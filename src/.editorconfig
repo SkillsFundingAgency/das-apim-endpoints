@@ -12,6 +12,10 @@ indent_size = 4
 insert_final_newline = true
 charset = utf-8-bom
 ###############################
+# Resharper Options           #
+###############################
+resharper_n_unit_method_with_parameters_and_test_attribute_highlighting=do_not_show
+###############################
 # .NET Coding Conventions     #
 ###############################
 [*.{cs,vb}]
@@ -122,7 +126,8 @@ csharp_preserve_single_line_blocks = true
 [*.vb]
 # Modifier preferences
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion
-###############################
-# Resharper Options           #
-###############################
-resharper_n_unit_method_with_parameters_and_test_attribute_highlighting=do_not_show
+#################################
+# Project File Formatting Rules #
+#################################
+[*.csproj]
+indent_size = 2
