@@ -20,17 +20,18 @@ resources:
     endpoint: "GitHub (SFA)"
 
 jobs:
-- job: 'CouldBuild'
+- job: 'CodeBuild'
   pool:
     name: 'DAS - Continuous Integration'
   workspace:
     clean: all  
   steps:
-  - task: gittools.gitversion-preview.gitversion-task.GitVersion@5
+  - task: UseGitVersion@5
     displayName: GitVersion
     inputs:
+      versionSpec: 5.x
+      useConfigFile: true
       configFilePath: GitVersion.yml
-      updateAssemblyInfo: true
 
   - task: DotNetCoreCLI@2
     displayName: Restore

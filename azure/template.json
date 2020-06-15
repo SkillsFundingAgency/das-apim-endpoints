@@ -2,13 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "resourceEnvironmentName": {
-            "type": "string"
-        },
         "environmentName": {
-            "type": "string"
-        },
-        "serviceName": {
             "type": "string"
         },
         "sharedEnvResourceGroup": {
@@ -21,46 +15,13 @@
             "type": "array",
             "defaultValue": []
         },
-        "appServicePlanInstances": {
-            "type": "int",
-            "defaultValue": 1
-        },
-        "appServicePlanSize": {
-            "type": "string",
-            "defaultValue": "1"
-        },        
-        "apiCustomHostname": {
-            "type": "string"
-        },
-        "keyvaultCertificateName": {
-            "type": "string"
-        },
+        "outerApiArray": {
+            "type": "array"
+        },      
         "sharedKeyVaultName": {
             "type": "string"
         },
         "sharedManagementResourceGroup": {
-            "type": "string"
-        },
-        "sharedSQLServerName": {
-            "type": "string"
-        },
-        "elasticPoolName": {
-            "defaultValue": "",
-            "type": "string"
-        },        
-        "databaseSkuName": {
-            "type": "string",
-            "defaultValue": "S0"
-        },
-        "databaseTier": {
-            "type": "string",
-            "defaultValue": "Standard"
-        },
-        "logAnalyticsSubscriptionId": {
-            "type": "string",
-            "defaultValue": "[subscription().subscriptionId]"
-        },
-        "logAnalyticsWorkspaceName": {
             "type": "string"
         },
         "loggingRedisConnectionString": {
@@ -74,58 +35,12 @@
         }
     },
     "variables": {
-        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'),'-asp')]",
-        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-        "importerFunctionAppName": "[concat(variables('resourceNamePrefix'),'-imp-fa')]",
-        "storageAccountName": "[concat('das',toLower(parameters('resourceEnvironmentName')),parameters('serviceName'),'str')]",
-        "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]"
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/"
     },
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "app-service-plan",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[variables('appServicePlanName')]"
-                    },
-                    "aspSize": {
-                        "value": "[parameters('appServicePlanSize')]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('appServicePlanInstances')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "storage-account",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'storage-account-arm.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "storageAccountName": {
-                        "value": "[variables('storageAccountName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "api-app-service-certificate",
+            "name": "[concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -136,7 +51,7 @@
                 },
                 "parameters": {
                     "keyVaultCertificateName": {
-                        "value": "[parameters('keyvaultCertificateName')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].keyVaultCertificateName]"
                     },
                     "keyVaultName": {
                         "value": "[parameters('sharedKeyVaultName')]"
@@ -145,11 +60,15 @@
                         "value": "[parameters('sharedManagementResourceGroup')]"
                     }
                 }
-            }
+            },
+            "copy": {
+                "name": "certificateLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            } 
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "api-application-insights",
+            "name": "[concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -159,17 +78,21 @@
                 },
                 "parameters": {
                     "appInsightsName": {
-                        "value": "[variables('apiAppServiceName')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
                     },
                     "attachedService": {
-                        "value": "[variables('apiAppServiceName')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
                     }
                 }
-            }
+            },
+            "copy": {
+                "name": "appInsightsLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            } 
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "api-app-service",
+            "name": "[concat('api-app-service', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -179,7 +102,7 @@
                 },
                 "parameters": {
                     "appServiceName": {
-                        "value": "[variables('apiAppServiceName')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
                     },
                     "appServicePlanName": {
                         "value": "[parameters('sharedBackEndAppServicePlanName')]"
@@ -215,113 +138,27 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference('api-application-insights').outputs.InstrumentationKey.value]"
+                                "value": "[reference(concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.InstrumentationKey.value]"
                             }
                         ]
                     },
                     "customHostName": {
-                        "value": "[parameters('apiCustomHostname')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference('api-app-service-certificate').outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('api-app-service-certificate-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
                     }
                 }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "importer-function-app-insights",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('importerFunctionAppName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('importerFunctionAppName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "importer-function-app",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'function-app.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "functionAppName": {
-                        "value": "[variables('importerFunctionAppName')]"
-                    },
-                    "appServicePlanName": {
-                        "value": "[variables('appServicePlanName')]"
-                    },
-                    "appServicePlanResourceGroup": {
-                        "value": "[resourceGroup().name]"
-                    },
-                    "functionAppAppSettings": {
-                        "value": [
-                            {
-                                "name": "ConfigurationStorageConnectionString",
-                                "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                                "name": "ConfigNames",
-                                "value": "SFA.DAS.Courses.Function"
-                            },
-                            {
-                                "name": "EnvironmentName",
-                                "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "Version",
-                                "value": "1.0"
-                            },
-                            {
-                                "name": "AzureWebJobsStorage",
-                                "value": "[reference('storage-account').outputs.storageConnectionString.value]"
-                            },
-                            {
-                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference('importer-function-app-insights').outputs.InstrumentationKey.value]"
-                            },
-                            {
-                                "name": "FUNCTIONS_EXTENSION_VERSION",
-                                "value": "~2"
-                            },
-                            {
-                                "name": "LoggingRedisConnectionString",
-                                "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                                "name": "FUNCTIONS_WORKER_RUNTIME",
-                                "value": "dotnet"
-                            }
-                        ]
-                    }
-                }
             },
-            "dependsOn": [
-                "app-service-plan"
-            ]
+            "copy": {
+                "name": "appServiceLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            }
         }
     ],
     "outputs": {
-        "ApiAppServiceName": {
-            "type": "string",
-            "value": "[variables('apiAppServiceName')]"
-        }
     }
 }
