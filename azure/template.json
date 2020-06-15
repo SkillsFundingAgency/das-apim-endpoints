@@ -92,7 +92,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('api-app-service', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "name": "[concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
