@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.FindApprenticeshipTraining.Api.Models;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -24,8 +27,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            await Task.CompletedTask;
-            return Ok("coming soon");
+            try
+            {
+                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery());
+                
+                var model = new GetTrainingCoursesListResponse
+                {
+                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseResponse)response)
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get list of training courses");
+                return BadRequest();
+            }
         }
     }
 }
