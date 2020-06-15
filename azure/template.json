@@ -18,9 +18,6 @@
         "outerApiArray": {
             "type": "array"
         },      
-        "apiCustomHostname": {
-            "type": "string"
-        },
         "sharedKeyVaultName": {
             "type": "string"
         },
@@ -146,7 +143,7 @@
                         ]
                     },
                     "customHostName": {
-                        "value": "[parameters('apiCustomHostname')]"
+                        "value": "[parameters('outerApiArray')[copyIndex()].customHostName]"
                     },
                     "certificateThumbprint": {
                         "value": "[reference(concat('api-app-service-certificate-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)).outputs.certificateThumbprint.value]"
