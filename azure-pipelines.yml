@@ -29,6 +29,7 @@ jobs:
   - task: UseGitVersion@5
     displayName: GitVersion
     inputs:
+      versionSpec: 5.x
       configFilePath: GitVersion.yml
       updateAssemblyInfo: true
 
