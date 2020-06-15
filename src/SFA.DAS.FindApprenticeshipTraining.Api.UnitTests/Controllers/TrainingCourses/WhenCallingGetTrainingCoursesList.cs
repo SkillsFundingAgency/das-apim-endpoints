@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
+using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -16,13 +17,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 {
     public class WhenCallingGetTrainingCoursesList
     {
-        [Test, MoqAutoData, Ignore("coming soon")]
-        public async Task Then_Gets_Training_Courses_From_Mediator()
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Training_Courses_From_Mediator(
+            GetTrainingCoursesListResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            TrainingCoursesController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetTrainingCoursesListQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
 
+            var controllerResult = await controller.GetList() as ObjectResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCoursesListResponse;
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses);
         }
 
-        [Test, MoqAutoData, Ignore("coming soon")]
+        [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
             TrainingCoursesController controller)
