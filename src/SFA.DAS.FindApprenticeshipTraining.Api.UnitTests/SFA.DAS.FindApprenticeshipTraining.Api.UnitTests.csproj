@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj" />
-    <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining.Application\SFA.DAS.FindApprenticeshipTraining.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj" />
   </ItemGroup>
 
 </Project>
