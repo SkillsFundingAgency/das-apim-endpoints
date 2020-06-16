@@ -2,6 +2,8 @@
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,20 +47,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.Configure<FindApprenticeshipTrainingConfig>(_configuration.GetSection("FindApprenticeshipTraining"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfig>>().Value);
-
+            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             
             var serviceProvider = services.BuildServiceProvider();
 
-
-
-
+            if (!ConfigurationIsLocalOrDev())
+            {
+                services.AddAuthentication(serviceProvider.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            }
+            
+            services
+                .AddMvc(o =>
+                {
+                    if (!ConfigurationIsLocalOrDev())
+                    {
+                        o.Filters.Add(new AuthorizeFilter("default"));
+                    }
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindApprenticeshipTrainingApi", Version = "v1" });
             });
+            
+            services.BuildServiceProvider();
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -70,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             app.UseAuthentication();    
         
-            app.UseHealthChecks();
+            
             
             app.UseMvc(routes =>
             {
@@ -82,7 +100,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoursesAPI");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindApprenticeshipTrainingApi");
                 c.RoutePrefix = string.Empty;
             });
         }

@@ -44,5 +44,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
