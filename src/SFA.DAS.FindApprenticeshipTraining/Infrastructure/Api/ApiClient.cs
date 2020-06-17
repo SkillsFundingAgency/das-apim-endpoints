@@ -10,8 +10,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
 {
     public class ApiClient : ApiClientBase, IApiClient
     {
-        public ApiClient(IOptions<CoursesApiConfiguration> configuration, HttpClient httpClient, IHostingEnvironment hostingEnvironment) 
-            : base(configuration, httpClient, hostingEnvironment)
+        public ApiClient(  IOptions<CoursesApiConfiguration> configuration, HttpClient httpClient,
+            IHostingEnvironment hostingEnvironment, IAzureClientCredentialHelper azureClientCredentialHelper) 
+            : base(configuration, httpClient, hostingEnvironment, azureClientCredentialHelper)
         {
             
         }
@@ -29,11 +30,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
             return result;
         }
 
-        protected override async Task<string> GetAccessTokenAsync()
-        {
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(Configuration.Identifier);
-            return accessToken;
-        }
     }
 }

@@ -13,14 +13,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
     {
         protected readonly HttpClient HttpClient;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
         protected readonly CoursesApiConfiguration Configuration;
 
         protected ApiClientBase(
             IOptions<CoursesApiConfiguration> configuration,
-            HttpClient httpClient, IHostingEnvironment hostingEnvironment)
+            HttpClient httpClient, IHostingEnvironment hostingEnvironment,
+            IAzureClientCredentialHelper azureClientCredentialHelper)
         {
             HttpClient = httpClient;
             _hostingEnvironment = hostingEnvironment;
+            _azureClientCredentialHelper = azureClientCredentialHelper;
             Configuration = configuration.Value;
         }
 
@@ -40,13 +43,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
         {
             if (!_hostingEnvironment.IsDevelopment())
             {
-                var accessToken = await GetAccessTokenAsync();
+                var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync();
                 HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    
             }
         }
 
         public abstract Task<string> Ping();
 
-        protected abstract Task<string> GetAccessTokenAsync();
     }
 }
