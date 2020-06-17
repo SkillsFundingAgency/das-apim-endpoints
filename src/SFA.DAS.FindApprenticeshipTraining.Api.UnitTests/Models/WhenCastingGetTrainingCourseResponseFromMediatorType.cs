@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Types;
+using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
@@ -10,9 +10,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
-            GetStandardResponse source)
+            GetStandardsListItem source)
         {
-            var response = (GetTrainingCourseResponse)source;
+            var response = (GetTrainingCourseListItem)source;
 
             response.Should().BeEquivalentTo(source);
         }

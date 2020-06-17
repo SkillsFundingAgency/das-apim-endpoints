@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Types
+﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses
 {
-    public class GetStandardResponse
+    public class GetStandardsListItem
     {
         public int Id { get; set; }
         public string Title { get; set; }

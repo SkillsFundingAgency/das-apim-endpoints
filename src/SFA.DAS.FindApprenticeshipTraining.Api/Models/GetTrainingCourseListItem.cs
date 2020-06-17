@@ -1,8 +1,8 @@
-﻿using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Types;
+﻿using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
-    public class GetTrainingCourseResponse
+    public class GetTrainingCourseListItem
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -18,9 +18,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
 
-        public static implicit operator GetTrainingCourseResponse(GetStandardResponse source)
+        public static implicit operator GetTrainingCourseListItem(GetStandardsListItem source)
         {
-            return new GetTrainingCourseResponse
+            return new GetTrainingCourseListItem
             {
                 Id = source.Id,
                 Title = source.Title,

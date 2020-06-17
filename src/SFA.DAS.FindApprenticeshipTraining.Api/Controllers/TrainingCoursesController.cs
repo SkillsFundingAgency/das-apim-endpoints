@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 
                 var model = new GetTrainingCoursesListResponse
                 {
-                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseResponse)response)
+                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response)
                 };
 
                 return Ok(model);

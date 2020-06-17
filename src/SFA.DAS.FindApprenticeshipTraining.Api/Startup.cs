@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -77,6 +79,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             
             services.BuildServiceProvider();
 
+            services.AddHttpClient();
+            services.AddTransient<IApiClient, ApiClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -4,6 +4,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetTrainingCoursesListResponse
     {
-        public IEnumerable<GetTrainingCourseResponse> TrainingCourses { get; set; }
+        public IEnumerable<GetTrainingCourseListItem> TrainingCourses { get; set; }
     }
 }
