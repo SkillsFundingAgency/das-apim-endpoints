@@ -18,4 +18,8 @@
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\InnerApi" />
+  </ItemGroup>
+
 </Project>

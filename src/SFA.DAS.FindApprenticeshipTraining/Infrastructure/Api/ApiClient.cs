@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -40,6 +41,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
             return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
+        public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            request.BaseUrl = _configuration.Url;
+            var response = await _httpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<IEnumerable<TResponse>>(json);
+        }
+
         private async Task AddAuthenticationHeader()
         {
             if (!_hostingEnvironment.IsDevelopment())
@@ -61,6 +74,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return result;
         }
-
     }
 }

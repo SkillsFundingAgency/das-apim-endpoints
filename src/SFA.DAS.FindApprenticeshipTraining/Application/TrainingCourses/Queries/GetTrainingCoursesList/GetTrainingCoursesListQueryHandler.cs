@@ -18,14 +18,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
-            var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest());
+            var standardsTask = _apiClient.GetAll<GetStandardsListItem>(new GetStandardsListRequest());
             //todo: sectors, levels here
 
             await Task.WhenAll(standardsTask);
 
             return new GetTrainingCoursesListResult
             {
-                Courses = standardsTask.Result.Standards
+                Courses = standardsTask.Result
             };
         }
     }

@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Requests
 {
-    public class GetStandardsListRequest : IGetApiRequest
+    public class GetStandardsListRequest : IGetAllApiRequest
     {
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/courses/standards";
+        public string GetAllUrl => $"{BaseUrl}api/courses/standards";
     }
 }
