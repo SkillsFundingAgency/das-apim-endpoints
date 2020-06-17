@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
+using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
@@ -18,10 +20,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _env;
         private readonly IConfiguration _configuration;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            _env = env;
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -49,17 +53,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddSingleton(_env);
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            
+
             var serviceProvider = services.BuildServiceProvider();
 
             if (!ConfigurationIsLocalOrDev())
             {
                 services.AddAuthentication(serviceProvider.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             }
+
+            services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
+            services.AddServiceRegistration();
             
             services
                 .AddMvc(o =>
@@ -79,8 +87,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             
             services.BuildServiceProvider();
 
-            services.AddHttpClient();
-            services.AddTransient<IApiClient, ApiClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
