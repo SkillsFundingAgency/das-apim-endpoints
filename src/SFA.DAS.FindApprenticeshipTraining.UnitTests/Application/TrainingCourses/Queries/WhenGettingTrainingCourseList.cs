@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Courses.Should().BeEquivalentTo(apiResponse);
+            result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
         }
     }
 }
