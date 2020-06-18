@@ -266,5 +266,6 @@ src/ReleaseTemplate.sql
 *.stackdump
 desktop.ini
 App.Debug.config
+.editorconfig
 
-src/SFA.DAS.Courses.Api/appsettings.Development.json
+src/**/appsettings.Development.json
