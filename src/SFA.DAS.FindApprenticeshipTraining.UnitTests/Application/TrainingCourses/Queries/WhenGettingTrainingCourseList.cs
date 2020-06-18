@@ -17,12 +17,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Courses_Api(
             GetTrainingCoursesListQuery query,
-            List<GetStandardsListItem> apiResponse,
+            GetStandardsListResponse apiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.GetAll<GetStandardsListItem>(It.IsAny<IGetAllApiRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<IGetApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
