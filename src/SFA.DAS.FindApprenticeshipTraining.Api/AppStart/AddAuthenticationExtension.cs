@@ -29,8 +29,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
                     {
                         ValidAudiences = new List<string>
                         {
-                            config.Identifier,
-                            config.Id
+                            config.Identifier
                         }
                     };
                 });
