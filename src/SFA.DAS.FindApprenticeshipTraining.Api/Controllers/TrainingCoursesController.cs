@@ -11,7 +11,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
     [ApiController]
-    [Route("findapprenticeshiptraining/[controller]/")]
+    [Route("[controller]/")]
     public class TrainingCoursesController : ControllerBase
     {
         private readonly ILogger<TrainingCoursesController> _logger;
