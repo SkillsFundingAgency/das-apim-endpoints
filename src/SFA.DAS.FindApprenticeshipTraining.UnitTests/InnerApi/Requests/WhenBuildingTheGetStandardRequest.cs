@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Domain.InnerApi.Requests
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetStandardRequest
     {

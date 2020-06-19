@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Options;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
 {

@@ -1,6 +1,6 @@
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Requests
+namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests
 {
     public class GetStandardRequest : IGetApiRequest
     {

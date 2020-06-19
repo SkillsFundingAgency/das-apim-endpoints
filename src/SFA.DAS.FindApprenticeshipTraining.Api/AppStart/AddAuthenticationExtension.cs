@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart

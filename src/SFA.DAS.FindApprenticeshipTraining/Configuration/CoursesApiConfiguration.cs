@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration
+﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Configuration
 {
     public class CoursesApiConfiguration
     {

@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse
 {

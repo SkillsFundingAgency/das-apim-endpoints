@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
 {

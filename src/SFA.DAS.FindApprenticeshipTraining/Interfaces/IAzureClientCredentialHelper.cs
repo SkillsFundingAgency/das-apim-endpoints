@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Interfaces
 {
     public interface IAzureClientCredentialHelper
     {

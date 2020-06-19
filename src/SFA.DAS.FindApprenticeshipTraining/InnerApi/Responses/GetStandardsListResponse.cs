@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses
+namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses
 {
     public class GetStandardsListResponse
     {

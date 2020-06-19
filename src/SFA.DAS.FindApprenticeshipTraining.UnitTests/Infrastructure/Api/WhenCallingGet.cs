@@ -8,9 +8,9 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Api
 {

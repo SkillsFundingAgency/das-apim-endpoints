@@ -5,9 +5,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries

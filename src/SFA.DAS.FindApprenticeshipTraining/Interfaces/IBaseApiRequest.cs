@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Domain.Interfaces
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Interfaces
 {
     public interface IBaseApiRequest
     {

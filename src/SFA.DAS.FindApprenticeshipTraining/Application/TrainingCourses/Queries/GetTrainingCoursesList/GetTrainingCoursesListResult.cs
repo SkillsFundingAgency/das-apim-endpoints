@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.FindApprenticeshipTraining.Application.Domain.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList
 {
