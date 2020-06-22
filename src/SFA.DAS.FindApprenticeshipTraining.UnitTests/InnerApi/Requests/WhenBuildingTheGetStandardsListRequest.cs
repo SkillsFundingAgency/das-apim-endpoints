@@ -9,12 +9,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     {
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed(
+            string keyword,
             string baseUrl)
         {
-            var actual = new GetStandardsListRequest{BaseUrl = baseUrl};
+            var actual = new GetStandardsListRequest{BaseUrl = baseUrl, Keyword = keyword};
 
             actual.BaseUrl.Should().Be(baseUrl);
-            actual.GetUrl.Should().Be($"{baseUrl}api/courses/standards");
+            actual.GetUrl.Should().Be($"{baseUrl}api/courses/standards?keyword={keyword}");
         }
     }
 }
