@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api", "SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj", "{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6D66363-4BC5-4E27-991A-3BACFACD6879}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{87C4369B-AB1E-444C-A6DA-433DD3812B03}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api.UnitTests", "SFA.DAS.FindApprenticeshipTraining.Api.UnitTests\SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.csproj", "{62E68066-4A3A-44A7-876A-968F67A083DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining", "SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj", "{5E9B3D3B-D1C8-4F04-BF47-622D4051EA6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.FindApprenticeshipTraining.UnitTests", "SFA.DAS.FindApprenticeshipTraining.UnitTests\SFA.DAS.FindApprenticeshipTraining.UnitTests.csproj", "{983010EF-4855-4838-8E9C-222F99B83A8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62E68066-4A3A-44A7-876A-968F67A083DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62E68066-4A3A-44A7-876A-968F67A083DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62E68066-4A3A-44A7-876A-968F67A083DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62E68066-4A3A-44A7-876A-968F67A083DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9B3D3B-D1C8-4F04-BF47-622D4051EA6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9B3D3B-D1C8-4F04-BF47-622D4051EA6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9B3D3B-D1C8-4F04-BF47-622D4051EA6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9B3D3B-D1C8-4F04-BF47-622D4051EA6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{983010EF-4855-4838-8E9C-222F99B83A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{983010EF-4855-4838-8E9C-222F99B83A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{983010EF-4855-4838-8E9C-222F99B83A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{983010EF-4855-4838-8E9C-222F99B83A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{62E68066-4A3A-44A7-876A-968F67A083DF} = {87C4369B-AB1E-444C-A6DA-433DD3812B03}
+		{983010EF-4855-4838-8E9C-222F99B83A8F} = {87C4369B-AB1E-444C-A6DA-433DD3812B03}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
+	EndGlobalSection
+EndGlobal

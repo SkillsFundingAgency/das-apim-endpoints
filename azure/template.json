@@ -1,0 +1,164 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentName": {
+            "type": "string"
+        },
+        "sharedEnvResourceGroup": {
+            "type": "string"
+        },
+        "sharedBackEndAppServicePlanName": {
+            "type": "string"
+        },
+        "appServiceAllowedIPs": {
+            "type": "array",
+            "defaultValue": []
+        },
+        "outerApiArray": {
+            "type": "array"
+        },      
+        "sharedKeyVaultName": {
+            "type": "string"
+        },
+        "sharedManagementResourceGroup": {
+            "type": "string"
+        },
+        "loggingRedisConnectionString": {
+            "type": "string"
+        },
+        "loggingRedisKey": {
+            "type": "string"
+        },
+        "configurationStorageConnectionString": {
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('outerApiArray')[copyIndex()].keyVaultCertificateName]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "certificateLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            } 
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                    },
+                    "attachedService": {
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "appInsightsLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            } 
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedBackEndAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedEnvResourceGroup')]"
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "Environment",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "ConfigNames",
+                                "value": "SFA.DAS.FindApprenticeshipTraining.OuterApi"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference(concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.InstrumentationKey.value]"
+                            }
+                        ]
+                    },
+                    "customHostName": {
+                        "value": "[parameters('outerApiArray')[copyIndex()].customHostName]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[reference(concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)).outputs.certificateThumbprint.value]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "appServiceLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
