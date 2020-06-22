@@ -17,6 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
                 o.AddPolicy("default", policy =>
                 {
                     policy.RequireAuthenticatedUser();
+                    policy.RequireRole("Default");
                 });
             });
                 
