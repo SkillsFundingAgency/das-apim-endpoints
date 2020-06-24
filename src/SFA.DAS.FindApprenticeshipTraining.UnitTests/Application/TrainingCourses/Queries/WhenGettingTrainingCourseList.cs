@@ -16,9 +16,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourseList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_From_Courses_Api(
+        public async Task Then_Gets_Standards_And_Sectors_From_Courses_Api(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -26,10 +27,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
         }
