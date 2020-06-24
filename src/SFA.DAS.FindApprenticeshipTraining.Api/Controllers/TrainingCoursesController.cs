@@ -35,6 +35,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var model = new GetTrainingCoursesListResponse
                 {
                     TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
+                    Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
                     Total = queryResult.Total,
                     TotalFiltered = queryResult.TotalFiltered
                 };
