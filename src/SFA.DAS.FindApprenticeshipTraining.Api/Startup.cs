@@ -90,7 +90,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = configuration.RedisCacheConnectionString;
+                    options.Configuration = configuration.SessionRedisConnectionString;
                 });
             }
             
