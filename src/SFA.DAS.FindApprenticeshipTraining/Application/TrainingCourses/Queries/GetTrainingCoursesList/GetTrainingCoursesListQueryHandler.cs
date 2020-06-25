@@ -18,9 +18,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
-            var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest{Keyword = request.Keyword});
+            var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest
+            {
+                Keyword = request.Keyword, 
+                RouteIds = request.RouteIds
+            });
             var sectorsTask = _apiClient.Get<GetSectorsListResponse>(new GetSectorsListRequest());
-            //todo: sectors, levels here
 
             await Task.WhenAll(standardsTask, sectorsTask);
 

@@ -16,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourseList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_And_Sectors_From_Courses_Api(
+        public async Task Then_Gets_Standards_And_Sectors_From_Courses_Api_With_Request_Params(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
@@ -25,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
