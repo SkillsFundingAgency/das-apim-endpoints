@@ -38,6 +38,58 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Sectors_Are_Added_To_The_Cache_If_Not_Available(
+            GetTrainingCoursesListQuery query,
+            GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
+            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
+            
+            await handler.Handle(query, CancellationToken.None);
+            
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse,23));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Sectors_Are_Returned_From_The_Cache_If_Available(
+            GetTrainingCoursesListQuery query,
+            GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
+            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            //Arrange
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                .ReturnsAsync(apiResponse);
+            cacheStorageService
+                .Setup(x =>
+                    x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
+                .ReturnsAsync(sectorsApiResponse);
+            
+            //Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            //Assert
+            result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Total.Should().Be(apiResponse.Total);
+            result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
+            mockApiClient.Verify(x=>x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
+        }
     }
 }
 
