@@ -55,6 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.AddSingleton(_env);
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+            services.Configure<FindApprenticeshipTrainingConfiguration>(_configuration.GetSection("FindApprenticeshipTrainingConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
@@ -76,6 +78,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            if (ConfigurationIsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = serviceProvider
+                    .GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value;
+                
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.RedisCacheConnectionString;
+                });
+            }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 

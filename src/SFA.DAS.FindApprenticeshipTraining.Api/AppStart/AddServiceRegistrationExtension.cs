@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
+using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Services;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
@@ -11,6 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             
             services.AddHttpClient<IApiClient, ApiClient>();
+            services.AddTransient<ICacheStorageService, CacheStorageService>();
         }
     }
 }
