@@ -58,7 +58,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Services
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_The_Item_Does_Not_Exist_Null_Is_Returned(
+        public async Task Then_If_The_Item_Does_Not_Exist_Default_Is_Returned(
             string keyName,
             [Frozen] Mock<IDistributedCache> distributedCache,
             CacheStorageService service)
