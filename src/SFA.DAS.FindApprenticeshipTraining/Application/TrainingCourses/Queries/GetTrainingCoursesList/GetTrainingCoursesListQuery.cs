@@ -4,6 +4,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
 {
     public class GetTrainingCoursesListQuery : IRequest<GetTrainingCoursesListResult>
     {
-        
+        public string Keyword { get ; set ; }
     }
 }

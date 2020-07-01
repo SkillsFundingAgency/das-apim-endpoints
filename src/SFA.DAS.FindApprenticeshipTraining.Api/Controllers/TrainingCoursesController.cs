@@ -26,15 +26,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetList([FromQuery]string keyword = "")
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery());
+                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery{Keyword = keyword});
                 
                 var model = new GetTrainingCoursesListResponse
                 {
-                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response)
+                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
+                    Total = queryResult.Total,
+                    TotalFiltered = queryResult.TotalFiltered
                 };
 
                 return Ok(model);
