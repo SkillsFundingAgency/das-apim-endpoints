@@ -35,6 +35,28 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_If_Supplied(
+            string keyword,
+            GetTrainingCoursesListResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCoursesListQuery>(c=>c.Keyword.Equals(keyword)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetList(keyword) as ObjectResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCoursesListResponse;
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses);
+            model.Total.Should().Be(mediatorResult.Total);
+            model.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
+        }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(

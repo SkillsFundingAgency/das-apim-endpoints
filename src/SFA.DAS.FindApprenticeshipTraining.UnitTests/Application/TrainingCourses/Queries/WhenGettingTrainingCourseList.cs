@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -22,12 +23,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<IGetApiRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Total.Should().Be(apiResponse.Total);
+            result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
         }
     }
 }
+
