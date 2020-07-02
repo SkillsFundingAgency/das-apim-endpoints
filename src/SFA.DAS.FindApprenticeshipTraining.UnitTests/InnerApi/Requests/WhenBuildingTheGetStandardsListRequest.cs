@@ -12,6 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed(
             List<Guid> routeIds,
+            List<int> levels,
             string keyword,
             string baseUrl)
         {
@@ -19,16 +20,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             {
                 BaseUrl = baseUrl, 
                 Keyword = keyword, 
-                RouteIds = routeIds
+                RouteIds = routeIds,
+                Levels = levels,
             };
 
             actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&routeIds=" + string.Join("&routeIds=",routeIds));
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
         }
 
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds(
+        public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
             string keyword,
             string baseUrl)
         {
@@ -41,6 +43,42 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
                 .Be($"{baseUrl}api/courses/standards?keyword={keyword}");
+        }
+
+        [Test, AutoData]
+        public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds(
+            List<int> levels,
+            string keyword,
+            string baseUrl)
+        {
+            var actual = new GetStandardsListRequest
+            {
+                BaseUrl = baseUrl, 
+                Keyword = keyword, 
+                Levels = levels
+            };
+            
+            actual.BaseUrl.Should().Be(baseUrl);
+            actual.GetUrl.Should()
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&levels=" + string.Join("&levels=", levels));
+        }
+        
+        [Test, AutoData]
+        public void Then_The_Url_Is_Correctly_Constructed_Without_Levels(
+            List<Guid> routeIds,
+            string keyword,
+            string baseUrl)
+        {
+            var actual = new GetStandardsListRequest
+            {
+                BaseUrl = baseUrl, 
+                Keyword = keyword, 
+                RouteIds = routeIds
+            };
+            
+            actual.BaseUrl.Should().Be(baseUrl);
+            actual.GetUrl.Should()
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }
