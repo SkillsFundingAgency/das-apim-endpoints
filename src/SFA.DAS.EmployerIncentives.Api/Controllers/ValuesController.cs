@@ -4,18 +4,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ValuesController : ControllerBase
     {
+        private readonly ILogger<ValuesController> _logger;
+
+        public ValuesController(ILogger<ValuesController> logger)
+        {
+            _logger = logger;
+        }
+
         // GET api/values
+        [Authorize]
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            _logger.LogInformation("Getting Values");
+
             return new string[] { "value1", "value2" };
         }
 
@@ -23,6 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
+            _logger.LogWarning($"Getting Value {id}");
             return "value";
         }
 

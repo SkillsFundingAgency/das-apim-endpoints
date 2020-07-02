@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Api.Authentication

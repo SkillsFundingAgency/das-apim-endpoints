@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,13 +16,18 @@ namespace SFA.DAS.EmployerIncentives.Api.Authorization
                 o.AddPolicy("default", policy =>
                 {
                     if (isDevelopment)
+                    {
                         policy.AllowAnonymousUser();
+                    }
                     else
+                    {
                         policy.RequireAuthenticatedUser();
-                    policy.RequireRole("Default");
+                        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                        policy.RequireRole("APIM");
+                    }
                 });
             });
-            if (!isDevelopment)
+            if (isDevelopment)
                 services.AddSingleton<IAuthorizationHandler, LocalAuthorizationHandler>();
             return services;
         }
