@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerIncentives.Api.HealthChecks
     {
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
-            return Task.FromResult(HealthCheckResult.Unhealthy());
+            return Task.FromResult(HealthCheckResult.Healthy());
         }
     }
 }
