@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
     public class WhenCallingGetTrainingCoursesList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_And_Sectors_From_Mediator(
+        public async Task Then_Gets_Training_Courses_And_Sectors_And_Levels_From_Mediator(
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             TrainingCoursesController controller)
@@ -39,11 +39,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 .Excluding(tc=>tc.StandardDates)
             );
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
+            model.Levels.Should().BeEquivalentTo(mediatorResult.Levels);
         }
         
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_If_Supplied(
+        public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_And_Levels_If_Supplied(
             string keyword,
+            List<int> levels,
             List<Guid> routeIds,
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -51,11 +53,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetTrainingCoursesListQuery>(c=>c.Keyword.Equals(keyword) && c.RouteIds.Equals(routeIds)),
+                    It.Is<GetTrainingCoursesListQuery>(c=>
+                                                            c.Keyword.Equals(keyword) 
+                                                            && c.RouteIds.Equals(routeIds)
+                                                            && c.Levels.Equals(levels)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList(keyword, routeIds) as ObjectResult;
+            var controllerResult = await controller.GetList(keyword, routeIds, levels) as ObjectResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
