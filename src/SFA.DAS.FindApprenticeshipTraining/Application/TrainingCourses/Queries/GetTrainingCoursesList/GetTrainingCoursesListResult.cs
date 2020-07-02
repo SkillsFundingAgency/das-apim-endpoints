@@ -7,6 +7,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
     {
         public IEnumerable<GetStandardsListItem> Courses { get; set; }
         public IEnumerable<GetSectorsListItem> Sectors { get ; set ; }
+        public IEnumerable<GetLevelsListItem> Levels { get ; set ; }
         public int Total { get ; set ; }
         public int TotalFiltered { get ; set ; }
     }

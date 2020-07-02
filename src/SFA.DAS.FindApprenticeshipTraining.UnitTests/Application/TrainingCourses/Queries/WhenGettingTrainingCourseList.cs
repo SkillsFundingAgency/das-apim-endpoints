@@ -18,10 +18,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourseList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_And_Sectors_From_Courses_Api_With_Request_Params(
+        public async Task Then_Gets_Standards_And_Sectors_And_Levels_From_Courses_Api_With_Request_Params(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -34,11 +35,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
                 .ReturnsAsync(sectorsApiResponse);
-
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
+            
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
             result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
         }
@@ -48,6 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_The_Standards_Are_Filtered_Based_On_The_Available_Dates(
             GetTrainingCoursesListQuery query,
             GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -118,6 +124,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
                 .ReturnsAsync(sectorsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
             
             
             //Act
@@ -136,6 +145,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
@@ -147,6 +157,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
                 .ReturnsAsync(sectorsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
             
             await handler.Handle(query, CancellationToken.None);
             
@@ -158,6 +171,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<IApiClient> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
@@ -168,6 +182,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
                 .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
             cacheStorageService
                 .Setup(x =>
                     x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
@@ -182,6 +199,66 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
             mockApiClient.Verify(x=>x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Levels_Are_Added_To_The_Cache_If_Not_Available( GetTrainingCoursesListQuery query,
+            GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
+            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
+            
+            await handler.Handle(query, CancellationToken.None);
+            
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse,23));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Levels_Are_Returned_From_The_Cache_If_Available(GetTrainingCoursesListQuery query,
+            GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
+            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            //Arrange
+            ArrangeStandardsToHaveValidDates(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
+            cacheStorageService
+                .Setup(x =>
+                    x.RetrieveFromCache<GetLevelsListResponse>(nameof(GetLevelsListResponse)))
+                .ReturnsAsync(levelsApiResponse);
+            
+            //Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            //Assert
+            result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
+            result.Total.Should().Be(apiResponse.Total);
+            result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
+            mockApiClient.Verify(x=>x.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()), Times.Never);
         }
         
         private static void ArrangeStandardsToHaveValidDates(GetStandardsListResponse apiResponse)

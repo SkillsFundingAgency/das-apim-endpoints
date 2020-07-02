@@ -16,7 +16,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
         private readonly IApiClient _apiClient;
         private readonly ICacheStorageService _cacheStorageService;
         private const int ExpirationInHours = 23;
-        
+        private List<Task> _taskList;
+        private bool _saveSectorsToCache;
+        private bool _saveLevelsToCache;
         public GetTrainingCoursesListQueryHandler(IApiClient apiClient, ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
@@ -25,39 +27,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
-            var taskList = new List<Task>();
+            _taskList = new List<Task>();
             
             var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest
             {
                 Keyword = request.Keyword, 
                 RouteIds = request.RouteIds
             });
-            taskList.Add(standardsTask);
+            _taskList.Add(standardsTask);
 
-            Task<GetSectorsListResponse> sectorsTask;
-            var sectorsFromCache =
-                await _cacheStorageService.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse));
+            var sectorsTask = GetRequest<GetSectorsListResponse>(new GetSectorsListRequest(),nameof(GetSectorsListResponse), out _saveSectorsToCache);
+           _taskList.Add(sectorsTask);
 
-            var saveSectorsToCache = false;
-            if (sectorsFromCache != null)
-            {
-                sectorsTask = Task.FromResult(sectorsFromCache);
-            }
-            else
-            {
-                sectorsTask = _apiClient.Get<GetSectorsListResponse>(new GetSectorsListRequest());
-                saveSectorsToCache = true;
-            }
+            var levelsTask = GetRequest<GetLevelsListResponse>(new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _saveLevelsToCache);
+            _taskList.Add(levelsTask);
             
-            taskList.Add(sectorsTask);
-            
-            await Task.WhenAll(taskList);
+            await Task.WhenAll(_taskList);
 
-            if (saveSectorsToCache)
-            {
-                await _cacheStorageService
-                    .SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, ExpirationInHours);    
-            }
+            await UpdateCachedItems(sectorsTask, levelsTask);
 
             var filteredStandards = standardsTask
                 .Result
@@ -76,9 +63,47 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
             {
                 Courses = filteredStandards,
                 Sectors = sectorsTask.Result.Sectors,
+                Levels = levelsTask.Result.Levels,
                 Total = standardsTask.Result.Total,
                 TotalFiltered = standardsTask.Result.TotalFiltered
             };
         }
+
+        private async Task UpdateCachedItems(Task<GetSectorsListResponse> sectorsTask, Task<GetLevelsListResponse> levelsTask)
+        {
+            if (_saveSectorsToCache)
+            {
+                await _cacheStorageService
+                    .SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, ExpirationInHours);
+            }
+
+            if (_saveLevelsToCache)
+            {
+                await _cacheStorageService.SaveToCache(nameof(GetLevelsListResponse), levelsTask.Result,
+                    ExpirationInHours);
+            }
+        }
+
+        private Task<TResponse> GetRequest<TResponse>(IGetApiRequest request,string keyName, out bool updateCache)
+        {
+            Task<TResponse> levelsTask;
+            updateCache = false;
+            
+            var itemFromCache =
+                _cacheStorageService.RetrieveFromCache<TResponse>(keyName).Result;
+
+            if (itemFromCache != null)
+            {
+                levelsTask = Task.FromResult(itemFromCache);
+            }
+            else
+            {
+                levelsTask = _apiClient.Get<TResponse>(request);
+                updateCache = true;
+            }
+
+            return levelsTask;
+        }
+        
     }
 }
