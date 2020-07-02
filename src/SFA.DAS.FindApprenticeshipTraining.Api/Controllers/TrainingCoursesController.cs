@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,15 +27,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery]string keyword = "")
+        public async Task<IActionResult> GetList([FromQuery]string keyword = "", [FromQuery]List<Guid> routeIds = null)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery{Keyword = keyword});
+                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery
+                {
+                    Keyword = keyword, 
+                    RouteIds = routeIds
+                });
                 
                 var model = new GetTrainingCoursesListResponse
                 {
                     TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
+                    Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
                     Total = queryResult.Total,
                     TotalFiltered = queryResult.TotalFiltered
                 };

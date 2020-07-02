@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
@@ -10,22 +11,55 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
         private readonly IApiClient _apiClient;
-
-        public GetTrainingCoursesListQueryHandler(IApiClient apiClient)
+        private readonly ICacheStorageService _cacheStorageService;
+        private const int ExpirationInHours = 23;
+        
+        public GetTrainingCoursesListQueryHandler(IApiClient apiClient, ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
+            _cacheStorageService = cacheStorageService;
         }
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
-            var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest{Keyword = request.Keyword});
-            //todo: sectors, levels here
+            var taskList = new List<Task>();
+            
+            var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest
+            {
+                Keyword = request.Keyword, 
+                RouteIds = request.RouteIds
+            });
+            taskList.Add(standardsTask);
 
-            await Task.WhenAll(standardsTask);
+            Task<GetSectorsListResponse> sectorsTask;
+            var sectorsFromCache =
+                await _cacheStorageService.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse));
 
+            var saveSectorsToCache = false;
+            if (sectorsFromCache != null)
+            {
+                sectorsTask = Task.FromResult(sectorsFromCache);
+            }
+            else
+            {
+                sectorsTask = _apiClient.Get<GetSectorsListResponse>(new GetSectorsListRequest());
+                saveSectorsToCache = true;
+            }
+            
+            taskList.Add(sectorsTask);
+            
+            await Task.WhenAll(taskList);
+
+            if (saveSectorsToCache)
+            {
+                await _cacheStorageService
+                    .SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, ExpirationInHours);    
+            }
+            
             return new GetTrainingCoursesListResult
             {
                 Courses = standardsTask.Result.Standards,
+                Sectors = sectorsTask.Result.Sectors,
                 Total = standardsTask.Result.Total,
                 TotalFiltered = standardsTask.Result.TotalFiltered
             };
