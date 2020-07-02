@@ -30,7 +30,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) 
+                                                      && c.RouteIds.Equals(query.RouteIds)
+                                                      && c.Levels.Equals(query.Levels)
+                                                      )))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))

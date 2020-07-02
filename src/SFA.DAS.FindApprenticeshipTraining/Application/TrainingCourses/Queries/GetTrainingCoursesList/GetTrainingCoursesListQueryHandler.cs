@@ -32,7 +32,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
             var standardsTask = _apiClient.Get<GetStandardsListResponse>(new GetStandardsListRequest
             {
                 Keyword = request.Keyword, 
-                RouteIds = request.RouteIds
+                RouteIds = request.RouteIds,
+                Levels = request.Levels
             });
             _taskList.Add(standardsTask);
 
