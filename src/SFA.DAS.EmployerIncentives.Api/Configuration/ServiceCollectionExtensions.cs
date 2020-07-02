@@ -6,7 +6,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Configuration
 {
     public static class ServiceCollectionExtensions
     {
-
         public static IServiceCollection AddApiConfigurationSections(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();

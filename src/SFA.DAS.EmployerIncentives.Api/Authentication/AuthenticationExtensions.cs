@@ -34,5 +34,4 @@ namespace SFA.DAS.EmployerIncentives.Api.Authentication
             return services;
         }
     }
-
 }
