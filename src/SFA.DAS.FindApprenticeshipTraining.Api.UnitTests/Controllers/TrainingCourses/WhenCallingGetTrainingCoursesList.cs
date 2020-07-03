@@ -34,7 +34,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses);
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
+                .Excluding(tc=>tc.ApprenticeshipFunding)
+                .Excluding(tc=>tc.StandardDates)
+            );
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
         }
         
@@ -56,7 +59,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses);
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
+                .Excluding(tc=>tc.ApprenticeshipFunding)
+                .Excluding(tc=>tc.StandardDates)
+            );
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
         }

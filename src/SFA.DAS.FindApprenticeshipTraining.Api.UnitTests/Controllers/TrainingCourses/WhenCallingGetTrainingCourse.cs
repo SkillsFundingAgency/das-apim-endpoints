@@ -36,7 +36,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseResponse;
             Assert.IsNotNull(model);
-            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course);
+            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options=>options
+                .Excluding(tc=>tc.ApprenticeshipFunding)
+                .Excluding(tc=>tc.StandardDates)
+            );
         }
 
         [Test, MoqAutoData]
