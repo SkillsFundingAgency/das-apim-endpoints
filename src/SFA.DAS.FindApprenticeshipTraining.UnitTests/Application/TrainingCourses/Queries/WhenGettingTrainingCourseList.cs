@@ -25,7 +25,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IApiClient> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
-            ArrangeStandardsToHaveValidDates(apiResponse);
             
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
@@ -42,94 +41,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
         }
-
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Standards_Are_Filtered_Based_On_The_Available_Dates(
-            GetTrainingCoursesListQuery query,
-            GetSectorsListResponse sectorsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
-            GetTrainingCoursesListQueryHandler handler)
-        {
-            //Arrange
-            var sameDate = DateTime.UtcNow.AddDays(10);
-            var standardsListResponse = new GetStandardsListResponse
-            {
-                Standards = new List<GetStandardsListItem>
-                {
-                    new GetStandardsListItem
-                    {
-                        Title = "Available",
-                        ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = new List<StandardDate>
-                        {
-                            new StandardDate
-                            {
-                                EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                                LastDateStarts = null
-                            }
-                        }
-                    },
-                    new GetStandardsListItem
-                    {
-                        Title = "Not Available 1",
-                        ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = new List<StandardDate>
-                        {
-                            new StandardDate
-                            {
-                                EffectiveFrom = DateTime.UtcNow.AddMonths(1),
-                                LastDateStarts = null
-                            }
-                        }
-                    },
-                    new GetStandardsListItem
-                    {
-                        Title = "Not Available 2",
-                        ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = new List<StandardDate>
-                        {
-                            new StandardDate
-                            {
-                                EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                                LastDateStarts = DateTime.UtcNow.AddDays(-1)
-                            }
-                        }
-                    },
-                    new GetStandardsListItem
-                    {
-                        Title = "Not Available 3",
-                        ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = new List<StandardDate>
-                        {
-                            new StandardDate
-                            {
-                                EffectiveFrom = sameDate,
-                                LastDateStarts = sameDate
-                            }
-                        }
-                    }
-                }
-            };
-            mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
-                .ReturnsAsync(standardsListResponse);
-            mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
-            
-            
-            //Act
-            var result = await handler.Handle(query, CancellationToken.None);
-            
-            //Assert
-            Assert.AreEqual(1,result.Courses.ToList().Count);
-            Assert.IsTrue(result.Courses.ToList().TrueForAll(c=>c.Title.Equals("Available")));
-        }
-
-        
-        
 
         [Test, MoqAutoData]
         public async Task Then_The_Sectors_Are_Added_To_The_Cache_If_Not_Available(
@@ -163,7 +74,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQueryHandler handler)
         {
             //Arrange
-            ArrangeStandardsToHaveValidDates(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
@@ -184,15 +94,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient.Verify(x=>x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
         }
         
-        private static void ArrangeStandardsToHaveValidDates(GetStandardsListResponse apiResponse)
-        {
-            apiResponse.Standards = apiResponse.Standards.Select(c =>
-            {
-                c.StandardDates.Select(d => { d.LastDateStarts = null; d.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
-                    return d;
-                }).ToList(); return c;
-            }).ToList();
-        }
+        
     }
 }
 

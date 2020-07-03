@@ -20,14 +20,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                     {
                         Title = "Available",
                         ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = new List<StandardDate>
-                        {
+                        StandardDates = 
                             new StandardDate
                             {
                                 EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
                                 LastDateStarts = null
                             }
-                        }
+                        
                     };
             
             //Assert
@@ -50,14 +49,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         MaxEmployerLevyCap = fundingPrice
                     }
                 },
-                StandardDates = new List<StandardDate>
-                {
+                StandardDates = 
                     new StandardDate
                     {
                         EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
                         LastDateStarts = null
                     }
-                }
+                
             };
             
             //Assert
@@ -86,14 +84,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         MaxEmployerLevyCap = fundingPrice
                     }
                 },
-                StandardDates = new List<StandardDate>
-                {
+                StandardDates = 
                     new StandardDate
                     {
                         EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
                         LastDateStarts = null
                     }
-                }
+                
             };
             
             //Assert
@@ -122,14 +119,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         MaxEmployerLevyCap = notFundingPrice
                     }
                 },
-                StandardDates = new List<StandardDate>
-                {
+                StandardDates =
                     new StandardDate
                     {
                         EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
                         LastDateStarts = null
                     }
-                }
+                
             };
             
             //Assert

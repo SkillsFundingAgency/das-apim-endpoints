@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.CodeAnalysis;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
@@ -58,23 +55,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
                 await _cacheStorageService
                     .SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, ExpirationInHours);    
             }
-
-            var filteredStandards = standardsTask
-                .Result
-                .Standards
-                .Where(c=>
-                    c.StandardDates.TrueForAll(
-                        standardDate=>
-                            (standardDate.LastDateStarts == null 
-                            || standardDate.LastDateStarts >= DateTime.UtcNow)
-                            && standardDate.LastDateStarts != standardDate.EffectiveFrom
-                            && standardDate.EffectiveFrom <= DateTime.UtcNow
-                            )).ToList();
-
             
             return new GetTrainingCoursesListResult
             {
-                Courses = filteredStandards,
+                Courses = standardsTask.Result.Standards,
                 Sectors = sectorsTask.Result.Sectors,
                 Total = standardsTask.Result.Total,
                 TotalFiltered = standardsTask.Result.TotalFiltered
