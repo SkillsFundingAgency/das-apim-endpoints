@@ -8,5 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int Total { get ; set ; }
         public int TotalFiltered { get ; set ; }
         public IEnumerable<GetTrainingSectorsListItem> Sectors { get ; set ; }
+        public IEnumerable<GetTrainingLevelsListItem> Levels { get ; set ; }
     }
 }

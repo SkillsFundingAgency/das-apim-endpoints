@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -27,20 +28,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery]string keyword = "", [FromQuery]List<Guid> routeIds = null)
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null)
         {
             try
             {
                 var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery
                 {
                     Keyword = keyword, 
-                    RouteIds = routeIds
+                    RouteIds = routeIds,
+                    Levels = levels
                 });
                 
                 var model = new GetTrainingCoursesListResponse
                 {
                     TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
                     Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
+                    Levels = queryResult.Levels.Select(response => (GetTrainingLevelsListItem)response),
                     Total = queryResult.Total,
                     TotalFiltered = queryResult.TotalFiltered
                 };
