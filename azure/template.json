@@ -5,11 +5,19 @@
         "environmentName": {
             "type": "string"
         },
-        "sharedEnvResourceGroup": {
+        "resourceEnvironmentName": {
             "type": "string"
         },
-        "sharedBackEndAppServicePlanName": {
+        "serviceName": {
             "type": "string"
+        },
+        "appServicePlanSku": {
+            "type": "object",
+            "defaultValue": {
+                "tier": "Standard",
+                "size": "2",
+                "instances": 2
+            }
         },
         "appServiceAllowedIPs": {
             "type": "array",
@@ -17,7 +25,7 @@
         },
         "outerApiArray": {
             "type": "array"
-        },      
+        },
         "sharedKeyVaultName": {
             "type": "string"
         },
@@ -35,13 +43,40 @@
         }
     },
     "variables": {
-        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/"
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
     },
     "resources": [
         {
             "apiVersion": "2017-05-10",
+            "name": "apim-endpoint-app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('appServicePlanSku').size]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('appServicePlanSku').instances]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('appServicePlanSku').tier]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
             "name": "[concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName)]",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -64,7 +99,7 @@
             "copy": {
                 "name": "certificateLoop",
                 "count": "[length(parameters('outerApiArray'))]"
-            } 
+            }
         },
         {
             "apiVersion": "2017-05-10",
@@ -88,12 +123,15 @@
             "copy": {
                 "name": "appInsightsLoop",
                 "count": "[length(parameters('outerApiArray'))]"
-            } 
+            }
         },
         {
             "apiVersion": "2017-05-10",
             "name": "[concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "apim-endpoint-app-service-plan"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -105,10 +143,10 @@
                         "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
                     },
                     "appServicePlanName": {
-                        "value": "[parameters('sharedBackEndAppServicePlanName')]"
+                        "value": "[variables('appServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedEnvResourceGroup')]"
+                        "value": "[resourceGroup().name]"
                     },
                     "appServiceAppSettings": {
                         "value": [
