@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses
 
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
         
-        public List<StandardDate> StandardDates { get; set; }
+        public StandardDate StandardDates { get; set; }
         
     }
     

@@ -118,7 +118,7 @@
                             },
                             {
                                 "name": "ConfigNames",
-                                "value": "SFA.DAS.FindApprenticeshipTraining.OuterApi"
+                                "value": "[parameters('outerApiArray')[copyIndex()].configNames]"
                             },
                             {
                                 "name": "LoggingRedisConnectionString",
