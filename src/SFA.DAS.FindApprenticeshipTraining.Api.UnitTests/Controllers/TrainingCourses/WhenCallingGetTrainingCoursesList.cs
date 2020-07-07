@@ -22,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         public async Task Then_Gets_Training_Courses_And_Sectors_And_Levels_From_Mediator(
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            TrainingCoursesController controller)
+            [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             List<Guid> routeIds,
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            TrainingCoursesController controller)
+            [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -75,7 +75,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            TrainingCoursesController controller)
+            [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
