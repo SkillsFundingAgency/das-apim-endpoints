@@ -8,5 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
     {
         public string Keyword { get ; set ; }
         public List<Guid> RouteIds { get ; set ; }
+        public List<int> Levels { get ; set ; }
     }
 }

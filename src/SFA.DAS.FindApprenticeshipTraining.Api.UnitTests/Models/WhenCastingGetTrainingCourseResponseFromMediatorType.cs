@@ -14,7 +14,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             var response = (GetTrainingCourseListItem)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Should().BeEquivalentTo(source, options=> options
+                .Excluding(c=>c.ApprenticeshipFunding)
+                .Excluding(c=>c.StandardDates)
+            );
         }
     }
 }
