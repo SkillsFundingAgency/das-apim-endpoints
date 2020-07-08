@@ -12,6 +12,7 @@ using SFA.DAS.EmployerIncentives.Models.PassThrough;
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.All)]
     public class PassThroughControllerTests
     {
         [Test]
@@ -49,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
         {
             var f = new TestsFixture().SetupEmployerIncentivesServiceForRemoveLegalEntityCall();
 
-            var result = await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
+            var result = await f.Sut.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId);
 
             f.VerifyInnerApiStatusCodeAndContentIsReturnFromOuterApi(result);
         }
