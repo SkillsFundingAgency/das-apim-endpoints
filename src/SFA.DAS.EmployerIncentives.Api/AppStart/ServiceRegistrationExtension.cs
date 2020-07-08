@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
 {
     public static class ServiceRegistrationExtension
     {
-        public static IServiceCollection AddDasHttpClients(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
+        public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
         {
             services.AddTransient(typeof(ManagedIdentityApiHandler));
             services.AddTransient<IRestApiClient, RestApiClient>();
