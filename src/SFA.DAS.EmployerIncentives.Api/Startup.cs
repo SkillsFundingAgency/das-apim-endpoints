@@ -42,7 +42,6 @@ namespace SFA.DAS.EmployerIncentives.Api
             _configuration = config.Build();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiConfigurationSections(_configuration);
@@ -59,7 +58,7 @@ namespace SFA.DAS.EmployerIncentives.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesApi", Version = "v1" });
             });
 
-            services.AddDasHttpClients(_configuration, _env);
+            services.AddDasHttpClientsAndAssociatedServices(_configuration, _env);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

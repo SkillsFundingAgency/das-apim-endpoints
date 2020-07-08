@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
     public class WhenCheckingPipeLine
     {
         [Test]
-        [Ignore("reworking")]
         public async Task CallPingEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();
@@ -21,7 +20,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
         }
 
         [Test]
-        [Ignore("reworking")]
         public async Task CallHealthEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();

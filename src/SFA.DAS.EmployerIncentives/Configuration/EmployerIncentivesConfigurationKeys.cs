@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.EmployerIncentives.Configuration
+﻿namespace SFA.DAS.EmployerIncentives.Configuration
 {
     public class EmployerIncentivesConfigurationKeys
     {

@@ -3,15 +3,15 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
-using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
 {
-    public class ManagedIdentityApiHandler<T> : DelegatingHandler where T : IAzureManagedIdentityApiConfiguration
+    public class ManagedIdentityApiHandler : DelegatingHandler 
     {
-        private readonly IAzureManagedIdentityApiConfiguration _configuration;
+        private readonly AzureManagedIdentityApiConfiguration _configuration;
 
-        public ManagedIdentityApiHandler(T configuration) 
+        public ManagedIdentityApiHandler(AzureManagedIdentityApiConfiguration configuration) 
         {
             _configuration = configuration;
         }

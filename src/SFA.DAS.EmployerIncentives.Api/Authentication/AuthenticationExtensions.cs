@@ -11,7 +11,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Authentication
     {
         public static IServiceCollection AddApiAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            var temp = config.GetSection(EmployerIncentivesConfigurationKeys.EmployerIncentivesOuterApi).Value;
             var azureActiveDirectoryConfiguration = config.GetSection(EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration).Get<AzureActiveDirectoryApiConfiguration>();
 
             services.AddAuthentication(auth =>

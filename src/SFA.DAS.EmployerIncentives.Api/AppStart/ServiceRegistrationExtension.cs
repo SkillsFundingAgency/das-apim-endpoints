@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
     {
         public static IServiceCollection AddDasHttpClients(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
         {
-            services.AddTransient(typeof(ManagedIdentityApiHandler<>));
+            services.AddTransient(typeof(ManagedIdentityApiHandler));
             services.AddTransient<IRestApiClient, RestApiClient>();
 
             var httpBuilder = services.AddHttpClient("EmployerIncentivesInnerApi", c =>
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
                 httpBuilder.AddHttpMessageHandler(_ =>
                 {
                     var apiConfig = GetConfigSection(configuration, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
-                    return new ManagedIdentityApiHandler<AzureManagedIdentityApiConfiguration>(apiConfig);
+                    return new ManagedIdentityApiHandler(apiConfig);
                 });
             }
 
