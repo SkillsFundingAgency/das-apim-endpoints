@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
@@ -20,21 +18,14 @@ namespace SFA.DAS.EmployerIncentives.Services
 
         public Task<InnerApiResponse> AddLegalEntity(long accountId, LegalEntityRequest legalEntityRequest)
         {
-            //return _client.PostAsync($"/accounts/{accountId}/legalEntities",
-            //    new {legalEntityRequest.AccountLegalEntityId, legalEntityRequest.LegalEntityId, legalEntityRequest.OrganisationName },
-            //    CancellationToken.None);
-
-
-            return _client.PostAsync($"/accounts/{accountId}/legalEntities", legalEntityRequest,
-                //new { legalEntityRequest.AccountLegalEntityId, legalEntityRequest.LegalEntityId, legalEntityRequest.OrganisationName },
+            return _client.PostAsync($"/accounts/{accountId}/legalentities", //legalEntityRequest,
+                new { legalEntityRequest.AccountLegalEntityId, legalEntityRequest.LegalEntityId, legalEntityRequest.OrganisationName },
                 CancellationToken.None);
-
-
         }
 
         public Task<InnerApiResponse> RemoveLegalEntity(long accountId, long accountLegalEntityId)
         {
-            return _client.DeleteAsync($"/accounts/{accountId}/legalEntities/{accountLegalEntityId}", CancellationToken.None);
+            return _client.DeleteAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}", CancellationToken.None);
         }
 
     }
