@@ -12,7 +12,6 @@ using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -26,6 +25,21 @@ namespace SFA.DAS.EmployerIncentives.Api
         {
             _env = env;
             _configuration = configuration;
+
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(configuration);
+
+            if (_env.IsDevelopment())
+            {
+                config.AddJsonFile($"appsettings.development.json", optional: true);
+            }
+
+            if (_env.IsEnvironment("AcceptanceTests"))
+            {
+                config.AddJsonFile($"appsettings.acceptancetests.json", optional: false);
+            }
+
+            _configuration = config.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

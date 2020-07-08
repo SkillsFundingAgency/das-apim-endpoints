@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerIncentives.Configuration
 {
-    public class EmployerIncentivesInnerApiConfiguration : IAzureManagedIdentityApiConfiguration
+    public class AzureManagedIdentityApiConfiguration : IAzureManagedIdentityApiConfiguration
     {
         public string Tenant { get; set; }
         public string Identifier { get; set; }

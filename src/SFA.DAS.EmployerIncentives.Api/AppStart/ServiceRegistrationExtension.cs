@@ -18,9 +18,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
 
             var httpBuilder = services.AddHttpClient("EmployerIncentivesInnerApi", c =>
                 {
-                    var apiConfig = configuration
-                        .GetSection(EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration)
-                        .Get<EmployerIncentivesInnerApiConfiguration>();
+                    var apiConfig = GetConfigSection(configuration, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
                     c.BaseAddress = new Uri(apiConfig.Url);
                 })
                 .AddTypedClient<IEmployerIncentivesPassThroughService, EmployerIncentivesPassThroughService>();
@@ -29,15 +27,17 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             {
                 httpBuilder.AddHttpMessageHandler(_ =>
                 {
-                    var apiConfig = configuration
-                        .GetSection(EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration)
-                        .Get<EmployerIncentivesInnerApiConfiguration>();
-
-                    return new ManagedIdentityApiHandler<EmployerIncentivesInnerApiConfiguration>(apiConfig);
+                    var apiConfig = GetConfigSection(configuration, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
+                    return new ManagedIdentityApiHandler<AzureManagedIdentityApiConfiguration>(apiConfig);
                 });
             }
 
             return services;
+        }
+
+        private static AzureManagedIdentityApiConfiguration GetConfigSection(IConfiguration configuration, string section)
+        {
+            return configuration.GetSection(section).Get<AzureManagedIdentityApiConfiguration>();
         }
     }
 }

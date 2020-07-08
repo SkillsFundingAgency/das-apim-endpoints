@@ -7,7 +7,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("AcceptanceTest");
+            builder.UseEnvironment("AcceptanceTests");
         }
     }
 }

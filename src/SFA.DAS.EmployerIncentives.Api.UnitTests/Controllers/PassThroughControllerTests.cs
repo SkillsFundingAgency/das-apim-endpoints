@@ -1,0 +1,108 @@
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.EmployerIncentives.Api.Controllers;
+using SFA.DAS.EmployerIncentives.Infrastructure.Api;
+using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models.PassThrough;
+
+namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
+{
+    [TestFixture]
+    public class PassThroughControllerTests
+    {
+        [Test]
+        public async Task When_AddLegalEntity_is_requested_Then_EmployerIncentivesPassThroughService_is_called()
+        {
+            var f = new TestsFixture().SetupEmployerIncentivesServiceForAddLegalEntityCall();
+
+            await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
+
+            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.AddLegalEntity(f.AccountId, f.LegalEntityRequest));
+        }
+
+        [Test]
+        public async Task When_AddLegalEntity_is_requested_Then_EmployerIncentivesPassThroughService_returns_Content_and_Statuscode()
+        {
+            var f = new TestsFixture().SetupEmployerIncentivesServiceForAddLegalEntityCall();
+
+            var result = await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
+
+            f.VerifyInnerApiStatusCodeAndContentIsReturnFromOuterApi(result);
+        }
+
+        [Test]
+        public async Task When_RemoveLegalEntity_is_requested_Then_EmployerIncentivesPassThroughService_is_called()
+        {
+            var f = new TestsFixture().SetupEmployerIncentivesServiceForRemoveLegalEntityCall();
+
+            await f.Sut.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId);
+
+            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId));
+        }
+
+        [Test]
+        public async Task When_RemoveLegalEntity_is_requested_Then_EmployerIncentivesPassThroughService_returns_Content_and_Statuscode()
+        {
+            var f = new TestsFixture().SetupEmployerIncentivesServiceForRemoveLegalEntityCall();
+
+            var result = await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
+
+            f.VerifyInnerApiStatusCodeAndContentIsReturnFromOuterApi(result);
+        }
+
+        private class TestsFixture
+        {
+            public Mock<IEmployerIncentivesPassThroughService> EmployerIncentivesPassThroughServiceMock;
+            public PassThroughController Sut;
+            public Fixture Fixture;
+            public long AccountId;
+            public long AccountLegalEntityId;
+            public LegalEntityRequest LegalEntityRequest;
+            public InnerApiResponse InnerApiResponse;
+
+            public TestsFixture()
+            {
+                Fixture = new Fixture();
+                EmployerIncentivesPassThroughServiceMock = new Mock<IEmployerIncentivesPassThroughService>();
+
+                Sut = new PassThroughController(EmployerIncentivesPassThroughServiceMock.Object);
+
+                AccountId = Fixture.Create<long>();
+                AccountLegalEntityId = Fixture.Create<long>();
+                LegalEntityRequest = Fixture.Create<LegalEntityRequest>();
+                InnerApiResponse = Fixture.Create<InnerApiResponse>();
+            }
+
+            public TestsFixture SetupEmployerIncentivesServiceForAddLegalEntityCall()
+            {
+                EmployerIncentivesPassThroughServiceMock
+                    .Setup(x => x.AddLegalEntity(It.IsAny<long>(), It.IsAny<LegalEntityRequest>()))
+                    .ReturnsAsync(InnerApiResponse);
+
+                return this;
+            }
+
+            public TestsFixture SetupEmployerIncentivesServiceForRemoveLegalEntityCall()
+            {
+                EmployerIncentivesPassThroughServiceMock
+                    .Setup(x => x.RemoveLegalEntity(It.IsAny<long>(), It.IsAny<long>()))
+                    .ReturnsAsync(InnerApiResponse);
+
+                return this;
+            }
+
+            public void VerifyInnerApiStatusCodeAndContentIsReturnFromOuterApi(ActionResult result)
+            {
+                result.Should().NotBeNull();
+                result.Should().BeOfType<ObjectResult>();
+                var objectResult = (ObjectResult)result;
+                objectResult.StatusCode.Should().Be((int)InnerApiResponse.StatusCode);
+                objectResult.Value.ToString().Should().Be(InnerApiResponse.Content);
+            }
+        }
+    }
+}

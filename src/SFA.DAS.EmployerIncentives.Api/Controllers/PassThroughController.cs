@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.PassThrough;
 
@@ -9,20 +8,18 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
     [ApiController]
     public class PassThroughController : ControllerBase
     {
-        private readonly ILogger<PassThroughController> _logger;
-        private readonly IEmployerIncentivesPassThroughService _client;
+        private readonly IEmployerIncentivesPassThroughService _passThroughService;
 
-        public PassThroughController(ILogger<PassThroughController> logger, IEmployerIncentivesPassThroughService client)
+        public PassThroughController(IEmployerIncentivesPassThroughService client)
         {
-            _logger = logger;
-            _client = client;
+            _passThroughService = client;
         }
 
         [HttpPost]
         [Route("account/{accountId}/legalentities")]
-        public async Task<ActionResult> Get(long accountId, LegalEntityRequest request)
+        public async Task<ActionResult> AddLegalEntity(long accountId, LegalEntityRequest request)
         {
-            var innerApiResponse = await _client.AddLegalEntity(accountId, request);
+            var innerApiResponse = await _passThroughService.AddLegalEntity(accountId, request);
 
             return StatusCode((int) innerApiResponse.StatusCode, innerApiResponse.Content);
         }
@@ -30,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
         public async Task<ActionResult> RemoveLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var innerApiResponse = await _client.RemoveLegalEntity(accountId, accountLegalEntityId);
+            var innerApiResponse = await _passThroughService.RemoveLegalEntity(accountId, accountLegalEntityId);
 
             return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Content);
         }
