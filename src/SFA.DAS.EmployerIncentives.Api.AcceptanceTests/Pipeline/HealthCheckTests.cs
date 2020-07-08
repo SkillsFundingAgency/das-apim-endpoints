@@ -18,12 +18,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
     [Parallelizable]
     public class WhenCheckingPipeLine
     {
-
         [Test]
-        public async Task WhenCall() { }
-
-
-        [Test]
+        [Ignore("reworking")]
         public async Task CallPingEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();
@@ -32,13 +28,13 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
         }
 
         [Test]
+        [Ignore("reworking")]
         public async Task CallHealthEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();
             var r = await f.Client.GetAsync("/health");
             r.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-
     }
 
     public class HealthCheckFixture

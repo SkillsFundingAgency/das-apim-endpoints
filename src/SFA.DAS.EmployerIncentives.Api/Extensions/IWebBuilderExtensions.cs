@@ -9,8 +9,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Extensions
         public static IWebHostBuilder ConfigureDasAppConfiguration(this IWebHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureAppConfiguration(c => c
-                .AddAzureTableStorage(EmployerIncentivesConfigurationKeys.EmployerIncentivesOuterApi,
-                    EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration)
+                .AddAzureTableStorage(
+                    EmployerIncentivesConfigurationKeys.EmployerIncentivesOuterApi,
+                    EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration, 
+                    EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration)
             );
         }
     }

@@ -6,11 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.EmployerIncentives.Api.AppStart;
 using SFA.DAS.EmployerIncentives.Api.Authentication;
 using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
+using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -42,6 +44,8 @@ namespace SFA.DAS.EmployerIncentives.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesApi", Version = "v1" });
             });
+
+            services.AddDasHttpClients(_configuration, _env);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
