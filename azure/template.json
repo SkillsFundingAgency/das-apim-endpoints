@@ -23,6 +23,9 @@
             "type": "array",
             "defaultValue": []
         },
+        "apimEndpointsSubnetResourceId": {
+            "type": "string"
+        },
         "outerApiArray": {
             "type": "array"
         },
@@ -188,6 +191,9 @@
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[parameters('apimEndpointsSubnetResourceId')]"
                     }
                 }
             },
