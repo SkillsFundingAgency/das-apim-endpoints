@@ -61,11 +61,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
-            var serviceProvider = services.BuildServiceProvider();
-
             if (!ConfigurationIsLocalOrDev())
             {
-                services.AddAuthentication(serviceProvider.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+                var azureAdConfiguration = _configuration
+                    .GetSection("AzureAd")
+                    .Get<AzureActiveDirectoryConfiguration>();
+                services.AddAuthentication(azureAdConfiguration);
             }
 
             services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
@@ -86,8 +87,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             }
             else
             {
-                var configuration = serviceProvider
-                    .GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value;
+                var configuration = _configuration
+                    .GetSection("FindApprenticeshipTrainingConfiguration")
+                    .Get<FindApprenticeshipTrainingConfiguration>(); 
                 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -102,8 +104,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindApprenticeshipTrainingApi", Version = "v1" });
             });
             
-            services.BuildServiceProvider();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
