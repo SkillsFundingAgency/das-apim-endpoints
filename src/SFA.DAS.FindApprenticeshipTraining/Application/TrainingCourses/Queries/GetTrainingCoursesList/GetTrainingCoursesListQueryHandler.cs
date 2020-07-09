@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
     {
         private readonly IApiClient _apiClient;
         private readonly ICacheStorageService _cacheStorageService;
-        private const int ExpirationInHours = 23;
+        private const int ExpirationInHours = 1;
         private List<Task> _taskList;
         private bool _saveSectorsToCache;
         private bool _saveLevelsToCache;

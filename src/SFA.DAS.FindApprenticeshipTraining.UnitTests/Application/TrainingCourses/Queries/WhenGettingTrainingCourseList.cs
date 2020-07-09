@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -73,7 +70,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse,23));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse,1));
         }
 
         [Test, MoqAutoData]
@@ -132,7 +129,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse,23));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse,1));
         }
 
         [Test, MoqAutoData]
