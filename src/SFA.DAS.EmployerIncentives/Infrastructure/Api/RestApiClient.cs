@@ -5,7 +5,6 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
@@ -31,8 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         public async Task<T> Get<T>(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<T>(json);
+            return await response.Content.ReadFromJsonAsync<T>(null, cancellationToken).ConfigureAwait(false);
         }
 
         public Task<T> Get<T>(string uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -55,9 +53,10 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         {
             var resultAsString = await Post<object>(uri, null, cancellationToken).ConfigureAwait(false);
 
-            var result = JsonConvert.DeserializeObject<string>(resultAsString);
+            //var result = JsonConvert.DeserializeObject<string>(resultAsString);
 
-            return result;
+            //return result;
+            return null;
         }
 
         public async Task<string> Post<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default)
@@ -74,9 +73,10 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         {
             var resultAsString = await Post(uri, requestData, cancellationToken).ConfigureAwait(false);
 
-            var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
+            //var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
 
-            return result;
+            //return result;
+            return default;
         }
 
         protected virtual async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
@@ -26,13 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             }
 
             var response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            
-            return new InnerApiResponse
-            {
-                StatusCode = response.StatusCode,
-                Content = content
-            };
+            return await CreateApiResponse(response, true);
         }
 
         public Task<InnerApiResponse> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -40,33 +35,43 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             return GetAsync(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        public Task<InnerApiResponse> PostAsync(string uri, CancellationToken cancellationToken = default)
+        public Task<InnerApiResponse> PostAsync(string uri, bool readAsJson, CancellationToken cancellationToken = default)
         {
-            return PostAsync<object>(uri, null, cancellationToken);
+            return PostAsync<object>(uri, null, readAsJson, cancellationToken);
         }
 
-        public async Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default)
+        public async Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, bool readAsJson, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PostAsJsonAsync(uri, request, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return await CreateApiResponse(response, readAsJson);
+        }
 
+        public async Task<InnerApiResponse> DeleteAsync(string uri, bool readAsJson, CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
+            return await CreateApiResponse(response, readAsJson);
+        }
+
+        private async Task<InnerApiResponse> CreateApiResponse(HttpResponseMessage responseMessage, bool readAsJson)
+        {
             return new InnerApiResponse
             {
-                StatusCode = response.StatusCode,
-                Content = content
+                StatusCode = responseMessage.StatusCode,
+                Json = readAsJson ? await ReadContentAsJson(responseMessage.Content) : null
             };
         }
 
-        public async Task<InnerApiResponse> DeleteAsync(string uri, CancellationToken cancellationToken = default)
+        private async Task<JsonDocument> ReadContentAsJson(HttpContent httpContent)
         {
-            var response = await _httpClient.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            return new InnerApiResponse
+            try
             {
-                StatusCode = response.StatusCode,
-                Content = content
-            };
+                await using var stream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false);
+                return JsonDocument.Parse(stream);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidCastException("Error casting api response to Json", e);
+            }
         }
 
         private string AddQueryString(string uri, object queryData)

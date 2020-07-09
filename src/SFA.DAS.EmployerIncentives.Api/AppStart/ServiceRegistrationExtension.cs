@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -11,7 +12,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
 {
     public static class ServiceRegistrationExtension
     {
-        public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
+        public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             services.AddTransient(typeof(ManagedIdentityApiHandler));
             services.AddTransient<IRestApiClient, RestApiClient>();

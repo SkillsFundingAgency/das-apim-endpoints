@@ -2,8 +2,8 @@
 {
     public class LegalEntityRequest
     {
-        public long AccountLegalEntityId;
-        public long LegalEntityId;
-        public string OrganisationName;
+        public long AccountLegalEntityId { get; set; }
+        public long LegalEntityId { get; set; }
+        public string OrganisationName { get; set; }
     }
 }

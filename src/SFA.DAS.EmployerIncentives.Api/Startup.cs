@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
@@ -12,18 +12,18 @@ using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
     public class Startup
     {
 
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
-        {
-            _env = env;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        { _env = env;
             _configuration = configuration;
 
             var config = new ConfigurationBuilder()
@@ -47,16 +47,20 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddApiConfigurationSections(_configuration);
             services.AddApiAuthentication(_configuration);
             services.AddApiAuthorization(_env);
-            
+
+            // Should this be upgraded?
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-            services.AddMvc(o => o.Filters.Add(new AuthorizeFilter("default")))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDasHealthChecks();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesApi", Version = "v1" });
             });
+
+            services.AddControllers(c=>c.Filters.Add(new AuthorizeFilter("APIM")))
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                }); 
 
             services.AddDasHttpClientsAndAssociatedServices(_configuration, _env);
         }
@@ -75,8 +79,14 @@ namespace SFA.DAS.EmployerIncentives.Api
             app.UseHttpsRedirection()
                 .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"))
                 .UseDasHealthChecks()
-                .UseAuthentication()
-                .UseMvc();
+                .UseAuthentication();
+
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(ep =>
+            {
+                ep.MapControllers();
+            });
 
             app.UseSwagger()
                 .UseSwaggerUI(c =>

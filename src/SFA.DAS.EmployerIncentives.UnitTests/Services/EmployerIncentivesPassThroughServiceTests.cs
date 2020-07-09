@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services
         [Test]
         public async Task When_Adding_LegalEntity_Then_should_call_PostAsync_with_correct_url()
         {
-            var f = new TestsFixture();
+            var f = new TestsFixture().WithJsonResponseFromInnerApi();
             await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
 
             f.VerifyMethodAndPath(HttpMethod.Post, $"accounts/{f.AccountId}/legalentities");
@@ -30,16 +30,16 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services
         [Test]
         public async Task When_Adding_LegalEntity_Then_should_return_ApiResponse()
         {
-            var f = new TestsFixture();
+            var f = new TestsFixture().WithJsonResponseFromInnerApi();
             var result = await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
 
-            await f.VerifyApiResponseIsReturned(result);
+            f.VerifyApiResponseIsReturned(result);
         }
 
         [Test]
         public async Task When_Removing_LegalEntity_Then_should_call_DeleteAsync_with_correct_url()
         {
-            var f = new TestsFixture();
+            var f = new TestsFixture().WithNoJsonResponseFromInnerApi();
             await f.Sut.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId);
 
             f.VerifyMethodAndPath(HttpMethod.Delete, $"accounts/{f.AccountId}/legalentities/{f.AccountLegalEntityId}");
@@ -48,10 +48,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services
         [Test]
         public async Task When_Removing_LegalEntity_Then_should_return_ApiResponse()
         {
-            var f = new TestsFixture();
+            var f = new TestsFixture().WithNoJsonResponseFromInnerApi();
             var result = await f.Sut.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId);
 
-            await f.VerifyApiResponseIsReturned(result);
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(f.HttpResponseMessage.StatusCode);
+            result.Json.Should().BeNull();
         }
 
         private class TestsFixture
@@ -70,11 +72,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services
             {
                 Fixture = new Fixture();
 
-                HttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("XXXX") };
                 HttpClientHandlerMock = new Mock<HttpClientHandler>();
-                HttpClientHandlerMock.Protected()
-                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x=> true),
-                        ItExpr.IsAny<CancellationToken>()).ReturnsAsync(HttpResponseMessage);
 
                 HttpClient = new HttpClient(HttpClientHandlerMock.Object);
                 HttpClient.BaseAddress = new Uri(BaseUrl);
@@ -86,17 +84,36 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services
                 LegalEntityRequest = Fixture.Create<LegalEntityRequest>();
             }
 
+            internal TestsFixture WithJsonResponseFromInnerApi()
+            {
+                HttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"Test\" : \"XXXX\"}") };
+                HttpClientHandlerMock.Protected()
+                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
+                        ItExpr.IsAny<CancellationToken>()).ReturnsAsync(HttpResponseMessage);
+                return this;
+            }
+
+            internal TestsFixture WithNoJsonResponseFromInnerApi()
+            {
+                HttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                HttpClientHandlerMock.Protected()
+                    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
+                        ItExpr.IsAny<CancellationToken>()).ReturnsAsync(HttpResponseMessage);
+                return this;
+            }
+
             internal void VerifyMethodAndPath(HttpMethod method, string path)
             {
                 var expectedUri = new Uri(new Uri(BaseUrl), path);
                 HttpClientHandlerMock.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(x => x.Method == method && x.RequestUri == expectedUri), ItExpr.IsAny<CancellationToken>());
             }
 
-            internal async Task VerifyApiResponseIsReturned(InnerApiResponse result)
+            internal void VerifyApiResponseIsReturned(InnerApiResponse result)
             {
                 result.Should().NotBeNull();
                 result.StatusCode.Should().Be(HttpResponseMessage.StatusCode);
-                result.Content.Should().Be(await HttpResponseMessage.Content.ReadAsStringAsync());
+                result.Json.Should().NotBeNull();
+                result.Json.RootElement.GetProperty("Test").GetString().Should().Be("XXXX");
             }
         }
     }

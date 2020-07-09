@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
     public class WhenCheckingPipeLine
     {
         [Test]
-        [Ignore("being reworked")]
+        //[Ignore("being reworked")]
         public async Task CallPingEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();
@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Pipeline
         }
 
         [Test]
-        [Ignore("being reworked")]
+        //[Ignore("being reworked")]
         public async Task CallHealthEndpoint_ThenShouldReturnOkResponse()
         {
             var f = new HealthCheckFixture();
