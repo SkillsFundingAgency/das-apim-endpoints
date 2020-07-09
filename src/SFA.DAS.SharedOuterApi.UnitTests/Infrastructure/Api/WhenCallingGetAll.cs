@@ -1,55 +1,58 @@
-﻿using System.Net;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
+using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
-using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 {
-    public class WhenCallingGet
+    public class WhenCallingGetAll
     {
         [Test, AutoData]
         public async Task Then_The_Endpoint_Is_Called(
             string authToken,
-            int id,
-            CoursesApiConfiguration config)
+            TestInnerApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
-            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync()).ReturnsAsync(authToken);
-            var configuration = new Mock<IOptions<CoursesApiConfiguration>>();
+            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
             config.Url = "https://test.local";
-            configuration.Setup(x => x.Value).Returns(config);
+            var configuration = config;
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent(JsonConvert.SerializeObject(new List<string>{"string","string"})),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var getTestRequest = new GetTestRequest(config.Url, id) {BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+            var getTestRequest = new GetAllTestRequest(config.Url) {BaseUrl = config.Url };
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetAllUrl);
             var client = new HttpClient(httpMessageHandler.Object);
+            var clientFactory = new Mock<IHttpClientFactory>();
+            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+            
             var hostingEnvironment = new Mock<IHostingEnvironment>();
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient(configuration.Object,client,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var apiClient = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
-            await actual.Get<string>(getTestRequest);
+            var actual = await apiClient.GetAll<string>(getTestRequest);
 
+            Assert.IsAssignableFrom<List<string>>(actual);
             //Assert
             httpMessageHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Get)
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetAllUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
@@ -58,27 +61,28 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Api
 
         [Test, AutoData]
          public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local(
-             int id,
-             CoursesApiConfiguration config)
+             TestInnerApiConfiguration config)
          {
              //Arrange
-             var configuration = new Mock<IOptions<CoursesApiConfiguration>>();
              config.Url = "https://test.local";
-             configuration.Setup(x => x.Value).Returns(config);
+             var configuration = config;
              var response = new HttpResponseMessage
              {
                  Content = new StringContent(""),
                  StatusCode = HttpStatusCode.Accepted
              };
-             var getTestRequest = new GetTestRequest(config.Url,id) {BaseUrl = config.Url };
-             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+             var getTestRequest = new GetAllTestRequest(config.Url) {BaseUrl = config.Url };
+             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetAllUrl);
              var client = new HttpClient(httpMessageHandler.Object);
+             var clientFactory = new Mock<IHttpClientFactory>();
+             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+             
              var hostingEnvironment = new Mock<IHostingEnvironment>();
              hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient(configuration.Object,client,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
-             await actual.Get<string>(getTestRequest);
+             await actual.GetAll<string>(getTestRequest);
              
              //Assert
              httpMessageHandler.Protected()
@@ -86,25 +90,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Api
                      "SendAsync", Times.Once(),
                      ItExpr.Is<HttpRequestMessage>(c =>
                          c.Method.Equals(HttpMethod.Get)
-                         && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                         && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetAllUrl)
                          && c.Headers.Authorization == null),
                      ItExpr.IsAny<CancellationToken>()
                  );
          }
         
-        private class GetTestRequest : IGetApiRequest
+        private class GetAllTestRequest : IGetAllApiRequest
         {
-            private readonly int _id;
-
-            public GetTestRequest (string baseUrl, int id)
+            public GetAllTestRequest (string baseUrl)
             {
-                _id = id;
                 BaseUrl = baseUrl;
             }
             public string BaseUrl { get; set; }
-            public string GetUrl => $"{BaseUrl}/test-url/get{_id}";
+            public string GetAllUrl => $"{BaseUrl}/test-url/get-all";
         }
-        
         
     }
 }

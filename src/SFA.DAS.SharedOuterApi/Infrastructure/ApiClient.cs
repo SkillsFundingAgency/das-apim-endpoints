@@ -2,30 +2,29 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
-using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public class ApiClient : IApiClient
+    public class ApiClient<T> : IApiClient<T> where T : IInnerApiConfiguration
     {
         private readonly HttpClient _httpClient;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
-        private readonly CoursesApiConfiguration _configuration;
+        private readonly T _configuration;
 
         public ApiClient(
-            IOptions<CoursesApiConfiguration> configuration,
-            HttpClient httpClient, IHostingEnvironment hostingEnvironment,
+            IHttpClientFactory httpClientFactory,
+            T apiConfiguration, 
+            IHostingEnvironment hostingEnvironment,
             IAzureClientCredentialHelper azureClientCredentialHelper)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
             _hostingEnvironment = hostingEnvironment;
             _azureClientCredentialHelper = azureClientCredentialHelper;
-            _configuration = configuration.Value;
+            _configuration = apiConfiguration;
         }
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
@@ -56,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
         {
             if (!_hostingEnvironment.IsDevelopment())
             {
-                var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync();
+                var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(_configuration.Identifier);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    
             }
         }
@@ -67,7 +66,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api
 
             pingUrl += pingUrl.EndsWith("/") ? "ping" : "/ping";
 
-            var response = await _httpClient.GetAsync(pingUrl).ConfigureAwait(false);
+            var response = await _httpClient.GetAsync((string) pingUrl).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

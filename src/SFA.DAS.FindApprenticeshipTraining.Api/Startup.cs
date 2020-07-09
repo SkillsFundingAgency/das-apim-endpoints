@@ -14,7 +14,6 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Api;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {

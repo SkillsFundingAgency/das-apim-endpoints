@@ -5,9 +5,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse;
+using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
@@ -18,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_Gets_Standards_From_Courses_Api(
             GetTrainingCourseQuery query,
             GetStandardsListItem apiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingCourseQueryHandler handler)
         {
             mockApiClient

@@ -5,9 +5,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
@@ -20,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
             
@@ -53,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -79,7 +81,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -112,7 +114,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
@@ -137,7 +139,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse apiResponse,
             GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            [Frozen] Mock<IApiClient> mockApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
