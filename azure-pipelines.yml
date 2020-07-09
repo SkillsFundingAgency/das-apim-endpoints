@@ -23,6 +23,7 @@ jobs:
 - job: 'CodeBuild'
   pool:
     name: 'DAS - Continuous Integration'
+    demands: Agent.OS -equals Linux
   workspace:
     clean: all  
   steps:
