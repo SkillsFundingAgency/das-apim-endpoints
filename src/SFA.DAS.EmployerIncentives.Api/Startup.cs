@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerIncentives.Api
 {
     public class Startup
     {
-
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
