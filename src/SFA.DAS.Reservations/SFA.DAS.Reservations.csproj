@@ -4,4 +4,12 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="6.0.0" />
+    </ItemGroup>
+
 </Project>
