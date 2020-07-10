@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
 
             await f.Sut.AddLegalEntity(f.AccountId, f.LegalEntityRequest);
 
-            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.AddLegalEntity(f.AccountId, f.LegalEntityRequest));
+            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.AddLegalEntity(f.AccountId, f.LegalEntityRequest, It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -42,7 +43,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
 
             await f.Sut.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId);
 
-            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId));
+            f.EmployerIncentivesPassThroughServiceMock.Verify(x => x.RemoveLegalEntity(f.AccountId, f.AccountLegalEntityId, It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -81,7 +82,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
             public TestsFixture SetupEmployerIncentivesServiceForAddLegalEntityCall()
             {
                 EmployerIncentivesPassThroughServiceMock
-                    .Setup(x => x.AddLegalEntity(It.IsAny<long>(), It.IsAny<LegalEntityRequest>()))
+                    .Setup(x => x.AddLegalEntity(It.IsAny<long>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(InnerApiResponse);
 
                 return this;
@@ -90,7 +91,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
             public TestsFixture SetupEmployerIncentivesServiceForRemoveLegalEntityCall()
             {
                 EmployerIncentivesPassThroughServiceMock
-                    .Setup(x => x.RemoveLegalEntity(It.IsAny<long>(), It.IsAny<long>()))
+                    .Setup(x => x.RemoveLegalEntity(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(InnerApiResponse);
 
                 return this;

@@ -14,26 +14,56 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
     {
         public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            services.AddTransient(typeof(ManagedIdentityApiHandler));
-            services.AddTransient<IRestApiClient, RestApiClient>();
+            services.AddTransient(typeof(ManagedIdentityApiHandler))
+                .AddTransient<IRestApiClient, RestApiClient>()
+                .AddEmployerIncentivesHttpClient(configuration, env)
+                .AddCommitmentsV2HttpClient(configuration, env);
 
-            var httpBuilder = services.AddHttpClient("EmployerIncentivesInnerApi", c =>
+            return services;
+        }
+
+        public static IServiceCollection AddEmployerIncentivesHttpClient(this IServiceCollection services,
+            IConfiguration configuration, IWebHostEnvironment env)
+        {
+            var configSection = EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration;
+            services.AddHttpClient("EmployerIncentivesInnerApi", c =>
                 {
-                    var apiConfig = GetConfigSection(configuration, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
+                    var apiConfig = GetConfigSection(configuration, configSection);
                     c.BaseAddress = new Uri(apiConfig.Url);
                 })
-                .AddTypedClient<IEmployerIncentivesPassThroughService, EmployerIncentivesPassThroughService>();
+                .AddTypedClient<IEmployerIncentivesPassThroughService, EmployerIncentivesPassThroughService>()
+                .AddManagedIdentityApiHandler(configuration, env, configSection);
 
+            return services;
+        }
+
+        public static IServiceCollection AddCommitmentsV2HttpClient(this IServiceCollection services,
+            IConfiguration configuration, IWebHostEnvironment env)
+        {
+            var configSection = EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration;
+            services.AddHttpClient("CommitmentsV2InnerApi", c =>
+                {
+                    var apiConfig = GetConfigSection(configuration, configSection);
+                    c.BaseAddress = new Uri(apiConfig.Url);
+                })
+                .AddTypedClient<ICommitmentsV2Service, CommitmentsV2Service>()
+                .AddManagedIdentityApiHandler(configuration, env, configSection);
+
+            return services;
+        }
+
+        public static IHttpClientBuilder AddManagedIdentityApiHandler(this IHttpClientBuilder httpBuilder, IConfiguration configuration, IWebHostEnvironment env, string configSection)
+        {
             if (!env.IsDevelopment())
             {
                 httpBuilder.AddHttpMessageHandler(_ =>
                 {
-                    var apiConfig = GetConfigSection(configuration, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
+                    var apiConfig = GetConfigSection(configuration, configSection);
                     return new ManagedIdentityApiHandler(apiConfig);
                 });
             }
 
-            return services;
+            return httpBuilder;
         }
 
         private static AzureManagedIdentityApiConfiguration GetConfigSection(IConfiguration configuration, string section)
