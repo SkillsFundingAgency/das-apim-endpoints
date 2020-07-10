@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Reservations.InnerApi.Requests;
 using SFA.DAS.Reservations.InnerApi.Responses;
-using SFA.DAS.Reservations.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList
 {
