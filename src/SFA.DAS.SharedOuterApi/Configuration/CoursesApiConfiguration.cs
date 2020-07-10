@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Configuration
+namespace SFA.DAS.SharedOuterApi.Configuration
 {
     public class CoursesApiConfiguration : IInnerApiConfiguration
     {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Services

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
 {
