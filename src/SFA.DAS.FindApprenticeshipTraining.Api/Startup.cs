@@ -10,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
+using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
@@ -26,28 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _env = env;
-            var config = new ConfigurationBuilder()
-                .AddConfiguration(configuration)
-                .SetBasePath(Directory.GetCurrentDirectory())
-#if DEBUG
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.Development.json", true)
-#endif
-                .AddEnvironmentVariables();
-
-            if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-            {
-                config.AddAzureTableStorage(options =>
-                    {
-                        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-                        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-                        options.EnvironmentName = configuration["Environment"];
-                        options.PreFixConfigurationKeys = false;
-                    }
-                );
-            }
-            
-            _configuration = config.Build();
+            _configuration = configuration.BuildSharedConfiguration();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -61,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
-            if (!ConfigurationIsLocalOrDev())
+            if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
@@ -75,13 +54,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services
                 .AddMvc(o =>
                 {
-                    if (!ConfigurationIsLocalOrDev())
+                    if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             
-            if (ConfigurationIsLocalOrDev())
+            if (_configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
             }
@@ -131,10 +110,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             });
         }
 
-        private bool ConfigurationIsLocalOrDev()
-        {
-            return _configuration["Environment"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
-                   _configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase);
-        }
     }
 }

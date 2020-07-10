@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.Configuration;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
+namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class AddAuthenticationExtension
     {

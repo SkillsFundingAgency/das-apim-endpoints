@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -11,14 +12,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
     public class ApiClient<T> : IApiClient<T> where T : IInnerApiConfiguration
     {
         private readonly HttpClient _httpClient;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
         private readonly T _configuration;
 
         public ApiClient(
             IHttpClientFactory httpClientFactory,
             T apiConfiguration, 
-            IHostingEnvironment hostingEnvironment,
+            IWebHostEnvironment hostingEnvironment,
             IAzureClientCredentialHelper azureClientCredentialHelper)
         {
             _httpClient = httpClientFactory.CreateClient();

@@ -1,6 +1,4 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
-
-namespace SFA.DAS.Reservations.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface ICoursesApiClient<T> : IApiClient<T>
     {

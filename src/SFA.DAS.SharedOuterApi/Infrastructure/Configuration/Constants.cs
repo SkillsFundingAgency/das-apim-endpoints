@@ -1,4 +1,4 @@
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Configuration
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Configuration
 {
     public static class Constants
     {

@@ -34,7 +34,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             var getTestRequest = new GetTestRequest(config.Url, id) {BaseUrl = config.Url };
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IHostingEnvironment>();
+            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
@@ -73,7 +73,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              var getTestRequest = new GetTestRequest(config.Url,id) {BaseUrl = config.Url };
              var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
              var client = new HttpClient(httpMessageHandler.Object);
-             var hostingEnvironment = new Mock<IHostingEnvironment>();
+             var hostingEnvironment = new Mock<IWebHostEnvironment>();
              var clientFactory = new Mock<IHttpClientFactory>();
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
              

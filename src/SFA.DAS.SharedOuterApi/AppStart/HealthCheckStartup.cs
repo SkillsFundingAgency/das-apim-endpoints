@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
-using SFA.DAS.FindApprenticeshipTraining.Api.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
+namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class HealthCheckStartup
     {

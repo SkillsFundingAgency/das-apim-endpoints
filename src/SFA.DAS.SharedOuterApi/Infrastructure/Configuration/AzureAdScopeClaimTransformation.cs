@@ -1,10 +1,9 @@
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Configuration
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Configuration
 {
     public class AzureAdScopeClaimTransformation : IClaimsTransformation
     {
