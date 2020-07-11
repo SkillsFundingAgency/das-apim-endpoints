@@ -19,13 +19,6 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetAsync<T>(string uri, CancellationToken cancellationToken = default)
-        {
-            var response = await _httpClient.GetAsync(new Uri(uri, UriKind.RelativeOrAbsolute), cancellationToken).ConfigureAwait(false);
-            var value = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return (T)Convert.ChangeType(value, typeof(T));
-        }
-
         public async Task<InnerApiResponse> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             if (queryData != null)
@@ -34,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             }
 
             var response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-            return await CreateApiResponse(response, true);
+            return await CreateApiResponse(response);
         }
 
         public Task<InnerApiResponse> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -42,29 +35,29 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             return GetAsync(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        public Task<InnerApiResponse> PostAsync(string uri, bool readAsJson, CancellationToken cancellationToken = default)
+        public Task<InnerApiResponse> PostAsync(string uri, CancellationToken cancellationToken = default)
         {
-            return PostAsync<object>(uri, null, readAsJson, cancellationToken);
+            return PostAsync<object>(uri, null, cancellationToken);
         }
 
-        public async Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, bool readAsJson, CancellationToken cancellationToken = default) where TRequest : class
+        public async Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
         {
             var response = await _httpClient.PostAsJsonAsync(uri, request, cancellationToken).ConfigureAwait(false);
-            return await CreateApiResponse(response, readAsJson);
+            return await CreateApiResponse(response);
         }
 
-        public async Task<InnerApiResponse> DeleteAsync(string uri, bool readAsJson, CancellationToken cancellationToken = default)
+        public async Task<InnerApiResponse> DeleteAsync(string uri, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
-            return await CreateApiResponse(response, readAsJson);
+            return await CreateApiResponse(response);
         }
 
-        private async Task<InnerApiResponse> CreateApiResponse(HttpResponseMessage responseMessage, bool readAsJson)
+        private async Task<InnerApiResponse> CreateApiResponse(HttpResponseMessage responseMessage)
         {
             return new InnerApiResponse
             {
                 StatusCode = responseMessage.StatusCode,
-                Json = readAsJson ? await ReadContentAsJson(responseMessage.Content) : null
+                Json = await ReadContentAsJson(responseMessage.Content)
             };
         }
 
@@ -77,7 +70,8 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             }
             catch (Exception e)
             {
-                throw new InvalidCastException("Error casting api response to Json", e);
+                return null;
+                //throw new InvalidCastException("Error casting api response to Json", e);
             }
         }
 

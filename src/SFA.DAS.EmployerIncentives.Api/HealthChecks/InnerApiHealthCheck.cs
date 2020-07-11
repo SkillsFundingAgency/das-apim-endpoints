@@ -7,15 +7,15 @@ namespace SFA.DAS.EmployerIncentives.Api.HealthChecks
 {
     public class InnerApiHealthCheck : IHealthCheck
     {
-        private readonly IEmployerIncentivesPassThroughService _employerIncentivesPassThroughService;
+        private readonly IEmployerIncentivesService _employerIncentivesService;
 
-        public InnerApiHealthCheck(IEmployerIncentivesPassThroughService employerIncentivesPassThroughService)
+        public InnerApiHealthCheck(IEmployerIncentivesService employerIncentivesService)
         {
-            _employerIncentivesPassThroughService = employerIncentivesPassThroughService;
+            _employerIncentivesService = employerIncentivesService;
         }
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
-            return _employerIncentivesPassThroughService.HealthCheck(cancellationToken);
+            return _employerIncentivesService.HealthCheck(cancellationToken);
         }
     }
 }
