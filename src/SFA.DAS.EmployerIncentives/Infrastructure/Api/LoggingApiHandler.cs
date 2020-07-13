@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         {
             try
             {
-                _logger.LogInformation($"calling endpoint {request?.RequestUri?.AbsoluteUri}");
+                _logger.LogInformation($"Calling endpoint {request?.RequestUri?.AbsoluteUri}");
                 return await base.SendAsync(request, cancellationToken);
             }
             catch (Exception e)

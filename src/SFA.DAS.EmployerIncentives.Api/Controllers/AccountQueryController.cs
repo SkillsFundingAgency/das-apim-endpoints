@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/legalentities")]
-        public async Task<IActionResult> AddLegalEntity(long accountId)
+        public async Task<IActionResult> GetLegalEntities(long accountId)
         {
             var innerApiResponse = await _passThroughService.GetAsync($"/accounts/{accountId}/legalentities");
 
