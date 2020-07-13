@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -35,6 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
                     c.BaseAddress = new Uri(apiConfig.Url);
                 })
                 .AddTypedClient<TService, TImplementation>()
+                .AddLoggingApiHandler<TImplementation>()
                 .AddManagedIdentityApiHandler(configuration, env, configSection);
 
             return services;
@@ -50,6 +52,17 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
                     return new ManagedIdentityApiHandler(apiConfig);
                 });
             }
+
+            return httpBuilder;
+        }
+
+        public static IHttpClientBuilder AddLoggingApiHandler<T>(this IHttpClientBuilder httpBuilder)
+        {
+            httpBuilder.AddHttpMessageHandler(sp =>
+            {
+                var logger = sp.GetService<ILogger<T>>();   
+                return new LoggingApiHandler<T>(logger);
+            });
 
             return httpBuilder;
         }

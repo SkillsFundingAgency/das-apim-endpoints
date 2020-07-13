@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
@@ -13,10 +14,12 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
     public class PassThroughApiClient : IPassThroughApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<PassThroughApiClient> _logger;
 
-        public PassThroughApiClient(HttpClient httpClient)
+        public PassThroughApiClient(HttpClient httpClient, ILogger<PassThroughApiClient> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<InnerApiResponse> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -65,13 +68,19 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         {
             try
             {
+                if (httpContent.Headers.ContentType.MediaType != "application/json")
+                {
+                    _logger.LogInformation("No json content returned");
+                    return null;
+                }
+
                 await using var stream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false);
                 return JsonDocument.Parse(stream);
             }
             catch (Exception e)
             {
+                _logger.LogError("Error reading content as json", e);
                 return null;
-                //throw new InvalidCastException("Error casting api response to Json", e);
             }
         }
 

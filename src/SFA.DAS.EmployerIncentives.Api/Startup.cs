@@ -12,7 +12,6 @@ using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -53,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddDasHealthChecks();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SFA.DAS.EmployerIncentives.OuterApi", Version = "v1" });
             });
 
             services.AddControllers(c=>c.Filters.Add(new AuthorizeFilter("APIM")))
@@ -64,7 +63,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddDasHttpClientsAndAssociatedServices(_configuration, _env);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -90,7 +89,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             app.UseSwagger()
                 .UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerIncentivesApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SFA.DAS.EmployerIncentives.OuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
