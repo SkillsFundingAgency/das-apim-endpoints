@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerIncentives.Api.Extensions;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.PassThrough;
 
@@ -21,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var innerApiResponse = await _passThroughService.PostAsync($"/accounts/{accountId}/legalentities", request);
 
-            return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json?.RootElement);
+            return this.CreateObjectResult(innerApiResponse);
         }
 
         [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
@@ -29,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var innerApiResponse = await _passThroughService.DeleteAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}");
 
-            return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json?.RootElement);
+            return this.CreateObjectResult(innerApiResponse);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerIncentives.Api.Extensions;
 using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
@@ -20,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var innerApiResponse = await _passThroughService.GetAsync($"/accounts/{accountId}/legalentities");
 
-            return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json?.RootElement);
+            return this.CreateObjectResult(innerApiResponse);
         }
     }
 }
