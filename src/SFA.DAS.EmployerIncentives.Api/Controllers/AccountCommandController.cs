@@ -6,11 +6,11 @@ using SFA.DAS.EmployerIncentives.Models.PassThrough;
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [ApiController]
-    public class PassThroughController : ControllerBase
+    public class AccountCommandController : ControllerBase
     {
-        private readonly IEmployerIncentivesPassThroughService _passThroughService;
+        private readonly IEmployerIncentivesCommandPassThroughService _passThroughService;
 
-        public PassThroughController(IEmployerIncentivesPassThroughService client)
+        public AccountCommandController(IEmployerIncentivesCommandPassThroughService client)
         {
             _passThroughService = client;
         }
@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/accounts/{accountId}/legalentities")]
         public async Task<IActionResult> AddLegalEntity(long accountId, LegalEntityRequest request)
         {
-            var innerApiResponse = await _passThroughService.AddLegalEntity(accountId, request);
+            var innerApiResponse = await _passThroughService.PostAsync($"/accounts/{accountId}/legalentities", request);
 
             return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json?.RootElement);
         }
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
         public async Task<IActionResult> RemoveLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var innerApiResponse = await _passThroughService.RemoveLegalEntity(accountId, accountLegalEntityId);
+            var innerApiResponse = await _passThroughService.DeleteAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}");
 
             return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json);
         }
