@@ -15,14 +15,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
     {
         public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            services.AddTransient(typeof(ManagedIdentityApiHandler))
+            services //.AddTransient(typeof(ManagedIdentityApiHandler))
                 .AddTransient<IRestApiClient, RestApiClient>()
-                .AddTypedHttpClient<IEmployerIncentivesPassThroughService, EmployerIncentivesPassThroughService>(configuration, env, 
-                    EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesPassThroughClient")
-                .AddTypedHttpClient<IEmployerIncentivesService, EmployerIncentivesService>(configuration, env,
-                    EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesClient")
-                .AddTypedHttpClient<ICommitmentsV2Service, CommitmentsV2Service>(configuration, env,
-                    EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration, "CommitmentsV2Client");
+                .AddTypedHttpClient<IEmployerIncentivesQueryPassThroughService, EmployerIncentivesQueryPassThroughService>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesQueryPassThroughClient")
+                .AddTypedHttpClient<IEmployerIncentivesCommandPassThroughService, EmployerIncentivesCommandPassThroughService>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesCommandPassThroughClient")
+                .AddTypedHttpClient<IEmployerIncentivesService, EmployerIncentivesService>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesClient")
+                .AddTypedHttpClient<ICommitmentsV2Service, CommitmentsV2Service>(configuration, env, EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration, "CommitmentsV2Client");
 
             return services;
         }
