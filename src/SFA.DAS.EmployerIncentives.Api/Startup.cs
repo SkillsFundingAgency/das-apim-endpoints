@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddDasHealthChecks();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SFA.DAS.EmployerIncentives.OuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesOuterApi", Version = "v1" });
             });
 
             services.AddControllers(c=>c.Filters.Add(new AuthorizeFilter("APIM")))
