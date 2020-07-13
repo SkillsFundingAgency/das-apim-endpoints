@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var innerApiResponse = await _passThroughService.DeleteAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}");
 
-            return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json);
+            return StatusCode((int)innerApiResponse.StatusCode, innerApiResponse.Json?.RootElement);
         }
     }
 }

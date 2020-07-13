@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountCommandCon
 
             await sut.RemoveLegalEntity(accountId, accountLegalEntityId);
 
-            passThroughMock.Verify(x => x.PostAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}", It.IsAny<CancellationToken>()));
+            passThroughMock.Verify(x => x.DeleteAsync($"/accounts/{accountId}/legalentities/{accountLegalEntityId}", It.IsAny<CancellationToken>()));
         }
 
         [Test, MoqAutoData]
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountCommandCon
             [Greedy] AccountCommandController sut)
         {
             passThroughMock
-                .Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_innerApiResponse);
 
             var result  = await sut.RemoveLegalEntity(accountId, accountLegalEntityId);
