@@ -89,7 +89,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             app.UseSwagger()
                 .UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SFA.DAS.EmployerIncentives.OuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerIncentivesOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
