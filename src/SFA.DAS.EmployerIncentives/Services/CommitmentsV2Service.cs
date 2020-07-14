@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var health = await _restApiClient.GetAsync<CommitmentsV2Health>("/health", cancellationToken);
+                var health = await _restApiClient.Get<CommitmentsV2Health>("/health",null, cancellationToken);
 
                 if (health == null)
                 {

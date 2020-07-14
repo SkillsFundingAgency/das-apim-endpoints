@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             _logger = logger;
         }
 
-        public async Task<InnerApiResponse> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        public async Task<InnerApiResponse> Get(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             if (queryData != null)
             {
@@ -33,23 +33,23 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             return await CreateApiResponse(response);
         }
 
-        public Task<InnerApiResponse> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<InnerApiResponse> Get(string uri, object queryData = null, CancellationToken cancellationToken = default)
         {
-            return GetAsync(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+            return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        public Task<InnerApiResponse> PostAsync(string uri, CancellationToken cancellationToken = default)
+        public Task<InnerApiResponse> Post(string uri, CancellationToken cancellationToken = default)
         {
-            return PostAsync<object>(uri, null, cancellationToken);
+            return Post<object>(uri, null, cancellationToken);
         }
 
-        public async Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
+        public async Task<InnerApiResponse> Post<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
         {
             var response = await _httpClient.PostAsJsonAsync(uri, request, cancellationToken).ConfigureAwait(false);
             return await CreateApiResponse(response);
         }
 
-        public async Task<InnerApiResponse> DeleteAsync(string uri, CancellationToken cancellationToken = default)
+        public async Task<InnerApiResponse> Delete(string uri, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
             return await CreateApiResponse(response);

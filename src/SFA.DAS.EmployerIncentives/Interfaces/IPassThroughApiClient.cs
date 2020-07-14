@@ -7,10 +7,10 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
 {
     public interface IPassThroughApiClient
     {
-        Task<InnerApiResponse> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default);
-        Task<InnerApiResponse> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default);
-        Task<InnerApiResponse> PostAsync(string uri, CancellationToken cancellationToken = default);
-        Task<InnerApiResponse> PostAsync<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class;
-        Task<InnerApiResponse> DeleteAsync(string uri, CancellationToken cancellationToken = default);
+        Task<InnerApiResponse> Get(Uri uri, object queryData = null, CancellationToken cancellationToken = default);
+        Task<InnerApiResponse> Get(string uri, object queryData = null, CancellationToken cancellationToken = default);
+        Task<InnerApiResponse> Post(string uri, CancellationToken cancellationToken = default);
+        Task<InnerApiResponse> Post<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class;
+        Task<InnerApiResponse> Delete(string uri, CancellationToken cancellationToken = default);
     }
 }

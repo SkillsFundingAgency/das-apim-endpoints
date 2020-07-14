@@ -18,34 +18,34 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetAsync<T>(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        public async Task<T> Get<T>(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
             return await response.Content.ReadFromJsonAsync<T>(null, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<T> GetAsync<T>(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<T> Get<T>(string uri, object queryData = null, CancellationToken cancellationToken = default)
         {
-            return GetAsync<T>(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+            return Get<T>(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        public async Task<string> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        public async Task<string> Get(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        public Task<string> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<string> Get(string uri, object queryData = null, CancellationToken cancellationToken = default)
         {
-            return GetAsync(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+            return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        public Task<string> PostAsync(string uri, CancellationToken cancellationToken = default)
+        public Task<string> Post(string uri, CancellationToken cancellationToken = default)
         {
-            return PostAsync<object>(uri, null, cancellationToken);
+            return Post<object>(uri, null, cancellationToken);
         }
 
-        public async Task<string> PostAsync<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
+        public async Task<string> Post<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
         {
             var response = await _httpClient.PostAsJsonAsync<TRequest>(new Uri(uri, UriKind.RelativeOrAbsolute), request, null, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             return result;
         }
 
-        public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default) where TRequest : class where TResponse : class, new()
+        public async Task<TResponse> Post<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default) where TRequest : class where TResponse : class, new()
         {
             var response = await _httpClient.PostAsJsonAsync<TRequest>(new Uri(uri, UriKind.RelativeOrAbsolute), requestData, null, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();

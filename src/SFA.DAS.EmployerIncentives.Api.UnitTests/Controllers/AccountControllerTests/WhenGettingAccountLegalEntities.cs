@@ -31,28 +31,28 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountController
         }
 
         [Test, MoqAutoData]
-        public async Task When_Getting_LegalEntities_For_Account_Then_Request_Is_Passed_To_Inner_Api(
+        public async Task Then_Request_Is_Passed_To_Inner_Api(
             long accountId,
-            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Frozen] Mock<IPassThroughApiClient> passThroughMock,
            [Greedy] AccountController sut)
         {
             passThroughMock
-                .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Get(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_innerApiResponse);
 
             await sut.GetLegalEntities(accountId);
 
-            passThroughMock.Verify(x => x.GetAsync($"/accounts/{accountId}/legalentities", null, It.IsAny<CancellationToken>()));
+            passThroughMock.Verify(x => x.Get($"/accounts/{accountId}/legalentities", null, It.IsAny<CancellationToken>()));
         }
 
         [Test, MoqAutoData]
-        public async Task When_Getting_LegalEntities_For_Account_Then_Response_From_Inner_Api_Is_Returned(
+        public async Task Then_Response_From_Inner_Api_Is_Returned(
             long accountId,
-            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Frozen] Mock<IPassThroughApiClient> passThroughMock,
             [Greedy] AccountController sut)
         {
             passThroughMock
-                .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Get(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_innerApiResponse);
 
             var result = await sut.GetLegalEntities(accountId);

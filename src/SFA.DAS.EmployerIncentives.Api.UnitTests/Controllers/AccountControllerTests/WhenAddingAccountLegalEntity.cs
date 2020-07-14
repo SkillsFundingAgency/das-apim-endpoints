@@ -32,30 +32,30 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountController
         }
 
         [Test, MoqAutoData]
-        public async Task When_Adding_LegalEntity_For_Account_Then_Request_Is_Passed_To_Inner_Api(
+        public async Task Then_Request_Is_Passed_To_Inner_Api(
             long accountId,
             LegalEntityRequest request,
-            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Frozen] Mock<IPassThroughApiClient> passThroughMock,
             [Greedy] AccountController sut)
         {
             passThroughMock
-                .Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Post(It.IsAny<string>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_innerApiResponse);
 
             await sut.AddLegalEntity(accountId, request);
 
-            passThroughMock.Verify(x => x.PostAsync($"/accounts/{accountId}/legalentities", request, It.IsAny<CancellationToken>()));
+            passThroughMock.Verify(x => x.Post($"/accounts/{accountId}/legalentities", request, It.IsAny<CancellationToken>()));
         }
 
         [Test, MoqAutoData]
-        public async Task When_Adding_LegalEntity_For_Account_Then_Response_Is_Returned_From_Inner_Api(
+        public async Task Then_Response_Is_Returned_From_Inner_Api(
             long accountId,
             LegalEntityRequest request,
-            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Frozen] Mock<IPassThroughApiClient> passThroughMock,
             [Greedy] AccountController sut)
         {
             passThroughMock
-                .Setup(x => x.PostAsync(It.IsAny<string>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Post(It.IsAny<string>(), It.IsAny<LegalEntityRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_innerApiResponse);
 
             var result  = await sut.AddLegalEntity(accountId, request);

@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
         public static IServiceCollection AddDasHttpClientsAndAssociatedServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             services.AddTransient<IRestApiClient, RestApiClient>()
-                .AddTypedHttpClient<IApiPassThroughService, ApiPassThroughService>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesCommandPassThroughClient")
+                .AddTypedHttpClient<IPassThroughApiClient, PassThroughApiClient>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesPassThroughClient")
                 .AddTypedHttpClient<IEmployerIncentivesService, EmployerIncentivesService>(configuration, env, EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration, "EmployerIncentivesClient")
                 .AddTypedHttpClient<ICommitmentsV2Service, CommitmentsV2Service>(configuration, env, EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration, "CommitmentsV2Client");
 

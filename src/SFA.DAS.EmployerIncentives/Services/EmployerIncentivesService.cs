@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var value = await _client.GetAsync("/health", null, cancellationToken);
+                var value = await _client.Get("/health", null, cancellationToken);
                 switch (value)
                 {
                     case "Healthy":

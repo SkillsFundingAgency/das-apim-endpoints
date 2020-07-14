@@ -8,9 +8,8 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
-using SFA.DAS.EmployerIncentives.Services;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTests
+namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTests
 {
     [TestFixture]
     public class WhenDeletingResource
@@ -18,24 +17,21 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTes
         private HttpClient _httpClient;
         private Mock<HttpClientHandler> _httpClientHandlerMock;
 
-        private Mock<ILoggerFactory> _loggerFactoryMock;
         private Mock<ILogger<PassThroughApiClient>> _loggerMock;
         public HttpResponseMessage _httpResponseMessage;
-        private ApiPassThroughService _sut;
+        private PassThroughApiClient _sut;
         string _baseUrl = "http://www.test.com/";
 
         [SetUp]
         public void Arrange()
         { 
-            _httpClientHandlerMock = new Mock<HttpClientHandler>();
             _loggerMock = new Mock<ILogger<PassThroughApiClient>>();
-            _loggerFactoryMock = new Mock<ILoggerFactory>();
-            _loggerFactoryMock.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_loggerMock.Object);
-
+            _httpClientHandlerMock = new Mock<HttpClientHandler>();
+ 
             _httpClient = new HttpClient(_httpClientHandlerMock.Object); 
             _httpClient.BaseAddress = new Uri(_baseUrl);
 
-            _sut = new ApiPassThroughService(_httpClient, _loggerFactoryMock.Object);
+            _sut = new PassThroughApiClient(_httpClient, _loggerMock.Object);
         }
 
         [Test]
@@ -43,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTes
         {
             SetupNoJsonResponseFromInnerApi();
 
-            await _sut.DeleteAsync("test/123");
+            await _sut.Delete("test/123");
 
             VerifyMethodAndPath(HttpMethod.Delete, $"test/123");
         }

@@ -10,68 +10,73 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
-using SFA.DAS.EmployerIncentives.Services;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTests
+namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTests
 {
     [TestFixture]
-    public class WhenPostingJson
+    public class WhenGettingJsonResult
     {
         private HttpClient _httpClient;
         private Mock<HttpClientHandler> _httpClientHandlerMock;
-
-        private Mock<ILoggerFactory> _loggerFactoryMock;
         private Mock<ILogger<PassThroughApiClient>> _loggerMock;
         public HttpResponseMessage _httpResponseMessage;
-        private ApiPassThroughService _sut;
+        private PassThroughApiClient _sut;
         string _baseUrl = "http://www.test.com/";
 
         [SetUp]
         public void Arrange()
-        { 
-            _httpClientHandlerMock = new Mock<HttpClientHandler>();
+        {
             _loggerMock = new Mock<ILogger<PassThroughApiClient>>();
-            _loggerFactoryMock = new Mock<ILoggerFactory>();
-            _loggerFactoryMock.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(_loggerMock.Object);
+            _httpClientHandlerMock = new Mock<HttpClientHandler>();
 
-            _httpClient = new HttpClient(_httpClientHandlerMock.Object); 
+            _httpClient = new HttpClient(_httpClientHandlerMock.Object);
             _httpClient.BaseAddress = new Uri(_baseUrl);
 
-            _sut = new ApiPassThroughService(_httpClient, _loggerFactoryMock.Object);
+            _sut = new PassThroughApiClient(_httpClient, _loggerMock.Object);
         }
 
-        [Test, MoqAutoData]
-        public async Task When_Posting_To_An_EndPoint_It_Calls_Api_Correctly(TestRequest request)
+        [Test]
+        public async Task When_Querying_An_EndPoint_It_Calls_Api_Correctly()
         {
             SetupJsonResponseFromInnerApi();
 
-            await _sut.PostAsync("test/123", request);
-            VerifyMethodAndPath(HttpMethod.Post, $"test/123");
+            await _sut.Get("test/123");
+            VerifyMethodAndPath(HttpMethod.Get, $"test/123");
         }
 
-        [Test, MoqAutoData]
-        public async Task When_Posting_To_An_EndPoint_It_Returns_Json_Value(TestRequest request)
+        [Test]
+        public async Task When_Querying_An_EndPoint_It_Returns_Json_Value()
         {
             SetupJsonResponseFromInnerApi();
 
-            var result = await _sut.PostAsync("test/123", request);
-
+            var result = await _sut.Get("test/123");
+            
             VerifyApiResponseIsReturned(result);
         }
 
         [Test]
-        public async Task When_Posting_To_An_EndPoint_Which_Returns_No_Json_Value()
+        public async Task When_Querying_An_EndPoint_Which_Returns_No_Json_Value()
         {
             SetupNoJsonResponseFromInnerApi();
 
-            var result = await _sut.GetAsync("test/123");
+            var result = await _sut.Get("test/123");
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(_httpResponseMessage.StatusCode);
             result.Json.Should().BeNull();
         }
 
+        [Test]
+        public async Task When_Querying_An_EndPoint_Thats_Returns_Badly_Formated_Json_Value()
+        {
+            SetupBadlyFormedJsonResponseFromInnerApi();
+
+            var result = await _sut.Get("test/123");
+
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(_httpResponseMessage.StatusCode);
+            result.Json.Should().BeNull();
+        }
 
         private void SetupJsonResponseFromInnerApi()
         {
@@ -83,7 +88,15 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTes
 
         private void SetupNoJsonResponseFromInnerApi()
         {
-            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NoContent);
+            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("") };
+            _httpClientHandlerMock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
+                    ItExpr.IsAny<CancellationToken>()).ReturnsAsync(_httpResponseMessage);
+        }
+
+        private void SetupBadlyFormedJsonResponseFromInnerApi()
+        {
+            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"Rubbish? json \"XXXX\"}", Encoding.UTF8, "application/json") };
             _httpClientHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
                     ItExpr.IsAny<CancellationToken>()).ReturnsAsync(_httpResponseMessage);
@@ -103,11 +116,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTes
             result.StatusCode.Should().Be(_httpResponseMessage.StatusCode);
             result.Json.Should().NotBeNull();
             result.Json.RootElement.GetProperty("Test").GetString().Should().Be("XXXX");
-        }
-
-        public class TestRequest
-        {
-            public string TestValue { get; set; }
         }
     }
 }
