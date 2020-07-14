@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountControllerTests
 {
     [TestFixture]
-    public class WhenAddingLegalEntity
+    public class WhenAddingAccountLegalEntity
     {
         private InnerApiResponse _innerApiResponse;
         private string _JsonString = "{\"Test\" : \"XXXX\"}";

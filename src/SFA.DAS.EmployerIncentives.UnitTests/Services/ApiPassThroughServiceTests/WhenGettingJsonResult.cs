@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.ApiPassThroughServiceTes
         }
 
         [Test]
-        public async Task When_Querying_An_EndPoint_Thats_Returns_No_Json_Value()
+        public async Task When_Querying_An_EndPoint_Which_Returns_No_Json_Value()
         {
             SetupNoJsonResponseFromInnerApi();
 
