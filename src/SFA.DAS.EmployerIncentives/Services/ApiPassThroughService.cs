@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -7,11 +8,21 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Services
 {
-    public class EmployerIncentivesCommandPassThroughService : IEmployerIncentivesCommandPassThroughService
+    public class ApiPassThroughService : IApiPassThroughService
     {
         private readonly IPassThroughApiClient _client;
 
-        public EmployerIncentivesCommandPassThroughService(HttpClient httpClient, ILoggerFactory loggerFactory)
+        public Task<InnerApiResponse> GetAsync(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        {
+            return _client.GetAsync(uri, queryData, cancellationToken);
+        }
+
+        public Task<InnerApiResponse> GetAsync(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        {
+            return _client.GetAsync(uri, queryData, cancellationToken);
+        }
+
+        public ApiPassThroughService(HttpClient httpClient, ILoggerFactory loggerFactory)
         {
             _client = new PassThroughApiClient(httpClient, loggerFactory.CreateLogger<PassThroughApiClient>());
         }

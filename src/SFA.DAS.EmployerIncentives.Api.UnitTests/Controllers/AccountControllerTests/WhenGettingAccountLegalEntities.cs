@@ -12,7 +12,7 @@ using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
+namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountControllerTests
 {
     [TestFixture]
     public class WhenGettingAccountLegalEntities
@@ -33,8 +33,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task When_Getting_LegalEntities_For_Account_Then_Request_Is_Passed_To_Inner_Api(
             long accountId,
-            [Frozen] Mock<IEmployerIncentivesQueryPassThroughService> passThroughMock,
-           [Greedy] AccountQueryController sut)
+            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+           [Greedy] AccountController sut)
         {
             passThroughMock
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))
@@ -48,8 +48,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task When_Getting_LegalEntities_For_Account_Then_Response_From_Inner_Api_Is_Returned(
             long accountId,
-            [Frozen] Mock<IEmployerIncentivesQueryPassThroughService> passThroughMock,
-            [Greedy] AccountQueryController sut)
+            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Greedy] AccountController sut)
         {
             passThroughMock
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CancellationToken>()))

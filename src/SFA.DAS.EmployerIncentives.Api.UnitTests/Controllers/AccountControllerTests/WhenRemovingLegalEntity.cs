@@ -10,10 +10,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models.PassThrough;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountCommandControllerTests
+namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountControllerTests
 {
     [TestFixture]
     public class WhenRemovingLegalEntity
@@ -35,8 +34,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountCommandCon
         public async Task When_Removing_LegalEntity_For_Account_Then_Request_Is_Passed_To_Inner_Api(
             long accountId,
             long accountLegalEntityId,
-            [Frozen] Mock<IEmployerIncentivesCommandPassThroughService> passThroughMock,
-            [Greedy] AccountCommandController sut)
+            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Greedy] AccountController sut)
         {
             passThroughMock
                 .Setup(x => x.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -51,8 +50,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.AccountCommandCon
         public async Task When_Removing_LegalEntity_For_Account_Then_Response_Is_Returned_From_Inner_Api(
             long accountId,
             long accountLegalEntityId,
-            [Frozen] Mock<IEmployerIncentivesCommandPassThroughService> passThroughMock,
-            [Greedy] AccountCommandController sut)
+            [Frozen] Mock<IApiPassThroughService> passThroughMock,
+            [Greedy] AccountController sut)
         {
             passThroughMock
                 .Setup(x => x.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

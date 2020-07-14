@@ -7,13 +7,22 @@ using SFA.DAS.EmployerIncentives.Models.PassThrough;
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [ApiController]
-    public class AccountCommandController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private readonly IEmployerIncentivesCommandPassThroughService _passThroughService;
+        private readonly IApiPassThroughService _passThroughService;
 
-        public AccountCommandController(IEmployerIncentivesCommandPassThroughService client)
+        public AccountController(IApiPassThroughService client)
         {
             _passThroughService = client;
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/legalentities")]
+        public async Task<IActionResult> GetLegalEntities(long accountId)
+        {
+            var innerApiResponse = await _passThroughService.GetAsync($"/accounts/{accountId}/legalentities");
+
+            return this.CreateObjectResult(innerApiResponse);
         }
 
         [HttpPost]
