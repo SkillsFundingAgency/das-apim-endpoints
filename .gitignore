@@ -269,6 +269,6 @@ App.Debug.config
 .editorconfig
 
 # NCrunch
-.ncrunchsolution
+*.ncrunchsolution
 
 src/**/appsettings.Development.json
