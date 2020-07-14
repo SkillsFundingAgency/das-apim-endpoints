@@ -25,16 +25,12 @@ namespace SFA.DAS.EmployerIncentives.Api
             _configuration = configuration;
 
             var config = new ConfigurationBuilder()
-                .AddConfiguration(configuration);
+                .AddConfiguration(configuration)
+                .AddEnvironmentVariables();
 
             if (_env.IsDevelopment())
             {
                 config.AddJsonFile($"appsettings.development.json", optional: true);
-            }
-
-            if (_env.IsEnvironment("AcceptanceTests"))
-            {
-                config.AddJsonFile($"appsettings.acceptancetests.json", optional: false);
             }
 
             _configuration = config.Build();
@@ -46,7 +42,6 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddApiAuthentication(_configuration);
             services.AddApiAuthorization(_env);
 
-            // Should this be upgraded?
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddDasHealthChecks();
