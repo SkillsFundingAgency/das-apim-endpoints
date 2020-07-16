@@ -23,8 +23,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _context = context;
         }
 
-        [Given(@"the Employer Incentives Inner Api is ready and healthy")]
-        public void GivenTheEmployerIncentivesInnerApiIsReadyAndHealthy()
+        [Given(@"the Employer Incentives Inner Api is ready and (.*)")]
+        public void GivenTheEmployerIncentivesInnerApiIsReadyAnd(string status)
         {
             _context.InnerApi.MockServer
                 .Given(
@@ -34,14 +34,14 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "plain/text")
-                        .WithBody("Healthy")
+                        .WithBody(status)
                 );
         }
 
-        [Given(@"the Commitments Inner Api is ready and healthy")]
-        public void GivenTheCommitmentsInnerApiIsReadyAndHealthy()
+        [Given(@"the Commitments Inner Api is ready and (.*)")]
+        public void GivenTheCommitmentsInnerApiIsReadyAnd(string status)
         {
-            var response = new CommitmentsV2HealthResponse {Status = "Healthy"};
+            var response = new CommitmentsV2HealthResponse {Status = status};
 
             _context.CommitmentsV2InnerApi.MockServer
                 .Given(
@@ -61,12 +61,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response = await _context.OuterApiClient.GetAsync($"/ping");
         }
 
-        [Then(@"the result should show healthy")]
-        public async Task ThenTheResultShouldShowHealthy()
+        [Then(@"the result should show (.*)")]
+        public async Task ThenTheResultShouldShow(string status)
         {
-            _response.StatusCode.Should().Be(HttpStatusCode.OK);
             var body = await _response.Content.ReadAsStringAsync();
-            body.Should().Be("Healthy");
+            body.Should().Be(status);
         }
     }
 }
