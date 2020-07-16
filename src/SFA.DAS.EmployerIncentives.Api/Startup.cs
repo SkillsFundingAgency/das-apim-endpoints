@@ -23,7 +23,8 @@ namespace SFA.DAS.EmployerIncentives.Api
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        { _env = env;
+        { 
+            _env = env;
             _configuration = configuration;
 
             var config = new ConfigurationBuilder()
