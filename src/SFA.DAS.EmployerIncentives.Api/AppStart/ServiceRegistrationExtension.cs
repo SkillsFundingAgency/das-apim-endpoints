@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
 
         public static IHttpClientBuilder AddManagedIdentityApiHandler(this IHttpClientBuilder httpBuilder, IConfiguration configuration, IWebHostEnvironment env, string configSection)
         {
-            if (!env.IsDevelopment())
+            if (!env.IsDevelopment() && !env.IsEnvironment("LOCAL"))
             {
                 httpBuilder.AddHttpMessageHandler(_ =>
                 {

@@ -10,13 +10,13 @@ namespace SFA.DAS.EmployerIncentives.Api.Authorization
     {
         public static IServiceCollection AddApiAuthorization(this IServiceCollection services, IWebHostEnvironment environment)
         {
-            var isDevelopment = environment.IsDevelopment();
+            var isLocal = environment.IsDevelopment() || environment.IsEnvironment("LOCAL");
 
             services.AddAuthorization(o =>
             {
                 o.AddPolicy("APIM", policy =>
                 {
-                    if (isDevelopment)
+                    if (isLocal)
                     {
                         policy.AllowAnonymousUser();
                     }
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Authorization
                     }
                 });
             });
-            if (isDevelopment)
+            if (isLocal)
                 services.AddSingleton<IAuthorizationHandler, LocalAuthorizationHandler>();
             return services;
         }
