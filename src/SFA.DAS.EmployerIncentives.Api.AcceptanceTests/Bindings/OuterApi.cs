@@ -23,6 +23,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
 
             config.Add($"{EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration}:url", _context?.InnerApi?.BaseAddress);
             config.Add($"{EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration}:url", _context?.CommitmentsV2InnerApi?.BaseAddress);
+            config.Add($"{EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration}:tenant", "citizenazuresfabisgov.onmicrosoft.com");
+            config.Add($"{EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration}:identifier", "https://citizenazuresfabisgov.onmicrosoft.com/das-at-apimendp-empincapi-as");
 
             var factory = new LocalWebApplicationFactory<Startup>(config);
 

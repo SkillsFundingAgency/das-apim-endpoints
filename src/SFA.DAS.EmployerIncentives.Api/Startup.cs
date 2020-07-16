@@ -6,12 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
 using SFA.DAS.EmployerIncentives.Api.Authentication;
 using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
+using SFA.DAS.EmployerIncentives.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -25,8 +27,17 @@ namespace SFA.DAS.EmployerIncentives.Api
             _configuration = configuration;
 
             var config = new ConfigurationBuilder()
-                .AddConfiguration(configuration)
-                .AddEnvironmentVariables();
+                .AddConfiguration(configuration);
+
+            if (!_env.IsEnvironment("LOCAL"))
+            {
+                config.AddAzureTableStorage(
+                    EmployerIncentivesConfigurationKeys.EmployerIncentivesOuterApi,
+                    EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration,
+                    EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration);
+
+            }
+            config.AddEnvironmentVariables();
 
             if (_env.IsDevelopment())
             {

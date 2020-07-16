@@ -14,7 +14,6 @@ namespace SFA.DAS.EmployerIncentives.Api
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureDasAppConfiguration()
                 .UseStartup<Startup>()
                 .UseNLog();
     }
