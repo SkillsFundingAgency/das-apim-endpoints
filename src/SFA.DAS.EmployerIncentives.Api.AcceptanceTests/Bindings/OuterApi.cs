@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
         }
 
         [BeforeScenario()]
-        public void InitialiseOuterApi()
+        public void Initialise()
         {
 
             var config = new Dictionary<string, string>();

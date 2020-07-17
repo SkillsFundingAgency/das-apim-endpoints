@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
         }
 
         [BeforeScenario(Order = 1)]
-        public void InitialiseInnerApi()
+        public void Initialise()
         {
             _context.InnerApi = new MockApi();
         }
