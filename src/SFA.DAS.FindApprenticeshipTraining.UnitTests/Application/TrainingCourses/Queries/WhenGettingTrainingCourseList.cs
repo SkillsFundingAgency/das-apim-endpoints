@@ -45,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
+            result.OrderBy.Should().Be(query.OrderBy);
         }
 
         [Test, MoqAutoData]

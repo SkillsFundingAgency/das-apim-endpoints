@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
+using SFA.DAS.FindApprenticeshipTraining.Application.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 
@@ -27,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null)
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]int orderBy = 0)
         {
             try
             {
@@ -35,7 +36,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     Keyword = keyword, 
                     RouteIds = routeIds,
-                    Levels = levels
+                    Levels = levels,
+                    OrderBy = (OrderBy)orderBy
                 });
                 
                 var model = new GetTrainingCoursesListResponse
@@ -44,7 +46,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
                     Levels = queryResult.Levels.Select(response => (GetTrainingLevelsListItem)response),
                     Total = queryResult.Total,
-                    TotalFiltered = queryResult.TotalFiltered
+                    TotalFiltered = queryResult.TotalFiltered,
+                    OrderBy = queryResult.OrderBy
                 };
 
                 return Ok(model);

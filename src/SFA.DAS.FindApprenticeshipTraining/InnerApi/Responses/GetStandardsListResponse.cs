@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.FindApprenticeshipTraining.Application.Application;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses
 {

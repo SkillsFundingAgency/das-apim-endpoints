@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.FindApprenticeshipTraining.Application.Application;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -9,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalFiltered { get ; set ; }
         public IEnumerable<GetTrainingSectorsListItem> Sectors { get ; set ; }
         public IEnumerable<GetTrainingLevelsListItem> Levels { get ; set ; }
+        public OrderBy OrderBy { get; set; }
     }
 }

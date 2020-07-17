@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindApprenticeshipTraining.Application.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
 
@@ -14,6 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests
         public string GetUrl => BuildUrl();
 
         public List<int> Levels { get ; set ; }
+        public OrderBy OrderBy { get; set; }
 
         private string BuildUrl()
         {
