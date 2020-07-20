@@ -2,21 +2,23 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList
+namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList
 {
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
-        private readonly IApiClient _apiClient;
+        private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
         private readonly ICacheStorageService _cacheStorageService;
         private const int ExpirationInHours = 1;
         private List<Task> _taskList;
         private bool _saveSectorsToCache;
         private bool _saveLevelsToCache;
-        public GetTrainingCoursesListQueryHandler(IApiClient apiClient, ICacheStorageService cacheStorageService)
+        public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
             _cacheStorageService = cacheStorageService;

@@ -1,17 +1,18 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourse
+namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse
 {
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
-        private readonly IApiClient _apiClient;
+        private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
 
-        public GetTrainingCourseQueryHandler (IApiClient apiClient)
+        public GetTrainingCourseQueryHandler (ICoursesApiClient<CoursesApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
