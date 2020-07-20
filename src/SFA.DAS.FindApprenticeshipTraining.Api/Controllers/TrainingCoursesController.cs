@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]int orderBy = 0)
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
         {
             try
             {
@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Keyword = keyword, 
                     RouteIds = routeIds,
                     Levels = levels,
-                    OrderBy = orderBy == 0 ? OrderBy.Score : OrderBy.Title
+                    OrderBy = orderBy == "relevance" ? OrderBy.Score : OrderBy.Title
                 });
                 
                 var model = new GetTrainingCoursesListResponse
@@ -46,8 +46,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
                     Levels = queryResult.Levels.Select(response => (GetTrainingLevelsListItem)response),
                     Total = queryResult.Total,
-                    TotalFiltered = queryResult.TotalFiltered,
-                    OrderBy = queryResult.OrderBy
+                    TotalFiltered = queryResult.TotalFiltered
                 };
 
                 return Ok(model);
