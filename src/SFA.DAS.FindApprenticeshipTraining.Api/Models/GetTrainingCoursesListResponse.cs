@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.FindApprenticeshipTraining.Application.Application;
+using SFA.DAS.FindApprenticeshipTraining.Application;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {

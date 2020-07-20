@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Application
+﻿namespace SFA.DAS.FindApprenticeshipTraining.Application
 {
     public enum OrderBy
     {
