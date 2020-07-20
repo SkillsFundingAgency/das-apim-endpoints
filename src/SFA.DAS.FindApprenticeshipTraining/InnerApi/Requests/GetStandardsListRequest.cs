@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests
 {
