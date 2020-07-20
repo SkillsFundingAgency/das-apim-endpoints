@@ -1,9 +1,11 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Services
 {
@@ -20,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var health = await _restApiClient.Get<CommitmentsV2HealthResponse>("/health",null, cancellationToken);
+                var health = await _restApiClient.Get<HealthResponse>("/health",null, cancellationToken);
 
                 if (health == null)
                 {
@@ -42,10 +44,14 @@ namespace SFA.DAS.EmployerIncentives.Services
                 return HealthCheckResult.Unhealthy();
             }
         }
-    }
 
-    public class CommitmentsV2HealthResponse
-    {
-        public string Status { get; set; }
+        public async Task<IEnumerable<ApprenticeshipItem>> Apprenticeships(long accountId, long accountLegalEntityId,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _restApiClient.Get<ApprenticeshipSearchResponse>("api/apprenticeships",
+                new {accountId, accountLegalEntityId}, cancellationToken);
+
+            return response.Apprenticeships;
+        }
     }
 }

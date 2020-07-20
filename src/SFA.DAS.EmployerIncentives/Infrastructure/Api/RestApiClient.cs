@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -40,6 +41,12 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
             return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
+        public async Task<HttpStatusCode> GetHttpStatusCode(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        {
+            var response = await GetRawResponse(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken).ConfigureAwait(false);
+            return response.StatusCode;
+        }
+
         public Task<string> Post(string uri, CancellationToken cancellationToken = default)
         {
             return Post<object>(uri, null, cancellationToken);
@@ -67,13 +74,19 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
 
         protected virtual async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
+            var response = await GetRawResponse(uri, queryData, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            return response;
+        }
+
+        protected virtual async Task<HttpResponseMessage> GetRawResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        {
             if (queryData != null)
             {
                 uri = new Uri(AddQueryString(uri.ToString(), queryData), UriKind.RelativeOrAbsolute);
             }
 
             var response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
             return response;
         }
 

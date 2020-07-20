@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
 using SFA.DAS.EmployerIncentives.Configuration;
+using SFA.DAS.EmployerIncentives.Services;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -65,7 +67,10 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddControllers(c=>c.Filters.Add(new AuthorizeFilter("APIM")))
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                }); 
+                });
+
+
+            services.AddMediatR(typeof(EmployerIncentivesService).Assembly);
 
             services.AddDasHttpClientsAndAssociatedServices(_configuration, _env);
         }

@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
-using SFA.DAS.EmployerIncentives.Services;
+using SFA.DAS.EmployerIncentives.Models.Commitments;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"the Commitments Inner Api is ready and (.*)")]
         public void GivenTheCommitmentsInnerApiIsReadyAnd(string status)
         {
-            var response = new CommitmentsV2HealthResponse {Status = status};
+            var response = new HealthResponse {Status = status};
 
             _context.CommitmentsV2InnerApi.MockServer
                 .Given(
