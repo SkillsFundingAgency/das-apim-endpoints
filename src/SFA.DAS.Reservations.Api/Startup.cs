@@ -85,7 +85,7 @@ namespace SFA.DAS.Reservations.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservationsApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservationsOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
