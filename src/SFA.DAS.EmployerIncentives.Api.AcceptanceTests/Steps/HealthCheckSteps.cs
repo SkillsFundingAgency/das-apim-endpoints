@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {
     [Binding]
     [Scope(Feature = "HealthChecks")]
-
     public class HealthCheckSteps
     {
         private readonly TestContext _context;
