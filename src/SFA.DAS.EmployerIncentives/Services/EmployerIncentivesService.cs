@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerIncentives.Services
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
         {
-            var statusCode = await _client.GetHttpStatusCode($"eligible-apprenticeships/{apprenticeship.Uln}", new { apprenticeship.StartDate, IsApproved = true }, cancellationToken);
+            var statusCode = await _client.GetHttpStatusCode($"eligible-apprenticeships/{apprenticeship.Uln}", new { StartDate = apprenticeship.StartDate.ToString("yyyy-MM-dd"), IsApproved = true }, cancellationToken);
             switch (statusCode)
             {
                 case HttpStatusCode.OK:
