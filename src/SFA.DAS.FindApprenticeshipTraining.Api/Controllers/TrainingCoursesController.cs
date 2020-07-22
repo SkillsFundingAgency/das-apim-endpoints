@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Keyword = keyword, 
                     RouteIds = routeIds,
                     Levels = levels,
-                    OrderBy = orderBy == "relevance" ? OrderBy.Score : OrderBy.Title
+                    OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title
                 });
                 
                 var model = new GetTrainingCoursesListResponse
