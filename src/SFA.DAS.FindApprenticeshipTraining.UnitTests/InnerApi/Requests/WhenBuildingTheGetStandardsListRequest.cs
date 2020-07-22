@@ -37,15 +37,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             string keyword,
             string baseUrl)
         {
+            var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
             {
                 BaseUrl = baseUrl, 
-                Keyword = keyword
+                Keyword = keyword,
+                OrderBy = orderBy
             };
 
             actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}");
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}");
         }
 
         [Test, AutoData]
@@ -54,16 +56,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             string keyword,
             string baseUrl)
         {
+            var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
             {
                 BaseUrl = baseUrl, 
                 Keyword = keyword, 
-                Levels = levels
+                Levels = levels,
+                OrderBy = orderBy
             };
             
             actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&levels=" + string.Join("&levels=", levels));
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}&levels=" + string.Join("&levels=", levels));
         }
         
         [Test, AutoData]
@@ -72,16 +76,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             string keyword,
             string baseUrl)
         {
+            var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
             {
                 BaseUrl = baseUrl, 
                 Keyword = keyword, 
-                RouteIds = routeIds
+                RouteIds = routeIds,
+                OrderBy = orderBy
             };
             
             actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&routeIds=" + string.Join("&routeIds=", routeIds));
+                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }
