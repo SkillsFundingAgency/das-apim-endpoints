@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6D66363-4BC5-4E27-991A-3BACFACD6879}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{87C4369B-AB1E-444C-A6DA-433DD3812B03}"
@@ -34,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerIncentives.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerIncentives.Api.AcceptanceTests", "SFA.DAS.EmployerIncentives.Api.AcceptanceTests\SFA.DAS.EmployerIncentives.Api.AcceptanceTests.csproj", "{106BDE69-5CDF-4D17-AEE7-81713A712FE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerIncentives.FakeInnerApis", "SFA.DAS.EmployerIncentives.FakeInnerApis\SFA.DAS.EmployerIncentives.FakeInnerApis.csproj", "{4137CBD7-107A-4CC0-AA8F-F9E9D13DB797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerIncentives.FakeInnerApis", "SFA.DAS.EmployerIncentives.FakeInnerApis\SFA.DAS.EmployerIncentives.FakeInnerApis.csproj", "{4137CBD7-107A-4CC0-AA8F-F9E9D13DB797}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
