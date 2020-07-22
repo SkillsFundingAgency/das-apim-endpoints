@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
-using SFA.DAS.EmployerIncentives.Api.Authentication;
-using SFA.DAS.EmployerIncentives.Api.Authorization;
 using SFA.DAS.EmployerIncentives.Api.Configuration;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Api.HealthChecks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Services;
+using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -53,8 +53,12 @@ namespace SFA.DAS.EmployerIncentives.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiConfigurationSections(_configuration);
-            services.AddApiAuthentication(_configuration);
-            services.AddApiAuthorization(_env);
+
+            if (!_configuration.IsLocalOrDev())
+            {
+                var azureAdConfiguration = _configuration.GetSection(EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration).Get<AzureActiveDirectoryConfiguration>();
+                services.AddAuthentication(azureAdConfiguration);
+            }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
@@ -64,14 +68,18 @@ namespace SFA.DAS.EmployerIncentives.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesOuterApi", Version = "v1" });
             });
 
-            services.AddControllers(c=>c.Filters.Add(new AuthorizeFilter("APIM")))
+            services.AddControllers(c=>
+                {
+                    if (!_configuration.IsLocalOrDev())
+                    {
+                        c.Filters.Add(new AuthorizeFilter("APIM"));
+                    }
+                })
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-
             services.AddMediatR(typeof(EmployerIncentivesService).Assembly);
-
             services.AddDasHttpClientsAndAssociatedServices(_configuration, _env);
         }
 
@@ -88,9 +96,9 @@ namespace SFA.DAS.EmployerIncentives.Api
 
             app.UseHttpsRedirection()
                 .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"))
-                .UseDasHealthChecks()
+                .UseHealthChecks()
                 .UseAuthentication();
-
+            
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(ep =>

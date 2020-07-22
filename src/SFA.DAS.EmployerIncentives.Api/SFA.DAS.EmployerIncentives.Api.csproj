@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.EmployerIncentives\SFA.DAS.EmployerIncentives.csproj" />
+    <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

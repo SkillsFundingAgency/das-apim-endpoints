@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.EmployerIncentives.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Api.Configuration
 {
@@ -9,7 +10,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Configuration
         public static IServiceCollection AddApiConfigurationSections(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
-            services.Configure<AzureActiveDirectoryApiConfiguration>(configuration.GetSection(EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration));
+            services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection(EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration));
             return services;
         }
     }

@@ -24,6 +24,7 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                     StartAdminInterface = true,
                 });
 
+                SetupHealthCheckResponse();
                 SetupApprenticeshipSearchResponses();
 
                 Console.WriteLine(("Please RETURN to stop server"));
@@ -34,6 +35,19 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                 _fakeCommitmentsApi.Stop();
                 _fakeCommitmentsApi.Dispose();
             }
+        }
+
+        static void SetupHealthCheckResponse()
+        {
+            _fakeCommitmentsApi.Given(
+                    Request.Create().WithPath("/health")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{ \"Status\" : \"Healthy\" }"));
         }
 
         static void SetupApprenticeshipSearchResponses()

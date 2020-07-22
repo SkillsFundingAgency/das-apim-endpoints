@@ -9,7 +9,7 @@ namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class AddAuthenticationExtension
     {
-        public static void AddAuthentication(this IServiceCollection services, AzureActiveDirectoryConfiguration config)
+        public static IServiceCollection AddAuthentication(this IServiceCollection services, AzureActiveDirectoryConfiguration config)
         {
             
             services.AddAuthorization(o =>
@@ -35,6 +35,7 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                     };
                 });
             services.AddSingleton<IClaimsTransformation, AzureAdScopeClaimTransformation>();
+            return services;
         }
     }
 }

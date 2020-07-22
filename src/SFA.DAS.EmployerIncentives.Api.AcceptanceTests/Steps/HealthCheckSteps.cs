@@ -60,11 +60,25 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response = await _context.OuterApiClient.GetAsync($"/ping");
         }
 
+        [When(@"I call the healthcheck endpoint of the Outer Api")]
+        public async Task WhenICallTheHealthcheckEndpointOfTheOuterApi()
+        {
+            _response = await _context.OuterApiClient.GetAsync($"/health");
+        }
+
         [Then(@"the result should show (.*)")]
         public async Task ThenTheResultShouldShow(string status)
         {
-            var body = await _response.Content.ReadAsStringAsync();
-            body.Should().Be(status);
+            var json = await _response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<HealthResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            result.Should().NotBeNull();
+            result.Status.Should().Be(status);
+        }
+
+        [Then(@"the result should return Ok status")]
+        public void ThenTheResultShouldReturnOkStatus()
+        {
+            _response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
