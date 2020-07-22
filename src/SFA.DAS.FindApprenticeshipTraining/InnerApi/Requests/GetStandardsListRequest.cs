@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"{BaseUrl}api/courses/standards?keyword={Keyword}";
+            var url = $"{BaseUrl}api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
 
             if (RouteIds != null && RouteIds.Any())
             {
