@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var result = await _mediator.Send(new GetEligibleApprenticeshipsSearchQuery{AccountId = accountId, AccountLegalEntityId = accountLegalEntityId});
 
-            var apprentices = result.Apprentices.Select(x => new ApprenticeshipDto { Uln = x.Uln, FirstName = x.FirstName, LastName = x.LastName, CourseName = x.CourseName });
+            var apprentices = result.Apprentices.Select(x => new ApprenticeshipDto { ApprenticeshipId = x.Id, Uln = x.Uln, FirstName = x.FirstName, LastName = x.LastName, CourseName = x.CourseName });
 
             return new OkObjectResult(new EligibleApprenticeshipsResponse { Apprentices = apprentices.ToArray()});
         }
