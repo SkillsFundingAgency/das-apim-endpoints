@@ -5,9 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Services;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Api.AppStart
 {
@@ -45,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
                 httpBuilder.AddHttpMessageHandler(_ =>
                 {
                     var apiConfig = GetConfigSection(configuration, configSection);
-                    return new ManagedIdentityApiHandler(apiConfig);
+                    return new ManagedIdentityApiHandler(apiConfig.Identifier);
                 });
             }
 

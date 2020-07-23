@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Extensions
 {
