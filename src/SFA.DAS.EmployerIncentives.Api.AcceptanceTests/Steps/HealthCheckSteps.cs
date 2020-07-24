@@ -75,7 +75,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-
         public HttpStatusCode StatusCodeFromDescription(string status)
             =>
                 (status == "Healthy")
