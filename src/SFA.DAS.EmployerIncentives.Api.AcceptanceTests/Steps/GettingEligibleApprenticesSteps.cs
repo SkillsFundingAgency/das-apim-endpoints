@@ -126,7 +126,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
-        private void SetEligibleApprenticeshipToReturnHttpStatusCode(HttpStatusCode statusCode, string uln)
+        private void SetEligibleApprenticeshipToReturnHttpStatusCode(HttpStatusCode statusCode, long uln)
         {
             _context.InnerApi.MockServer
                 .Given(

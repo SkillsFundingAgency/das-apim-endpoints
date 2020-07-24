@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.EmployerIncentives.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface IPassThroughApiClient
     {

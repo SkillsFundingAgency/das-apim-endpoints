@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class InnerApiResponse
     {

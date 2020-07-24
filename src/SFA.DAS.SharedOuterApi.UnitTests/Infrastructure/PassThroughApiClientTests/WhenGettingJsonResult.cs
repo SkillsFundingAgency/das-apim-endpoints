@@ -9,13 +9,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTests
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.PassThroughApiClientTests
 {
     [TestFixture]
-    public class WhenPostingJson
+    public class WhenGettingJsonResult
     {
         private HttpClient _httpClient;
         private Mock<HttpClientHandler> _httpClientHandlerMock;
@@ -36,27 +35,27 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTest
             _sut = new PassThroughApiClient(_httpClient, _loggerMock.Object);
         }
 
-        [Test, MoqAutoData]
-        public async Task When_Posting_To_An_EndPoint_It_Calls_Api_Correctly(TestRequest request)
+        [Test]
+        public async Task When_Querying_An_EndPoint_It_Calls_Api_Correctly()
         {
             SetupJsonResponseFromInnerApi();
 
-            await _sut.Post("test/123", request);
-            VerifyMethodAndPath(HttpMethod.Post, $"test/123");
+            await _sut.Get("test/123");
+            VerifyMethodAndPath(HttpMethod.Get, $"test/123");
         }
 
-        [Test, MoqAutoData]
-        public async Task When_Posting_To_An_EndPoint_It_Returns_Json_Value(TestRequest request)
+        [Test]
+        public async Task When_Querying_An_EndPoint_It_Returns_Json_Value()
         {
             SetupJsonResponseFromInnerApi();
 
-            var result = await _sut.Post("test/123", request);
-
+            var result = await _sut.Get("test/123");
+            
             VerifyApiResponseIsReturned(result);
         }
 
         [Test]
-        public async Task When_Posting_To_An_EndPoint_Which_Returns_No_Json_Value()
+        public async Task When_Querying_An_EndPoint_Which_Returns_No_Json_Value()
         {
             SetupNoJsonResponseFromInnerApi();
 
@@ -67,6 +66,17 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTest
             result.Json.Should().BeNull();
         }
 
+        [Test]
+        public async Task When_Querying_An_EndPoint_Thats_Returns_Badly_Formated_Json_Value()
+        {
+            SetupBadlyFormedJsonResponseFromInnerApi();
+
+            var result = await _sut.Get("test/123");
+
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(_httpResponseMessage.StatusCode);
+            result.Json.Should().BeNull();
+        }
 
         private void SetupJsonResponseFromInnerApi()
         {
@@ -78,7 +88,15 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTest
 
         private void SetupNoJsonResponseFromInnerApi()
         {
-            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NoContent);
+            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("") };
+            _httpClientHandlerMock.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
+                    ItExpr.IsAny<CancellationToken>()).ReturnsAsync(_httpResponseMessage);
+        }
+
+        private void SetupBadlyFormedJsonResponseFromInnerApi()
+        {
+            _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"Rubbish? json \"XXXX\"}", Encoding.UTF8, "application/json") };
             _httpClientHandlerMock.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(x => true),
                     ItExpr.IsAny<CancellationToken>()).ReturnsAsync(_httpResponseMessage);
@@ -98,11 +116,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTest
             result.StatusCode.Should().Be(_httpResponseMessage.StatusCode);
             result.Json.Should().NotBeNull();
             result.Json.RootElement.GetProperty("Test").GetString().Should().Be("XXXX");
-        }
-
-        public class TestRequest
-        {
-            public string TestValue { get; set; }
         }
     }
 }

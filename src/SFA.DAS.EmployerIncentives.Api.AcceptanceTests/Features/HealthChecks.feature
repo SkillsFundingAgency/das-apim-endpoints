@@ -26,9 +26,6 @@ Scenario Outline: HealthCheck is called
 Examples:
 	| InnerStatus | CommitmentsV2Status | OuterStatus |
 	| Healthy     | Healthy             | Healthy     |
-	| Healthy     | Degraded            | Degraded    |
-	| Degarded    | Degraded            | Unhealthy   |
 	| Unhealthy   | Healthy             | Unhealthy   |
 	| Healthy     | Unhealthy           | Unhealthy   |
-	| Unhealthy   | Degraded            | Unhealthy   |
-	| Degraded    | Unhealthy           | Unhealthy   |
+	| Unhealthy   | Unhealthy           | Unhealthy   |

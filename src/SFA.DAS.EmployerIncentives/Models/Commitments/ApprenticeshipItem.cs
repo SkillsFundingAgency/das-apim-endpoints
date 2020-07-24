@@ -5,7 +5,7 @@ namespace SFA.DAS.EmployerIncentives.Models.Commitments
     public class ApprenticeshipItem
     {
         public long Id { get; set; }
-        public string Uln { get; set; }
+        public long Uln { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string CourseName { get; set; }

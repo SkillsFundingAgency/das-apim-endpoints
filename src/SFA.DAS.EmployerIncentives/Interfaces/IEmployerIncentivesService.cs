@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
 {
     public interface IEmployerIncentivesService
     {
-        Task<HealthCheckResult> HealthCheck(CancellationToken cancellationToken = default);
+        Task<bool> IsHealthy(CancellationToken cancellationToken = default);
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default);
     }
 }

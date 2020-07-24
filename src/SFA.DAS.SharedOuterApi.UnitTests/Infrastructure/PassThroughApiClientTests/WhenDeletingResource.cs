@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.Infrastructure.Api;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Services.PassThroughApiClientTests
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.PassThroughApiClientTests
 {
     [TestFixture]
     public class WhenDeletingResource

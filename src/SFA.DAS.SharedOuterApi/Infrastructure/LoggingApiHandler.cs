@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class LoggingApiHandler<T> : DelegatingHandler 
     {

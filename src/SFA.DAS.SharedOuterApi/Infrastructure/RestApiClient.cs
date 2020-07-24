@@ -6,9 +6,9 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class RestApiClient : IRestApiClient
     {

@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class PassThroughApiClient : IPassThroughApiClient
     {

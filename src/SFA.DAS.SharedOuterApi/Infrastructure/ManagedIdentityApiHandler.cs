@@ -3,22 +3,21 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
-using SFA.DAS.EmployerIncentives.Configuration;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public class ManagedIdentityApiHandler : DelegatingHandler 
+    public class ManagedIdentityApiHandler : DelegatingHandler
     {
-        private readonly AzureManagedIdentityApiConfiguration _configuration;
+        private readonly string _managedIdentifier;
 
-        public ManagedIdentityApiHandler(AzureManagedIdentityApiConfiguration configuration) 
+        public ManagedIdentityApiHandler(string managedIdentifier) 
         {
-            _configuration = configuration;
+            _managedIdentifier = managedIdentifier;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(_configuration.Identifier) && !request.Headers.Contains("authentication"))
+            if (!string.IsNullOrWhiteSpace(_managedIdentifier) && !request.Headers.Contains("authentication"))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
             }
@@ -29,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure.Api
         public async Task<string> GetAccessTokenAsync()
         {
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(_configuration.Identifier);
+            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(_managedIdentifier);
 
             return accessToken;
         }

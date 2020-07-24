@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerIncentives.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface IRestApiClient
     {
