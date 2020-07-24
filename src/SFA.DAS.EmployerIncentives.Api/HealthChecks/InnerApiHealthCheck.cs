@@ -13,9 +13,9 @@ namespace SFA.DAS.EmployerIncentives.Api.HealthChecks
         {
             _employerIncentivesService = employerIncentivesService;
         }
-        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
-            return _employerIncentivesService.HealthCheck(cancellationToken);
+            return (await _employerIncentivesService.IsHealthy(cancellationToken) ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy());
         }
     }
 }

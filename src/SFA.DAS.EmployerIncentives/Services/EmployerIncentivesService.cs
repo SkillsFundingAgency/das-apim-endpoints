@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -23,24 +22,16 @@ namespace SFA.DAS.EmployerIncentives.Services
             _client = new RestApiClient(httpClient);
         }
 
-        public async Task<HealthCheckResult> HealthCheck(CancellationToken cancellationToken = default)
+        public async Task<bool> IsHealthy(CancellationToken cancellationToken = default)
         {
             try
             {
-                var value = await _client.Get("/health", null, cancellationToken);
-                switch (value)
-                {
-                    case "Healthy":
-                        return HealthCheckResult.Healthy();
-                    case "Degraded":
-                        return HealthCheckResult.Degraded();
-                    default:
-                        return HealthCheckResult.Unhealthy();
-                }
+                var status = await _client.GetHttpStatusCode("/ping", null, cancellationToken);
+                return (status == HttpStatusCode.OK);
             }
             catch
             {
-                return HealthCheckResult.Unhealthy();
+                return false;
             }
         }
 

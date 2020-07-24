@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,30 +20,17 @@ namespace SFA.DAS.EmployerIncentives.Services
             _restApiClient = new RestApiClient(client);
         }
 
-        public async Task<HealthCheckResult> HealthCheck(CancellationToken cancellationToken = default)
+        public async Task<bool> IsHealthy(CancellationToken cancellationToken = default)
         {
             try
             {
-                var health = await _restApiClient.Get<HealthResponse>("/health",null, cancellationToken);
-
-                if (health == null)
-                {
-                    return HealthCheckResult.Unhealthy();
-                }
-
-                switch (health.Status)
-                {
-                    case "Healthy" :
-                        return HealthCheckResult.Healthy();
-                    case "Degraded" :
-                        return HealthCheckResult.Degraded();
-                    default :
-                        return HealthCheckResult.Unhealthy();
-                }
+                var status = await _restApiClient.GetHttpStatusCode("api/ping",null, cancellationToken);
+                    
+                return (status == HttpStatusCode.OK);
             }
             catch
             {
-                return HealthCheckResult.Unhealthy();
+                return false;
             }
         }
 

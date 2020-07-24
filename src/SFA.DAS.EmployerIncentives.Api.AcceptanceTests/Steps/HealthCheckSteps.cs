@@ -27,30 +27,24 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/health")
+                    Request.Create().WithPath($"/ping")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "plain/text")
-                        .WithBody(status)
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
                 );
         }
 
         [Given(@"the Commitments Inner Api is ready and (.*)")]
         public void GivenTheCommitmentsInnerApiIsReadyAnd(string status)
         {
-            var response = new HealthResponse {Status = status};
-
             _context.CommitmentsV2InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/health")
+                    Request.Create().WithPath($"/api/ping")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(response))
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
                 );
         }
         
@@ -80,5 +74,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+
+        public HttpStatusCode StatusCodeFromDescription(string status)
+            =>
+                (status == "Healthy")
+                    ? HttpStatusCode.OK
+                    : HttpStatusCode.InternalServerError;
     }
 }
