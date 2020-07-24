@@ -2,6 +2,6 @@
 {
     public class EligibleApprenticeshipsResponse
     {
-        public ApprenticeshipDto[] Apprentices { get; set; }
+        public EligibleApprenticeshipDto[] Apprentices { get; set; }
     }
 }

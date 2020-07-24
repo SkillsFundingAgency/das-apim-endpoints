@@ -16,6 +16,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.EmployerIncentives.Api.Extensions;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -32,7 +33,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration);
 
-            if (!_env.IsEnvironment("LOCAL"))
+            if (!_env.IsLocal())
             {
                 config.AddAzureTableStorage(
                     EmployerIncentivesConfigurationKeys.EmployerIncentivesOuterApi,
@@ -54,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api
         {
             services.AddApiConfigurationSections(_configuration);
 
-            if (!_configuration.IsLocalOrDev())
+            if (!_env.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration.GetSection(EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration).Get<AzureActiveDirectoryConfiguration>();
                 services.AddAuthentication(azureAdConfiguration);
@@ -70,7 +71,7 @@ namespace SFA.DAS.EmployerIncentives.Api
 
             services.AddControllers(c=>
                 {
-                    if (!_configuration.IsLocalOrDev())
+                    if (!_env.IsLocalOrDev())
                     {
                         c.Filters.Add(new AuthorizeFilter("APIM"));
                     }
