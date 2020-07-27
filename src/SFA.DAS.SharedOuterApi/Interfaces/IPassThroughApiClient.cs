@@ -11,6 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task<InnerApiResponse> Get(string uri, object queryData = null, CancellationToken cancellationToken = default);
         Task<InnerApiResponse> Post(string uri, CancellationToken cancellationToken = default);
         Task<InnerApiResponse> Post<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class;
+        Task<InnerApiResponse> Put<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class;
         Task<InnerApiResponse> Delete(string uri, CancellationToken cancellationToken = default);
     }
 }

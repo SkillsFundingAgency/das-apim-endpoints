@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -49,6 +50,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return await CreateApiResponse(response);
         }
 
+        public async Task<InnerApiResponse> Put<TRequest>(string uri, TRequest request, CancellationToken cancellationToken = default) where TRequest : class
+        {
+            var response = await _httpClient.PutAsJsonAsync(uri, request, cancellationToken).ConfigureAwait(false);
+            return await CreateApiResponse(response);
+        }
+
         public async Task<InnerApiResponse> Delete(string uri, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
@@ -60,7 +67,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return new InnerApiResponse
             {
                 StatusCode = responseMessage.StatusCode,
-                Json = await ReadContentAsJson(responseMessage.Content)
+                Json = responseMessage.StatusCode == HttpStatusCode.NoContent ? null : await ReadContentAsJson(responseMessage.Content)
             };
         }
 

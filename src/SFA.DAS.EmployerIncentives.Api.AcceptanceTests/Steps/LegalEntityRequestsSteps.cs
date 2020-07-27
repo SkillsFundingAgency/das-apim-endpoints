@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private TestResult _innerResult;
         private HttpResponseMessage _response;
         private HttpStatusCode _innerResponseStatusCode;
-        private Fixture _fixture;
+        private readonly Fixture _fixture;
 
         public LegalEntityRequestsSteps(TestContext context)
         {
