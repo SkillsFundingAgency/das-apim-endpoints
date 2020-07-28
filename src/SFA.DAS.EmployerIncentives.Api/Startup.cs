@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerIncentives.Api
                 {
                     if (!_env.IsLocalOrDev())
                     {
-                        c.Filters.Add(new AuthorizeFilter("APIM"));
+                        c.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
                 .AddJsonOptions(options => {

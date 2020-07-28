@@ -15,10 +15,16 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/accounts{accountId}/draft-submissions")]
+        [Route("/accounts/{accountId}/draft-submissions")]
         public IActionResult PostDraftSubmission(CreateDraftSubmissionRequest request)
         {
-            return new CreatedResult($"/accounts{request.AccountId}/draft-submissions", (new CreateDraftSubmissionResponse { DraftSubmissionId = 30001 }));
+            return new CreatedResult($"/accounts{request.AccountId}/draft-submissions", 
+                new CreateDraftSubmissionResponse
+                {
+                    AccountId = request.AccountId, 
+                    AccountLegalEntityId = request.AccountLegalEntityId,
+                    DraftSubmissionId = 30001
+                });
         }
 
         [HttpGet]
@@ -30,36 +36,41 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 return NotFound();
             }
 
-            return new OkObjectResult(new GetDraftSubmissionResponse { AccountLegalEntityId = 1000, Apprentices = new DraftSubmissionApprenticeshipDto[]
+            return new OkObjectResult(new GetDraftSubmissionResponse
             {
-                new DraftSubmissionApprenticeshipDto
-                {
-                    ApprenticeshipId = 1,
-                    Uln = 9876566778,
-                    FirstName = "Fred",
-                    LastName = "Flintstone",
-                    CourseName = "Mining Flint",
-                    ExpectedAmount = 1000
-                },
-                new DraftSubmissionApprenticeshipDto
-                {
-                    ApprenticeshipId = 2,
-                    Uln = 765668998,
-                    FirstName = "Barry",
-                    LastName = "Rumble",
-                    CourseName = "Mining Flint (level 3)",
-                    ExpectedAmount = 1000
-                },
-                new DraftSubmissionApprenticeshipDto
-                {
-                    ApprenticeshipId = 3,
-                    Uln = 998987678,
-                    FirstName = "Barry",
-                    LastName = "Cryer",
-                    CourseName = "Something or other (level 1)",
-                    ExpectedAmount = 2500
-                }
-            }
+                AccountId = accountId,
+                AccountLegalEntityId = 1000,
+                Apprentices =
+                    new DraftSubmissionApprenticeshipDto[]
+                    {
+                        new DraftSubmissionApprenticeshipDto
+                        {
+                            ApprenticeshipId = 1,
+                            Uln = 9876566778,
+                            FirstName = "Fred",
+                            LastName = "Flintstone",
+                            CourseName = "Mining Flint",
+                            ExpectedAmount = 1000
+                        },
+                        new DraftSubmissionApprenticeshipDto
+                        {
+                            ApprenticeshipId = 2,
+                            Uln = 765668998,
+                            FirstName = "Barry",
+                            LastName = "Rumble",
+                            CourseName = "Mining Flint (level 3)",
+                            ExpectedAmount = 1000
+                        },
+                        new DraftSubmissionApprenticeshipDto
+                        {
+                            ApprenticeshipId = 3,
+                            Uln = 998987678,
+                            FirstName = "Barry",
+                            LastName = "Cryer",
+                            CourseName = "Something or other (level 1)",
+                            ExpectedAmount = 2500
+                        }
+                    }
             });
         }
     }
