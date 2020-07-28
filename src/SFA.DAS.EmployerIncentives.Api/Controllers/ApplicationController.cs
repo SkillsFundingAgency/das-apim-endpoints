@@ -1,49 +1,45 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [ApiController]
-    public class DraftSubmissionController : ControllerBase
+    public class ApplicationController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public DraftSubmissionController(IMediator mediator)
+        public ApplicationController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost]
-        [Route("/accounts/{accountId}/draft-submissions")]
-        public IActionResult PostDraftSubmission(CreateDraftSubmissionRequest request)
+        [Route("/accounts/{accountId}/applications")]
+        public IActionResult PostApplication(CreateApplicationRequest request)
         {
-            return new CreatedResult($"/accounts{request.AccountId}/draft-submissions", 
-                new CreateDraftSubmissionResponse
+            return new CreatedResult($"/accounts{request.AccountId}/applications", 
+                new CreateApplicationResponse
                 {
                     AccountId = request.AccountId, 
                     AccountLegalEntityId = request.AccountLegalEntityId,
-                    DraftSubmissionId = 30001
+                    ApplicationId = request.ApplicationId
                 });
         }
 
         [HttpGet]
-        [Route("/accounts/{accountId}/draft-submissions/{draftSubmissionId}")]
-        public IActionResult GetDraftSubmission(long accountId, long draftSubmissionId)
+        [Route("/accounts/{accountId}/applications/{applicationId}")]
+        public IActionResult GetApplication(long accountId, Guid applicationId)
         {
-            if (draftSubmissionId != 30001)
-            {
-                return NotFound();
-            }
-
-            return new OkObjectResult(new GetDraftSubmissionResponse
+            return new OkObjectResult(new GetApplicationResponse
             {
                 AccountId = accountId,
                 AccountLegalEntityId = 1000,
                 Apprentices =
-                    new DraftSubmissionApprenticeshipDto[]
+                    new []
                     {
-                        new DraftSubmissionApprenticeshipDto
+                        new ApplicationApprenticeshipDto
                         {
                             ApprenticeshipId = 1,
                             Uln = 9876566778,
@@ -52,7 +48,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                             CourseName = "Mining Flint",
                             ExpectedAmount = 1000
                         },
-                        new DraftSubmissionApprenticeshipDto
+                        new ApplicationApprenticeshipDto
                         {
                             ApprenticeshipId = 2,
                             Uln = 765668998,
@@ -61,7 +57,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                             CourseName = "Mining Flint (level 3)",
                             ExpectedAmount = 1000
                         },
-                        new DraftSubmissionApprenticeshipDto
+                        new ApplicationApprenticeshipDto
                         {
                             ApprenticeshipId = 3,
                             Uln = 998987678,

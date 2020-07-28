@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EmployerIncentives.Api.Models
 {
-    public class DraftSubmissionApprenticeshipDto
+    public class ApplicationApprenticeshipDto
     {
         public long ApprenticeshipId { get; set; }
         public long Uln { get; set; }
