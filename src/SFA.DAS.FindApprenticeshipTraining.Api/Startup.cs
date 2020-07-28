@@ -75,7 +75,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
                 });
             }
-            
+
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks();
+            }
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
@@ -93,7 +98,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             }
 
             app.UseAuthentication();
-            
+
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
