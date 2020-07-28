@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             return new OkObjectResult(new GetApplicationResponse
             {
+                ApplicationId = applicationId,
                 AccountId = accountId,
                 AccountLegalEntityId = 1000,
                 Apprentices =
