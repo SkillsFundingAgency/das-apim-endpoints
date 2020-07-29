@@ -61,17 +61,5 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
         }
 
-        public async Task<string> Ping()
-        {
-            var pingUrl = _configuration.Url;
-
-            pingUrl += pingUrl.EndsWith("/") ? "ping" : "/ping";
-
-            var response = await _httpClient.GetAsync((string) pingUrl).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return result;
-        }
     }
 }

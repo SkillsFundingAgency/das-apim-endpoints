@@ -5,11 +5,11 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class CourseApiClient : ICoursesApiClient<CoursesApiConfiguration>
+    public class CourseDeliveryApiClient : ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>
     {
-        private readonly IApiClient<CoursesApiConfiguration> _apiClient;
+        private readonly IApiClient<CourseDeliveryApiConfiguration> _apiClient;
 
-        public CourseApiClient (IApiClient<CoursesApiConfiguration> apiClient)
+        public CourseDeliveryApiClient (IApiClient<CourseDeliveryApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -22,5 +22,6 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.GetAll<TResponse>(request);
         }
+
     }
 }
