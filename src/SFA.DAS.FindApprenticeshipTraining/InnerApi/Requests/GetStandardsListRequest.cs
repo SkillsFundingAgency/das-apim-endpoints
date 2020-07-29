@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
@@ -13,10 +14,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         public string GetUrl => BuildUrl();
 
         public List<int> Levels { get ; set ; }
+        public OrderBy OrderBy { get; set; }
 
         private string BuildUrl()
         {
-            var url = $"{BaseUrl}api/courses/standards?keyword={Keyword}";
+            var url = $"{BaseUrl}api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
 
             if (RouteIds != null && RouteIds.Any())
             {

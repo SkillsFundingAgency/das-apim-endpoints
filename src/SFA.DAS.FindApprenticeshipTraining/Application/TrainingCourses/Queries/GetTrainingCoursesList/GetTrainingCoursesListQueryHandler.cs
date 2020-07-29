@@ -32,7 +32,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 Keyword = request.Keyword, 
                 RouteIds = request.RouteIds,
-                Levels = request.Levels
+                Levels = request.Levels,
+                OrderBy = request.OrderBy
             });
             _taskList.Add(standardsTask);
 
@@ -52,7 +53,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Sectors = sectorsTask.Result.Sectors,
                 Levels = levelsTask.Result.Levels,
                 Total = standardsTask.Result.Total,
-                TotalFiltered = standardsTask.Result.TotalFiltered
+                TotalFiltered = standardsTask.Result.TotalFiltered,
+                OrderBy = request.OrderBy
             };
         }
 

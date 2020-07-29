@@ -10,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public IEnumerable<GetLevelsListItem> Levels { get ; set ; }
         public int Total { get ; set ; }
         public int TotalFiltered { get ; set ; }
+        public OrderBy OrderBy { get; set; }
     }
 }
