@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
     public class GetProvidersByCourseRequest : IGetApiRequest
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetProvidersListResponse
     {

@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCourseProviders
+namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {
     public class GetTrainingCourseProvidersQuery : IRequest<GetTrainingCourseProvidersResult>
     {
