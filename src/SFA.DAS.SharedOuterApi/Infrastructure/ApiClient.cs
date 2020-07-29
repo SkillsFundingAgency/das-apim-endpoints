@@ -32,6 +32,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
 
+            AddVersionHeader(request.Version);
+
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
@@ -39,6 +41,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(json);
         }
+
+        
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
@@ -59,6 +63,10 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(_configuration.Identifier);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    
             }
+        }
+        private void AddVersionHeader(string requestVersion)
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
 
     }
