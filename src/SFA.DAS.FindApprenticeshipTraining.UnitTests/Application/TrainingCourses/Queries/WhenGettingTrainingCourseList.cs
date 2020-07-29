@@ -4,11 +4,10 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
-using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Application.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -48,6 +47,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
+            result.OrderBy.Should().Be(query.OrderBy);
         }
 
         [Test, MoqAutoData]

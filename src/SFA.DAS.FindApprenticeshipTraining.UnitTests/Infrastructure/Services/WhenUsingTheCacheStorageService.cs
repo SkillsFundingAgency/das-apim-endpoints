@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Infrastructure.Services;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Services
