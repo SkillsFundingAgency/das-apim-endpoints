@@ -2,9 +2,11 @@
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface IBaseApiRequest
+    public interface IBaseApiRequest 
     {
         [JsonIgnore]
         string BaseUrl { get; set; }
+        [JsonIgnore]
+        string Version => "1.0";
     }
 }
