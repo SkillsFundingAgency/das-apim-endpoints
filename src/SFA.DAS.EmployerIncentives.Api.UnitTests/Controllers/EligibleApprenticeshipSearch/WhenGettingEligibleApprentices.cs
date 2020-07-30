@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +42,25 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
             model.Apprentices.Should().BeEquivalentTo(mediatorResult.Apprentices, options=>options
                 .Excluding(tc=>tc.StartDate)
             );
+        }
+        
+        [Test, MoqAutoData]
+        public async Task And_Throws_Exception_Then_Returns_Bad_Request(
+            long accountId,
+            long accountLegalEntityId,
+            GetEligibleApprenticeshipsSearchResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy]EligibleApprenticeshipSearchController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetEligibleApprenticeshipsSearchQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws<InvalidOperationException>();
+            
+            var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId) as StatusCodeResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }
