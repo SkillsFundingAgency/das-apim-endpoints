@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
-using SFA.DAS.EmployerIncentives.Application.Queries;
+using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;

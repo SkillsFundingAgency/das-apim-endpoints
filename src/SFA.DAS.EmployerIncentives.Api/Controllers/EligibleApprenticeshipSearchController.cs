@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Application.Queries;
+using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
