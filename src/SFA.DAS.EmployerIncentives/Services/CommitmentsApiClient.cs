@@ -29,5 +29,14 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             return _client.GetResponseCode(request);
         }
+        public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            return _client.Post<TResponse>(request);
+        }
+
+        public Task Delete(IDeleteApiRequest request)
+        {
+            return _client.Delete(request);
+        }
     }
 }

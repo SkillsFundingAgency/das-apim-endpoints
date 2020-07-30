@@ -1,6 +1,6 @@
 using SFA.DAS.EmployerIncentives.Models;
 
-namespace SFA.DAS.EmployerIncentives.Application.Queries
+namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch
 {
     public class GetEligibleApprenticeshipsSearchResult
     {

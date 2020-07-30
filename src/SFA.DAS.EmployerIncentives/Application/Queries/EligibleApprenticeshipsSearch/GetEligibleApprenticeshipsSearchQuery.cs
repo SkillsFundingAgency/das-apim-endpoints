@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.EmployerIncentives.Application.Queries
+namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch
 {
     public class GetEligibleApprenticeshipsSearchQuery : IRequest<GetEligibleApprenticeshipsSearchResult>
     {
