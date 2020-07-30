@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
+using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -42,6 +43,11 @@ namespace SFA.DAS.EmployerIncentives.Services
             await Task.WhenAll(tasks);
 
             return bag.ToArray();
+        }
+
+        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
+        {
+            return _client.Post("/applications", request, cancellationToken);
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)

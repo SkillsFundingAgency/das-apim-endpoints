@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
@@ -10,5 +9,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     {
         Task<bool> IsHealthy(CancellationToken cancellationToken = default);
         Task<IEnumerable<ApprenticeshipItem>> Apprenticeships(long accountId, long accountLegalEntityId, CancellationToken cancellationToken = default);
+        Task<ApprenticeshipResponse[]> GetApprenticeshipDetails(long accountId, IEnumerable<long> apprenticeshipIds, CancellationToken cancellationToken = default);
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -24,8 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var status = await _restApiClient.GetHttpStatusCode("api/ping",null, cancellationToken);
-                    
+                var status = await _restApiClient.GetHttpStatusCode("api/ping", null, cancellationToken);
                 return (status == HttpStatusCode.OK);
             }
             catch
@@ -38,9 +39,31 @@ namespace SFA.DAS.EmployerIncentives.Services
             CancellationToken cancellationToken = default)
         {
             var response = await _restApiClient.Get<ApprenticeshipSearchResponse>("api/apprenticeships",
-                new {accountId, accountLegalEntityId}, cancellationToken);
+                new { accountId, accountLegalEntityId }, cancellationToken);
 
             return response.Apprenticeships;
+        }
+
+        public async Task<ApprenticeshipResponse[]> GetApprenticeshipDetails(long accountId, IEnumerable<long> apprenticeshipIds, CancellationToken cancellationToken = default)
+        {
+            ConcurrentBag<ApprenticeshipResponse> bag = new ConcurrentBag<ApprenticeshipResponse>();
+
+            var tasks = apprenticeshipIds.Select(x => CheckApprenticeshipIsAssignedToAccountAndAddToBag(accountId, x, bag, cancellationToken));
+            await Task.WhenAll(tasks);
+
+            return bag.ToArray();
+        }
+
+        private async Task CheckApprenticeshipIsAssignedToAccountAndAddToBag(long accountId, long apprenticeshipId, ConcurrentBag<ApprenticeshipResponse> bag, CancellationToken cancellationToken)
+        {
+            var apprenticeship = await _restApiClient.Get<ApprenticeshipResponse>($"api/apprenticeship/{apprenticeshipId}", null, cancellationToken);
+
+            if (apprenticeship.EmployerAccountId != accountId)
+            {
+                throw new UnauthorizedAccessException($"Employer Account {accountId} does not have access to apprenticeship Id {apprenticeshipId}");
+            } 
+
+            bag.Add(apprenticeship);
         }
     }
 }

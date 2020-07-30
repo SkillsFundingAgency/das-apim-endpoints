@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.Application.Command.CreateApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -17,15 +19,11 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpPost]
         [Route("/accounts/{accountId}/applications")]
-        public IActionResult PostApplication(CreateApplicationRequest request)
+        public async Task<IActionResult> PostApplication(CreateApplicationRequest request)
         {
-            return new CreatedResult($"/accounts{request.AccountId}/applications", 
-                new CreateApplicationResponse
-                {
-                    AccountId = request.AccountId, 
-                    AccountLegalEntityId = request.AccountLegalEntityId,
-                    ApplicationId = request.ApplicationId
-                });
+            var applicationId = await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+
+            return new CreatedResult($"/accounts{request.AccountId}/applications/{request.ApplicationId}", null);
         }
 
         [HttpGet]
