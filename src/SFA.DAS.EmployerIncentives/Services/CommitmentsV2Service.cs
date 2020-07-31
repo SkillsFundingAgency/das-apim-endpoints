@@ -26,7 +26,8 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var status = await _restApiClient.GetHttpStatusCode("api/ping", null, cancellationToken);
+                var status = await _restApiClient.GetHttpStatusCode("api/ping", cancellationToken);
+                    
                 return (status == HttpStatusCode.OK);
             }
             catch

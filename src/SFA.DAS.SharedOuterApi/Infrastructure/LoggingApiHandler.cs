@@ -19,7 +19,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             try
             {
-                _logger.LogInformation($"Calling endpoint {request?.RequestUri?.AbsoluteUri}");
                 return await base.SendAsync(request, cancellationToken);
             }
             catch (Exception e)

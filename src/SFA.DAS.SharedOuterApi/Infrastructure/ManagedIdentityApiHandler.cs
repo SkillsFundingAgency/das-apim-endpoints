@@ -17,7 +17,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(_managedIdentifier) && !request.Headers.Contains("authentication"))
+            if (!string.IsNullOrWhiteSpace(_managedIdentifier) && request.Headers.Authorization != null)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAccessTokenAsync());
             }
