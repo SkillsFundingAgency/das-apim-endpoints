@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             await handler.Handle(command, CancellationToken.None);
             
-            employerIncentivesService.Verify(x => x.SignAgreement(command.AccountId, command.AccountLegalEntityId, command.AgreementVersion), Times.Once);
+            employerIncentivesService.Verify(x => x.SignAgreement(command.AccountId, command.AccountLegalEntityId, It.Is<SignAgreementRequest>(y => y.AgreementVersion == command.AgreementVersion)), Times.Once);
         }
     }
 }

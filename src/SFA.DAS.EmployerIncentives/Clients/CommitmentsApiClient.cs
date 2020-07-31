@@ -53,5 +53,11 @@ namespace SFA.DAS.EmployerIncentives.Clients
         {
             return _client.Put(request);
         }
+
+        public Task Patch(IPatchApiRequest request)
+        {
+            return _client.Patch(request);
+        }
+
     }
 }
