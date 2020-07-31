@@ -73,6 +73,20 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task Patch(IPatchApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data)) : null;
+
+            var response = await _httpClient.PatchAsync(request.PatchUrl, stringContent)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             await AddAuthenticationHeader();

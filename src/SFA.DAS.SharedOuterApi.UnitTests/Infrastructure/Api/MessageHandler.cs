@@ -24,7 +24,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             {
                 method = HttpMethod.Delete;
             }
-            
+            else if (httpMethod.Equals("patch", StringComparison.CurrentCultureIgnoreCase))
+            {
+                method = HttpMethod.Patch;
+            }
+
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>(
