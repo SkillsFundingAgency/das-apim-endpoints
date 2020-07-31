@@ -14,5 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
+
+        Task SignAgreement(long accountId, long accountLegalEntityId, int agreementVersion);
     }
 }

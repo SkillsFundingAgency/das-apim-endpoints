@@ -65,6 +65,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public Task SignAgreement(long accountId, long accountLegalEntityId, int agreementVersion)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln,apprenticeship.StartDate));
