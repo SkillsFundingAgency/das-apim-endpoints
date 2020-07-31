@@ -15,4 +15,11 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public string PostUrl => $"{BaseUrl}accounts/{_accountId}/legalentities";
         public object Data { get; set; }
     }
+
+    public class AccountLegalEntityCreateRequest
+    {
+        public long AccountLegalEntityId { get; set; }
+        public long LegalEntityId { get; set; }
+        public string OrganisationName { get; set; }
+    }
 }

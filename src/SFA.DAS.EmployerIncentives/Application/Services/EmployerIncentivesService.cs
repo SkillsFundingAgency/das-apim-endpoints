@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
 
@@ -42,6 +43,26 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await Task.WhenAll(tasks);
 
             return bag.ToArray();
+        }
+
+        public async Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId)
+        {
+            var response = await _client.Get<GetAccountLegalEntitiesResponse>(new GetAccountLegalEntitiesRequest(accountId));
+
+            return response;
+        }
+
+        public async Task Delete(long accountId, long accountLegalEntityId)
+        {
+            await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
+        }
+
+        public async Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
+        {
+            var result = await _client.Post<AccountLegalEntity>(new PostAccountLegalEntityRequest(accountId)
+                {Data = accountLegalEntity});
+
+            return result;
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
