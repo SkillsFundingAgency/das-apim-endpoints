@@ -79,6 +79,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.RestApiClientTests
         }
 
         [TestCase("/test/123")]
+        public async Task And_Post_Is_Called_With_Only_CancellationToken_And_No_Expected_ResponseType_Then_It_Should_Return_String_Content(string path)
+        {
+            SetupStringOkResponseForPath(path);
+
+            var result = await _sut.Post(path, CancellationToken.None);
+
+            result.Should().Be(_simpleResponse);
+        }
+
+        [TestCase("/test/123")]
         public async Task And_Post_Is_Called_With_RequestType_And_No_Expected_ResponseType_Then_It_Should_Return_String_Content(string path)
         {
             SetupStringOkResponseForPath(path);
@@ -99,7 +109,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.RestApiClientTests
             _httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(SetupIncorrectCasingForResponseType(), Encoding.UTF8, "application/json") };
             SetupMockResponse(path);
         }
-
 
         private void SetupStringOkResponseForPath(string path)
         {

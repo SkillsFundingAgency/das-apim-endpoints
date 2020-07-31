@@ -55,6 +55,20 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.RestApiClientTests
         }
 
         [TestCase("/test/123")]
+        [TestCase("/test/123?abc=1")]
+        [TestCase("/test/123?abc=1&some=XXX")]
+        public async Task And_Get_Is_Called_With_No_Return_Type_And_A_CancellationToken_Then_It_Should_Return_String_Content(string path)
+        {
+
+            SetupStringOkResponseForPath(path);
+
+            var result = await _sut.Get(path, CancellationToken.None);
+
+            result.Should().Be(_simpleResponse);
+        }
+
+
+        [TestCase("/test/123")]
         public async Task And_Get_Is_Called_With_No_Return_Type_And_With_A_QueryStringObject_Then_It_Should_Return_String_Content(string path)
         {
             var queryObject = new { abc = 1 };
@@ -73,6 +87,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.RestApiClientTests
             SetupJsonOkResponseForPath(path);
 
             var result = await _sut.Get<TestResponse>(path);
+
+            result.Should().BeEquivalentTo(_testResponse);
+        }
+
+        [TestCase("/test/123")]
+        public async Task And_Get_Is_Called_With_A_Return_Type_And_With_A_CancellationToken_Then_It_Should_Return_Json_Content(string path)
+        {
+            SetupJsonOkResponseForPath(path);
+
+            var result = await _sut.Get<TestResponse>(path, CancellationToken.None);
 
             result.Should().BeEquivalentTo(_testResponse);
         }
@@ -99,6 +123,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.RestApiClientTests
             SetupHttpStatusCodeResponseForPath(path + "?abc=1", statusCode);
 
             var result = await _sut.GetHttpStatusCode(path, queryObject);
+
+            result.Should().Be(statusCode);
+        }
+
+        [TestCase("/test/123", HttpStatusCode.NoContent)]
+        [TestCase("/test/123", HttpStatusCode.Found)]
+        [TestCase("/test/123", HttpStatusCode.NotFound)]
+        public async Task And_GetHttpStatusCode_Is_Called_With_A_CancellationToken_Then_It_Should_Return_The_StatusCode(string path, HttpStatusCode statusCode)
+        {
+            SetupHttpStatusCodeResponseForPath(path, statusCode);
+
+            var result = await _sut.GetHttpStatusCode(path, CancellationToken.None);
 
             result.Should().Be(statusCode);
         }

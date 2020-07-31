@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var status = await _client.GetHttpStatusCode("/ping", null, cancellationToken);
+                var status = await _client.GetHttpStatusCode("/ping", cancellationToken);
                 return (status == HttpStatusCode.OK);
             }
             catch
@@ -37,20 +37,20 @@ namespace SFA.DAS.EmployerIncentives.Services
 
         public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default)
         {
-            ConcurrentBag<ApprenticeshipItem> bag = new ConcurrentBag<ApprenticeshipItem>();
-            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag, cancellationToken));
+            var apprenticeshipItems = new ConcurrentBag<ApprenticeshipItem>();
+            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, apprenticeshipItems, cancellationToken));
             await Task.WhenAll(tasks);
 
-            return bag.ToArray();
+            return apprenticeshipItems.ToArray();
         }
 
-        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
+        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> apprenticeshipItems, CancellationToken cancellationToken)
         {
             var statusCode = await _client.GetHttpStatusCode($"eligible-apprenticeships/{apprenticeship.Uln}", new { StartDate = apprenticeship.StartDate.ToString("yyyy-MM-dd"), IsApproved = true }, cancellationToken);
             switch (statusCode)
             {
                 case HttpStatusCode.OK:
-                    bag.Add(apprenticeship);
+                    apprenticeshipItems.Add(apprenticeship);
                     break;
                 case HttpStatusCode.NotFound:
                     break;

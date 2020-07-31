@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -24,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Services
         {
             try
             {
-                var status = await _restApiClient.GetHttpStatusCode("api/ping",null, cancellationToken);
+                var status = await _restApiClient.GetHttpStatusCode("api/ping", cancellationToken);
                     
                 return (status == HttpStatusCode.OK);
             }

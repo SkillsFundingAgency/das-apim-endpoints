@@ -11,7 +11,9 @@ namespace SFA.DAS.EmployerIncentives.Api.ErrorHandler
     {
         public static IApplicationBuilder UseApiGlobalExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
+#pragma warning disable 1998
             async Task Handler(HttpContext context)
+#pragma warning restore 1998
             {
                 context.Response.ContentType = "application/json";
 

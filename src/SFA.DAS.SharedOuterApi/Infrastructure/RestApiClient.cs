@@ -19,29 +19,34 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             _httpClient = httpClient;
         }
 
-        public async Task<T> Get<T>(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<T> Get<T>(string uri, CancellationToken cancellationToken = default) where T : class, new()
         {
-            var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
+            return Get<T>(uri, null, cancellationToken);
+        }
+
+        public async Task<T> Get<T>(string uri, object queryData, CancellationToken cancellationToken = default) where T : class, new()
+        {
+            var response = await GetResponse(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken).ConfigureAwait(false);
             return await response.Content.ReadFromJsonAsync<T>(null, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<T> Get<T>(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<string> Get(string uri, CancellationToken cancellationToken = default)
         {
-            return Get<T>(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+            return Get(uri, null, cancellationToken);
         }
 
-        public async Task<string> Get(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        public async Task<string> Get(string uri, object queryData, CancellationToken cancellationToken = default)
         {
-            var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
+            var response = await GetResponse(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken).ConfigureAwait(false);
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        public Task<string> Get(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public Task<HttpStatusCode> GetHttpStatusCode(string uri, CancellationToken cancellationToken = default)
         {
-            return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+            return GetHttpStatusCode(uri, null, cancellationToken);
         }
 
-        public async Task<HttpStatusCode> GetHttpStatusCode(string uri, object queryData = null, CancellationToken cancellationToken = default)
+        public async Task<HttpStatusCode> GetHttpStatusCode(string uri, object queryData, CancellationToken cancellationToken = default)
         {
             var response = await GetRawResponse(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken).ConfigureAwait(false);
             return response.StatusCode;
@@ -72,14 +77,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return result;
         }
 
-        protected virtual async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        private async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             var response = await GetRawResponse(uri, queryData, cancellationToken);
             response.EnsureSuccessStatusCode();
             return response;
         }
 
-        protected virtual async Task<HttpResponseMessage> GetRawResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        private async Task<HttpResponseMessage> GetRawResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             if (queryData != null)
             {
