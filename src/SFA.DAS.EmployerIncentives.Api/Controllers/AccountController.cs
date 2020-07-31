@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
+using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
@@ -57,6 +59,18 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             
             return Created("", response);
             
+        }
+        
+        [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
+        public async Task<IActionResult> RemoveLegalEntity(long accountId, long accountLegalEntityId)
+        {
+            await _mediator.Send(new RemoveAccountLegalEntityCommand
+            {
+                AccountId = accountId,
+                AccountLegalEntityId = accountLegalEntityId
+            });
+            
+            return Accepted();
         }
     }
 }
