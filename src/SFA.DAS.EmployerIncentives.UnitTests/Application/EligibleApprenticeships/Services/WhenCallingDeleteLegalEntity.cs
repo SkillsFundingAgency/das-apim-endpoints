@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             EmployerIncentivesService service)
         {
 
-            await service.Delete(accountId, accountLegalEntityId);
+            await service.DeleteAccountLegalEntity(accountId, accountLegalEntityId);
             
             client.Verify(x =>
                     x.Delete(

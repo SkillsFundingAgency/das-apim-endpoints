@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response;
         }
 
-        public async Task Delete(long accountId, long accountLegalEntityId)
+        public async Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId)
         {
             await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
         }
