@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.DeleteUrl.Should().Be($"/accounts/{accountId}/legalentities/{accountLegalEntityId}");
+            actual.DeleteUrl.Should().Be($"{baseUrl}accounts/{accountId}/legalentities/{accountLegalEntityId}");
         }
     }
 }
