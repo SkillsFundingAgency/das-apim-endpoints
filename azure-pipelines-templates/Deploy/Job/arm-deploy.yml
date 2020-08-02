@@ -1,0 +1,51 @@
+parameters:
+  AzureSubscription: ''
+  Environment: ''
+  ArmTemplatePath: ''
+  ConfigSchemaPath: ''
+
+jobs:
+- deployment: DeployInfrastructure_${{ parameters.Environment }}
+  pool:
+    name: DAS - Continuous Deployment
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: DownloadGitHubRelease@0
+          displatName: Download das-platform-automation Github Artifact
+          inputs:
+            connection: GitHub (SFA)
+            userRepository: SkillsFundingAgency/das-platform-automation
+            defaultVersionType: specificTag
+            version: 4.0.3
+
+        - task: AzurePowerShell@5
+          displayName: 'Create and Tag Resource Group'
+          inputs:
+            azureSubscription: ${{ parameters.AzureSubscription }}
+            ScriptPath: $(System.ArtifactsDirectory)/das-platform-automation/Set-AzResourceGroupTags.ps1
+            ScriptArguments: '-ResourceGroupName "$(ResourceGroupName)" -Tags "$(Tags)"'
+            azurePowerShellVersion: LatestVersion
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: Azure Deployment - Deploy resources to $(ResourceGroupName)
+          inputs:
+            azureSubscription: ${{ parameters.AzureSubscription }}
+            resourceGroupName: $(ResourceGroupName)
+            location: West Europe
+            csmFile: ${{ parameters.ArmTemplatePath }}/template.json
+            overrideParameters: '' # lots of stuff
+            deploymentOutputs: ARMOutputs
+
+        - task: esfadevops.ARMTemplateOutputs.custom-build-task.ARMTemplateOutputs@0
+          displayName: Convert ARM Template Outputs to Variables
+          inputs:
+            ARMOutputs: $(ARMOutputs)
+
+        template: azure-pipelines-templates/Deploy/Step/generate-config.yml
+        parameters:
+          AzureSubscription: ${{ parameters.AzureSubscription }}
+          SourcePath: ''
+          TargetFileName: '*.schema.json'

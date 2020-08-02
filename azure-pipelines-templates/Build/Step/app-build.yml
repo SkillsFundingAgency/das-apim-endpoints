@@ -1,0 +1,27 @@
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'src/**/*.csproj'
+    noCache: true
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: 'src/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Unit Tests'
+  inputs:
+    command: test
+    projects: '**/*.UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Acceptance Tests'
+  inputs:
+    command: test
+    projects: '**/*.AcceptanceTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'

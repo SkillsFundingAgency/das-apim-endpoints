@@ -6,96 +6,94 @@ trigger:
 
 pr: none
 
-variables:
-  - group: 'Prod Management Resources'
-  - name: buildConfiguration
-    value: 'release'
-
 resources:
   repositories:
+  - repository: self
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/heads/master
     endpoint: "GitHub (SFA)"
+  pipelines:
+  - pipeline: das-employer-config
+    source: das-employer-config
+    branch: master
+    
+stages:
+  - stage: 'Build'
+    variables:
+    - group: 'Prod Management Resources'
+    - name: buildConfiguration
+      value: 'release'
+    jobs:
+    - job: 'CodeBuild'
+      pool:
+        name: 'DAS - Continuous Integration'        
+      workspace:
+        clean: all  
+      steps:
+      - task: UseGitVersion@5
+        displayName: GitVersion
+        inputs:
+          versionSpec: 5.x
+          useConfigFile: true
+          configFilePath: GitVersion.yml
 
-jobs:
-- job: 'CodeBuild'
-  pool:
-    name: 'DAS - Continuous Integration'
-    demands: Agent.OS -equals Linux
-  workspace:
-    clean: all  
-  steps:
-  - task: UseGitVersion@5
-    displayName: GitVersion
-    inputs:
-      versionSpec: 5.x
-      useConfigFile: true
-      configFilePath: GitVersion.yml
+      - template: azure-pipelines-templates/Build/Step/arm-deploy.yml
 
-  - task: DotNetCoreCLI@2
-    displayName: Restore
-    inputs:
-      command: restore
-      projects: 'src/**/*.csproj'
-      noCache: true
+      - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
 
-  - task: DotNetCoreCLI@2
-    displayName: Build
-    inputs:
-      projects: 'src/**/*.csproj'
-      arguments: '--configuration $(buildConfiguration) --no-restore'
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish FAT Api'
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
       
-  - task: DotNetCoreCLI@2
-    displayName: Test
-    inputs:
-      command: test
-      projects: '**/*.UnitTests.csproj'
-      arguments: '--configuration $(buildConfiguration) --no-build'
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish Reservations Api'
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'     
       
-  - task: DotNetCoreCLI@2
-    displayName: 'Acceptance Tests'
-    inputs:
-      command: test
-      projects: '**/*.AcceptanceTests.csproj'
-      arguments: '--configuration $(buildConfiguration) --no-build'
+      - task: CopyFiles@2
+        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+        inputs:
+          Contents: |
+            azure/**
+          TargetFolder: '$(build.artifactstagingdirectory)/publish'
+          OverWrite: true
 
-  - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Artifact'
+        inputs:
+          targetPath: '$(build.artifactstagingdirectory)/publish'
+          artifactName: 'ApimEndpointsArtifacts'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish FAT Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-  
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Reservations Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+  - stage: DeployInfrastructure_AT
+    displayName: Deploy Infrastructure to AT
+    variables:
+    - group: AT DevTestShared Resources
+    - group: DevTest Management Resources
+    - group: DevTest Wildcard CertVariables
+    jobs:
+    - template: azure-pipelines-templates/Deploy/Job/arm-deploy.yml
+      parameters:
+        AzureSubscription: SFA-DAS-DevTest-ARM
+        Environment: AT # TO DO: Investigate purposes of Environments
+        ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/drop/azure/template.json
+        ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Employer Incentives Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
-  
-  - task: CopyFiles@2
-    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-    inputs:
-      Contents: |
-        azure/**
-      TargetFolder: '$(build.artifactstagingdirectory)/publish'
-      OverWrite: true
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact'
-    inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)/publish'
+  - stage: DeployFindApprenticeshipTraining_AT
+    displayName: Deploy Find Apprenticeship Training to AT
+    variables:
+    - group: AT DevTestShared Resources
+    jobs:
+    - template: azure-pipelines-templates/Deploy/Job/app-deploy.yml
+      parameters:
+        AzureSubscription: SFA-DAS-DevTest-ARM
+        Environment: AT # TO DO: Investigate purposes of Environments
+        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/drop/SFA.DAS.FindApprenticeshipTraining.Api.Zip
