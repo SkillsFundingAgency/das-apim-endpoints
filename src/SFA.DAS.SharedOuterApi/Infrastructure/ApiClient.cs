@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -50,7 +51,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             AddVersionHeader(request.Version);
 
             request.BaseUrl = _configuration.Url;
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data)) : null;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
             
             var response = await _httpClient.PostAsync(request.PostUrl,stringContent)
                 .ConfigureAwait(false);
@@ -69,6 +70,20 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.DeleteAsync(request.DeleteUrl)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task Patch(IPatchApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+
+            var response = await _httpClient.PatchAsync(request.PatchUrl, stringContent)
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }

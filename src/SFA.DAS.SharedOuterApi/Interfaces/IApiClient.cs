@@ -12,5 +12,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task<TResponse> Post<TResponse>(IPostApiRequest request);
         Task<TResponse> Patch<TResponse>(IPostApiRequest request);
         Task Delete(IDeleteApiRequest request);
+        Task Patch(IPatchApiRequest request);
     }
 }

@@ -6,6 +6,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     {
         [JsonIgnore]
         string PatchUrl { get; }
+
         object Data { get; set; }
     }
 }
