@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetPingRequest
     {
