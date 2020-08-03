@@ -9,7 +9,7 @@ using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Extensions.SFA.DAS.FAT.I
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure
+namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
 {
     public class CoursesApiHealthCheck : IHealthCheck
     {

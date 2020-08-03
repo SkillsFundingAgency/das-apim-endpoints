@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Infrastructure;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;

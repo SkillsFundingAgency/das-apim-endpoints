@@ -9,11 +9,11 @@ using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Extensions.SFA.DAS.FAT.I
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure
+namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
 {
     public class CourseDeliveryApiHealthCheck :IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Courses Api check";
+        private const string HealthCheckResultDescription = "Course Delivery Api check";
 
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _apiClient;
         private readonly ILogger<CourseDeliveryApiHealthCheck> _logger;
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Pinging Courses API");
+            _logger.LogInformation("Pinging Course Delivery API");
 
             var timer = Stopwatch.StartNew();
             var response = await _apiClient.GetResponseCode(new GetPingRequest());
@@ -36,13 +36,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure
             {
                 var durationString = timer.Elapsed.ToHumanReadableString();
 
-                _logger.LogInformation($"Courses API ping successful and took {durationString}");
+                _logger.LogInformation($"Course Delivery API ping successful and took {durationString}");
 
                 return HealthCheckResult.Healthy(HealthCheckResultDescription,
                     new Dictionary<string, object> { { "Duration", durationString } });
             }
 
-            _logger.LogWarning($"Courses API ping failed : [Code: {response}]");
+            _logger.LogWarning($"Course Delivery API ping failed : [Code: {response}]");
             return HealthCheckResult.Unhealthy(HealthCheckResultDescription);
         }
     }
