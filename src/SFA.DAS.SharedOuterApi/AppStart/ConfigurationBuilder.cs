@@ -14,7 +14,6 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                 .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
                 .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.Development.json", true)
 #endif
                 .AddEnvironmentVariables();
 
@@ -30,6 +29,9 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                 );
             }
 
+#if DEBUG
+            config.AddJsonFile("appsettings.Development.json", true);
+#endif
             return config.Build();
         }
 

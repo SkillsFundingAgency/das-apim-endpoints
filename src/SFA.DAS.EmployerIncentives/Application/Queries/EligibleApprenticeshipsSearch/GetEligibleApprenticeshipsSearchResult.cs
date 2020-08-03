@@ -1,4 +1,5 @@
 using SFA.DAS.EmployerIncentives.Models;
+using SFA.DAS.EmployerIncentives.Models.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch
 {

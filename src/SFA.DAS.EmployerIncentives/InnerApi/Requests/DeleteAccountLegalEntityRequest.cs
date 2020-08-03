@@ -14,6 +14,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         }
 
         public string BaseUrl { get; set; }
+        public string Version { get; }
         public string DeleteUrl => $"{BaseUrl}accounts/{_accountId}/legalentities/{_accountLegalEntityId}";
     }
 }

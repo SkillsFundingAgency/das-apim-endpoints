@@ -12,6 +12,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
+using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Services
@@ -53,13 +54,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                      && c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
                      )))
                 .ReturnsAsync(HttpStatusCode.OK);
+
             client.Setup(x =>
                  x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
                      !c.GetUrl.Contains(passingApprenticeship.Uln.ToString())
                      && !c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
                      )))
                 .ReturnsAsync(HttpStatusCode.NotFound);
-
             
             //Act
             var actual = await service.GetEligibleApprenticeships(allApprenticeship);

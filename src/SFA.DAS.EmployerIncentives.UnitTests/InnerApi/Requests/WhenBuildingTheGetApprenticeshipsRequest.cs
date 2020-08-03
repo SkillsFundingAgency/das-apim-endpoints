@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/apprenticeships/?accountId={accountId}&accountLegalEntityId={employerAccountId}");
+                .Be($"{baseUrl}api/apprenticeships?accountId={accountId}&accountLegalEntityId={employerAccountId}");
         }
     }
 }

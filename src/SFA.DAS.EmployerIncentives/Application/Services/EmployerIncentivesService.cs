@@ -10,6 +10,8 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
+using SFA.DAS.EmployerIncentives.Models.Commitments;
+using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -23,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             _client = client;
         }
 
-        public async Task<bool> IsHealthy(CancellationToken cancellationToken = default)
+        public async Task<bool> IsHealthy()
         {
             try
             {
@@ -36,10 +38,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default)
+        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship)
         {
             var bag = new ConcurrentBag<ApprenticeshipItem>();
-            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag, cancellationToken));
+            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag));
             await Task.WhenAll(tasks);
 
             return bag.ToArray();
@@ -65,7 +67,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
-        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
+        public Task CreateIncentiveApplication(CreateIncentiveApplication request)
+        {
+            return _client.Post<CreateIncentiveApplication>(new PostCreateIncentiveApplicationRequest{ Data = request});
+        }
+
+        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln,apprenticeship.StartDate));
             switch (statusCode)

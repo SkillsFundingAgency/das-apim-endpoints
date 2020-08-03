@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var timer = Stopwatch.StartNew();
-            var isHealthy = await _employerIncentivesService.IsHealthy(cancellationToken);
+            var isHealthy = await _employerIncentivesService.IsHealthy();
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
             

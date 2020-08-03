@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.HealthChecks
             HealthCheckContext context,
             CommitmentsHealthCheck healthCheck)
         {
-            commitmentsApiClient.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
+            commitmentsApiClient.Setup(x => x.GetResponseCode(It.IsAny<GetCommitmentsPingRequest>()))
                 .ReturnsAsync(HttpStatusCode.OK);
             
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
