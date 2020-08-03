@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 
         public async Task<Unit> Handle(ConfirmApplicationCommand command, CancellationToken cancellationToken)
         {
-            var request = new ConfirmIncentiveApplicationRequest(command.ApplicationId, command.AccountId, command.DateSubmitted);
+            var request = new ConfirmIncentiveApplicationRequest(command.ApplicationId, command.AccountId, command.DateSubmitted, command.SubmittedBy);
 
             await _employerIncentivesService.ConfirmIncentiveApplication(request, cancellationToken);
 

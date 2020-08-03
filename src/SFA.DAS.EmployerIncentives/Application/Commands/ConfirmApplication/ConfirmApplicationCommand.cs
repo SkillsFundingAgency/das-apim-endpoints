@@ -1,5 +1,5 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
+using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
@@ -8,12 +8,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
         public Guid ApplicationId { get; }
         public long AccountId { get; }
         public DateTime DateSubmitted { get; }
+        public string SubmittedBy { get; }
 
-        public ConfirmApplicationCommand(Guid applicationId, in long accountId, in DateTime dateSubmitted)
+        public ConfirmApplicationCommand(Guid applicationId, long accountId, DateTime dateSubmitted, string submittedBy)
         {
             ApplicationId = applicationId;
             AccountId = accountId;
             DateSubmitted = dateSubmitted;
+            SubmittedBy = submittedBy;
         }
     }
 }

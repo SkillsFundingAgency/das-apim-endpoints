@@ -17,19 +17,24 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         public async Task Then_The_Service_Is_Called_With_The_Request_To_Confirm(
             long accountId,
             Guid applicationId,
-            DateTime submitted,
+            DateTime submittedOn,
+            string submittedBy,
             [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
             ConfirmApplicationCommandHandler handler)
         {
 
-            var command = new ConfirmApplicationCommand(applicationId, accountId, submitted);
+            var command = new ConfirmApplicationCommand(applicationId, accountId, submittedOn, submittedBy);
 
             await handler.Handle(command, CancellationToken.None);
 
-            employerIncentivesService.Verify(x => x.ConfirmIncentiveApplication(It.Is<ConfirmIncentiveApplicationRequest>(
-                r => r.DateSubmitted == command.DateSubmitted &&
-                     r.AccountId == command.AccountId &&
-                     r.IncentiveApplicationId == command.ApplicationId), CancellationToken.None),
+            employerIncentivesService.Verify(x => x.ConfirmIncentiveApplication(
+                    It.Is<ConfirmIncentiveApplicationRequest>(
+                        r =>
+                            r.DateSubmitted == command.DateSubmitted &&
+                            r.SubmittedBy == command.SubmittedBy &&
+                            r.AccountId == command.AccountId &&
+                            r.IncentiveApplicationId == command.ApplicationId),
+                    CancellationToken.None),
                 Times.Once);
         }
     }
