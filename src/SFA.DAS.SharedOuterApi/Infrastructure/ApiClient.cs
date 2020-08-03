@@ -107,6 +107,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         private void AddVersionHeader(string requestVersion)
         {
+            _httpClient.DefaultRequestHeaders.Remove("X-Version");
             _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
     }
