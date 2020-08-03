@@ -43,7 +43,35 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
-        
+        public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data)) : null;
+            
+            var response = await _httpClient.PostAsync(request.PostUrl,stringContent)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            
+            return JsonConvert.DeserializeObject<TResponse>(json);
+        }
+
+        public async Task Delete(IDeleteApiRequest request)
+        {
+            await AddAuthenticationHeader();
+            AddVersionHeader(request.Version);
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var response = await _httpClient.DeleteAsync(request.DeleteUrl)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
@@ -66,6 +94,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             return response.StatusCode;
         }
+
 
         private async Task AddAuthenticationHeader()
         {

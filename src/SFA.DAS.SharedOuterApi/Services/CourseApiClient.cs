@@ -28,5 +28,15 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.GetResponseCode(request);
         }
+
+        public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            return _apiClient.Post<TResponse>(request);
+        }
+
+        public Task Delete(IDeleteApiRequest request)
+        {
+            return _apiClient.Delete(request);
+        }
     }
 }
