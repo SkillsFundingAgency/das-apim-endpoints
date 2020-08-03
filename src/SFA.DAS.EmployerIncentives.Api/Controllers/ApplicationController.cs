@@ -1,0 +1,28 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.EmployerIncentives.Api.Controllers
+{
+    [ApiController]
+    public class ApplicationController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public ApplicationController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpPost]
+        [Route("/applications/confirm")]
+        public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
+        {
+            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted));
+
+            return new OkResult();
+        }
+    }
+}

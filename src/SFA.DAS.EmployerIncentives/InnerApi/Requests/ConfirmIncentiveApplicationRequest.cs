@@ -5,6 +5,12 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
     public class ConfirmIncentiveApplicationRequest : IPatchApiRequest
     {
+        public ConfirmIncentiveApplicationRequest(Guid applicationId, long accountId, DateTime dateSubmitted)
+        {
+            IncentiveApplicationId = applicationId;
+            AccountId = accountId;
+            DateSubmitted = dateSubmitted;
+        }
         public Guid IncentiveApplicationId { get; set; }
         public long AccountId { get; set; }
         public DateTime DateSubmitted { get; set; }
