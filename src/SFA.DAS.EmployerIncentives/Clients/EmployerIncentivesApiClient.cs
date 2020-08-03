@@ -5,7 +5,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Services
+namespace SFA.DAS.EmployerIncentives.Clients
 {
     public class EmployerIncentivesApiClient : IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>
     {
