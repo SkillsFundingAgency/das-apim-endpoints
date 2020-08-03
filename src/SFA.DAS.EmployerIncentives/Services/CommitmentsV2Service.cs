@@ -47,24 +47,24 @@ namespace SFA.DAS.EmployerIncentives.Services
 
         public async Task<ApprenticeshipResponse[]> GetApprenticeshipDetails(long accountId, IEnumerable<long> apprenticeshipIds, CancellationToken cancellationToken = default)
         {
-            ConcurrentBag<ApprenticeshipResponse> bag = new ConcurrentBag<ApprenticeshipResponse>();
+            var apprenticeshipResponses = new ConcurrentBag<ApprenticeshipResponse>();
 
-            var tasks = apprenticeshipIds.Select(x => CheckApprenticeshipIsAssignedToAccountAndAddToBag(accountId, x, bag, cancellationToken));
+            var tasks = apprenticeshipIds.Select(x => CheckApprenticeshipIsAssignedToAccountAndAddToBag(accountId, x, apprenticeshipResponses, cancellationToken));
             await Task.WhenAll(tasks);
 
-            return bag.ToArray();
+            return apprenticeshipResponses.ToArray();
         }
 
-        private async Task CheckApprenticeshipIsAssignedToAccountAndAddToBag(long accountId, long apprenticeshipId, ConcurrentBag<ApprenticeshipResponse> bag, CancellationToken cancellationToken)
+        private async Task CheckApprenticeshipIsAssignedToAccountAndAddToBag(long accountId, long apprenticeshipId, ConcurrentBag<ApprenticeshipResponse> apprenticeshipResponses, CancellationToken cancellationToken)
         {
-            var apprenticeship = await _restApiClient.Get<ApprenticeshipResponse>($"api/apprenticeship/{apprenticeshipId}", null, cancellationToken);
+            var apprenticeship = await _restApiClient.Get<ApprenticeshipResponse>($"api/apprenticeships/{apprenticeshipId}", null, cancellationToken);
 
             if (apprenticeship.EmployerAccountId != accountId)
             {
                 throw new UnauthorizedAccessException($"Employer Account {accountId} does not have access to apprenticeship Id {apprenticeshipId}");
-            } 
+            }
 
-            bag.Add(apprenticeship);
+            apprenticeshipResponses.Add(apprenticeship);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
 {
@@ -9,6 +7,6 @@ namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
         public Guid IncentiveApplicationId { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
-        public IEnumerable<IncentiveClaimApprenticeshipDto> Apprenticeships { get; set; }
+        public IncentiveClaimApprenticeshipDto[] Apprenticeships { get; set; }
     }
 }

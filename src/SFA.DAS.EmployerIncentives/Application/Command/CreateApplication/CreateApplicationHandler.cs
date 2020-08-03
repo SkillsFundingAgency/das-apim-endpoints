@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
                 IncentiveApplicationId = command.ApplicationId,
                 AccountId = command.AccountId,
                 AccountLegalEntityId = command.AccountLegalEntityId,
-                Apprenticeships = apprenticeships.Select(MapApprenticeship)
+                Apprenticeships = apprenticeships.Select(MapApprenticeship).ToArray()
             };
         }
 
@@ -59,6 +59,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
 
         private Models.EmployerIncentives.ApprenticeshipEmployerType MapLevyType(Models.Commitments.ApprenticeshipEmployerType? from)
         {
+
             switch (from)
             {
                 case null:

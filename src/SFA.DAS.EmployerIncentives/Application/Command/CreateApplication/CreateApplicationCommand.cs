@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
             ApplicationId = applicationId;
             AccountId = accountId;
             AccountLegalEntityId = accountLegalEntityId;
-            ApprenticeshipIds = ApprenticeshipIds;
+            ApprenticeshipIds = apprenticeshipIds;
         }
     }
 }
