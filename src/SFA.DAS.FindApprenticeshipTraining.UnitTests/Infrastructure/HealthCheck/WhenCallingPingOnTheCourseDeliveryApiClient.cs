@@ -45,7 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.HealthChec
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown(
+        public async Task And_CoursesApi_Ping_Not_Found_Then_Unhealthy(
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             CourseDeliveryApiHealthCheck healthCheck)
