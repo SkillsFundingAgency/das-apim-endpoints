@@ -1,3 +1,4 @@
+using SFA.DAS.EmployerIncentives.Models.Commitments;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default);
         Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
+        Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
     }
 }

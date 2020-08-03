@@ -268,4 +268,9 @@ desktop.ini
 App.Debug.config
 .editorconfig
 
+# NCrunch
+*.ncrunchsolution
+*.ncrunchproject
+
 src/**/appsettings.Development.json
+**.ncrunchproject
