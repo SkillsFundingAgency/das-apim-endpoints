@@ -65,7 +65,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
-            AddVersionHeader(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.DeleteAsync(request.DeleteUrl)
