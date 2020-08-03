@@ -7,6 +7,5 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     {
         Task<TResponse> Get<TResponse>(IGetApiRequest request);
         Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request);
-        Task<string> Ping();    
     }
 }

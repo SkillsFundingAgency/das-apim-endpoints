@@ -11,8 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
-using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
-using SFA.DAS.FindApprenticeshipTraining.Application.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -35,6 +35,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.AddSingleton(_env);
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+            services.Configure<CourseDeliveryApiConfiguration>(_configuration.GetSection("CourseDeliveryApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
             services.Configure<FindApprenticeshipTrainingConfiguration>(_configuration.GetSection("FindApprenticeshipTrainingConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));

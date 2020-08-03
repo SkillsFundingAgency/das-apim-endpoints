@@ -11,7 +11,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Application;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingCourses
@@ -43,7 +44,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         }
         
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_And_Levels_If_Supplied(
+        public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_And_Levels_And_OrderBy_If_Supplied(
             string keyword,
             List<int> levels,
             List<Guid> routeIds,
@@ -56,11 +57,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.Is<GetTrainingCoursesListQuery>(c=>
                                                             c.Keyword.Equals(keyword) 
                                                             && c.RouteIds.Equals(routeIds)
-                                                            && c.Levels.Equals(levels)),
+                                                            && c.Levels.Equals(levels)
+                                                            && c.OrderBy.Equals(OrderBy.Score)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList(keyword, routeIds, levels) as ObjectResult;
+            var controllerResult = await controller.GetList(keyword, routeIds, levels, "Relevance") as ObjectResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;

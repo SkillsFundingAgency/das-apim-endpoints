@@ -1,8 +1,8 @@
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
-    public class GetLevelsListItem
+    public class GetProvidersListItem
     {
-        public int Code { get; set; }
+        public int Ukprn { get; set; }
         public string Name { get; set; }
     }
 }

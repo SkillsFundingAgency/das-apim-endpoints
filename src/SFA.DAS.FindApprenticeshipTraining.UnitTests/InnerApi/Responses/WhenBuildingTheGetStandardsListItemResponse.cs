@@ -4,7 +4,7 @@ using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
 {

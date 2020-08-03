@@ -32,6 +32,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
 
+            AddVersionHeader(request.Version);
+
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
@@ -39,6 +41,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(json);
         }
+
+        
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
@@ -60,18 +64,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    
             }
         }
-
-        public async Task<string> Ping()
+        private void AddVersionHeader(string requestVersion)
         {
-            var pingUrl = _configuration.Url;
-
-            pingUrl += pingUrl.EndsWith("/") ? "ping" : "/ping";
-
-            var response = await _httpClient.GetAsync((string) pingUrl).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return result;
+            _httpClient.DefaultRequestHeaders.Remove("X-Version");
+            _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
+
     }
 }

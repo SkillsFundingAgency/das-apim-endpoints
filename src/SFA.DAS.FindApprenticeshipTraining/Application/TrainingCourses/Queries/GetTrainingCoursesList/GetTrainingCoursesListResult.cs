@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.FindApprenticeshipTraining.Application.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCourses.Queries.GetTrainingCoursesList
+namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList
 {
     public class GetTrainingCoursesListResult
     {
@@ -10,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Application.TrainingCou
         public IEnumerable<GetLevelsListItem> Levels { get ; set ; }
         public int Total { get ; set ; }
         public int TotalFiltered { get ; set ; }
+        public OrderBy OrderBy { get; set; }
     }
 }
