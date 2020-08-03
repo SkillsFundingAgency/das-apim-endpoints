@@ -59,7 +59,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
         {
-            await _client.Patch<void>(request);
+            await _client.Patch(request);
         }
 
         public async Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)

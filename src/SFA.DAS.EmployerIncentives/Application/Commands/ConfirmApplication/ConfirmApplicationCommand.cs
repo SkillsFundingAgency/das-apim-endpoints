@@ -1,7 +1,7 @@
-﻿using MediatR;
-using System;
+﻿using System;
+using MediatR;
 
-namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
+namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
     public class ConfirmApplicationCommand : IRequest
     {

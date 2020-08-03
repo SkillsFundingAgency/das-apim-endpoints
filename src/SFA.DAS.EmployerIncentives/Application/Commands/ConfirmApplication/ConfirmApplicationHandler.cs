@@ -1,19 +1,17 @@
 using MediatR;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 
-namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
+namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
     public class ConfirmApplicationHandler : IRequestHandler<ConfirmApplicationCommand>
     {
-        private readonly ICommitmentsV2Service _commitmentsV2Service;
         private readonly IEmployerIncentivesService _employerIncentivesService;
 
-        public ConfirmApplicationHandler(ICommitmentsV2Service commitmentsV2Service, IEmployerIncentivesService employerIncentivesService)
+        public ConfirmApplicationHandler(IEmployerIncentivesService employerIncentivesService)
         {
-            _commitmentsV2Service = commitmentsV2Service;
             _employerIncentivesService = employerIncentivesService;
         }
 
