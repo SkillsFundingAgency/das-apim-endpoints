@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -42,12 +43,40 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
-        
+        public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data)) : null;
+            
+            var response = await _httpClient.PostAsync(request.PostUrl,stringContent)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            
+            return JsonConvert.DeserializeObject<TResponse>(json);
+        }
+
+        public async Task Delete(IDeleteApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var response = await _httpClient.DeleteAsync(request.DeleteUrl)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             await AddAuthenticationHeader();
-
+            AddVersionHeader(request.Version);
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
 
@@ -55,6 +84,17 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<IEnumerable<TResponse>>(json);
         }
+
+        public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        {
+            await AddAuthenticationHeader();
+            AddVersionHeader(request.Version);
+            request.BaseUrl = _configuration.Url;
+            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+
+            return response.StatusCode;
+        }
+
 
         private async Task AddAuthenticationHeader()
         {
@@ -64,11 +104,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    
             }
         }
+
         private void AddVersionHeader(string requestVersion)
         {
             _httpClient.DefaultRequestHeaders.Remove("X-Version");
             _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
-
     }
 }
