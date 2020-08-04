@@ -103,9 +103,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                         .WithStatusCode((int)HttpStatusCode.Created));
         }
 
-        private CreateIncentiveApplicationRequest ExpectedIncentiveApplicationRequest()
+        private CreateIncentiveApplication ExpectedIncentiveApplicationRequest()
         {
-            return new CreateIncentiveApplicationRequest
+            return new CreateIncentiveApplication
             {
                 IncentiveApplicationId = _applicationId,
                 AccountId = _accountId,

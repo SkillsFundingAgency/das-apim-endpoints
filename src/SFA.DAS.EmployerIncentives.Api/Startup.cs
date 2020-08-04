@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
+using SFA.DAS.EmployerIncentives.Api.HealthChecks;
 using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure;
@@ -27,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Api
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _env = env;
-            _configuration = configuration.BuildSharedConfiguration();
+            _configuration = configuration.BuildSharedConfiguration(env);
         }
         
         public void ConfigureServices(IServiceCollection services)
@@ -47,9 +48,11 @@ namespace SFA.DAS.EmployerIncentives.Api
                 services.AddAuthentication(azureAdConfiguration);
             }
 
-            services.AddHealthChecks()
-                .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
-                .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck));
+            //services.AddHealthChecks()
+            //    .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
+            //    .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck));
+
+            services.AddDasHealthChecks();
 
             services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
             services.AddServiceRegistration();

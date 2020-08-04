@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/ping")
+                    Request.Create().WithPath($"/health")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -54,8 +54,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response = await _context.OuterApiClient.GetAsync($"/ping");
         }
 
-        [When(@"I call the healthcheck endpoint of the Outer Api")]
-        public async Task WhenICallTheHealthcheckEndpointOfTheOuterApi()
+        [When(@"I call the health endpoint of the Outer Api")]
+        public async Task WhenICallTheHealthEndpointOfTheOuterApi()
         {
             _response = await _context.OuterApiClient.GetAsync($"/health");
         }
@@ -80,5 +80,13 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 (status == "Healthy")
                     ? HttpStatusCode.OK
                     : HttpStatusCode.InternalServerError;
+
+
+        public class HealthResponse
+        {
+            public string Status { get; set; }
+        }
+
+
     }
 }

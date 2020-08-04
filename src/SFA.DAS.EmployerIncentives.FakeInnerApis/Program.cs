@@ -40,6 +40,15 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
         static void SetupHealthCheckResponse()
         {
             _fakeCommitmentsApi.Given(
+                    Request.Create().WithPath("/api/ping")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int) HttpStatusCode.OK)
+                    );
+
+            _fakeCommitmentsApi.Given(
                     Request.Create().WithPath("/health")
                         .UsingGet()
                 )

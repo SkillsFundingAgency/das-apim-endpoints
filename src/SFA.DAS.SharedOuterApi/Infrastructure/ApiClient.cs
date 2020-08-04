@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
@@ -98,7 +99,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         private async Task AddAuthenticationHeader()
         {
-            if (!_hostingEnvironment.IsDevelopment())
+            if (!_hostingEnvironment.IsDevelopment() && !_hostingEnvironment.IsLocalAcceptanceTests())
             {
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(_configuration.Identifier);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    

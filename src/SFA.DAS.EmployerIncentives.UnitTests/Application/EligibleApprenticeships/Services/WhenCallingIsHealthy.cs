@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             //Arrange
             client.Setup(x => 
-                x.GetResponseCode(It.IsAny<GetPingRequest>())).ReturnsAsync(HttpStatusCode.OK);
+                x.GetResponseCode(It.IsAny<GetHealthRequest>())).ReturnsAsync(HttpStatusCode.OK);
             
             //Act
             var actual = await service.IsHealthy();

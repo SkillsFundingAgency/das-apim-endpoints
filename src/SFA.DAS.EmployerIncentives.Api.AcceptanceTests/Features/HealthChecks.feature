@@ -21,7 +21,7 @@ Scenario Outline: Ping returns Ok even when inner Apis are not
 Scenario Outline: HealthCheck is called
 	Given the Employer Incentives Inner Api is ready and <InnerStatus>
 	And the Commitments Inner Api is ready and <CommitmentsV2Status>
-	When I call the healthcheck endpoint of the Outer Api
+	When I call the health endpoint of the Outer Api
 	Then the result should show <OuterStatus>
 Examples:
 	| InnerStatus | CommitmentsV2Status | OuterStatus |

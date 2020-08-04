@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             try
             {
-                var status = await _client.GetResponseCode(new GetPingRequest());
+                var status = await _client.GetResponseCode(new GetHealthRequest());
                 return (status == HttpStatusCode.OK);
             }
             catch
