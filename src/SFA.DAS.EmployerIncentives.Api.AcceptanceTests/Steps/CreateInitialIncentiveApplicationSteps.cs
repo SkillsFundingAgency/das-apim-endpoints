@@ -91,41 +91,13 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
         private void SetupExpectedCreateIncentiveApplication()
         {
-            //var expected = ExpectedIncentiveApplicationRequest();
-
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create().WithPath($"/applications")
-                        //.WithBody( new JsonMatcher(JsonSerializer.Serialize(expected), true))
                         .UsingPost())
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Created));
-        }
-
-        private CreateIncentiveApplication ExpectedIncentiveApplicationRequest()
-        {
-            return new CreateIncentiveApplication
-            {
-                IncentiveApplicationId = _applicationId,
-                AccountId = _accountId,
-                AccountLegalEntityId = _accountLegalEntityId,
-                Apprenticeships = new[] { new IncentiveClaimApprenticeshipDto() }
-            };
-        }
-
-        private IncentiveClaimApprenticeshipDto IncentiveClaimApprenticeshipDtoFromResponse(ApprenticeshipResponse from)
-        {
-            return new IncentiveClaimApprenticeshipDto
-            {
-                ApprenticeshipId = from.Id,
-                FirstName = from.FirstName,
-                LastName = from.LastName,
-                DateOfBirth = from.DateOfBirth,
-                Uln = from.Uln,
-                PlannedStartDate = from.OriginalStartDate ?? from.StartDate, 
-                ApprenticeshipEmployerTypeOnApproval = EmployerIncentives.Models.EmployerIncentives.ApprenticeshipEmployerType.Levy 
-            };
         }
 
         private void SetResponseFromCommitmentsForApprenticeshipId(long id, ApprenticeshipResponse response)

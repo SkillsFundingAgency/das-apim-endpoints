@@ -81,12 +81,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     ? HttpStatusCode.OK
                     : HttpStatusCode.InternalServerError;
 
-
         public class HealthResponse
         {
             public string Status { get; set; }
         }
-
-
     }
 }

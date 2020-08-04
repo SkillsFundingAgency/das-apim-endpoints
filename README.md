@@ -38,7 +38,7 @@ When Running Employer Incentives Api Locally
 You will need override the setting in the config ```SFA.DAS.EmployerIncentives.OuterApi_1.0``` with the following in appsettings.development.json
 
 ```
-  "SFA.DAS.EmployerIncentives.OuterApi": {
+  {
     "EmployerIncentivesInnerApi": {
       "url": "https://localhost:5001/" // Local running inner API
     },

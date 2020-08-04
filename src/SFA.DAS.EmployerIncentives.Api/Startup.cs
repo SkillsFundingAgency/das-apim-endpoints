@@ -48,11 +48,9 @@ namespace SFA.DAS.EmployerIncentives.Api
                 services.AddAuthentication(azureAdConfiguration);
             }
 
-            //services.AddHealthChecks()
-            //    .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
-            //    .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck));
-
-            services.AddDasHealthChecks();
+            services.AddHealthChecks()
+                .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
+                .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck));
 
             services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
             services.AddServiceRegistration();
@@ -64,7 +62,11 @@ namespace SFA.DAS.EmployerIncentives.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                });
             
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

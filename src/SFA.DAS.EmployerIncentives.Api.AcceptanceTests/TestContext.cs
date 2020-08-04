@@ -10,9 +10,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
         public HttpClient OuterApiClient { get; set; }
 
         private bool _isDisposed;
-        public TestContext()
-        {
-        }
 
         public void Dispose()
         {
