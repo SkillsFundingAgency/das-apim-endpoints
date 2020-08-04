@@ -75,7 +75,7 @@ stages:
     variables:
     - group: AT DevTest Shared Resources
     - group: DevTest Management Resources
-    - group: DevTest Wildcard CertVariables
+    - group: DevTest Wildcard Cert Variables
     jobs:
     - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
       parameters:
