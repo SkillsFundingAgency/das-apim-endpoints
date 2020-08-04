@@ -1,3 +1,5 @@
+using SFA.DAS.EmployerIncentives.Models;
+
 namespace SFA.DAS.EmployerIncentives.Api.Models
 {
     public class IncentiveApplicationApprenticeshipDto
@@ -6,5 +8,16 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public string LastName { get; set; }
         public string CourseName { get; set; }
         public decimal TotalIncentiveAmount { get; set; }
+
+        public static implicit operator IncentiveApplicationApprenticeshipDto(IncentiveApplicationApprenticeship source)
+        {
+            return new IncentiveApplicationApprenticeshipDto
+            {
+                FirstName = source.FirstName,
+                LastName = source.LastName,
+                TotalIncentiveAmount = source.TotalIncentiveAmount,
+                CourseName = source.CourseName
+            };
+        }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
-using SFA.DAS.EmployerIncentives.Models;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -42,28 +40,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 ApplicationId = applicationId
             });
 
-            var response = new ApplicationResponse { Application = MapToDto(result.Application) };
+            var response = new ApplicationResponse { Application = result.Application };
 
             return Ok(response);
-        }
-
-        private IncentiveApplicationDto MapToDto(IncentiveApplication application)
-        {
-            return new IncentiveApplicationDto
-            {
-                Apprenticeships = application.Apprenticeships.Select(x => MapToDto(x))
-            };
-        }
-
-        private IncentiveApplicationApprenticeshipDto MapToDto(IncentiveApplicationApprenticeship apprenticeship)
-        {
-            return new IncentiveApplicationApprenticeshipDto
-            {
-                FirstName = apprenticeship.FirstName,
-                LastName = apprenticeship.LastName,
-                TotalIncentiveAmount = apprenticeship.TotalIncentiveAmount,
-                CourseName = apprenticeship.CourseName
-            };
         }
     }
 }
