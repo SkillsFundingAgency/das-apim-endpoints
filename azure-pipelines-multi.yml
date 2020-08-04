@@ -80,8 +80,7 @@ stages:
     jobs:
     - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
       parameters:
-        AzureSubscription: SFA-DAS-DevTest-ARM
-        # AzureSubscription: $(ServiceConnection)
+        AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: AT
         # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
         ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
@@ -95,8 +94,7 @@ stages:
     jobs:
     - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
       parameters:
-        AzureSubscription: SFA-DAS-DevTest-ARM
-        # AzureSubscription: $(ServiceConnection)
+        AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: AT
         AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
         DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
@@ -109,7 +107,7 @@ stages:
     jobs:
     - template: azure-pipelines-templates/Deploy/Job/app-deploy.yml@das-platform-building-blocks
       parameters:
-        AzureSubscription: SFA-DAS-DevTest-ARM
-        # AzureSubscription: $(ServiceConnection)
+        AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: AT
+        AppServiceName: $(ReservationsOuterApiAppServiceName)
         DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
