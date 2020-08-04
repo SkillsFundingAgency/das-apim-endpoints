@@ -270,5 +270,7 @@ App.Debug.config
 
 # NCrunch
 *.ncrunchsolution
+*.ncrunchproject
 
+# Local configs
 src/**/appsettings.Development.json

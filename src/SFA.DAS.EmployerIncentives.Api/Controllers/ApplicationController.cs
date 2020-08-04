@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Command.CreateApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -11,10 +14,12 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
     public class ApplicationController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<ApplicationController> _logger;
 
-        public ApplicationController(IMediator mediator)
+        public ApplicationController(IMediator mediator, ILogger<ApplicationController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -26,47 +31,28 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return new CreatedResult($"/accounts{request.AccountId}/applications/{request.ApplicationId}", null);
         }
 
-        [HttpGet]
-        [Route("/accounts/{accountId}/applications/{applicationId}")]
-        public IActionResult GetApplication(long accountId, Guid applicationId)
+        [HttpPatch]
+        [Route("applications")]
+        public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
-            return new OkObjectResult(new GetApplicationResponse
+            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
+
+            return new OkResult();
+        }
+		
+		[HttpGet]
+        [Route("/accounts/{accountId}/applications/{applicationId}")]
+        public async Task<IActionResult> GetApplication(long accountId, Guid applicationId)
+        {
+            var result = await _mediator.Send(new GetApplicationQuery
             {
-                ApplicationId = applicationId,
                 AccountId = accountId,
-                AccountLegalEntityId = 1000,
-                Apprentices =
-                    new []
-                    {
-                        new ApplicationApprenticeshipDto
-                        {
-                            ApprenticeshipId = 1,
-                            Uln = 9876566778,
-                            FirstName = "Fred",
-                            LastName = "Flintstone",
-                            CourseName = "Mining Flint",
-                            ExpectedAmount = 1000
-                        },
-                        new ApplicationApprenticeshipDto
-                        {
-                            ApprenticeshipId = 2,
-                            Uln = 765668998,
-                            FirstName = "Barry",
-                            LastName = "Rumble",
-                            CourseName = "Mining Flint (level 3)",
-                            ExpectedAmount = 1000
-                        },
-                        new ApplicationApprenticeshipDto
-                        {
-                            ApprenticeshipId = 3,
-                            Uln = 998987678,
-                            FirstName = "Barry",
-                            LastName = "Cryer",
-                            CourseName = "Something or other (level 1)",
-                            ExpectedAmount = 2500
-                        }
-                    }
+                ApplicationId = applicationId
             });
+
+            var response = new ApplicationResponse { Application = result.Application };
+
+            return Ok(response);
         }
     }
 }

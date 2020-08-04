@@ -13,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -77,7 +79,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
                 });
             }
-            
+
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
+            }
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
@@ -95,7 +104,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             }
 
             app.UseAuthentication();
-            
+
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

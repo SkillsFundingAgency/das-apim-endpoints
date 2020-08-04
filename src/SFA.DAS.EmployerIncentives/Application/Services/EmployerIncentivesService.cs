@@ -1,3 +1,8 @@
+using SFA.DAS.EmployerIncentives.Configuration;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -5,11 +10,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses;
-using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 
@@ -59,10 +59,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
         }
 
+        public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
+        {
+            await _client.Patch(request);
+        }
+
         public async Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
         {
             var result = await _client.Post<AccountLegalEntity>(new PostAccountLegalEntityRequest(accountId)
-                {Data = accountLegalEntity});
+            { Data = accountLegalEntity });
 
             return result;
         }
@@ -72,9 +77,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return _client.Post<CreateIncentiveApplication>(new PostCreateIncentiveApplicationRequest{ Data = request});
         }
 
+        public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
+        {
+            var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
+
+            return response;
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
-            var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln,apprenticeship.StartDate));
+            var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
             switch (statusCode)
             {
                 case HttpStatusCode.OK:

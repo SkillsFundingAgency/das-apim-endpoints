@@ -10,6 +10,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.Get
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -101,6 +102,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             }
         }
 
-        
+        [HttpGet]
+        [Route("{id}/providers/{providerId}")]
+        public async Task<IActionResult> GetProviderCourse(int id, int providerId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetTrainingCourseProviderQuery
+                {
+                    CourseId = id, 
+                    ProviderId = providerId
+                });
+                var model = new GetTrainingCourseProviderResponse
+                {
+                    TrainingCourse = result.Course,
+                    TrainingCourseProvider = result.ProviderStandard
+                };
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get a training course {id} with provider {providerId}");
+                return BadRequest();
+            }
+        }
     }
 }
