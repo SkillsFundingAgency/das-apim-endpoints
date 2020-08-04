@@ -15,6 +15,11 @@ resources:
     # once implemented use tags to reference the repo for backwards compatibility
     ref: refs/heads/multi-stage-yaml
     endpoint: "GitHub (SFA)"
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
     
 stages:
   - stage: Build
