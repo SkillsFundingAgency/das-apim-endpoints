@@ -83,7 +83,8 @@ stages:
         AzureSubscription: SFA-DAS-DevTest-ARM
         # AzureSubscription: $(ServiceConnection)
         Environment: AT
-        ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json        
+        # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+        ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
         ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
 
   - stage: DeployFindApprenticeshipTraining_AT
