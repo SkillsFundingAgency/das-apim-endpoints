@@ -38,5 +38,10 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.Delete(request);
         }
+
+        public Task Patch(IPatchApiRequest request)
+        {
+            return _apiClient.Patch(request);
+        }
     }
 }
