@@ -16,4 +16,8 @@
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="InnerApi\Requests" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,6 +22,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             return _apiClient.GetAll<TResponse>(request);
+        }
+
+        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        {
+            return _apiClient.GetResponseCode(request);
         }
     }
 }
