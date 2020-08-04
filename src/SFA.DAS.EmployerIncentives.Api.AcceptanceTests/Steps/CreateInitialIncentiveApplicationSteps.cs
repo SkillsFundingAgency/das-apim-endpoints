@@ -37,8 +37,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _context = context;
         }
 
-        [Given(@"the employer has selected at a few apprentices")]
-        public void GivenTheEmployerHasSelectedAtAFewApprentices()
+        [Given(@"the employer has selected a few apprentices")]
+        public void GivenTheEmployerHasSelectedAFewApprentices()
         {
             _accountId = _fixture.Create<long>();
             _accountLegalEntityId = _fixture.Create<long>();
