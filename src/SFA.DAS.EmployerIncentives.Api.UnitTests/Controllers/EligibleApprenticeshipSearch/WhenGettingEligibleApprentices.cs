@@ -39,9 +39,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as EligibleApprenticeshipsResponse;
             Assert.IsNotNull(model);
-            model.Apprentices.Should().BeEquivalentTo(mediatorResult.Apprentices, options=>options
-                .Excluding(tc=>tc.StartDate)
-            );
+            model.Apprentices.Length.Should().Be(mediatorResult.Apprentices.Length);
         }
         
         [Test, MoqAutoData]

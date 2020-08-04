@@ -14,7 +14,11 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
         {
             var actual = (EligibleApprenticeshipDto) source;
             
-            actual.Should().BeEquivalentTo(source, options=>options.Excluding(c=>c.StartDate));
+            actual.ApprenticeshipId.Should().Be(source.Id);
+            actual.CourseName.Should().Be(source.CourseName);
+            actual.FirstName.Should().Be(source.FirstName);
+            actual.LastName.Should().Be(source.LastName);
+            actual.Uln.Should().Be(source.Uln);
         }
     }
 }

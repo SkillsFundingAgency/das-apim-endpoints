@@ -6,7 +6,6 @@ namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
     public class PostCreateIncentiveApplicationRequest : IPostApiRequest
     {
         public string BaseUrl { get; set; }
-        public string Version => "";
         public string PostUrl => $"{BaseUrl}applications";
         public object Data { get; set; }
     }
