@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Models;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
 {
@@ -14,6 +13,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default);
         Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
+        Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
     }

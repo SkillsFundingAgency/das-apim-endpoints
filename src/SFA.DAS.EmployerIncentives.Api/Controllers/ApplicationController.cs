@@ -22,7 +22,16 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpPatch]
+        [Route("applications")]
+        public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
+        {
+            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
+
+            return new OkResult();
+        }
+		
+		[HttpGet]
         [Route("/accounts/{accountId}/applications/{applicationId}")]
         public async Task<IActionResult> GetApplication(long accountId, Guid applicationId)
         {
