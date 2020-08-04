@@ -1,3 +1,4 @@
+using System;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Models;
@@ -15,5 +16,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
+        Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
     }
 }

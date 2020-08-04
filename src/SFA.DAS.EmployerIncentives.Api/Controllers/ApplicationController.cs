@@ -1,8 +1,11 @@
-﻿using MediatR;
+using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
-using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -10,10 +13,12 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
     public class ApplicationController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<ApplicationController> _logger;
 
-        public ApplicationController(IMediator mediator)
+        public ApplicationController(IMediator mediator, ILogger<ApplicationController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPatch]
@@ -23,6 +28,21 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
 
             return new OkResult();
+        }
+		
+		[HttpGet]
+        [Route("/accounts/{accountId}/applications/{applicationId}")]
+        public async Task<IActionResult> GetApplication(long accountId, Guid applicationId)
+        {
+            var result = await _mediator.Send(new GetApplicationQuery
+            {
+                AccountId = accountId,
+                ApplicationId = applicationId
+            });
+
+            var response = new ApplicationResponse { Application = result.Application };
+
+            return Ok(response);
         }
     }
 }

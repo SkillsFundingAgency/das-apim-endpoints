@@ -70,6 +70,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
+        {
+            var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
+
+            return response;
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
