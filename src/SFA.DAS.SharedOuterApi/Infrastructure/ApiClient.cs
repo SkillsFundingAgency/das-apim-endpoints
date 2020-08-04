@@ -64,7 +64,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         public async Task Delete(IDeleteApiRequest request)
         {
             await AddAuthenticationHeader();
-
             AddVersionHeader(request.Version);
 
             request.BaseUrl = _configuration.Url;
