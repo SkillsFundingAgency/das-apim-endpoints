@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
+        Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
     }
 }
