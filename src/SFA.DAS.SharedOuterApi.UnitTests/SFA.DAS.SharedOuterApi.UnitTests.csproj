@@ -23,4 +23,8 @@
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="InnerApi\Requests" />
+    </ItemGroup>
+
 </Project>

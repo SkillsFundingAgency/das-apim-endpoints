@@ -13,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -80,7 +82,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             if (_configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks();
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
