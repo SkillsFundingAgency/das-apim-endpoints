@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             var applicationId = await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
 
-            return new CreatedResult($"/accounts{request.AccountId}/applications/{request.ApplicationId}", null);
+            return new CreatedResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}", null);
         }
 
         [HttpPatch]
