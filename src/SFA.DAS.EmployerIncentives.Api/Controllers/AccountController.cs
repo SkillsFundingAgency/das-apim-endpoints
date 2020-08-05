@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/accounts/{accountId}/legalentities/{accountlegalentityid}")]
+        [Route("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
         public async Task<IActionResult> GetLegalEntity(long accountId, long accountLegalEntityId)
         {
             var result = await _mediator.Send(new GetLegalEntityQuery
