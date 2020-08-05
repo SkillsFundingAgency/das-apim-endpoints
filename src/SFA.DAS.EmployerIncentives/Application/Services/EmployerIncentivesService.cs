@@ -47,11 +47,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId)
+        public async Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId)
         {
-            var response = await _client.Get<GetAccountLegalEntitiesResponse>(new GetAccountLegalEntitiesRequest(accountId));
+            var response = await _client.GetAll<AccountLegalEntity>(new GetAccountLegalEntitiesRequest(accountId));
 
-            return response;
+            return response.ToArray();
         }
 
         public async Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId)

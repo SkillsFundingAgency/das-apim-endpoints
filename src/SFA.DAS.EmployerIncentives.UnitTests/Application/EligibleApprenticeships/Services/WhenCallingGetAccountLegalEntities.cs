@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -8,6 +9,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Services
@@ -17,14 +19,14 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_LegalEntities_For_The_Account(
             long accountId,
-            GetAccountLegalEntitiesResponse apiResponse,
+            IEnumerable<AccountLegalEntity> apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service
         )
         {
             client.Setup(x =>
-                    x.Get<GetAccountLegalEntitiesResponse>(
-                        It.Is<GetAccountLegalEntitiesRequest>(c => c.GetUrl.Contains(accountId.ToString()))))
+                    x.GetAll<AccountLegalEntity>(
+                        It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains(accountId.ToString()))))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetAccountLegalEntities(accountId);
