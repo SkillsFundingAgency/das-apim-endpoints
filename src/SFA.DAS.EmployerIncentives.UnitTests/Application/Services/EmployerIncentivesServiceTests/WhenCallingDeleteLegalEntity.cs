@@ -8,7 +8,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Services
+namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
     public class WhenCallingDeleteLegalEntity
     {
