@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 AccountLegalEntityId = accountLegalEntityId
             });
 
-            var response = new AccountLegalEntityResponse { AccountLegalEntity = result.AccountLegalEntity };
+            var response = result.AccountLegalEntity;
 
             return Ok(response);
         }

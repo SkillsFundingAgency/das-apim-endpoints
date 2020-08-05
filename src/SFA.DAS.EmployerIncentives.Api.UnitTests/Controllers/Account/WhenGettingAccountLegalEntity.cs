@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
-using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
+using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
@@ -35,9 +35,9 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as AccountLegalEntityResponse;
+            var model = controllerResult.Value as AccountLegalEntity;
             Assert.IsNotNull(model);
-            model.AccountLegalEntity.Should().BeEquivalentTo(mediatorResult.AccountLegalEntity, options=>options.Excluding(c=>c.LegalEntityName));
+            model.Should().BeEquivalentTo(mediatorResult.AccountLegalEntity, options=>options.Excluding(c=>c.LegalEntityName));
         }
     }
 }
