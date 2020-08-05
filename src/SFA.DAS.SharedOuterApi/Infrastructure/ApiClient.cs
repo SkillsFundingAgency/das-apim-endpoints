@@ -113,7 +113,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         private async Task AddAuthenticationHeader()
         {
-            if (!_hostingEnvironment.IsDevelopment() && !_hostingEnvironment.IsLocalAcceptanceTests())
+            if (!_hostingEnvironment.IsDevelopment())
             {
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(_configuration.Identifier);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);    

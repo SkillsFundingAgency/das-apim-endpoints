@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
             {
                 a.AddInMemoryCollection(_config);
             });
-            builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
+            builder.UseEnvironment("Development");
         }
     }
 }

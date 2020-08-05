@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Api
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _env = env;
-            _configuration = configuration.BuildSharedConfiguration(env);
+            _configuration = configuration.BuildSharedConfiguration();
         }
         
         public void ConfigureServices(IServiceCollection services)
