@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
             var actual = (AccountLegalEntityDto) source;
             
             actual.Should().BeEquivalentTo(source, options=>options.Excluding(c=>c.LegalEntityName));
-            actual.OrganisationName.Should().Be(source.LegalEntityName);
+            actual.LegalEntityName.Should().Be(source.LegalEntityName);
         }
     }
 }
