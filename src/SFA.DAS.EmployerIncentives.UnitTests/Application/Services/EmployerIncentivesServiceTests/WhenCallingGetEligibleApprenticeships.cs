@@ -47,7 +47,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             EmployerIncentivesService service)
         { 
             //Arrange
-
             client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>()))
                 .ReturnsAsync(HttpStatusCode.NotFound);
 

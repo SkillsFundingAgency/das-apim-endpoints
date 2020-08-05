@@ -18,6 +18,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
-        Task CreateIncentiveApplication(CreateIncentiveApplication request);
+        Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request);
     }
 }

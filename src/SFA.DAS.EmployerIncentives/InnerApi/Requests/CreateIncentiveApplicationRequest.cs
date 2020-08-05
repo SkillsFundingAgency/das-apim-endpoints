@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public object Data { get; set; }
     }
 
-    public class CreateIncentiveApplication
+    public class CreateIncentiveApplicationRequest
     {
         public Guid IncentiveApplicationId { get; set; }
         public long AccountId { get; set; }

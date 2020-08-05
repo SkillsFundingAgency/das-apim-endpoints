@@ -71,9 +71,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
-        public Task CreateIncentiveApplication(CreateIncentiveApplication request)
+        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request)
         {
-            return _client.Post<CreateIncentiveApplication>(new PostCreateIncentiveApplicationRequest{ Data = request});
+            return _client.Post<CreateIncentiveApplicationRequest>(new PostCreateIncentiveApplicationRequest{ Data = request});
         }
 
         public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)

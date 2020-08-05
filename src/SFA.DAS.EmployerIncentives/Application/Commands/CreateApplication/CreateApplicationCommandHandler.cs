@@ -32,9 +32,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
             return command.ApplicationId;
         }
 
-        private CreateIncentiveApplication CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
+        private CreateIncentiveApplicationRequest CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
         {
-            return new CreateIncentiveApplication
+            return new CreateIncentiveApplicationRequest
             {
                 IncentiveApplicationId = command.ApplicationId,
                 AccountId = command.AccountId,

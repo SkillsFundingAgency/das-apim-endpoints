@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             employerIncentivesService.Verify(
                 x => x.CreateIncentiveApplication(
-                    It.Is<CreateIncentiveApplication>(p => p.IncentiveApplicationId == command.ApplicationId &&
+                    It.Is<CreateIncentiveApplicationRequest>(p => p.IncentiveApplicationId == command.ApplicationId &&
                                                            p.AccountId == command.AccountId && p.AccountLegalEntityId == command.AccountLegalEntityId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),
                 Times.Once);
