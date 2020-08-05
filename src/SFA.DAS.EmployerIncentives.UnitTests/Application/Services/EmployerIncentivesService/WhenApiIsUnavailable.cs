@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
     public class WhenApiIsUnavailable
     {
         [Test]
-        public async Task Then_health_check_should_return_false()
+        public async Task Then_Health_Check_Should_Return_False()
         {
             var sut = new EmployerIncentives.Application.Services.EmployerIncentivesService(null);
 

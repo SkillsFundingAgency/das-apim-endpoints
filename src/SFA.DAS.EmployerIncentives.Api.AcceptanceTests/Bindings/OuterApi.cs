@@ -21,10 +21,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
 
             var config = new Dictionary<string, string>();
 
-            config.Add($"{EmployerIncentivesConfigurationKeys.EmployerIncentivesInnerApiConfiguration}:url", _context?.InnerApi?.BaseAddress + "/");
-            config.Add($"{EmployerIncentivesConfigurationKeys.CommitmentsV2InnerApiConfiguration}:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/");
-            config.Add($"{EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration}:tenant", "citizenazuresfabisgov.onmicrosoft.com");
-            config.Add($"{EmployerIncentivesConfigurationKeys.AzureActiveDirectoryApiConfiguration}:identifier", "https://citizenazuresfabisgov.onmicrosoft.com/das-at-apimendp-empincapi-as");
+            config.Add("EmployerIncentivesInnerApi:url", _context?.InnerApi?.BaseAddress + "/");
+            config.Add($"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/");
+            config.Add("AzureAD:tenant", "");
+            config.Add("AzureAD:identifier", "");
 
             var factory = new LocalWebApplicationFactory<Startup>(config);
 
