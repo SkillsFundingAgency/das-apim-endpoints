@@ -12,6 +12,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
@@ -46,6 +47,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             EmployerIncentivesService service)
         { 
             //Arrange
+
+            client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>()))
+                .ReturnsAsync(HttpStatusCode.NotFound);
+
             allApprenticeship.Add(passingApprenticeship);
             client.Setup(x =>
                  x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
@@ -53,13 +58,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                      && c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
                      )))
                 .ReturnsAsync(HttpStatusCode.OK);
-
-            client.Setup(x =>
-                 x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
-                     !c.GetUrl.Contains(passingApprenticeship.Uln.ToString())
-                     && !c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
-                     )))
-                .ReturnsAsync(HttpStatusCode.NotFound);
             
             //Act
             var actual = await service.GetEligibleApprenticeships(allApprenticeship);
@@ -84,6 +82,5 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             //Act
             Assert.ThrowsAsync<ApplicationException>(() => service.GetEligibleApprenticeships(allApprenticeship));
         }
-
     }
 }
