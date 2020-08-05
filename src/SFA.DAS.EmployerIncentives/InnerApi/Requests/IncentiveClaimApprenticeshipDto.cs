@@ -1,8 +1,7 @@
 ﻿using System;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
-using ApprenticeshipEmployerType = SFA.DAS.EmployerIncentives.InnerApi.ApprenticeshipEmployerType;
 
-namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
     public class IncentiveClaimApprenticeshipDto
     {

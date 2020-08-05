@@ -7,7 +7,6 @@ using MediatR;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
