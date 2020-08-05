@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
                 LastName = from.LastName,
                 DateOfBirth = from.DateOfBirth,
                 Uln = from.Uln,
-                PlannedStartDate = from.OriginalStartDate ?? from.StartDate,
+                PlannedStartDate = from.StartDate,
                 ApprenticeshipEmployerTypeOnApproval = MapLevyType(from.ApprenticeshipEmployerTypeOnApproval)
             };
         }
