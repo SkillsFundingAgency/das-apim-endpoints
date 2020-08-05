@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerIncentives.Models.Commitments
+﻿namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments
 {
     public enum ApprenticeshipEmployerType : byte
     {

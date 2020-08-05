@@ -2,7 +2,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Models.Commitments;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
 {

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
-using SFA.DAS.EmployerIncentives.Models.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

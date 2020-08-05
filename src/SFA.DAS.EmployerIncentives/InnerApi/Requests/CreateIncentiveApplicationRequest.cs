@@ -1,7 +1,8 @@
 ﻿using System;
+using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
     public class PostCreateIncentiveApplicationRequest : IPostApiRequest
     {

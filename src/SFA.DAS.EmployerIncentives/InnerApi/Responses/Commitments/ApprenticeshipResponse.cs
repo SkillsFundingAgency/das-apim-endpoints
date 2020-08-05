@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.EmployerIncentives.Models.Commitments
+namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments
 {
     public class ApprenticeshipResponse
     {

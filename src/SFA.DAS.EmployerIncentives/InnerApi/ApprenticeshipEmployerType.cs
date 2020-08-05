@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SFA.DAS.EmployerIncentives.Models.EmployerIncentives
+namespace SFA.DAS.EmployerIncentives.InnerApi
 {
     public enum ApprenticeshipEmployerType : byte
     {

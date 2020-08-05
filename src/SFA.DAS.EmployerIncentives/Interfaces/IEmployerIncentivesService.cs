@@ -5,7 +5,7 @@ using SFA.DAS.EmployerIncentives.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Models.Commitments;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces

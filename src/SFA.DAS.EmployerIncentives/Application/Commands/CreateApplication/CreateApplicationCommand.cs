@@ -1,7 +1,7 @@
 using System;
 using MediatR;
 
-namespace SFA.DAS.EmployerIncentives.Application.Command.CreateApplication
+namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
     public class CreateApplicationCommand : IRequest<Guid>
     {

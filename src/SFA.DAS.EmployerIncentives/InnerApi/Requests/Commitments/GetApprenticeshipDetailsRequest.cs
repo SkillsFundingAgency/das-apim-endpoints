@@ -1,12 +1,12 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments
 {
-    public class GetApprenticeshipRequest : IGetApiRequest
+    public class GetApprenticeshipDetailsRequest : IGetApiRequest
     {
         private readonly long _apprenticeshipId;
 
-        public GetApprenticeshipRequest(long apprenticeshipId)
+        public GetApprenticeshipDetailsRequest(long apprenticeshipId)
         {
             _apprenticeshipId = apprenticeshipId;
         }

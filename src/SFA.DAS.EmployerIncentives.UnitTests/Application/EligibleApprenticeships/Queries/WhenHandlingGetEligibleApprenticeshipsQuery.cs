@@ -9,9 +9,10 @@ using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Queries

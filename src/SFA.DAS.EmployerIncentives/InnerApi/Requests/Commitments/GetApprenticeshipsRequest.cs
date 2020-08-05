@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments
 {
     public class GetApprenticeshipsRequest : IGetApiRequest
     {

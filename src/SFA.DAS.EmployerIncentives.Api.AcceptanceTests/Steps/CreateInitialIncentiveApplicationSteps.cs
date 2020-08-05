@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Models.Commitments;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Models.EmployerIncentives;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using ApprenticeshipEmployerType = SFA.DAS.EmployerIncentives.Models.Commitments.ApprenticeshipEmployerType;
+using ApprenticeshipEmployerType = SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments.ApprenticeshipEmployerType;
 
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {

@@ -4,8 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Application.Command.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers

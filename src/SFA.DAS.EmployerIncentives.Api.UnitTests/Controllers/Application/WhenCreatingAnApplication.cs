@@ -10,7 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Command.CreateApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 {
