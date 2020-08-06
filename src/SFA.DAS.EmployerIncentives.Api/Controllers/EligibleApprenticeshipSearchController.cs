@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/apprentices")]
+        [Route("/apprenticeships")]
         public async Task<IActionResult> GetEligibleApprentices(long accountId, long accountLegalEntityId)
         {
             try
@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
                 var apprentices = result.Apprentices.Select(x=> (EligibleApprenticeshipDto) x);
 
-                return new OkObjectResult(new EligibleApprenticeshipsResponse { Apprentices = apprentices.ToArray()});
+                return new OkObjectResult(apprentices.ToArray());
             }
             catch (Exception e)
             {
