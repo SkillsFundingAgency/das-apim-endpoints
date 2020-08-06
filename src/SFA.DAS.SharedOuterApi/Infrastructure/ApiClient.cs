@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
@@ -88,6 +87,20 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task Put(IPutApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            request.BaseUrl = _configuration.Url;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+
+            var response = await _httpClient.PutAsync(request.PutUrl, stringContent)
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             await AddAuthenticationHeader();
@@ -109,7 +122,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             return response.StatusCode;
         }
-
 
         private async Task AddAuthenticationHeader()
         {

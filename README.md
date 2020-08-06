@@ -39,14 +39,16 @@ You will need override the setting in the config ```SFA.DAS.EmployerIncentives.O
 
 ```
   {
-    "EmployerIncentivesInnerApi": {
-      "url": "https://localhost:5001/" // Local running inner API
-    },
-    "CommitmentsV2InnerApi": {
-      // -- when commitmentsV2 is running locally "url": "https://localhost:5011/",
-      "url": "http://localhost:6011/" // Fake API
-    }
+  "Environment": "DEV",
+  "EmployerIncentivesInnerApi": {
+    "identifier": "",
+    "url": "https://localhost:5001/",
+  },
+  "CommitmentsV2InnerApi": {
+    "identifier": "",
+    "url": "http://localhost:6011/"
   }
+}
 ```
 
 To invoke the Fake CommitmentsV2Api start the console application ```SFA.DAS.EmployerIncentives.FakeApis``` 
