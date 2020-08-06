@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -23,11 +24,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             _client = client;
         }
 
-        public async Task<bool> IsHealthy(CancellationToken cancellationToken = default)
+        public async Task<bool> IsHealthy()
         {
             try
             {
-                var status = await _client.GetResponseCode(new GetPingRequest());
+                var status = await _client.GetResponseCode(new GetHealthRequest());
                 return (status == HttpStatusCode.OK);
             }
             catch
@@ -36,20 +37,20 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship, CancellationToken cancellationToken = default)
+        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship)
         {
             var bag = new ConcurrentBag<ApprenticeshipItem>();
-            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag, cancellationToken));
+            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag));
             await Task.WhenAll(tasks);
 
             return bag.ToArray();
         }
 
-        public async Task<GetAccountLegalEntitiesResponse> GetAccountLegalEntities(long accountId)
+        public async Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId)
         {
-            var response = await _client.Get<GetAccountLegalEntitiesResponse>(new GetAccountLegalEntitiesRequest(accountId));
+            var response = await _client.GetAll<AccountLegalEntity>(new GetAccountLegalEntitiesRequest(accountId));
 
-            return response;
+            return response.ToArray();
         }
 
         public async Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId)
@@ -70,6 +71,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request)
+        {
+            return _client.Post<CreateIncentiveApplicationRequest>(new PostCreateIncentiveApplicationRequest{ Data = request});
+        }
+
         public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
         {
             var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
@@ -77,7 +83,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response;
         }
 
-        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
+        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
             switch (statusCode)

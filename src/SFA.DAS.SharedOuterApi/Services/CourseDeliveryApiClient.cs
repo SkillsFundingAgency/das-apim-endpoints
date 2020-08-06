@@ -43,5 +43,10 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.Patch(request);
         }
+
+        public Task Put(IPutApiRequest request)
+        {
+            return _apiClient.Put(request);
+        }
     }
 }

@@ -15,14 +15,14 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<EligibleApprenticeshipSearchController> _logger;
 
-        public EligibleApprenticeshipSearchController(IMediator mediator,ILogger<EligibleApprenticeshipSearchController> logger)
+        public EligibleApprenticeshipSearchController(IMediator mediator, ILogger<EligibleApprenticeshipSearchController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
         [HttpGet]
-        [Route("/apprentices")]
+        [Route("/apprenticeships")]
         public async Task<IActionResult> GetEligibleApprentices(long accountId, long accountLegalEntityId)
         {
             try
@@ -33,9 +33,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                     AccountLegalEntityId = accountLegalEntityId
                 });
 
-                var apprentices = result.Apprentices.Select(x => (ApprenticeshipDto) x);
+                var apprentices = result.Apprentices.Select(x=> (EligibleApprenticeshipDto) x);
 
-                return new OkObjectResult(new EligibleApprenticeshipsResponse { Apprentices = apprentices.ToArray()});
+                return new OkObjectResult(apprentices.ToArray());
             }
             catch (Exception e)
             {
