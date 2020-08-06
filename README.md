@@ -4,7 +4,7 @@
 
 ## Requirements
 
-* DotNet Core 2.2 and any supported IDE for DEV running.
+* DotNet Core 3.1 and any supported IDE for DEV running.
 * Azure Storage Account
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 
@@ -31,3 +31,23 @@ data: {
 * Start the api project ```SFA.DAS.FindApprenticeshipTraining.Api```
 
 Starting the API will then show the swagger definition with the available operations.
+
+
+When Running Employer Incentives Api Locally
+
+You will need override the setting in the config ```SFA.DAS.EmployerIncentives.OuterApi_1.0``` with the following in appsettings.development.json
+
+```
+  {
+    "EmployerIncentivesInnerApi": {
+      "url": "https://localhost:5001/" // Local running inner API
+    },
+    "CommitmentsV2InnerApi": {
+      // -- when commitmentsV2 is running locally "url": "https://localhost:5011/",
+      "url": "http://localhost:6011/" // Fake API
+    }
+  }
+```
+
+To invoke the Fake CommitmentsV2Api start the console application ```SFA.DAS.EmployerIncentives.FakeApis``` 
+

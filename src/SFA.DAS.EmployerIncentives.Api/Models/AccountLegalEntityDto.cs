@@ -6,7 +6,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
     {
         public long LegalEntityId { get ; set ; }
 
-        public string OrganisationName { get ; set ; }
+        public string LegalEntityName { get ; set ; }
 
         public long AccountLegalEntityId { get ; set ; }
 
@@ -19,9 +19,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
             {
                 AccountId = source.AccountId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
-                OrganisationName = source.LegalEntityName,
+                LegalEntityName = source.LegalEntityName,
                 LegalEntityId = source.LegalEntityId,
-                HasSignedIncentivesTerms = source.HasSignedIncentivesTerms
+				HasSignedIncentivesTerms = source.HasSignedIncentivesTerms
             };
         }
     }

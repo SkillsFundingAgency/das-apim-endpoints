@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -11,15 +11,16 @@ namespace SFA.DAS.EmployerIncentives.Api.ErrorHandler
     {
         public static IApplicationBuilder UseApiGlobalExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
+#pragma warning disable 1998
             async Task Handler(HttpContext context)
+#pragma warning restore 1998
             {
                 context.Response.ContentType = "application/json";
 
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null)
                 {
-                    var exception = contextFeature.Error;
-                    if (exception != null)
+                    if (contextFeature.Error is Exception exception)
                     {
                         logger.LogError(exception, "Unhandled Exception");
                     }
