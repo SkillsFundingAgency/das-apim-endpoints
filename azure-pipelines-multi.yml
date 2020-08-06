@@ -91,14 +91,12 @@ stages:
         ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
         ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
     - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
-      condition: succeeded()
       parameters:
         AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: Deploy
         AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
         DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
     - template: azure-pipelines-templates/Deploy/Job/app-deploy.yml@das-platform-building-blocks
-      condition: succeeded()
       parameters:
         AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: Deploy
