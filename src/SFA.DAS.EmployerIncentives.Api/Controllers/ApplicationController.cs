@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
@@ -19,6 +20,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
+        }
+
+        [HttpPost]
+        [Route("/accounts/{accountId}/applications")]
+        public async Task<IActionResult> PostApplication(CreateApplicationRequest request)
+        {
+            var applicationId = await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+
+            return new CreatedResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}", null);
         }
 
         [HttpPatch]

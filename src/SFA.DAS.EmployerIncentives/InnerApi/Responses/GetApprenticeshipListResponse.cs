@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SFA.DAS.EmployerIncentives.Models;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
 {

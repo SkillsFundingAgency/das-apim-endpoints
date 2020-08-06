@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var timer = Stopwatch.StartNew();
-            var result = await _client.GetResponseCode(new GetPingRequest());
+            var result = await _client.GetResponseCode(new GetCommitmentsPingRequest());
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
             if (result != HttpStatusCode.OK)

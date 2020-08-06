@@ -1,7 +1,7 @@
-namespace SFA.DAS.EmployerIncentives.Api.Models
+﻿namespace SFA.DAS.EmployerIncentives.Api.Models
 {
     public class EligibleApprenticeshipsResponse
     {
-        public ApprenticeshipDto[] Apprentices { get ; set ; }
+        public EligibleApprenticeshipDto[] Apprentices { get; set; }
     }
 }

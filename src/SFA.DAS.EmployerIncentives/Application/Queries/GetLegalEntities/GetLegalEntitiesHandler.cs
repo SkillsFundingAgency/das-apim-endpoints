@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities
             
             return new GetLegalEntitiesResult
             {
-                AccountLegalEntities = response.AccountLegalEntities
+                AccountLegalEntities = response
             }; 
                 
         }

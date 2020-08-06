@@ -31,10 +31,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 AccountId = accountId
             });
             
-            var response = new AccountLegalEntitiesResponse
-            {
-                AccountLegalEntities = queryResult.AccountLegalEntities.Select(c=>(AccountLegalEntityDto)c).ToArray()
-            };
+            var response = queryResult.AccountLegalEntities.Select(c=>(AccountLegalEntityDto)c).ToArray();
             
             return Ok(response);
         }
@@ -50,7 +47,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 LegalEntityId = request.LegalEntityId,
                 AccountLegalEntityId = request.AccountLegalEntityId
             });
-            
 
             var response = new CreatedAccountLegalEntityResponse
             {
@@ -58,7 +54,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             };
             
             return Created("", response);
-            
         }
         
         [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]

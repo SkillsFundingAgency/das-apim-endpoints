@@ -2,6 +2,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/apprenticeships/?accountId={accountId}&accountLegalEntityId={employerAccountId}");
+                .Be($"{baseUrl}api/apprenticeships?accountId={accountId}&accountLegalEntityId={employerAccountId}");
         }
     }
 }
