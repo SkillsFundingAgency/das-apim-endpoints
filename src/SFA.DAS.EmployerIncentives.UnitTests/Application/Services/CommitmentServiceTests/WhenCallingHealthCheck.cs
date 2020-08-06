@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
     public class WhenCallingHealthCheck
     {
         [Test]
-        public async Task And_Api_Is_Unavailble_Then_Health_Check_Should_Return_False()
+        public async Task And_Api_Is_Unavailable_Then_Health_Check_Should_Return_False()
         {
             var sut = new CommitmentsService(null);
 
