@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 {
-    public class WhenCreatingAnApplication
+    public class WhenUpdatingAnApplication
     {
         [Test, MoqAutoData]
-        public async Task Then_CreateApplicationCommand_Is_Sent(
-            CreateApplicationRequest request,
+        public async Task Then_UpdateApplicationCommand_Is_Sent(
+            UpdateApplicationRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationController controller)
         {
@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 
             mockMediator
                 .Setup(mediator => mediator.Send(
-                        It.Is<CreateApplicationCommand>(c =>
+                        It.Is<UpdateApplicationCommand>(c =>
                             c.AccountId == request.AccountId
                               && c.AccountLegalEntityId == request.AccountLegalEntityId
                               && c.ApplicationId == request.ApplicationId
@@ -34,11 +34,11 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
                     ), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(applicationId);
 
-            var controllerResult = await controller.CreateApplication(request) as CreatedResult;
+            var controllerResult = await controller.UpdateApplication(request) as OkObjectResult;
 
             Assert.IsNotNull(controllerResult);
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.Created);
-            controllerResult.Location.Should().Be($"/accounts/{request.AccountId}/applications/{applicationId}");
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            controllerResult.Value.Should().Be($"/accounts/{request.AccountId}/applications/{applicationId}");
         }
     }
 }

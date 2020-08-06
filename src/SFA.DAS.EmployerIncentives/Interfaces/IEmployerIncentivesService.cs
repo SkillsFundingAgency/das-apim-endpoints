@@ -1,11 +1,11 @@
-﻿using System;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+﻿using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
 {
@@ -19,5 +19,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
         Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request);
+        Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequest request);
     }
 }
