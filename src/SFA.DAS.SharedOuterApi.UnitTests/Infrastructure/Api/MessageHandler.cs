@@ -33,7 +33,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 method = HttpMethod.Put;
             }
 
-
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>(
