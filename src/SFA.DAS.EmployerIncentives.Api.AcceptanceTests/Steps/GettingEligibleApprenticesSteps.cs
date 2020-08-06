@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -83,7 +84,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the request to list all eligible apprentices")]
         public async Task WhenTheOuterApiReceivesTheRequestToListAllEligibleApprentices()
         {
-            _response = await _context.OuterApiClient.GetAsync($"/apprentices?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}");
+            _response = await _context.OuterApiClient.GetAsync($"/apprenticeships?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}");
         }
         
         [Then(@"the result should return Ok, but with no apprentices")]
@@ -92,9 +93,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await _response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<EligibleApprenticeshipsResponse>(content);
+            var result = JsonSerializer.Deserialize<IEnumerable<EligibleApprenticeshipDto>>(content);
             result.Should().NotBeNull();
-            result.Apprentices.Should().BeNull();
         }
 
         [Then(@"the result should return Ok and have two apprentices")]
@@ -103,11 +103,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await _response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<EligibleApprenticeshipsResponse>(content, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<IEnumerable<EligibleApprenticeshipDto>>(content, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
             result.Should().NotBeNull();
-            result.Apprentices.Length.Should().Be(2);
-            result.Apprentices.Count(a => a.Uln == _eligibleApprenticeship1.Uln).Should().Be(1);
-            result.Apprentices.Count(a => a.Uln == _eligibleApprenticeship2.Uln).Should().Be(1);
+            result.Count().Should().Be(2);
+            result.Count(a => a.Uln == _eligibleApprenticeship1.Uln).Should().Be(1);
+            result.Count(a => a.Uln == _eligibleApprenticeship2.Uln).Should().Be(1);
         }
 
         private void SetApprenticeshipSearchToReturn(ApprenticeshipSearchResponse response)
