@@ -90,32 +90,20 @@ stages:
         # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
         ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
         ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-
-  - stage: DeployFindApprenticeshipTraining_AT
-    dependsOn: DeployInfrastructure_AT
-    displayName: Deploy Find Apprenticeship Training to AT
-    variables:
-    - group: AT DevTest Shared Resources
-    jobs:
     - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
+      condition: succeeded()
       parameters:
         AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: Deploy
         AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
         DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
-
-  - stage: DeployReservations_AT
-    dependsOn: DeployInfrastructure_AT
-    displayName: Deploy Reservations to AT
-    variables:
-    - group: AT DevTest Shared Resources
-    jobs:
     - template: azure-pipelines-templates/Deploy/Job/app-deploy.yml@das-platform-building-blocks
+      condition: succeeded()
       parameters:
         AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: Deploy
         AppServiceName: $(ReservationsOuterApiAppServiceName)
-        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip   
 
   - stage: DeployInfrastructure_TEST
     dependsOn: Build
