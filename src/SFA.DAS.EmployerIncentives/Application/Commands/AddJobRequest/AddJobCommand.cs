@@ -8,9 +8,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest
     public class AddJobCommand : IRequest
     {
         public JobType Type { get; }
-        public Dictionary<string, object> Data { get; }
+        public Dictionary<string, string> Data { get; }
 
-        public AddJobCommand(JobType type, Dictionary<string, object> data)
+        public AddJobCommand(JobType type, Dictionary<string, string> data)
         {
             Type = type;
             Data = data;
