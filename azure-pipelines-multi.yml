@@ -96,12 +96,14 @@ stages:
         Environment: Deploy
         AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
         DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+        AppName: FAT
     - template: azure-pipelines-templates/Deploy/Job/app-deploy.yml@das-platform-building-blocks
       parameters:
         AzureSubscription: SFA-DAS-DevTest-ARM        
         Environment: Deploy
         AppServiceName: $(ReservationsOuterApiAppServiceName)
-        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip   
+        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+        AppName: Reservations
 
   - stage: DeployInfrastructure_TEST
     dependsOn: Build
@@ -143,4 +145,4 @@ stages:
         AzureSubscription: SFA-DAS-DevTest-ARM
         Environment: Deploy
         AppServiceName: $(ReservationsOuterApiAppServiceName)
-        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+        DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip        
