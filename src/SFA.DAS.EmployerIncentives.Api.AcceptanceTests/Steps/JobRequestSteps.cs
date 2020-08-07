@@ -34,10 +34,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _request = new JobRequest
             {
                 Type = JobType.RefreshLegalEntities,
-                 Data = new Dictionary<string, object>
+                 Data = new Dictionary<string, string>
                 {
-                    { "PageNumber", _fixture.Create<int>() },
-                    { "PageSize", _fixture.Create<int>() }
+                    { "PageNumber", _fixture.Create<int>().ToString() },
+                    { "PageSize", _fixture.Create<int>().ToString() }
                 }
             };
         }
