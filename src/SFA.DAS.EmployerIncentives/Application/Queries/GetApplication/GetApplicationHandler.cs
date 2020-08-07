@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -45,6 +44,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
 
             return applicationApprenticeships.Select(x => new IncentiveApplicationApprenticeship
             {
+                ApprenticeshipId = x.ApprenticeshipId,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 TotalIncentiveAmount = x.TotalIncentiveAmount,
