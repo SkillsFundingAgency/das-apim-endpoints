@@ -4,11 +4,9 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
