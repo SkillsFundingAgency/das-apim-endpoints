@@ -94,8 +94,8 @@ stages:
       inputs:
         filePath: '$(Pipeline.Workspace)/ApimEndpointsArtifacts/GenerateParametersFile.ps1'
         arguments: >
-          -TemplateFilePath '$(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json'
-          -ParametersFilePath '$(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json'
+          -TemplateFilePath "$(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json"
+          -ParametersFilePath "$(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json"
         pwsh: true
 
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
