@@ -22,129 +22,129 @@ resources:
     branch: master
     
 stages:
-  - stage: Build
-    variables:
-    - group: 'Prod Management Resources'
-    - name: buildConfiguration
-      value: release
-    jobs:
-    - job: CodeBuild
-      pool:
-        name: DAS - Continuous Integration
-      workspace:
-        clean: all
-      steps:
-      - task: UseGitVersion@5
-        displayName: GitVersion
-        inputs:
-          versionSpec: 5.x
-          useConfigFile: true
-          configFilePath: GitVersion.yml
-
-      - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
-
-      - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish FAT Api'
-        inputs:
-          command: publish
-          publishWebProjects: false
-          projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-      
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish Reservations Api'
-        inputs:
-          command: publish
-          publishWebProjects: false
-          projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'     
-      
-      - task: CopyFiles@2
-        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-        inputs:
-          Contents: |
-            azure/**
-          TargetFolder: '$(build.artifactstagingdirectory)/publish'
-          OverWrite: true
-
-      - task: PublishPipelineArtifact@1
-        displayName: 'Publish Artifact'
-        inputs:
-          targetPath: '$(build.artifactstagingdirectory)/publish'
-          artifactName: 'ApimEndpointsArtifacts'
-
-  - stage: Deploy_AT
-    dependsOn: Build
-    displayName: Deploy to AT
+- stage: Build
+  variables:
+  - group: 'Prod Management Resources'
+  - name: buildConfiguration
+    value: release
+  jobs:
+  - job: CodeBuild
     pool:
-      name: DAS - Continuous Deployment
-    variables:
-    - group: AT DevTest Shared Resources
-    - group: DevTest Management Resources
-    - group: DevTest Wildcard Cert Variables
-    jobs:
-    - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-      parameters:
-        AzureSubscription: SFA-DAS-DevTest-ARM        
-        Environment: AT
-        # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-        ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
-        ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      name: DAS - Continuous Integration
+    workspace:
+      clean: all
+    steps:
+    - task: UseGitVersion@5
+      displayName: GitVersion
+      inputs:
+        versionSpec: 5.x
+        useConfigFile: true
+        configFilePath: GitVersion.yml
 
-    - deployment: DeployApp_FAT
-      dependsOn: DeployInfrastructure
-      environment: AT
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-              parameters:
-                AzureSubscription: SFA-DAS-DevTest-ARM        
-                AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-                DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+    - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
 
-    - deployment: DeployApp_RSRV
-      dependsOn: DeployInfrastructure
-      environment: AT
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-              parameters:
-                AzureSubscription: SFA-DAS-DevTest-ARM              
-                AppServiceName: $(ReservationsOuterApiAppServiceName)
-                DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+    - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
-    - stage: Deploy_TEST
-      dependsOn: Build
-      displayName: Deploy to TEST
-      variables:
-      - group: TEST DevTest Shared Resources
-      - group: DevTest Management Resources
-      - group: DevTest Wildcard Cert Variables
-      jobs:
-      - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-        parameters:
-          AzureSubscription: SFA-DAS-DevTest-ARM        
-          Environment: TEST
-          # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-          ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
-          ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
-        parameters:
-          AzureSubscription: SFA-DAS-DevTest-ARM        
-          Environment: TEST
-          AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-          DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
-          DependsOn: DeployInfrastructure
-      - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
-        parameters:
-          AzureSubscription: SFA-DAS-DevTest-ARM        
-          Environment: TEST
-          AppServiceName: $(ReservationsOuterApiAppServiceName)
-          DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
-          DependsOn: DeployInfrastructure
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish FAT Api'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Reservations Api'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+    
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+      inputs:
+        Contents: |
+          azure/**
+        TargetFolder: '$(build.artifactstagingdirectory)/publish'
+        OverWrite: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifact'
+      inputs:
+        targetPath: '$(build.artifactstagingdirectory)/publish'
+        artifactName: 'ApimEndpointsArtifacts'
+
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: AT DevTest Shared Resources
+  - group: DevTest Management Resources
+  - group: DevTest Wildcard Cert Variables
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      AzureSubscription: SFA-DAS-DevTest-ARM
+      Environment: AT
+      # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+
+  - deployment: DeployApp_FAT
+    dependsOn: DeployInfrastructure
+    environment: AT
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              AzureSubscription: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+
+  - deployment: DeployApp_RSRV
+    dependsOn: DeployInfrastructure
+    environment: AT
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              AzureSubscription: SFA-DAS-DevTest-ARM
+              AppServiceName: $(ReservationsOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+
+- stage: Deploy_TEST
+  dependsOn: Build
+  displayName: Deploy to TEST
+  variables:
+  - group: TEST DevTest Shared Resources
+  - group: DevTest Management Resources
+  - group: DevTest Wildcard Cert Variables
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      AzureSubscription: SFA-DAS-DevTest-ARM
+      Environment: TEST
+      # ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ArmTemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+  - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
+    parameters:
+      AzureSubscription: SFA-DAS-DevTest-ARM
+      Environment: TEST
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+      DependsOn: DeployInfrastructure
+  - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
+    parameters:
+      AzureSubscription: SFA-DAS-DevTest-ARM
+      Environment: TEST
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+      DependsOn: DeployInfrastructure
