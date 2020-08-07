@@ -99,12 +99,12 @@ stages:
       strategy:
         runOnce:
           deploy:
-          steps:
-          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-            parameters:
-              AzureSubscription: SFA-DAS-DevTest-ARM        
-              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+            steps:
+            - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+              parameters:
+                AzureSubscription: SFA-DAS-DevTest-ARM        
+                AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+                DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
 
     - deployment: DeployApp_$(ReservationsOuterApiAppServiceName)
       dependsOn: DeployInfrastructure
@@ -112,12 +112,12 @@ stages:
       strategy:
         runOnce:
           deploy:
-          steps:
-          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-            parameters:
-              AzureSubscription: SFA-DAS-DevTest-ARM              
-              AppServiceName: $(ReservationsOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+            steps:
+            - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+              parameters:
+                AzureSubscription: SFA-DAS-DevTest-ARM              
+                AppServiceName: $(ReservationsOuterApiAppServiceName)
+                DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
 
   - stage: DeployInfrastructure_TEST
     dependsOn: Build
