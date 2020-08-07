@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
 
             var applicationToReturn = new IncentiveApplication
             {
+                AccountLegalEntityId = application.AccountLegalEntityId,
                 Apprenticeships = await MapApprenticeships(application.Apprenticeships)
             };
 
