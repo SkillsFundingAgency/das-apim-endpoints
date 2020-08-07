@@ -92,8 +92,7 @@ stages:
     - task: PowerShell@2
       displayName: Generate parameters File
       inputs:
-        targetType: filePath
-        filePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/GenerateParametersFile.ps1                
+        filePath: ./$(Pipeline.Workspace)/ApimEndpointsArtifacts/GenerateParametersFile.ps1                
         arguments: -TemplateFilePath $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json -ParametersFilePath $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json        
         pwsh: true
 
