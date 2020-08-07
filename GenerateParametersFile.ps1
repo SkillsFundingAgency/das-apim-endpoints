@@ -4,7 +4,7 @@ Param(
     [Parameter(Mandatory = $true)]
     [String]$TemplateFilePath,
     [Parameter(Mandatory = $true)]
-    [String]$TemplateParametersFilePath
+    [String]$ParametersFilePath
 )
 Write-Output "Get TemplateFilePath"
 $TemplateParameters = (Get-Content -Path $TemplateFilePath -Raw | ConvertFrom-Json).Parameters
@@ -16,7 +16,7 @@ $ParametersFile = [PSCustomObject]@{
 }
 Write-Output "Get Parameter Objects"
 $ParameterObjects = $TemplateParameters.PSObject.Members | Where-Object MemberType -eq NoteProperty
-Write-Output "Get Parameter Objects - pass"
+Write-Output "Get Parameter Objects"
 foreach ($ParameterObject in $ParameterObjects) {
     $ParameterType = $ParameterObject.Value.Type
     $ParameterName = $ParameterObject.Name
@@ -76,4 +76,4 @@ foreach ($ParameterObject in $ParameterObjects) {
 }
 
 
-$null = Set-Content -Path $TemplateParametersFilePath -Value ([Regex]::Unescape(($ParametersFile | ConvertTo-Json -Depth 10))) -Force
+$null = Set-Content -Path $ParametersFilePath -Value ([Regex]::Unescape(($ParametersFile | ConvertTo-Json -Depth 10))) -Force
