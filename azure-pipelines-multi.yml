@@ -140,6 +140,7 @@ stages:
       Environment: TEST
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+      DeploymentName: Deploy_FindApprenticeshipTraining
       DependsOn: DeployInfrastructure
   - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
     parameters:
@@ -147,4 +148,5 @@ stages:
       Environment: TEST
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+      DeploymentName: Deploy_Reservations
       DependsOn: DeployInfrastructure
