@@ -44,7 +44,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
 
             var command = new UpdateApplicationCommand(applicationId, accountId, accountLegalEntityId, apprenticeshipIds);
-            commitmentsService.Setup(x => x.GetApprenticeshipDetails(It.IsAny<long>(), It.IsAny<long[]>())).ReturnsAsync(apprenticeshipDetails);
+            commitmentsService.Setup(x => x.GetApprenticeshipDetails(command.AccountId, command.ApprenticeshipIds))
+                .ReturnsAsync(apprenticeshipDetails);
 
             await handler.Handle(command, CancellationToken.None);
 

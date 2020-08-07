@@ -78,6 +78,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             };
 
             _response = await _context.OuterApiClient.PostAsync($"accounts/{_accountId}/applications", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+            _response.EnsureSuccessStatusCode();
         }
 
 

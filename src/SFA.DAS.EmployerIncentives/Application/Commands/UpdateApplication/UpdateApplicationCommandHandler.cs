@@ -3,7 +3,6 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 {
-    public class UpdateApplicationCommandHandler : IRequestHandler<UpdateApplicationCommand, Guid>
+    public class UpdateApplicationCommandHandler : IRequestHandler<UpdateApplicationCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IEmployerIncentivesService _employerIncentivesService;
@@ -22,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
             _employerIncentivesService = employerIncentivesService;
         }
 
-        public async Task<Guid> Handle(UpdateApplicationCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateApplicationCommand command, CancellationToken cancellationToken)
         {
             var apprenticeships = await _commitmentsService.GetApprenticeshipDetails(command.AccountId, command.ApprenticeshipIds);
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 
             await _employerIncentivesService.UpdateIncentiveApplication(request);
 
-            return command.ApplicationId;
+            return Unit.Value;
         }
 
         private static UpdateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(UpdateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)

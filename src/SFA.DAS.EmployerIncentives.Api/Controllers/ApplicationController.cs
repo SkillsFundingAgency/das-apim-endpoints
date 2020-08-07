@@ -27,18 +27,18 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> CreateApplication(CreateApplicationRequest request)
         {
-            var applicationId = await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+            await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
 
-            return new CreatedResult($"/accounts/{request.AccountId}/applications/{applicationId}", null);
+            return new CreatedResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}", null);
         }
 
         [HttpPut]
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> UpdateApplication(UpdateApplicationRequest request)
         {
-            var applicationId = await _mediator.Send(new UpdateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+            await _mediator.Send(new UpdateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
 
-            return new OkObjectResult($"/accounts/{request.AccountId}/applications/{applicationId}");
+            return new OkObjectResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}");
         }
 
         [HttpPatch]

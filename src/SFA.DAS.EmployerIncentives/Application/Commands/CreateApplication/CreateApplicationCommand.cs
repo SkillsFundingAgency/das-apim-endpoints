@@ -1,9 +1,9 @@
-using System;
 using MediatR;
+using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
-    public class CreateApplicationCommand : IRequest<Guid>
+    public class CreateApplicationCommand : IRequest
     {
         public Guid ApplicationId { get; }
         public long AccountId { get; }

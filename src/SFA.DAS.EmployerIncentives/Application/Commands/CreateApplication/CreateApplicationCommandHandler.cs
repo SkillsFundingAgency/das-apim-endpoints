@@ -3,7 +3,6 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
-    public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand, Guid>
+    public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IEmployerIncentivesService _employerIncentivesService;
@@ -22,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
             _employerIncentivesService = employerIncentivesService;
         }
 
-        public async Task<Guid> Handle(CreateApplicationCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateApplicationCommand command, CancellationToken cancellationToken)
         {
             var apprenticeships = await _commitmentsService.GetApprenticeshipDetails(command.AccountId, command.ApprenticeshipIds);
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 
             await _employerIncentivesService.CreateIncentiveApplication(request);
 
-            return command.ApplicationId;
+            return Unit.Value;
         }
 
         private static CreateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)

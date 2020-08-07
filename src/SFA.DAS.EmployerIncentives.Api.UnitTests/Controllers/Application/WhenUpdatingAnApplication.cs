@@ -25,14 +25,13 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
             var applicationId = request.ApplicationId;
 
             mockMediator
-                .Setup(mediator => mediator.Send(
-                        It.Is<UpdateApplicationCommand>(c =>
-                            c.AccountId == request.AccountId
-                              && c.AccountLegalEntityId == request.AccountLegalEntityId
-                              && c.ApplicationId == request.ApplicationId
-                            && c.ApprenticeshipIds == request.ApprenticeshipIds
-                    ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(applicationId);
+                .Setup(mediator => mediator.Send<Unit>(
+                    It.Is<UpdateApplicationCommand>(c =>
+                        c.AccountId == request.AccountId
+                        && c.AccountLegalEntityId == request.AccountLegalEntityId
+                        && c.ApplicationId == request.ApplicationId
+                        && c.ApprenticeshipIds == request.ApprenticeshipIds
+                    ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
             var controllerResult = await controller.UpdateApplication(request) as OkObjectResult;
 

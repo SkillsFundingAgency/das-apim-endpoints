@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
                               && c.ApplicationId == request.ApplicationId
                             && c.ApprenticeshipIds == request.ApprenticeshipIds
                     ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(applicationId);
+                .ReturnsAsync(Unit.Value);
 
             var controllerResult = await controller.CreateApplication(request) as CreatedResult;
 
