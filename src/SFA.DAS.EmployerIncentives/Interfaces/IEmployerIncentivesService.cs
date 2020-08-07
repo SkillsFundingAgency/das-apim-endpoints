@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<bool> IsHealthy();
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship);
         Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId);
+		Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);

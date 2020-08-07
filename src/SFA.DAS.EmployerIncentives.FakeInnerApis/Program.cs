@@ -26,6 +26,7 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
 
                 SetupHealthCheckResponse();
                 SetupApprenticeshipSearchResponses();
+                SetupGetApprenticeshipResponses();
 
                 Console.WriteLine(("Please RETURN to stop server"));
                 Console.ReadLine();
@@ -84,6 +85,29 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(GetSampleJsonResponse("ApprenticeshipSearchSampleData.json")));
+        }
+
+        static void SetupGetApprenticeshipResponses()
+        {
+            _fakeCommitmentsApi.Given(
+                    Request.Create().WithPath("/api/apprenticeships/20002")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(GetSampleJsonResponse("Apprenticeship20002Data.json")));
+
+            _fakeCommitmentsApi.Given(
+                    Request.Create().WithPath("/api/apprenticeships/5")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(GetSampleJsonResponse("Apprenticeship5Data.json")));
         }
 
         static string GetSampleJsonResponse(string file)

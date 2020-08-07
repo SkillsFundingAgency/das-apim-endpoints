@@ -54,6 +54,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response.ToArray();
         }
 
+        public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
+        {
+            var response = await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
+
+            return response;
+        }
+
         public async Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId)
         {
             await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
