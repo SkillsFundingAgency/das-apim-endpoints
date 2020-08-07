@@ -16,7 +16,7 @@ $ParametersFile = [PSCustomObject]@{
 }
 
 $ParameterObjects = $TemplateParameters.PSObject.Members | Where-Object MemberType -eq NoteProperty
-
+Write-Host $ParameterObjects
 foreach ($ParameterObject in $ParameterObjects) {
     $ParameterType = $ParameterObject.Value.Type
     $ParameterName = $ParameterObject.Name
