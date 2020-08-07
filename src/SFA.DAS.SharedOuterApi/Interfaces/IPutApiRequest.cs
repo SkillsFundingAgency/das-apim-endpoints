@@ -6,7 +6,13 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     {
         [JsonIgnore]
         string PutUrl { get; }
-
         object Data { get; set; }
+    }
+
+    public interface IPutApiRequest<TData> : IBaseApiRequest
+    {
+        [JsonIgnore]
+        string PutUrl { get; }
+        TData Data { get; set; }
     }
 }

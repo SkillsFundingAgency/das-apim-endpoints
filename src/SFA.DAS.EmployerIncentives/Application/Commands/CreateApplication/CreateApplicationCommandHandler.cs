@@ -1,12 +1,13 @@
+using MediatR;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
+using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
-using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
@@ -32,14 +33,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
             return command.ApplicationId;
         }
 
-        private CreateIncentiveApplicationRequest CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
+        private static CreateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
         {
-            return new CreateIncentiveApplicationRequest
+            return new CreateIncentiveApplicationRequestData
             {
                 IncentiveApplicationId = command.ApplicationId,
                 AccountId = command.AccountId,
                 AccountLegalEntityId = command.AccountLegalEntityId,
-                Apprenticeships = apprenticeships.Select(x=>(IncentiveClaimApprenticeshipDto)x).ToArray()
+                Apprenticeships = apprenticeships.Select(x => (IncentiveClaimApprenticeshipDto)x).ToArray()
             };
         }
     }

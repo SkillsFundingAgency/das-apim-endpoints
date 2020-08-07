@@ -1,5 +1,6 @@
 using MediatR;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
@@ -32,13 +33,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
             return command.ApplicationId;
         }
 
-        private static UpdateIncentiveApplicationRequest CreateIncentiveApplicationRequest(UpdateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
+        private static UpdateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(UpdateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
         {
-            return new UpdateIncentiveApplicationRequest
+            return new UpdateIncentiveApplicationRequestData
             {
                 IncentiveApplicationId = command.ApplicationId,
                 AccountId = command.AccountId,
-                AccountLegalEntityId = command.AccountLegalEntityId,
                 Apprenticeships = apprenticeships.Select(x => (IncentiveClaimApprenticeshipDto)x).ToArray()
             };
         }

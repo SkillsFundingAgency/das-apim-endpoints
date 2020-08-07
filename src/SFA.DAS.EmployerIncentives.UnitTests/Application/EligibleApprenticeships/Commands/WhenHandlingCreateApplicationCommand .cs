@@ -1,14 +1,14 @@
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Commands
 {
@@ -20,7 +20,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             long accountLegalEntityId,
             long[] apprenticeshipIds,
             Guid applicationId,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
             [Frozen] Mock<ICommitmentsService> commitmentsService,
             CreateApplicationCommandHandler handler)
         {
@@ -51,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             employerIncentivesService.Verify(
                 x => x.CreateIncentiveApplication(
-                    It.Is<CreateIncentiveApplicationRequest>(p => p.IncentiveApplicationId == command.ApplicationId &&
+                    It.Is<CreateIncentiveApplicationRequestData>(p => p.IncentiveApplicationId == command.ApplicationId &&
                                                            p.AccountId == command.AccountId && p.AccountLegalEntityId == command.AccountLegalEntityId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),
                 Times.Once);

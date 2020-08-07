@@ -2,7 +2,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -50,8 +50,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             employerIncentivesService.Verify(
                 x => x.UpdateIncentiveApplication(
-                    It.Is<UpdateIncentiveApplicationRequest>(p => p.IncentiveApplicationId == command.ApplicationId &&
-                                                           p.AccountId == command.AccountId && p.AccountLegalEntityId == command.AccountLegalEntityId &&
+                    It.Is<UpdateIncentiveApplicationRequestData>(p => p.IncentiveApplicationId == command.ApplicationId &&
+                                                           p.AccountId == command.AccountId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),
                 Times.Once);
         }

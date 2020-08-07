@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
         Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
-        Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request);
-        Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequest request);
+        Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData);
+        Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequestData requestData);
     }
 }

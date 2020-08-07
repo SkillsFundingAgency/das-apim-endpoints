@@ -1,5 +1,5 @@
-using System;
 using MediatR;
+using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 {

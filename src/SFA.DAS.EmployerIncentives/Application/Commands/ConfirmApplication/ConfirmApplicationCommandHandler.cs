@@ -1,5 +1,5 @@
 using MediatR;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;

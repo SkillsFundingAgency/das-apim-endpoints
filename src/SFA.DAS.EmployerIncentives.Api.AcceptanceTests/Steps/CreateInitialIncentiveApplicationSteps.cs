@@ -1,16 +1,15 @@
-﻿using System;
+﻿using AutoFixture;
+using FluentAssertions;
+using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using TechTalk.SpecFlow;
-using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using ApprenticeshipEmployerType = SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments.ApprenticeshipEmployerType;
@@ -54,7 +53,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             apprenticeshipResponses[0] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[0])
                 .With(x => x.EmployerAccountId, _accountId).With(x => x.AccountLegalEntityId, _accountLegalEntityId)
-                .With(x=>x.ApprenticeshipEmployerTypeOnApproval, ApprenticeshipEmployerType.Levy)
+                .With(x => x.ApprenticeshipEmployerTypeOnApproval, ApprenticeshipEmployerType.Levy)
                 .Create();
             apprenticeshipResponses[1] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[1])
                 .With(x => x.EmployerAccountId, _accountId).With(x => x.AccountLegalEntityId, _accountLegalEntityId)
@@ -78,7 +77,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 ApprenticeshipIds = _apprenticeshipIds
             };
 
-            _response = await _context.OuterApiClient.PostAsync($"accounts/{_accountId}/applications",  new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+            _response = await _context.OuterApiClient.PostAsync($"accounts/{_accountId}/applications", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
         }
 
 

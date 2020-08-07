@@ -1,8 +1,8 @@
-using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
+using System;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
 {
