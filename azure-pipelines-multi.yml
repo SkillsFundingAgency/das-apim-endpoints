@@ -64,8 +64,10 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
       inputs:
+      # Temporarily have Generate ParametersFile.ps1 in this repo. Eventually reference in das-platform-automation
         Contents: |
           azure/**
+          GenerateParametersFile.ps1
         TargetFolder: '$(build.artifactstagingdirectory)/publish'
         OverWrite: true
 
@@ -85,6 +87,16 @@ stages:
   - group: DevTest Management Resources
   - group: DevTest Wildcard Cert Variables
   jobs:
+  - job:
+    steps:
+    - task: PowerShell@2
+      displayName: Generate parameters File
+      inputs:
+        targetType: filePath
+        filePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/GenerateParametersFile.ps1                
+        arguments: -TemplateFilePath $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json -ParametersFilePath $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json        
+        pwsh: true
+
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
       AzureSubscription: SFA-DAS-DevTest-ARM
