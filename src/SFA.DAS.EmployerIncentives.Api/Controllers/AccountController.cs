@@ -6,6 +6,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -35,7 +36,22 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             
             return Ok(response);
         }
-        
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
+        public async Task<IActionResult> GetLegalEntity(long accountId, long accountLegalEntityId)
+        {
+            var result = await _mediator.Send(new GetLegalEntityQuery
+            {
+                AccountId = accountId,
+                AccountLegalEntityId = accountLegalEntityId
+            });
+
+            var response = (AccountLegalEntityDto)result.AccountLegalEntity;
+
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("/accounts/{accountId}/legalentities")]
         public async Task<IActionResult> AddLegalEntity(long accountId, LegalEntityRequest request)
