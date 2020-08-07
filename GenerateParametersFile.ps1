@@ -4,9 +4,9 @@ Param(
     [Parameter(Mandatory = $true)]
     [String]$TemplateFilePath,
     [Parameter(Mandatory = $true)]
-    [String]$ParametersFilePath
+    [String]$TemplateParametersFilePath
 )
-
+Write-Output "Get TemplateFilePath"
 $TemplateParameters = (Get-Content -Path $TemplateFilePath -Raw | ConvertFrom-Json).Parameters
 
 $ParametersFile = [PSCustomObject]@{
@@ -14,14 +14,15 @@ $ParametersFile = [PSCustomObject]@{
     contentVersion = "1.0.0.0"
     parameters     = @{ }
 }
-
+Write-Output "Get Parameter Objects"
 $ParameterObjects = $TemplateParameters.PSObject.Members | Where-Object MemberType -eq NoteProperty
-Write-Host $ParameterObjects
+Write-Output "Get Parameter Objects - pass"
 foreach ($ParameterObject in $ParameterObjects) {
     $ParameterType = $ParameterObject.Value.Type
     $ParameterName = $ParameterObject.Name
-    $ParameterValue = (Get-Item -Path "env:$ParameterName" -ErrorAction SilentlyContinue).Value
-
+    Write-Output "Get environment variable for $ParameterName"
+    $ParameterValue = (Get-Item -Path "ENV:$ParameterName" -ErrorAction SilentlyContinue).Value
+    Write-Output "Got it - $ParameterValue"
     if (!$ParameterValue) {
         Write-Verbose -Message "Environment variable for $ParameterName was not found, attempting default value"
         $ParameterValue = $TemplateParameters.$ParameterName.defaultValue
