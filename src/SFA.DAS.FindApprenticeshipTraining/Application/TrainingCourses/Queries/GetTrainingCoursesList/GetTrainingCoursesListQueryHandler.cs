@@ -85,7 +85,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
         private Task<TResponse> GetRequest<TResponse>(IGetApiRequest request,string keyName, out bool updateCache)
         {
-            Task<TResponse> levelsTask;
+            Task<TResponse> itemsTask;
             updateCache = false;
             
             var itemFromCache =
@@ -93,15 +93,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             if (itemFromCache != null)
             {
-                levelsTask = Task.FromResult(itemFromCache);
+                itemsTask = Task.FromResult(itemFromCache);
             }
             else
             {
-                levelsTask = _apiClient.Get<TResponse>(request);
+                itemsTask = _apiClient.Get<TResponse>(request);
                 updateCache = true;
             }
 
-            return levelsTask;
+            return itemsTask;
         }
         
     }
