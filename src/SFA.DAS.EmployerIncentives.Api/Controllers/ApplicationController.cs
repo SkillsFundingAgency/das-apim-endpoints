@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> UpdateApplication(UpdateApplicationRequest request)
         {
-            await _mediator.Send(new UpdateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+            await _mediator.Send(new UpdateApplicationCommand(request.ApplicationId, request.AccountId, request.ApprenticeshipIds));
 
             return new OkObjectResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}");
         }

@@ -28,7 +28,6 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
                 .Setup(mediator => mediator.Send<Unit>(
                     It.Is<UpdateApplicationCommand>(c =>
                         c.AccountId == request.AccountId
-                        && c.AccountLegalEntityId == request.AccountLegalEntityId
                         && c.ApplicationId == request.ApplicationId
                         && c.ApprenticeshipIds == request.ApprenticeshipIds
                     ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);

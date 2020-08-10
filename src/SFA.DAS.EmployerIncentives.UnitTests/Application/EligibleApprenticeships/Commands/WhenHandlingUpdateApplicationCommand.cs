@@ -17,14 +17,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_CommitmentService_Is_Called_To_Get_Apprenticeship_Details(
             long accountId,
-            long accountLegalEntityId,
             long[] apprenticeshipIds,
             Guid applicationId,
             [Frozen] Mock<ICommitmentsService> commitmentsService,
             UpdateApplicationCommandHandler handler)
         {
 
-            var command = new UpdateApplicationCommand(applicationId, accountId, accountLegalEntityId, apprenticeshipIds);
+            var command = new UpdateApplicationCommand(applicationId, accountId, apprenticeshipIds);
 
             await handler.Handle(command, CancellationToken.None);
 
@@ -34,7 +33,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_EmployerIncentivesService_Is_Called_To_Update_The_Application(
             long accountId,
-            long accountLegalEntityId,
             long[] apprenticeshipIds,
             Guid applicationId,
             ApprenticeshipResponse[] apprenticeshipDetails,
@@ -43,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             UpdateApplicationCommandHandler handler)
         {
 
-            var command = new UpdateApplicationCommand(applicationId, accountId, accountLegalEntityId, apprenticeshipIds);
+            var command = new UpdateApplicationCommand(applicationId, accountId, apprenticeshipIds);
             commitmentsService.Setup(x => x.GetApprenticeshipDetails(command.AccountId, command.ApprenticeshipIds))
                 .ReturnsAsync(apprenticeshipDetails);
 

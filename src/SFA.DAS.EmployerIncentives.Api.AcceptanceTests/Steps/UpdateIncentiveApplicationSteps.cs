@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private long _accountId;
         private long _accountLegalEntityId;
         private long[] _apprenticeshipIds;
-        private ApprenticeshipResponse[] apprenticeshipResponses;
+        private ApprenticeshipResponse[] _apprenticeshipResponses;
         private Guid _applicationId;
         private HttpResponseMessage _response;
 
@@ -44,19 +44,19 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"employer has changed selected apprenticeships for the application")]
         public void WhenEmployerHasChangedSelectedApprenticeshipsForTheApplication()
         {
-            apprenticeshipResponses = new ApprenticeshipResponse[2];
+            _apprenticeshipResponses = new ApprenticeshipResponse[2];
 
-            apprenticeshipResponses[0] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[0])
+            _apprenticeshipResponses[0] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[0])
                 .With(x => x.EmployerAccountId, _accountId).With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.ApprenticeshipEmployerTypeOnApproval, ApprenticeshipEmployerType.Levy)
                 .Create();
-            apprenticeshipResponses[1] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[1])
+            _apprenticeshipResponses[1] = _fixture.Build<ApprenticeshipResponse>().With(x => x.Id, _apprenticeshipIds[1])
                 .With(x => x.EmployerAccountId, _accountId).With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.ApprenticeshipEmployerTypeOnApproval, ApprenticeshipEmployerType.Levy)
                 .Create();
 
-            SetResponseFromCommitmentsForApprenticeshipId(_apprenticeshipIds[0], apprenticeshipResponses[0]);
-            SetResponseFromCommitmentsForApprenticeshipId(_apprenticeshipIds[1], apprenticeshipResponses[1]);
+            SetResponseFromCommitmentsForApprenticeshipId(_apprenticeshipIds[0], _apprenticeshipResponses[0]);
+            SetResponseFromCommitmentsForApprenticeshipId(_apprenticeshipIds[1], _apprenticeshipResponses[1]);
         }
 
         [Then(@"the application is updated with new selection of apprenticeships")]
@@ -68,7 +68,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 ApplicationId = _applicationId,
                 AccountId = _accountId,
-                AccountLegalEntityId = _accountLegalEntityId,
                 ApprenticeshipIds = _apprenticeshipIds
             };
 
