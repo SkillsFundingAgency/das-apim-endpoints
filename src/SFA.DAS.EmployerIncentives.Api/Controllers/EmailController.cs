@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [ApiController]
+    [Route("email")]
     public class EmailController : ControllerBase
     {
         private readonly IMediator _mediator;
