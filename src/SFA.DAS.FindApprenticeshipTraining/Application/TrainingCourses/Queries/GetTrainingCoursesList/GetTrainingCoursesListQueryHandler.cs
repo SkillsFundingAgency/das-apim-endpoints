@@ -21,10 +21,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private bool _saveStandardsToCache;
         private bool _saveSectorsToCache;
         private bool _saveLevelsToCache;
+        private readonly CacheHelper _cacheHelper;
+
         public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
             _cacheStorageService = cacheStorageService;
+            _cacheHelper = new CacheHelper(cacheStorageService);
         }
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
@@ -40,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             Task<GetStandardsListResponse> standardsTask;
 
-            if (_cacheStorageService.FilterApplied(standardsRequest))
+            if (_cacheHelper.FilterApplied(standardsRequest))
             {
                 standardsTask = _apiClient.Get<GetStandardsListResponse>(standardsRequest);
                 _saveStandardsToCache = false;
@@ -49,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             }
             else
             {
-                standardsTask = _cacheStorageService.GetRequest<GetStandardsListResponse>(_apiClient,
+                standardsTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_apiClient,
                     new GetStandardsListRequest
                 {
                     Keyword = request.Keyword,
@@ -60,17 +63,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 _taskList.Add(standardsTask);
             }
 
-            var sectorsTask = _cacheStorageService.GetRequest<GetSectorsListResponse>(_apiClient,
+            var sectorsTask = _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
                 new GetSectorsListRequest(),nameof(GetSectorsListResponse), out _saveSectorsToCache);
            _taskList.Add(sectorsTask);
 
-            var levelsTask = _cacheStorageService.GetRequest<GetLevelsListResponse>(_apiClient,
+            var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _saveLevelsToCache);
             _taskList.Add(levelsTask);
             
             await Task.WhenAll(_taskList);
 
-            await _cacheStorageService.UpdateCachedItems(sectorsTask, levelsTask, standardsTask, 
+            await _cacheHelper.UpdateCachedItems(sectorsTask, levelsTask, standardsTask, 
                 new SaveToCache{Levels = _saveLevelsToCache, Sectors = _saveSectorsToCache, Standards = _saveStandardsToCache});
             
             return new GetTrainingCoursesListResult
@@ -83,5 +86,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 OrderBy = request.OrderBy
             };
         }
+        
+    }
+    internal class SaveToCache
+    {
+        public bool Sectors { get; set; }
+        public bool Levels { get; set; }
+        public bool Standards { get; set; }
     }
 }

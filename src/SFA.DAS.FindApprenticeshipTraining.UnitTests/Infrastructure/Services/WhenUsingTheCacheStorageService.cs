@@ -92,61 +92,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Services
             distributedCache.Verify(x=>x.RemoveAsync(keyName, It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_No_Items_Are_Updated_In_Cache_If_Not_Required(
-            Task<GetSectorsListResponse> sectorsTask,
-            Task<GetLevelsListResponse> levelsTask,
-            Task<GetStandardsListResponse> standardsTask,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            CacheStorageService service)
-        {
-            //Arrange
-            var saveToCache = new SaveToCache {Levels = false, Sectors = false, Standards = false};
-
-            //Act
-            await service.UpdateCachedItems(sectorsTask, levelsTask, standardsTask, saveToCache);
-
-            //Assert
-            distributedCache.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()), Times.Never);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Items_Are_Updated_In_Cache_If_Required(
-            Task<GetSectorsListResponse> sectorsTask,
-            Task<GetLevelsListResponse> levelsTask,
-            Task<GetStandardsListResponse> standardsTask,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            CacheStorageService service)
-        {
-            //Arrange
-            var saveToCache = new SaveToCache { Levels = true, Sectors = true, Standards = true };
-
-            //Act
-            await service.UpdateCachedItems(sectorsTask, levelsTask, standardsTask, saveToCache);
-
-            //Assert
-            distributedCache.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
-        }
-
-        [Test, MoqAutoData, Ignore("WIP")]
-        public async Task Then_Present_Items_Are_Returned_From_Cache(
-            GetSectorsListRequest request,
-            [Frozen] Mock<IDistributedCache> distributedCacheMock,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> clientMock,
-        CacheStorageService service)
-        {
-            //Arrange
-            //distributedCacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync("notnull");
-            var outFalse = false;
-
-            //Act
-            await service.GetRequest<GetSectorsListResponse>(clientMock.Object, request, nameof(GetSectorsListRequest),
-                out outFalse);
-
-            //Assert
-            clientMock.Verify(x => x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
-        }
         public class TestObject
         {
             public int Id { get; set; }
