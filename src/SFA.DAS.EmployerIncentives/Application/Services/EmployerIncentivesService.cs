@@ -70,6 +70,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest) 
+        {
+            var request = new PostSendBankDetailsEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag, CancellationToken cancellationToken)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
@@ -84,5 +92,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
+
+      
     }
 }
