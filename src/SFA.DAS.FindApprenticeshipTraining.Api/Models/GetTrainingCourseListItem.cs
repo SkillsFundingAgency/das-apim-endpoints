@@ -17,6 +17,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string CoreSkillsCount { get; set; }
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
+        public string SectorSubjectAreaTier2Description { get; set; }
+        public decimal SectorSubjectAreaTier2 { get; set; }
 
         public static implicit operator GetTrainingCourseListItem(GetStandardsListItem source)
         {
@@ -34,7 +36,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 TypicalJobTitles = source.TypicalJobTitles,
                 CoreSkillsCount = source.CoreSkillsCount,
                 StandardPageUrl = source.StandardPageUrl,
-                IntegratedDegree = source.IntegratedDegree
+                IntegratedDegree = source.IntegratedDegree,
+                SectorSubjectAreaTier2Description = source.SectorSubjectAreaTier2Description,
+                SectorSubjectAreaTier2 = source.SectorSubjectAreaTier2
             };
         }
     }
