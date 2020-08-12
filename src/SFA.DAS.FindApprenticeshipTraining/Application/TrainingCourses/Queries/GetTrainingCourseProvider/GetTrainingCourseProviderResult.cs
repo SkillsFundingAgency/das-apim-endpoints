@@ -7,6 +7,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         public GetStandardsListItem Course { get ; set ; }
         public GetProviderStandardItem ProviderStandard { get; set; }
-        public List<GetStandardsListItem> Courses { get; set; }
+        public List<GetAdditionalCourseListItem> AdditionalCourses { get ; set ; }
     }
 }

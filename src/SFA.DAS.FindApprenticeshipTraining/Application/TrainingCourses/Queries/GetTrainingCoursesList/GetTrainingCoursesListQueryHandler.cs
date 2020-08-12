@@ -74,7 +74,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             await Task.WhenAll(_taskList);
 
             await _cacheHelper.UpdateCachedItems(sectorsTask, levelsTask, standardsTask, 
-                new SaveToCache{Levels = _saveLevelsToCache, Sectors = _saveSectorsToCache, Standards = _saveStandardsToCache});
+                new CacheHelper.SaveToCache{Levels = _saveLevelsToCache, Sectors = _saveSectorsToCache, Standards = _saveStandardsToCache});
             
             return new GetTrainingCoursesListResult
             {
@@ -88,10 +88,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         
     }
-    internal class SaveToCache
-    {
-        public bool Sectors { get; set; }
-        public bool Levels { get; set; }
-        public bool Standards { get; set; }
-    }
+    
 }

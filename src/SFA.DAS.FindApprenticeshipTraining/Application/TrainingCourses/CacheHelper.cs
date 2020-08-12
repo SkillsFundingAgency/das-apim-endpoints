@@ -67,5 +67,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
                 return false;
             return true;
         }
+        internal class SaveToCache
+        {
+            public bool Sectors { get; set; }
+            public bool Levels { get; set; }
+            public bool Standards { get; set; }
+        }
     }
 }

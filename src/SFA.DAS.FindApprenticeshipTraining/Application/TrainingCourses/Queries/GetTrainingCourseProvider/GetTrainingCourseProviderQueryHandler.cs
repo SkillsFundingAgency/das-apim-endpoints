@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,28 +30,45 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
             var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId));
+            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
+            var providerCoursesTask =
+                _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
+                    new GetProviderAdditionalStandardsRequest(request.ProviderId));
+            
+            var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
+                new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
+            
+            await Task.WhenAll(courseTask, providerTask, coursesTask);
 
-            if (request.CourseIds.Count == 0)
+            await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
+                new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
+
+            if (!providerCoursesTask.Result.CourseIds.Any())
             {
-                var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
-                await Task.WhenAll(courseTask, providerTask);
-
                 return new GetTrainingCourseProviderResult
                 {
                     Course = courseTask.Result,
-                    ProviderStandard = providerTask.Result
+                    ProviderStandard = providerTask.Result,
+                    AdditionalCourses = new List<GetAdditionalCourseListItem>() 
                 };
             }
-            var saveToCache = false;
-            var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
-                new GetStandardsListRequest(), nameof(GetStandardsListResponse), out saveToCache);
 
-            await Task.WhenAll(coursesTask, providerTask);
+            var additionalCourses = providerCoursesTask
+                .Result
+                .CourseIds.Select(courseId => 
+                    coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
+                .Select(course => new GetAdditionalCourseListItem
+                {
+                    Id = course.Id, 
+                    Level = course.Level, 
+                    Title = course.Title
+                }).ToList();
 
             return new GetTrainingCourseProviderResult
             {
+                Course = courseTask.Result,
                 ProviderStandard = providerTask.Result,
-                Courses = coursesTask.Result.Standards.ToList()
+                AdditionalCourses = additionalCourses 
             };
             
         }
