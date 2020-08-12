@@ -23,5 +23,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
         Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData);
         Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequestData requestData);
+        Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId);
     }
 }

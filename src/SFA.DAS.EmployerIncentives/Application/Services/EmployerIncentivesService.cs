@@ -104,6 +104,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response;
         }
 
+        public async Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId)
+        {
+            var response = await _client.Get<long>(new GetApplicationLegalEntityRequest(accountId, applicationId));
+
+            return response;
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
@@ -118,7 +125,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
-
-      
+        
     }
 }
