@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MediatR;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
@@ -6,5 +7,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         public int CourseId { get ; set ; }
         public int ProviderId { get ; set ; }
+        public List<int> CourseIds { get; set; }
     }
 }
