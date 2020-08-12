@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
-    public class GetAccountLegalEntitiesRequest : IGetApiRequest
+    public class GetAccountLegalEntitiesRequest : IGetAllApiRequest
     {
         private readonly long _accountId;
 
@@ -12,6 +12,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}accounts/{_accountId}/legalentities";
+        public string GetAllUrl => $"{BaseUrl}accounts/{_accountId}/legalentities";
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +11,10 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using System;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
             services.AddServiceRegistration();
-            
+
             services
                 .AddMvc(o =>
                 {
@@ -61,7 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            
+
             if (_configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
@@ -70,8 +70,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             {
                 var configuration = _configuration
                     .GetSection("FindApprenticeshipTrainingConfiguration")
-                    .Get<FindApprenticeshipTrainingConfiguration>(); 
-                
+                    .Get<FindApprenticeshipTrainingConfiguration>();
+
                 services.AddStackExchangeRedisCache(options =>
                 {
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
@@ -80,7 +80,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             if (_configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks();
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
@@ -89,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindApprenticeshipTrainingOuterApi", Version = "v1" });
             });
-            
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -113,7 +115,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     name: "default",
                     pattern: "api/{controller=Standards}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

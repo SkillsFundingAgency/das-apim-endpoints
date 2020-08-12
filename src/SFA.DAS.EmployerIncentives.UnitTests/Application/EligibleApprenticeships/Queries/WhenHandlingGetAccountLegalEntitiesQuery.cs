@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Queries
@@ -16,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_AccountLegalEntities_Are_Returned(
             GetLegalEntitiesQuery query,
-            GetAccountLegalEntitiesResponse response,
+            AccountLegalEntity[] response,
             [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
             GetLegalEntitiesHandler handler
         )
@@ -26,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             
             var actual = await handler.Handle(query, CancellationToken.None);
             
-            actual.AccountLegalEntities.Should().BeEquivalentTo(response.AccountLegalEntities);
+            actual.AccountLegalEntities.Should().BeEquivalentTo(response);
         }
     }
 }

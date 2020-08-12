@@ -34,9 +34,9 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as AccountLegalEntitiesResponse;
+            var model = controllerResult.Value as AccountLegalEntityDto[];
             Assert.IsNotNull(model);
-            model.AccountLegalEntities.Should().BeEquivalentTo(mediatorResult.AccountLegalEntities, options=>options.Excluding(c=>c.LegalEntityName));
+            model.Should().BeEquivalentTo(mediatorResult.AccountLegalEntities, options=>options.Excluding(c=>c.LegalEntityName));
         }
     }
 }

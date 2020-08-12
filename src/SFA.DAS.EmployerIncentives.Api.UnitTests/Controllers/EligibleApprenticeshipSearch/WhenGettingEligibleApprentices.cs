@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,11 +39,9 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as EligibleApprenticeshipsResponse;
+            var model = controllerResult.Value as IEnumerable<EligibleApprenticeshipDto>;
             Assert.IsNotNull(model);
-            model.Apprentices.Should().BeEquivalentTo(mediatorResult.Apprentices, options=>options
-                .Excluding(tc=>tc.StartDate)
-            );
+            model.Count().Should().Be(mediatorResult.Apprentices.Length);
         }
         
         [Test, MoqAutoData]

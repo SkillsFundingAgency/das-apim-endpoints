@@ -5,15 +5,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Models\EmployerIncentives\**" />
+      <EmbeddedResource Remove="Models\EmployerIncentives\**" />
+      <None Remove="Models\EmployerIncentives\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\EmployerIncentives\" />
     </ItemGroup>
 
 </Project>
