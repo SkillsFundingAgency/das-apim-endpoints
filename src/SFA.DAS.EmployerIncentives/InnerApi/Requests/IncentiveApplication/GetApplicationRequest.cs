@@ -1,7 +1,7 @@
 using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication
 {
     public class GetApplicationRequest : IGetApiRequest
     {

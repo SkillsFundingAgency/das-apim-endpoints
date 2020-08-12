@@ -8,37 +8,36 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
+namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 {
-    public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand>
+    public class UpdateApplicationCommandHandler : IRequestHandler<UpdateApplicationCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IEmployerIncentivesService _employerIncentivesService;
 
-        public CreateApplicationCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
+        public UpdateApplicationCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
         {
             _commitmentsService = commitmentsService;
             _employerIncentivesService = employerIncentivesService;
         }
 
-        public async Task<Unit> Handle(CreateApplicationCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateApplicationCommand command, CancellationToken cancellationToken)
         {
             var apprenticeships = await _commitmentsService.GetApprenticeshipDetails(command.AccountId, command.ApprenticeshipIds);
 
             var request = CreateIncentiveApplicationRequest(command, apprenticeships);
 
-            await _employerIncentivesService.CreateIncentiveApplication(request);
+            await _employerIncentivesService.UpdateIncentiveApplication(request);
 
             return Unit.Value;
         }
 
-        private static CreateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(CreateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
+        private static UpdateIncentiveApplicationRequestData CreateIncentiveApplicationRequest(UpdateApplicationCommand command, IEnumerable<ApprenticeshipResponse> apprenticeships)
         {
-            return new CreateIncentiveApplicationRequestData
+            return new UpdateIncentiveApplicationRequestData
             {
                 IncentiveApplicationId = command.ApplicationId,
                 AccountId = command.AccountId,
-                AccountLegalEntityId = command.AccountLegalEntityId,
                 Apprenticeships = apprenticeships.Select(x => (IncentiveClaimApprenticeshipDto)x).ToArray()
             };
         }

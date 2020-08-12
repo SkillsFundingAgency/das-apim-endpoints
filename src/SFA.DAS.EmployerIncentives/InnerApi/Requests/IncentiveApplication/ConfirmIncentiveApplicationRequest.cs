@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
-namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
+namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication
 {
     public class ConfirmIncentiveApplicationRequest : IPatchApiRequest
     {
@@ -12,6 +12,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
             DateSubmitted = dateSubmitted;
             SubmittedBy = submittedBy;
         }
+
         public Guid IncentiveApplicationId { get; set; }
         public long AccountId { get; set; }
         public DateTime DateSubmitted { get; set; }

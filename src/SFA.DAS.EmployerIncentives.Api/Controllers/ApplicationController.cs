@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 using System;
 using System.Threading.Tasks;
@@ -24,11 +25,20 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpPost]
         [Route("/accounts/{accountId}/applications")]
-        public async Task<IActionResult> PostApplication(CreateApplicationRequest request)
+        public async Task<IActionResult> CreateApplication(CreateApplicationRequest request)
         {
-            var applicationId = await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
+            await _mediator.Send(new CreateApplicationCommand(request.ApplicationId, request.AccountId, request.AccountLegalEntityId, request.ApprenticeshipIds));
 
             return new CreatedResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}", null);
+        }
+
+        [HttpPut]
+        [Route("/accounts/{accountId}/applications")]
+        public async Task<IActionResult> UpdateApplication(UpdateApplicationRequest request)
+        {
+            await _mediator.Send(new UpdateApplicationCommand(request.ApplicationId, request.AccountId, request.ApprenticeshipIds));
+
+            return new OkObjectResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}");
         }
 
         [HttpPatch]

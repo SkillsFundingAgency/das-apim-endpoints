@@ -1,6 +1,8 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
 using System;
@@ -10,7 +12,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -78,9 +79,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
-        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequest request)
+        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
-            return _client.Post<CreateIncentiveApplicationRequest>(new PostCreateIncentiveApplicationRequest{ Data = request});
+            return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
+        }
+
+        public Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequestData requestData)
+        {
+            return _client.Put(new UpdateIncentiveApplicationRequest { Data = requestData });
         }
 
         public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)

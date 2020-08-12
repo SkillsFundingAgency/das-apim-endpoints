@@ -1,8 +1,8 @@
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -10,7 +10,7 @@ namespace SFA.DAS.SharedOuterApi.Services
     {
         private readonly IApiClient<CoursesApiConfiguration> _apiClient;
 
-        public CourseApiClient (IApiClient<CoursesApiConfiguration> apiClient)
+        public CourseApiClient(IApiClient<CoursesApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -45,6 +45,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         }
 
         public Task Put(IPutApiRequest request)
+        {
+            return _apiClient.Put(request);
+        }
+
+        public Task Put<TData>(IPutApiRequest<TData> request)
         {
             return _apiClient.Put(request);
         }

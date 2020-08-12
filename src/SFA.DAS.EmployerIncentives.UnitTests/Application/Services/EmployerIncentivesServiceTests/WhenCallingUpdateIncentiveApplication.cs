@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
-    public class WhenCallingCreateIncentiveApplication
+    public class WhenCallingUpdateIncentiveApplication
     {
         [Test, MoqAutoData]
         public async Task Then_The_InnerApi_Is_Called(
-            CreateIncentiveApplicationRequestData requestData,
+            UpdateIncentiveApplicationRequestData requestData,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService sut)
         {
-            await sut.CreateIncentiveApplication(requestData);
+            await sut.UpdateIncentiveApplication(requestData);
 
             client.Verify(x =>
-                x.Post<CreateIncentiveApplicationRequestData>(It.Is<CreateIncentiveApplicationRequest>(
-                    c => (CreateIncentiveApplicationRequestData)c.Data == requestData &&
-                        c.PostUrl.Contains("application")
+                x.Put(It.Is<UpdateIncentiveApplicationRequest>(
+                    c => c.Data == requestData &&
+                         c.PutUrl.Contains("application")
                 )), Times.Once);
         }
     }

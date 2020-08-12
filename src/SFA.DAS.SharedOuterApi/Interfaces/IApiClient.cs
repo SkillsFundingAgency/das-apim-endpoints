@@ -13,5 +13,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task Delete(IDeleteApiRequest request);
         Task Patch(IPatchApiRequest request);
         Task Put(IPutApiRequest request);
+        Task Put<TData>(IPutApiRequest<TData> request);
     }
 }
