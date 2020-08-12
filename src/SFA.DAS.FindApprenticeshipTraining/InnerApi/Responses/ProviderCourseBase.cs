@@ -6,7 +6,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class ProviderCourseBase
     {
-        protected string MapLevel(int level)
+        private string MapLevel(int level)
         {
             if (level == 2)
             {
@@ -25,6 +25,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         protected GetAchievementRateItem GetAchievementRateItem(IEnumerable<GetAchievementRateItem> list, string subjectArea, int level)
         {
+            if (list == null)
+                return null;
+            
             var result = list.Where(c =>
                 c.SectorSubjectArea.Equals(subjectArea, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
