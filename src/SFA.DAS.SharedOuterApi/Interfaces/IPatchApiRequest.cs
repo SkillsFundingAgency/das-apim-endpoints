@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface IPatchApiRequest : IBaseApiRequest
+    public interface IPatchApiRequest<TData> : IBaseApiRequest
     {
         [JsonIgnore]
         string PatchUrl { get; }
 
-        object Data { get; set; }
+        TData Data { get; set; }
     }
 }
