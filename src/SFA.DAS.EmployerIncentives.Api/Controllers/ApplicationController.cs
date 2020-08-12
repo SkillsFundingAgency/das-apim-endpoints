@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -32,15 +32,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("applications")]
+        [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
             await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
 
             return new OkResult();
         }
-		
-		[HttpGet]
+
+        [HttpGet]
         [Route("/accounts/{accountId}/applications/{applicationId}")]
         public async Task<IActionResult> GetApplication(long accountId, Guid applicationId)
         {
