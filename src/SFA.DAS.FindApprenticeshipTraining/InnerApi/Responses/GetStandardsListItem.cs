@@ -29,7 +29,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string StandardPageUrl { get; set; }
 
         public string IntegratedDegree { get; set; }
-
+        public string SectorSubjectAreaTier2Description { get; set; }
+        public decimal SectorSubjectAreaTier2 { get; set; }
         private long GetMaxFunding()
         {
             var funding = ApprenticeshipFunding

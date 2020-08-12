@@ -4,6 +4,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
 {
     public class IncentiveApplicationApprenticeshipDto
     {
+        public long ApprenticeshipId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string CourseName { get; set; }
@@ -13,6 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         {
             return new IncentiveApplicationApprenticeshipDto
             {
+                ApprenticeshipId = source.ApprenticeshipId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 TotalIncentiveAmount = source.TotalIncentiveAmount,

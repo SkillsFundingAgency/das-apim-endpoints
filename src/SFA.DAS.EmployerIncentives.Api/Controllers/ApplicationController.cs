@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("applications")]
+        [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
             await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
