@@ -8,13 +8,4 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Name { get; set; }
         public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
     }
-
-    
-
-    public class GetAchievementRateItem
-    {
-        public string SectorSubjectArea { get; set; }
-        public int OverallCohort { get; set; }
-        public decimal OverallAchievementRate { get; set; }
-    }
 }

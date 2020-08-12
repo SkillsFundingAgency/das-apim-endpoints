@@ -4,7 +4,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
-    public class GetTrainingCourseProviderListItem
+    public class GetTrainingCourseProviderListItem : ProviderCourseBase
     {
         public string Name { get ; set ; }
 
@@ -12,10 +12,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int? OverallCohort { get ; set ; }
         public decimal? OverallAchievementRate { get ; set ; }
 
-        public GetTrainingCourseProviderListItem Map(GetProvidersListItem source, string sectorSubjectArea)
+        public GetTrainingCourseProviderListItem Map(GetProvidersListItem source, string sectorSubjectArea, int level)
         {
-            var achievementRate = source.AchievementRates.FirstOrDefault(c =>
-                c.SectorSubjectArea.Equals(sectorSubjectArea, StringComparison.CurrentCultureIgnoreCase));
+            var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
+            
             return new GetTrainingCourseProviderListItem
             {
                 Name = source.Name,

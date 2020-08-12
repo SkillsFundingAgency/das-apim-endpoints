@@ -46,7 +46,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             );
             model.TrainingCourseProvider.Should()
                 .BeEquivalentTo(mediatorResult.ProviderStandard, 
-                    options => options.Excluding(c=>c.ContactUrl).Excluding(c=>c.StandardId));
+                    options => options
+                        .Excluding(c=>c.ContactUrl)
+                        .Excluding(c=>c.StandardId)
+                        .Excluding(c=>c.AchievementRates)
+                        .Excluding(c=>c.OverallAchievementRates)
+                    );
             model.TrainingCourse.Should().NotBeNull();
         }
 
