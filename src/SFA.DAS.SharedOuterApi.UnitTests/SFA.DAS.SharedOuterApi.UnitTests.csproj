@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
         <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.5" />
         <PackageReference Include="Moq" Version="4.7.0" />
@@ -20,6 +21,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="InnerApi\Requests" />
     </ItemGroup>
 
 </Project>

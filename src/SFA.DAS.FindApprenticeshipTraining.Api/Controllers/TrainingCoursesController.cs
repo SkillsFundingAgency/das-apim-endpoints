@@ -10,6 +10,8 @@ using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.Get
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -89,7 +91,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var model = new GetTrainingCourseProvidersResponse
                 {
                     TrainingCourse = result.Course,
-                    TrainingCourseProviders = result.Providers.Select(c=>(GetTrainingCourseProviderListItem)c).ToList(),
+                    TrainingCourseProviders = result.Providers
+                        .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)).ToList(),
                     Total = result.Total
                 };
                 return Ok(model);
@@ -101,6 +104,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             }
         }
 
-        
+        [HttpGet]
+        [Route("{id}/providers/{providerId}")]
+        public async Task<IActionResult> GetProviderCourse(int id, int providerId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetTrainingCourseProviderQuery
+                {
+                    CourseId = id, 
+                    ProviderId = providerId
+                });
+                var model = new GetTrainingCourseProviderResponse
+                {
+                    TrainingCourse = result.Course,
+                    TrainingCourseProvider = new GetProviderCourseItem().Map(result,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)
+                };
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get a training course {id} with provider {providerId}");
+                return BadRequest();
+            }
+        }
     }
 }
