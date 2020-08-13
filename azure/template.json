@@ -101,7 +101,8 @@
             },
             "copy": {
                 "name": "certificateLoop",
-                "count": "[length(parameters('outerApiArray'))]"
+                "count": "[length(parameters('outerApiArray'))]",
+                "mode": "Serial"
             }
         },
         {
