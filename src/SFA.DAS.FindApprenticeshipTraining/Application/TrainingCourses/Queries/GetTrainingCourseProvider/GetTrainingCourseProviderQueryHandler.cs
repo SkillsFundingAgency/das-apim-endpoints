@@ -43,6 +43,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
                 new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
 
+            var overallAchievementRates =
+                await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
             if (!providerCoursesTask.Result.CourseIds.Any())
             {
                 return new GetTrainingCourseProviderResult
@@ -50,6 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Course = courseTask.Result,
                     ProviderStandard = providerTask.Result,
                     AdditionalCourses = new List<GetAdditionalCourseListItem>() 
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates
                 };
             }
 
@@ -68,7 +71,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 Course = courseTask.Result,
                 ProviderStandard = providerTask.Result,
-                AdditionalCourses = additionalCourses 
+                AdditionalCourses = additionalCourses,
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates
             };
             
         }

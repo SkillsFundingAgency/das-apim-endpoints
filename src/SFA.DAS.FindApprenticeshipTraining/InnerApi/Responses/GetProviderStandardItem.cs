@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetProviderStandardItem
@@ -8,5 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Email { get; set; }
         public string Phone { get; set; }
         public int StandardId { get; set; }
+        public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
+        
     }
 }

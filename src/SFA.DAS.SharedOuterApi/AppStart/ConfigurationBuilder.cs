@@ -12,13 +12,15 @@ namespace SFA.DAS.SharedOuterApi.AppStart
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
-#if DEBUG
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.Development.json", true)
-#endif
                 .AddEnvironmentVariables();
-
-            if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+#if DEBUG
+            config.AddJsonFile("appsettings.json", true);
+            if (!configuration.IsLocalAcceptanceTests())
+            {
+                config.AddJsonFile("appsettings.Development.json", true);
+            }
+#endif
+            if (!configuration.IsLocalAcceptanceTestsOrDev())
             {
                 config.AddAzureTableStorage(options =>
                     {
@@ -35,8 +37,26 @@ namespace SFA.DAS.SharedOuterApi.AppStart
 
         public static bool IsLocalOrDev(this IConfiguration configuration)
         {
-            return configuration["Environment"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
-                   configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase);
+            return configuration.IsLocal() || configuration.IsDev() || configuration.IsLocalAcceptanceTests();
+        }
+
+        public static bool IsLocalAcceptanceTestsOrDev(this IConfiguration configuration)
+        {
+            return configuration.IsLocalAcceptanceTests() || configuration.IsDev();
+        }
+
+        public static bool IsLocalAcceptanceTests(this IConfiguration configuration)
+        {
+            return configuration["Environment"].Equals("LOCAL_ACCEPTANCE_TESTS", StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public static bool IsDev(this IConfiguration configuration)
+        {
+            return configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase);
+        }
+        public static bool IsLocal(this IConfiguration configuration)
+        {
+            return configuration["Environment"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

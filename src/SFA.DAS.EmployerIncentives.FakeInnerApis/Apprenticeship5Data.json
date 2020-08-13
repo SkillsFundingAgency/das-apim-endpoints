@@ -1,0 +1,18 @@
+{
+  "id": 5,
+  "employerAccountId": 100,
+  "accountLegalEntityId": 2000,
+  "firstName": "noone",
+  "lastName": "Last name",
+  "uln": "8166625368",
+  "courseCode": "ABC123",
+  "courseName": "Geospatial Survey Technician, Level: 3 (Standard)",
+  "startDate": "2020-09-01T00:00:00",
+  "endDate": "2021-12-01T00:00:00",
+  "pauseDate": "0001-01-01T00:00:00",
+  "stopDate": "0001-01-01T00:00:00",
+  "completionDate": "0001-01-01T00:00:00",
+  "dateOfBirth": "1997-01-01T00:00:00",
+  "originalStartDate": "2020-09-01T00:00:00",
+  "ApprenticeshipEmployerTypeOnApproval": 1
+}

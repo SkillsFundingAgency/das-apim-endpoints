@@ -11,6 +11,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.Get
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -91,7 +92,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     TrainingCourse = result.Course,
                     TrainingCourseProviders = result.Providers
-                        .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description)).ToList(),
+                        .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)).ToList(),
                     Total = result.Total
                 };
                 return Ok(model);
@@ -117,7 +118,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
-                    TrainingCourseProvider = result.ProviderStandard,
+                    TrainingCourseProvider = new GetProviderCourseItem().Map(result,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)
                     AdditionalCourses = result.AdditionalCourses
                 };
                 return Ok(model);
