@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
             var bankingData = new BankingData
             {
                 VendorCode = "00000000",
-                LegalEntityId = 0, //TODO
+                LegalEntityId = application.LegalEntityId,
                 ApplicantEmail = "TODO", //TODO
                 ApplicantName = "TODO", //TODO
                 ApplicationValue = application.Apprenticeships.Sum(x => x.TotalIncentiveAmount)

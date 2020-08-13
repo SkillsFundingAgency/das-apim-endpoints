@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             actual.Data.ApplicantEmail.Should().Be("TODO");
             actual.Data.ApplicantName.Should().Be("TODO");
-            actual.Data.LegalEntityId.Should().Be(0);
+            actual.Data.LegalEntityId.Should().Be(applicationResponse.LegalEntityId);
             actual.Data.ApplicationValue.Should().Be(applicationResponse.Apprenticeships.Sum(x => x.TotalIncentiveAmount));
             actual.Data.VendorCode.Should().Be("00000000");
         }

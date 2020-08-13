@@ -1,6 +1,5 @@
 using System;
 using MediatR;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
 {
