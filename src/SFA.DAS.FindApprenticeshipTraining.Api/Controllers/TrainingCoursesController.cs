@@ -118,7 +118,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     TrainingCourse = result.Course,
                     TrainingCourseProvider = result.ProviderStandard,
-                    AdditionalCourses = result.AdditionalCourses
+                    AdditionalCourses = new GetTrainingAdditionalCourseItem
+                    {
+                        Total = result.AdditionalCourses.Count,
+                        Courses = result.AdditionalCourses.Select(c=>(GetTrainingProviderAdditionalCourseListItem)c).ToList()
+                    }
                 };
                 return Ok(model);
             }
