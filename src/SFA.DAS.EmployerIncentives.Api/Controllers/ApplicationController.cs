@@ -6,7 +6,7 @@ using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationLegalEntity;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using System;
 using System.Threading.Tasks;
 
@@ -68,9 +68,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/applications/{applicationId}/accountlegalentity")]
-        public async Task<IActionResult> GetApplicationLegalEntity(long accountId, Guid applicationId)
+        public async Task<IActionResult> GetApplicationAccountLegalEntity(long accountId, Guid applicationId)
         {
-            var result = await _mediator.Send(new GetApplicationLegalEntityQuery
+            var result = await _mediator.Send(new GetApplicationAccountLegalEntityQuery
             {
                 AccountId = accountId,
                 ApplicationId = applicationId

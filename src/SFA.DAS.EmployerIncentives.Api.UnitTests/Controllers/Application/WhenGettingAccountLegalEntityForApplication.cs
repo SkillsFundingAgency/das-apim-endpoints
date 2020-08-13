@@ -10,12 +10,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationLegalEntity;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprenticeshipSearch
 {
-    public class WhenGettingLegalEntityForApplication
+    public class WhenGettingAccountLegalEntityForApplication
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Legal_Entity_From_Mediator(
@@ -27,13 +27,13 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetApplicationLegalEntityQuery>(c=>
+                    It.Is<GetApplicationAccountLegalEntityQuery>(c=>
                                             c.AccountId.Equals(accountId) 
                                             && c.ApplicationId.Equals(applicationId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetApplicationLegalEntity(accountId, applicationId) as ObjectResult;
+            var controllerResult = await controller.GetApplicationAccountLegalEntity(accountId, applicationId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
