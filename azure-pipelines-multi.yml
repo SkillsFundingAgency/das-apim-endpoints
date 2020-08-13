@@ -15,6 +15,11 @@ resources:
     # once implemented use tags to reference the repo for backwards compatibility
     ref: refs/heads/multi-stage-yaml
     endpoint: GitHub (SFA)
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.1.0
+    endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
