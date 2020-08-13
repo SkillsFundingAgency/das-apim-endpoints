@@ -45,13 +45,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var overallAchievementRates =
                 await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
+                    new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
             if (!providerCoursesTask.Result.CourseIds.Any())
             {
                 return new GetTrainingCourseProviderResult
                 {
                     Course = courseTask.Result,
                     ProviderStandard = providerTask.Result,
-                    AdditionalCourses = new List<GetAdditionalCourseListItem>() 
+                    AdditionalCourses = new List<GetAdditionalCourseListItem>(),
                 OverallAchievementRates = overallAchievementRates.OverallAchievementRates
                 };
             }
