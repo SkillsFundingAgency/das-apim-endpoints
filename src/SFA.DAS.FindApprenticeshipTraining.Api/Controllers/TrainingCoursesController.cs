@@ -116,7 +116,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
-                    TrainingCourseProvider = result.ProviderStandard
+                    TrainingCourseProvider = result.ProviderStandard,
+                    AdditionalCourses = result.AdditionalCourses
                 };
                 return Ok(model);
             }

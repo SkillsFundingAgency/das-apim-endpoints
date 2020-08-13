@@ -55,14 +55,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var additionalCourses = providerCoursesTask
                 .Result
-                .CourseIds.Select(courseId => 
+                .CourseIds.Select(courseId =>
                     coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
                 .Select(course => new GetAdditionalCourseListItem
                 {
-                    Id = course.Id, 
-                    Level = course.Level, 
+                    Id = course.Id,
+                    Level = course.Level,
                     Title = course.Title
-                }).ToList();
+                }).Where(x => x.Id != request.CourseId).ToList();
 
             return new GetTrainingCourseProviderResult
             {
