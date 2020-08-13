@@ -8,6 +8,7 @@ using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -61,6 +62,21 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             });
 
             var response = new ApplicationResponse { Application = result.Application };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails")]
+        public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId)
+        {
+            var result = await _mediator.Send(new GetBankingDataQuery
+            {
+                AccountId = accountId,
+                ApplicationId = applicationId
+            });
+
+            var response = (BankingDetailsDto)result.Data;
 
             return Ok(response);
         }
