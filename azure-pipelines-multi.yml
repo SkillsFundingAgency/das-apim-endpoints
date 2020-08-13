@@ -89,8 +89,7 @@ stages:
     parameters:
       AzureSubscription: SFA-DAS-DevTest-ARM
       Environment: AT
-      # TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
 
@@ -132,8 +131,7 @@ stages:
     parameters:
       AzureSubscription: SFA-DAS-DevTest-ARM
       Environment: TEST
-      # TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.min.json
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
   - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
