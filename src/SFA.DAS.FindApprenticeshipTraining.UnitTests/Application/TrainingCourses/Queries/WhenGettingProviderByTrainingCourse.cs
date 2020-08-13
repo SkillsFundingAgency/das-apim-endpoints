@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    CourseIds = allCoursesApiResponse.Standards.Select(c=>c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c=>c.Id).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.CourseId.ToString()))))
@@ -79,7 +79,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    CourseIds = new List<int>()
+                    StandardIds = new List<int>()
                 });
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
@@ -94,7 +94,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Returns_Additional_Courses_for_Provider(
+        public async Task Then_Returns_Additional_Courses_for_Provider_In_Alphabetical_Order(
             GetTrainingCourseProviderQuery query,
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
@@ -116,7 +116,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    CourseIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
@@ -127,45 +127,59 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.AdditionalCourses.Should().NotBeEquivalentTo(new List<GetAdditionalCourseListItem>());
+            result.AdditionalCourses.Should().BeInAscendingOrder(c=>c.Title);
+            result.AdditionalCourses.Should()
+                .BeEquivalentTo(allCoursesApiResponse.Standards, options => options.ExcludingMissingMembers());
         }
 
         [Test, MoqAutoData]
         public async Task Then_Additional_Courses_for_Provider_Should_Not_Contain_Course_Passed_To_Handler(
-    GetTrainingCourseProviderQuery query,
-    GetProviderStandardItem apiResponse,
-    GetStandardsListItem apiCourseResponse,
-    GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
-    GetStandardsListResponse allCoursesApiResponse,
-    [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-    [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-    GetTrainingCourseProviderQueryHandler handler)
+            GetTrainingCourseProviderQuery query,
+            GetProviderStandardItem apiProviderStandardResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
+            GetStandardsListResponse allCoursesApiResponse,
+            List<GetStandardsListItem> allStandards,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProviderQueryHandler handler)
         {
+            apiCourseResponse.Id = query.CourseId;
+            allStandards.Add(new GetStandardsListItem
+            {
+                Id=apiCourseResponse.Id,
+                Title = apiCourseResponse.Title,
+                Level = apiCourseResponse.Level
+            });
+            allCoursesApiResponse.Standards = allStandards;
             mockApiClient
                 .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString()
                     ))))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(apiProviderStandardResponse);
+            
             mockApiClient
                 .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(It.Is<GetProviderAdditionalStandardsRequest>(c =>
                     c.GetUrl.Contains(query.ProviderId.ToString()
                     ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    CourseIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
                 });
+            
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => 
+                    c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
-            var originalCourse = new GetAdditionalCourseListItem{Id = query.CourseId};
+            
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.AdditionalCourses.Should().NotContain(originalCourse);
+            result.AdditionalCourses.Count.Should().Be(allCoursesApiResponse.Standards.Count()-1);
         }
     }
 }
