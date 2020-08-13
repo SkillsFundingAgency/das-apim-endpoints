@@ -38,7 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
             
-            await Task.WhenAll(courseTask, providerTask, coursesTask);
+            await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask);
 
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
                 new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
@@ -46,7 +46,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var overallAchievementRates =
                 await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
                     new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
-            if (!providerCoursesTask.Result.CourseIds.Any())
+            if (!providerCoursesTask.Result.StandardIds.Any())
             {
                 return new GetTrainingCourseProviderResult
                 {
@@ -59,14 +59,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var additionalCourses = providerCoursesTask
                 .Result
-                .CourseIds.Select(courseId =>
+                .StandardIds.Select(courseId =>
                     coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
                 .Select(course => new GetAdditionalCourseListItem
                 {
                     Id = course.Id,
                     Level = course.Level,
                     Title = course.Title
-                }).Where(x => x.Id != request.CourseId).ToList();
+                })
+                .Where(x => x.Id != request.CourseId)
+                .OrderBy(c=>c.Title)
+                .ToList();
 
             return new GetTrainingCourseProviderResult
             {
