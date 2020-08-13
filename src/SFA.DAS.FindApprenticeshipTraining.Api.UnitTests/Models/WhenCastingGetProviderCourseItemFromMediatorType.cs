@@ -15,9 +15,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.Should().BeEquivalentTo(providerStandardItem, options => options
                 .Excluding(c=>c.ContactUrl)
                 .Excluding(c=>c.StandardId)
+                .Excluding(c=>c.Ukprn)
             );
 
             actual.Website.Should().Be(providerStandardItem.ContactUrl);
+            actual.ProviderId.Should().Be(providerStandardItem.Ukprn);
         }
     }
 }

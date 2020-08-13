@@ -2,7 +2,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetProviderCourseItem
     {
-        public int Ukprn { get ; set ; }
+        public int ProviderId { get ; set ; }
 
         public string Name { get ; set ; }
 
@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 Phone = source.Phone,
                 Email = source.Email,
                 Name = source.Name,
-                Ukprn = source.Ukprn
+                ProviderId = source.Ukprn
             };
 
         }
