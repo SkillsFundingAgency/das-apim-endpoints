@@ -25,5 +25,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
             return new OkResult();
         }
+
+        [HttpPost]
+        [Route("bank-details-reminder")]
+        public async Task<IActionResult> SendBankDetailsReminderEmail(SendBankDetailsEmailRequest request)
+        {
+            await _mediator.Send(new SendBankDetailsReminderEmailCommand(request.AccountId, request.AccountLegalEntityId, request.EmailAddress, request.AddBankDetailsUrl));
+
+            return new OkResult();
+        }
+
     }
 }

@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await sut.SendBankDetailRequiredEmail(accountId, requestData);
 
             client.Verify(x =>
-                x.Post<SendBankDetailsEmailRequest>(It.Is<PostSendBankDetailsEmailRequest>(
+                x.Post<SendBankDetailsEmailRequest>(It.Is<PostBankDetailsRequiredEmailRequest>(
                     c => c.Data == requestData &&
                          c.PostUrl.Contains("bank-details-required")
                 )), Times.Once);

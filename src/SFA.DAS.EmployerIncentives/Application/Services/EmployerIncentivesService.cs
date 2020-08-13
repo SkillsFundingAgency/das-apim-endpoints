@@ -81,7 +81,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest) 
         {
-            var request = new PostSendBankDetailsEmailRequest(accountId)
+            var request = new PostBankDetailsRequiredEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
+        public async Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
+        {
+            var request = new PostBankDetailsReminderEmailRequest(accountId)
             { Data = sendBankDetailsEmailRequest };
 
             await _client.Post<SendBankDetailsEmailRequest>(request);
@@ -125,6 +133,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
-        
+
     }
 }

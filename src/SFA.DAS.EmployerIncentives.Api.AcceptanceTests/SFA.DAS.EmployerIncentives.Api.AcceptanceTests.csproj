@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\SendBankDetailsRequiredEmail - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
@@ -21,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features\SendBankDetailsReminderEmail.feature.cs">
+      <DependentUpon>SendBankDetailsReminderEmail.feature</DependentUpon>
+    </Compile>
     <Compile Update="Features\SendBankDetailsRequiredEmail.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -30,6 +37,12 @@
     <SpecFlowFeatureFiles Update="Features\JobRequests.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\SendBankDetailsReminderEmail.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+      <LastGenOutput>SendBankDetailsRequiredEmail.feature.cs</LastGenOutput>
+      <Generator>SpecFlowSingleFileGenerator</Generator>
     </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\SendBankDetailsRequiredEmail.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
