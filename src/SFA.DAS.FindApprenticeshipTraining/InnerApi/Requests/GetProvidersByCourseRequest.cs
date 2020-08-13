@@ -12,6 +12,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         }
         public string BaseUrl { get; set; }
         
-        public string GetUrl => $"{BaseUrl}api/courses/{_courseId}/providers?age=4&level=1";
+        public string GetUrl => $"{BaseUrl}api/courses/{_courseId}/providers";
     }
 }
