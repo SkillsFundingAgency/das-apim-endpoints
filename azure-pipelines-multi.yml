@@ -14,7 +14,7 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     # once implemented use tags to reference the repo for backwards compatibility
     ref: refs/heads/multi-stage-yaml
-    endpoint: "GitHub (SFA)"
+    endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
@@ -137,6 +137,9 @@ stages:
       TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
   - template: azure-pipelines-templates/deploy/job/app-deploy.yml@das-platform-building-blocks
     parameters:
       AzureSubscription: SFA-DAS-DevTest-ARM
