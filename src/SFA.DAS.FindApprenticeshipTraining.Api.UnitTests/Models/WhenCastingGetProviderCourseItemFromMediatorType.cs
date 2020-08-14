@@ -18,6 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.Should().BeEquivalentTo(providerStandardItem.Course, options => options.ExcludingMissingMembers());
 
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.ContactUrl);
+            actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
         }
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level_Higher_Than_Three(string sectorSubjectArea,
@@ -34,7 +35,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,5);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
-            response.Ukprn.Should().Be(source.ProviderStandard.Ukprn);
+            response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
 
@@ -61,7 +62,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,2);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
-            response.Ukprn.Should().Be(source.ProviderStandard.Ukprn);
+            response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.NationalOverallCohort.Should().Be(item3.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
@@ -87,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea, 1);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
-            response.Ukprn.Should().Be(source.ProviderStandard.Ukprn);
+            response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().BeNull();
             response.NationalOverallCohort.Should().BeNull();
             response.OverallAchievementRate.Should().BeNull();
