@@ -5,7 +5,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetProviderCourseItem : ProviderCourseBase
     {
-        public int Ukprn { get ; set ; }
+        public int ProviderId { get ; set ; }
 
         public string Name { get ; set ; }
 
@@ -31,11 +31,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
-                Ukprn = source.ProviderStandard.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 NationalOverallCohort = nationalRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
-                NationalOverallAchievementRate = nationalRate?.OverallAchievementRate
+                NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
+                ProviderId = source.ProviderStandard.Ukprn
             };
         }
 
