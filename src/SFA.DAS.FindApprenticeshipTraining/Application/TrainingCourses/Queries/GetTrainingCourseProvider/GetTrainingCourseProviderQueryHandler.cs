@@ -76,7 +76,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 ProviderStandard = providerTask.Result,
                 Course = courseTask.Result,
-                OverallAchievementRates = overallAchievementRates?.OverallAchievementRates,
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
                 AdditionalCourses = additionalCourses
             };
         }
