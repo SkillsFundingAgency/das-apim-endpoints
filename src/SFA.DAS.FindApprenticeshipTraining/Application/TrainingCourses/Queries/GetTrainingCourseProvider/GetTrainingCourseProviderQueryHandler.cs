@@ -26,11 +26,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId));
 
             await Task.WhenAll(courseTask, providerTask);
+
+            var overallAchievementRates =
+                await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
+                    new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
             
             return new GetTrainingCourseProviderResult
             {
                 Course = courseTask.Result,
-                ProviderStandard = providerTask.Result
+                ProviderStandard = providerTask.Result,
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates
             }; 
         }
     }

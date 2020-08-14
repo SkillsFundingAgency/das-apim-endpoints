@@ -14,13 +14,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             GetProvidersListItem source, GetAchievementRateItem item, GetAchievementRateItem item2)
         {
             item.SectorSubjectArea = sectorSubjectArea;
+            item.Level = "Two";
             source.AchievementRates = new List<GetAchievementRateItem>
             {
                item,
                item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,2);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -38,7 +39,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Name.Should().Be(source.Name);
+            response.ProviderId.Should().Be(source.Ukprn);
+            response.OverallCohort.Should().BeNull();
+            response.OverallAchievementRate.Should().BeNull();
+
+        }
+        
+        [Test, AutoData]
+        public void Then_Maps_Fields_Appropriately_Returning_Null_For_AchievementRate_Data_If_No_AchievementRates(string sectorSubjectArea,
+            GetProvidersListItem source, GetAchievementRateItem item, GetAchievementRateItem item2)
+        {
+            source.AchievementRates = null;
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
