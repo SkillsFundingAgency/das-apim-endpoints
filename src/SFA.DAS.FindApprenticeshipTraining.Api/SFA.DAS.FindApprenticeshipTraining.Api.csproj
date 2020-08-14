@@ -5,6 +5,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="nlog.Debug.config" />
+    <Content Remove="nlog.Release.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="nlog.Debug.config">
+      <IsTransformFile>true</IsTransformFile>
+      <DependentUpon>nlog.config</DependentUpon>
+    </None>
+    <None Include="nlog.Release.config">
+      <IsTransformFile>true</IsTransformFile>
+      <DependentUpon>nlog.config</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
       <PackageReference Include="MediatR" Version="6.0.0" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
@@ -29,6 +45,7 @@
     </Content>
     <Content Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
     </Content>
   </ItemGroup>
 
