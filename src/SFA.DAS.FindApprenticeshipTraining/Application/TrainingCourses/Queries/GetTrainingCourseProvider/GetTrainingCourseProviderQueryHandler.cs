@@ -39,7 +39,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
             
             await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask);
-
+            
+            var overallAchievementRates =
+                await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
+                    new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
+            
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
                 new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
 
@@ -67,13 +71,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 .OrderBy(c=>c.Title)
                 .ToList();
 
+
             return new GetTrainingCourseProviderResult
             {
-                Course = courseTask.Result,
                 ProviderStandard = providerTask.Result,
-                AdditionalCourses = additionalCourses 
+                Course = courseTask.Result,
+                OverallAchievementRates = overallAchievementRates?.OverallAchievementRates,
+                AdditionalCourses = additionalCourses
             };
-            
         }
     }
 }
