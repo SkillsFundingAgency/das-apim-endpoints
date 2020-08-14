@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MediatR;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
