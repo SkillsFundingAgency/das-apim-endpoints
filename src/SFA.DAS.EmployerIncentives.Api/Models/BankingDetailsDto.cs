@@ -1,4 +1,5 @@
-﻿using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.EmployerIncentives.Models;
 
 namespace SFA.DAS.EmployerIncentives.Api.Models
@@ -10,6 +11,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public string ApplicantName { get; set; }
         public string ApplicantEmail { get; set; }
         public decimal ApplicationValue { get; set; }
+        public IEnumerable<SignedAgreementDto> SignedAgreements { get; set; }
 
         public static implicit operator BankingDetailsDto(BankingData from)
         {
@@ -19,7 +21,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 LegalEntityId = from.LegalEntityId,
                 ApplicantEmail = from.ApplicantEmail,
                 ApplicationValue = from.ApplicationValue,
-                ApplicantName = from.ApplicantName
+                ApplicantName = from.ApplicantName,
+                SignedAgreements = from.SignedAgreements.Select(x => (SignedAgreementDto)x)
             };
         }
     }
