@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers?age=4&level=1");
+            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers");
         }
     }
 }
