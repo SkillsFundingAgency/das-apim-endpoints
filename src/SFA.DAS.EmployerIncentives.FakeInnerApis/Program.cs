@@ -38,6 +38,8 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                 SetupApprenticeshipSearchResponses();
                 SetupGetApprenticeshipResponses();
 
+                SetupGetLegalEntityResponse();
+
                 Console.WriteLine(("Please RETURN to stop server"));
                 Console.ReadLine();
             }
@@ -125,8 +127,8 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
 
         static void SetupGetLegalEntityResponse()
         {
-            _fakeCommitmentsApi.Given(
-                    Request.Create().WithPath($"api/accounts/{_hashedAccountId}/legalentities/{_legalEntityId}")
+            _fakeAccountsApi.Given(
+                    Request.Create().WithPath($"/api/accounts/{_hashedAccountId}/legalentities/{_legalEntityId}")
                         .UsingGet()
                 )
                 .RespondWith(
