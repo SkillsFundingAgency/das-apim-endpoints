@@ -1,8 +1,3 @@
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
@@ -10,6 +5,11 @@ using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 {
@@ -31,15 +31,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.NoContent
             };
-            var patchTestRequest = new PatchTestRequest(config.Url, id) {BaseUrl = config.Url ,Data = postContent};
+            var patchTestRequest = new PatchTestRequest(config.Url, id) { BaseUrl = config.Url, Data = postContent };
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, patchTestRequest.PatchUrl, "patch");
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            
+
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Patch(patchTestRequest);
@@ -52,13 +52,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                         c.Method.Equals(HttpMethod.Patch)
                         && c.RequestUri.AbsoluteUri.Equals(patchTestRequest.PatchUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
-                        && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
-        
-        private class PatchTestRequest : IPatchApiRequest
+
+        private class PatchTestRequest : IPatchApiRequest<string>
         {
             private readonly int _id;
 
@@ -69,7 +69,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 _id = id;
                 BaseUrl = baseUrl;
             }
-            public object Data { get; set; }
+            public string Data { get; set; }
             public string BaseUrl { get; set; }
             public string PatchUrl => $"{BaseUrl}/test-url/patch{_id}";
         }

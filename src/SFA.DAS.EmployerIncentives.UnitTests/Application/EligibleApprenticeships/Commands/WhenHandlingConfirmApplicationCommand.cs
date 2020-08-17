@@ -30,10 +30,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             employerIncentivesService.Verify(x => x.ConfirmIncentiveApplication(
                     It.Is<ConfirmIncentiveApplicationRequest>(
                         r =>
-                            r.DateSubmitted == command.DateSubmitted &&
-                            r.SubmittedBy == command.SubmittedBy &&
-                            r.AccountId == command.AccountId &&
-                            r.IncentiveApplicationId == command.ApplicationId),
+                            r.Data.DateSubmitted == command.DateSubmitted &&
+                            r.Data.SubmittedBy == command.SubmittedBy &&
+                            r.Data.AccountId == command.AccountId &&
+                            r.Data.IncentiveApplicationId == command.ApplicationId),
                     CancellationToken.None),
                 Times.Once);
         }

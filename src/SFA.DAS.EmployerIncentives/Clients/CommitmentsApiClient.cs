@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Clients
 {
@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerIncentives.Clients
     {
         private readonly IApiClient<CommitmentsConfiguration> _client;
 
-        public CommitmentsApiClient (IApiClient<CommitmentsConfiguration> client)
+        public CommitmentsApiClient(IApiClient<CommitmentsConfiguration> client)
         {
             _client = client;
         }
@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.Clients
             return _client.Delete(request);
         }
 
-        public Task Patch(IPatchApiRequest request)
+        public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             return _client.Patch(request);
         }
