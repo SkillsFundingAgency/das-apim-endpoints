@@ -22,6 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IEmployerIncentivesService, EmployerIncentivesService>();
             services.AddTransient<ICommitmentsService, CommitmentsService>();
+            services.AddTransient<IAccountsService, AccountsService>();
         }
     }
 }

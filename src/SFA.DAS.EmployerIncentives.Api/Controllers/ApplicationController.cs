@@ -68,12 +68,13 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails")]
-        public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId)
+        public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId, string hashedAccountId)
         {
             var result = await _mediator.Send(new GetBankingDataQuery
             {
                 AccountId = accountId,
-                ApplicationId = applicationId
+                ApplicationId = applicationId,
+                HashedAccountId = hashedAccountId
             });
 
             var response = (BankingDetailsDto)result.Data;

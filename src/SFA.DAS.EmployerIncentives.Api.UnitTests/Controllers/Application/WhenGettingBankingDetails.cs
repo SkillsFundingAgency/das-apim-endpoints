@@ -21,6 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
         public async Task Then_Gets_Banking_Details_From_Mediator(
             long accountId,
             Guid applicationId,
+            string hashedAccountId,
             GetBankingDataResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]ApplicationController controller)
@@ -29,11 +30,12 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
                 .Setup(mediator => mediator.Send(
                     It.Is<GetBankingDataQuery>(c=>
                                             c.AccountId.Equals(accountId) 
-                                            && c.ApplicationId.Equals(applicationId)),
+                                            && c.ApplicationId.Equals(applicationId)
+                                            && c.HashedAccountId.Equals(hashedAccountId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetBankingDetails(accountId, applicationId) as ObjectResult;
+            var controllerResult = await controller.GetBankingDetails(accountId, applicationId, hashedAccountId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
