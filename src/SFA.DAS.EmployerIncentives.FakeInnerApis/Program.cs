@@ -11,8 +11,12 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
     public class Program
     {
         private static WireMockServer _fakeCommitmentsApi;
+        private static WireMockServer _fakeAccountsApi;
         private static long _accountId = 100;
         private static long _accountLegalEntityId = 2000;
+        private static long _legalEntityId = 2000;
+
+        private static string _hashedAccountId = "LVX89V"; // Account ID 100
 
         static void Main(string[] args)
         {
@@ -21,6 +25,12 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                 _fakeCommitmentsApi = WireMockServer.Start(new FluentMockServerSettings
                 {
                     Urls = new[] {"http://*:6011"},
+                    StartAdminInterface = true,
+                });
+
+                _fakeAccountsApi = WireMockServer.Start(new FluentMockServerSettings
+                {
+                    Urls = new[] { "http://*:6012" },
                     StartAdminInterface = true,
                 });
 
@@ -35,6 +45,9 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
             {
                 _fakeCommitmentsApi.Stop();
                 _fakeCommitmentsApi.Dispose();
+
+                _fakeAccountsApi.Stop();
+                _fakeAccountsApi.Dispose();
             }
         }
 
@@ -108,6 +121,19 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(GetSampleJsonResponse("Apprenticeship5Data.json")));
+        }
+
+        static void SetupGetLegalEntityResponse()
+        {
+            _fakeCommitmentsApi.Given(
+                    Request.Create().WithPath($"api/accounts/{_hashedAccountId}/legalentities/{_legalEntityId}")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(GetSampleJsonResponse("LegalEntityData.json")));
         }
 
         static string GetSampleJsonResponse(string file)
