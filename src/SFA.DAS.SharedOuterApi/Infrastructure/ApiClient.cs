@@ -73,10 +73,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task Patch(IPatchApiRequest request)
+        public async Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             await AddAuthenticationHeader();
-
             AddVersionHeader(request.Version);
 
             request.BaseUrl = _configuration.Url;
