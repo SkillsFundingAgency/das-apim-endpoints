@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.IO.Pipelines;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -24,14 +24,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProviderQuery query,
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
-            GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
+            GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetStandardsListResponse allCoursesApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, mockCoursesApiClient, mockApiClient);
+                    StandardIds = allCoursesApiResponse.Standards.Select(c=>c.Id).ToList()
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .ReturnsAsync(allCoursesApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -39,22 +43,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_Gets_The_Overall_Achievement_Rate_Data_From_The_Course_SubjectSectorArea(
-            GetTrainingCourseProviderQuery query,
+        [Test, MoqAutoData]        public async Task Then_Does_Not_Return_Additional_Courses_If_No_Additional_Courses(
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
+            GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetStandardsListResponse allCoursesApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, mockCoursesApiClient, mockApiClient);
-            
-            var result = await handler.Handle(query, CancellationToken.None);
-            
             result.OverallAchievementRates.Should().BeEquivalentTo(apiAchievementRateResponse.OverallAchievementRates);
         }
 
@@ -89,6 +89,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
+            mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(c =>
+                    c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                )))
+                .ReturnsAsync(apiAchievementRateResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -102,12 +106,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
+            GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetStandardsListResponse allCoursesApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, mockCoursesApiClient, mockApiClient);
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+            mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(c =>
+                    c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                )))
+                .ReturnsAsync(apiAchievementRateResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -119,12 +129,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         [Test, MoqAutoData]
         public async Task Then_Additional_Courses_for_Provider_Should_Not_Contain_Course_Passed_To_Handler(
             GetTrainingCourseProviderQuery query,
-            GetProviderStandardItem apiResponse,
+            GetProviderStandardItem apiProviderStandardResponse,
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             List<GetStandardsListItem> allStandards,
+            GetOverallAchievementRateResponse apiAchievementRateResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProviderQueryHandler handler)
@@ -154,10 +165,58 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString()
                     ))))
+                .ReturnsAsync(apiProviderStandardResponse);
+            
+            mockApiClient
+                .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(
+                    It.Is<GetProviderAdditionalStandardsRequest>(c =>
+                        c.GetUrl.Contains(query.ProviderId.ToString()
+                        ))))
+                .ReturnsAsync(new GetProviderAdditionalStandardsItem
+                {
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                });
+            
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => 
+                    c.GetUrl.Contains(query.CourseId.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .ReturnsAsync(allCoursesApiResponse);
+            
+            mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(c =>
+                    c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                )))
+                .ReturnsAsync(apiAchievementRateResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.AdditionalCourses.Count.Should().Be(allCoursesApiResponse.Standards.Count()-1);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_The_Overall_Achievement_Rate_Data_From_The_Course_SubjectSectorArea(
+            GetTrainingCourseProviderQuery query,
+            GetOverallAchievementRateResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetStandardsListResponse allCoursesApiResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProviderQueryHandler handler)
+        {
+            mockCoursesApiClient
+                .Setup(client =>
+                    client.Get<GetStandardsListItem>(
+                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(c=>
+                    c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                )))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(It.Is<GetProviderAdditionalStandardsRequest>(
-                    c =>
+                .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(
+                    It.Is<GetProviderAdditionalStandardsRequest>(c =>
                         c.GetUrl.Contains(query.ProviderId.ToString()
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
@@ -165,18 +224,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
                 });
             mockCoursesApiClient
-                .Setup(client =>
-                    client.Get<GetStandardsListItem>(
-                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
-                .ReturnsAsync(apiCourseResponse);
-            mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
+            var originalCourse = new GetAdditionalCourseListItem{Id = query.CourseId};
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
                         c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
-                )))
-                .ReturnsAsync(apiAchievementRateResponse);
+                                        .ReturnsAsync(apiAchievementRateResponse);
+            
+            result.OverallAchievementRates.Should().BeEquivalentTo(apiResponse.OverallAchievementRates);
         }
     }
 }

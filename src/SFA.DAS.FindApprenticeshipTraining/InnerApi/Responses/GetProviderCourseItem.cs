@@ -31,11 +31,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
-                ProviderId = source.ProviderStandard.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 NationalOverallCohort = nationalRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
-                NationalOverallAchievementRate = nationalRate?.OverallAchievementRate
+                NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
+                ProviderId = source.ProviderStandard.Ukprn
             };
         }
 
