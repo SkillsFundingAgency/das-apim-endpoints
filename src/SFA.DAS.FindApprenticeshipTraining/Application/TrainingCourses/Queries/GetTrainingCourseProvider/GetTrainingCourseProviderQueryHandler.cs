@@ -47,9 +47,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
                 new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
 
-            var overallAchievementRates =
-                await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
-                    new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
             if (!providerCoursesTask.Result.StandardIds.Any())
             {
                 return new GetTrainingCourseProviderResult
