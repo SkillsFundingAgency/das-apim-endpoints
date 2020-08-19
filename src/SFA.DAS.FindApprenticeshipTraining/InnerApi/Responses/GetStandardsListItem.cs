@@ -12,13 +12,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public int Level { get; set; }
         public decimal Version { get; set; }
         [JsonIgnore]
-        public long MaxFunding => GetFundingDetails(nameof(MaxFunding));
+        public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
 
         public string OverviewOfRole { get; set; }
 
         public string Keywords { get; set; }
         [JsonIgnore]
-        public int TypicalDuration => (int)GetFundingDetails(nameof(TypicalDuration));
+        public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
 
         public string Route { get; set; }
 
@@ -32,27 +32,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
 
-        private long GetFundingDetails(string prop)
+        private int GetFundingDetails(string prop)
         {
             var funding = ApprenticeshipFunding
                 .FirstOrDefault(c =>
                     c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
                                                            || c.EffectiveTo >= DateTime.UtcNow));
 
-            if (funding != null)
+            if (funding == null)
             {
-                if (prop == nameof(MaxFunding))
-                    return funding.MaxEmployerLevyCap;
-                return funding.Duration;
+                funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
             }
 
-            var fundingRecord = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-
             if (prop == nameof(MaxFunding))
-                return fundingRecord?.MaxEmployerLevyCap
+            {
+                return funding?.MaxEmployerLevyCap
                        ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
                        ?? 0;
-            return fundingRecord?.Duration
+            }
+                
+            return funding?.Duration
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
         }
@@ -65,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
     public class ApprenticeshipFunding
     {
-        public long MaxEmployerLevyCap { get; set; }
+        public int MaxEmployerLevyCap { get; set; }
 
         public DateTime? EffectiveTo { get; set; }
 

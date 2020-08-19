@@ -56,7 +56,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         }
 
         [Test, AutoData]
-        public void Then_The_ApprenticeshipFunding_Price_With_No_EffectiveTo_Date_And_Has_A_From_Date_In_The_Past_Is_Used(long fundingPrice)
+        public void Then_The_ApprenticeshipFunding_Price_With_No_EffectiveTo_Date_And_Has_A_From_Date_In_The_Past_Is_Used(int fundingPrice)
         {
             //Arrange / Act
             var standard = new GetStandardsListItem
@@ -85,7 +85,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         }
 
         [Test, AutoData]
-        public void Then_The_Current_Funding_Price_Is_Used(long notFundingPrice, long fundingPrice)
+        public void Then_The_Current_Funding_Price_Is_Used(int notFundingPrice, int fundingPrice)
         {
             //Arrange / Act
             var standard = new GetStandardsListItem
@@ -155,7 +155,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         }
 
         [Test, AutoData]
-        public void Then_The_Future_Price_Is_Not_Used(long fundingPrice, long notFundingPrice)
+        public void Then_The_Future_Price_Is_Not_Used(int fundingPrice, int notFundingPrice)
         {
             //Arrange / Act
             var standard = new GetStandardsListItem
