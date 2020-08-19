@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails/{hashedAccountId}")]
+        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails/")]
         public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId, string hashedAccountId)
         {
             var result = await _mediator.Send(new GetBankingDataQuery
