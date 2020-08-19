@@ -6,9 +6,9 @@ using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails")]
+        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails/{hashedAccountId}")]
         public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId, string hashedAccountId)
         {
             var result = await _mediator.Send(new GetBankingDataQuery
