@@ -79,6 +79,22 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest) 
+        {
+            var request = new PostBankDetailsRequiredEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
+        public async Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
+        {
+            var request = new PostBankDetailsReminderEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
@@ -92,6 +108,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
         {
             var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
+
+            return response;
+        }
+
+        public async Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId)
+        {
+            var response = await _client.Get<long>(new GetApplicationLegalEntityRequest(accountId, applicationId));
 
             return response;
         }
@@ -110,5 +133,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
+
     }
 }
