@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task<LegalEntity> GetLegalEntity(string accountId, long legalEntityId)
         {
-            var response = await _client.Get<LegalEntity>(new GetAccountLegalEntityRequest(accountId, legalEntityId));
+            var response = await _client.Get<LegalEntity>(new GetLegalEntityRequest(accountId, legalEntityId));
 
             return response;
         }

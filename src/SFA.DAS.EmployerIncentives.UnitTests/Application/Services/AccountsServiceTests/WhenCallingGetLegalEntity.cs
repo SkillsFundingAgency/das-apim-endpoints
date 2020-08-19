@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.AccountsServ
         {
             client.Setup(x =>
                     x.Get<LegalEntity>(
-                        It.Is<GetAccountLegalEntityRequest>(c => c.GetUrl.Contains(accountId) && c.GetUrl.Contains(legalEntityId.ToString()))))
+                        It.Is<GetLegalEntityRequest>(c => c.GetUrl.Contains(accountId) && c.GetUrl.Contains(legalEntityId.ToString()))))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetLegalEntity(accountId, legalEntityId);

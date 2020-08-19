@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl,string accountId, long legalEntityId, DateTime startDate)
         {
-            var actual = new GetAccountLegalEntityRequest(accountId, legalEntityId)
+            var actual = new GetLegalEntityRequest(accountId, legalEntityId)
             {
                 BaseUrl = baseUrl
             };
