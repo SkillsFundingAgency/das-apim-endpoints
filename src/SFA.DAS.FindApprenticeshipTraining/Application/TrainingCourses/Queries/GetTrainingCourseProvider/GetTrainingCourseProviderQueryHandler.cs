@@ -53,7 +53,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 {
                     Course = courseTask.Result,
                     ProviderStandard = providerTask.Result,
-                    AdditionalCourses = new List<GetAdditionalCourseListItem>() 
+                    AdditionalCourses = new List<GetAdditionalCourseListItem>(),
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates
                 };
             }
 
