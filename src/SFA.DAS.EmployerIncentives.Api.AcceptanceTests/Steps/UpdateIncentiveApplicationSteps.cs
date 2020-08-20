@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the application is updated with new selection of apprenticeships")]
         public async Task ThenTheApplicationIsUpdatedWithNewSelectionOfApprenticeships()
         {
-            SetupExpectedCreateIncentiveApplication();
+            SetupExpectedUpdateIncentiveApplication();
 
             var request = new UpdateApplicationRequest
             {
@@ -75,11 +75,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.EnsureSuccessStatusCode();
         }
 
-        private void SetupExpectedCreateIncentiveApplication()
+        private void SetupExpectedUpdateIncentiveApplication()
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/applications")
+                    Request.Create().WithPath($"/applications/{_applicationId}")
                         .UsingPut())
                 .RespondWith(
                     Response.Create()
