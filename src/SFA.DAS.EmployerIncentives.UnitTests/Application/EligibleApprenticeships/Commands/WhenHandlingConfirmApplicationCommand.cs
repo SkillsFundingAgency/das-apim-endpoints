@@ -18,12 +18,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             long accountId,
             Guid applicationId,
             DateTime submittedOn,
-            string submittedBy,
+            string submittedByEmail,
+            string submittedByName,
             [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
             ConfirmApplicationCommandHandler handler)
         {
 
-            var command = new ConfirmApplicationCommand(applicationId, accountId, submittedOn, submittedBy);
+            var command = new ConfirmApplicationCommand(applicationId, accountId, submittedOn, submittedByEmail, submittedByName);
 
             await handler.Handle(command, CancellationToken.None);
 
@@ -31,9 +32,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                     It.Is<ConfirmIncentiveApplicationRequest>(
                         r =>
                             r.Data.DateSubmitted == command.DateSubmitted &&
-                            r.Data.SubmittedBy == command.SubmittedBy &&
+                            r.Data.SubmittedByEmail == command.SubmittedByEmail &&
                             r.Data.AccountId == command.AccountId &&
-                            r.Data.IncentiveApplicationId == command.ApplicationId),
+                            r.Data.IncentiveApplicationId == command.ApplicationId &&
+                            r.Data.SubmittedByName == command.SubmittedByName),
                     CancellationToken.None),
                 Times.Once);
         }
