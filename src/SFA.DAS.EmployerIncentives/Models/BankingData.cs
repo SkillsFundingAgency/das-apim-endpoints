@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerIncentives.Models
         public string SubmittedByName { get; set; }
         public string SubmittedByEmail { get; set; }
         public decimal ApplicationValue { get; set; }
+        public int NumberOfApprenticeships { get; set; }
         public IEnumerable<SignedAgreement> SignedAgreements { get; set; }
     }
 }

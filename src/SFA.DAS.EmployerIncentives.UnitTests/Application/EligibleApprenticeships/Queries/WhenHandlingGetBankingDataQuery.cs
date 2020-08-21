@@ -32,6 +32,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             actual.Data.LegalEntityId.Should().Be(applicationResponse.LegalEntityId);
             actual.Data.ApplicationValue.Should().Be(applicationResponse.Apprenticeships.Sum(x => x.TotalIncentiveAmount));
             actual.Data.VendorCode.Should().Be("00000000");
+            actual.Data.NumberOfApprenticeships.Should().Be(applicationResponse.Apprenticeships.Count());
         }
 
         [Test, MoqAutoData]

@@ -11,6 +11,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public string SubmittedByName { get; set; }
         public string SubmittedByEmail { get; set; }
         public decimal ApplicationValue { get; set; }
+        public int NumberOfApprenticeships { get; set; }
         public IEnumerable<SignedAgreementDto> SignedAgreements { get; set; }
 
         public static implicit operator BankingDetailsDto(BankingData from)
@@ -22,6 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 SubmittedByEmail = from.SubmittedByEmail,
                 ApplicationValue = from.ApplicationValue,
                 SubmittedByName = from.SubmittedByName,
+                NumberOfApprenticeships = from.NumberOfApprenticeships,
                 SignedAgreements = from.SignedAgreements.Select(x => (SignedAgreementDto)x)
             };
         }
