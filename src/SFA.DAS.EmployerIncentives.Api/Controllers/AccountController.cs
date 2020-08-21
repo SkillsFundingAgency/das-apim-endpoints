@@ -8,6 +8,7 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

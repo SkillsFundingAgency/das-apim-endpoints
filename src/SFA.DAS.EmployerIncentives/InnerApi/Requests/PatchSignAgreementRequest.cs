@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
-    public class PatchSignAgreementRequest : IPatchApiRequest
+    public class PatchSignAgreementRequest : IPatchApiRequest<SignAgreementRequest>
     {
         private readonly long _accountId;
         private readonly long _accountLegalEntityId;
@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 
         public string BaseUrl { get; set; }
         public string PatchUrl => $"{BaseUrl}accounts/{_accountId}/legalentities/{_accountLegalEntityId}";
-        public object Data { get; set; }
+        public SignAgreementRequest Data { get; set; }
     }
 
     public class SignAgreementRequest

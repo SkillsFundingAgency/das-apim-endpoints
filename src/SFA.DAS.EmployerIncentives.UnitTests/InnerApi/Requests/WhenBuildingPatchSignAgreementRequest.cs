@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingPatchSignAgreementRequest
     {
         [Test, AutoData]
-        public void Then_The_Patch_Url_Is_Correctly_Built(long accountId, long accountLegalEntityId, string baseUrl, List<string> data)
+        public void Then_The_Patch_Url_Is_Correctly_Built(long accountId, long accountLegalEntityId, string baseUrl, SignAgreementRequest data)
         {
             var actual = new PatchSignAgreementRequest(accountId,accountLegalEntityId){BaseUrl = baseUrl, Data = data};
 
