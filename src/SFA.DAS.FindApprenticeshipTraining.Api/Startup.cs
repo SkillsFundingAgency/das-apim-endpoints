@@ -31,17 +31,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
             services.AddSingleton(_env);
-            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(_configuration.GetSection("CourseDeliveryApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
-            services.Configure<FindApprenticeshipTrainingConfiguration>(_configuration.GetSection("FindApprenticeshipTrainingConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
-            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-
+            
+            services.AddConfigurationOptions(_configuration);
+            
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
