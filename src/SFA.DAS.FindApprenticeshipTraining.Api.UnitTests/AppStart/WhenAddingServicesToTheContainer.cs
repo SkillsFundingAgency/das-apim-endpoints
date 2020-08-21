@@ -44,13 +44,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
         {
             var configSource = new MemoryConfigurationSource
             {
-                InitialData = new[]
-                {
-                    new KeyValuePair<string, string>("ConfigurationStorageConnectionString", "UseDevelopmentStorage=true;"),
-                    new KeyValuePair<string, string>("ConfigNames", "SFA.DAS.FindApprenticeshipTraining.OuterApi"),
-                    new KeyValuePair<string, string>("Environment", "DEV"),
-                    new KeyValuePair<string, string>("Version", "1.0")
-                }
+                InitialData = new List<KeyValuePair<string, string>>()
             };
 
             var provider = new MemoryConfigurationProvider(configSource);
