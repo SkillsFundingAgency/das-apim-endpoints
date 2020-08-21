@@ -27,8 +27,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Data.ApplicantEmail.Should().Be("Applicant@Email");
-            actual.Data.ApplicantName.Should().Be("Applicant Name");
+            actual.Data.SubmittedByEmail.Should().Be(applicationResponse.SubmittedByEmail);
+            actual.Data.SubmittedByName.Should().Be(applicationResponse.SubmittedByName);
             actual.Data.LegalEntityId.Should().Be(applicationResponse.LegalEntityId);
             actual.Data.ApplicationValue.Should().Be(applicationResponse.Apprenticeships.Sum(x => x.TotalIncentiveAmount));
             actual.Data.VendorCode.Should().Be("00000000");
