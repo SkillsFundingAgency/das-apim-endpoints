@@ -38,22 +38,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 .FirstOrDefault(c =>
                     c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
                                                            || c.EffectiveTo >= DateTime.UtcNow));
-
             if (funding == null)
-            {
                 funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-            }
-
             if (prop == nameof(MaxFunding))
-            {
                 return funding?.MaxEmployerLevyCap
                        ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
                        ?? 0;
-            }
-                
             return funding?.Duration
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
+
         }
 
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
