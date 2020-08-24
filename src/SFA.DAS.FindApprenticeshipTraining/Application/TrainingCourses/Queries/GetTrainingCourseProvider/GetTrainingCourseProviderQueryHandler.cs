@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICacheStorageService _cacheStorageService;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCourseProviderQueryHandler (
+        public GetTrainingCourseProviderQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICacheStorageService cacheStorageService)
         {
@@ -34,18 +34,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var providerCoursesTask =
                 _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
                     new GetProviderAdditionalStandardsRequest(request.ProviderId));
-            
+
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
-            
+
             await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask);
-            
+
             var overallAchievementRates =
                 await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
                     new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
-            
-            await _cacheHelper.UpdateCachedItems(null, null, coursesTask, 
-                new CacheHelper.SaveToCache{Levels = false, Sectors = false, Standards = saveToCache});
+
+            await _cacheHelper.UpdateCachedItems(null, null, coursesTask,
+                new CacheHelper.SaveToCache { Levels = false, Sectors = false, Standards = saveToCache });
 
             if (!providerCoursesTask.Result.StandardIds.Any())
             {
@@ -54,7 +54,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Course = courseTask.Result,
                     ProviderStandard = providerTask.Result,
                     AdditionalCourses = new List<GetAdditionalCourseListItem>(),
-                OverallAchievementRates = overallAchievementRates.OverallAchievementRates
+                    OverallAchievementRates = overallAchievementRates.OverallAchievementRates
                 };
             }
 
@@ -62,6 +62,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 .Result
                 .StandardIds.Select(courseId =>
                     coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
+                .Where(c => c != null)
                 .Select(course => new GetAdditionalCourseListItem
                 {
                     Id = course.Id,
@@ -69,9 +70,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Title = course.Title
                 })
                 .Where(x => x.Id != request.CourseId)
-                .OrderBy(c=>c.Title)
+                .OrderBy(c => c.Title)
                 .ToList();
-
 
             return new GetTrainingCourseProviderResult
             {
