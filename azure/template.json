@@ -79,7 +79,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())]",
+            "name": "[concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -188,7 +188,7 @@
                         "value": "[parameters('outerApiArray')[copyIndex()].customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('app-service-cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())).outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
