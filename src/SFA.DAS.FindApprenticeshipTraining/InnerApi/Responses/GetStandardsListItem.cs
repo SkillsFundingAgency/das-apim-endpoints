@@ -12,13 +12,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public int Level { get; set; }
         public decimal Version { get; set; }
         [JsonIgnore]
-        public int MaxFunding => GetFundingDetails("MaxFunding");
+        public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
 
         public string OverviewOfRole { get; set; }
 
         public string Keywords { get; set; }
         [JsonIgnore]
-        public int TypicalDuration => GetFundingDetails("TypicalDuration");
+        public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
 
         public string Route { get; set; }
 
@@ -38,14 +38,42 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 .FirstOrDefault(c =>
                     c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
                                                            || c.EffectiveTo >= DateTime.UtcNow));
-            if (funding == null)
-                funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-
             if (prop == nameof(MaxFunding))
-                return funding?.MaxEmployerLevyCap
-                       ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
-                       ?? 0;
-            return funding?.Duration
+            {
+                return GetMaxFunding(funding);
+            }
+
+            if (prop == nameof(TypicalDuration))
+            {
+                return GetTypicalDuration(funding);
+            }
+
+            return default;
+        }
+        private int GetMaxFunding(ApprenticeshipFunding funding)
+        {
+            if (funding != null)
+            {
+                return funding.MaxEmployerLevyCap;
+            }
+
+            var fundingRecord = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
+
+            return fundingRecord?.MaxEmployerLevyCap
+                                  ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
+                                  ?? 0;
+        }
+
+        private int GetTypicalDuration(ApprenticeshipFunding funding)
+        {
+            if (funding != null)
+            {
+                return funding.Duration;
+            }
+
+            var fundingRecord = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
+
+            return fundingRecord?.Duration
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
 
