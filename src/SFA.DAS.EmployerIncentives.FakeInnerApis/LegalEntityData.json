@@ -1,0 +1,26 @@
+{
+  "code": "1234567",
+  "dasAccountId": "LVX89V",
+  "dateOfInception": "2020-08-01T00:00:00",
+  "address": "address",
+  "legalEntityId": 2000,
+  "name": "Some name",
+  "publicSectorDataSource": "",
+  "sector": "",
+  "source": "CompaniesHouse",
+  "sourceNumeric": 1,
+  "status": "Status?",
+  "accountLegalEntityId": 2000,
+  "accountLegalEntityPublicHashedId": "VXNDYR",
+  "agreements": [
+    {
+      "id": 12345,
+      "signedDate": "2020-08-01T00:00:00",
+      "signedByName": "John Smith",
+      "signedByEmail": "john@smith.com",
+      "status": 2,
+      "templateVersionNumber": 4,
+      "agreementType": 0 
+    }
+  ] 
+}
