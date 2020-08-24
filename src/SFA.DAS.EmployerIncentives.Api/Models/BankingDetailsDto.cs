@@ -8,9 +8,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
     {
         public long LegalEntityId { get; set; }
         public string VendorCode { get; set; }
-        public string ApplicantName { get; set; }
-        public string ApplicantEmail { get; set; }
+        public string SubmittedByName { get; set; }
+        public string SubmittedByEmail { get; set; }
         public decimal ApplicationValue { get; set; }
+        public int NumberOfApprenticeships { get; set; }
         public IEnumerable<SignedAgreementDto> SignedAgreements { get; set; }
 
         public static implicit operator BankingDetailsDto(BankingData from)
@@ -19,9 +20,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
             {
                 VendorCode = from.VendorCode,
                 LegalEntityId = from.LegalEntityId,
-                ApplicantEmail = from.ApplicantEmail,
+                SubmittedByEmail = from.SubmittedByEmail,
                 ApplicationValue = from.ApplicationValue,
-                ApplicantName = from.ApplicantName,
+                SubmittedByName = from.SubmittedByName,
+                NumberOfApprenticeships = from.NumberOfApprenticeships,
                 SignedAgreements = from.SignedAgreements.Select(x => (SignedAgreementDto)x)
             };
         }

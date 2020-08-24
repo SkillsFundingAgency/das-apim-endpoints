@@ -31,9 +31,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
             {
                 VendorCode = "00000000",
                 LegalEntityId = application.LegalEntityId,
-                ApplicantEmail = "Applicant@Email", //TODO
-                ApplicantName = "Applicant Name", //TODO
+                SubmittedByEmail = application.SubmittedByEmail,
+                SubmittedByName = application.SubmittedByName,
                 ApplicationValue = application.Apprenticeships.Sum(x => x.TotalIncentiveAmount),
+                NumberOfApprenticeships = application.Apprenticeships.Count(),
                 SignedAgreements = legalEntity.Agreements.Where(AgreementHasBeenSigned).Select(ToSignedAgreement)
             };
 

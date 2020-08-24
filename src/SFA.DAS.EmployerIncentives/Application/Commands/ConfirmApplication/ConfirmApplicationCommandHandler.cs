@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
         {
             var request = new ConfirmIncentiveApplicationRequest
             {
-                Data = new ConfirmIncentiveApplicationRequestData(command.ApplicationId, command.AccountId, command.DateSubmitted, command.SubmittedBy)
+                Data = new ConfirmIncentiveApplicationRequestData(command.ApplicationId, command.AccountId, command.DateSubmitted, command.SubmittedByEmail, command.SubmittedByName)
             };
 
             await _employerIncentivesService.ConfirmIncentiveApplication(request, cancellationToken);

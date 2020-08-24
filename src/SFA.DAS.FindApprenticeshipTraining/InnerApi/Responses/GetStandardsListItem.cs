@@ -38,47 +38,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 .FirstOrDefault(c =>
                     c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
                                                            || c.EffectiveTo >= DateTime.UtcNow));
+
+            if (funding == null)
+            {
+                funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
+            }
+
             if (prop == nameof(MaxFunding))
             {
-                return GetMaxFunding(funding);
+                return funding?.MaxEmployerLevyCap
+                       ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
+                       ?? 0;
             }
-
-            if (prop == nameof(TypicalDuration))
-            {
-                return GetTypicalDuration(funding);
-            }
-
-            return default;
-        }
-        private int GetMaxFunding(ApprenticeshipFunding funding)
-        {
-            if (funding != null)
-            {
-                return funding.MaxEmployerLevyCap;
-            }
-
-            var fundingRecord = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-
-            return fundingRecord?.MaxEmployerLevyCap
-                                  ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
-                                  ?? 0;
-        }
-
-        private int GetTypicalDuration(ApprenticeshipFunding funding)
-        {
-            if (funding != null)
-            {
-                return funding.Duration;
-            }
-
-            var fundingRecord = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-
-            return fundingRecord?.Duration
+                
+            return funding?.Duration
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
-
         }
-
+        
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
         public StandardDate StandardDates { get; set; }

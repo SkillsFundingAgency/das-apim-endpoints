@@ -8,14 +8,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
         public Guid ApplicationId { get; }
         public long AccountId { get; }
         public DateTime DateSubmitted { get; }
-        public string SubmittedBy { get; }
+        public string SubmittedByEmail { get; }
+        public string SubmittedByName { get; }
 
-        public ConfirmApplicationCommand(Guid applicationId, long accountId, DateTime dateSubmitted, string submittedBy)
+        public ConfirmApplicationCommand(Guid applicationId, long accountId, DateTime dateSubmitted, string submittedByEmail, string submittedByName)
         {
             ApplicationId = applicationId;
             AccountId = accountId;
             DateSubmitted = dateSubmitted;
-            SubmittedBy = submittedBy;
+            SubmittedByEmail = submittedByEmail;
+            SubmittedByName = submittedByName;
         }
     }
 }

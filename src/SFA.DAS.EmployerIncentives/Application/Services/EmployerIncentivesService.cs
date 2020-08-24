@@ -118,6 +118,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             return response;
         }
+		
+        public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        {
+            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) {Data = request});
+        }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
