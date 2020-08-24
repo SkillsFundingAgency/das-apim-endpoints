@@ -8,7 +8,7 @@ using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations
 {
-    public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, GetLocationsResponse>
+    public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, GetLocationsQueryResponse>
     {
         private readonly ILocationApiClient<LocationApiConfiguration> _apiClient;
 
@@ -17,11 +17,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations
             _apiClient = apiClient;
         }
         
-        public async Task<GetLocationsResponse> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
+        public async Task<GetLocationsQueryResponse> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
         {
             var result = await _apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.SearchTerm));
             
-            return new GetLocationsResponse
+            return new GetLocationsQueryResponse
             {
                 Locations = result.Locations
             };
