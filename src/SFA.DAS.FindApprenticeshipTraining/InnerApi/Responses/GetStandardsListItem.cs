@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
             return default;
         }
-        private long GetMaxFunding(ApprenticeshipFunding funding)
+        private int GetMaxFunding(ApprenticeshipFunding funding)
         {
             if (funding != null)
             {
@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                                   ?? 0;
         }
 
-        private long GetTypicalDuration(ApprenticeshipFunding funding)
+        private int GetTypicalDuration(ApprenticeshipFunding funding)
         {
             if (funding != null)
             {
