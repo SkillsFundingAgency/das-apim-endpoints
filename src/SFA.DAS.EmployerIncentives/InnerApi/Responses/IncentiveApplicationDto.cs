@@ -4,7 +4,10 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
 {
     public class IncentiveApplicationDto
     {
+        public long LegalEntityId { get; set; }
         public long AccountLegalEntityId { get; set; }
+        public string SubmittedByEmail { get; set; }
+        public string SubmittedByName { get; set; }
         public IEnumerable<IncentiveApplicationApprenticeshipDto> Apprenticeships { get; set; }
     }
 }
