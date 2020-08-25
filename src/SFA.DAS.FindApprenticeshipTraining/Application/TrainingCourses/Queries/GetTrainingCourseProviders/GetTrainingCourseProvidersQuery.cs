@@ -5,5 +5,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseProvidersQuery : IRequest<GetTrainingCourseProvidersResult>
     {
         public int Id { get ; set ; }
+        public string Location { get ; set ; }
     }
 }
