@@ -4,7 +4,6 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

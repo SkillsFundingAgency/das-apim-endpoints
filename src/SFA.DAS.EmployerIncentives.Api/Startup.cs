@@ -38,7 +38,9 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerIncentivesConfiguration>>().Value);
             services.Configure<CommitmentsConfiguration>(_configuration.GetSection("CommitmentsV2InnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsConfiguration>>().Value);
-            
+            services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
