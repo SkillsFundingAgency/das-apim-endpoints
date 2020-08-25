@@ -55,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
         }
-
+        
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
         public StandardDate StandardDates { get; set; }
