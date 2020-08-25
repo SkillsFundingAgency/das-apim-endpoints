@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/locations?query={query}");   
+            actual.GetUrl.Should().Be($"{baseUrl}api/locations/search?query={query}");   
         }
     }
 }
