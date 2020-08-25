@@ -18,17 +18,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Courses_Api(
             GetTrainingCourseQuery query,
-            GetStandardsListItem apiResponse,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
+            GetStandardsListItem coursesApiResponse,
+            GetProvidersListResponse courseDirectoryApiResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
             GetTrainingCourseQueryHandler handler)
         {
-            mockApiClient
+            mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(coursesApiResponse);
+
+            mockCourseDeliveryApiClient
+                .Setup(client =>
+                    client.Get<GetProvidersListResponse>(
+                        It.Is<GetProvidersByCourseRequest>((c => c.GetUrl.Contains(query.Id.ToString())))))
+                .ReturnsAsync(courseDirectoryApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Course.Should().BeEquivalentTo(apiResponse);
+            result.Course.Should().BeEquivalentTo(coursesApiResponse);
+            result.ProvidersCount.Should().Be(courseDirectoryApiResponse.TotalResults);
         }
     }
 }
