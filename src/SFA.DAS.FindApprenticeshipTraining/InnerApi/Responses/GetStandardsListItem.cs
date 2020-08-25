@@ -31,6 +31,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string IntegratedDegree { get; set; }
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
+        public bool OtherBodyApprovalRequired { get; set; }
 
         private int GetFundingDetails(string prop)
         {
