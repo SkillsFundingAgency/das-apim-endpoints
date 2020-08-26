@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
     public class WhenCallingGetTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator(
+        public async Task Then_Gets_Training_Course_And_Providers_Count_From_Mediator(
             int standardCode,
             GetTrainingCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -36,10 +36,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseResponse;
             Assert.IsNotNull(model);
-            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options=>options
-                .Excluding(tc=>tc.ApprenticeshipFunding)
-                .Excluding(tc=>tc.StandardDates)
-            );
+            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options => options
+                .Excluding(tc => tc.ApprenticeshipFunding)
+                .Excluding(tc => tc.StandardDates));
+
+            model.ProvidersCount.Should().Be(mediatorResult.ProvidersCount);
+
         }
 
         [Test, MoqAutoData]
