@@ -35,9 +35,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> Apprenticeships(long accountId, long accountLegalEntityId)
+        public async Task<ApprenticeshipItem[]> Apprenticeships(long accountId, long accountLegalEntityId, DateTime startDateFrom, DateTime startDateTo)
         {
-            var response = await _client.Get<GetApprenticeshipListResponse>(new GetApprenticeshipsRequest(accountId, accountLegalEntityId));
+            var response = await _client.Get<GetApprenticeshipListResponse>(new GetApprenticeshipsRequest(accountId, accountLegalEntityId, startDateFrom, startDateTo));
             return response.Apprenticeships.ToArray();
         }
 
