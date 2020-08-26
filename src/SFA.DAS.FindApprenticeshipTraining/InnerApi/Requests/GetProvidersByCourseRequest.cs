@@ -6,16 +6,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
     {
         private readonly double? _latitude;
         private readonly double? _longitude;
-        private int CourseId { get ;}
+        private readonly int _courseId;
         
         public GetProvidersByCourseRequest (int id, double? latitude = null, double? longitude = null)
         {
             _latitude = latitude;
             _longitude = longitude;
-            CourseId = id;
+            _courseId = id;
         }
         public string BaseUrl { get; set; }
         
-        public string GetUrl => $"{BaseUrl}api/courses/{CourseId}/providers?latitude={_latitude}&longitude={_longitude}";
+        public string GetUrl => $"{BaseUrl}api/courses/{_courseId}/providers?latitude={_latitude}&longitude={_longitude}";
     }
 }
