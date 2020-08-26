@@ -70,7 +70,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var result = await _mediator.Send(new GetTrainingCourseQuery {Id = id});
                 var model = new GetTrainingCourseResponse
                 {
-                    TrainingCourse = result.Course
+                    TrainingCourse = result.Course,
+                    ProvidersCount = result.ProvidersCount
                 };
                 return Ok(model);
             }
