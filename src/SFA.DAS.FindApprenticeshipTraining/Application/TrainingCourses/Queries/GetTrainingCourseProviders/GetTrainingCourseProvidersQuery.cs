@@ -6,6 +6,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         public int Id { get ; set ; }
         public string Location { get ; set ; }
-        public int SortOrder { get ; set ; }
+        public short SortOrder { get ; set ; }
     }
 }
