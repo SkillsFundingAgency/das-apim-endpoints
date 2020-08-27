@@ -91,7 +91,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             {
                 var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
                 {
-                    Id = id, Location = location, 
+                    Id = id, 
+                    Location = location, 
                     SortOrder = (short)sortOrder
                 });
                 var model = new GetTrainingCourseProvidersResponse

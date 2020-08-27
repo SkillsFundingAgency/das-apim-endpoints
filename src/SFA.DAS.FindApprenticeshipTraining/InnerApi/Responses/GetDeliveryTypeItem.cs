@@ -3,6 +3,6 @@
     public class GetDeliveryTypeItem
     {
         public string DeliveryModes { get; set; }
-        public double DistanceInMiles { get; set; }
+        public decimal DistanceInMiles { get; set; }
     }
 }
