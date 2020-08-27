@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 IntegratedDegree = source.IntegratedDegree,
                 SectorSubjectAreaTier2Description = source.SectorSubjectAreaTier2Description,
                 SectorSubjectAreaTier2 = source.SectorSubjectAreaTier2,
-                OtherBodyApprovalRequired = source.OtherBodyApprovalRequired
+                OtherBodyApprovalRequired = source.OtherBodyApprovalRequired,
                 StandardDates = source.StandardDates
             };
         }
