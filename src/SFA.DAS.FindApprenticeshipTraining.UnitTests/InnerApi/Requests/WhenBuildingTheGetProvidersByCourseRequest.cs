@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers?latitude={latitude}&longitude={longitude}&sortOrder={sortOrder}");
+            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers?lat={latitude}&lon={longitude}&sortOrder={sortOrder}");
         }
 
         [Test, AutoData]
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers?latitude=&longitude=&sortOrder=0");
+            actual.GetUrl.Should().Be($"{baseUrl}api/courses/{courseId}/providers?lat=&lon=&sortOrder=0");
         }
     }
 }
