@@ -23,7 +23,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Verify(x =>
                 x.Put(It.Is<UpdateIncentiveApplicationRequest>(
                     c => c.Data == requestData &&
-                         c.PutUrl.Contains("application")
+                         c.PutUrl.Contains("application") && 
+                         c.PutUrl.Contains(requestData.IncentiveApplicationId.ToString())
                 )), Times.Once);
         }
     }
