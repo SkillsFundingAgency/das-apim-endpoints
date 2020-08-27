@@ -70,6 +70,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.Id.ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
                 )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
