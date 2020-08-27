@@ -1,4 +1,5 @@
-﻿using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+﻿using System;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -20,6 +21,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
+        public StandardDate StandardDates { get; set; }
+
 
         public static implicit operator GetTrainingCourseListItem(GetStandardsListItem source)
         {
@@ -40,7 +43,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 IntegratedDegree = source.IntegratedDegree,
                 SectorSubjectAreaTier2Description = source.SectorSubjectAreaTier2Description,
                 SectorSubjectAreaTier2 = source.SectorSubjectAreaTier2,
-                OtherBodyApprovalRequired = source.OtherBodyApprovalRequired
+                OtherBodyApprovalRequired = source.OtherBodyApprovalRequired,
+                StandardDates = source.StandardDates
+            };
+        }
+    }
+
+    public class StandardDate
+    {
+        public DateTime? LastDateStarts { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
+
+        public DateTime EffectiveFrom { get; set; }
+
+        public static implicit operator StandardDate(InnerApi.Responses.StandardDate source)
+        {
+            return new StandardDate
+            {
+                EffectiveFrom = source.EffectiveFrom,
+                EffectiveTo = source.EffectiveTo,
+                LastDateStarts = source.LastDateStarts
             };
         }
     }
