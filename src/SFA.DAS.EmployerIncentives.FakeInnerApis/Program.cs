@@ -93,6 +93,8 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                     Request.Create().WithPath("/api/apprenticeships")
                         .WithParam("accountId", true, _accountId.ToString())
                         .WithParam("accountLegalEntityId", true, _accountLegalEntityId.ToString())
+                        .WithParam("startDateRangeFrom", true)
+                        .WithParam("startDateRangeTo", true)
                         .UsingGet()
                 )
                 .RespondWith(
