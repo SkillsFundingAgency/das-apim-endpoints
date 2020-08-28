@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features\GetApplicationsForAccount.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\SendBankDetailsReminderEmail.feature.cs">
       <DependentUpon>SendBankDetailsReminderEmail.feature</DependentUpon>
     </Compile>
@@ -34,6 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\GetApplicationsForAccount.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>GetApplicationsForAccount.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\JobRequests.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
