@@ -1,8 +1,7 @@
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface IInnerApiConfiguration
+    public interface IInnerApiConfiguration : IApiConfiguration
     {
-        string Url { get; set; }
         string Identifier { get; set; }
     }
 }

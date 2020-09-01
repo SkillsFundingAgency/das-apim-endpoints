@@ -40,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var apiClient = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var apiClient = new InternalApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             var actual = await apiClient.GetAll<string>(getTestRequest);
@@ -79,7 +79,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              
              var hostingEnvironment = new Mock<IWebHostEnvironment>();
              hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
              await actual.GetAll<string>(getTestRequest);
