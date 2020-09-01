@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public class InternalApiClient<T> : ApiClient<T>, IApiClient<T> where T : IInnerApiConfiguration
+    public class InternalApiClient<T> : ApiClient<T>, IApiClient<T> where T : IInternalApiConfiguration
     {
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
 

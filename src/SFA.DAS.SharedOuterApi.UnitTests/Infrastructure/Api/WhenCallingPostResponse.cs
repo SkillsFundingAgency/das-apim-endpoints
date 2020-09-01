@@ -23,7 +23,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             string postContent,
             int id,
             string responseContent,
-            TestInnerApiConfiguration config)
+            TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
@@ -43,7 +43,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new InternalApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             var actualResult = await actual.Post<TestResponse>(getTestRequest);
