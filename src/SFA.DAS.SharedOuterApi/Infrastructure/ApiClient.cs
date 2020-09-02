@@ -132,7 +132,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             if (string.IsNullOrEmpty(namedClient))
             {
                 client =  _httpClientFactory.CreateClient();
-
             }
             else
             {
