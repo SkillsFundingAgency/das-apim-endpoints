@@ -4,11 +4,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 {
     public class UpdateVendorRegistrationFormCaseDetailsCommand : IRequest
     {
-        private readonly long _legalEntityId;
+        public long LegalEntityId { get; }
+        public string HashedLegalEntityId { get; }
 
-        public UpdateVendorRegistrationFormCaseDetailsCommand(long legalEntityId)
+        public UpdateVendorRegistrationFormCaseDetailsCommand(long legalEntityId, string hashedLegalEntityId)
         {
-            _legalEntityId = legalEntityId;
+            LegalEntityId = legalEntityId;
+            HashedLegalEntityId = hashedLegalEntityId;
         }
     }
 }

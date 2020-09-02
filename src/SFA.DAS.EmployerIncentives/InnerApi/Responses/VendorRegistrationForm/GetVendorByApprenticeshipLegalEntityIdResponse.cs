@@ -4,7 +4,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm
 {
     public class GetVendorByApprenticeshipLegalEntityIdResponse
     { 
-        public string VendorIndetifier { get; set; }
+        public string VendorIdentifier { get; set; }
         public string VendorUKPRN { get; set; }
         public string VendorUPIN { get; set; }
         public string VendorURN { get; set; }
