@@ -9,9 +9,9 @@ namespace SFA.DAS.EmployerIncentives.Clients
 {
     public class CommitmentsApiClient : ICommitmentsApiClient<CommitmentsConfiguration>
     {
-        private readonly IApiClient<CommitmentsConfiguration> _client;
+        private readonly IInternalApiClient<CommitmentsConfiguration> _client;
 
-        public CommitmentsApiClient(IApiClient<CommitmentsConfiguration> client)
+        public CommitmentsApiClient(IInternalApiClient<CommitmentsConfiguration> client)
         {
             _client = client;
         }

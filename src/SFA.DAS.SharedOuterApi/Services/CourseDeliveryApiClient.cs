@@ -8,9 +8,9 @@ namespace SFA.DAS.SharedOuterApi.Services
 {
     public class CourseDeliveryApiClient : ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>
     {
-        private readonly IApiClient<CourseDeliveryApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<CourseDeliveryApiConfiguration> _apiClient;
 
-        public CourseDeliveryApiClient(IApiClient<CourseDeliveryApiConfiguration> apiClient)
+        public CourseDeliveryApiClient(IInternalApiClient<CourseDeliveryApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }

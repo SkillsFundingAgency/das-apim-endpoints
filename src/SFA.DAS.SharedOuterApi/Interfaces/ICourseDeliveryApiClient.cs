@@ -1,6 +1,6 @@
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface ICourseDeliveryApiClient<T> : IApiClient<T>
+    public interface ICourseDeliveryApiClient<T> : IInternalApiClient<T>
     {
         
     }
