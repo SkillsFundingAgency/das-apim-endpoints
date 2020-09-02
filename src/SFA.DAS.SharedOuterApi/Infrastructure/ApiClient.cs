@@ -13,7 +13,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class ApiClient<T> : IApiClient<T> where T : IInnerApiConfiguration
     {
-        private readonly HttpClient _httpClient;
+        private HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
         private readonly T _configuration;
@@ -24,6 +25,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             IWebHostEnvironment hostingEnvironment,
             IAzureClientCredentialHelper azureClientCredentialHelper)
         {
+            _httpClientFactory = httpClientFactory;
             _httpClient = httpClientFactory.CreateClient();
             _hostingEnvironment = hostingEnvironment;
             _azureClientCredentialHelper = azureClientCredentialHelper;
@@ -127,8 +129,13 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return JsonConvert.DeserializeObject<IEnumerable<TResponse>>(json);
         }
 
-        public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request, string namedClient = default)
         {
+            if(!string.IsNullOrEmpty(namedClient))
+            {
+                _httpClient = _httpClientFactory.CreateClient(namedClient);
+            }
+
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
             request.BaseUrl = _configuration.Url;
@@ -150,6 +157,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             _httpClient.DefaultRequestHeaders.Remove("X-Version");
             _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
+        }
+
+        public void UseNamedClient(string namedClient = null)
+        {
+            if (!string.IsNullOrEmpty(namedClient))
+            {
+                _httpClient = _httpClientFactory.CreateClient(namedClient);
+            }
         }
     }
 }

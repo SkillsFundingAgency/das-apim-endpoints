@@ -126,7 +126,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
-            var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
+            var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate), namedClient: "Throttled");
             switch (statusCode)
             {
                 case HttpStatusCode.OK:

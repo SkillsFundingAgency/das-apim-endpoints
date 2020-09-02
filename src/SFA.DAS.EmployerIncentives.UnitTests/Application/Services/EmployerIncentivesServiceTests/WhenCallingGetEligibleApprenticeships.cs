@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             //Arrange
             client.Setup(x =>
-                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()))
+                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>(), "Throttled"))
                 .ReturnsAsync(HttpStatusCode.OK);
             
             //Act
@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             
             //Assert
             actual.ToList().Should().BeEquivalentTo(allApprenticeship);
-            client.Verify(x => x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()),
+            client.Verify(x => x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>(), "Throttled"),
                 Times.Exactly(allApprenticeship.Count));
         }
         
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             EmployerIncentivesService service)
         { 
             //Arrange
-            client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>()))
+            client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>(), "Throttled"))
                 .ReturnsAsync(HttpStatusCode.NotFound);
 
             allApprenticeship.Add(passingApprenticeship);
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                  x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
                      c.GetUrl.Contains(passingApprenticeship.Uln.ToString())
                      && c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
-                     )))
+                     ), "Throttled"))
                 .ReturnsAsync(HttpStatusCode.OK);
             
             //Act
@@ -75,7 +75,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             //Arrange
             client.Setup(x =>
-                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()))
+                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>(), null))
                 .ReturnsAsync(HttpStatusCode.InternalServerError);
             
             //Act

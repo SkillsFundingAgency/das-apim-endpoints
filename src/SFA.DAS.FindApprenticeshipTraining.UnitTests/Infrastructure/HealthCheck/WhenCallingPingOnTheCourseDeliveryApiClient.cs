@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.HealthChec
             //Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             //Assert
-            client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>()), Times.Once);
+            client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>(), null), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.HealthChec
             CourseDeliveryApiHealthCheck healthCheck)
         {
             //Arrange
-            client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
+            client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>(), null))
                 .ReturnsAsync(HttpStatusCode.OK);
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -51,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.HealthChec
             CourseDeliveryApiHealthCheck healthCheck)
         {
             //Arrange
-            client.Setup(x => x.GetResponseCode(new GetPingRequest()))
+            client.Setup(x => x.GetResponseCode(new GetPingRequest(), null))
                 .ReturnsAsync(HttpStatusCode.NotFound);
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
