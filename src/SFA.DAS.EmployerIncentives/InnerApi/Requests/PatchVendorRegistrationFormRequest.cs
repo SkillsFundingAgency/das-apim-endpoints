@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
-    public class PatchVendorRegistrationFormRequest : IPatchApiRequest<VendorRegistrationFormRequest>
+    public class PatchVendorRegistrationFormRequest : IPatchApiRequest<UpdateVendorRegistrationFormRequest>
     {
         private readonly long _legalEntityId;
         
@@ -13,10 +13,10 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 
         public string BaseUrl { get; set; }
         public string PatchUrl => $"{BaseUrl}legalentities/{_legalEntityId}/vendorregistrationform";
-        public VendorRegistrationFormRequest Data { get; set; }
+        public UpdateVendorRegistrationFormRequest Data { get; set; }
     }
 
-    public class VendorRegistrationFormRequest
+    public class UpdateVendorRegistrationFormRequest
     {
         public string VendorId { get; set; }
         public string CaseId { get; set; }
