@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                 .ReturnsAsync(items);
 
             employerIncentivesService.Setup(x =>
-                x.GetEligibleApprenticeships(It.Is<IEnumerable<ApprenticeshipItem>>(c => c.Count().Equals(response.Apprenticeships.Count())))).ReturnsAsync(items);
+                x.GetEligibleApprenticeships(query.AccountId, query.AccountLegalEntityId, It.Is<IEnumerable<ApprenticeshipItem>>(c => c.Count().Equals(response.Apprenticeships.Count())))).ReturnsAsync(items);
 
             var actual = await handler.Handle(query, CancellationToken.None);
             

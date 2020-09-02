@@ -21,65 +21,26 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
     {
         [Test,MoqAutoData]
         public async Task Then_Each_Apprentice_Record_Is_Checked(
+            long accountId,
+            long accountLegalEntityId,
             List<ApprenticeshipItem> allApprenticeship,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service)
         {
             //Arrange
+            var eligibleApprenticeships = (from apprenticeship in allApprenticeship
+                                           select new EligibleApprenticeshipResult { Eligible = true, Uln = apprenticeship.Uln }).ToList();
             client.Setup(x =>
-                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
+                    x.Post<IEnumerable<EligibleApprenticeshipResult>>(It.IsAny<GetMultipleEligibleApprenticeshipsRequest>()))
+                .ReturnsAsync(eligibleApprenticeships);
             
             //Act
-            var actual = await service.GetEligibleApprenticeships(allApprenticeship);
+            var actual = await service.GetEligibleApprenticeships(accountId, accountLegalEntityId, allApprenticeship);
             
             //Assert
-            actual.ToList().Should().BeEquivalentTo(allApprenticeship);
-            client.Verify(x => x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()),
-                Times.Exactly(allApprenticeship.Count));
+            actual.Count().Should().Be(eligibleApprenticeships.Count());
+            client.Verify(x => x.Post<IEnumerable<EligibleApprenticeshipResult>>(It.IsAny<GetMultipleEligibleApprenticeshipsRequest>()), Times.Once);
         }
         
-        [Test,MoqAutoData]
-        public async Task Then_Each_Apprentice_Record_Is_Checked_And_If_Client_Returns_Ok_Is_Returned(
-            List<ApprenticeshipItem> allApprenticeship,
-            ApprenticeshipItem passingApprenticeship,
-            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
-        { 
-            //Arrange
-            client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>()))
-                .ReturnsAsync(HttpStatusCode.NotFound);
-
-            allApprenticeship.Add(passingApprenticeship);
-            client.Setup(x =>
-                 x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
-                     c.GetUrl.Contains(passingApprenticeship.Uln.ToString())
-                     && c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
-                     )))
-                .ReturnsAsync(HttpStatusCode.OK);
-            
-            //Act
-            var actual = await service.GetEligibleApprenticeships(allApprenticeship);
-            
-            //Assert
-            actual.ToList().Should().ContainEquivalentOf(passingApprenticeship);
-            actual.Length.Should().Be(1);
-        }
-
-        [Test, MoqAutoData]
-        public void Then_An_Exception_Is_Thrown_If_The_Uln_Is_Not_Found(
-            List<ApprenticeshipItem> allApprenticeship,
-            ApprenticeshipItem passingApprenticeship,
-            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
-        {
-            //Arrange
-            client.Setup(x =>
-                    x.GetResponseCode(It.IsAny<GetEligibleApprenticeshipsRequest>()))
-                .ReturnsAsync(HttpStatusCode.InternalServerError);
-            
-            //Act
-            Assert.ThrowsAsync<ApplicationException>(() => service.GetEligibleApprenticeships(allApprenticeship));
-        }
     }
 }

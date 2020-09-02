@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     public interface IEmployerIncentivesService
     {
         Task<bool> IsHealthy();
-        Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship);
+        Task<ApprenticeshipItem[]> GetEligibleApprenticeships(long accountId, long accountLegalEntityId, IEnumerable<ApprenticeshipItem> allApprenticeship);
         Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId);
 		Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);

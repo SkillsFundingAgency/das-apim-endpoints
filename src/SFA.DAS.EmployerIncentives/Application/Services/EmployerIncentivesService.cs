@@ -38,13 +38,24 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship)
+        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(long accountId, long accountLegalEntityId, 
+                                                                           IEnumerable<ApprenticeshipItem> allApprenticeships)
         {
-            var bag = new ConcurrentBag<ApprenticeshipItem>();
-            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag));
-            await Task.WhenAll(tasks);
+            var result = new List<ApprenticeshipItem>();
+            if (!allApprenticeships.Any())
+            {
+                return result.ToArray();
+            }
 
-            return bag.ToArray();
+            var request = new GetMultipleEligibleApprenticeshipsRequest(accountId, accountLegalEntityId)
+            {
+                Data = allApprenticeships
+            };
+            var response = await _client.Post<IEnumerable<EligibleApprenticeshipResult>>(request);
+            var filteredResponse = response.Where(x => x.Eligible == true).ToList();
+            result.AddRange(from eligibileUlns in filteredResponse
+                            select allApprenticeships.FirstOrDefault(x => x.Uln == eligibileUlns.Uln));
+            return result.ToArray();
         }
 
         public async Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId)

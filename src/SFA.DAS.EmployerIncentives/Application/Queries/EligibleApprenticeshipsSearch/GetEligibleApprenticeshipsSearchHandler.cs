@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
             var apprentices = await _commitmentsV2Service.Apprenticeships(request.AccountId, request.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate);
             var result = new GetEligibleApprenticeshipsSearchResult
             {
-                Apprentices = await _employerIncentivesService.GetEligibleApprenticeships(apprentices)
+                Apprentices = await _employerIncentivesService.GetEligibleApprenticeships(request.AccountId, request.AccountLegalEntityId, apprentices)
             };
 
             return result;
