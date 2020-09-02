@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/health")
+                    Request.Create().WithPath($"/ping")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()

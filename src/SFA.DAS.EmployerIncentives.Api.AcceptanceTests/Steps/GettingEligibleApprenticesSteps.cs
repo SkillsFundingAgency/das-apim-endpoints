@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -28,6 +30,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private ApprenticeshipItem _nonEligibleApprenticeship3;
         private ApprenticeshipItem _nonEligibleApprenticeship4;
         private ApprenticeshipItem _nonEligibleApprenticeship5;
+        private DateTime _eligibilityStartDate;
+        private DateTime _eligibilityEndDate;
 
         public GettingEligibleApprenticesSteps(TestContext testContext)
         {
@@ -45,6 +49,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"this search request finds no approved apprenticeships")]
         public void GivenThisSearchRequestFindsNoApprovedApprenticeships()
         {
+            SetupIncentiveDetailsResponse();
+
             var response = new ApprenticeshipSearchResponse
             {
                 Apprenticeships = new ApprenticeshipItem[0]
@@ -56,6 +62,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"this search request finds several approved apprenticeships")]
         public void GivenThisSearchRequestFindsSeveralApprovedApprenticeships()
         {
+            SetupIncentiveDetailsResponse();
+
             _eligibleApprenticeship1 = _fixture.Create<ApprenticeshipItem>();
             _eligibleApprenticeship2 = _fixture.Create<ApprenticeshipItem>();
             _nonEligibleApprenticeship3 = _fixture.Create<ApprenticeshipItem>();
@@ -110,6 +118,22 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             result.Count(a => a.Uln == _eligibleApprenticeship2.Uln).Should().Be(1);
         }
 
+        private void SetupIncentiveDetailsResponse()
+        {
+            _eligibilityStartDate = _fixture.Create<DateTime>();
+            _eligibilityEndDate = _fixture.Create<DateTime>();
+            var response = new GetIncentiveDetailsResponse {  EligibilityStartDate = _eligibilityStartDate, EligibilityEndDate = _eligibilityEndDate };
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/newapprenticeincentive")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(response)));
+        }
+
         private void SetApprenticeshipSearchToReturn(ApprenticeshipSearchResponse response)
         {
             _context.CommitmentsV2InnerApi.MockServer
@@ -117,6 +141,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Request.Create().WithPath($"/api/apprenticeships")
                         .WithParam("accountId", _accountId.ToString())
                         .WithParam("accountLegalEntityId", _accountLegalEntityId.ToString())
+                        .WithParam("startDateRangeFrom", _eligibilityStartDate.ToString("u"))
+                        .WithParam("startDateRangeTo", _eligibilityEndDate.ToString("u"))
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
