@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CustomerEnga
         {
             client.Setup(x =>
                     x.Get<GetVendorByApprenticeshipLegalEntityIdResponse>(
-                        It.Is<GetVendorByApprenticeshipLegalEntityId>(c => c.GetUrl.Contains(companyName) && c.GetUrl.Contains(hashedLegalEntityId))))
+                        It.Is<GetVendorByApprenticeshipLegalEntityId>(c => c.GetUrl.Contains(companyName) && c.GetUrl.Contains(hashedLegalEntityId)), true))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId);

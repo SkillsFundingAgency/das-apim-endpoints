@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public abstract class ApiClient<T> :GetApiClient<T>, IApiClient<T> where T : IApiConfiguration
+    public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IApiConfiguration
     {
         public ApiClient(
             IHttpClientFactory httpClientFactory,

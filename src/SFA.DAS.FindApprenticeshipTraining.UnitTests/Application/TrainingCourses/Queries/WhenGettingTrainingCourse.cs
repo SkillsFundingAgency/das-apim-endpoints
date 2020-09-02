@@ -25,13 +25,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString())), true))
                 .ReturnsAsync(coursesApiResponse);
 
             mockCourseDeliveryApiClient
                 .Setup(client =>
                     client.Get<GetProvidersListResponse>(
-                        It.Is<GetProvidersByCourseRequest>((c => c.GetUrl.Contains(query.Id.ToString())))))
+                        It.Is<GetProvidersByCourseRequest>((c => c.GetUrl.Contains(query.Id.ToString()))), true))
                 .ReturnsAsync(courseDirectoryApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

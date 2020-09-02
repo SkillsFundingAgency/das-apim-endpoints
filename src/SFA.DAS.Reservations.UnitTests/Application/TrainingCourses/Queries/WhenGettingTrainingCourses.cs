@@ -23,7 +23,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.TrainingCourses.Queries
             GetTrainingCoursesQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

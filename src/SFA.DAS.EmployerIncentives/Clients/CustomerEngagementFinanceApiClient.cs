@@ -14,9 +14,9 @@ namespace SFA.DAS.EmployerIncentives.Clients
             _client = client;
         }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
         {
-            return _client.Get<TResponse>(request);
+            return _client.Get<TResponse>(request, ensureSuccessResponseCode);
         }
     }
 }

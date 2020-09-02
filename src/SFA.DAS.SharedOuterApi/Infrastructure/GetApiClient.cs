@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
@@ -25,7 +22,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             Configuration = apiConfiguration;
         }
 
-        public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
+        public async Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
         {
             await AddAuthenticationHeader();
 
@@ -34,7 +31,16 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             request.BaseUrl = Configuration.Url;
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            if (ensureSuccessResponseCode)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(json);
         }

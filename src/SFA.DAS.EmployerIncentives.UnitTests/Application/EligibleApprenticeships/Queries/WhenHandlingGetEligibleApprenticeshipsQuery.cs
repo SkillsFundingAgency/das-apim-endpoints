@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             commitmentsClient.Setup(client =>
                 client.Get<GetApprenticeshipListResponse>(It.Is<GetApprenticeshipsRequest>(c =>
                     c.GetUrl.Contains(query.AccountId.ToString()) &&
-                    c.GetUrl.Contains(query.AccountLegalEntityId.ToString()))))
+                    c.GetUrl.Contains(query.AccountLegalEntityId.ToString())), true))
                 .ReturnsAsync(response);
 
             employerIncentivesService.Setup(x =>
