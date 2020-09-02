@@ -32,9 +32,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            var client = GetClient();
-            await AddAuthenticationHeader(client);
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var response = await client.GetAsync(request.GetUrl).ConfigureAwait(false);
@@ -46,10 +44,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
-            var client = GetClient();
-            await AddAuthenticationHeader(client);
-
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
@@ -65,9 +60,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Delete(IDeleteApiRequest request)
         {
-            var client = GetClient();
-            await AddAuthenticationHeader(client);
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var response = await client.DeleteAsync(request.DeleteUrl)
@@ -77,10 +70,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            var client = GetClient();
-
-            await AddAuthenticationHeader(client);
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
@@ -92,11 +82,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Put(IPutApiRequest request)        
         {
-            var client = GetClient();
-
-            await AddAuthenticationHeader(client);
-
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
@@ -108,11 +94,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Put<TData>(IPutApiRequest<TData> request)
         {
-            var client = GetClient();
-
-            await AddAuthenticationHeader(client);
-
-            AddVersionHeader(request.Version, client);
+            var client = await GetClient(request.Version);
 
             request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
@@ -124,10 +106,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
-            var client = GetClient();
+            var client = await GetClient(request.Version);
 
-            await AddAuthenticationHeader(client);
-            AddVersionHeader(request.Version, client);
             request.BaseUrl = _configuration.Url;
             var response = await client.GetAsync(request.GetAllUrl).ConfigureAwait(false);
 
@@ -138,27 +118,31 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request, string namedClient = default)
         {
-            var client = GetClient(namedClient);
+            var client = await GetClient(request.Version, namedClient);
 
-            await AddAuthenticationHeader(client);
-            AddVersionHeader(request.Version, client);
             request.BaseUrl = _configuration.Url;
             var response = await client.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;
         }
 
-        private HttpClient GetClient(string namedClient = default)
+        private async Task<HttpClient> GetClient(string version, string namedClient = default)
         {
+            HttpClient client;
             if (string.IsNullOrEmpty(namedClient))
             {
-                return _httpClientFactory.CreateClient();
+                client =  _httpClientFactory.CreateClient();
 
             }
             else
             {
-                return = _httpClientFactory.CreateClient(namedClient);
+                client = _httpClientFactory.CreateClient(namedClient);
             }
+
+            await AddAuthenticationHeader(client);
+            AddVersionHeader(version, client);
+
+            return client;
         }
 
         private async Task AddAuthenticationHeader(HttpClient client)
