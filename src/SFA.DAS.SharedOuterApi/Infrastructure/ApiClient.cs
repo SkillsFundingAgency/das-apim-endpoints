@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class ApiClient<T> : IApiClient<T> where T : IInnerApiConfiguration
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
@@ -131,16 +131,17 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request, string namedClient = default)
         {
-            if(!string.IsNullOrEmpty(namedClient))
+            var client = _httpClient;
+            if (!string.IsNullOrEmpty(namedClient))
             {
-                _httpClient = _httpClientFactory.CreateClient(namedClient);
+                client = _httpClientFactory.CreateClient(namedClient);
             }
 
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
             request.BaseUrl = _configuration.Url;
-            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
-
+            var response = await client.GetAsync(request.GetUrl).ConfigureAwait(false);
+            
             return response.StatusCode;
         }
 
@@ -157,14 +158,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             _httpClient.DefaultRequestHeaders.Remove("X-Version");
             _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
-        }
-
-        public void UseNamedClient(string namedClient = null)
-        {
-            if (!string.IsNullOrEmpty(namedClient))
-            {
-                _httpClient = _httpClientFactory.CreateClient(namedClient);
-            }
         }
     }
 }
