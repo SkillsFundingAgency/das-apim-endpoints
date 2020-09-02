@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public class CustomerEngagementApiClient<T> : GetApiClient<T> where T : ICustomerEngagementApiConfiguration
+    public class CustomerEngagementApiClient<T> : GetApiClient<T>, ICustomerEngagementApiClient<T> where T : ICustomerEngagementApiConfiguration
     {
         public CustomerEngagementApiClient(IHttpClientFactory httpClientFactory, T apiConfiguration, IWebHostEnvironment hostingEnvironment) : base(httpClientFactory, apiConfiguration, hostingEnvironment)
         {
