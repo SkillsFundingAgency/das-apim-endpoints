@@ -9,34 +9,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
-    public abstract class ApiClient<T> : IApiClient<T> where T : IApiConfiguration
+    public abstract class ApiClient<T> :GetApiClient<T>, IApiClient<T> where T : IApiConfiguration
     {
-        protected readonly HttpClient HttpClient;
-        protected readonly IWebHostEnvironment HostingEnvironment;
-        protected readonly T Configuration;
-
         public ApiClient(
             IHttpClientFactory httpClientFactory,
             T apiConfiguration,
-            IWebHostEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(httpClientFactory, apiConfiguration, hostingEnvironment)
         {
-            HttpClient = httpClientFactory.CreateClient();
-            HostingEnvironment = hostingEnvironment;
-            Configuration = apiConfiguration;
-        }
-
-        public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
-            request.BaseUrl = Configuration.Url;
-            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
@@ -131,9 +110,5 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             return response.StatusCode;
         }
-
-        protected abstract Task AddAuthenticationHeader();
-
-        protected abstract void AddVersionHeader(string requestVersion);
     }
 }
