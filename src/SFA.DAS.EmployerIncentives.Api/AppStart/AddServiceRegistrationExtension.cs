@@ -16,10 +16,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            
+            services.AddTransient(typeof(ICustomerEngagementApiClient<>), typeof(CustomerEngagementApiClient<>));
+
             services.AddTransient<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>, EmployerIncentivesApiClient>();
             services.AddTransient<ICommitmentsApiClient<CommitmentsConfiguration>, CommitmentsApiClient>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<ICustomerEngagementFinanceApiClient<CustomerEngagementFinanceConfiguration>, CustomerEngagementFinanceApiClient>();
             services.AddTransient<IEmployerIncentivesService, EmployerIncentivesService>();
             services.AddTransient<ICommitmentsService, CommitmentsService>();
             services.AddTransient<IAccountsService, AccountsService>();
