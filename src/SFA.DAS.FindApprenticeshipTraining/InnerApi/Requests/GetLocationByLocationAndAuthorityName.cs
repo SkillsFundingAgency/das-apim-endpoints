@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System.Web;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
@@ -14,6 +15,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl  => $"{BaseUrl}api/locations?locationName={_locationName}&authorityName={_authorityName}";
+        public string GetUrl  => $"{BaseUrl}api/locations?locationName={HttpUtility.UrlEncode(_locationName)}&authorityName={HttpUtility.UrlEncode(_authorityName)}";
     }
 }
