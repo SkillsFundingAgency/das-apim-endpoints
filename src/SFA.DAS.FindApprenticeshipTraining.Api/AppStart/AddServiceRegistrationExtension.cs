@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -18,6 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddTransient(typeof(IApiClient<>), typeof(ApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             
             services.AddTransient<ICacheStorageService, CacheStorageService>();
         }
