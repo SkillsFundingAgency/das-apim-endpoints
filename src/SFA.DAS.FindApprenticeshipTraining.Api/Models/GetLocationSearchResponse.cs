@@ -23,13 +23,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             public string LocationName { get ; set ; }
             public string CountyName { get ; set ; }
             public string Name { get; set; }
+            public string Postcode { get; set; }
 
             public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
             {
                 return new GetLocationSearchResponseItem
                 {
-                    Name = string.IsNullOrEmpty(source.Postcode) ? 
+                    Name = string.IsNullOrEmpty(source.Postcode) ?
                         $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
+                    LocationName = source.LocationName,
+                    CountyName = source.CountyName,
+                    LocalAuthorityName = source.LocalAuthorityName,
                     Location = source.Location
                 };
             }
