@@ -21,6 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         public async Task Then_Gets_Training_Course_And_Providers_From_Mediator(
             int standardCode,
             int providerId,
+            string location,
             GetTrainingCourseProviderResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -28,12 +29,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetTrainingCourseProviderQuery>(
-                        c=>c.CourseId.Equals(standardCode)
-                        && c.ProviderId.Equals(providerId)),
+                        c
+                            =>c.CourseId.Equals(standardCode)
+                        && c.ProviderId.Equals(providerId)
+                        && c.Location.Equals(location)
+                        ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId) as ObjectResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -59,6 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         public async Task And_Exception_Then_Returns_Bad_Request(
             int standardCode,
             int providerId,
+            string location,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
@@ -68,7 +73,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId) as StatusCodeResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
