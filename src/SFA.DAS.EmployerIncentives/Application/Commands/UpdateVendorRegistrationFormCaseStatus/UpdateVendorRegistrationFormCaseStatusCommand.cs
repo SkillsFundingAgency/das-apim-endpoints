@@ -6,13 +6,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
     {
         public long LegalEntityId { get; }
         public string CaseId { get; }
-        public string VendorId { get; }
 
-        public UpdateVendorRegistrationFormCaseStatusCommand(long legalEntityId, string caseId, string vendorId)
+        public UpdateVendorRegistrationFormCaseStatusCommand(long legalEntityId, string caseId)
         {
             LegalEntityId = legalEntityId;
             CaseId = caseId;
-            VendorId = vendorId;
         }
     }
 }

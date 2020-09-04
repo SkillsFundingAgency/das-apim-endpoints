@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             {
                 var updateRequest = new UpdateVendorRegistrationFormRequest
                 {
-                    VendorId = command.VendorId,
+                    VendorId = statusResponse.RegistrationCase.SubmittedVendorIdentifier,
                     CaseId = command.CaseId,
                     CaseStatus = statusResponse.RegistrationCase.CaseStatus
                 };

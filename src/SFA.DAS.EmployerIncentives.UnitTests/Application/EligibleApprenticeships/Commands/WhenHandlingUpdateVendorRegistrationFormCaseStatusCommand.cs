@@ -17,7 +17,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         public async Task Then_The_legal_entity_is_updated_with_the_vendor_registration_form_Details(
             long legalEntityId,
             string caseId,
-            string vendorId,
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
             UpdateVendorRegistrationFormCaseStatusCommandHandler handler,
@@ -25,25 +24,24 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             financeService.Setup(x => x.GetVendorRegistrationStatusByCaseId(caseId)).ReturnsAsync(vendorResponse);
 
-            var command = new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId, vendorId);
+            var command = new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId);
 
             await handler.Handle(command, CancellationToken.None);
 
-            incentivesService.Verify(x => x.UpdateVendorRegistrationFormDetails(legalEntityId, It.Is<UpdateVendorRegistrationFormRequest>(r => r.CaseId == caseId && r.CaseStatus == vendorResponse.RegistrationCase.CaseStatus && r.VendorId == vendorId)), Times.Once);
+            incentivesService.Verify(x => x.UpdateVendorRegistrationFormDetails(legalEntityId, It.Is<UpdateVendorRegistrationFormRequest>(r => r.CaseId == caseId && r.CaseStatus == vendorResponse.RegistrationCase.CaseStatus && r.VendorId == vendorResponse.RegistrationCase.SubmittedVendorIdentifier)), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_if_the_vendor_is_not_found_then_the_details_are_not_updated(
             long legalEntityId,
             string caseId,
-            string vendorId,
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
             UpdateVendorRegistrationFormCaseStatusCommandHandler handler)
         {
             financeService.Setup(x => x.GetVendorRegistrationStatusByCaseId(caseId)).ReturnsAsync((GetVendorRegistrationStatusByCaseIdResponse)null);
 
-            var command = new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId, vendorId);
+            var command = new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId);
 
             await handler.Handle(command, CancellationToken.None);
 

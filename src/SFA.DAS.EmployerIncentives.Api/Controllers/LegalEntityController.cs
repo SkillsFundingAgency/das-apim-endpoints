@@ -26,9 +26,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch("legalentities/{legalEntityId}/vendorregistrationform/{caseId}")]
-        public async Task<IActionResult> UpdateVendorRegistrationFormStatus(long legalEntityId, string caseId, UpdateVendorRegistrationFormStatusRequest request)
+        public async Task<IActionResult> UpdateVendorRegistrationFormStatus(long legalEntityId, string caseId)
         {
-            await _mediator.Send(new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId, request.VendorId));
+            await _mediator.Send(new UpdateVendorRegistrationFormCaseStatusCommand(legalEntityId, caseId));
 
             return NoContent();
         }
