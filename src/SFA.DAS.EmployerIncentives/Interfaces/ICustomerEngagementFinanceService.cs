@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     public interface ICustomerEngagementFinanceService
     {
         Task<GetVendorByApprenticeshipLegalEntityIdResponse> GetVendorByApprenticeshipLegalEntityId(string companyName, string hashedLegalEntityId);
+        Task<GetVendorRegistrationStatusByCaseIdResponse> GetVendorRegistrationStatusByCaseId(string caseId);
     }
 }

@@ -21,5 +21,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             return response;
         }
+
+        public async Task<GetVendorRegistrationStatusByCaseIdResponse> GetVendorRegistrationStatusByCaseId(string caseId)
+        {
+            var response = await _client.Get<GetVendorRegistrationStatusByCaseIdResponse>(new GetVendorRegistrationStatusByCaseIdRequest(caseId), false);
+
+            return response;
+        }
     }
 }
