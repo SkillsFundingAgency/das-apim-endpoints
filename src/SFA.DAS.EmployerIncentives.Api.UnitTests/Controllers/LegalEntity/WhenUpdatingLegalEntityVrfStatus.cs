@@ -6,28 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
-using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseDetails;
+using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.LegalEntity
 {
-    public class WhenUpdatingLegalEntityVrfDetails
+    public class WhenUpdatingLegalEntityVrfStatus
     {
         [Test, MoqAutoData]
-        public async Task Then_UpdateVendorRegistrationFormCaseDetailsCommand_Is_Sent(
+        public async Task Then_UpdateVendorRegistrationFormCaseStatusCommand_Is_Sent(
             long legalEntityId,
-            string hashedLegalEntityId,
+            string caseId,
+            UpdateVendorRegistrationFormStatusRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LegalEntityController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<UpdateVendorRegistrationFormCaseDetailsCommand>(c =>
+                    It.Is<UpdateVendorRegistrationFormCaseStatusCommand>(c =>
                         c.LegalEntityId == legalEntityId
-                        && c.HashedLegalEntityId == hashedLegalEntityId
+                        && c.CaseId == caseId
+                        && c.VendorId == request.VendorId
                     ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
-            var controllerResult = await controller.UpdateVendorRegistrationForm(legalEntityId, hashedLegalEntityId) as NoContentResult;
+            var controllerResult = await controller.UpdateVendorRegistrationFormStatus(legalEntityId, caseId, request) as NoContentResult;
 
             Assert.IsNotNull(controllerResult);
         }
