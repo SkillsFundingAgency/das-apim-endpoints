@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationsController controller)
         {
+            //Arrange
+            queryResponse.Locations = queryResponse.Locations.Select(c => { c.Postcode = null; return c; }).ToList();
+
             mockMediator
                 .Setup(mediator => mediator.Send(It.Is<GetLocationsQuery>(c => c.SearchTerm.Equals(searchTerm)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResponse);
