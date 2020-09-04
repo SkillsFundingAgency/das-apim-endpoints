@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -35,7 +36,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 var locationName = locationInformation.First().Trim();
                 var authorityName = locationInformation.Last().Trim();
                 location = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
-            }    
+            } 
+            else if (Regex.IsMatch(request.Location, @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$"))
+            {
+                location = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcode(request.Location));
+            } 
             
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.Location.GeoPoint.First(), location?.Location.GeoPoint.Last(), request.SortOrder));
