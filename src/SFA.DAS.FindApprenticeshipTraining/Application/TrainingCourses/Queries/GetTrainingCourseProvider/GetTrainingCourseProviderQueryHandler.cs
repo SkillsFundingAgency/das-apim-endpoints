@@ -58,7 +58,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 };
             }
 
-            var additionalCourses = providerCoursesTask
+            var additionalCourses = BuildAdditionalCoursesResponse(request, providerCoursesTask, coursesTask);
+
+            return new GetTrainingCourseProviderResult
+            {
+                ProviderStandard = providerTask.Result,
+                Course = courseTask.Result,
+                AdditionalCourses = additionalCourses,
+                OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
+            };
+        }
+
+        private static IEnumerable<GetAdditionalCourseListItem> BuildAdditionalCoursesResponse(GetTrainingCourseProviderQuery request, Task<GetProviderAdditionalStandardsItem> providerCoursesTask, Task<GetStandardsListResponse> coursesTask)
+        {
+            return providerCoursesTask
                 .Result
                 .StandardIds.Select(courseId =>
                     coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
@@ -72,14 +85,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 .Where(x => x.Id != request.CourseId)
                 .OrderBy(c => c.Title)
                 .ToList();
-
-            return new GetTrainingCourseProviderResult
-            {
-                ProviderStandard = providerTask.Result,
-                Course = courseTask.Result,
-                AdditionalCourses = additionalCourses,
-                OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
-            };
         }
     }
 }
