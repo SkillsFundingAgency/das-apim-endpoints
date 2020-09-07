@@ -127,5 +127,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.DeliveryModes.Count.Should().Be(1);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == deliveryModeType)?.DistanceInMiles.Should().Be(2.5m);
         }
+
+        [Test, AutoData]
+        public void Then_Maps_All_DeliveryType_Fields(string sectorSubjectArea, GetProvidersListItem source, GetDeliveryTypeItem item)
+        {
+            source.AchievementRates = null;
+            item.DeliveryModes = "100PercentEmployer";
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>{item};
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            
+            response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes));
+        }
     }
 }
