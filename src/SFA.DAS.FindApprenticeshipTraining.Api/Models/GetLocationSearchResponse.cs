@@ -31,9 +31,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 {
                     Name = string.IsNullOrEmpty(source.Postcode) ?
                         $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
-                    LocationName = source.LocationName,
-                    CountyName = source.CountyName,
-                    LocalAuthorityName = source.LocalAuthorityName,
                     Location = source.Location
                 };
             }
