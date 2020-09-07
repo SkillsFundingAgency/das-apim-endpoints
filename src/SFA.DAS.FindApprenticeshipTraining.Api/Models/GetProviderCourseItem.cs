@@ -1,7 +1,6 @@
-using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
+namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetProviderCourseItem : ProviderCourseBase
     {
