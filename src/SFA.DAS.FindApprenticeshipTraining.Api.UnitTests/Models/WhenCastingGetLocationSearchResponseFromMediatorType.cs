@@ -17,8 +17,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var actual = (GetLocationSearchResponse) source;
             
-            actual.Locations.ToList().First().Should().BeEquivalentTo(source.Locations.First());
-            actual.Locations.ToList().Last().Should().BeEquivalentTo(source.Locations.Last());
+            actual.Locations.ToList().First().Should().BeEquivalentTo(source.Locations.First(), options=> options.ExcludingMissingMembers());
+            actual.Locations.ToList().Last().Should().BeEquivalentTo(source.Locations.Last(), options=> options.ExcludingMissingMembers());
             actual.Locations.Count().Should().Be(source.Locations.Count());
         }
     }

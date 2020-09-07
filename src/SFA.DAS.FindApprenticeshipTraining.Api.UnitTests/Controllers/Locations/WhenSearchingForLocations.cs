@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
 
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = actual.Value as GetLocationSearchResponse;
-            model.Locations.Should().BeEquivalentTo(queryResponse.Locations);
+            model.Locations.Should().BeEquivalentTo(queryResponse.Locations, options=>options.ExcludingMissingMembers());
             
         }
         
