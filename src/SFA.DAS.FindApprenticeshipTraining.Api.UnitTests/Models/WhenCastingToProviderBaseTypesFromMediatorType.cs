@@ -8,7 +8,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenCastingGetTrainingCourseProvidersResponseFromMediatorType
+    public class WhenCastingToProviderBaseTypesFromMediatorType
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately_Matching_AchievementRate(string sectorSubjectArea,
