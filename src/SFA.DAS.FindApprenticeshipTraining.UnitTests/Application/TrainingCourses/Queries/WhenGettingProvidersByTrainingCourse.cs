@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -115,6 +116,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Are_Filters_Then_Gets_The_Standard_And_The_List_Of_Providers_For_That_Course_And_Filters_By_Filters(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Location = "";
+            query.Filters = "filter1,filter2";
+
+            apiResponse.Providers.First().DeliveryTypes.First().DeliveryModes = "filter1";
+            apiResponse.Providers.First().DeliveryTypes.Last().DeliveryModes = "filter2";
+
+            var expectedProvidersList = new List<GetProvidersListItem> {apiResponse.Providers.First(), apiResponse.Providers.Last()};
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(expectedProvidersList);
         }
     }
 }

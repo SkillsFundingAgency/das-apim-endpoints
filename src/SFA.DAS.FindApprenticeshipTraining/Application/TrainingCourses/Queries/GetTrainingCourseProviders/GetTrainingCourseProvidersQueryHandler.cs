@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,14 +40,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.Location.GeoPoint.First(), location?.Location.GeoPoint.Last(), request.SortOrder));
-
-            await Task.WhenAll(courseTask, providersTask);
             
+            await Task.WhenAll(courseTask, providersTask);
+
+            var providers = providersTask.Result;
+
+            if (!string.IsNullOrEmpty(request.Filters) || request.Filters.Split(',').Length > 0)
+            {
+                var filters = request.Filters.Split(',');
+                providers = providers.Providers.Where(c => c.DeliveryTypes.Any() == filters.Any()) as GetProvidersListResponse;
+            }
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providersTask.Result.Providers,
-                Total = providersTask.Result.TotalResults
+                Providers = providers.Providers,
+                Total = providers.TotalResults
             }; 
         }
     }
