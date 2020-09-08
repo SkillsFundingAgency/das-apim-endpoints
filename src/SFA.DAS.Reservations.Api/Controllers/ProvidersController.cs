@@ -23,11 +23,13 @@ namespace SFA.DAS.Reservations.Api.Controllers
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> GetProvider(int ukPrn)
+        [HttpGet]
+        [Route("{ukprn}")]
+        public async Task<IActionResult> GetProvider(int ukprn)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetProviderQuery{Ukprn = ukPrn});
+                var queryResult = await _mediator.Send(new GetProviderQuery{Ukprn = ukprn});
 
                 var model = (GetProviderResponse) queryResult.Provider;
 
@@ -35,7 +37,7 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get training provider, UKPRN: [{ukPrn}]");
+                _logger.LogError(e, $"Error attempting to get training provider, UKPRN: [{ukprn}]");
                 return BadRequest();
             }
         }

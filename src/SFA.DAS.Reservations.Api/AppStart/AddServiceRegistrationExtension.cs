@@ -15,6 +15,7 @@ namespace SFA.DAS.Reservations.Api.AppStart
 
             services.AddTransient(typeof(IApiClient<>), typeof(ApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+            services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>(); 
             
         }
     }
