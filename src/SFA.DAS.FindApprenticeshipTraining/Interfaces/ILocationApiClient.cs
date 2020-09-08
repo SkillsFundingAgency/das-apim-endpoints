@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.FindApprenticeshipTraining.Interfaces
 {
-    public interface ILocationApiClient<T> : IApiClient<T>
+    public interface ILocationApiClient<T> : IInternalApiClient<T>
     {
         
     }

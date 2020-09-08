@@ -9,9 +9,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
     public class LocationApiClient : ILocationApiClient<LocationApiConfiguration>
     {
-        private readonly IApiClient<LocationApiConfiguration> _client;
+        private readonly IInternalApiClient<LocationApiConfiguration> _client;
 
-        public LocationApiClient (IApiClient<LocationApiConfiguration> client)
+        public LocationApiClient (IInternalApiClient<LocationApiConfiguration> client)
         {
             _client = client;
         }
