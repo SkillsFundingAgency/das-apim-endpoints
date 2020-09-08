@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
+            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>(), It.IsAny<bool>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
-                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim())), true))
                 .ReturnsAsync(apiLocationResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
@@ -71,10 +71,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
                     && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
-                )))
+                ), true))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString())), true))
                 .ReturnsAsync(apiCourseResponse);
             
             
@@ -102,10 +102,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
                     c.GetUrl.Contains(query.Id.ToString())
-                )))
+                ), true))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString())), true))
                 .ReturnsAsync(apiCourseResponse);
             
             
@@ -114,7 +114,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
+            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>(), true), Times.Never);
         }
     }
 }
