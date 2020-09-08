@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
         }
 
         [Test, MoqAutoData]
-        public async Task And_We_Find_Matching_Apprenticeships_With_Different_AccountIds_Then_Throws_UnauthorizedAccessException(
+        public void And_We_Find_Matching_Apprenticeships_With_Different_AccountIds_Then_Throws_UnauthorizedAccessException(
             long accountId,
             long[] apprenticeshipIds,
             ApprenticeshipResponse apprenticeshipDetail,

@@ -127,6 +127,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task UpdateVendorRegistrationFormDetails(long legalEntityId, UpdateVendorRegistrationFormRequest request)
         {
             await _client.Patch(new PatchVendorRegistrationFormRequest(legalEntityId) { Data = request });
+		}
+
+        public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
+        {
+            return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

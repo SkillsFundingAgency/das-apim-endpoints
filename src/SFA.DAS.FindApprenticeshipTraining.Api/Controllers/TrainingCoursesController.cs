@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
@@ -84,11 +85,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         
         [HttpGet]
         [Route("{id}/providers")]
-        public async Task<IActionResult> GetProviders(int id)
+        public async Task<IActionResult> GetProviders(int id, [FromQuery]string location, [FromQuery]ProviderCourseSortOrder.SortOrder sortOrder = ProviderCourseSortOrder.SortOrder.Distance)
         {
             try
             {
-                var result = await _mediator.Send(new GetTrainingCourseProvidersQuery {Id = id});
+                var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
+                {
+                    Id = id, 
+                    Location = location, 
+                    SortOrder = (short)sortOrder
+                });
                 var model = new GetTrainingCourseProvidersResponse
                 {
                     TrainingCourse = result.Course,

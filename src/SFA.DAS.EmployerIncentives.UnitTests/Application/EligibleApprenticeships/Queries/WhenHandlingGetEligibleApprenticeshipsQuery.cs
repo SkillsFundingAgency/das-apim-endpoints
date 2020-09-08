@@ -7,9 +7,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
-using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -24,16 +21,17 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetEligibleApprenticeshipsSearchQuery query,
             GetApprenticeshipListResponse response,
             ApprenticeshipItem[] items,
-            [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
+            GetIncentiveDetailsResponse incentiveDetails,
+            [Frozen] Mock<ICommitmentsService> commitmentsService,
             [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
             GetEligibleApprenticeshipsSearchHandler handler
             )
         {
-            commitmentsClient.Setup(client =>
-                client.Get<GetApprenticeshipListResponse>(It.Is<GetApprenticeshipsRequest>(c =>
-                    c.GetUrl.Contains(query.AccountId.ToString()) &&
-                    c.GetUrl.Contains(query.AccountLegalEntityId.ToString())), true))
-                .ReturnsAsync(response);
+            employerIncentivesService.Setup(x => x.GetIncentiveDetails()).ReturnsAsync(incentiveDetails);
+
+            commitmentsService.Setup(x =>
+                x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate))
+                .ReturnsAsync(items);
 
             employerIncentivesService.Setup(x =>
                 x.GetEligibleApprenticeships(It.Is<IEnumerable<ApprenticeshipItem>>(c => c.Count().Equals(response.Apprenticeships.Count())))).ReturnsAsync(items);
