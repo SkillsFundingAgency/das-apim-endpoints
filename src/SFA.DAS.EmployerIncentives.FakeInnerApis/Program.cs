@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
 
         private static string _customerEngagementCompanyName = "ESFA";
         private static string _hashedLegalEntityId = "JRML7V"; // Legal entity id 1
+        private static string _caseId = "AF1042409";
 
         private static string _hashedAccountId = "LVX89V"; // Account ID 100
 
@@ -51,6 +52,7 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                 SetupGetLegalEntityResponse();
 
                 SetupGetVendorDetailsResponse();
+                SetupGetVendorCaseStatusResponse();
 
                 Console.WriteLine(("Please RETURN to stop server"));
                 Console.ReadLine();
@@ -80,6 +82,19 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(GetSampleJsonResponse("VendorData.json")));
+        }
+
+        private static void SetupGetVendorCaseStatusResponse()
+        {
+            _fakeCustomerEngagementApi.Given(
+                    Request.Create().WithPath($"/Finance/Registrations/{_caseId}")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(GetSampleJsonResponse("VendorStatus.json")));
         }
 
         static void SetupHealthCheckResponse()

@@ -20,6 +20,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
     {
         public string VendorId { get; set; }
         public string CaseId { get; set; }
-        public string CaseStatus { get; set; }
+        public string Status { get; set; }
     }
 }

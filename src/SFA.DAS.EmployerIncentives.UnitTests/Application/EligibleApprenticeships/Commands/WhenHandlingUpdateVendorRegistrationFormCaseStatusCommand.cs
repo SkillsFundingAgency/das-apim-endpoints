@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             await handler.Handle(command, CancellationToken.None);
 
-            incentivesService.Verify(x => x.UpdateVendorRegistrationFormDetails(legalEntityId, It.Is<UpdateVendorRegistrationFormRequest>(r => r.CaseId == caseId && r.CaseStatus == vendorResponse.RegistrationCase.CaseStatus && r.VendorId == vendorResponse.RegistrationCase.SubmittedVendorIdentifier)), Times.Once);
+            incentivesService.Verify(x => x.UpdateVendorRegistrationFormDetails(legalEntityId, It.Is<UpdateVendorRegistrationFormRequest>(r => r.CaseId == caseId && r.Status == vendorResponse.RegistrationCase.CaseStatus && r.VendorId == vendorResponse.RegistrationCase.SubmittedVendorIdentifier)), Times.Once);
         }
 
         [Test, MoqAutoData]

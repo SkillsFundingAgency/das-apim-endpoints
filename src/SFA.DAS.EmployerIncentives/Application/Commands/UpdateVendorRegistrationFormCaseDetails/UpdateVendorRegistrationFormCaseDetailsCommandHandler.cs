@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 {
                     VendorId = vendorDetails.VendorIdentifier,
                     CaseId = vendorDetails.RegistrationCaseID,
-                    CaseStatus = DefaultCaseStatus
+                    Status = DefaultCaseStatus
                 };
                 await _employerIncentivesService.UpdateVendorRegistrationFormDetails(command.LegalEntityId, updateRequest);
             }
