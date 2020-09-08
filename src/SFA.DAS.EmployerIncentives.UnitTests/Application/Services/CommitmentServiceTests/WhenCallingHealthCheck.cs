@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> client,
             [Greedy] CommitmentsService sut)
         {
-            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "api/ping")))
+            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "api/ping"), null))
                 .ReturnsAsync(HttpStatusCode.OK);
 
             var result = await sut.IsHealthy();
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> client,
             [Greedy] CommitmentsService sut)
         {
-            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "api/ping")))
+            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "api/ping"), null))
                 .ReturnsAsync(HttpStatusCode.NotFound);
 
             var result = await sut.IsHealthy();

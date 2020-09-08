@@ -1,10 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Clients;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net.Http;
 
 namespace SFA.DAS.EmployerIncentives.Api.AppStart
 {
@@ -23,6 +26,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             services.AddTransient<IEmployerIncentivesService, EmployerIncentivesService>();
             services.AddTransient<ICommitmentsService, CommitmentsService>();
             services.AddTransient<IAccountsService, AccountsService>();
+
+            int maxParallelism = 100;
+            var throttler = Policy.BulkheadAsync<HttpResponseMessage>(maxParallelism, int.MaxValue);
+
+            services.AddHttpClient("Throttled")
+                .AddPolicyHandler(throttler);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             [Greedy] EmployerIncentivesService sut)
         {
-            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "ping")))
+            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "ping"), null))
                 .ReturnsAsync(HttpStatusCode.OK);
 
             var result = await sut.IsHealthy();
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             [Greedy] EmployerIncentivesService sut)
         {
-            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "ping")))
+            client.Setup(x => x.GetResponseCode(It.Is<IGetApiRequest>(p => p.GetUrl == "ping"), null))
                 .ReturnsAsync(HttpStatusCode.NotFound);
 
             var result = await sut.IsHealthy();

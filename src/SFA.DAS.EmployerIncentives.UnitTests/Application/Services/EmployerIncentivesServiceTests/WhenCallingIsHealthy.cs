@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             //Arrange
             client.Setup(x => 
-                x.GetResponseCode(It.IsAny<GetHealthRequest>())).ReturnsAsync(HttpStatusCode.OK);
+                x.GetResponseCode(It.IsAny<GetHealthRequest>(), null)).ReturnsAsync(HttpStatusCode.OK);
             
             //Act
             var actual = await service.IsHealthy();
@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             //Arrange
             client.Setup(x => 
-                x.GetResponseCode(It.IsAny<GetPingRequest>())).ReturnsAsync(HttpStatusCode.InternalServerError);
+                x.GetResponseCode(It.IsAny<GetPingRequest>(), null)).ReturnsAsync(HttpStatusCode.InternalServerError);
             
             //Act
             var actual = await service.IsHealthy();
