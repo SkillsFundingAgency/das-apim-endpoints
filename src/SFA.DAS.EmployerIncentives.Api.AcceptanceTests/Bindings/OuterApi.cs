@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
             var factory = new LocalWebApplicationFactory<Startup>(config);
 
             _context.OuterApiClient = factory.CreateClient();
+            _context.Factory = factory;
         }
     }
 }
