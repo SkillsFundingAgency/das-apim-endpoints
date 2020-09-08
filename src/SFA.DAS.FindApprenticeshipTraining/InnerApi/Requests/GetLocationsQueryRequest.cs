@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Web;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
@@ -12,6 +13,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/search?query={_query}";
+        public string GetUrl => $"{BaseUrl}api/search?query={HttpUtility.UrlEncode(_query)}";
     }
 }

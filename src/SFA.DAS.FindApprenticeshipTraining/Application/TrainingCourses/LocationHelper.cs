@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             }   
             if (Regex.IsMatch(location, @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$"))
             {
-                return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcode(location));
+                return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
             } 
             
             return null;

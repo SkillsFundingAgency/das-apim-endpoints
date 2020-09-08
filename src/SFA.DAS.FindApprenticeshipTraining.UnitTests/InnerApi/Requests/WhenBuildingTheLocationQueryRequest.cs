@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using System.Web;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
@@ -15,7 +16,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/locations/search?query={query}");   
+            actual.GetUrl.Should().Be($"{baseUrl}api/search?query={query}");   
+        }
+
+        [Test, AutoData]
+        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string baseUrl, string query)
+        {
+            var actual = new GetLocationsQueryRequest(query)
+            {
+                BaseUrl = baseUrl
+            };
+
+            actual.GetUrl.Should()
+                .Be($"{baseUrl}api/search?query={HttpUtility.UrlEncode(query)}");
         }
     }
 }

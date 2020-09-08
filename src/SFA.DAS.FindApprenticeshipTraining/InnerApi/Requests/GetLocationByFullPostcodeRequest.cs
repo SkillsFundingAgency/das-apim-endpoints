@@ -6,11 +6,11 @@ using System.Web;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class GetLocationByFullPostcode : IGetApiRequest
+    public class GetLocationByFullPostcodeRequest : IGetApiRequest
     {
         private readonly string _fullPostcode;
 
-        public GetLocationByFullPostcode(string fullPostcode)
+        public GetLocationByFullPostcodeRequest(string fullPostcode)
         {
             _fullPostcode = fullPostcode;            
         }
