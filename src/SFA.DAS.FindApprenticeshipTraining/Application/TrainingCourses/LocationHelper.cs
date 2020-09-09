@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
@@ -19,10 +19,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
         public async Task<GetLocationsListItem> GetLocationInformation(string location)
         {
+
             if (string.IsNullOrEmpty(location))
             {
                 return null;
             }
+
             if (location.Split(",").Length == 2)
             {
                 var locationInformation = location.Split(",");
