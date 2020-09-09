@@ -14,6 +14,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}Finance/{_companyName}/vendor/{_hashedLegalEntityId}";
+        public string GetUrl => $"{BaseUrl}Finance/{_companyName}/vendor/aleid={_hashedLegalEntityId}?api-version=2019-06-01";
     }
 }

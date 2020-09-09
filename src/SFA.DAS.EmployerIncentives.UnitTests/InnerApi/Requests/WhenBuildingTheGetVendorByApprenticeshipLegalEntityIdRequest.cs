@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}Finance/{companyName}/vendor/{hashedLegalEntityId}");
+            actual.GetUrl.Should().Be($"{baseUrl}Finance/{companyName}/vendor/aleid={hashedLegalEntityId}?api-version=2019-06-01");
         }
     }
 }

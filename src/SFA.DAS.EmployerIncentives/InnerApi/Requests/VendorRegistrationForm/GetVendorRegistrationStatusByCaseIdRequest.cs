@@ -12,6 +12,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}Finance/Registrations/{_caseId}";
+        public string GetUrl => $"{BaseUrl}Finance/Registrations/{_caseId}?api-version=2019-06-01";
     }
 }

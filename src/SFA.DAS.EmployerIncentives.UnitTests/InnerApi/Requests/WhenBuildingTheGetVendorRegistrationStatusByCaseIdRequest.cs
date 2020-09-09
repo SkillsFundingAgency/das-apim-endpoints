@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}Finance/Registrations/{caseId}");
+            actual.GetUrl.Should().Be($"{baseUrl}Finance/Registrations/{caseId}?api-version=2019-06-01");
         }
     }
 }
