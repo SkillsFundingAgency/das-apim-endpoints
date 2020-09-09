@@ -43,18 +43,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             
             await Task.WhenAll(courseTask, providersTask);
 
-            var providers = providersTask.Result;
-
-            if (!string.IsNullOrEmpty(request.Filters) || request.Filters.Split(',').Length > 0)
-            {
-                var filters = request.Filters.Split(',');
-                providers = providers.Providers.Where(c => c.DeliveryTypes.Any() == filters.Any()) as GetProvidersListResponse;
-            }
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providers.Providers,
-                Total = providers.TotalResults
+                Providers = providersTask.Result.Providers,
+                Total = providersTask.Result.TotalResults
             }; 
         }
     }
