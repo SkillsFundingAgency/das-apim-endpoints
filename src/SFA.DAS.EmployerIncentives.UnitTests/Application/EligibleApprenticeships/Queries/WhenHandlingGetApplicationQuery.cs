@@ -45,20 +45,24 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetApplicationHandler handler
         )
         {
-            commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
-                .ReturnsAsync(new GetApprenticeshipResponse());
-
             apprenticeshipResponse.Id = applicationResponse.Apprenticeships.First().ApprenticeshipId;
-            commitmentsClient.Setup(client =>
-                    client.Get<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(c =>
-                        c.GetUrl.Contains(applicationResponse.Apprenticeships.First().ApprenticeshipId.ToString()))))
+
+            commitmentsClient
+                .Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
+                .ReturnsAsync(new GetApprenticeshipResponse());
+            commitmentsClient
+                .Setup(client => client.Get<GetApprenticeshipResponse>(
+                    It.Is<GetApprenticeshipRequest>(c => 
+                        c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}"))))
                 .ReturnsAsync(apprenticeshipResponse);
 
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            employerIncentivesService
+                .Setup(x => x.GetApplication(query.AccountId, query.ApplicationId))
+                .ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Application.Apprenticeships.First().CourseName.Should().BeEquivalentTo(apprenticeshipResponse.CourseName);
+            actual.Application.Apprenticeships.First().CourseName.Should().Be(apprenticeshipResponse.CourseName);
         }
     }
 }
