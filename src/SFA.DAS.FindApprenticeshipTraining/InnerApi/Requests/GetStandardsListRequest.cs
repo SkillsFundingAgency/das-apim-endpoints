@@ -8,7 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
     public class GetStandardsListRequest : IGetApiRequest
     {
-        public string BaseUrl { get; set; }
         public string Keyword { get ; set ; }
         public List<Guid> RouteIds { get; set; }
         public string GetUrl => BuildUrl();
@@ -18,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"{BaseUrl}api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
+            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
 
             if (RouteIds != null && RouteIds.Any())
             {

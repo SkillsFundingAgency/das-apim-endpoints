@@ -4,8 +4,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication
 {
     public class UpdateIncentiveApplicationRequest : IPutApiRequest<UpdateIncentiveApplicationRequestData>
     {
-        public string BaseUrl { get; set; }
-        public string PutUrl => $"{BaseUrl}applications/{Data.IncentiveApplicationId}";
+        public string PutUrl => $"applications/{Data.IncentiveApplicationId}";
         public UpdateIncentiveApplicationRequestData Data { get; set; }
     }
 }

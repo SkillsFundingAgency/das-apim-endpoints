@@ -19,9 +19,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments
             _startDateTo = startDateTo;
         }
 
-        public string BaseUrl { get; set; }
-
         public string GetUrl =>
-            $"{BaseUrl}api/apprenticeships?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(_startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(_startDateTo.ToString("u"))}";
+            $"api/apprenticeships?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(_startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(_startDateTo.ToString("u"))}";
     }
 }

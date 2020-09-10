@@ -8,14 +8,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheLocationQueryRequest
     {
         [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Built(string baseUrl, string query)
+        public void Then_The_Request_Is_Correctly_Built(string query)
         {
-            var actual = new GetLocationsQueryRequest(query)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetLocationsQueryRequest(query);
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/locations/search?query={query}");   
+            actual.GetUrl.Should().Be($"api/locations/search?query={query}");   
         }
     }
 }

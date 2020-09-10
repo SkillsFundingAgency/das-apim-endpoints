@@ -1,3 +1,4 @@
+using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
@@ -5,18 +6,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetStandardRequest
     {
-        [Test]
-        public void Then_The_Url_Is_Correctly_Constructed()
+        [Test, AutoData]
+        public void Then_The_Url_Is_Correctly_Constructed(int id)
         {
-            //Arrange
-            var id = 10;
-            var baseUrl = "https://test.local/";
-            
             //Act
-            var actual = new GetStandardRequest(id) {BaseUrl = baseUrl};
+            var actual = new GetStandardRequest(id);
 
             //Assert
-            Assert.AreEqual($"{baseUrl}api/courses/standards/{id}",actual.GetUrl);
+            Assert.AreEqual($"api/courses/standards/{id}",actual.GetUrl);
         }
     }
 }

@@ -13,7 +13,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
             _accountLegalEntityId = accountLegalEntityId;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}accounts/{_accountId}/legalentities/{_accountLegalEntityId}";
+        public string GetUrl => $"accounts/{_accountId}/legalentities/{_accountLegalEntityId}";
     }
 }
