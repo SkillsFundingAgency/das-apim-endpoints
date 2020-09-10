@@ -39,6 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             result.ProviderStandard.Should().BeEquivalentTo(apiResponse);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            mockApiClient.Verify(x=>x.Get<GetProviderStandardItem>(It.IsAny<GetProviderByCourseAndUkPrnRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
