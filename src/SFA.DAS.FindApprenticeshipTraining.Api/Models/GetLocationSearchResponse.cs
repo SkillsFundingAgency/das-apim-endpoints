@@ -44,7 +44,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 }
             }
         }
-    }
-
-    
+    }    
 }

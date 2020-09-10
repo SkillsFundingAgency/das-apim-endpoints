@@ -19,6 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
         public async Task<GetLocationsListItem> GetLocationInformation(string location)
         {
+            string postcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$";
 
             if (string.IsNullOrEmpty(location))
             {
@@ -32,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
                 var authorityName = locationInformation.Last().Trim();
                 return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
             }   
-            if (Regex.IsMatch(location, @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$"))
+            if (Regex.IsMatch(location, postcodeRegex))
             {
                 return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
             } 
