@@ -15,6 +15,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts
 
         public string BaseUrl { get; set; }
 
-        public string GetUrl => $"{BaseUrl}api/accounts/{_accountId}/legalentities/{_legalEntityId}";
+        public string GetUrl => $"{BaseUrl}api/accounts/{_accountId}/legalentities/{_legalEntityId}?includeAllAgreements=true";
     }
 }
