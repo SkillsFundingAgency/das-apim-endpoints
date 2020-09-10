@@ -19,8 +19,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             actual.GetUrl.Should().Be($"{baseUrl}api/search?query={query}");   
         }
 
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string baseUrl, string query)
+        [Test, InlineAutoData("test/*6]'est&#%'*'/@")]
+        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string query, string baseUrl)
         {
             var actual = new GetLocationsQueryRequest(query)
             {

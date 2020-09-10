@@ -15,8 +15,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             //Arrange
             source.Locations = source.Locations.Select(c => { c.Postcode = null; return c; }).ToList();
 
+            //Act
             var actual = (GetLocationSearchResponse) source;
             
+            //Assert
             actual.Locations.ToList().First().Should().BeEquivalentTo(source.Locations.First(), options=> options.ExcludingMissingMembers());
             actual.Locations.ToList().Last().Should().BeEquivalentTo(source.Locations.Last(), options=> options.ExcludingMissingMembers());
             actual.Locations.Count().Should().Be(source.Locations.Count());
