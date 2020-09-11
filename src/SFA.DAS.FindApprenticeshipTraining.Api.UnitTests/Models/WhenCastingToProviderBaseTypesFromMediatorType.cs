@@ -23,7 +23,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,2, new List<DeliveryModeType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,2, null);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, null);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);

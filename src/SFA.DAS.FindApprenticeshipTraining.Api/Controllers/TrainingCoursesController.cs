@@ -85,7 +85,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         
         [HttpGet]
         [Route("{id}/providers")]
-        public async Task<IActionResult> GetProviders(int id, [FromQuery]string location, [FromQuery] List<DeliveryModeType> deliveryModes,
+        public async Task<IActionResult> GetProviders(int id, [FromQuery]string location, [FromQuery] List<DeliveryModeType> deliveryModes = null,
             [FromQuery]ProviderCourseSortOrder.SortOrder sortOrder = ProviderCourseSortOrder.SortOrder.Distance)
         {
             try
