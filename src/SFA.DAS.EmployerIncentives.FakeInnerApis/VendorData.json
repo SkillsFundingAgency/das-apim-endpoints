@@ -1,25 +1,24 @@
 {
-  "Value": [
-    {
-      "VendorIdentifier": "P0004320",
-      "VendorUKPRN": "63941728",
-      "VendorUPIN": "917346",
-      "VendorURN": "",
-      "VendorCompanyRegistrationNo": "24861379",
-      "VendorCPIDCode": "65892317",
-      "VendorEdubaseCode": "12345678",
-      "VendorDUNSNumber": "3378",
-      "RegistrationCaseID": "AF1042409",
-      "ApprenticeshipLegalEntityID": "JRML7V",
-      "VendorOrganisationUnit": "AC100",
-      "VendorLAIdentifier": "",
-      "VendorRemittanceDelMethod": "Email",
-      "VendorCategorisation": "Academies",
-      "VendorVASISNumber": "987654",
-      "VendorBlocked": "",
-      "VendorBlockedForBACS": "",
-      "VendorBlockedReason": "",
-      "VendorLastUpdated": "2019-10-19T00:00:00.0000000+00:00"
-    }
-  ]
+  "Vendor":
+  {
+    "VendorIdentifier": "P0004320",
+    "VendorUKPRN": "63941728",
+    "VendorUPIN": "917346",
+    "VendorURN": "",
+    "VendorCompanyRegistrationNo": "24861379",
+    "VendorCPIDCode": "65892317",
+    "VendorEdubaseCode": "12345678",
+    "VendorDUNSNumber": "3378",
+    "RegistrationCaseID": "AF1042409",
+    "ApprenticeshipLegalEntityID": "JRML7V",
+    "VendorOrganisationUnit": "AC100",
+    "VendorLAIdentifier": "",
+    "VendorRemittanceDelMethod": "Email",
+    "VendorCategorisation": "Academies",
+    "VendorVASISNumber": "987654",
+    "VendorBlocked": "",
+    "VendorBlockedForBACS": "",
+    "VendorBlockedReason": "",
+    "VendorLastUpdated": "2019-10-19T00:00:00.0000000+00:00"
+  }
 }
