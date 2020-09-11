@@ -20,9 +20,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
                 .Be($"{baseUrl}api/locations?locationName={locationName}&authorityName={authorityName}");
         }
 
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string baseUrl, string locationName,
-            string authorityName)
+        [Test, InlineAutoData("test/*6]'est&#", "test%'*'/@")]
+        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string locationName,
+            string authorityName, string baseUrl)
         {
             var actual = new GetLocationByLocationAndAuthorityName($"{locationName}&{locationName}", $"{authorityName}&{authorityName}")
             {
