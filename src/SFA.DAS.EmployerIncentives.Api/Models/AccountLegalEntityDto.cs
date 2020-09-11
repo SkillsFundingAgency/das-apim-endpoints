@@ -13,8 +13,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public long AccountId { get ; set ; }
         public bool HasSignedIncentivesTerms { get; set; }
 
-        public string VrfCaseStatus { get; set; }
-
         public static implicit operator AccountLegalEntityDto(AccountLegalEntity source)
         {
             return new AccountLegalEntityDto
@@ -23,8 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 LegalEntityName = source.LegalEntityName,
                 LegalEntityId = source.LegalEntityId,
-				HasSignedIncentivesTerms = source.HasSignedIncentivesTerms,
-                VrfCaseStatus = source.VrfCaseStatus
+				HasSignedIncentivesTerms = source.HasSignedIncentivesTerms
             };
         }
     }
