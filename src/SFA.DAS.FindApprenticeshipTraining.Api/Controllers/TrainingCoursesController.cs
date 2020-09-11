@@ -115,14 +115,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}/providers/{providerId}")]
-        public async Task<IActionResult> GetProviderCourse(int id, int providerId)
+        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location)
         {
             try
             {
                 var result = await _mediator.Send(new GetTrainingCourseProviderQuery
                 {
                     CourseId = id, 
-                    ProviderId = providerId
+                    ProviderId = providerId,
+                    Location = location
                 });
                 var model = new GetTrainingCourseProviderResponse
                 {

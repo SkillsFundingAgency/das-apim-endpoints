@@ -63,9 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
         public bool FilterApplied(GetStandardsListRequest request)
         {
-            if (String.IsNullOrEmpty(request.Keyword) && request.Levels == null && request.RouteIds == null)
-                return false;
-            return true;
+            return !string.IsNullOrEmpty(request.Keyword) || request.Levels != null || request.RouteIds != null;
         }
         internal class SaveToCache
         {
