@@ -37,9 +37,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            
+
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Get<string>(getTestRequest);
@@ -52,7 +52,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                         c.Method.Equals(HttpMethod.Get)
                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
-                        && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
                 );
@@ -80,14 +80,14 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            
+
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Get<string>(getTestRequest);
             await actual.Get<string>(getTestRequest);
-            
+
             //Assert
             httpMessageHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
@@ -96,51 +96,51 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                         c.Method.Equals(HttpMethod.Get)
                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
-                        && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.Single() == "2.0"
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.Single() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
-        
+
         [Test, AutoData]
-         public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local_And_Default_Version_If_Not_Specified(
+        public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local_And_Default_Version_If_Not_Specified(
              int id,
              TestInnerApiConfiguration config)
-         {
-             //Arrange
-             config.Url = "https://test.local";
-             var configuration = config;
-             var response = new HttpResponseMessage
-             {
-                 Content = new StringContent(""),
-                 StatusCode = HttpStatusCode.Accepted
-             };
+        {
+            //Arrange
+            config.Url = "https://test.local";
+            var configuration = config;
+            var response = new HttpResponseMessage
+            {
+                Content = new StringContent(""),
+                StatusCode = HttpStatusCode.Accepted
+            };
              var getTestRequest = new GetTestRequestNoVersion(id);
              var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
              var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
-             var client = new HttpClient(httpMessageHandler.Object);
-             var hostingEnvironment = new Mock<IWebHostEnvironment>();
-             var clientFactory = new Mock<IHttpClientFactory>();
-             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-             
-             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+            var client = new HttpClient(httpMessageHandler.Object);
+            var hostingEnvironment = new Mock<IWebHostEnvironment>();
+            var clientFactory = new Mock<IHttpClientFactory>();
+            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-             //Act
-             await actual.Get<string>(getTestRequest);
-             
-             //Assert
-             httpMessageHandler.Protected()
-                 .Verify<Task<HttpResponseMessage>>(
-                     "SendAsync", Times.Once(),
-                     ItExpr.Is<HttpRequestMessage>(c =>
-                         c.Method.Equals(HttpMethod.Get)
-                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "1.0"
+            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
+            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration, hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+
+            //Act
+            await actual.Get<string>(getTestRequest);
+
+            //Assert
+            httpMessageHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync", Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(c =>
+                        c.Method.Equals(HttpMethod.Get)
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "1.0"
                          && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
-                         && c.Headers.Authorization == null),
-                     ItExpr.IsAny<CancellationToken>()
-                 );
-         }
+                        && c.Headers.Authorization == null),
+                    ItExpr.IsAny<CancellationToken>()
+                );
+        }
 
          [Test, AutoData]
          public async Task Then_If_Returns_Not_Found_Result_Returns_Default(int id,
@@ -195,6 +195,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             public string GetUrl => $"test-url/get{_id}";
         }
 
-        
+
     }
 }
