@@ -44,7 +44,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
         {
             var configSource = new MemoryConfigurationSource
             {
-                InitialData = new List<KeyValuePair<string, string>>()
+                InitialData = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("CourseDeliveryApiConfiguration:url", "http://localhost:2"),
+                    new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3")
+                }
             };
 
             var provider = new MemoryConfigurationProvider(configSource);

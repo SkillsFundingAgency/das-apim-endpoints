@@ -8,8 +8,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         {
             Data = request;
         }
-        public string BaseUrl { get; set; }
-        public string PutUrl => $"{BaseUrl}jobs";
+        public string PutUrl => "jobs";
         public object Data { get; set; }
     }
 }
