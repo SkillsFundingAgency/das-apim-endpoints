@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             var request = new GetMultipleEligibleApprenticeshipsRequest(accountId, accountLegalEntityId)
             {
-                Data = allApprenticeships
+                Data = MapToEligibleApprenticeshipDto(allApprenticeships)
             };
             var response = await _client.Post<IEnumerable<EligibleApprenticeshipResult>>(request);
             var filteredResponse = response.Where(x => x.Eligible == true).ToList();
@@ -153,6 +153,24 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                 default:
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
+        }
+
+        private IEnumerable<EligibleApprenticeDto> MapToEligibleApprenticeshipDto(IEnumerable<ApprenticeshipItem> apprenticeshipItems)
+        {
+            return (from apprenticeship in apprenticeshipItems
+                    let dto = new EligibleApprenticeDto
+                    {
+                        IsApproved = true,
+                        CourseName = apprenticeship.CourseName,
+                        DateOfBirth = apprenticeship.DateOfBirth,
+                        EndDate = apprenticeship.EndDate,
+                        FirstName = apprenticeship.FirstName,
+                        Id = apprenticeship.Id,
+                        LastName = apprenticeship.LastName,
+                        StartDate = apprenticeship.StartDate,
+                        Uln = apprenticeship.Uln
+                    }
+                    select dto).ToList();
         }
 
     }

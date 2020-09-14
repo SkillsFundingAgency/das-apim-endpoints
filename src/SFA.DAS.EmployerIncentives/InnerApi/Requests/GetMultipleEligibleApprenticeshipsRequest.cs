@@ -22,6 +22,20 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public object Data { get; set; }
     }
 
+
+    public class EligibleApprenticeDto
+    {
+        public long Id { get; set; }
+        public long Uln { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string CourseName { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public bool IsApproved { get; set; }
+    }
+
     public class EligibleApprenticeshipResult
     {
         public long Uln { get; set; }
