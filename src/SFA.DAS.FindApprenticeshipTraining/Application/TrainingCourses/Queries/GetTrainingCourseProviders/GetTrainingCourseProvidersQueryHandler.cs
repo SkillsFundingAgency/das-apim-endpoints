@@ -33,8 +33,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             var location = await _locationHelper.GetLocationInformation(request.Location);
             var locationResult = !string.IsNullOrEmpty(location?.Postcode) ?
-                                    location?.Postcode : !(string.IsNullOrEmpty(location?.LocationName) && string.IsNullOrEmpty(location?.LocalAuthorityName)) ?
-                                        $"{location?.LocationName}, {location?.LocalAuthorityName}" : null;
+
+                                    location.Postcode : !(string.IsNullOrEmpty(location?.LocationName) && string.IsNullOrEmpty(location?.LocalAuthorityName)) ?
+                                        $"{location.LocationName}, {location.LocalAuthorityName}" : null;
 
 
 
