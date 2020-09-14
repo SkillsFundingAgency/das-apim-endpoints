@@ -39,6 +39,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             request.BaseUrl = _configuration.Url;
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return default;
+            }
+            
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(json);

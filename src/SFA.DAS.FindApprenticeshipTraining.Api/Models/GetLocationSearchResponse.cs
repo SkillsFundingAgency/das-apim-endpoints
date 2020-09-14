@@ -19,17 +19,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public class GetLocationSearchResponseItem
         {
             public LocationResponse Location { get; set; }
-            public string LocalAuthorityName { get ; set ; }
-            public string LocationName { get ; set ; }
-            public string CountyName { get ; set ; }
+            public string Name { get; set; }
 
             public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
             {
                 return new GetLocationSearchResponseItem
                 {
-                    LocationName = source.LocationName,
-                    CountyName = source.CountyName,
-                    LocalAuthorityName = source.LocalAuthorityName,
+                    Name = string.IsNullOrEmpty(source.Postcode) ?
+                        $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
                     Location = source.Location
                 };
             }
@@ -47,7 +44,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 }
             }
         }
-    }
-
-    
+    }    
 }

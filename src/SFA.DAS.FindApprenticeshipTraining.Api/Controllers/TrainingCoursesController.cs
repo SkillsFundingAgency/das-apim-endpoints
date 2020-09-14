@@ -100,7 +100,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     TrainingCourse = result.Course,
                     TrainingCourseProviders = result.Providers
                         .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)).ToList(),
-                    Total = result.Total
+                    Total = result.Total,
+                    Location = result.Location
                 };
                 return Ok(model);
             }
