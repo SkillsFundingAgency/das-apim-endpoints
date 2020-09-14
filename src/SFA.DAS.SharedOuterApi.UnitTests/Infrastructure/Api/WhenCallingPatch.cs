@@ -32,8 +32,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.NoContent
             };
-            var patchTestRequest = new PatchTestRequest(config.Url, id) { BaseUrl = config.Url, Data = postContent };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, patchTestRequest.PatchUrl, "patch");
+            var patchTestRequest = new PatchTestRequest(id) { Data = postContent };
+            var expectedUrl = $"{config.Url}{patchTestRequest.PatchUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, "patch");
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -51,7 +52,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Patch)
-                        && c.RequestUri.AbsoluteUri.Equals(patchTestRequest.PatchUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -65,14 +66,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 
             public string Version => "2.0";
 
-            public PatchTestRequest(string baseUrl, int id)
+            public PatchTestRequest(int id)
             {
                 _id = id;
-                BaseUrl = baseUrl;
             }
             public string Data { get; set; }
-            public string BaseUrl { get; set; }
-            public string PatchUrl => $"{BaseUrl}/test-url/patch{_id}";
+            public string PatchUrl => $"/test-url/patch{_id}";
         }
     }
 }

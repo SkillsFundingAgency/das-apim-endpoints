@@ -9,15 +9,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetEligibleApprenticeshipsRequest
     {
         [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl,long uln, DateTime startDate)
+        public void Then_The_GetUrl_Is_Correctly_Built(long uln, DateTime startDate)
         {
-            var actual = new GetEligibleApprenticeshipsRequest(uln, startDate)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetEligibleApprenticeshipsRequest(uln, startDate);
 
-            actual.GetUrl.Should()
-                .Be($"{baseUrl}eligible-apprenticeships/{uln}?startDate={startDate:yyyy-MM-dd}&isApproved=true");
+            actual.GetUrl.Should().Be($"eligible-apprenticeships/{uln}?startDate={startDate:yyyy-MM-dd}&isApproved=true");
         }
     }
 }

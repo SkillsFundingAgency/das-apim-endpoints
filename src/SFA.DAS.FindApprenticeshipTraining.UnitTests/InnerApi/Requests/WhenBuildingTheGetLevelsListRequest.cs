@@ -8,11 +8,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetLevelsListRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Build(string baseUrl)
+        public void Then_The_Url_Is_Correctly_Build()
         {
-            var actual = new GetLevelsListRequest {BaseUrl = baseUrl};
+            var actual = new GetLevelsListRequest();
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/courses/levels");
+            actual.GetUrl.Should().Be("api/courses/levels");
 
         }
         

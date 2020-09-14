@@ -17,7 +17,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _longitude = longitude;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/courses/{_courseId}/providers/{_providerId}?lat={_latitude}&lon={_longitude}";
+        public string GetUrl => $"api/courses/{_courseId}/providers/{_providerId}?lat={_latitude}&lon={_longitude}";
     }
 }

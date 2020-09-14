@@ -8,14 +8,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingGetLegalEntityRequest
     {
         [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(long accountId, long accountLegalEntityId, string baseUrl)
+        public void Then_The_GetUrl_Is_Correctly_Built(long accountId, long accountLegalEntityId)
         {
-            var actual = new GetLegalEntityRequest(accountId, accountLegalEntityId)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetLegalEntityRequest(accountId, accountLegalEntityId);
 
-            actual.GetUrl.Should().Be($"{baseUrl}accounts/{accountId}/legalentities/{accountLegalEntityId}");
+            actual.GetUrl.Should().Be($"accounts/{accountId}/legalentities/{accountLegalEntityId}");
         }
     }
 }
