@@ -105,6 +105,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     TrainingCourseProviders = mappedProviders,
                     Total = result.Total,
                     TotalFiltered = mappedProviders.Count
+                    Location = result.Location
                 };
                 return Ok(model);
             }

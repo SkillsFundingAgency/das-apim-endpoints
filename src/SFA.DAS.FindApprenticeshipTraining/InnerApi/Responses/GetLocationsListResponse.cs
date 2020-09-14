@@ -21,6 +21,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         
         [JsonProperty("location")]
         public Coordinates Location { get; set; }
+        [JsonProperty("postcode")]
+        public string Postcode { get; set; }
 
         public class Coordinates
         {
