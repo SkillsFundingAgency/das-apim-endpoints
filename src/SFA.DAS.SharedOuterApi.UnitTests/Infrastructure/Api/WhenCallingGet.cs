@@ -31,8 +31,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var getTestRequest = new GetTestRequest(config.Url, id) { BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+            var getTestRequest = new GetTestRequest(id);
+            var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -50,7 +51,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Get)
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -67,13 +68,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
             azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
             config.Url = "https://test.local";
+            
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var getTestRequest = new GetTestRequest(config.Url, id) { BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+            var getTestRequest = new GetTestRequest(id);
+            var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -92,7 +95,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Exactly(2),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Get)
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.Single() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -104,95 +107,93 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local_And_Default_Version_If_Not_Specified(
              int id,
              TestInnerApiConfiguration config)
-        {
-            //Arrange
-            config.Url = "https://test.local";
-            var configuration = config;
-            var response = new HttpResponseMessage
-            {
-                Content = new StringContent(""),
-                StatusCode = HttpStatusCode.Accepted
-            };
-            var getTestRequest = new GetTestRequestNoVersion(config.Url, id) { BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
-            var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
-            var clientFactory = new Mock<IHttpClientFactory>();
-            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+         {
+             //Arrange
+             config.Url = "https://test.local";
+             var configuration = config;
+             var response = new HttpResponseMessage
+             {
+                 Content = new StringContent(""),
+                 StatusCode = HttpStatusCode.Accepted
+             };
+             var getTestRequest = new GetTestRequestNoVersion(id);
+             var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
+             var client = new HttpClient(httpMessageHandler.Object);
+             var hostingEnvironment = new Mock<IWebHostEnvironment>();
+             var clientFactory = new Mock<IHttpClientFactory>();
+             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+             
+             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
+             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration, hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             //Act
+             await actual.Get<string>(getTestRequest);
+             
+             //Assert
+             httpMessageHandler.Protected()
+                 .Verify<Task<HttpResponseMessage>>(
+                     "SendAsync", Times.Once(),
+                     ItExpr.Is<HttpRequestMessage>(c =>
+                         c.Method.Equals(HttpMethod.Get)
+                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "1.0"
+                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
+                         && c.Headers.Authorization == null),
+                     ItExpr.IsAny<CancellationToken>()
+                 );
+         }
 
-            //Act
-            await actual.Get<string>(getTestRequest);
+         [Test, AutoData]
+         public async Task Then_If_Returns_Not_Found_Result_Returns_Default(int id,
+             TestInnerApiConfiguration config)
+         {
+             //Arrange
+             config.Url = "https://test.local";
+             var configuration = config;
+             var response = new HttpResponseMessage
+             {
+                 Content = new StringContent(""),
+                 StatusCode = HttpStatusCode.NotFound
+             };
+             var getTestRequest = new GetTestRequestNoVersion(id);
+             var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
+             var client = new HttpClient(httpMessageHandler.Object);
+             var hostingEnvironment = new Mock<IWebHostEnvironment>();
+             var clientFactory = new Mock<IHttpClientFactory>();
+             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+             
+             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
+             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
-            //Assert
-            httpMessageHandler.Protected()
-                .Verify<Task<HttpResponseMessage>>(
-                    "SendAsync", Times.Once(),
-                    ItExpr.Is<HttpRequestMessage>(c =>
-                        c.Method.Equals(HttpMethod.Get)
-                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "1.0"
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
-                        && c.Headers.Authorization == null),
-                    ItExpr.IsAny<CancellationToken>()
-                );
-        }
-
-        [Test, AutoData]
-        public async Task Then_If_Returns_Not_Found_Result_Returns_Default(int id,
-            TestInnerApiConfiguration config)
-        {
-            //Arrange
-            config.Url = "https://test.local";
-            var configuration = config;
-            var response = new HttpResponseMessage
-            {
-                Content = new StringContent(""),
-                StatusCode = HttpStatusCode.NotFound
-            };
-            var getTestRequest = new GetTestRequestNoVersion(config.Url, id) { BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
-            var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
-            var clientFactory = new Mock<IHttpClientFactory>();
-            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, configuration, hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
-
-            //Act
-            var actualResult = await actual.Get<string>(getTestRequest);
-
-            //Assert
-            Assert.IsNull(actualResult);
-        }
-
+             //Act
+             var actualResult = await actual.Get<string>(getTestRequest);
+             
+             //Assert
+             Assert.IsNull(actualResult);
+         }
+        
         private class GetTestRequest : IGetApiRequest
         {
             private readonly int _id;
 
             public string Version => "2.0";
 
-            public GetTestRequest(string baseUrl, int id)
+            public GetTestRequest (int id)
             {
                 _id = id;
-                BaseUrl = baseUrl;
             }
-            public string BaseUrl { get; set; }
-            public string GetUrl => $"{BaseUrl}/test-url/get{_id}";
+            public string GetUrl => $"test-url/get{_id}";
         }
         private class GetTestRequestNoVersion : IGetApiRequest
         {
             private readonly int _id;
 
-            public GetTestRequestNoVersion(string baseUrl, int id)
+            public GetTestRequestNoVersion (int id)
             {
                 _id = id;
-                BaseUrl = baseUrl;
             }
-            public string BaseUrl { get; set; }
-            public string GetUrl => $"{BaseUrl}/test-url/get{_id}";
+            public string GetUrl => $"test-url/get{_id}";
         }
 
 

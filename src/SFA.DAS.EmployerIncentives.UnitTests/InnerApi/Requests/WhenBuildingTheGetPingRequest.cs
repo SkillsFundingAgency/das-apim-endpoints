@@ -7,15 +7,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetPingRequest
     {
-        [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl)
+        [Test]
+        public void Then_The_GetUrl_Is_Correctly_Built()
         {
-            var actual = new GetPingRequest
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetPingRequest();
 
-            actual.GetUrl.Should().Be($"{baseUrl}ping");
+            actual.GetUrl.Should().Be("ping");
         }
     }
 }
