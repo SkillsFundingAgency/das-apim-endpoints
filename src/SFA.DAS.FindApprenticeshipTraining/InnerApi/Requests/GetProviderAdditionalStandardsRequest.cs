@@ -11,7 +11,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _providerId = providerId;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/providers/{_providerId}/courses";
+        public string GetUrl => $"api/providers/{_providerId}/courses";
     }
 }

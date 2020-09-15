@@ -32,7 +32,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 
                 var response = new GetLocationSearchResponse
                 {
-                    Locations = queryResult.Locations.Select(c=>(GetLocationSearchResponse.GetLocationSearchResponseItem)c)
+                    Locations = queryResult.Locations
+                        .Select(c=>(GetLocationSearchResponse.GetLocationSearchResponseItem)c),
                 };
 
                 return Ok(response);

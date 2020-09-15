@@ -10,14 +10,10 @@ namespace SFA.DAS.Reservations.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Built(string baseUrl)
         {
             //Arrange Act
-            var actual = new GetStandardsRequest
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetStandardsRequest();
             
             //Assert
-            Assert.AreEqual(baseUrl, actual.BaseUrl);
-            Assert.AreEqual($"{baseUrl}api/courses/standards", actual.GetUrl);
+            Assert.AreEqual("api/courses/standards", actual.GetUrl);
         }
     }
 }

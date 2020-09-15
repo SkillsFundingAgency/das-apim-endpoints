@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -31,9 +32,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
             var location = await _locationHelper.GetLocationInformation(request.Location);
-               
+            var locationResult = !string.IsNullOrEmpty(location?.Postcode) ?
+                                    location.Postcode : !(string.IsNullOrEmpty(location?.LocationName) && string.IsNullOrEmpty(location?.LocalAuthorityName)) ?
+                                        $"{location.LocationName}, {location.LocalAuthorityName}" : null;
+
+
+
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
-            var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.Location.GeoPoint.First(), location?.Location.GeoPoint.Last(), request.SortOrder));
+            var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.Location?.GeoPoint.First(), location?.Location?.GeoPoint.Last(), request.SortOrder));
 
             await Task.WhenAll(courseTask, providersTask);
             
@@ -41,7 +47,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 Course = courseTask.Result,
                 Providers = providersTask.Result.Providers,
-                Total = providersTask.Result.TotalResults
+                Total = providersTask.Result.TotalResults,
+                Location = locationResult,
             }; 
         }
     }
