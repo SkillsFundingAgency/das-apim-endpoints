@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Api.Common.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 {

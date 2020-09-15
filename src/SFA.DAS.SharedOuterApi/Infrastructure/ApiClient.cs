@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.Api.Common.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
