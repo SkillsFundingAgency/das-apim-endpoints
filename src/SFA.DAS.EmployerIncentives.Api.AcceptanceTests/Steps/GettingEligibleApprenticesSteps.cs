@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using TechTalk.SpecFlow;
@@ -85,8 +86,31 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"two of these are eligible")]
         public void GivenTwoOfTheseAreEligible()
         {
-            SetEligibleApprenticeshipToReturnHttpStatusCode(HttpStatusCode.OK, _eligibleApprenticeship1.Uln);
-            SetEligibleApprenticeshipToReturnHttpStatusCode(HttpStatusCode.OK, _eligibleApprenticeship2.Uln);
+            var result = new List<EligibleApprenticeshipResult>
+            {
+                new EligibleApprenticeshipResult
+                {
+                    Uln = _eligibleApprenticeship1.Uln, Eligible = true
+                },
+                new EligibleApprenticeshipResult
+                {
+                    Uln = _eligibleApprenticeship2.Uln, Eligible = true
+                },
+                new EligibleApprenticeshipResult
+                {
+                    Uln = _nonEligibleApprenticeship3.Uln, Eligible = false
+                },
+                new EligibleApprenticeshipResult
+                {
+                    Uln = _nonEligibleApprenticeship4.Uln, Eligible = false
+                },
+                new EligibleApprenticeshipResult
+                {
+                    Uln = _nonEligibleApprenticeship5.Uln, Eligible = false
+                }
+            };
+            
+            SetEligibleApprenticeshipsResponse(result);
         }
 
         [When(@"the Outer Api receives the request to list all eligible apprentices")]
@@ -152,15 +176,17 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
-        private void SetEligibleApprenticeshipToReturnHttpStatusCode(HttpStatusCode statusCode, long uln)
+        private void SetEligibleApprenticeshipsResponse(List<EligibleApprenticeshipResult> eligibleApprenticeshipResults)
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/eligible-apprenticeships/{uln}")
-                        .UsingGet())
+                    Request.Create().WithPath($"/eligible-apprenticeships/{_accountId}/{_accountLegalEntityId}")
+                        .UsingPost())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)statusCode)
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(eligibleApprenticeshipResults))
                 );
         }
     }
