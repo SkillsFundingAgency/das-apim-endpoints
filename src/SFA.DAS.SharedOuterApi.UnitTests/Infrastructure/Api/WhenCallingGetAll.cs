@@ -9,6 +9,7 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 

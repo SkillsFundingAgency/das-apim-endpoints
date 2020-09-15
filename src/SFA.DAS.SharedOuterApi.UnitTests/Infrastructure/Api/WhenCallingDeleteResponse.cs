@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -19,7 +20,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         public async Task Then_The_Endpoint_Is_Called(
             string authToken,
             int id,
-            string responseContent,
             TestInnerApiConfiguration config)
         {
             //Arrange
