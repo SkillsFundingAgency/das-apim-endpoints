@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Infrastructure
 {

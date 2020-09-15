@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using System;
+using System.Collections.Generic;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -40,7 +41,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
-                services.AddAuthentication(azureAdConfiguration);
+                var policies = new Dictionary<string, string>
+                {
+                    {"default", "APIM"}
+                };
+
+                services.AddAuthentication(azureAdConfiguration, policies);
             }
 
             services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
