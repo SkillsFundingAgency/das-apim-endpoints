@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Configuration;
+﻿using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -28,5 +29,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             return response;
         }
+
+        public Task<GetVendorRegistrationCaseStatusUpdateResponse> GetVendorRegistrationCasesByLastStatusChangeDate(DateTime dateTimeFrom, DateTime dateTimeTo)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
