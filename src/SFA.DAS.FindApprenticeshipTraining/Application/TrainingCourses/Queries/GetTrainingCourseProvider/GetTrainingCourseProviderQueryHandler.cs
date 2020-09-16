@@ -50,6 +50,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 providerTask = Task.FromResult(
                     await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
                         new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId)));
+
+                providerTask.Result.DeliveryTypes = new List<GetDeliveryTypeItem> { new GetDeliveryTypeItem() { DeliveryModes = "No Result" } };
             }
             
             var overallAchievementRates =
