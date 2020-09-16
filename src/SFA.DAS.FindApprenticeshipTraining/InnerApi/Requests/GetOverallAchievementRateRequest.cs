@@ -11,7 +11,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _sectorSubjectAreaTier2Description = sectorSubjectAreaTier2Description;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/AchievementRates/Overall?sector={_sectorSubjectAreaTier2Description}";
+        public string GetUrl => $"api/AchievementRates/Overall?sector={_sectorSubjectAreaTier2Description}";
     }
 }
