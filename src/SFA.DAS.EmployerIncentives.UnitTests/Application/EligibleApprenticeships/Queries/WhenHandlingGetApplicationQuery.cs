@@ -60,5 +60,25 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             actual.Application.Apprenticeships.First().CourseName.Should().BeEquivalentTo(apprenticeshipResponse.CourseName);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Apprenticeships_Are_Not_Returned_If_Opted_Out(
+            GetApplicationQuery query,
+            IncentiveApplicationDto applicationResponse,
+            GetApprenticeshipResponse apprenticeshipResponse,
+            [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
+            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            GetApplicationHandler handler
+        )
+        {
+            query.IncludeApprenticeships = false;
+
+            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Application.Apprenticeships.Count().Should().Be(0);
+            commitmentsClient.Verify(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true), Times.Never);
+        }
     }
 }
