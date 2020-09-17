@@ -8,11 +8,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetOverallAchievementRateRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Build(string baseUrl, string sectorSubjectArea)
+        public void Then_The_Url_Is_Correctly_Build(string sectorSubjectArea)
         {
-            var actual = new GetOverallAchievementRateRequest(sectorSubjectArea) {BaseUrl = baseUrl};
+            var actual = new GetOverallAchievementRateRequest(sectorSubjectArea);
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/AchievementRates/Overall?sector={sectorSubjectArea}");
+            actual.GetUrl.Should().Be($"api/AchievementRates/Overall?sector={sectorSubjectArea}");
 
         }
     }
