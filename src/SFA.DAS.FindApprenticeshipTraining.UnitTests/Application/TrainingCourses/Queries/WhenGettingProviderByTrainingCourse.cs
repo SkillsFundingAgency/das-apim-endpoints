@@ -370,6 +370,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             var result = await handler.Handle(query, CancellationToken.None);
             
             result.ProviderStandard.Should().BeEquivalentTo(apiProviderStandardResponse);
+            result.ProviderStandard.DeliveryTypes.Select(x => x.DeliveryModes.Should().Be("NoResult"));
         }
 
         private static void ArrangeClients(GetTrainingCourseProviderQuery query, GetProviderStandardItem apiProviderStandardResponse,
