@@ -37,7 +37,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                                         $"{location.LocationName}, {location.LocalAuthorityName}" : null;
 
 
-
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.Location?.GeoPoint.First(), location?.Location?.GeoPoint.Last(), request.SortOrder));
 

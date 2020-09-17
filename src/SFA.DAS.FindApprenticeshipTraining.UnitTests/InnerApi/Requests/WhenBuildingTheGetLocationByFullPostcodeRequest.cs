@@ -9,26 +9,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetLocationByFullPostcodeRequest
     {
         [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Built(string baseUrl, string fullPostcode)
+        public void Then_The_Request_Is_Correctly_Built(string fullPostcode)
         {
-            var actual = new GetLocationByFullPostcodeRequest(fullPostcode)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetLocationByFullPostcodeRequest(fullPostcode);
 
-            actual.GetUrl.Should().Be($"{baseUrl}api/postcodes?postcode={fullPostcode}");
+            actual.GetUrl.Should().Be($"api/postcodes?postcode={fullPostcode}");
         }
 
         [Test, InlineAutoData("test/*6]'est&#%'*'/@")]
-        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string fullPostcode, string baseUrl)
+        public void Then_The_Request_Is_Correctly_Encoded_For_Special_Characters(string fullPostcode)
         {
-            var actual = new GetLocationByFullPostcodeRequest(fullPostcode)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetLocationByFullPostcodeRequest(fullPostcode);
 
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/postcodes?postcode={HttpUtility.UrlEncode(fullPostcode)}");
+                .Be($"api/postcodes?postcode={HttpUtility.UrlEncode(fullPostcode)}");
         }
     }
 }
