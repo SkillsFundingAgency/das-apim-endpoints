@@ -53,7 +53,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var hasWorkPlace = false;
             var hasDayRelease = false;
             var hasBlockRelease = false;
+            var isNotFound = false;
             var filterDeliveryModes = new List<GetDeliveryType>();
+
+            if (getDeliveryTypeItems.Any(x => x.DeliveryModes == DeliveryModeType.NotFound.ToString()))
+            {
+                var item = CreateDeliveryTypeItem(getDeliveryTypeItems.First());
+                filterDeliveryModes.Add(item);
+                return filterDeliveryModes;
+            }
 
             foreach (var deliveryTypeItem in getDeliveryTypeItems)
             {
@@ -79,7 +87,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                             filterDeliveryModes.Add(item);
                             hasDayRelease = true;
                             break;
+                        case DeliveryModeType.NotFound when !isNotFound:
+                            item.DeliveryModeType = DeliveryModeType.NotFound;
+                            filterDeliveryModes.Add(item);
+                            isNotFound = true;
+                            break;
                     }
+                }
+
+                if (isNotFound)
+                {
+                    break;
                 }
 
                 if (hasBlockRelease && hasDayRelease && hasWorkPlace)
@@ -97,12 +115,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 "100PercentEmployer" => DeliveryModeType.Workplace,
                 "DayRelease" => DeliveryModeType.DayRelease,
                 "BlockRelease" => DeliveryModeType.BlockRelease,
+                "NotFound" => DeliveryModeType.NotFound,
                 _ => default
             };
         }
 
         private GetDeliveryType CreateDeliveryTypeItem(GetDeliveryTypeItem deliveryTypeItem)
         {
+            if (deliveryTypeItem.DeliveryModes == DeliveryModeType.NotFound.ToString())
+            {
+                return new GetDeliveryType
+                {
+                    DeliveryModeType = DeliveryModeType.NotFound
+                };
+            }
             return new GetDeliveryType
             {
                 DistanceInMiles = deliveryTypeItem.DistanceInMiles,
