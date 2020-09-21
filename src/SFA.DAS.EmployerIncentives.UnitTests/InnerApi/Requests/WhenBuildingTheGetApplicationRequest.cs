@@ -9,15 +9,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetApplicationRequest
     {
         [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl, long accountId, Guid applicationId)
+        public void Then_The_GetUrl_Is_Correctly_Built(long accountId, Guid applicationId)
         {
-            var actual = new GetApplicationRequest(accountId, applicationId)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetApplicationRequest(accountId, applicationId);
 
-            actual.GetUrl.Should()
-                .Be($"{baseUrl}accounts/{accountId}/applications/{applicationId.ToString()}");
+            actual.GetUrl.Should().Be($"accounts/{accountId}/applications/{applicationId.ToString()}");
         }
     }
 }

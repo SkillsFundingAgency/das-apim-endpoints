@@ -11,9 +11,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments
             _apprenticeshipId = apprenticeshipId;
         }
 
-        public string BaseUrl { get; set; }
-
-        public string GetUrl =>
-            $"{BaseUrl}api/apprenticeships/{_apprenticeshipId}";
+        public string GetUrl => $"api/apprenticeships/{_apprenticeshipId}";
     }
 }

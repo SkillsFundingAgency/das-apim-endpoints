@@ -52,5 +52,25 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             actual.Data.SignedAgreements.Should().BeEquivalentTo(legalEntityResponse.Agreements.Where(x => x.Status == EmployerAgreementStatus.Signed || x.Status == EmployerAgreementStatus.Expired || x.Status == EmployerAgreementStatus.Superseded), opts => opts.ExcludingMissingMembers());
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_Agreements_Without_a_Signed_Date_Are_Not_Returned(
+            GetBankingDataQuery query,
+            IncentiveApplicationDto applicationResponse,
+            LegalEntity legalEntityResponse,
+            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IAccountsService> accountsService,
+            GetBankingDataHandler handler
+        )
+        {
+            var agreementWithoutDate = legalEntityResponse.Agreements.First(x => x.Status == EmployerAgreementStatus.Signed || x.Status == EmployerAgreementStatus.Expired || x.Status == EmployerAgreementStatus.Superseded);
+            agreementWithoutDate.SignedDate = null;
+            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            accountsService.Setup(x => x.GetLegalEntity(query.HashedAccountId, applicationResponse.LegalEntityId)).ReturnsAsync(legalEntityResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Data.SignedAgreements.Count().Should().Be(legalEntityResponse.Agreements.Count(x => x.Status == EmployerAgreementStatus.Signed || x.Status == EmployerAgreementStatus.Expired || x.Status == EmployerAgreementStatus.Superseded) - 1);
+        }
     }
 }

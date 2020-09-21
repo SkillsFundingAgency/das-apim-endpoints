@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -8,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.Api.Common.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -24,10 +26,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             IWebHostEnvironment hostingEnvironment,
             IAzureClientCredentialHelper azureClientCredentialHelper)
         {
+            _configuration = apiConfiguration;
             _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri(apiConfiguration.Url);
             _hostingEnvironment = hostingEnvironment;
             _azureClientCredentialHelper = azureClientCredentialHelper;
-            _configuration = apiConfiguration;
+            
         }
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
@@ -36,7 +40,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -55,7 +58,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await _httpClient.PostAsync(request.PostUrl, stringContent)
@@ -72,7 +74,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var response = await _httpClient.DeleteAsync(request.DeleteUrl)
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
@@ -83,7 +84,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await _httpClient.PatchAsync(request.PatchUrl, stringContent)
@@ -98,7 +98,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await _httpClient.PutAsync(request.PutUrl, stringContent)
@@ -112,7 +111,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = _configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await _httpClient.PutAsync(request.PutUrl, stringContent)
@@ -124,7 +122,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
-            request.BaseUrl = _configuration.Url;
+
             var response = await _httpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
@@ -136,7 +134,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
-            request.BaseUrl = _configuration.Url;
+            
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;

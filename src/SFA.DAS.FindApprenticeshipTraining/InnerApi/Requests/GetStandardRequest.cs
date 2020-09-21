@@ -11,7 +11,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _id = id;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}api/courses/standards/{_id}";
+        public string GetUrl => $"api/courses/standards/{_id}";
     }
 }

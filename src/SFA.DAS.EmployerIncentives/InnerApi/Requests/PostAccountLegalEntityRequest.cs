@@ -11,8 +11,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
             _accountId = accountId;
         }
 
-        public string BaseUrl { get; set; }
-        public string PostUrl => $"{BaseUrl}accounts/{_accountId}/legalentities";
+        public string PostUrl => $"accounts/{_accountId}/legalentities";
         public object Data { get; set; }
     }
 

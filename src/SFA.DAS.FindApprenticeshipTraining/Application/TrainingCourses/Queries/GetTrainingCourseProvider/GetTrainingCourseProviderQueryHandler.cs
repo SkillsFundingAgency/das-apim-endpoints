@@ -45,6 +45,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask);
 
+            if (providerTask.Result == null && location != null)
+            {
+                providerTask = Task.FromResult(
+                    await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
+                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId)));
+            }
+            
             var overallAchievementRates =
                 await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
                     new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
