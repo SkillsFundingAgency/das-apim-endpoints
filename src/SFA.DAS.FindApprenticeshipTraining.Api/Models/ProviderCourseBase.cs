@@ -13,7 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public List<GetDeliveryType> DeliveryModes { get ; set ; }
         public int? OverallCohort { get; set; }
         public decimal? OverallAchievementRate { get ; set ; }
-        public GetProviderFeedbackResponse FeedbackResponse { get ; set ; }
+        public GetProviderFeedbackResponse Feedback { get ; set ; }
         
         private string MapLevel(int level)
         {

@@ -147,8 +147,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(0);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(0);
+            response.Feedback.TotalEmployerResponses.Should().Be(0);
+            response.Feedback.TotalFeedbackRating.Should().Be(0);
         }
 
         [Test, AutoData]
@@ -180,8 +180,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(129);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(3);
+            response.Feedback.TotalEmployerResponses.Should().Be(129);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
         }
 
         [Test, AutoData]
@@ -204,8 +204,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(9);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(1);
+            response.Feedback.TotalEmployerResponses.Should().Be(9);
+            response.Feedback.TotalFeedbackRating.Should().Be(1);
         }
         
         [Test, AutoData]
@@ -227,8 +227,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(5);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(2);
+            response.Feedback.TotalEmployerResponses.Should().Be(5);
+            response.Feedback.TotalFeedbackRating.Should().Be(2);
         }
         
         [Test, AutoData]
@@ -250,8 +250,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(6);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(3);
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
         }
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Four_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
@@ -272,8 +272,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
 
-            response.FeedbackResponse.TotalEmployerResponses.Should().Be(2);
-            response.FeedbackResponse.TotalFeedbackRating.Should().Be(4);
+            response.Feedback.TotalEmployerResponses.Should().Be(2);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
         }
     }
 }
