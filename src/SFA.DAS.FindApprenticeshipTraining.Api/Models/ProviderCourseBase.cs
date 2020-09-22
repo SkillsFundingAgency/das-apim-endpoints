@@ -63,43 +63,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var feedbackRatingItems = getFeedbackRatingItems.ToList();
             var totalRatings = feedbackRatingItems.Sum(c => c.FeedbackCount);
 
-            var ratings = 0;
+            var ratingScore = GetRatingScore(feedbackRatingItems);
 
-            foreach (var feedbackRatingItem in feedbackRatingItems)
-            {
-                switch (feedbackRatingItem.FeedbackName.ToLower())
-                {
-                    case "very poor":
-                        ratings += feedbackRatingItem.FeedbackCount * 1;
-                        break;
-                    case "poor":
-                        ratings += feedbackRatingItem.FeedbackCount * 2;
-                        break;
-                    case "good":
-                        ratings += feedbackRatingItem.FeedbackCount * 3;
-                        break;
-                    case "excellent":
-                        ratings += feedbackRatingItem.FeedbackCount * 4;
-                        break;
-                }
-            }
+            var ratingAverage = Math.Round((double)ratingScore / totalRatings,1 );
 
-            var ratingAverage = Math.Round((double)ratings / totalRatings,1 );
-
-            var ratingResponse = 0;
-            if (ratingAverage >= 1 && ratingAverage < 1.3)
-            {
-                ratingResponse = 1;
-            } else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
-            {
-                ratingResponse = 2;
-            }else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
-            {
-                ratingResponse = 3;
-            }else if (ratingAverage >= 3.3 && ratingAverage < 4)
-            {
-                ratingResponse = 4;
-            }
+            var ratingResponse = GetOverallRatingResponse(ratingAverage);
             
             return new GetProviderFeedbackResponse
             {
@@ -150,6 +118,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return filterDeliveryModes; 
                 
         }
+
         private DeliveryModeType MapDeliveryType(string deliveryType)
         {
             return deliveryType switch
@@ -172,6 +141,54 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Postcode = deliveryTypeItem.Postcode,
                 Town = deliveryTypeItem.Town
             };
+        }
+
+        private static int GetRatingScore(List<GetFeedbackRatingItem> feedbackRatingItems)
+        {
+            var ratingScore = 0;
+            foreach (var feedbackRatingItem in feedbackRatingItems)
+            {
+                switch (feedbackRatingItem.FeedbackName.ToLower())
+                {
+                    case "very poor":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 1;
+                        break;
+                    case "poor":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 2;
+                        break;
+                    case "good":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 3;
+                        break;
+                    case "excellent":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 4;
+                        break;
+                }
+            }
+
+            return ratingScore;
+        }
+
+        private static int GetOverallRatingResponse(double ratingAverage)
+        {
+            var ratingResponse = 0;
+            if (ratingAverage >= 1 && ratingAverage < 1.3)
+            {
+                ratingResponse = 1;
+            }
+            else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
+            {
+                ratingResponse = 2;
+            }
+            else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
+            {
+                ratingResponse = 3;
+            }
+            else if (ratingAverage >= 3.3 && ratingAverage < 4)
+            {
+                ratingResponse = 4;
+            }
+
+            return ratingResponse;
         }
     }
 }
