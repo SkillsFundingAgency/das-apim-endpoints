@@ -183,7 +183,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             {
                 ratingResponse = 3;
             }
-            else if (ratingAverage >= 3.3 && ratingAverage < 4)
+            else if (ratingAverage >= 3.3 && ratingAverage <= 4)
             {
                 ratingResponse = 4;
             }
