@@ -9,12 +9,12 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
+namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesLegalEntitiesTests
 {
     public class WhenCallingUpdateVendorRegistrationCaseStatus
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_To_Update_the_vendor_registration_case_status_details(
+        public async Task Then_The_Api_Is_Called_To_Update_the_vendor_registration_case_status(
             UpdateVendorRegistrationCaseStatusRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service)
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Verify(x =>
                 x.Patch(It.Is<PatchVendorRegistrationCaseStatusRequest>(
                     c =>
-                        c.PatchUrl.Contains(request.LegalEntityId) && c.Data.IsSameOrEqualTo(request)
+                        c.PatchUrl.Contains(request.HashedLegalEntityId) && c.Data.IsSameOrEqualTo(request)
                 )), Times.Once
             );
         }

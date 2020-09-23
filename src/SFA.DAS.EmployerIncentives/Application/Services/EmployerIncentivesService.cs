@@ -141,15 +141,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public Task<DateTime> GetLastSuccessfulVendorRegistrationFormCaseStatusRefreshDateTimeFrom()
-        {
-            throw new NotImplementedException();
-        }
-        public Task UpdateLastSuccessfulVendorRegistrationFormCaseStatusRefreshDateTimeFrom(DateTime value)
-        {
-            throw new NotImplementedException();
-        }
-
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
