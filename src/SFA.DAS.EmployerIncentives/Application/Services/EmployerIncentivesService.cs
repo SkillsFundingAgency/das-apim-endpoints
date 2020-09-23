@@ -124,13 +124,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
         }
-
-
-        public async Task UpdateVendorRegistrationFormDetails(long legalEntityId, UpdateVendorRegistrationFormRequest request)
-        {
-            await _client.Patch(new PatchVendorRegistrationFormRequest(legalEntityId) { Data = request });
-        }
-
+        
         public async Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request)
         {
             await _client.Patch(new PatchVendorRegistrationCaseStatusRequest(request));
@@ -139,15 +133,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
         {
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
-        }
-
-        public Task<DateTime> GetLastSuccessfulVendorRegistrationFormCaseStatusRefreshDateTimeFrom()
-        {
-            throw new NotImplementedException();
-        }
-        public Task UpdateLastSuccessfulVendorRegistrationFormCaseStatusRefreshDateTimeFrom(DateTime value)
-        {
-            throw new NotImplementedException();
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
