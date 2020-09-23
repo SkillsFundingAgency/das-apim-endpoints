@@ -146,7 +146,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.FeedbackRatings = null;
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(0);
             response.Feedback.TotalFeedbackRating.Should().Be(0);
@@ -179,7 +179,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(129);
             response.Feedback.TotalFeedbackRating.Should().Be(3);
@@ -203,7 +203,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(9);
             response.Feedback.TotalFeedbackRating.Should().Be(1);
@@ -226,7 +226,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(5);
             response.Feedback.TotalFeedbackRating.Should().Be(2);
@@ -249,7 +249,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(6);
             response.Feedback.TotalFeedbackRating.Should().Be(3);
@@ -271,7 +271,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(2);
             response.Feedback.TotalFeedbackRating.Should().Be(4);
@@ -289,7 +289,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(6);
             response.Feedback.TotalFeedbackRating.Should().Be(4);
