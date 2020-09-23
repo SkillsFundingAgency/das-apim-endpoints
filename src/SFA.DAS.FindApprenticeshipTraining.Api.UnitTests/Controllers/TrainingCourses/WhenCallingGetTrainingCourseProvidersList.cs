@@ -51,6 +51,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     options => options.Excluding(c=>c.Ukprn)
                         .Excluding(c=>c.AchievementRates)
                         .Excluding(c=>c.DeliveryTypes)
+                        .Excluding(c=>c.FeedbackAttributes)
+                        .Excluding(c=>c.FeedbackRatings)
                     );
             model.Total.Should().Be(mediatorResult.Total);
         }
