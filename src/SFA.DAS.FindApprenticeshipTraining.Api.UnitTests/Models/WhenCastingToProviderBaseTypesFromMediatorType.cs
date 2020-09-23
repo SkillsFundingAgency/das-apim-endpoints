@@ -275,5 +275,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.Feedback.TotalEmployerResponses.Should().Be(2);
             response.Feedback.TotalFeedbackRating.Should().Be(4);
         }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Four_If_Max(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 6,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
+        }
     }
 }
