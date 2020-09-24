@@ -80,7 +80,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ProvidersCount = new GetTrainingCourseProviderCountResponse
                     {
                         TotalProviders  = result.ProvidersCount,
-                        providersAtLocation = result.ProvidersCountAtLocation
+                        ProvidersAtLocation = result.ProvidersCountAtLocation
                     }
                 };
                 return Ok(model);
@@ -141,6 +141,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         Total = result.AdditionalCourses.Count(),
                         Courses = result.AdditionalCourses.Select(c=>(GetTrainingProviderAdditionalCourseListItem)c).ToList()
+                    },
+                    ProvidersCount = new GetTrainingCourseProviderCountResponse
+                    {
+                        TotalProviders  = result.TotalProviders,
+                        ProvidersAtLocation = result.TotalProvidersAtLocation
                     }
                 };
                 return Ok(model);

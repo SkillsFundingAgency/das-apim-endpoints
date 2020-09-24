@@ -47,7 +47,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 .Excluding(tc => tc.StandardDates));
 
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
-            model.ProvidersCount.providersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
+            model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
 
         }
 
