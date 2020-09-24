@@ -5,18 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\SendBankDetailsRequiredEmail - Copy.feature.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Data\FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
