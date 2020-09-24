@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.EmployerIncentives.Configuration;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
