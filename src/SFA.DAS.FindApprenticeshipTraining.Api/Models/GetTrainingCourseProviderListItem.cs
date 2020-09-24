@@ -11,6 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
             var getDeliveryTypes = FilterDeliveryModes(source.DeliveryTypes);
+            var getFeedbackResponse = ProviderFeedbackResponse(source.FeedbackRatings);
             
             return new GetTrainingCourseProviderListItem
             {
@@ -18,7 +19,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 ProviderId = source.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
-                DeliveryModes = getDeliveryTypes
+                DeliveryModes = getDeliveryTypes,
+                Feedback = getFeedbackResponse
             };
         }
     }

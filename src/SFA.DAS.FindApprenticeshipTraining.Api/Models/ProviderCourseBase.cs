@@ -13,6 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public List<GetDeliveryType> DeliveryModes { get ; set ; }
         public int? OverallCohort { get; set; }
         public decimal? OverallAchievementRate { get ; set ; }
+        public GetProviderFeedbackResponse Feedback { get ; set ; }
         
         private string MapLevel(int level)
         {
@@ -46,6 +47,33 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                        ?? result.FirstOrDefault(c => c.Level.Equals("AllLevels"));
 
             return item;
+        }
+
+        protected GetProviderFeedbackResponse ProviderFeedbackResponse(IEnumerable<GetFeedbackRatingItem> getFeedbackRatingItems)
+        {
+            if (getFeedbackRatingItems == null)
+            {
+                return new GetProviderFeedbackResponse
+                {
+                    TotalEmployerResponses = 0,
+                    TotalFeedbackRating = 0
+                };
+            }
+
+            var feedbackRatingItems = getFeedbackRatingItems.ToList();
+            var totalRatings = feedbackRatingItems.Sum(c => c.FeedbackCount);
+
+            var ratingScore = GetRatingScore(feedbackRatingItems);
+
+            var ratingAverage = Math.Round((double)ratingScore / totalRatings,1 );
+
+            var ratingResponse = GetOverallRatingResponse(ratingAverage);
+            
+            return new GetProviderFeedbackResponse
+            {
+                TotalFeedbackRating = ratingResponse,
+                TotalEmployerResponses = totalRatings
+            };
         }
 
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
@@ -96,6 +124,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return filterDeliveryModes; 
                 
         }
+
         private DeliveryModeType MapDeliveryType(string deliveryType)
         {
             return deliveryType switch
@@ -126,6 +155,54 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Postcode = deliveryTypeItem.Postcode,
                 Town = deliveryTypeItem.Town
             };
+        }
+
+        private static int GetRatingScore(List<GetFeedbackRatingItem> feedbackRatingItems)
+        {
+            var ratingScore = 0;
+            foreach (var feedbackRatingItem in feedbackRatingItems)
+            {
+                switch (feedbackRatingItem.FeedbackName.ToLower())
+                {
+                    case "very poor":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 1;
+                        break;
+                    case "poor":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 2;
+                        break;
+                    case "good":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 3;
+                        break;
+                    case "excellent":
+                        ratingScore += feedbackRatingItem.FeedbackCount * 4;
+                        break;
+                }
+            }
+
+            return ratingScore;
+        }
+
+        private static int GetOverallRatingResponse(double ratingAverage)
+        {
+            var ratingResponse = 0;
+            if (ratingAverage >= 1 && ratingAverage < 1.3)
+            {
+                ratingResponse = 1;
+            }
+            else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
+            {
+                ratingResponse = 2;
+            }
+            else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
+            {
+                ratingResponse = 3;
+            }
+            else if (ratingAverage >= 3.3 && ratingAverage <= 4)
+            {
+                ratingResponse = 4;
+            }
+
+            return ratingResponse;
         }
     }
 }

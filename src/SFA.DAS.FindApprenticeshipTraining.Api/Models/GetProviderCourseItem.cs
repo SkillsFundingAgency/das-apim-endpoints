@@ -32,7 +32,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 NationalOverallCohort = nationalRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
-                DeliveryModes = deliveryModes
+                DeliveryModes = deliveryModes,
+                Feedback = new GetProviderFeedbackResponse
+                {
+                    TotalEmployerResponses = 0,
+                    TotalFeedbackRating = 0
+                }
             };
         }
 
