@@ -10,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public int Total { get ; set ; }
 
         public string Location { get; set; }
+        public double[] LocationGeoPoint { get ; set ; }
     }
 }

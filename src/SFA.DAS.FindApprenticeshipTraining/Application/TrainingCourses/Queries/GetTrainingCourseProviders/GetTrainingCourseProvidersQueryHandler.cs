@@ -47,6 +47,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Providers = providersTask.Result.Providers,
                 Total = providersTask.Result.TotalResults,
                 Location = locationResult,
+                LocationGeoPoint = location?.Location?.GeoPoint
             }; 
         }
     }
