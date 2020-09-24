@@ -8,6 +8,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,16 +59,16 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             cases[0].ApprenticeshipLegalEntityId = null;
 
             cases[1].ApprenticeshipLegalEntityId = "XYZ123";
-            cases[1].CaseStatusLastUpdatedDate = DateTime.Parse("02-01-2000");
+            cases[1].CaseStatusLastUpdatedDate = DateTime.Parse("02-01-2000", new CultureInfo("en-GB"));
 
             cases[2].ApprenticeshipLegalEntityId = "ABCDEF";
-            cases[2].CaseStatusLastUpdatedDate = DateTime.Parse("01-01-2000");
+            cases[2].CaseStatusLastUpdatedDate = DateTime.Parse("01-01-2000", new CultureInfo("en-GB"));
 
             cases[3].ApprenticeshipLegalEntityId = "XYZ123";
-            cases[3].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000");
+            cases[3].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000", new CultureInfo("en-GB"));
 
             cases[4].ApprenticeshipLegalEntityId = "XYZ123";
-            cases[4].CaseStatusLastUpdatedDate = DateTime.Parse("04-01-2000");
+            cases[4].CaseStatusLastUpdatedDate = DateTime.Parse("04-01-2000", new CultureInfo("en-GB"));
 
             cases[5].ApprenticeshipLegalEntityId = "";
 
