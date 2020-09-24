@@ -33,9 +33,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
             var location = await _locationHelper.GetLocationInformation(request.Location);
+
+            var ukprnsCount = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(
+                new GetUkprnsForStandardAndLocationRequest(request.CourseId, location?.Location?.GeoPoint.First() ?? 0,
+                    location?.Location?.GeoPoint.Last() ?? 0));
             
             var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(
-                new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, location?.Location.GeoPoint.First(), location?.Location.GeoPoint.Last()));
+                new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, location?.Location?.GeoPoint.First(), location?.Location?.GeoPoint.Last()));
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
             var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
                     new GetProviderAdditionalStandardsRequest(request.ProviderId));
@@ -43,7 +47,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
 
-            await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask);
+            await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask, ukprnsCount);
 
             if (providerTask.Result == null && location != null)
             {
@@ -74,7 +78,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Course = courseTask.Result,
                     ProviderStandard = providerTask.Result,
                     AdditionalCourses = new List<GetAdditionalCourseListItem>(),
-                    OverallAchievementRates = overallAchievementRates.OverallAchievementRates
+                    OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
+                    TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(c=>c != request.ProviderId),
+                    TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(c=>c != request.ProviderId)
                 };
             }
 
@@ -86,6 +92,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
+                TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(c=>c != request.ProviderId),
+                TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(c=>c != request.ProviderId)
             };
         }
 
