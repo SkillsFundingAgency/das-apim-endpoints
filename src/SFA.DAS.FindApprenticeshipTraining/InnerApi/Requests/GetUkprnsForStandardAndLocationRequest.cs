@@ -2,13 +2,13 @@
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class GetUkprnsForStandardAndLocation : IGetApiRequest
+    public class GetUkprnsForStandardAndLocationRequest : IGetApiRequest
     {
         private readonly int _standardId;
         private readonly double _lat;
         private readonly double _lon;
 
-        public GetUkprnsForStandardAndLocation(int standardId, double lat, double lon)
+        public GetUkprnsForStandardAndLocationRequest(int standardId, double lat, double lon)
         {
             _standardId = standardId;
             _lat = lat;

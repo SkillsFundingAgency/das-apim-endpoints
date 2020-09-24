@@ -11,7 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Built(int standardId, double lat, double lon)
         {
             //Arrange Act
-            var actual = new GetUkprnsForStandardAndLocation(standardId, lat, lon);
+            var actual = new GetUkprnsForStandardAndLocationRequest(standardId, lat, lon);
             
             //Assert
             actual.GetUrl.Should().Be($"/api/courses/{standardId}/ukprns?lat={lat}&lon={lon}");
