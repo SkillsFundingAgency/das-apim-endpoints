@@ -64,15 +64,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, [FromQuery]double lat=0, [FromQuery]double lon=0)
         {
             try
             {
-                var result = await _mediator.Send(new GetTrainingCourseQuery {Id = id});
+                var result = await _mediator.Send(new GetTrainingCourseQuery
+                {
+                    Id = id,
+                    Lat = lat,
+                    Lon = lon
+                });
                 var model = new GetTrainingCourseResponse
                 {
                     TrainingCourse = result.Course,
-                    ProvidersCount = result.ProvidersCount
+                    ProvidersCount = new GetTrainingCourseProviderCountResponse
+                    {
+                        TotalProviders  = result.ProvidersCount,
+                        providersAtLocation = result.ProvidersCountAtLocation
+                    }
                 };
                 return Ok(model);
             }

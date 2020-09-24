@@ -20,17 +20,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Course_And_Providers_Count_From_Mediator(
             int standardCode,
+            double lat,
+            double lon,
             GetTrainingCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetTrainingCourseQuery>(c=>c.Id.Equals(standardCode)),
+                    It.Is<GetTrainingCourseQuery>(c=>
+                        c.Id.Equals(standardCode)
+                        && c.Lat.Equals(lat)
+                        && c.Lon.Equals(lon)
+                        ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Get(standardCode) as ObjectResult;
+            var controllerResult = await controller.Get(standardCode, lat, lon) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -40,7 +46,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 .Excluding(tc => tc.ApprenticeshipFunding)
                 .Excluding(tc => tc.StandardDates));
 
-            model.ProvidersCount.Should().Be(mediatorResult.ProvidersCount);
+            model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
+            model.ProvidersCount.providersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
 
         }
 
