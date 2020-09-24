@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\SendBankDetailsRequiredEmail - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate.json" />
   </ItemGroup>
 
   <ItemGroup>
