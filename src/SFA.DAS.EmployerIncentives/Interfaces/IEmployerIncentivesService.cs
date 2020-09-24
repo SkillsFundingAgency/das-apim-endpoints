@@ -28,7 +28,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId);
         Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request);
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
-        Task UpdateVendorRegistrationFormDetails(long legalEntityId, UpdateVendorRegistrationFormRequest request);
         Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request);
     }
 }
