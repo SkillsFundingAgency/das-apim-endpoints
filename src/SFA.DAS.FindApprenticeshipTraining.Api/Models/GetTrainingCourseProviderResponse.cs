@@ -8,5 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public GetProviderCourseItem TrainingCourseProvider { get; set; }
         public GetTrainingAdditionalCourseItem AdditionalCourses { get; set; }
         public GetTrainingCourseProviderCountResponse ProvidersCount { get ; set ; }
+        public GetLocationSearchResponseItem Location { get ; set ; }
     }
 }

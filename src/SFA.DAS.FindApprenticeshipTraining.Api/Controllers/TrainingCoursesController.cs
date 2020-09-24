@@ -110,7 +110,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     TrainingCourseProviders = result.Providers
                         .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level)).ToList(),
                     Total = result.Total,
-                    Location = result.Location.Name
+                    Location = new GetLocationSearchResponseItem
+                    {
+                        Name = result.Location?.Name,
+                        Location = new GetLocationSearchResponseItem.LocationResponse
+                        {
+                            GeoPoint = result.Location?.GeoPoint
+                        }
+                    } 
                 };
                 return Ok(model);
             }
@@ -146,6 +153,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         TotalProviders  = result.TotalProviders,
                         ProvidersAtLocation = result.TotalProvidersAtLocation
+                    },
+                    Location = new GetLocationSearchResponseItem
+                    {
+                        Name = result.Location?.Name,
+                        Location = new GetLocationSearchResponseItem.LocationResponse
+                        {
+                            GeoPoint = result.Location?.GeoPoint
+                        }
                     }
                 };
                 return Ok(model);
