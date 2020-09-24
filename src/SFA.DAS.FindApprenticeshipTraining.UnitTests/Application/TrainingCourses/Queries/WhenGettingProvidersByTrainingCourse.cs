@@ -83,8 +83,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            result.Location.Should().Be(apiLocationResponse.Postcode);
-            result.LocationGeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Location.Name.Should().Be(query.Location);
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
         }
         
         [Test, MoqAutoData]
@@ -117,8 +117,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
-            result.Location.Should().BeNullOrEmpty();
-            result.LocationGeoPoint.Should().BeNull();
+            result.Location.Should().BeNull();
         }
     }
 }
