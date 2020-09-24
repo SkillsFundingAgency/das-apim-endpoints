@@ -9,25 +9,30 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequest
+    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
-        private readonly ILogger _logger;
+        private readonly ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> _logger;
 
         public RefreshVendorRegistrationFormCaseStatusCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger logger)
+            IEmployerIncentivesService incentivesService, ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
             _logger = logger;
         }
 
-        public async Task Handle(RefreshVendorRegistrationFormCaseStatusCommand command, CancellationToken none)
+        public async Task<Unit> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Requesting VRF Case status updates from: [{command.FromDateTime}] to: [{command.ToDateTime}]");
+            _logger.LogInformation($"Requesting VRF Case status updates from: [{request.FromDateTime}] to: [{request.ToDateTime}]");
 
-            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime);
+            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime);
+
+            if (response == null)
+            {
+                _logger.LogError($"No response received from Finance API");
+            }
 
             _logger.LogInformation($"Number of VRF Cases received from Finance API: [{response.RegistrationCases.Count}]");
 
@@ -49,6 +54,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             }
 
             await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
+            return Unit.Value;
         }
 
         private static void GetLatestCasesForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)

@@ -5,7 +5,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm
 {
     public class GetVendorRegistrationCaseStatusUpdateResponse
     {
-        public List<VendorRegistrationCase> RegistrationCases { get; set; }
+        public List<VendorRegistrationCase> RegistrationCases { get; set; } = new List<VendorRegistrationCase>();
     }
 
     public class VendorRegistrationCase

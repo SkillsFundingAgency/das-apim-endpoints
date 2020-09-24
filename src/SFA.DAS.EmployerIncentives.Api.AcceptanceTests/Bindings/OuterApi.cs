@@ -5,7 +5,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
 {
     [Binding]
     [Scope(Tag = "outerApi")]
-    public class OuterApi 
+    public class OuterApi
     {
         private readonly TestContext _context;
 
@@ -18,13 +18,16 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
         public void Initialise()
         {
 
-            var config = new Dictionary<string, string>();
+            var config = new Dictionary<string, string>
+            {
+                {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
+                {"EmployerIncentivesInnerApi:url", _context?.InnerApi?.BaseAddress + "/"},
+                {"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/"},
+                {"CustomerEngagementFinanceInnerApi:url", _context?.FinanceApiV1?.BaseAddress + "/"},
+                {"AzureAD:tenant", ""},
+                {"AzureAD:identifier", ""}
+            };
 
-            config.Add("Environment", "LOCAL_ACCEPTANCE_TESTS");
-            config.Add("EmployerIncentivesInnerApi:url", _context?.InnerApi?.BaseAddress + "/");
-            config.Add($"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/");
-            config.Add("AzureAD:tenant", "");
-            config.Add("AzureAD:identifier", "");
 
             var factory = new LocalWebApplicationFactory<Startup>(config);
 
