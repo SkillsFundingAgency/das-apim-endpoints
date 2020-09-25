@@ -17,7 +17,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
         private readonly LocationHelper _locationHelper;
 
         public GetTrainingCourseProvidersQueryHandler (
@@ -27,8 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
-            _locationApiClient = locationApiClient;
-            _locationHelper = new LocationHelper(_locationApiClient);
+            _locationHelper = new LocationHelper(locationApiClient);
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
