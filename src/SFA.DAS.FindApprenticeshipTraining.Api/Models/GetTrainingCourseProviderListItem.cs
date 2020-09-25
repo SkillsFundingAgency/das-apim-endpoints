@@ -16,9 +16,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             if (deliveryModes != null && deliveryModes.Any())
             {
-                getDeliveryTypes = getDeliveryTypes.Where(c => deliveryModes.Contains(c.DeliveryModeType)).ToList();
+                var isInList = getDeliveryTypes.Select(c=>c.DeliveryModeType).Intersect(deliveryModes).ToList();
+                    
 
-                if (!getDeliveryTypes.Any())
+                if (isInList.Count != deliveryModes.Count)
                 {
                     return null;
                 }    

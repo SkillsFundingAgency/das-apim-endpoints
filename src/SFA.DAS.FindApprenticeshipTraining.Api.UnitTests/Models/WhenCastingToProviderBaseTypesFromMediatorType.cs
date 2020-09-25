@@ -323,8 +323,51 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                     DeliveryModeType.DayRelease
                 });
 
-            response.DeliveryModes.Count.Should().Be(1);
-            response.DeliveryModes.TrueForAll(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
+            response.DeliveryModes.Count.Should().Be(3);
+            response.DeliveryModes.Should().Contain(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
+        }
+
+        [Test, AutoData]
+        public void Then_If_There_Are_Multiple_Delivery_Modes_Filtered_And_Not_Match_Then_It_Is_Returned_Correctly(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease",
+                    DistanceInMiles = 2.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.DayRelease,
+                DeliveryModeType.BlockRelease
+            });
+
+            response.Should().BeNull();
+        }
+        [Test, AutoData]
+        public void Then_If_There_Are_Multiple_Delivery_Modes_Filtered_And_Match_Then_It_Is_Returned_Correctly(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease",
+                    DistanceInMiles = 2.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.DayRelease,
+                DeliveryModeType.Workplace
+            });
+
+            response.DeliveryModes.Count.Should().Be(2);
         }
 
         [Test, AutoData]
