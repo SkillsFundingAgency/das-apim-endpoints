@@ -81,7 +81,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                             hasDayRelease = true;
                             break;
                         case DeliveryModeType.NotFound when !isNotFound:
-                            item.DeliveryModeType = DeliveryModeType.NotFound;
                             filterDeliveryModes.Add(item);
                             isNotFound = true;
                             break;

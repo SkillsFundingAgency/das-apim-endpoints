@@ -139,5 +139,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes));
         }
+
+        [Test, AutoData]
+        public void Then_Maps_Not_Found_Delivery_Mode(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            var deliveryTypeItem = new GetDeliveryTypeItem{DeliveryModes = "NotFound"};
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>{deliveryTypeItem};
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.DeliveryModes.First().DeliveryModeType.Should().Be(DeliveryModeType.NotFound);
+            response.DeliveryModes.First().Address1.Should().BeNullOrEmpty();
+            response.DeliveryModes.First().Address2.Should().BeNullOrEmpty();
+            response.DeliveryModes.First().County.Should().BeNullOrEmpty();
+            response.DeliveryModes.First().Postcode.Should().BeNullOrEmpty();
+            response.DeliveryModes.First().Town.Should().BeNullOrEmpty();
+            response.DeliveryModes.First().DistanceInMiles.Should().Be(0);
+        }
     }
 }
