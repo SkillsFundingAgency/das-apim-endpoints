@@ -36,8 +36,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             if (Regex.IsMatch(location, postcodeRegex))
             {
                 return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
-            } 
-            
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                var locationName = location.Trim();
+                return await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationName(locationName));
+            }
+
             return null;
         }
     }
