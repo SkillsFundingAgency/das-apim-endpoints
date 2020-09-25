@@ -141,6 +141,160 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
+        public void Then_Maps_Zero_If_No_Feedback(GetProvidersListItem source, string sectorSubjectArea)
+        {
+            source.FeedbackRatings = null;
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(0);
+            response.Feedback.TotalFeedbackRating.Should().Be(0);
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_Feedback_Rating_To_A_Score(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 92,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 29,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 7,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Very Poor",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(129);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
+        }
+
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_One_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Very Poor",
+                    FeedbackCount = 7,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 2,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(9);
+            response.Feedback.TotalFeedbackRating.Should().Be(1);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Two_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 4,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(5);
+            response.Feedback.TotalFeedbackRating.Should().Be(2);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Three_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 4,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 2,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
+        }
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Four_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 1,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(2);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Four_If_Max(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 6,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
+        }
+
+        [Test, AutoData]
         public void Then_Maps_Not_Found_Delivery_Mode(string sectorSubjectArea, GetProvidersListItem source)
         {
             var deliveryTypeItem = new GetDeliveryTypeItem{DeliveryModes = "NotFound"};
