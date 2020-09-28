@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System;
+using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -24,7 +25,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
@@ -41,7 +41,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var response = await HttpClient.DeleteAsync(request.DeleteUrl)
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
@@ -52,7 +51,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
@@ -67,7 +65,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
@@ -81,7 +78,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
             var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
@@ -93,7 +89,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
-            request.BaseUrl = Configuration.Url;
             var response = await HttpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
@@ -105,7 +100,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             await AddAuthenticationHeader();
             AddVersionHeader(request.Version);
-            request.BaseUrl = Configuration.Url;
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;

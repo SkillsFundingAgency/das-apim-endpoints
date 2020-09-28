@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,13 +10,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerIncentives.Api.AppStart;
 using SFA.DAS.EmployerIncentives.Api.ErrorHandler;
 using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -48,7 +50,12 @@ namespace SFA.DAS.EmployerIncentives.Api
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
-                services.AddAuthentication(azureAdConfiguration);
+                var policies = new Dictionary<string, string>
+                {
+                    {"default", "APIM"}
+                };
+
+                services.AddAuthentication(azureAdConfiguration, policies);
             }
 
             services.AddHealthChecks()

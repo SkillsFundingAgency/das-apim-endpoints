@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -32,8 +33,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(""),
                 StatusCode = code
             };
-            var getTestRequest = new GetTestRequest(config.Url, id) {BaseUrl = config.Url };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+            var getTestRequest = new GetTestRequest(id) ;
+            var expectedUrl = $"{config.Url}{getTestRequest.GetUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -51,7 +53,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Get)
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -74,8 +76,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                  Content = new StringContent(""),
                  StatusCode = HttpStatusCode.Accepted
              };
-             var getTestRequest = new GetTestRequest(config.Url,id) {BaseUrl = config.Url };
-             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
+             var getTestRequest = new GetTestRequest(id);
+             var expectedUrl = $"{config.Url}{getTestRequest.GetUrl}";
+             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
              var client = new HttpClient(httpMessageHandler.Object);
              var hostingEnvironment = new Mock<IWebHostEnvironment>();
              var clientFactory = new Mock<IHttpClientFactory>();
@@ -94,7 +97,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                      ItExpr.Is<HttpRequestMessage>(c =>
                          c.Method.Equals(HttpMethod.Get)
                          && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
-                         && c.RequestUri.AbsoluteUri.Equals(getTestRequest.GetUrl)
+                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                          && c.Headers.Authorization == null),
                      ItExpr.IsAny<CancellationToken>()
                  );
@@ -105,13 +108,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 
              public string Version => "2.0";
 
-             public GetTestRequest (string baseUrl, int id)
+             public GetTestRequest (int id)
              {
                  _id = id;
-                 BaseUrl = baseUrl;
              }
-             public string BaseUrl { get; set; }
-             public string GetUrl => $"{BaseUrl}/test-url/get{_id}";
+             
+             public string GetUrl => $"/test-url/get{_id}";
          }
     }
 }

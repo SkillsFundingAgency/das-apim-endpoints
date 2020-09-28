@@ -10,6 +10,7 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -35,8 +36,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(testObject),
                 StatusCode = HttpStatusCode.Created
             };
-            var getTestRequest = new PostTestRequest(config.Url, id) {BaseUrl = config.Url ,Data = postContent};
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.PostUrl, "post");
+            var postTestRequest = new PostTestRequest(id) {Data = postContent};
+            var expectedUrl = $"{config.Url}{postTestRequest.PostUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, "post");
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -46,7 +48,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
-            var actualResult = await actual.Post<TestResponse>(getTestRequest);
+            var actualResult = await actual.Post<TestResponse>(postTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
@@ -54,7 +56,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Post)
-                        && c.RequestUri.AbsoluteUri.Equals(getTestRequest.PostUrl)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -70,14 +72,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 
             public string Version => "2.0";
 
-            public PostTestRequest (string baseUrl, int id)
+            public PostTestRequest (int id)
             {
                 _id = id;
-                BaseUrl = baseUrl;
             }
             public object Data { get; set; }
-            public string BaseUrl { get; set; }
-            public string PostUrl => $"{BaseUrl}/test-url/get{_id}";
+            public string PostUrl => $"/test-url/get{_id}";
         }
 
         private class TestResponse

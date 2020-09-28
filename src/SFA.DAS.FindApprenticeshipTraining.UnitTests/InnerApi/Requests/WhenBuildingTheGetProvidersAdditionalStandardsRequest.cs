@@ -8,14 +8,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetProvidersAdditionalStandardsRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(string baseUrl, int providerId)
+        public void Then_The_Url_Is_Correctly_Built(int providerId)
         {
-            var actual = new GetProviderAdditionalStandardsRequest(providerId)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetProviderAdditionalStandardsRequest(providerId);
             
-            actual.GetUrl.Should().Be($"{baseUrl}api/providers/{providerId}/courses");
+            actual.GetUrl.Should().Be($"api/providers/{providerId}/courses");
         }
     }
 }

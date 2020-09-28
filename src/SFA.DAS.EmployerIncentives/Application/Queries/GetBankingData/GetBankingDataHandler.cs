@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
 
         private static bool AgreementHasBeenSigned(Agreement agreement)
         {
-            return agreement.Status == EmployerAgreementStatus.Signed || agreement.Status == EmployerAgreementStatus.Expired || agreement.Status == EmployerAgreementStatus.Superseded;
+            return (agreement.Status == EmployerAgreementStatus.Signed || agreement.Status == EmployerAgreementStatus.Expired || agreement.Status == EmployerAgreementStatus.Superseded) && agreement.SignedDate.HasValue;
         }
 
         private SignedAgreement ToSignedAgreement(Agreement agreement)

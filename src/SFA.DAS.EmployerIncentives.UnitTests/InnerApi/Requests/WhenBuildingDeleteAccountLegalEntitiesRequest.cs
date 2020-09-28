@@ -8,14 +8,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingDeleteAccountLegalEntitiesRequest
     {
         [Test, AutoData]
-        public void Then_The_DeleteUrl_Is_Correctly_Build(long accountId,long accountLegalEntityId, string baseUrl)
+        public void Then_The_DeleteUrl_Is_Correctly_Build(long accountId,long accountLegalEntityId)
         {
-            var actual = new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId)
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId);
 
-            actual.DeleteUrl.Should().Be($"{baseUrl}accounts/{accountId}/legalentities/{accountLegalEntityId}");
+            actual.DeleteUrl.Should().Be($"accounts/{accountId}/legalentities/{accountLegalEntityId}");
         }
     }
 }
