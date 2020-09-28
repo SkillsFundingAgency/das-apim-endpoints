@@ -167,7 +167,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
-             var actualResult = await actual.Get<string>(getTestRequest);
+             var actualResult = await actual.Get<string>(getTestRequest, false);
              
              //Assert
              Assert.IsNull(actualResult);

@@ -39,7 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             result.ProviderStandard.Should().BeEquivalentTo(apiResponse);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            mockApiClient.Verify(x=>x.Get<GetProviderStandardItem>(It.IsAny<GetProviderByCourseAndUkPrnRequest>()), Times.Once);
+            mockApiClient.Verify(x=>x.Get<GetProviderStandardItem>(It.IsAny<GetProviderByCourseAndUkPrnRequest>(), true), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -326,7 +326,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
-                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim())), true))
                 .ReturnsAsync(apiLocationResponse);
             
             mockApiClient
@@ -335,20 +335,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
-                )))
+                ), true))
                 .ReturnsAsync((GetProviderStandardItem) null);
             mockApiClient
                 .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains("?lat=&lon=")
-                )))
+                ), true))
                 .ReturnsAsync(apiProviderStandardResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(It.Is<GetProviderAdditionalStandardsRequest>(
                     c =>
                         c.GetUrl.Contains(query.ProviderId.ToString()
-                        ))))
+                        )), true))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
                     StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
@@ -356,15 +356,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client =>
                     client.Get<GetStandardsListItem>(
-                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
+                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString())), true))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>(), true))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
                         c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
-                )))
+                ), true))
                 .ReturnsAsync(apiAchievementRateResponse);
             
             var result = await handler.Handle(query, CancellationToken.None);
