@@ -8,6 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int Total { get; set; }
         public IEnumerable<GetTrainingCourseProviderListItem> TrainingCourseProviders { get; set; }
         public int TotalFiltered { get ; set ; }
-        public string Location { get; set; }
+        public GetLocationSearchResponseItem Location { get; set; }
     }
 }

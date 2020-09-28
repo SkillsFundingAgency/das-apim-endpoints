@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -21,14 +22,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
-            var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id));
+            
+            var providersTask = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(new GetUkprnsForStandardAndLocationRequest(request.Id, request.Lat, request.Lon));
 
             await Task.WhenAll(standardTask, providersTask);
             
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
-                ProvidersCount = providersTask.Result.TotalResults
+                ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
+                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count
             };
         }
     }
