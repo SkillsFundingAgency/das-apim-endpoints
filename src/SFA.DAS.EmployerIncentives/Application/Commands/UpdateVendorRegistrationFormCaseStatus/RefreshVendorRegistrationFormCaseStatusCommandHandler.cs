@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
             if (response == null)
             {
-                _logger.LogError($"No response received from Finance API");
+                _logger.LogError("Error retrieving data from Finance API");
             }
 
             _logger.LogInformation($"Number of VRF Cases received from Finance API: [{response.RegistrationCases.Count}]");
