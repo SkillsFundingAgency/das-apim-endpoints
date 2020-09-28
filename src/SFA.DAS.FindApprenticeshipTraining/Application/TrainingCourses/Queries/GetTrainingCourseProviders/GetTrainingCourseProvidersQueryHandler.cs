@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -35,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.GeoPoint?.FirstOrDefault(), location?.GeoPoint?.LastOrDefault(), request.SortOrder));
 
             await Task.WhenAll(courseTask, providersTask);
-            
+
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
