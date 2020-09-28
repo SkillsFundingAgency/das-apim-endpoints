@@ -19,6 +19,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         [Description("DayRelease")]
         DayRelease = 1,
         [Description("BlockRelease")]
-        BlockRelease = 2
+        BlockRelease = 2,
+        [Description("NotFound")]
+        NotFound = 3
     }
 }
