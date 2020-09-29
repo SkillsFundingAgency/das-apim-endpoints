@@ -1,5 +1,5 @@
 ﻿@innerApi
-@customerEngagementFinanceInnerApi
+@customerEngagementFinanceApi
 @outerApi
 
 Feature: UpdateVendorRegistrationCaseStatusForLegalEntities
