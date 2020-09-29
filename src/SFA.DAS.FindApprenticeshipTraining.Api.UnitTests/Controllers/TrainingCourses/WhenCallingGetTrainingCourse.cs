@@ -18,28 +18,37 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
     public class WhenCallingGetTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator(
+        public async Task Then_Gets_Training_Course_And_Providers_Count_From_Mediator(
             int standardCode,
+            double lat,
+            double lon,
             GetTrainingCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetTrainingCourseQuery>(c=>c.Id.Equals(standardCode)),
+                    It.Is<GetTrainingCourseQuery>(c=>
+                        c.Id.Equals(standardCode)
+                        && c.Lat.Equals(lat)
+                        && c.Lon.Equals(lon)
+                        ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Get(standardCode) as ObjectResult;
+            var controllerResult = await controller.Get(standardCode, lat, lon) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseResponse;
             Assert.IsNotNull(model);
-            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options=>options
-                .Excluding(tc=>tc.ApprenticeshipFunding)
-                .Excluding(tc=>tc.StandardDates)
-            );
+            model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options => options
+                .Excluding(tc => tc.ApprenticeshipFunding)
+                .Excluding(tc => tc.StandardDates));
+
+            model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
+            model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
+
         }
 
         [Test, MoqAutoData]

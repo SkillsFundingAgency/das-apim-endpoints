@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services
     public class CacheStorageService : ICacheStorageService
     {
         private readonly IDistributedCache _distributedCache;
-
+        
         public CacheStorageService (IDistributedCache distributedCache)
         {
             _distributedCache = distributedCache;
@@ -36,4 +36,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services
             await _distributedCache.RemoveAsync(key);
         }
     }
+
+    
 }

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Clients;
 using SFA.DAS.EmployerIncentives.Configuration;
@@ -19,8 +21,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             
             services.AddTransient<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>, EmployerIncentivesApiClient>();
             services.AddTransient<ICommitmentsApiClient<CommitmentsConfiguration>, CommitmentsApiClient>();
+            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IEmployerIncentivesService, EmployerIncentivesService>();
             services.AddTransient<ICommitmentsService, CommitmentsService>();
+            services.AddTransient<IAccountsService, AccountsService>();
         }
     }
 }

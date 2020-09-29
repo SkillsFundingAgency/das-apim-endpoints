@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SFA.DAS.FindApprenticeshipTraining.Domain.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
@@ -7,7 +8,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         public GetStandardsListItem Course { get ; set ; }
         public GetProviderStandardItem ProviderStandard { get; set; }
-        
+        public IEnumerable<GetAdditionalCourseListItem> AdditionalCourses { get ; set ; }
         public IEnumerable<GetAchievementRateItem> OverallAchievementRates { get; set; }
+        public int TotalProviders { get ; set ; }
+        public int TotalProvidersAtLocation { get ; set ; }
+        public LocationItem Location { get ; set ; }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +10,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingCourses
@@ -20,6 +24,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Course_And_Providers_From_Mediator(
             int standardCode,
+            string location,
+            ProviderCourseSortOrder.SortOrder sortOrder,
             GetTrainingCourseProvidersResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -30,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviders(standardCode) as ObjectResult;
+            var controllerResult = await controller.GetProviders(standardCode, location, new List<DeliveryModeType>(), sortOrder) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -43,13 +49,62 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourseProviders.Should()
                 .BeEquivalentTo(mediatorResult.Providers, 
                     options => options.Excluding(c=>c.Ukprn)
-                        .Excluding(c=>c.AchievementRates));
+                        .Excluding(c=>c.AchievementRates)
+                        .Excluding(c=>c.DeliveryTypes)
+                        .Excluding(c=>c.FeedbackAttributes)
+                        .Excluding(c=>c.FeedbackRatings)
+                    );
             model.Total.Should().Be(mediatorResult.Total);
+            model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
+            model.Location.Name.Should().Be(mediatorResult.Location.Name);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Nulls_Are_Filtered_Out_From_The_Providers_List_And_The_Filtered_Count_Returned(
+            int standardCode,
+            string location,
+            GetProvidersListItem provider1,
+            GetProvidersListItem provider2,
+            ProviderCourseSortOrder.SortOrder sortOrder,
+            GetTrainingCourseProvidersResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy]TrainingCoursesController controller)
+        {
+            provider1.DeliveryTypes = provider1.DeliveryTypes.Select(c =>
+            {
+                c.DeliveryModes = "100PercentEmployer";
+                return c;
+            }).ToList();
+            provider2.DeliveryTypes = provider2.DeliveryTypes.Select(c =>
+            {
+                c.DeliveryModes = "DayRelease";
+                return c;
+            }).ToList();
+            mediatorResult.Providers = new List<GetProvidersListItem>{provider1, provider2};
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseProvidersQuery>(c=>c.Id.Equals(standardCode)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+            
+            var controllerResult = await controller.GetProviders(standardCode, location, new List<DeliveryModeType>
+                {
+                    DeliveryModeType.Workplace
+                }, sortOrder) as ObjectResult;
+            
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
+            Assert.IsNotNull(model);
+            model.TrainingCourseProviders.Count().Should().Be(1);
+            model.Total.Should().Be(mediatorResult.Total);
+            model.TotalFiltered.Should().Be(model.TrainingCourseProviders.Count());
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int standardCode,
+            List<DeliveryModeType> deliveryModes,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
@@ -59,7 +114,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetProviders(standardCode) as StatusCodeResult;
+            var controllerResult = await controller.GetProviders(standardCode,"", deliveryModes) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

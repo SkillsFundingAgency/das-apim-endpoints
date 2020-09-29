@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
+using SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -79,6 +82,32 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             });
 
             return Accepted();
+        }
+
+        [HttpPatch("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
+        public async Task<IActionResult> SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        {
+            await _mediator.Send(new SignAgreementCommand
+            {
+                AccountId = accountId,
+                AccountLegalEntityId = accountLegalEntityId,
+                AgreementVersion = request.AgreementVersion
+            });
+
+            return NoContent();
+        }
+
+        [HttpGet("/accounts/{accountId}/applications")]
+        public async Task<IActionResult> GetApplications(long accountId)
+        {
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { AccountId = accountId });
+
+            if (queryResult?.ApprenticeApplications == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(queryResult.ApprenticeApplications);
         }
     }
 }

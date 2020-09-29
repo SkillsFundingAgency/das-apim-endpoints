@@ -79,6 +79,22 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
+        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest) 
+        {
+            var request = new PostBankDetailsRequiredEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
+        public async Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
+        {
+            var request = new PostBankDetailsReminderEmailRequest(accountId)
+            { Data = sendBankDetailsEmailRequest };
+
+            await _client.Post<SendBankDetailsEmailRequest>(request);
+        }
+
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
@@ -96,6 +112,28 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response;
         }
 
+        public async Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId)
+        {
+            var response = await _client.Get<long>(new GetApplicationLegalEntityRequest(accountId, applicationId));
+
+            return response;
+        }
+		
+        public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        {
+            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) {Data = request});
+        }
+
+        public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
+        {
+            return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
+        }
+
+        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId)
+        {
+            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
@@ -110,5 +148,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
+
     }
 }

@@ -14,8 +14,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
             _startDate = startDate;
         }
 
-        public string BaseUrl { get; set; }
-
-        public string GetUrl => $"{BaseUrl}eligible-apprenticeships/{_uln}?startDate={_startDate:yyyy-MM-dd}&isApproved=true";
+        public string GetUrl => $"eligible-apprenticeships/{_uln}?startDate={_startDate:yyyy-MM-dd}&isApproved=true";
     }
 }

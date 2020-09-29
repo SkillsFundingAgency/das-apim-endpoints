@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -16,19 +17,31 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_From_Courses_Api(
+        public async Task Then_Gets_Standards_From_Courses_Api_With_Totals(
             GetTrainingCourseQuery query,
-            GetStandardsListItem apiResponse,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
+            GetStandardsListItem coursesApiResponse,
+            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
             GetTrainingCourseQueryHandler handler)
-        {
-            mockApiClient
+        {   
+            mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(coursesApiResponse);
+
+            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
+            mockCourseDeliveryApiClient
+                .Setup(client =>
+                    client.Get<GetUkprnsForStandardAndLocationResponse>(
+                        It.Is<GetUkprnsForStandardAndLocationRequest>((c => 
+                            c.GetUrl.Equals(url)))))
+                .ReturnsAsync(courseDirectoryApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Course.Should().BeEquivalentTo(apiResponse);
+            result.Course.Should().BeEquivalentTo(coursesApiResponse);
+            result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
+            result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
         }
     }
 }

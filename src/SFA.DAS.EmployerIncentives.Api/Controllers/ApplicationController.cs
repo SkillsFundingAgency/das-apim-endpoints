@@ -6,6 +6,8 @@ using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using System;
 using System.Threading.Tasks;
 
@@ -45,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
-            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedBy));
+            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedByEmail, request.SubmittedByName));
 
             return new OkResult();
         }
@@ -63,6 +65,35 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             var response = new ApplicationResponse { Application = result.Application };
 
             return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/applications/{applicationId}/bankingDetails/")]
+        public async Task<IActionResult> GetBankingDetails(long accountId, Guid applicationId, string hashedAccountId)
+        {
+            var result = await _mediator.Send(new GetBankingDataQuery
+            {
+                AccountId = accountId,
+                ApplicationId = applicationId,
+                HashedAccountId = hashedAccountId
+            });
+
+            var response = (BankingDetailsDto)result.Data;
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/applications/{applicationId}/accountlegalentity")]
+        public async Task<IActionResult> GetApplicationAccountLegalEntity(long accountId, Guid applicationId)
+        {
+            var result = await _mediator.Send(new GetApplicationAccountLegalEntityQuery
+            {
+                AccountId = accountId,
+                ApplicationId = applicationId
+            });
+
+            return Ok(result);
         }
     }
 }

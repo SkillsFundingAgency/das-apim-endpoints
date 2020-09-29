@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using System;
+using System.Collections.Generic;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -31,23 +32,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
             services.AddSingleton(_env);
-            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(_configuration.GetSection("CourseDeliveryApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
-            services.Configure<FindApprenticeshipTrainingConfiguration>(_configuration.GetSection("FindApprenticeshipTrainingConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
-            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-
+            
+            services.AddConfigurationOptions(_configuration);
+            
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
-                services.AddAuthentication(azureAdConfiguration);
+                var policies = new Dictionary<string, string>
+                {
+                    {"default", "APIM"}
+                };
+
+                services.AddAuthentication(azureAdConfiguration, policies);
             }
 
             services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
@@ -82,7 +81,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
+                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check")
+                    .AddCheck<LocationsApiHealthCheck>("Location API health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
