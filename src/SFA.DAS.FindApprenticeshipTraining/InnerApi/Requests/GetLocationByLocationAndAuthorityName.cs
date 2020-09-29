@@ -14,7 +14,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _authorityName = authorityName;
         }
 
-        public string BaseUrl { get; set; }
-        public string GetUrl  => $"{BaseUrl}api/locations?locationName={HttpUtility.UrlEncode(_locationName)}&authorityName={HttpUtility.UrlEncode(_authorityName)}";
+        public string GetUrl  => $"api/locations?locationName={HttpUtility.UrlEncode(_locationName)}&authorityName={HttpUtility.UrlEncode(_authorityName)}";
     }
 }

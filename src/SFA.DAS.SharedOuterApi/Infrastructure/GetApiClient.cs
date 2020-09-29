@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             IWebHostEnvironment hostingEnvironment)
         {
             HttpClient = httpClientFactory.CreateClient();
+            HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
             HostingEnvironment = hostingEnvironment;
             Configuration = apiConfiguration;
         }
@@ -28,7 +30,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             AddVersionHeader(request.Version);
 
-            request.BaseUrl = Configuration.Url;
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             if (ensureSuccessResponseCode)

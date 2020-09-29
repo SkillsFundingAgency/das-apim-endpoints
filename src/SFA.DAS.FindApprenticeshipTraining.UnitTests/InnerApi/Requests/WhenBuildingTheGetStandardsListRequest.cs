@@ -14,80 +14,68 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed(
             List<Guid> routeIds,
             List<int> levels,
-            string keyword,
-            string baseUrl)
+            string keyword)
         {
             var orderBy = OrderBy.Title;
             var actual = new GetStandardsListRequest
             {
-                BaseUrl = baseUrl, 
                 Keyword = keyword, 
                 RouteIds = routeIds,
                 Levels = levels,
                 OrderBy = orderBy
             };
 
-            actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
         }
 
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
-            string keyword,
-            string baseUrl)
+            string keyword)
         {
             var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
-            {
-                BaseUrl = baseUrl, 
+            { 
                 Keyword = keyword,
                 OrderBy = orderBy
             };
 
-            actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}");
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}");
         }
 
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds(
             List<int> levels,
-            string keyword,
-            string baseUrl)
+            string keyword)
         {
             var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
             {
-                BaseUrl = baseUrl, 
                 Keyword = keyword, 
                 Levels = levels,
                 OrderBy = orderBy
             };
             
-            actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&levels=" + string.Join("&levels=", levels));
         }
         
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed_Without_Levels(
             List<Guid> routeIds,
-            string keyword,
-            string baseUrl)
+            string keyword)
         {
             var orderBy = OrderBy.Score;
             var actual = new GetStandardsListRequest
-            {
-                BaseUrl = baseUrl, 
+            { 
                 Keyword = keyword, 
                 RouteIds = routeIds,
                 OrderBy = orderBy
             };
             
-            actual.BaseUrl.Should().Be(baseUrl);
             actual.GetUrl.Should()
-                .Be($"{baseUrl}api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=", routeIds));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }

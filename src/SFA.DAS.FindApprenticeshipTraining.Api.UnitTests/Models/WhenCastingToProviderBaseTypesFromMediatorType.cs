@@ -11,7 +11,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class WhenCastingToProviderBaseTypesFromMediatorType
     {
         [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately_Matching_AchievementRate(string sectorSubjectArea,
+        public void Then_Maps_Fields_Appropriately_Matching_AchievementRate(
+            string sectorSubjectArea,
             GetProvidersListItem source, GetAchievementRateItem item, GetAchievementRateItem item2)
         {
             item.SectorSubjectArea = sectorSubjectArea;
@@ -22,7 +23,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,2);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,2, null);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -40,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item2
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, null);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -55,7 +56,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             source.AchievementRates = null;
             source.DeliveryTypes = new List<GetDeliveryTypeItem>();
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -88,7 +89,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
 
             response.DeliveryModes.Count.Should().Be(3);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease)?.DistanceInMiles.Should().Be(3.1m);
@@ -122,7 +123,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
 
             response.DeliveryModes.Count.Should().Be(1);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == deliveryModeType)?.DistanceInMiles.Should().Be(2.5m);
@@ -135,9 +136,259 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             item.DeliveryModes = "100PercentEmployer";
             source.DeliveryTypes = new List<GetDeliveryTypeItem>{item};
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
             
             response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes));
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_Zero_If_No_Feedback(GetProvidersListItem source, string sectorSubjectArea)
+        {
+            source.FeedbackRatings = null;
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(0);
+            response.Feedback.TotalFeedbackRating.Should().Be(0);
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_Feedback_Rating_To_A_Score(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 92,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 29,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 7,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Very Poor",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(129);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
+        }
+
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_One_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Very Poor",
+                    FeedbackCount = 7,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 2,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(9);
+            response.Feedback.TotalFeedbackRating.Should().Be(1);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Two_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 4,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(5);
+            response.Feedback.TotalFeedbackRating.Should().Be(2);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Three_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 4,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 2,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(3);
+        }
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Four_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 1,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(2);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
+        }
+        
+        [Test, AutoData]
+        public void Then_Returns_Feedback_Of_Four_If_Max(GetProvidersListItem source, string sectorSubjectArea )
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 6,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.TotalEmployerResponses.Should().Be(6);
+            response.Feedback.TotalFeedbackRating.Should().Be(4);
+        }
+
+        [Test, AutoData]
+        public void Then_If_Delivery_Modes_Are_Passed_The_Results_Are_Filtered(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease",
+                    DistanceInMiles = 2.5m
+                },
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease|BlockRelease",
+                    DistanceInMiles = 3.1m
+                },
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "BlockRelease",
+                    DistanceInMiles = 5.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+                {
+                    DeliveryModeType.DayRelease
+                });
+
+            response.DeliveryModes.Count.Should().Be(3);
+            response.DeliveryModes.Should().Contain(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
+        }
+
+        [Test, AutoData]
+        public void Then_If_There_Are_Multiple_Delivery_Modes_Filtered_And_Not_Match_Then_It_Is_Returned_Correctly(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease",
+                    DistanceInMiles = 2.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.DayRelease,
+                DeliveryModeType.BlockRelease
+            });
+
+            response.Should().BeNull();
+        }
+        [Test, AutoData]
+        public void Then_If_There_Are_Multiple_Delivery_Modes_Filtered_And_Match_Then_It_Is_Returned_Correctly(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer|DayRelease",
+                    DistanceInMiles = 2.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.DayRelease,
+                DeliveryModeType.Workplace
+            });
+
+            response.DeliveryModes.Count.Should().Be(2);
+        }
+
+        [Test, AutoData]
+        public void The_If_There_Are_Delivery_Modes_To_Filter_And_Returns_No_Delivery_Modes_After_Filter_Then_Null_Returned(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "BlockRelease",
+                    DistanceInMiles = 5.5m
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.DayRelease
+            });
+
+            response.Should().BeNull();
         }
     }
 }

@@ -8,14 +8,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingGetIncentiveDetailsRequest
     {
         [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(long accountId, string baseUrl)
+        public void Then_The_GetUrl_Is_Correctly_Built(long accountId)
         {
-            var actual = new GetIncentiveDetailsRequest()
-            {
-                BaseUrl = baseUrl
-            };
+            var actual = new GetIncentiveDetailsRequest();
 
-            actual.GetUrl.Should().Be($"{baseUrl}newapprenticeincentive");
+            actual.GetUrl.Should().Be("newapprenticeincentive");
         }
     }
 }

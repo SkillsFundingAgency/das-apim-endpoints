@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm
 {
@@ -28,8 +27,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm
             public DateTime VendorLastUpdated { get; set; }
         }
 
-        public GetVendorByApprenticeshipLegalEntityIdResponseVendor[] Value { get; set; }
-
-        public GetVendorByApprenticeshipLegalEntityIdResponseVendor Vendor => Value.FirstOrDefault();
+        public GetVendorByApprenticeshipLegalEntityIdResponseVendor Vendor { get; set; }
     }
 }

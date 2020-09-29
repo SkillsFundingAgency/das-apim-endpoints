@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -19,7 +20,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         public async Task Then_The_Endpoint_Is_Called(
             string authToken,
             int id,
-            string responseContent,
             TestInternalApiConfiguration config)
         {
             //Arrange
@@ -31,8 +31,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Created
             };
-            var deleteTestReequest = new DeleteTestRequest(config.Url, id) {BaseUrl = config.Url};
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, deleteTestReequest.DeleteUrl, "delete");
+            var deleteTestReequest = new DeleteTestRequest(id);
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.Url}{deleteTestReequest.DeleteUrl}", "delete");
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
@@ -50,7 +50,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Delete)
-                        && c.RequestUri.AbsoluteUri.Equals(deleteTestReequest.DeleteUrl)
+                        && c.RequestUri.AbsoluteUri.Equals($"{config.Url}{deleteTestReequest.DeleteUrl}")
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
@@ -65,13 +65,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 
             public string Version => "2.0";
 
-            public DeleteTestRequest (string baseUrl, int id)
+            public DeleteTestRequest (int id)
             {
                 _id = id;
-                BaseUrl = baseUrl;
             }
-            public string BaseUrl { get; set; }
-            public string DeleteUrl => $"{BaseUrl}/test-url/get{_id}";
+            
+            public string DeleteUrl => $"/test-url/get{_id}";
         }
     }
 }

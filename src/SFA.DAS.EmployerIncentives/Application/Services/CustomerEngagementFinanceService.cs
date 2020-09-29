@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Configuration;
+﻿using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -15,18 +16,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             _client = client;
         }
 
-        public async Task<GetVendorByApprenticeshipLegalEntityIdResponse> GetVendorByApprenticeshipLegalEntityId(string companyName, string hashedLegalEntityId)
+        public async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetVendorRegistrationCasesByLastStatusChangeDate(DateTime dateTimeFrom, DateTime dateTimeTo)
         {
-            var response = await _client.Get<GetVendorByApprenticeshipLegalEntityIdResponse>(new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId), false);
+            var response = await _client.Get<GetVendorRegistrationCaseStatusUpdateResponse>(new GetVendorRegistrationStatusByLastStatusChangeDateRequest(dateTimeFrom, dateTimeTo), false);
 
             return response;
         }
 
-        public async Task<GetVendorRegistrationStatusByCaseIdResponse> GetVendorRegistrationStatusByCaseId(string caseId)
-        {
-            var response = await _client.Get<GetVendorRegistrationStatusByCaseIdResponse>(new GetVendorRegistrationStatusByCaseIdRequest(caseId), false);
-
-            return response;
-        }
     }
 }
