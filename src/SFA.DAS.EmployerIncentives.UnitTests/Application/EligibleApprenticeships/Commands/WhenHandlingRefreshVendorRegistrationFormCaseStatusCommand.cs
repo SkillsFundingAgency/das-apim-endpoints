@@ -60,15 +60,19 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             cases[1].ApprenticeshipLegalEntityId = "XYZ123";
             cases[1].CaseStatusLastUpdatedDate = DateTime.Parse("02-01-2000", new CultureInfo("en-GB"));
+            cases[1].CaseType = "New";
 
             cases[2].ApprenticeshipLegalEntityId = "ABCDEF";
             cases[2].CaseStatusLastUpdatedDate = DateTime.Parse("01-01-2000", new CultureInfo("en-GB"));
+            cases[2].CaseType = "New";
 
             cases[3].ApprenticeshipLegalEntityId = "XYZ123";
             cases[3].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000", new CultureInfo("en-GB"));
+            cases[3].CaseType = "New";
 
             cases[4].ApprenticeshipLegalEntityId = "XYZ123";
             cases[4].CaseStatusLastUpdatedDate = DateTime.Parse("04-01-2000", new CultureInfo("en-GB"));
+            cases[4].CaseType = "New";
 
             cases[5].ApprenticeshipLegalEntityId = "";
 
@@ -103,6 +107,46 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                         r.Status == cases[3].CaseStatus &&
                         r.VendorId == cases[3].SubmittedVendorIdentifier &&
                         r.CaseStatusLastUpdatedDate == cases[3].CaseStatusLastUpdatedDate)), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_the_case_status_is_only_updated_for_vrf_cases_with_a_type_of_New(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
+        {
+            var fixture = new Fixture();
+
+            var cases = fixture.CreateMany<VendorRegistrationCase>(3).ToList();
+
+            cases[0].ApprenticeshipLegalEntityId = "XYZ123";
+            cases[0].CaseStatusLastUpdatedDate = DateTime.Parse("02-01-2000", new CultureInfo("en-GB"));
+            cases[0].CaseType = "Amend";
+
+            cases[1].ApprenticeshipLegalEntityId = "ABCDEF";
+            cases[1].CaseStatusLastUpdatedDate = DateTime.Parse("01-01-2000", new CultureInfo("en-GB"));
+            cases[1].CaseType = "New";
+
+            cases[2].ApprenticeshipLegalEntityId = "XYZ678";
+            cases[2].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000", new CultureInfo("en-GB"));
+            cases[2].CaseType = null;
+
+            var financeApiResponse = new GetVendorRegistrationCaseStatusUpdateResponse { RegistrationCases = cases };
+
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1), DateTime.Now);
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime))
+                .ReturnsAsync(financeApiResponse);
+
+            await handler.Handle(command, CancellationToken.None);
+
+            incentivesService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(x => x.HashedLegalEntityId == "XYZ123")), Times.Never);
+            incentivesService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(x => x.HashedLegalEntityId == "XYZ678")), Times.Never);
+            incentivesService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(x => x.HashedLegalEntityId == "ABCDEF")), Times.Exactly(1));
+
         }
     }
 }

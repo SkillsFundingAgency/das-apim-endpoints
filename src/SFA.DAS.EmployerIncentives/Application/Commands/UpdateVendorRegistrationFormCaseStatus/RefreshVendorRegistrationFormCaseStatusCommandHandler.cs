@@ -59,7 +59,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
         private static void GetLatestCasesForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)
         {
-            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId));
+            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId)
+                                                            && c.CaseType?.ToUpper() == "NEW");
 
             response.RegistrationCases = filtered.GroupBy(x => x.ApprenticeshipLegalEntityId,
                     (_, g) => g.OrderByDescending(e => e.CaseStatusLastUpdatedDate).First())
