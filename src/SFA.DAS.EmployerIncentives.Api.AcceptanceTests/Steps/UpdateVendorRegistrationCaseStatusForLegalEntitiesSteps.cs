@@ -68,7 +68,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 .WithPath("/Finance/Registrations")
                 .WithParam("DateTimeFrom", $"{_dateTimeFrom.ToLocalTime():yyyy-MM-ddTHH:mm:ssZ}")
                 .WithParam("DateTimeTo", $"{_dateTimeTo.ToLocalTime():yyyy-MM-ddTHH:mm:ssZ}")
-                .WithParam("VendorType", "EMPLOYER")
                 .WithParam("api-version", "2019-06-01")
                 .UsingGet();
 

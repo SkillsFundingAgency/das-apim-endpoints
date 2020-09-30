@@ -16,6 +16,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}Finance/Registrations?DateTimeFrom={_dateTimeFrom.ToIsoDateTime()}&DateTimeTo={_dateTimeTo.ToIsoDateTime()}&VendorType=EMPLOYER&api-version=2019-06-01";
+        public string GetUrl => $"{BaseUrl}Finance/Registrations?DateTimeFrom={_dateTimeFrom.ToIsoDateTime()}&DateTimeTo={_dateTimeTo.ToIsoDateTime()}&api-version=2019-06-01";
     }
 }
