@@ -18,7 +18,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.1.0
+    ref: refs/tags/4.1.2
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
@@ -123,11 +123,12 @@ stages:
               ServiceConnection: SFA-DAS-DevTest-ARM
               AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+          #- checkout: das-platform-automation
           - task: AzurePowerShell@5
             displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
-              ScriptPath: '$(System.DefaultWorkingDirectory)/das-platform-automation/Import-ApimSwaggerApiDefinition.ps1'
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1@das-platform-automation
               ScriptArguments:
                 -ApimResourceGroup $(ApimResourceGroup) `
                 -InstanceName $(InstanceName) `
@@ -138,7 +139,7 @@ stages:
                 -ProductId $(FindApprenticeshipProductId) `
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)'
               azurePowerShellVersion: LatestVersion
-              pwsh: true            
+              pwsh: true
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
