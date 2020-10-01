@@ -51,7 +51,7 @@ stages:
     - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish FAT Api'
+      displayName: 'Publish Find Apprenticeship Training Api'
       inputs:
         command: publish
         publishWebProjects: false
@@ -65,6 +65,14 @@ stages:
         publishWebProjects: false
         projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Employer Incentives Api'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'        
     
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
@@ -128,6 +136,19 @@ stages:
               ServiceConnection: SFA-DAS-DevTest-ARM
               AppServiceName: $(ReservationsOuterApiAppServiceName)
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+
+  - deployment: Deploy_EmployerIncentives
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
 
 # - stage: Deploy_AT_JOB
 #   dependsOn: Build
