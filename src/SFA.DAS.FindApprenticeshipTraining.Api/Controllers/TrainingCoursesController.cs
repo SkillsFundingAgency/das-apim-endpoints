@@ -106,8 +106,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     SortOrder = (short)sortOrder
                 });
                 var mappedProviders = result.Providers
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes))
-                    .Where(x=>x!=null).ToList();
+                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes, null))
+                    .Where(x=>x!=null)
+                    .ToList();
                 var model = new GetTrainingCourseProvidersResponse
                 {
                     TrainingCourse = result.Course,
