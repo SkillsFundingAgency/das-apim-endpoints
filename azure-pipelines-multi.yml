@@ -128,7 +128,7 @@ stages:
             displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
-              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1@das-platform-automation
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
               ScriptArguments:
                 -ApimResourceGroup $(ApimResourceGroup) `
                 -InstanceName $(InstanceName) `
