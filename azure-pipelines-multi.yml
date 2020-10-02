@@ -99,17 +99,17 @@ stages:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   jobs:
-  # - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-  #   parameters:
-  #     ServiceConnection: SFA-DAS-DevTest-ARM
-  #     SubscriptionId: $(SubscriptionId)
-  #     Environment: DEV
-  #     TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-  #     ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
-  #     ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-  #     TemplateSecrets:
-  #       LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-  #       ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - deployment: Deploy_FindApprenticeshipTraining
     #dependsOn: DeployInfrastructure
@@ -141,214 +141,398 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-#   - deployment: Deploy_Reservations
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(ReservationsOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+  - deployment: Deploy_Reservations
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(ReservationsOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(ReservationsOuterApiVersionSetName) `
+                -ApiPath $(ReservationsOuterApiPath) `
+                -ApiBaseUrl $(ReservationsOuterApiBaseUrl) `
+                -ProductId $(ReservationsProductId) `
+                -ApplicationIdentifierUri $(ReservationsOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-#   - deployment: Deploy_EmployerIncentives
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+  - deployment: Deploy_EmployerIncentives
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(EmployerIncentivesOuterApiVersionSetName) `
+                -ApiPath $(EmployerIncentivesOuterApiPath) `
+                -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
+                -ProductId $(EmployerIncentivesProductId) `
+                -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-# - stage: Deploy_TEST
-#   dependsOn: Build
-#   displayName: Deploy to TEST
-#   pool:
-#     name: DAS - Continuous Deployment
-#   variables:
-#   - group: Release Management Resources
-#   - group: Wildcard Cert Variables v2
-#   - group: DevTest Management Resources
-#   - group: TEST DevTest Shared Resources
-#   jobs:
-#   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-#     parameters:
-#       ServiceConnection: SFA-DAS-DevTest-ARM
-#       SubscriptionId: $(SubscriptionId)
-#       Environment: DEV
-#       TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-#       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
-#       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-#       TemplateSecrets:
-#         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-#         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+- stage: Deploy_TEST
+  dependsOn: Build
+  displayName: Deploy to TEST
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: Release Management Resources
+  - group: Wildcard Cert Variables v2
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-#   - deployment: Deploy_FindApprenticeshipTraining
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+  - deployment: Deploy_FindApprenticeshipTraining
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindApprenticeshipOuterApiVersionSetName) `
+                -ApiPath $(FindApprenticeshipOuterApiPath) `
+                -ApiBaseUrl $(FindApprenticeshipOuterApiBaseUrl) `
+                -ProductId $(FindApprenticeshipProductId) `
+                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
 
-#   - deployment: Deploy_Reservations
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(ReservationsOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+  - deployment: Deploy_Reservations
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(ReservationsOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(ReservationsOuterApiVersionSetName) `
+                -ApiPath $(ReservationsOuterApiPath) `
+                -ApiBaseUrl $(ReservationsOuterApiBaseUrl) `
+                -ProductId $(ReservationsProductId) `
+                -ApplicationIdentifierUri $(ReservationsOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-#   - deployment: Deploy_EmployerIncentives
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+  - deployment: Deploy_EmployerIncentives
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(EmployerIncentivesOuterApiVersionSetName) `
+                -ApiPath $(EmployerIncentivesOuterApiPath) `
+                -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
+                -ProductId $(EmployerIncentivesProductId) `
+                -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-# - stage: Deploy_TEST2
-#   dependsOn: Build
-#   displayName: Deploy to TEST2
-#   pool:
-#     name: DAS - Continuous Deployment
-#   variables:
-#   - group: Release Management Resources
-#   - group: Wildcard Cert Variables v2
-#   - group: DevTest Management Resources
-#   - group: TEST2 DevTest Shared Resources
-#   jobs:
-#   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-#     parameters:
-#       ServiceConnection: SFA-DAS-DevTest-ARM
-#       SubscriptionId: $(SubscriptionId)
-#       Environment: DEV
-#       TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-#       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
-#       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-#       TemplateSecrets:
-#         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-#         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+- stage: Deploy_TEST2
+  dependsOn: Build
+  displayName: Deploy to TEST2
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: Release Management Resources
+  - group: Wildcard Cert Variables v2
+  - group: DevTest Management Resources
+  - group: TEST2 DevTest Shared Resources
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-#   - deployment: Deploy_FindApprenticeshipTraining
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+  - deployment: Deploy_FindApprenticeshipTraining
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindApprenticeshipOuterApiVersionSetName) `
+                -ApiPath $(FindApprenticeshipOuterApiPath) `
+                -ApiBaseUrl $(FindApprenticeshipOuterApiBaseUrl) `
+                -ProductId $(FindApprenticeshipProductId) `
+                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
 
-#   - deployment: Deploy_Reservations
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(ReservationsOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+  - deployment: Deploy_Reservations
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(ReservationsOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(ReservationsOuterApiVersionSetName) `
+                -ApiPath $(ReservationsOuterApiPath) `
+                -ApiBaseUrl $(ReservationsOuterApiBaseUrl) `
+                -ProductId $(ReservationsProductId) `
+                -ApplicationIdentifierUri $(ReservationsOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-#   - deployment: Deploy_EmployerIncentives
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DAS-DevTest-ARM
-#               AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+  - deployment: Deploy_EmployerIncentives
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(EmployerIncentivesOuterApiVersionSetName) `
+                -ApiPath $(EmployerIncentivesOuterApiPath) `
+                -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
+                -ProductId $(EmployerIncentivesProductId) `
+                -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-#  - stage: Deploy_PP
-#   dependsOn: Build
-#   displayName: Deploy to PP
-#   pool:
-#     name: DAS - Continuous Deployment
-#   variables:
-#   - group: Release Management Resources
-#   - group: Wildcard Cert Variables v2
-#   - group: PreProd Management Resources
-#   - group: PreProd Shared Resources
-#   jobs:
-#   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
-#     parameters:
-#       ServiceConnection: SFA-DIG-PreProd (ARM)
-#       SubscriptionId: $(SubscriptionId)
-#       Environment: DEV
-#       TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-#       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
-#       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-#       TemplateSecrets:
-#         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-#         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+- stage: Deploy_PP
+  dependsOn: Build
+  displayName: Deploy to PP
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: Release Management Resources
+  - group: Wildcard Cert Variables v2
+  - group: PreProd Management Resources
+  - group: PreProd Shared Resources
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      SubscriptionId: $(SubscriptionId)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-#   - deployment: Deploy_FindApprenticeshipTraining
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DIG-PreProd (ARM)
-#               AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+  - deployment: Deploy_FindApprenticeshipTraining
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DIG-PreProd (ARM)
+              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DIG-PreProd (ARM)
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindApprenticeshipOuterApiVersionSetName) `
+                -ApiPath $(FindApprenticeshipOuterApiPath) `
+                -ApiBaseUrl $(FindApprenticeshipOuterApiBaseUrl) `
+                -ProductId $(FindApprenticeshipProductId) `
+                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
 
-#   - deployment: Deploy_Reservations
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DIG-PreProd (ARM)
-#               AppServiceName: $(ReservationsOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+  - deployment: Deploy_Reservations
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DIG-PreProd (ARM)
+              AppServiceName: $(ReservationsOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DIG-PreProd (ARM)
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(ReservationsOuterApiVersionSetName) `
+                -ApiPath $(ReservationsOuterApiPath) `
+                -ApiBaseUrl $(ReservationsOuterApiBaseUrl) `
+                -ProductId $(ReservationsProductId) `
+                -ApplicationIdentifierUri $(ReservationsOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
 
-#   - deployment: Deploy_EmployerIncentives
-#     dependsOn: DeployInfrastructure
-#     environment: DEV
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-#             parameters:
-#               ServiceConnection: SFA-DIG-PreProd (ARM)
-#               AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-#               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+  - deployment: Deploy_EmployerIncentives
+    dependsOn: DeployInfrastructure
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DIG-PreProd (ARM)
+              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DIG-PreProd (ARM)
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(EmployerIncentivesOuterApiVersionSetName) `
+                -ApiPath $(EmployerIncentivesOuterApiPath) `
+                -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
+                -ProductId $(EmployerIncentivesProductId) `
+                -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
