@@ -1,38 +1,11 @@
 parameters:
-- name: Test
+- name: DeployFindApprenticeshipTraining
   type: boolean
   default: false
-- name: Test1
+- name: DeployReservations
   type: boolean
   default: false
-- name: Test2
-  type: boolean
-  default: false
-- name: Test3
-  type: boolean
-  default: false
-- name: Test4
-  type: boolean
-  default: false
-- name: Test5
-  type: boolean
-  default: false
-- name: Test6
-  type: boolean
-  default: false
-- name: Test7
-  type: boolean
-  default: false
-- name: Test8
-  type: boolean
-  default: false
-- name: Test9
-  type: boolean
-  default: false
-- name: Test10
-  type: boolean
-  default: false
-- name: Test11
+- name: DeployEmployerIncentives
   type: boolean
   default: false
 
@@ -43,6 +16,10 @@ trigger:
       - "multi-stage-yaml"
 
 pr: none
+
+variables:
+  - group: Release Management Resources
+  - group: Wildcard Cert Variables v2
 
 resources:
   repositories:
@@ -126,14 +103,12 @@ stages:
         targetPath: '$(build.artifactstagingdirectory)/publish'
         artifactName: 'ApimEndpointsArtifacts'
 
-- stage: Deploy_AT
+- stage: Deploy_Infrastructure_AT
   dependsOn: Build
-  displayName: Deploy to AT
+  displayName: Deploy ARM template and configuration to AT
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: Release Management Resources
-  - group: Wildcard Cert Variables v2
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   jobs:
@@ -149,8 +124,16 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
+- stage: Deploy_FindApprenticeshipTraining_AT
+  dependsOn: Deploy_Infrastructure_AT
+  displayName: Deploy to Find Apprenticeship Training to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_FindApprenticeshipTraining    
     environment: DEV
     strategy:
       runOnce:
@@ -179,8 +162,16 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
+- stage: Deploy_Reservations_AT
+  dependsOn: Deploy_Infrastructure_AT
+  displayName: Deploy to Reservations to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_Reservations    
     environment: DEV
     strategy:
       runOnce:
@@ -209,8 +200,16 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
+- stage: Deploy_EmployerIncentives_AT
+  dependsOn: Deploy_Infrastructure_AT
+  displayName: Deploy to Employer Incentives to AT
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  jobs:
   - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
     environment: DEV
     strategy:
       runOnce:
