@@ -113,7 +113,7 @@ stages:
 
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
-    environment: DEV
+    environment: Nuget
     strategy:
       runOnce:
         deploy:
