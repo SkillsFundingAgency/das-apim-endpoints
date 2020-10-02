@@ -536,8 +536,7 @@ stages:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
   jobs:
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
+  - deployment: Deploy_FindApprenticeshipTraining    
     environment: DEV
     strategy:
       runOnce:
@@ -574,8 +573,7 @@ stages:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
   jobs:
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
+  - deployment: Deploy_Reservations    
     environment: DEV
     strategy:
       runOnce:
@@ -613,8 +611,7 @@ stages:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
   jobs:
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
+  - deployment: Deploy_EmployerIncentives    
     environment: DEV
     strategy:
       runOnce:
