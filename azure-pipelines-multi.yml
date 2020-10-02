@@ -238,14 +238,12 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-- stage: Deploy_TEST
+- stage: Deploy_Infrastructure_TEST
   dependsOn: Build
-  displayName: Deploy to TEST
+  displayName: Deploy ARM template and configuration to TEST
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: Release Management Resources
-  - group: Wildcard Cert Variables v2
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   jobs:
@@ -261,8 +259,16 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
+- stage: Deploy_FindApprenticeshipTraining_TEST
+  dependsOn: Deploy_Infrastructure_TEST
+  displayName: Deploy to Find Apprenticeship Training to TEST
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_FindApprenticeshipTraining    
     environment: DEV
     strategy:
       runOnce:
@@ -290,8 +296,16 @@ stages:
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
+- stage: Deploy_Reservations_TEST
+  dependsOn: Deploy_Infrastructure_TEST
+  displayName: Deploy to Reservations to TEST
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_Reservations    
     environment: DEV
     strategy:
       runOnce:
@@ -320,8 +334,16 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
+- stage: Deploy_EmployerIncentives_TEST
+  dependsOn: Deploy_Infrastructure_TEST
+  displayName: Deploy to Employer Incentives to TEST
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
   - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
     environment: DEV
     strategy:
       runOnce:
@@ -350,14 +372,12 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-- stage: Deploy_TEST2
+- stage: Deploy_Infrastructure_TEST2
   dependsOn: Build
-  displayName: Deploy to TEST2
+  displayName: Deploy ARM template and configuration to TEST2
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: Release Management Resources
-  - group: Wildcard Cert Variables v2
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   jobs:
@@ -373,8 +393,16 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
+- stage: Deploy_FindApprenticeshipTraining_TEST2
+  dependsOn: Deploy_Infrastructure_TEST2
+  displayName: Deploy to Find Apprenticeship Training to TEST2
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_FindApprenticeshipTraining    
     environment: DEV
     strategy:
       runOnce:
@@ -402,8 +430,16 @@ stages:
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
+- stage: Deploy_Reservations_TEST2
+  dependsOn: Deploy_Infrastructure_TEST2
+  displayName: Deploy to Reservations Training to TEST2
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_Reservations    
     environment: DEV
     strategy:
       runOnce:
@@ -432,8 +468,16 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
+- stage: Deploy_EmployerIncentives_TEST2
+  dependsOn: Deploy_Infrastructure_TEST2
+  displayName: Deploy to Employer Incentives Training to TEST2
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  jobs:
+  - deployment: Deploy_EmployerIncentives    
     environment: DEV
     strategy:
       runOnce:
@@ -462,14 +506,12 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
-- stage: Deploy_PP
+- stage: Deploy_Infrastructure_PP
   dependsOn: Build
-  displayName: Deploy to PP
+  displayName: Deploy ARM template and configuration to PP
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: Release Management Resources
-  - group: Wildcard Cert Variables v2
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
   jobs:
@@ -485,6 +527,15 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+- stage: Deploy_FindApprenticeshipTraining_PP
+  dependsOn: Deploy_Infrastructure_PP
+  displayName: Deploy to Find Apprenticeship Training to PP
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PreProd Management Resources
+  - group: PreProd Shared Resources
+  jobs:
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
     environment: DEV
@@ -514,6 +565,15 @@ stages:
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
 
+- stage: Deploy_Reservations_PP
+  dependsOn: Deploy_Infrastructure_PP
+  displayName: Deploy to Reservations to PP
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PreProd Management Resources
+  - group: PreProd Shared Resources
+  jobs:
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
     environment: DEV
@@ -544,6 +604,15 @@ stages:
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
+- stage: Deploy_EmployerIncentives_PP
+  dependsOn: Deploy_Infrastructure_PP
+  displayName: Deploy to Employer Incentives to PP
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PreProd Management Resources
+  - group: PreProd Shared Resources
+  jobs:
   - deployment: Deploy_EmployerIncentives
     dependsOn: DeployInfrastructure
     environment: DEV
