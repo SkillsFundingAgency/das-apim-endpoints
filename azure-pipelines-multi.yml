@@ -1,3 +1,41 @@
+parameters:
+- name: Test
+  type: boolean
+  default: false
+- name: Test1
+  type: boolean
+  default: false
+- name: Test2
+  type: boolean
+  default: false
+- name: Test3
+  type: boolean
+  default: false
+- name: Test4
+  type: boolean
+  default: false
+- name: Test5
+  type: boolean
+  default: false
+- name: Test6
+  type: boolean
+  default: false
+- name: Test7
+  type: boolean
+  default: false
+- name: Test8
+  type: boolean
+  default: false
+- name: Test9
+  type: boolean
+  default: false
+- name: Test10
+  type: boolean
+  default: false
+- name: Test11
+  type: boolean
+  default: false
+
 trigger:
   batch: false
   branches:
