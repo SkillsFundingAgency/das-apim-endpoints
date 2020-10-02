@@ -64,15 +64,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, [FromQuery]double lat=0, [FromQuery]double lon=0)
         {
             try
             {
-                var result = await _mediator.Send(new GetTrainingCourseQuery {Id = id});
+                var result = await _mediator.Send(new GetTrainingCourseQuery
+                {
+                    Id = id,
+                    Lat = lat,
+                    Lon = lon
+                });
                 var model = new GetTrainingCourseResponse
                 {
                     TrainingCourse = result.Course,
-                    ProvidersCount = result.ProvidersCount
+                    ProvidersCount = new GetTrainingCourseProviderCountResponse
+                    {
+                        TotalProviders  = result.ProvidersCount,
+                        ProvidersAtLocation = result.ProvidersCountAtLocation
+                    }
                 };
                 return Ok(model);
             }
@@ -105,7 +114,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     TrainingCourseProviders = mappedProviders,
                     Total = result.Total,
                     TotalFiltered = mappedProviders.Count,
-                    Location = result.Location
+                    Location = new GetLocationSearchResponseItem
+                    {
+                        Name = result.Location?.Name,
+                        Location = new GetLocationSearchResponseItem.LocationResponse
+                        {
+                            GeoPoint = result.Location?.GeoPoint
+                        }
+                    } 
                 };
                 return Ok(model);
             }
@@ -136,6 +152,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         Total = result.AdditionalCourses.Count(),
                         Courses = result.AdditionalCourses.Select(c=>(GetTrainingProviderAdditionalCourseListItem)c).ToList()
+                    },
+                    ProvidersCount = new GetTrainingCourseProviderCountResponse
+                    {
+                        TotalProviders  = result.TotalProviders,
+                        ProvidersAtLocation = result.TotalProvidersAtLocation
+                    },
+                    Location = new GetLocationSearchResponseItem
+                    {
+                        Name = result.Location?.Name,
+                        Location = new GetLocationSearchResponseItem.LocationResponse
+                        {
+                            GeoPoint = result.Location?.GeoPoint
+                        }
                     }
                 };
                 return Ok(model);
