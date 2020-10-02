@@ -126,7 +126,7 @@ stages:
 
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }})
+    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     environment: DEV
     strategy:
       runOnce:
@@ -157,7 +157,7 @@ stages:
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.Reservations }})
+    condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     environment: DEV
     strategy:
       runOnce:
@@ -188,7 +188,7 @@ stages:
 
   - deployment: Deploy_EmployerIncentives
     dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }})
+    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     environment: DEV
     strategy:
       runOnce:
