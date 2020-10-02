@@ -137,7 +137,7 @@ stages:
                 -ApiPath $(FindApprenticeshipOuterApiPath) `
                 -ApiBaseUrl $(FindApprenticeshipOuterApiBaseUrl) `
                 -ProductId $(FindApprenticeshipProductId) `
-                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)'
+                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
