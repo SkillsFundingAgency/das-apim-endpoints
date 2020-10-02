@@ -112,7 +112,7 @@ stages:
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - deployment: Deploy_FindApprenticeshipTraining
-    #dependsOn: DeployInfrastructure
+    dependsOn: DeployInfrastructure
     environment: DEV
     strategy:
       runOnce:
