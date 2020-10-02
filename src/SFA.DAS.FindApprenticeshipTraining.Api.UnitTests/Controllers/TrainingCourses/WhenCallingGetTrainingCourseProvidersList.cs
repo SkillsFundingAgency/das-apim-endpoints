@@ -144,7 +144,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
             
-            var controllerResult = await controller.GetProviders(standardCode, location, null, sortOrder, new List<int>{2,4}) as ObjectResult;
+            var controllerResult = await controller.GetProviders(standardCode, location, null, sortOrder, new List<FeedbackRatingType>{FeedbackRatingType.Good,FeedbackRatingType.Excellent}) as ObjectResult;
             
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

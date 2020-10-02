@@ -8,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     public class GetTrainingCourseProviderListItem : ProviderCourseBase
     {
         public GetTrainingCourseProviderListItem Map(   GetProvidersListItem source, string sectorSubjectArea,
-            int level, List<DeliveryModeType> deliveryModes, List<int> feedbackRatings)
+            int level, List<DeliveryModeType> deliveryModes, List<FeedbackRatingType> feedbackRatings)
         {
             var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
             var getDeliveryTypes = FilterDeliveryModes(source.DeliveryTypes);
@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             if (feedbackRatings != null && feedbackRatings.Any())
             {
-                if (!feedbackRatings.Contains(getFeedbackResponse.TotalFeedbackRating))
+                if (!feedbackRatings.Contains((FeedbackRatingType)getFeedbackResponse.TotalFeedbackRating))
                 {
                     return null;
                 }
