@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.Forecasting.Api.AppStart;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Forecasting.Api
 {
@@ -65,6 +67,12 @@ namespace SFA.DAS.Forecasting.Api
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+            }
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
@@ -82,8 +90,13 @@ namespace SFA.DAS.Forecasting.Api
             }
 
             app.UseAuthentication();
-            app.UseRouting();
 
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
+
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
