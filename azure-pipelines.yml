@@ -72,12 +72,12 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
-      displayName: 'Publish Find Epao Api'
-      inputs:
-        command: publish
-        publishWebProjects: false
-        projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
+    displayName: 'Publish Find Epao Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
       
   - task: DotNetCoreCLI@2
     displayName: 'Publish Reservations Api'
