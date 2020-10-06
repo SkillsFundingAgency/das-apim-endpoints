@@ -35,7 +35,8 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsListResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards);
+            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards,
+                o => o.Excluding(s => s.ApprenticeshipFunding));
         }
 
         [Test, MoqAutoData]

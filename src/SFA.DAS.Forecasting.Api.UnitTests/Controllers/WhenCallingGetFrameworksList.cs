@@ -35,7 +35,9 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetFrameworksListResponse;
             Assert.IsNotNull(model);
-            model.Frameworks.Should().BeEquivalentTo(mediatorResult.Frameworks);
+            model.Frameworks.Should().BeEquivalentTo(mediatorResult.Frameworks,
+                o => o.Excluding(f => f.IsActiveFramework)
+                    .Excluding(f => f.CurrentFundingCap));
         }
 
         [Test, MoqAutoData]

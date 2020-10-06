@@ -14,6 +14,8 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.Forecasting.Api.AppStart;
+using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
+using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
 
 namespace SFA.DAS.Forecasting.Api
 {
@@ -50,6 +52,8 @@ namespace SFA.DAS.Forecasting.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
+            services.AddMediatR(typeof(GetFrameworkCoursesQuery).Assembly);
+            services.AddMediatR(typeof(GetStandardCoursesQuery).Assembly);
             services.AddServiceRegistration();
 
             services

@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.Forecasting.InnerApi.Requests
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.Forecasting.InnerApi.Requests
 {
-    public class GetFrameworksRequest
+    public class GetFrameworksRequest :IGetApiRequest
     {
-        
+        public string GetUrl => "api/courses/frameworks";
     }
 }

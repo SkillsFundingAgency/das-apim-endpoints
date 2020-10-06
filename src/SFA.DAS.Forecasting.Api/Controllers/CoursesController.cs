@@ -24,6 +24,7 @@ namespace SFA.DAS.Forecasting.Api.Controllers
         }
 
         [HttpGet]
+        [Route("standards")]
         public async Task<IActionResult> GetStandardsList()
         {
             try
@@ -45,6 +46,7 @@ namespace SFA.DAS.Forecasting.Api.Controllers
         }
 
         [HttpGet]
+        [Route("frameworks")]
         public async Task<IActionResult> GetFrameworksList()
         {
             try
