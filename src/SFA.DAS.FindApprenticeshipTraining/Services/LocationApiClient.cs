@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services
