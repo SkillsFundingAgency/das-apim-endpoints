@@ -31,12 +31,9 @@ namespace SFA.DAS.FindEpao.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
             services.AddSingleton(_env);
-            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+
+            services.AddConfigurationOptions(_configuration);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -62,6 +59,12 @@ namespace SFA.DAS.FindEpao.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    ;//.AddCheck<CoursesApiHealthCheck>("Courses API health check");
+            }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
