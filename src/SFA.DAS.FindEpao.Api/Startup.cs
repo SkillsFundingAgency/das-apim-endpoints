@@ -15,6 +15,7 @@ using SFA.DAS.FindEpao.Api.AppStart;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.FindEpao.Api
 {
@@ -63,7 +64,7 @@ namespace SFA.DAS.FindEpao.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    ;//.AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

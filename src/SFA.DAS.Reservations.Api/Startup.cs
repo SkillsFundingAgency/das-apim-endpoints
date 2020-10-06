@@ -14,6 +14,7 @@ using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Reservations.Api
 {
@@ -58,6 +59,13 @@ namespace SFA.DAS.Reservations.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check");
+            }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
