@@ -88,7 +88,7 @@ namespace SFA.DAS.Reservations.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
+                    pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
         
             app.UseSwagger();
