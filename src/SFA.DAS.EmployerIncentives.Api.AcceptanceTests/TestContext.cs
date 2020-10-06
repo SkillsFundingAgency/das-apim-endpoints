@@ -7,7 +7,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
     {
         public MockApi InnerApi { get; set; }
         public MockApi CommitmentsV2InnerApi { get; set; }
-        public MockApi FinanceApiV1 { get; set; }
+        public MockApi FinanceApi { get; set; }
+        public MockApi AccountsApi { get; set; }
         public HttpClient OuterApiClient { get; set; }
         public LocalWebApplicationFactory<Startup> Factory { get; set; }
 
@@ -29,7 +30,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
                 OuterApiClient?.Dispose();
                 InnerApi?.Dispose();
                 CommitmentsV2InnerApi?.Dispose();
-                FinanceApiV1?.Dispose();
+                FinanceApi?.Dispose();
+                AccountsApi?.Dispose();
             }
 
             _isDisposed = true;

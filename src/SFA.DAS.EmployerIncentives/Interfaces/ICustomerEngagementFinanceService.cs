@@ -7,6 +7,5 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     public interface ICustomerEngagementFinanceService
     {
         Task<GetVendorRegistrationCaseStatusUpdateResponse> GetVendorRegistrationCasesByLastStatusChangeDate(DateTime dateTimeFrom, DateTime dateTimeTo);
-        Task<bool> IsHealthy();
     }
 }

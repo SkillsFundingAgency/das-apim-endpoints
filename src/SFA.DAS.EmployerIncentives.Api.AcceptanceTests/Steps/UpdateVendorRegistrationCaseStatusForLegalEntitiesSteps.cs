@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"latest VRF cases are retrieved from Finance API")]
         public void ThenLatestVRFCasesAreRetrievedFromFinanceAPI()
         {
-            _context.FinanceApiV1.MockServer.FindLogEntries(Request.Create()
+            _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath("/Finance/Registrations")
                 .UsingGet()).Should().HaveCount(1);
         }
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
         private void SetResponseFromFinanceApi()
         {
-            _context.FinanceApiV1.MockServer
+            _context.FinanceApi.MockServer
                 .Given(ExpectedFinanceApiRequest)
                 .RespondWith(
                     Response.Create()
