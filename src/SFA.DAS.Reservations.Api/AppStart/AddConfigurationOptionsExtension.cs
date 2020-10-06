@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
+namespace SFA.DAS.Reservations.Api.AppStart
 {
     public static class AddConfigurationOptionsExtension
     {
