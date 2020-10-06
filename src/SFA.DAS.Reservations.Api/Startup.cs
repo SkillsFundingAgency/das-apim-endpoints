@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
