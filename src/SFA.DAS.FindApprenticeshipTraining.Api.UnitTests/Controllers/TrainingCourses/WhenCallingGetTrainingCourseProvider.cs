@@ -55,6 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         .Excluding(c=>c.AchievementRates)
                         .Excluding(c=>c.Ukprn)
                         .Excluding(c=>c.DeliveryTypes)
+                        .Excluding(c=>c.FeedbackRatings)
+                        .Excluding(c=>c.FeedbackAttributes)
                 );
             model.AdditionalCourses.Courses.Should().BeEquivalentTo(mediatorResult.AdditionalCourses);
             model.TrainingCourse.Should().NotBeNull();
@@ -62,6 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.TotalProviders);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
+            model.TrainingCourseProvider.Feedback.Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
