@@ -267,6 +267,7 @@ stages:
                 -ProductId $(FindApprenticeshipProductId) `
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
+              pwsh: true
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
@@ -380,6 +381,7 @@ stages:
                 -ProductId $(FindApprenticeshipProductId) `
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
+              pwsh: true
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
@@ -493,6 +495,7 @@ stages:
                 -ProductId $(FindApprenticeshipProductId) `
                 -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
+              pwsh: true
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
