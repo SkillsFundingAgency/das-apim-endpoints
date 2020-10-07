@@ -452,6 +452,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>{FeedbackRatingType.Poor,FeedbackRatingType.Excellent});
 
             response.Should().NotBeNull();
+            response.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
 
         }
     }
