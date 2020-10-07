@@ -225,6 +225,7 @@ stages:
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
       Environment: DEV
       TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
       ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
