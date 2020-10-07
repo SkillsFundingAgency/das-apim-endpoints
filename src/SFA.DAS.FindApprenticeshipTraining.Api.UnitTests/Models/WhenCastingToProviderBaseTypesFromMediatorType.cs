@@ -203,7 +203,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
 
             response.Feedback.TotalEmployerResponses.Should().Be(9);
             response.Feedback.TotalFeedbackRating.Should().Be(1);
