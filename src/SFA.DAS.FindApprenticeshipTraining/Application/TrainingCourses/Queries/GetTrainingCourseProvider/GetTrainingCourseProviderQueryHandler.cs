@@ -77,8 +77,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
-                TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(c=>c != request.ProviderId),
-                TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(c=>c != request.ProviderId),
+                TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(),
+                TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(),
                 Location = location
             };
         }
