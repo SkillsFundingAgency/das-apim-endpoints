@@ -23,7 +23,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.0.1
+    ref: refs/tags/0.2.0
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
@@ -135,7 +135,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -166,7 +166,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(ReservationsOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -197,7 +197,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(EmployerIncentivesOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -250,7 +250,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -281,7 +281,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(ReservationsOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -312,7 +312,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(EmployerIncentivesOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -365,7 +365,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -396,7 +396,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(ReservationsOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -427,7 +427,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(EmployerIncentivesOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DAS-DevTest-ARM
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -480,7 +480,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(FindApprenticeshipOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(FindApprenticeshipOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DIG-PreProd (ARM)
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -511,7 +511,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(ReservationsOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(ReservationsOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DIG-PreProd (ARM)
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
@@ -542,7 +542,7 @@ stages:
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.Zip
           - checkout: das-platform-automation
           - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition- $(EmployerIncentivesOuterApiAppServiceName)
+            displayName: Import-ApimSwaggerApiDefinition - $(EmployerIncentivesOuterApiAppServiceName)
             inputs:
               azureSubscription: SFA-DIG-PreProd (ARM)
               ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
