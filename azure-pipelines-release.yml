@@ -35,7 +35,7 @@ resources:
     project: Digital Apprenticeship Service
     source: das-employer-config
     branch: master
-    
+
 stages:
 - stage: Build
   variables:
@@ -67,7 +67,7 @@ stages:
         publishWebProjects: false
         projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-    
+
     - task: DotNetCoreCLI@2
       displayName: 'Publish Reservations Api'
       inputs:
@@ -83,7 +83,7 @@ stages:
         publishWebProjects: false
         projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'        
-    
+
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
       inputs:      
