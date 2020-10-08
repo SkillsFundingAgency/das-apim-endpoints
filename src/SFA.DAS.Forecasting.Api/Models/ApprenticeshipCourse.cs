@@ -23,9 +23,9 @@ namespace SFA.DAS.Forecasting.Api.Models
                 Title = standard.Title,
                 FundingCap = standard.FundingCap,
                 Level = standard.Level,
-                Duration = standard.ApprenticeshipFunding?.FirstOrDefault()?.Duration ?? 0,
+                Duration = GetDuration(standard),
                 CourseType = ApprenticeshipCourseType.Standard,
-                FundingPeriods = ConvertStandardFundingPeriod(standard.ApprenticeshipFunding)
+                FundingPeriods = standard.ApprenticeshipFunding?.Select(c => (FundingPeriod) c).ToList()
             };
         }
 
@@ -39,62 +39,52 @@ namespace SFA.DAS.Forecasting.Api.Models
                 Level = framework.Level,
                 Duration = framework.Duration,
                 CourseType = ApprenticeshipCourseType.Framework,
-                FundingPeriods = ConvertFrameworkFundingPeriod(framework.FundingPeriods)
+                FundingPeriods = framework.FundingPeriods?.Select(c => (FundingPeriod) c).ToList()
             };
         }
-        private static List<FundingPeriod> ConvertStandardFundingPeriod(List<GetStandardsListItem.FundingPeriod> fundingPeriod)
+
+        private static int GetDuration(GetStandardsListItem standard)
         {
-            var fundingPeriods = new List<FundingPeriod>();
-            foreach (var period in fundingPeriod)
+            var duration = standard.ApprenticeshipFunding
+                .FirstOrDefault(c =>
+                    c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
+                                                           || c.EffectiveTo >= DateTime.UtcNow));
+            return duration?.Duration
+                   ?? standard.ApprenticeshipFunding.FirstOrDefault()?.Duration
+                   ?? 0;
+        }
+
+        public class FundingPeriod
+        {
+            public DateTime EffectiveFrom { get; set; }
+            public DateTime? EffectiveTo { get; set; }
+            public int FundingCap { get; set; }
+
+            public static implicit operator FundingPeriod(GetStandardsListItem.FundingPeriod fundingPeriod)
             {
-                fundingPeriods.Add(period);
+                return new FundingPeriod
+                {
+                    EffectiveFrom = fundingPeriod.EffectiveFrom,
+                    EffectiveTo = fundingPeriod.EffectiveTo,
+                    FundingCap = fundingPeriod.MaxEmployerLevyCap
+                };
             }
 
-            return fundingPeriods;
-        }
-
-        private static List<FundingPeriod> ConvertFrameworkFundingPeriod(List<GetFrameworksListItem.FundingPeriod> fundingPeriod)
-        {
-            var fundingPeriods = new List<FundingPeriod>();
-            foreach (var period in fundingPeriod)
+            public static implicit operator FundingPeriod(GetFrameworksListItem.FundingPeriod fundingPeriod)
             {
-                fundingPeriods.Add(period);
+                return new FundingPeriod
+                {
+                    EffectiveFrom = fundingPeriod.EffectiveFrom,
+                    EffectiveTo = fundingPeriod.EffectiveTo,
+                    FundingCap = fundingPeriod.FundingCap
+                };
             }
-
-            return fundingPeriods;
         }
-    }
 
-    public class FundingPeriod
-    {
-        public DateTime EffectiveFrom { get; set; }
-        public DateTime? EffectiveTo { get; set; }
-        public int FundingCap { get; set; }
-
-        public static implicit operator FundingPeriod(GetStandardsListItem.FundingPeriod fundingPeriod)
+        public enum ApprenticeshipCourseType
         {
-            return new FundingPeriod
-            {
-                EffectiveFrom = fundingPeriod.EffectiveFrom,
-                EffectiveTo = fundingPeriod.EffectiveTo,
-                FundingCap = fundingPeriod.MaxEmployerLevyCap
-            };
+            Standard = 1,
+            Framework = 2
         }
-
-        public static implicit operator FundingPeriod(GetFrameworksListItem.FundingPeriod fundingPeriod)
-        {
-            return new FundingPeriod
-            {
-                EffectiveFrom = fundingPeriod.EffectiveFrom,
-                EffectiveTo = fundingPeriod.EffectiveTo,
-                FundingCap = fundingPeriod.FundingCap
-            };
-        }
-    }
-
-    public enum ApprenticeshipCourseType
-    {
-        Standard = 1,
-        Framework
     }
 }

@@ -18,7 +18,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
             response.Should().BeEquivalentTo(source,
                 o => o.Excluding(s => s.ApprenticeshipFunding));
             
-            for (int i = 0; i < response.FundingPeriods.Count; i++)
+            for (var i = 0; i < response.FundingPeriods.Count; i++)
             {
                 response.FundingPeriods[i].FundingCap.Should().Be(source.ApprenticeshipFunding[i].MaxEmployerLevyCap);
                 response.FundingPeriods[i].EffectiveFrom.Should().Be(source.ApprenticeshipFunding[i].EffectiveFrom);
