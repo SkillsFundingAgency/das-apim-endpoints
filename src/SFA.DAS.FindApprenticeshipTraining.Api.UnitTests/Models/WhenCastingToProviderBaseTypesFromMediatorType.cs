@@ -153,6 +153,38 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
+        public void Then_Maps_FeedbackDetail(GetProvidersListItem source, string sectorSubjectArea)
+        {
+            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            {
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Good",
+                    FeedbackCount = 92,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Excellent",
+                    FeedbackCount = 29,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Poor",
+                    FeedbackCount = 7,
+                },
+                new GetFeedbackRatingItem
+                {
+                    FeedbackName = "Very Poor",
+                    FeedbackCount = 1,
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>());
+
+            response.Feedback.FeedbackDetail.Should().BeEquivalentTo(source.FeedbackRatings);
+        }
+
+        [Test, AutoData]
         public void Then_Maps_Feedback_Rating_To_A_Score(GetProvidersListItem source, string sectorSubjectArea )
         {
             source.FeedbackRatings = new List<GetFeedbackRatingItem>
