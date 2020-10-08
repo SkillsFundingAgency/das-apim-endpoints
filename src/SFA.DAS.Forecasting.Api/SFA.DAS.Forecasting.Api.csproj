@@ -7,6 +7,9 @@
   <ItemGroup>
     <Content Remove="nlog.Debug.config" />
     <Content Remove="nlog.Release.config" />
+    <Content Update="appsettings.Development.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
