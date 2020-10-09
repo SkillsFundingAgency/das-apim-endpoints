@@ -121,6 +121,7 @@ stages:
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - job: tempJob
+    dependsOn: DeployInfrastructure
     steps:
     - task: PowerShell@2
       inputs:
