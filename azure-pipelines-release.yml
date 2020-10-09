@@ -123,8 +123,8 @@ stages:
   - job: tempJob
     dependsOn: DeployInfrastructure
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.ResourceGroupName']]
-      ResourceGroup: $[dependencies.DeployInfrastructure.outputs['ResourceGroupName']]
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.ARMOutputs']]
+      ResourceGroup: $[dependencies.DeployInfrastructure.outputs['ArmOutputs']]
     steps:
     - task: PowerShell@2
       inputs:
