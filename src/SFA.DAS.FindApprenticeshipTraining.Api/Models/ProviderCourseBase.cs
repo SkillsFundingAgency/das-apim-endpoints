@@ -72,7 +72,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetProviderFeedbackResponse
             {
                 TotalFeedbackRating = ratingResponse,
-                TotalEmployerResponses = totalRatings
+                TotalEmployerResponses = totalRatings,
+                FeedbackDetail = feedbackRatingItems.Select(c=>(GetProviderFeedbackItem)c).ToList()
             };
         }
 

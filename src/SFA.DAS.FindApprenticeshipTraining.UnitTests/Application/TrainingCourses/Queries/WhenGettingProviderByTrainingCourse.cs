@@ -193,7 +193,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Returns_Totals_For_Standard_Excluding_Self(
+        public async Task Then_Returns_Totals_For_Standard(
             GetTrainingCourseProviderQuery query,
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
@@ -218,8 +218,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.TotalProviders.Should().Be(ukprnsCountResponse.UkprnsByStandard.ToList().Count - 1);
-            result.TotalProvidersAtLocation.Should().Be(ukprnsCountResponse.UkprnsByStandardAndLocation.ToList().Count - 1);
+            result.TotalProviders.Should().Be(ukprnsCountResponse.UkprnsByStandard.ToList().Count);
+            result.TotalProvidersAtLocation.Should().Be(ukprnsCountResponse.UkprnsByStandardAndLocation.ToList().Count);
         }
 
         [Test, MoqAutoData]
