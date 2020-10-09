@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Reservations.Api.AppStart;
-using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
+using SFA.DAS.FindEpao.Api.AppStart;
+using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.Reservations.Api
+namespace SFA.DAS.FindEpao.Api
 {
     public class Startup
     {
@@ -27,7 +29,7 @@ namespace SFA.DAS.Reservations.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
@@ -47,7 +49,7 @@ namespace SFA.DAS.Reservations.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
+            services.AddMediatR(typeof(GetCourseListQuery).Assembly);
             services.AddServiceRegistration();
             
             services
@@ -62,15 +64,14 @@ namespace SFA.DAS.Reservations.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReservationsOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindEpaoOuterApi", Version = "v1" });
             });
         }
 
@@ -89,13 +90,13 @@ namespace SFA.DAS.Reservations.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
+                    pattern: "api/{controller=Courses}/{action=index}/{id?}");
             });
         
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservationsOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindEpaoOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
