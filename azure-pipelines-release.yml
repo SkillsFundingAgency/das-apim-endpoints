@@ -122,8 +122,6 @@ stages:
 
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
-    variables:
-    var: $[ dependencies.Storage.outputs['psJob.psJobVariable'] ]
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     environment: DEV
     strategy:
