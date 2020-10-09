@@ -120,19 +120,11 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - job: tempJob
-    dependsOn: DeployInfrastructure
-    steps:
-    - task: PowerShell@2
-      inputs:
-        targetType: inline
-        script: Write-Host ResourceGroup - $(ResourceGroupName) - $(ResourceGroup)
-
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.ResourceGroupName']]
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.resourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
