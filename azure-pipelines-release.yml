@@ -119,6 +119,14 @@ stages:
       TemplateSecrets:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+  
+  - job: tempJob
+    dependsOn: DeployInfrastructure
+    variables:
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.resourceGroupName']]
+    powershell: |
+      Write-Host "$env:ResourceGroupName"
+      Write-Host Resource group is $(ResourceGroupName)
 
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
