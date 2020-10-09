@@ -95,7 +95,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         [HttpGet]
         [Route("{id}/providers")]
         public async Task<IActionResult> GetProviders(int id, [FromQuery]string location, [FromQuery] List<DeliveryModeType> deliveryModes = null,
-            [FromQuery]ProviderCourseSortOrder.SortOrder sortOrder = ProviderCourseSortOrder.SortOrder.Distance)
+            [FromQuery]ProviderCourseSortOrder.SortOrder sortOrder = ProviderCourseSortOrder.SortOrder.Distance, [FromQuery] List<FeedbackRatingType> providerRatings = null)
         {
             try
             {
@@ -106,8 +106,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     SortOrder = (short)sortOrder
                 });
                 var mappedProviders = result.Providers
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes))
-                    .Where(x=>x!=null).ToList();
+                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes, providerRatings))
+                    .Where(x=>x!=null)
+                    .ToList();
                 var model = new GetTrainingCourseProvidersResponse
                 {
                     TrainingCourse = result.Course,
