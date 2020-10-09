@@ -28,7 +28,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.1.2
+    ref: refs/heads/convert-arm-t-vsts
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
@@ -122,9 +122,6 @@ stages:
 
   - job: tempJob
     dependsOn: DeployInfrastructure
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.ARMOutputs']]
-      ResourceGroup: $[dependencies.DeployInfrastructure.outputs['ArmOutputs']]
     steps:
     - task: PowerShell@2
       inputs:
