@@ -46,7 +46,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                     new UpdateVendorRegistrationCaseStatusRequest
                     {
                         CaseId = @case.CaseId,
-                        VendorId = @case.SubmittedVendorIdentifier,
                         HashedLegalEntityId = @case.ApprenticeshipLegalEntityId,
                         Status = @case.CaseStatus,
                         CaseStatusLastUpdatedDate = @case.CaseStatusLastUpdatedDate
