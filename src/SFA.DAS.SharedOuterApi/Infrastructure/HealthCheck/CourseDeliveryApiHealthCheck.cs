@@ -4,21 +4,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Extensions.SFA.DAS.FAT.Infrastructure.Extensions;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
+namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
-    public class CoursesApiHealthCheck : IHealthCheck
+    public class CourseDeliveryApiHealthCheck :IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Courses Api check";
+        private const string HealthCheckResultDescription = "Course Delivery Api check";
 
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly ILogger<CoursesApiHealthCheck> _logger;
+        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _apiClient;
+        private readonly ILogger<CourseDeliveryApiHealthCheck> _logger;
 
-        public CoursesApiHealthCheck(ICoursesApiClient<CoursesApiConfiguration> apiClient, ILogger<CoursesApiHealthCheck> logger)
+        public CourseDeliveryApiHealthCheck(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> apiClient, ILogger<CourseDeliveryApiHealthCheck> logger)
         {
             _apiClient = apiClient;
             _logger = logger;
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Pinging Courses API");
+            _logger.LogInformation("Pinging Course Delivery API");
 
             var timer = Stopwatch.StartNew();
             var response = await _apiClient.GetResponseCode(new GetPingRequest());
@@ -36,13 +36,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
             {
                 var durationString = timer.Elapsed.ToHumanReadableString();
 
-                _logger.LogInformation($"Courses API ping successful and took {durationString}");
+                _logger.LogInformation($"Course Delivery API ping successful and took {durationString}");
 
                 return HealthCheckResult.Healthy(HealthCheckResultDescription,
                     new Dictionary<string, object> { { "Duration", durationString } });
             }
 
-            _logger.LogWarning($"Courses API ping failed : [Code: {response}]");
+            _logger.LogWarning($"Course Delivery API ping failed : [Code: {response}]");
             return HealthCheckResult.Unhealthy(HealthCheckResultDescription);
         }
     }
