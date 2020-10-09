@@ -125,9 +125,14 @@ stages:
     variables:
       ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['ArmOutputs.resourceGroupName']]
     steps:
-      powershell: |
-        Write-Host "$env:ResourceGroupName"
-        Write-Host Resource group is $(ResourceGroupName)
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: Write-Host "env:ResourceGroupName"
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: Write-Host $(ResourceGroupName)
 
   - deployment: Deploy_FindApprenticeshipTraining
     dependsOn: DeployInfrastructure
