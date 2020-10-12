@@ -8,6 +8,9 @@ parameters:
 - name: EmployerIncentives
   type: boolean
   default: false
+- name: FindEpao
+  type: boolean
+  default: false
 
 trigger: none
 
@@ -82,7 +85,15 @@ stages:
         command: publish
         publishWebProjects: false
         projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'        
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+      
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Find Epao Api'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
@@ -191,7 +202,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -217,6 +228,39 @@ stages:
                 -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
                 -ProductId $(EmployerIncentivesProductId) `
                 -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+  - deployment: Deploy_FindEpao
+    dependsOn: DeployInfrastructure
+    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+    variables:
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindEpaoOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition - $(FindEpaoOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindEpaoOuterApiVersionSetName) `
+                -ApiPath $(FindEpaoOuterApiPath) `
+                -ApiBaseUrl $(FindEpaoOuterApiBaseUrl) `
+                -ProductId $(FindEpaoProductId) `
+                -ApplicationIdentifierUri $(FindEpaoOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
@@ -247,7 +291,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -280,7 +324,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -313,7 +357,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -339,6 +383,39 @@ stages:
                 -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
                 -ProductId $(EmployerIncentivesProductId) `
                 -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+  - deployment: Deploy_FindEpao
+    dependsOn: DeployInfrastructure
+    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+    variables:
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindEpaoOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition - $(FindEpaoOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindEpaoOuterApiVersionSetName) `
+                -ApiPath $(FindEpaoOuterApiPath) `
+                -ApiBaseUrl $(FindEpaoOuterApiBaseUrl) `
+                -ProductId $(FindEpaoProductId) `
+                -ApplicationIdentifierUri $(FindEpaoOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
@@ -369,7 +446,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -402,7 +479,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -435,7 +512,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -461,6 +538,39 @@ stages:
                 -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
                 -ProductId $(EmployerIncentivesProductId) `
                 -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+  - deployment: Deploy_FindEpao
+    dependsOn: DeployInfrastructure
+    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+    variables:
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DAS-DevTest-ARM
+              AppServiceName: $(FindEpaoOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition - $(FindEpaoOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DAS-DevTest-ARM
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindEpaoOuterApiVersionSetName) `
+                -ApiPath $(FindEpaoOuterApiPath) `
+                -ApiBaseUrl $(FindEpaoOuterApiBaseUrl) `
+                -ProductId $(FindEpaoProductId) `
+                -ApplicationIdentifierUri $(FindEpaoOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
               pwsh: true
 
@@ -491,7 +601,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -524,7 +634,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -557,7 +667,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -583,5 +693,38 @@ stages:
                 -ApiBaseUrl $(EmployerIncentivesOuterApiBaseUrl) `
                 -ProductId $(EmployerIncentivesProductId) `
                 -ApplicationIdentifierUri $(EmployerIncentivesOuterApiIdentifierUri)
+              azurePowerShellVersion: LatestVersion
+              pwsh: true
+
+  - deployment: Deploy_FindEpao
+    dependsOn: DeployInfrastructure
+    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+    variables:
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: SFA-DIG-PreProd (ARM)
+              AppServiceName: $(FindEpaoOuterApiAppServiceName)
+              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.Zip
+          - checkout: das-platform-automation
+          - task: AzurePowerShell@5
+            displayName: Import-ApimSwaggerApiDefinition - $(FindEpaoOuterApiAppServiceName)
+            inputs:
+              azureSubscription: SFA-DIG-PreProd (ARM)
+              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName $(FindEpaoOuterApiVersionSetName) `
+                -ApiPath $(FindEpaoOuterApiPath) `
+                -ApiBaseUrl $(FindEpaoOuterApiBaseUrl) `
+                -ProductId $(FindEpaoProductId) `
+                -ApplicationIdentifierUri $(FindEpaoOuterApiIdentifierUri)
               azurePowerShellVersion: LatestVersion
               pwsh: true
