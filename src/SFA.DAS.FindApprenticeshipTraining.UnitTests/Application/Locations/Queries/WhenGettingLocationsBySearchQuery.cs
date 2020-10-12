@@ -5,10 +5,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Locations.Queries

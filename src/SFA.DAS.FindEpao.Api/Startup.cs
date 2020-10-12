@@ -1,4 +1,5 @@
-﻿using MediatR;
+using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,18 +7,17 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.AppStart;
-using System;
-using System.Collections.Generic;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.FindEpao.Api.AppStart;
+using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
+using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api
+namespace SFA.DAS.FindEpao.Api
 {
     public class Startup
     {
@@ -33,9 +33,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -49,9 +49,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
+            services.AddMediatR(typeof(GetCourseListQuery).Assembly);
             services.AddServiceRegistration();
-
+            
             services
                 .AddMvc(o =>
                 {
@@ -61,39 +61,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            if (_configuration.IsLocalOrDev())
-            {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                var configuration = _configuration
-                    .GetSection("FindApprenticeshipTrainingConfiguration")
-                    .Get<FindApprenticeshipTrainingConfiguration>();
-
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
-                });
-            }
-
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check")
-                    .AddCheck<LocationsApiHealthCheck>("Location API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
-
+            
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindApprenticeshipTrainingOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindEpaoOuterApi", Version = "v1" });
             });
-
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -102,27 +84,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             }
 
             app.UseAuthentication();
-
-            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-            {
-                app.UseHealthChecks();
-            }
-
+            
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
+                    pattern: "api/{controller=Courses}/{action=index}/{id?}");
             });
-
+        
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindApprenticeshipTrainingOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindEpaoOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
-
     }
 }
