@@ -124,7 +124,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
     environment: DEV
     strategy:
       runOnce:
@@ -157,7 +157,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -190,7 +190,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -245,7 +245,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -278,7 +278,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -311,7 +311,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -366,7 +366,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -399,7 +399,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -432,7 +432,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -487,7 +487,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -520,7 +520,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
@@ -553,7 +553,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
     variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName']]    
+      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
     environment: DEV
     strategy:
       runOnce:
