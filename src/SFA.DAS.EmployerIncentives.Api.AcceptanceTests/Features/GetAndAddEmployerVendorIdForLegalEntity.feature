@@ -1,7 +1,6 @@
 ﻿@innerApi
 @customerEngagementFinanceApi
 @outerApi
-
 Feature: GetAndAddEmployerVendorIdForLegalEntity
 	In order for Legal Entity to be paid by Business Central
 	As an employer

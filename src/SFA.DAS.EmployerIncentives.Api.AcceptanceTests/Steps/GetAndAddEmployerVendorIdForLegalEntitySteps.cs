@@ -1,8 +1,8 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Data;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using TechTalk.SpecFlow;
@@ -20,6 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private readonly string _hashedLegalEntityId = "DW5T8V";
         private HttpResponseMessage _response;
         private const string CompanyName = "ESFA";
+        private const string ExpectedEmployerVendorId = "P0004320";
 
         public GetAndAddEmployerVendorIdForLegalEntitySteps(TestContext context) { _context = context; }
 
@@ -28,18 +29,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public async Task WhenGetAndAddEmployerVendorIdIsInvoked()
         {
             SetResponseFromFinanceApi();
-            //    SetupExpectedEmployerIncentivesApiCalls();
 
-            try
-            {
-                var url = $"legalentities/{_hashedLegalEntityId}/employervendorid";
-
-                _response = await _context.OuterApiClient.PutAsync(url, new StringContent(""));
-            }
-            catch(Exception e)
-            {
-                var a = e;
-            }
+            var url = $"legalentities/{_hashedLegalEntityId}/employervendorid";
+            _response = await _context.OuterApiClient.PutAsync(url, new StringContent(""));
         }
 
         [Then(@"employer vendor Id is retrieved from the Finance API")]
@@ -56,34 +48,15 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath(p => p.Contains($"legalentities/{_hashedLegalEntityId}/employervendorid"))
-                .WithBody(p=> CheckObject(p))
+                .WithBody(p=> CheckBody(p))
                 .UsingPut()).Should().HaveCount(1);
         }
 
-        private bool CheckObject(string bytes)
+        private bool CheckBody(string json)
         {
-            var r = bytes.Contains("P0004320");
-            return r;
+            var body = JsonConvert.DeserializeObject<PutEmployerVendorIdForLegalEntityRequestData>(json);
+            return body.EmployerVendorId == ExpectedEmployerVendorId;
         }
-
-
-        //[Then(@"latest VRF cases are retrieved from Finance API")]
-        //public void ThenLatestVRFCasesAreRetrievedFromFinanceAPI()
-        //{
-        //    _context.FinanceApiV1.MockServer.FindLogEntries(Request.Create()
-        //        .WithPath("/Finance/Registrations")
-        //        .UsingGet()).Should().HaveCount(1);
-        //}
-
-        //[Then(@"VRF case details are updated for legal entities")]
-        //public void ThenVRFCaseDetailsAreUpdatedForLegalEntities()
-        //{
-        //    _response.EnsureSuccessStatusCode();
-
-        //    _context.InnerApi.MockServer.FindLogEntries(Request.Create()
-        //        .WithPath(p => p.Contains("/legalentities/"))
-        //        .UsingPatch()).Should().HaveCount(2);
-        //}
 
         private void SetResponseFromFinanceApi()
         {
@@ -103,25 +76,5 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 .WithPath($"/Finance/{CompanyName}/vendor/aleid={_hashedLegalEntityId}")
                 .WithParam("api-version", "2019-06-01")
                 .UsingGet();
-
-        //private void SetupExpectedEmployerIncentivesApiCalls()
-        //{
-
-        //    _context.InnerApi.MockServer
-        //        .Given(
-        //            Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/vendorregistrationform/status")
-        //                .UsingPatch())
-        //        .RespondWith(
-        //            Response.Create()
-        //                .WithStatusCode((int)HttpStatusCode.OK));
-
-        //    _context.InnerApi.MockServer
-        //        .Given(
-        //            Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/vendorregistrationform/status")
-        //                .UsingPatch())
-        //        .RespondWith(
-        //            Response.Create()
-        //                .WithStatusCode((int)HttpStatusCode.OK));
-        //}
     }
 }
