@@ -24,9 +24,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler,
             GetVendorRegistrationCaseStatusUpdateResponse vendorResponse)
         {
-            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1), DateTime.Now);
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
                 .ReturnsAsync(vendorResponse);
 
 
@@ -73,9 +73,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var financeApiResponse = new GetVendorRegistrationCaseStatusUpdateResponse { RegistrationCases = cases };
 
-            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1), DateTime.Now);
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
                 .ReturnsAsync(financeApiResponse);
 
             await handler.Handle(command, CancellationToken.None);

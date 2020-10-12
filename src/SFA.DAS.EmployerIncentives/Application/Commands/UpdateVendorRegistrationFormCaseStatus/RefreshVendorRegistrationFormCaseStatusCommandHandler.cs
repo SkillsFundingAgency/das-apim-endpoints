@@ -25,9 +25,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
         public async Task<Unit> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Requesting VRF Case status updates from: [{request.FromDateTime}] to: [{request.ToDateTime}]");
+            _logger.LogInformation($"Requesting VRF Case status updates from: [{request.FromDateTime}]");
 
-            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime);
+            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime);
 
             if (response == null)
             {

@@ -5,13 +5,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 {
     public class RefreshVendorRegistrationFormCaseStatusCommand : IRequest
     {
-        public RefreshVendorRegistrationFormCaseStatusCommand(DateTime from, DateTime to)
+        public RefreshVendorRegistrationFormCaseStatusCommand(DateTime from)
         {
             FromDateTime = from;
-            ToDateTime = to;
         }
 
         public DateTime FromDateTime { get; set; }
-        public DateTime ToDateTime { get; set; }
     }
 }
