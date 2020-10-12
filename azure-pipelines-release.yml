@@ -123,7 +123,7 @@ stages:
   - job: tempJob
     dependsOn: DeployInfrastructure
     variables:
-      ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['ArmOutputs.resourceGroupName'] ]
+      ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName'] ]
     steps:
     - task: PowerShell@2
       inputs:
@@ -138,7 +138,7 @@ stages:
     dependsOn: DeployInfrastructure
     condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
     variables:
-      ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['ArmOutputs.resourceGroupName'] ]
+      ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.resourceGroupName'] ]
     environment: DEV
     strategy:
       runOnce:
