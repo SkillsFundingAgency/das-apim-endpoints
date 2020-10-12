@@ -70,7 +70,15 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-  
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Find Epao Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
+      
   - task: DotNetCoreCLI@2
     displayName: 'Publish Reservations Api'
     inputs:
@@ -86,7 +94,16 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
-  
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Forecasting Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Forecasting.Api/SFA.DAS.Forecasting.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
     inputs:
