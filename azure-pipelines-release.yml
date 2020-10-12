@@ -104,6 +104,7 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
+  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   jobs:
@@ -225,6 +226,7 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
+  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   jobs:
@@ -346,6 +348,7 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
+  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   jobs:
@@ -467,6 +470,7 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
+  - group: PP das-apim-endpoints
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
   jobs:
