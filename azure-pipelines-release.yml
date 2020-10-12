@@ -23,12 +23,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/heads/arm-deploy-arm-output-fix
+    ref: refs/tags/0.2.1
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/heads/convert-arm-t-vsts
+    ref: refs/tags/4.2.0
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
