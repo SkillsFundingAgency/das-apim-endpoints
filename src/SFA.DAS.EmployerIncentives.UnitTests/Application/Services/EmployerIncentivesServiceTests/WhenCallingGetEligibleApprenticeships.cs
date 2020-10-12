@@ -53,8 +53,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             allApprenticeship.Add(passingApprenticeship);
             client.Setup(x =>
                  x.GetResponseCode(It.Is<GetEligibleApprenticeshipsRequest>(c =>
-                     c.GetUrl.Contains(passingApprenticeship.Uln.ToString())
-                     && c.GetUrl.Contains(passingApprenticeship.StartDate.ToString("yyyy-MM-dd"))
+                     c.GetUrl.Contains($@"/{passingApprenticeship.Uln}?")
+                     && c.GetUrl.Contains($@"?startDate={passingApprenticeship.StartDate:yyyy-MM-dd}&isApproved")
                      )))
                 .ReturnsAsync(HttpStatusCode.OK);
             
