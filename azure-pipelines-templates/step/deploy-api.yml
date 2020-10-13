@@ -14,14 +14,14 @@ parameters:
 steps:
 - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
   parameters:
-    ServiceConnection: SFA-DAS-DevTest-ARM
+    ServiceConnection: ${{ parameters.ServiceConnection }}
     AppServiceName: ${{ parameters.AppServiceName }}
     DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
 - checkout: das-platform-automation
 - task: AzurePowerShell@5
   displayName: Import-ApimSwaggerApiDefinition - ${{ parameters.AppServiceName }}
   inputs:
-    azureSubscription: SFA-DAS-DevTest-ARM
+    azureSubscription: ${{ parameters.ServiceConnection }}
     ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
     ScriptArguments:
       -ApimResourceGroup ${{ parameters.ApimResourceGroup }} `
