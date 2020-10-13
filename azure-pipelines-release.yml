@@ -1,7 +1,4 @@
 parameters:
-- name: DasEmployerConfigBranch
-  type: string
-  default: master
 - name: FindApprenticeshipTraining
   type: boolean
   default: false
@@ -40,7 +37,7 @@ resources:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config
-    branch: ${{ parameters.DasEmployerConfigBranch }}
+    branch: master
 
 stages:
 - stage: Build
