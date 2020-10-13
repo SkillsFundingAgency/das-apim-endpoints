@@ -67,29 +67,20 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-              ApiPath: $(FindApprenticeshipOuterApiPath)
-              ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-              ProductId: $(FindApprenticeshipProductId)
-              ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure
