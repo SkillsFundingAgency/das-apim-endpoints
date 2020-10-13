@@ -70,6 +70,7 @@ stages:
   - template: azure-pipelines-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
+      DeployAPI: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
