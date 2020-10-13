@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
     {
         public string HashedLegalEntityId { get; set; }
         public string Status { get; set; }
-        public string VendorId { get; set; }
         public string CaseId { get; set; }
         public DateTime CaseStatusLastUpdatedDate { get; set; }
     }

@@ -7,15 +7,13 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
     public class GetVendorRegistrationStatusByLastStatusChangeDateRequest : IGetApiRequest
     {
         private readonly DateTime _dateTimeFrom;
-        private readonly DateTime _dateTimeTo;
 
-        public GetVendorRegistrationStatusByLastStatusChangeDateRequest(DateTime dateTimeFrom, DateTime dateTimeTo)
+        public GetVendorRegistrationStatusByLastStatusChangeDateRequest(DateTime dateTimeFrom)
         {
             _dateTimeFrom = dateTimeFrom;
-            _dateTimeTo = dateTimeTo;
         }
 
         public string BaseUrl { get; set; }
-        public string GetUrl => $"{BaseUrl}Finance/Registrations?DateTimeFrom={_dateTimeFrom.ToIsoDateTime()}&DateTimeTo={_dateTimeTo.ToIsoDateTime()}&VendorType=EMPLOYER&api-version=2019-06-01";
+        public string GetUrl => $"{BaseUrl}Finance/Registrations?DateTimeFrom={_dateTimeFrom.ToIsoDateTime()}&VendorType=EMPLOYER&api-version=2019-06-01";
     }
 }
