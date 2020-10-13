@@ -1,6 +1,7 @@
 parameters:
   DeploymentName: ''
   DeploymentCondition: false
+  DeploymentApprovals: ''
   ServiceConnection: ''
   AppServiceName: ''
   DeploymentPackagePath: ''
@@ -19,7 +20,7 @@ jobs:
   condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-  environment: DEV
+  environment: ${{ parameters.DeploymentApprovals }}
   strategy:
     runOnce:
       deploy:
