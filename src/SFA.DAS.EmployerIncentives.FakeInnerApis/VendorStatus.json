@@ -1,0 +1,27 @@
+{
+  "RegistrationCase": {
+    "CaseID": "AF1042409",
+    "VendorType": "EMPLOYER",
+    "SubmittedVendorIdentifier": "P0007983",
+    "ApprenticeshipLegalEntityID": "JRML7V",
+    "UKPRN": "",
+    "URN": "114286",
+    "VendorCompanyRegistrationNo": "",
+    "CaseType": "Amend",
+    "VendorName": "",
+    "CaseStatusReasons": [
+      {
+        "Code": "BANK_INVALID",
+        "Text": "The bank account submitted is not showing as a valid combination of sort code and account number, please check the details and complete a new submission."
+      },
+      {
+        "Code": "SUBMITTER_INVALID",
+        "Text": "There is no individual named person within the Form Submitter details field, which means we are unable to know who to liaise with, please resubmit a new online form."
+      }
+    ],
+    "CaseStatus": "Case Rejected - Data validation",
+    "CaseReceivedDate": "2020-08-17",
+    "CaseRequestedEffectiveDate": "2020-09-01",
+    "CaseStatusLastUpdatedDate": "2020-08-19 08:54:42"
+  }
+}

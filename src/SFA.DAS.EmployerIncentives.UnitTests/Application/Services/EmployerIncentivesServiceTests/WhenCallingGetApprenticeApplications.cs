@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             client.Setup(x =>
                     x.Get<IEnumerable<ApprenticeApplication>>(
-                        It.Is<GetApplicationsRequest>(c => c.GetUrl.Contains(accountId.ToString()))))
+                        It.Is<GetApplicationsRequest>(c => c.GetUrl.Contains(accountId.ToString())), true))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetApprenticeApplications(accountId);
