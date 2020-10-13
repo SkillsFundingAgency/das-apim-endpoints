@@ -10,7 +10,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System;
 using System.Collections.Generic;
