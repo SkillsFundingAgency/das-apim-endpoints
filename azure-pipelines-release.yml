@@ -77,28 +77,19 @@ stages:
       runOnce:
         deploy:
           steps:
-          - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          - template: azure-pipelines-templates/step/deploy-api.yml
             parameters:
               ServiceConnection: SFA-DAS-DevTest-ARM
               AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
               DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-          - checkout: das-platform-automation
-          - task: AzurePowerShell@5
-            displayName: Import-ApimSwaggerApiDefinition - $(FindApprenticeshipOuterApiAppServiceName)
-            inputs:
-              azureSubscription: SFA-DAS-DevTest-ARM
-              ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
-              ScriptArguments:
-                -ApimResourceGroup $(ApimResourceGroup) `
-                -InstanceName $(InstanceName) `
-                -AppServiceResourceGroup $(ResourceGroupName) `
-                -ApiVersionSetName $(FindApprenticeshipOuterApiVersionSetName) `
-                -ApiPath $(FindApprenticeshipOuterApiPath) `
-                -ApiBaseUrl $(FindApprenticeshipOuterApiBaseUrl) `
-                -ProductId $(FindApprenticeshipProductId) `
-                -ApplicationIdentifierUri $(FindApprenticeshipOuterApiIdentifierUri)
-              azurePowerShellVersion: LatestVersion
-              pwsh: true
+              ApimResourceGroup: $(ApimResourceGroup)
+              InstanceName: $(InstanceName)
+              AppServiceResourceGroup: $(ResourceGroupName)
+              ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+              ApiPath: $(FindApprenticeshipOuterApiPath)
+              ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+              ProductId: $(FindApprenticeshipProductId)
+              ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
   - deployment: Deploy_Reservations
     dependsOn: DeployInfrastructure

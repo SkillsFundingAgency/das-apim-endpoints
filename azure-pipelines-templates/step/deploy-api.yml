@@ -1,0 +1,36 @@
+parameters:
+  ServiceConnection: ''
+  AppServiceName: ''
+  DeploymentPackagePath: ''
+  ApimResourceGroup: ''
+  InstanceName: ''
+  AppServiceResourceGroup: ''
+  ApiVersionSetName: ''
+  ApiPath: ''
+  ApiBaseUrl: ''
+  ProductId: ''
+  ApplicationIdentifierUri: ''
+
+steps:
+- template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+  parameters:
+    ServiceConnection: SFA-DAS-DevTest-ARM
+    AppServiceName: ${{ parameters.AppServiceName }}
+    DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
+- checkout: das-platform-automation
+- task: AzurePowerShell@5
+  displayName: Import-ApimSwaggerApiDefinition - ${{ parameters.AppServiceName }}
+  inputs:
+    azureSubscription: SFA-DAS-DevTest-ARM
+    ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+    ScriptArguments:
+      -ApimResourceGroup ${{ parameters.ApimResourceGroup }} `
+      -InstanceName ${{ parameters.InstanceName }} `
+      -AppServiceResourceGroup ${{ parameters.AppServiceResourceGroup }} `
+      -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+      -ApiPath ${{ parameters.ApiPath }} `
+      -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+      -ProductId ${{ parameters.ProductId }} `
+      -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }}
+    azurePowerShellVersion: LatestVersion
+    pwsh: true
