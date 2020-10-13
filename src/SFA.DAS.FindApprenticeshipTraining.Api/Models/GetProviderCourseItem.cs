@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
             var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, sectorSubjectArea, level);
             var deliveryModes = FilterDeliveryModes(source.ProviderStandard.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(source.ProviderStandard.FeedbackRatings);
+            var getFeedbackResponse = ProviderFeedbackResponse(source.ProviderStandard.FeedbackRatings, source.ProviderStandard.FeedbackAttributes);
             
             return new GetProviderCourseItem
             {

@@ -49,7 +49,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return item;
         }
 
-        protected GetProviderFeedbackResponse ProviderFeedbackResponse(IEnumerable<GetFeedbackRatingItem> getFeedbackRatingItems)
+        protected GetProviderFeedbackResponse ProviderFeedbackResponse(
+            IEnumerable<GetFeedbackRatingItem> getFeedbackRatingItems,
+            IEnumerable<GetFeedbackAttributeItem> getFeedbackAttributeItems)
         {
             if (getFeedbackRatingItems == null)
             {
@@ -73,9 +75,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             {
                 TotalFeedbackRating = ratingResponse,
                 TotalEmployerResponses = totalRatings,
-                FeedbackDetail = feedbackRatingItems.Select(c=>(GetProviderFeedbackItem)c).ToList()
+                FeedbackDetail = feedbackRatingItems.Select(c=>(GetProviderFeedbackItem)c).ToList(),
+                FeedbackAttributes = new GetProviderFeedbackAttributes().Build(getFeedbackAttributeItems.Select(c=>(GetProviderFeedbackAttributeItem)c).ToList())
             };
         }
+        
 
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
         {

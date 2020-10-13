@@ -12,9 +12,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
             var getDeliveryTypes = FilterDeliveryModes(source.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(source.FeedbackRatings);
+            var getFeedbackResponse = ProviderFeedbackResponse(source.FeedbackRatings, source.FeedbackAttributes);
             
-
             if (deliveryModes != null && deliveryModes.Any())
             {
                 var isInList = getDeliveryTypes.Select(c=>c.DeliveryModeType).Intersect(deliveryModes).ToList();
