@@ -70,7 +70,7 @@ stages:
   - template: azure-pipelines-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
-      DeployAPI: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
@@ -83,77 +83,53 @@ stages:
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]    
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(ReservationsOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-              ApiPath: $(ReservationsOuterApiPath)
-              ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-              ProductId: $(ReservationsProductId)
-              ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
-              ApiPath: $(EmployerIncentivesOuterApiPath)
-              ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
-              ProductId: $(EmployerIncentivesProductId)
-              ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
 
-  - deployment: Deploy_FindEpao
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindEpaoOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
-              ApiPath: $(FindEpaoOuterApiPath)
-              ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
-              ProductId: $(FindEpaoProductId)
-              ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -178,101 +154,69 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-              ApiPath: $(FindApprenticeshipOuterApiPath)
-              ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-              ProductId: $(FindApprenticeshipProductId)
-              ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(ReservationsOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-              ApiPath: $(ReservationsOuterApiPath)
-              ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-              ProductId: $(ReservationsProductId)
-              ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
-              ApiPath: $(EmployerIncentivesOuterApiPath)
-              ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
-              ProductId: $(EmployerIncentivesProductId)
-              ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
 
-  - deployment: Deploy_FindEpao
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindEpaoOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
-              ApiPath: $(FindEpaoOuterApiPath)
-              ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
-              ProductId: $(FindEpaoProductId)
-              ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -297,101 +241,69 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-              ApiPath: $(FindApprenticeshipOuterApiPath)
-              ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-              ProductId: $(FindApprenticeshipProductId)
-              ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(ReservationsOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-              ApiPath: $(ReservationsOuterApiPath)
-              ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-              ProductId: $(ReservationsProductId)
-              ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
-              ApiPath: $(EmployerIncentivesOuterApiPath)
-              ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
-              ProductId: $(EmployerIncentivesProductId)
-              ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
 
-  - deployment: Deploy_FindEpao
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DAS-DevTest-ARM
-              AppServiceName: $(FindEpaoOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
-              ApiPath: $(FindEpaoOuterApiPath)
-              ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
-              ProductId: $(FindEpaoProductId)
-              ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -416,98 +328,66 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - deployment: Deploy_FindApprenticeshipTraining
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DIG-PreProd (ARM)
-              AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-              ApiPath: $(FindApprenticeshipOuterApiPath)
-              ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-              ProductId: $(FindApprenticeshipProductId)
-              ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  - deployment: Deploy_Reservations
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DIG-PreProd (ARM)
-              AppServiceName: $(ReservationsOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-              ApiPath: $(ReservationsOuterApiPath)
-              ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-              ProductId: $(ReservationsProductId)
-              ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))    
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
-  - deployment: Deploy_EmployerIncentives
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DIG-PreProd (ARM)
-              AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
-              ApiPath: $(EmployerIncentivesOuterApiPath)
-              ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
-              ProductId: $(EmployerIncentivesProductId)
-              ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
 
-  - deployment: Deploy_FindEpao
-    dependsOn: DeployInfrastructure
-    condition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
-    variables:
-      ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-    environment: DEV
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: azure-pipelines-templates/step/deploy-api.yml
-            parameters:
-              ServiceConnection: SFA-DIG-PreProd (ARM)
-              AppServiceName: $(FindEpaoOuterApiAppServiceName)
-              DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-              ApimResourceGroup: $(ApimResourceGroup)
-              InstanceName: $(InstanceName)
-              AppServiceResourceGroup: $(ResourceGroupName)
-              ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
-              ApiPath: $(FindEpaoOuterApiPath)
-              ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
-              ProductId: $(FindEpaoProductId)
-              ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+  - template: azure-pipelines-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      InstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)

@@ -1,6 +1,6 @@
 parameters:
   DeploymentName: ''
-  DeployAPI: false
+  DeploymentCondition: false
   ServiceConnection: ''
   AppServiceName: ''
   DeploymentPackagePath: ''
@@ -16,7 +16,7 @@ parameters:
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
   dependsOn: DeployInfrastructure
-  condition: ${{ parameters.DeployAPI }}
+  condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
   environment: DEV
