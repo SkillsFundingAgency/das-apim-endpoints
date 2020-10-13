@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +8,8 @@ using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseList
 {
@@ -23,7 +23,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseList
             GetCourseListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\SendBankDetailsRequiredEmail - Copy.feature.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
@@ -25,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Data\TestData.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestData.resx</DependentUpon>
+    </Compile>
     <Compile Update="Features\GetApplicationsForAccount.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -34,6 +35,16 @@
     <Compile Update="Features\SendBankDetailsRequiredEmail.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Data\TestData.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestData.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +65,10 @@
     <SpecFlowFeatureFiles Update="Features\SendBankDetailsRequiredEmail.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SendBankDetailsRequiredEmail.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 

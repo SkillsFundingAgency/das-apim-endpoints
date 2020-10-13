@@ -20,7 +20,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         public async Task Then_The_Endpoint_Is_Called(
             string authToken,
             int id,
-            TestInnerApiConfiguration config)
+            TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
@@ -40,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Get<string>(getTestRequest);
@@ -62,7 +62,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         [Test, AutoData]
         public async Task Then_Multiple_Calls_Do_Not_Result_In_Multiple_Versions_Added(string authToken,
             int id,
-            TestInnerApiConfiguration config)
+            TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
@@ -83,7 +83,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Get<string>(getTestRequest);
@@ -106,7 +106,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         [Test, AutoData]
         public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local_And_Default_Version_If_Not_Specified(
              int id,
-             TestInnerApiConfiguration config)
+             TestInternalApiConfiguration config)
          {
              //Arrange
              config.Url = "https://test.local";
@@ -125,7 +125,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
              
              hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
              await actual.Get<string>(getTestRequest);
@@ -145,7 +145,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 
          [Test, AutoData]
          public async Task Then_If_Returns_Not_Found_Result_Returns_Default(int id,
-             TestInnerApiConfiguration config)
+             TestInternalApiConfiguration config)
          {
              //Arrange
              config.Url = "https://test.local";
@@ -164,10 +164,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
              
              hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
-             var actualResult = await actual.Get<string>(getTestRequest);
+             var actualResult = await actual.Get<string>(getTestRequest, false);
              
              //Assert
              Assert.IsNull(actualResult);

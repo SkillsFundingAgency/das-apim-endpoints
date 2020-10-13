@@ -9,15 +9,15 @@ namespace SFA.DAS.EmployerIncentives.Clients
 {
     public class AccountsApiClient : IAccountsApiClient<AccountsConfiguration>
     {
-        private readonly IApiClient<AccountsConfiguration> _client;
+        private readonly IInternalApiClient<AccountsConfiguration> _client;
 
-        public AccountsApiClient(IApiClient<AccountsConfiguration> client)
+        public AccountsApiClient(IInternalApiClient<AccountsConfiguration> client)
         {
             _client = client;
         }
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
         {
-            return _client.Get<TResponse>(request);
+            return _client.Get<TResponse>(request, ensureSuccessResponseCode);
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)

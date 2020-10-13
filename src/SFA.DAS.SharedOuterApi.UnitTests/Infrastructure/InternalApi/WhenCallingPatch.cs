@@ -1,88 +1,77 @@
+using AutoFixture.NUnit3;
+using Microsoft.AspNetCore.Hosting;
+using Moq;
+using Moq.Protected;
+using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Moq;
-using Moq.Protected;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
 {
-    public class WhenCallingPostResponse
+    public class WhenCallingPatch
     {
         [Test, AutoData]
-        public async Task Then_The_Endpoint_Is_Called_And_Content_Returned(
+        public async Task Then_The_Endpoint_Is_Called(
             string authToken,
             string postContent,
             int id,
-            string responseContent,
-            TestInnerApiConfiguration config)
+            TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
             azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
             config.Url = "https://test.local";
-            var testObject = JsonConvert.SerializeObject(new TestResponse{MyResponse = responseContent});
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(testObject),
-                StatusCode = HttpStatusCode.Created
+                Content = new StringContent(""),
+                StatusCode = HttpStatusCode.NoContent
             };
-            var postTestRequest = new PostTestRequest(id) {Data = postContent};
-            var expectedUrl = $"{config.Url}{postTestRequest.PostUrl}";
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, "post");
+            var patchTestRequest = new PatchTestRequest(id) { Data = postContent };
+            var expectedUrl = $"{config.Url}{patchTestRequest.PatchUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, "patch");
             var client = new HttpClient(httpMessageHandler.Object);
             var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            
+
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
-            var actualResult = await actual.Post<TestResponse>(postTestRequest);
+            await actual.Patch(patchTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
-                        c.Method.Equals(HttpMethod.Post)
+                        c.Method.Equals(HttpMethod.Patch)
                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
-                        && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
                 );
-            
-            actualResult.MyResponse.Should().Be(responseContent);
         }
-        
-        private class PostTestRequest : IPostApiRequest
+
+        private class PatchTestRequest : IPatchApiRequest<string>
         {
             private readonly int _id;
 
             public string Version => "2.0";
 
-            public PostTestRequest (int id)
+            public PatchTestRequest(int id)
             {
                 _id = id;
             }
-            public object Data { get; set; }
-            public string PostUrl => $"/test-url/get{_id}";
-        }
-
-        private class TestResponse
-        {
-            public string MyResponse { get; set; }
+            public string Data { get; set; }
+            public string PatchUrl => $"/test-url/patch{_id}";
         }
     }
 }

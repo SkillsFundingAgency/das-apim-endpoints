@@ -1,0 +1,123 @@
+{
+    "RegistrationCases": [{
+            "CaseID": "AF230443595",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "",
+            "ApprenticeshipLegalEntityID": "",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "Eden Learning Trust",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-06",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-06 14:41:08"
+        },
+        {
+            "CaseID": "AF230449027",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "P0007983",
+            "ApprenticeshipLegalEntityID": "DW5T8V",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-13",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-13 08:38:21"
+        },
+        {
+            "CaseID": "AF230449028",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "P0007983",
+            "ApprenticeshipLegalEntityID": "DW5T8V",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-13",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-13 16:27:53"
+        },
+        {
+            "CaseID": "AF230449033",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "P0007983",
+            "ApprenticeshipLegalEntityID": "DW5T8V",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "Amend",
+            "VendorName": "",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-13",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-13 16:47:54"
+        },
+        {
+            "CaseID": "AF23049000",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "",
+            "ApprenticeshipLegalEntityID": "HEN123",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "Eden Learning Trust",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-09",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-14 08:14:47"
+        },
+        {
+            "CaseID": "AF237925421",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "",
+            "ApprenticeshipLegalEntityID": "",
+            "UKPRN": "10032849",
+            "URN": "",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "CHILFORD HUNDRED EDUCATION TRUST",
+            "CaseStatusReasons": [{
+                    "Code": "CH_INCORRECT",
+                    "Text": "This submission has been placed on hold as the Companies House number supplied does not appear to match your organisation, please can you supply your actual companies house number via email to dfe.standingdata@education.gov.uk quoting your AF number "
+                },
+                {
+                    "Code": "UKPRN_INCORRECT",
+                    "Text": "This submission has been placed on hold as the UKPRN supplied does not appear to match your organisation, please can you supply your actual UKPRN via email to dfe.standingdata@education.gov.uk quoting your AF number in the subject line of your email."
+                }
+            ],
+            "CaseStatus": "Data Validation On Hold",
+            "CaseReceivedDate": "2020-08-13",
+            "CaseRequestedEffectiveDate": "2020-08-13",
+            "CaseStatusLastUpdatedDate": "2020-08-14 08:11:54"
+        },
+        {
+            "CaseID": "AF239116994",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "",
+            "ApprenticeshipLegalEntityID": "",
+            "UKPRN": "",
+            "URN": "",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "Testing Form",
+            "CaseStatusReasons": [],
+            "CaseStatus": "Case Rejected - Decryption Failure",
+            "CaseReceivedDate": "2020-08-19",
+            "CaseRequestedEffectiveDate": "2020-08-17",
+            "CaseStatusLastUpdatedDate": "2020-08-19 11:58:44"
+        }
+    ]
+}

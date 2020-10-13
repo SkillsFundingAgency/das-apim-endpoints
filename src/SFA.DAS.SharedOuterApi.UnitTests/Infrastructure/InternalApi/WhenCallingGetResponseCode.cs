@@ -22,7 +22,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             string authToken,
             int id,
             HttpStatusCode code,
-            TestInnerApiConfiguration config)
+            TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
@@ -42,7 +42,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
 
             //Act
             var actualResult = await actual.GetResponseCode(getTestRequest);
@@ -66,7 +66,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
         [Test, AutoData]
          public async Task Then_The_Bearer_Token_Is_Not_Added_If_Local_And_Default_Version_If_Not_Specified(
              int id,
-             TestInnerApiConfiguration config)
+             TestInternalApiConfiguration config)
          {
              //Arrange
              config.Url = "https://test.local";
@@ -85,7 +85,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
              
              hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new ApiClient<TestInnerApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
              await actual.GetResponseCode(getTestRequest);
