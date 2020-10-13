@@ -1,0 +1,67 @@
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration
+  variables:
+  - group: Prod Management Resources
+  - name: buildConfiguration
+    value: release
+  workspace:
+    clean: all
+  steps:
+  - task: UseGitVersion@5
+    displayName: GitVersion
+    inputs:
+      versionSpec: 5.x
+      useConfigFile: true
+      configFilePath: GitVersion.yml
+
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+
+  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Find Apprenticeship Training Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Reservations Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Employer Incentives Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+    
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Find Epao Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:      
+      Contents: |
+        azure/**          
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+      OverWrite: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact'
+    inputs:
+      targetPath: '$(build.artifactstagingdirectory)/publish'
+      artifactName: 'ApimEndpointsArtifacts'
