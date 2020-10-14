@@ -1,18 +1,18 @@
 parameters:
-  DeploymentName: ''
+  DeploymentName:
   DeploymentCondition: false
-  DeploymentApprovals: ''
-  ServiceConnection: ''
-  AppServiceName: ''
-  DeploymentPackagePath: ''
-  ApimResourceGroup: ''
-  InstanceName: ''
-  AppServiceResourceGroup: ''
-  ApiVersionSetName: ''
-  ApiPath: ''
-  ApiBaseUrl: ''
-  ProductId: ''
-  ApplicationIdentifierUri: ''
+  DeploymentApprovals:
+  ServiceConnection:
+  AppServiceName:
+  DeploymentPackagePath:
+  ApimResourceGroup:
+  InstanceName:
+  AppServiceResourceGroup:
+  ApiVersionSetName:
+  ApiPath: 
+  ApiBaseUrl:
+  ProductId:
+  ApplicationIdentifierUri:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
