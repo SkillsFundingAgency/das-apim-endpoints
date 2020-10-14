@@ -24,9 +24,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler,
             GetVendorRegistrationCaseStatusUpdateResponse vendorResponse)
         {
-            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1), DateTime.Now);
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
                 .ReturnsAsync(vendorResponse);
 
 
@@ -39,7 +39,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                             r.CaseId == @case.CaseId &&
                             r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId &&
                             r.Status == @case.CaseStatus &&
-                            r.VendorId == @case.SubmittedVendorIdentifier &&
                             r.CaseStatusLastUpdatedDate == @case.CaseStatusLastUpdatedDate)),
                     Times.Once());
             }
@@ -74,9 +73,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var financeApiResponse = new GetVendorRegistrationCaseStatusUpdateResponse { RegistrationCases = cases };
 
-            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1), DateTime.Now);
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.ToDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
                 .ReturnsAsync(financeApiResponse);
 
             await handler.Handle(command, CancellationToken.None);
@@ -92,7 +91,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                         r.CaseId == cases[2].CaseId &&
                         r.HashedLegalEntityId == cases[2].ApprenticeshipLegalEntityId &&
                         r.Status == cases[2].CaseStatus &&
-                        r.VendorId == cases[2].SubmittedVendorIdentifier &&
                         r.CaseStatusLastUpdatedDate == cases[2].CaseStatusLastUpdatedDate)), Times.Once);
 
             incentivesService.Verify(
@@ -101,7 +99,6 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                         r.CaseId == cases[3].CaseId &&
                         r.HashedLegalEntityId == cases[3].ApprenticeshipLegalEntityId &&
                         r.Status == cases[3].CaseStatus &&
-                        r.VendorId == cases[3].SubmittedVendorIdentifier &&
                         r.CaseStatusLastUpdatedDate == cases[3].CaseStatusLastUpdatedDate)), Times.Once);
         }
     }

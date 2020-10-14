@@ -17,18 +17,16 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.LegalEntity
         [Test, MoqAutoData]
         public async Task Then_RefreshVendorRegistrationFormCaseStatusCommand_Is_Sent(
             DateTime from,
-            DateTime to,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LegalEntityController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<RefreshVendorRegistrationFormCaseStatusCommand>(x =>
-                        x.FromDateTime == from &&
-                        x.ToDateTime == to),
+                        x.FromDateTime == from),
                     It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
-            var controllerResult = await controller.RefreshVendorRegistrationFormStatus(from, to) as NoContentResult;
+            var controllerResult = await controller.RefreshVendorRegistrationFormStatus(from) as NoContentResult;
 
             Assert.IsNotNull(controllerResult);
         }

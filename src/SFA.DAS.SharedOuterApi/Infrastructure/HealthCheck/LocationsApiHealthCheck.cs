@@ -5,12 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Extensions.SFA.DAS.FAT.Infrastructure.Extensions;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.HealthCheck
+namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class LocationsApiHealthCheck : IHealthCheck
     {
