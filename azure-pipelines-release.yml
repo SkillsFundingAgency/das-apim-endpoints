@@ -46,6 +46,7 @@ stages:
 
 - stage: Deploy_AT
   dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
   displayName: Deploy to AT
   pool:
     name: DAS - Continuous Deployment
@@ -137,6 +138,7 @@ stages:
 
 - stage: Deploy_TEST
   dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
   displayName: Deploy to TEST
   pool:
     name: DAS - Continuous Deployment
@@ -228,6 +230,7 @@ stages:
 
 - stage: Deploy_TEST2
   dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
   displayName: Deploy to TEST2
   pool:
     name: DAS - Continuous Deployment
@@ -319,6 +322,7 @@ stages:
 
 - stage: Deploy_PP
   dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
   displayName: Deploy to PP
   pool:
     name: DAS - Continuous Deployment
