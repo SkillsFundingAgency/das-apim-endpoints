@@ -46,6 +46,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var actual = (GetLocationSearchResponseItem)source;
 
             //Assert
+            actual.DistrictName.Should().Be(source.DistrictName);
             actual.Name.Should().Be(source.Postcode);
             actual.Location.Should().BeEquivalentTo(source.Location);
         }
