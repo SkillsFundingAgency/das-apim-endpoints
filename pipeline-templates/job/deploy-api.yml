@@ -6,7 +6,7 @@ parameters:
   AppServiceName:
   DeploymentPackagePath:
   ApimResourceGroup:
-  InstanceName:
+  ApimInstanceName:
   AppServiceResourceGroup:
   ApiVersionSetName:
   ApiPath: 
@@ -38,7 +38,7 @@ jobs:
             ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
             ScriptArguments:
               -ApimResourceGroup ${{ parameters.ApimResourceGroup }} `
-              -InstanceName ${{ parameters.InstanceName }} `
+              -InstanceName ${{ parameters.ApimInstanceName }} `
               -AppServiceResourceGroup ${{ parameters.AppServiceResourceGroup }} `
               -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
               -ApiPath ${{ parameters.ApiPath }} `
