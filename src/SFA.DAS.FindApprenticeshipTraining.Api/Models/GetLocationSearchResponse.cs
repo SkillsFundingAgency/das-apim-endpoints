@@ -8,11 +8,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     public class GetLocationSearchResponse
     {
         public IEnumerable<GetLocationSearchResponseItem> Locations { get; set; }
+        public string DistrictName { get; set; }
         public static implicit operator GetLocationSearchResponse(GetLocationsQueryResponse source)
         {
             return new GetLocationSearchResponse
             {
-                Locations = source.Locations.Select(c=>(GetLocationSearchResponseItem)c).ToList()
+                Locations = source.Locations.Select(c => (GetLocationSearchResponseItem)c).ToList(),
+                DistrictName = source.Locations.Select(c => (GetLocationSearchResponseItem)c).Select(x => x.DistrictName).FirstOrDefault()
             };
         }
         
@@ -21,6 +23,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     {
         public LocationResponse Location { get; set; }
         public string Name { get; set; }
+        public string DistrictName { get; set; }
 
         public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
         {
@@ -28,7 +31,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             {
                 Name = string.IsNullOrEmpty(source.Postcode) ?
                     $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
-                Location = source.Location
+                Location = source.Location,
+                DistrictName = source.DistrictName
             };
         }
 
