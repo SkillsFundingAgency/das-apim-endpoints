@@ -34,7 +34,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     Locations = queryResult.Locations
                         .Select(c => (GetLocationSearchResponseItem)c),
-                    DistrictName = queryResult.Locations.Select(x => x.DistrictName).FirstOrDefault()
                 };
                 return Ok(response);
             }
