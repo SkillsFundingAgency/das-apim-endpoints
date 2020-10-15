@@ -24,11 +24,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
         {
-
             return new GetLocationSearchResponseItem
             {
-                Name = string.IsNullOrEmpty(source.Postcode) ?
-                    $"{source.LocationName}, {source.LocalAuthorityName}" : $"{source.Postcode} {source.DistrictName}",
+                Name = !string.IsNullOrEmpty(source.DistrictName) ? $"{source.Outcode} {source.DistrictName}" : string.IsNullOrEmpty(source.Postcode) ?
+                    $"{source.LocationName}, {source.LocalAuthorityName}" : $"{source.Postcode}",
                 Location = source.Location,
             };
         }

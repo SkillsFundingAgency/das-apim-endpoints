@@ -25,6 +25,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Postcode { get; set; }
         [JsonProperty("districtName")]
         public string DistrictName { get; set; }
+        [JsonProperty("outcode")]
+        public string Outcode { get; set; }
 
         public class Coordinates
         {
