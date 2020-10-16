@@ -13,7 +13,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
     {
         private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
         private const string PostcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$";
-        
+        private const string OutcodeRegex = @"^[A-Za-z]{1,2}\d$";
+
         public LocationHelper (ILocationApiClient<LocationApiConfiguration> locationApiClient)
         {
             _locationApiClient = locationApiClient;
@@ -39,6 +40,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             if (Regex.IsMatch(location, PostcodeRegex))
             {
                 getLocationsListItem =  await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
+            }
+
+            if(Regex.IsMatch(location, OutcodeRegex))
+            {
+                //
             }
 
             return getLocationsListItem != null 
