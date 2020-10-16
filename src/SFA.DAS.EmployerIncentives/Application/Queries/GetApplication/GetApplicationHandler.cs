@@ -22,19 +22,34 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
             _employerIncentivesService = employerIncentivesService;
             _commitmentsV2Service = commitmentsV2Service;
         }
+
         public async Task<GetApplicationResult> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
         {
             var application = await _employerIncentivesService.GetApplication(request.AccountId, request.ApplicationId);
 
-            var applicationToReturn = new IncentiveApplication
+            var applicationToReturn = MapApplication(application);
+
+            if (request.IncludeApprenticeships)
             {
-                AccountLegalEntityId = application.AccountLegalEntityId,
-                Apprenticeships = await MapApprenticeships(application.Apprenticeships)
-            };
+                applicationToReturn.Apprenticeships = await MapApprenticeships(application.Apprenticeships);
+            }
 
             return new GetApplicationResult
             {
                 Application = applicationToReturn
+            };
+        }
+
+        private IncentiveApplication MapApplication(IncentiveApplicationDto applicationDto)
+        {
+            return new IncentiveApplication
+            {
+                AccountLegalEntityId = applicationDto.AccountLegalEntityId,
+                BankDetailsRequired = applicationDto.BankDetailsRequired,
+                Apprenticeships = new List<IncentiveApplicationApprenticeship>(),
+                LegalEntityId = applicationDto.LegalEntityId,
+                SubmittedByEmail = applicationDto.SubmittedByEmail,
+                SubmittedByName = applicationDto.SubmittedByName
             };
         }
 

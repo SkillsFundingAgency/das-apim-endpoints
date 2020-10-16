@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "environmentName": {
@@ -36,25 +36,42 @@
             "type": "string"
         },
         "loggingRedisConnectionString": {
-            "type": "string"
+            "type": "securestring"
         },
         "loggingRedisKey": {
             "type": "string"
         },
         "configurationStorageConnectionString": {
             "type": "securestring"
+        },
+        "tags": {
+            "type": "object"
+        },
+        "resourceGroupLocation": {
+            "type": "string"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
     },
     "resources": [
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "location": "[parameters('resourceGroupLocation')]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+            }
+        },
+        {
+            "apiVersion": "2020-06-01",
             "name": "apim-endpoint-app-service-plan",
             "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -78,9 +95,10 @@
             }
         },
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2020-06-01",
             "name": "[concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())]",
             "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedManagementResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -106,9 +124,10 @@
             }
         },
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2020-06-01",
             "name": "[concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -130,9 +149,10 @@
             }
         },
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2020-06-01",
             "name": "[concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
             "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "dependsOn": [
                 "apim-endpoint-app-service-plan"
             ],
@@ -150,7 +170,7 @@
                         "value": "[variables('appServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[resourceGroup().name]"
+                        "value": "[variables('resourceGroupName')]"
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -205,5 +225,9 @@
         }
     ],
     "outputs": {
+        "ResourceGroupName": {
+            "type": "string",
+            "value": "[variables('resourceGroupName')]"
+        }
     }
 }
