@@ -125,5 +125,25 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             result.Should().Be(fromDateTime);
         }
+
+        [Test, MoqAutoData]
+        public async Task And_null_response_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_passed_in_From_date_is_returned(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            DateTime fromDateTime,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
+        {
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(fromDateTime);
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
+                .ReturnsAsync(new GetVendorRegistrationCaseStatusUpdateResponse { RegistrationCases = null });
+
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            incentivesService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
+
+            result.Should().Be(fromDateTime);
+        }
     }
 }
