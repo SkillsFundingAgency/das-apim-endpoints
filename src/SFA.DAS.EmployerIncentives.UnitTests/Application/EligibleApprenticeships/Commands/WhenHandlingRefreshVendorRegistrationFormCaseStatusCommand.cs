@@ -1,5 +1,6 @@
 using AutoFixture;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
@@ -45,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         }
 
         [Test, MoqAutoData]
-        public async Task Then_the_Vrf_case_status_is_updated_once_for_each_legal_entity_using_the_latest_case_details(
+        public async Task Then_the_Vrf_case_status_is_updated_once_for_each_legal_entity_using_the_latest_case_details_and_latest_case_update_date_is_returned(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
@@ -64,7 +65,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             cases[2].CaseStatusLastUpdatedDate = DateTime.Parse("01-01-2000", new CultureInfo("en-GB"));
 
             cases[3].ApprenticeshipLegalEntityId = "XYZ123";
-            cases[3].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000", new CultureInfo("en-GB"));
+            cases[3].CaseStatusLastUpdatedDate = DateTime.Parse("13-01-2000", new CultureInfo("en-GB")); // max date
 
             cases[4].ApprenticeshipLegalEntityId = "XYZ123";
             cases[4].CaseStatusLastUpdatedDate = DateTime.Parse("04-01-2000", new CultureInfo("en-GB"));
@@ -78,7 +79,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
                 .ReturnsAsync(financeApiResponse);
 
-            await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
+
+
+            result.Should().Be(DateTime.Parse("13-01-2000", new CultureInfo("en-GB")));
 
             incentivesService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r => string.IsNullOrEmpty(r.HashedLegalEntityId))), Times.Never);

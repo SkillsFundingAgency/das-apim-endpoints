@@ -3,13 +3,14 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand>
+    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand, DateTime>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
@@ -23,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
+        public async Task<DateTime> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Requesting VRF Case status updates from: [{request.FromDateTime}]");
 
@@ -53,7 +54,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             }
 
             await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
-            return Unit.Value;
+
+            var latestCaseUpdateDateTime = response.RegistrationCases
+                .OrderBy(x => x.CaseStatusLastUpdatedDate).Last().CaseStatusLastUpdatedDate;
+
+            return await Task.FromResult(latestCaseUpdateDateTime);
         }
 
         private static void GetLatestCasesForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)
@@ -64,5 +69,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                     (_, g) => g.OrderByDescending(e => e.CaseStatusLastUpdatedDate).First())
                 .ToList();
         }
+
     }
 }
