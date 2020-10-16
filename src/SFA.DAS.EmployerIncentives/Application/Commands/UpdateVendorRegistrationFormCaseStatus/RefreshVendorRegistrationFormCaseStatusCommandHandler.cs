@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerIncentives.Extensions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -26,20 +27,26 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
         public async Task<DateTime> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Requesting VRF Case status updates from: [{request.FromDateTime}]");
+            _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [dateTimeFrom={request.FromDateTime.ToIsoDateTime()}]", request.FromDateTime);
 
             var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime);
 
             if (response == null)
             {
-                _logger.LogError("Error retrieving data from Finance API");
+                _logger.LogError("[VRF Refresh] Error retrieving data from Finance API with parameters: [dateTimeFrom={request.FromDateTime.ToIsoDateTime()}]", request.FromDateTime);
             }
 
-            _logger.LogInformation($"Number of VRF Cases received from Finance API: [{response.RegistrationCases.Count}]");
+            if (response.RegistrationCases?.Any() != true)
+            {
+                _logger.LogInformation($"[VRF Refresh] No cases returned by the Finance API with parameters: [dateTimeFrom={request.FromDateTime.ToIsoDateTime()}]", request.FromDateTime);
+                return await Task.FromResult(request.FromDateTime);
+            }
+
+            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
 
             GetLatestCasesForEachLegalEntity(response);
 
-            _logger.LogInformation($"Number of unique Legal Entities found: [{response.RegistrationCases.Count}]. Updating their VRF Case status...");
+            _logger.LogInformation($"[VRF Refresh] Number of unique Legal Entities found: [{response.RegistrationCases.Count}]. Updating their VRF Case status...");
 
             Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
             {
