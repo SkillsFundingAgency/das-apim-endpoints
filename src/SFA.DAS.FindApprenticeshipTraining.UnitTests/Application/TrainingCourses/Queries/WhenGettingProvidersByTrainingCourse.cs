@@ -120,5 +120,46 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>(), true), Times.Never);
             result.Location.Should().BeNull();
         }
+
+        /*******/
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+            string outcode,
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Location = $"{outcode}";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByOutcodeRequest>(c => c.GetUrl.Contains(outcode)), true))
+                .ReturnsAsync(apiLocationResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                ), true))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString())), true))
+                .ReturnsAsync(apiCourseResponse);
+
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Name.Should().Be(query.Location);
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
     }
 }

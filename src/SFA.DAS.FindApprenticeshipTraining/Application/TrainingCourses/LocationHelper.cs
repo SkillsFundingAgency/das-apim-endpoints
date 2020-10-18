@@ -44,9 +44,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
             if(Regex.IsMatch(location, OutcodeRegex))
             {
-                //
+                // below will hit this endpoint: api/search?query={HttpUtility.UrlEncode(_outcode)
+                getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
+
+                // I think something has to happen here to make the one district result have location info
             }
 
+
+            // is the error below beccause with the outcode journey, not all results return an item with a Location.geopoint ?
             return getLocationsListItem != null 
                 ? new LocationItem(location, getLocationsListItem.Location.GeoPoint) 
                 : null;
