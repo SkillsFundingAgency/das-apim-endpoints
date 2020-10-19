@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
                 .ReturnsAsync(vendorResponse);
 
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         }
 
         [Test, MoqAutoData]
-        public async Task Then_the_Vrf_case_status_is_updated_once_for_each_legal_entity_using_the_latest_case_details_and_latest_case_update_date_is_returned(
+        public async Task Then_the_Vrf_case_status_is_updated_once_for_each_legal_entity_using_the_latest_case_details_and_next_update_date_is_returned(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
@@ -76,13 +76,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
                 .ReturnsAsync(financeApiResponse);
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-
-            result.Should().Be(DateTime.Parse("13-01-2000", new CultureInfo("en-GB")));
+            result.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
 
             incentivesService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r => string.IsNullOrEmpty(r.HashedLegalEntityId))), Times.Never);
@@ -107,15 +106,15 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         }
 
         [Test, MoqAutoData]
-        public async Task And_no_cases_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_passed_in_From_date_is_returned(
+        public async Task And_no_cases_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_current_UTC_DateTime_is_returned__when_to_date_is_in_future(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
-            DateTime fromDateTime,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
         {
+            var fromDateTime = DateTime.UtcNow.AddHours(-1);
             var command = new RefreshVendorRegistrationFormCaseStatusCommand(fromDateTime);
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
                 .ReturnsAsync(new GetVendorRegistrationCaseStatusUpdateResponse());
 
             var result = await handler.Handle(command, CancellationToken.None);
@@ -123,11 +122,32 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             incentivesService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
 
-            result.Should().Be(fromDateTime);
+            result.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        }
+
+
+        [Test, MoqAutoData]
+        public async Task And_no_cases_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_from_date_plus_1_day_is_returned__when_ToDate_is_in_past(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
+        {
+            var fromDateTime = DateTime.UtcNow.AddHours(-25);
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(fromDateTime);
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
+                .ReturnsAsync(new GetVendorRegistrationCaseStatusUpdateResponse());
+
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            incentivesService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
+
+            result.Should().Be(fromDateTime.AddDays(1));
         }
 
         [Test, MoqAutoData]
-        public async Task And_null_response_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_passed_in_From_date_is_returned(
+        public void And_null_response_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_exception_is_thrown(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
             [Frozen] Mock<IEmployerIncentivesService> incentivesService,
             DateTime fromDateTime,
@@ -135,15 +155,15 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             var command = new RefreshVendorRegistrationFormCaseStatusCommand(fromDateTime);
 
-            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime))
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
                 .ReturnsAsync(new GetVendorRegistrationCaseStatusUpdateResponse { RegistrationCases = null });
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            Func<Task> f = async () => await handler.Handle(command, CancellationToken.None);
+
+            f.Should().Throw<ArgumentNullException>();
 
             incentivesService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
-
-            result.Should().Be(fromDateTime);
         }
     }
 }

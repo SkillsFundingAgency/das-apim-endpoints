@@ -11,5 +11,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         }
 
         public DateTime FromDateTime { get; set; }
+        public DateTime ToDateTime { get; set; }
     }
 }
