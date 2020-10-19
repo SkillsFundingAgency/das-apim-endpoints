@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.FindEpao.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.FindEpao.Api.AppStart

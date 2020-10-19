@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindEpao.Configuration
+namespace SFA.DAS.SharedOuterApi.Configuration
 {
     public class AssessorsApiConfiguration : IInternalApiConfiguration
     {
