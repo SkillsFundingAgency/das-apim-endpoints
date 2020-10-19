@@ -19,7 +19,7 @@ namespace SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList
 
         public async Task<GetDeliveryAreaListResult> Handle(GetDeliveryAreaListQuery request, CancellationToken cancellationToken)
         {
-            var deliveryAreasList = await _assessorsApiClient.Get<GetDeliveryAreasListResponse>(new GetDeliveryAreasRequest());
+            var deliveryAreasList = await _assessorsApiClient.Get<GetDeliveryAreaListResponse>(new GetDeliveryAreasRequest());
             
             return new GetDeliveryAreaListResult
             {

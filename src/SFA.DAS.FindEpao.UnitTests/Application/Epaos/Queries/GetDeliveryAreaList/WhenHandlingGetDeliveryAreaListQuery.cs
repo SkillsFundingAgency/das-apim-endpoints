@@ -19,12 +19,12 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Epaos.Queries.GetDeliveryAreaLi
         [Test, MoqAutoData]
         public async Task Then_Gets_DeliveryAreas_From_Assessors_Api(
             GetDeliveryAreaListQuery query,
-            GetDeliveryAreasListResponse apiResponse,
+            GetDeliveryAreaListResponse apiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockApiClient,
             GetDeliveryAreaListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetDeliveryAreasListResponse>(It.IsAny<GetDeliveryAreasRequest>(), true))
+                .Setup(client => client.Get<GetDeliveryAreaListResponse>(It.IsAny<GetDeliveryAreasRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -5,6 +5,6 @@ namespace SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList
 {
     public class GetDeliveryAreaListResult
     {
-        public IEnumerable<GetDeliveryAreasListItem> DeliveryAreas { get; set; }
+        public IEnumerable<GetDeliveryAreaListItem> DeliveryAreas { get; set; }
     }
 }
