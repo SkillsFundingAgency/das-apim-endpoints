@@ -43,6 +43,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 return await Task.FromResult(nextRunDateTime);
             }
 
+            if (!string.IsNullOrEmpty(response.SkipCode))
+            {
+                _logger.LogError($"[VRF Refresh] [SkipCode={response.SkipCode}] returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
+            }
+
             FindLatestUpdateForEachLegalEntity(response);
 
             Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
