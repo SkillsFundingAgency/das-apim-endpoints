@@ -32,7 +32,7 @@
         "sharedKeyVaultName": {
             "type": "string"
         },
-        "SharedEnvResourceGroup": {
+        "sharedEnvResourceGroup": {
             "type": "string"
         },
         "sharedManagementResourceGroup": {
