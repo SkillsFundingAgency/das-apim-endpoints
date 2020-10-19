@@ -32,6 +32,9 @@
         "sharedKeyVaultName": {
             "type": "string"
         },
+        "SharedEnvResourceGroup": {
+            "type": "string"
+        },
         "sharedManagementResourceGroup": {
             "type": "string"
         },
@@ -98,7 +101,7 @@
             "apiVersion": "2020-06-01",
             "name": "[concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())]",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedManagementResourceGroup')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
