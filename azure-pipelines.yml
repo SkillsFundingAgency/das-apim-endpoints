@@ -157,7 +157,7 @@ stages:
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
-      ApplicationIdentifierUri: $(ForecastingApiIdentifierUri)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -266,7 +266,7 @@ stages:
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
-      ApplicationIdentifierUri: $(ForecastingApiIdentifierUri)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -375,7 +375,7 @@ stages:
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
-      ApplicationIdentifierUri: $(ForecastingApiIdentifierUri)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -484,4 +484,4 @@ stages:
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
-      ApplicationIdentifierUri: $(ForecastingApiIdentifierUri)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
