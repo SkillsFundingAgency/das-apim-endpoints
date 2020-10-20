@@ -39,7 +39,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
                 }
             };
             mockCoursesApiClient.Setup(client =>
-                    client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
+                    client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>(),true))
                 .ReturnsAsync(frameworksList);
 
             //Act
