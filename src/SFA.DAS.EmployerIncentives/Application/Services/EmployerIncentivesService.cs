@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
         }
-        
+
         public async Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request)
         {
             await _client.Patch(new PatchVendorRegistrationCaseStatusRequest(request));
