@@ -8,15 +8,15 @@ namespace SFA.DAS.SharedOuterApi.Services
 {
     public class CourseDeliveryApiClient : ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>
     {
-        private readonly IApiClient<CourseDeliveryApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<CourseDeliveryApiConfiguration> _apiClient;
 
-        public CourseDeliveryApiClient(IApiClient<CourseDeliveryApiConfiguration> apiClient)
+        public CourseDeliveryApiClient(IInternalApiClient<CourseDeliveryApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
         {
-            return _apiClient.Get<TResponse>(request);
+            return _apiClient.Get<TResponse>(request, ensureSuccessResponseCode);
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)

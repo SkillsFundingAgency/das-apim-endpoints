@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             client.Setup(x =>
                     x.Get<AccountLegalEntity>(
-                        It.Is<GetLegalEntityRequest>(c => c.GetUrl.Contains(accountId.ToString()) && c.GetUrl.Contains(accountLegalEntityId.ToString()))))
+                        It.Is<GetLegalEntityRequest>(c => c.GetUrl.Contains(accountId.ToString()) && c.GetUrl.Contains(accountLegalEntityId.ToString())), true))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetLegalEntity(accountId, accountLegalEntityId);

@@ -54,12 +54,13 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/applications/{applicationId}")]
-        public async Task<IActionResult> GetApplication(long accountId, Guid applicationId)
+        public async Task<IActionResult> GetApplication(long accountId, Guid applicationId, [FromQuery] bool includeApprenticeships = true)
         {
             var result = await _mediator.Send(new GetApplicationQuery
             {
                 AccountId = accountId,
-                ApplicationId = applicationId
+                ApplicationId = applicationId,
+                IncludeApprenticeships = includeApprenticeships
             });
 
             var response = new ApplicationResponse { Application = result.Application };

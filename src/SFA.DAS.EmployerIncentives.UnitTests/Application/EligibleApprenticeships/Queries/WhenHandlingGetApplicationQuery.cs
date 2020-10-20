@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetApplicationHandler handler
             )
         {
-            commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
+            commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true))
                 .ReturnsAsync(new GetApprenticeshipResponse());
 
             employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
@@ -48,12 +48,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             apprenticeshipResponse.Id = applicationResponse.Apprenticeships.First().ApprenticeshipId;
 
             commitmentsClient
-                .Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
+                .Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true))
                 .ReturnsAsync(new GetApprenticeshipResponse());
             commitmentsClient
                 .Setup(client => client.Get<GetApprenticeshipResponse>(
                     It.Is<GetApprenticeshipRequest>(c => 
-                        c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}"))))
+                        c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}")), true))
                 .ReturnsAsync(apprenticeshipResponse);
 
             employerIncentivesService
@@ -63,6 +63,26 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Application.Apprenticeships.First().CourseName.Should().Be(apprenticeshipResponse.CourseName);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Apprenticeships_Are_Not_Returned_If_Opted_Out(
+            GetApplicationQuery query,
+            IncentiveApplicationDto applicationResponse,
+            GetApprenticeshipResponse apprenticeshipResponse,
+            [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
+            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            GetApplicationHandler handler
+        )
+        {
+            query.IncludeApprenticeships = false;
+
+            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Application.Apprenticeships.Count().Should().Be(0);
+            commitmentsClient.Verify(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true), Times.Never);
         }
     }
 }

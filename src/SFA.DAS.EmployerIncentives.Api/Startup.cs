@@ -42,6 +42,8 @@ namespace SFA.DAS.EmployerIncentives.Api
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsConfiguration>>().Value);
             services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.Configure<CustomerEngagementFinanceConfiguration>(_configuration.GetSection("CustomerEngagementFinanceApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CustomerEngagementFinanceConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {

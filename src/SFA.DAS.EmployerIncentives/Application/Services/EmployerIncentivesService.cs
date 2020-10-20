@@ -1,6 +1,7 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -79,7 +80,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return result;
         }
 
-        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest) 
+        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
         {
             var request = new PostBankDetailsRequiredEmailRequest(accountId)
             { Data = sendBankDetailsEmailRequest };
@@ -118,10 +119,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             return response;
         }
-		
+
         public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
         {
-            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) {Data = request});
+            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
+        }
+
+        public async Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request)
+        {
+            await _client.Patch(new PatchVendorRegistrationCaseStatusRequest(request));
         }
 
         public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()

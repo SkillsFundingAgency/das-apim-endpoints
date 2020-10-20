@@ -8,15 +8,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
     public class LocationApiClient : ILocationApiClient<LocationApiConfiguration>
     {
-        private readonly IApiClient<LocationApiConfiguration> _client;
+        private readonly IInternalApiClient<LocationApiConfiguration> _client;
 
-        public LocationApiClient (IApiClient<LocationApiConfiguration> client)
+        public LocationApiClient (IInternalApiClient<LocationApiConfiguration> client)
         {
             _client = client;
         }
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
         {
-            return _client.Get<TResponse>(request);
+            return _client.Get<TResponse>(request, ensureSuccessResponseCode);
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
