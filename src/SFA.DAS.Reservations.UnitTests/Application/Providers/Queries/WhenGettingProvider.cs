@@ -23,7 +23,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Providers.Queries
             GetProviderQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetProviderResponse>(It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn), true))
+                .Setup(client => client.Get<GetProviderResponse>(It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn)))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

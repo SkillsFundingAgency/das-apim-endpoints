@@ -24,18 +24,13 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             Configuration = apiConfiguration;
         }
 
-        public async Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
+        public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             await AddAuthenticationHeader();
 
             AddVersionHeader(request.Version);
 
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
-
-            if (ensureSuccessResponseCode)
-            {
-                response.EnsureSuccessStatusCode();
-            }
 
             if (!response.IsSuccessStatusCode)
             {
