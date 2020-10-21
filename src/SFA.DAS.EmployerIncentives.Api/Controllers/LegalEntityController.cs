@@ -17,11 +17,11 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch("legalentities/vendorregistrationform/status")]
-        public async Task<IActionResult> RefreshVendorRegistrationFormStatus(DateTime from, DateTime to)
+        public async Task<IActionResult> RefreshVendorRegistrationFormStatus(DateTime from)
         {
-            await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from, to));
+            var nextRunDateTime = await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from));
 
-            return NoContent();
+            return new OkObjectResult(nextRunDateTime);
         }
     }
 }

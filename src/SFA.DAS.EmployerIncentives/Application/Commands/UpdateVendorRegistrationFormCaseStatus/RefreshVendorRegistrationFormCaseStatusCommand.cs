@@ -3,12 +3,11 @@ using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class RefreshVendorRegistrationFormCaseStatusCommand : IRequest
+    public class RefreshVendorRegistrationFormCaseStatusCommand : IRequest<DateTime>
     {
-        public RefreshVendorRegistrationFormCaseStatusCommand(DateTime from, DateTime to)
+        public RefreshVendorRegistrationFormCaseStatusCommand(DateTime from)
         {
             FromDateTime = from;
-            ToDateTime = to;
         }
 
         public DateTime FromDateTime { get; set; }

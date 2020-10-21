@@ -7,14 +7,13 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Reservations.Api
 {
@@ -31,14 +30,9 @@ namespace SFA.DAS.Reservations.Api
         
         public void ConfigureServices(IServiceCollection services)
         {
-             services.AddOptions();
             services.AddSingleton(_env);
-            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(_configuration.GetSection("CourseDeliveryApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
-            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+
+            services.AddConfigurationOptions(_configuration);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -64,6 +58,13 @@ namespace SFA.DAS.Reservations.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check");
+            }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
@@ -88,7 +89,7 @@ namespace SFA.DAS.Reservations.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
+                    pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
         
             app.UseSwagger();
