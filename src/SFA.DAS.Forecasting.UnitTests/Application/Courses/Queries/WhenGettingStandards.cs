@@ -23,7 +23,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
         {
             //Arrange
             mockCoursesApiClient.Setup(client =>
-                    client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>(),true))
+                    client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
                 .ReturnsAsync(coursesApiResponse);
 
             //Act
