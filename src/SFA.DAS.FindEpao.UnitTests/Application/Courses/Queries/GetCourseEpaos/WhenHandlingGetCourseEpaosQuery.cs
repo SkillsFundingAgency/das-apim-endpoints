@@ -20,7 +20,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
         public async Task Then_Gets_Epaos_From_Assessors_Api_And_Course_From_Courses_Api(
             GetCourseEpaosQuery query,
             List<GetCourseEpaoListItem> epaoApiResponse,
-            GetStandardResponse coursesApiResponse,
+            GetStandardsListItem coursesApiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetCourseEpaosQueryHandler handler)
@@ -30,7 +30,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                     It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
                 .ReturnsAsync(epaoApiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardResponse>(
+                .Setup(client => client.Get<GetStandardsListItem>(
                     It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
 
             result.Epaos.Should().BeEquivalentTo(epaoApiResponse);
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
-            result.Course.Should().BeEquivalentTo(coursesApiResponse.Standard);
+            result.Course.Should().BeEquivalentTo(coursesApiResponse);
         }
     }
 }

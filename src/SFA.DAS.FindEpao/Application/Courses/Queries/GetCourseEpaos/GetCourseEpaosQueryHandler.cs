@@ -30,7 +30,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                     CourseId = request.CourseId
                 });
 
-            var courseTask = _coursesApiClient.Get<GetStandardResponse>(
+            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(
                 new GetStandardRequest
                 {
                     StandardId = request.CourseId
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
             return new GetCourseEpaosResult
             {
                 Epaos = epaosTask.Result.OrderBy(item => item.Name),
-                Course = courseTask.Result.Standard
+                Course = courseTask.Result
             };
         }
     }
