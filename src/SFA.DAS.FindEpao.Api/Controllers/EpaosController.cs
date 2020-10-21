@@ -24,7 +24,7 @@ namespace SFA.DAS.FindEpao.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/delivery-areas")]
+        [Route("delivery-areas")]
         public async Task<IActionResult> GetDeliveryAreas()
         {
             try
