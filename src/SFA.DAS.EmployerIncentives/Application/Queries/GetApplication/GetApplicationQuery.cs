@@ -8,5 +8,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
         public long AccountId { get ; set ; }
         
         public Guid ApplicationId { get; set; }
+
+        public bool IncludeApprenticeships { get; set; }
     }
 }
