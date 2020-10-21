@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString())), true))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(coursesApiResponse);
 
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
@@ -34,7 +34,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client =>
                     client.Get<GetUkprnsForStandardAndLocationResponse>(
                         It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
-                            c.GetUrl.Equals(url))), true))
+                            c.GetUrl.Equals(url)))))
                 .ReturnsAsync(courseDirectoryApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

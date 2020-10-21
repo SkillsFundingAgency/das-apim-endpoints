@@ -42,7 +42,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object);
 
             //Act
-            await actual.Get<string>(getTestRequest, false);
+            await actual.Get<string>(getTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
@@ -80,7 +80,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
 
             //Act
-            var response = await actual.Get<TestResponse>(getTestRequest, false);
+            var response = await actual.Get<TestResponse>(getTestRequest);
 
             //Assert
             response.Should().BeEquivalentTo(expectedResponse);
@@ -108,7 +108,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
 
             //Act
-            var response = await actual.Get<TestResponse>(getTestRequest, false);
+            var response = await actual.Get<TestResponse>(getTestRequest);
 
             //Assert
             response.Should().BeNull();

@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
             [Greedy] CommitmentsService sut)
         {
             client.Setup(x => x.Get< GetApprenticeshipListResponse>(It.Is<IGetApiRequest>(p => 
-                    p.GetUrl == $"api/apprenticeships?accountId={accountId}&accountLegalEntityId={accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}"), true))
+                    p.GetUrl == $"api/apprenticeships?accountId={accountId}&accountLegalEntityId={accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}")))
                 .ReturnsAsync(response);
 
             var result = await sut.Apprenticeships(accountId, accountLegalEntityId, startDateFrom, startDateTo);
