@@ -36,6 +36,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Epaos.Should().BeEquivalentTo(epaoApiResponse.CourseEpaos);
+            result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse.Standard);
         }
     }

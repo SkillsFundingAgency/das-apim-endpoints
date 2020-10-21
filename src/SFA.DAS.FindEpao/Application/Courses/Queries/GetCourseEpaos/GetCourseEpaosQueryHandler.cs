@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindEpao.InnerApi.Requests;
@@ -39,7 +40,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
 
             return new GetCourseEpaosResult
             {
-                Epaos = epaosTask.Result.CourseEpaos,
+                Epaos = epaosTask.Result.CourseEpaos.OrderBy(item => item.Name),
                 Course = courseTask.Result.Standard
             };
         }
