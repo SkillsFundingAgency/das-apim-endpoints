@@ -24,7 +24,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
 
         public async Task<GetCourseEpaosResult> Handle(GetCourseEpaosQuery request, CancellationToken cancellationToken)
         {
-            var epaosTask = _assessorsApiClient.Get<GetCourseEpaoListResponse>(
+            var epaosTask = _assessorsApiClient.GetAll<GetCourseEpaoListItem>(
                 new GetCourseEpaosRequest
                 {
                     CourseId = request.CourseId
@@ -40,7 +40,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
 
             return new GetCourseEpaosResult
             {
-                Epaos = epaosTask.Result.CourseEpaos.OrderBy(item => item.Name),
+                Epaos = epaosTask.Result.OrderBy(item => item.Name),
                 Course = courseTask.Result.Standard
             };
         }

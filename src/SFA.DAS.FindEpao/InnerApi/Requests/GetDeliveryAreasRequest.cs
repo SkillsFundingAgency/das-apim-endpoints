@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.FindEpao.InnerApi.Requests
 {
-    public class GetDeliveryAreasRequest : IGetApiRequest
+    public class GetDeliveryAreasRequest : IGetAllApiRequest
     {
-        public string GetUrl => $"api/ao/delivery-areas";
+        public string GetAllUrl => $"api/ao/delivery-areas";
     }
 }

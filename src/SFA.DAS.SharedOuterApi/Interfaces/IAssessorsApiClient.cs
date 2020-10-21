@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface IAssessorsApiClient<T> : IGetApiClient<T>
+    public interface IAssessorsApiClient<T> : IGetAllApiClient<T>
     {
         
     }

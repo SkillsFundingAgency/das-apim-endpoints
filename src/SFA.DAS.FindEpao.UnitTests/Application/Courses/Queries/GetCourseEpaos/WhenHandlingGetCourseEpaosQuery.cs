@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -18,14 +19,14 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
         [Test, MoqAutoData]
         public async Task Then_Gets_Epaos_From_Assessors_Api_And_Course_From_Courses_Api(
             GetCourseEpaosQuery query,
-            GetCourseEpaoListResponse epaoApiResponse,
+            List<GetCourseEpaoListItem> epaoApiResponse,
             GetStandardResponse coursesApiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetCourseEpaosQueryHandler handler)
         {
             mockAssessorsApiClient
-                .Setup(client => client.Get<GetCourseEpaoListResponse>(
+                .Setup(client => client.GetAll<GetCourseEpaoListItem>(
                     It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
                 .ReturnsAsync(epaoApiResponse);
             mockCoursesApiClient
@@ -35,7 +36,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Epaos.Should().BeEquivalentTo(epaoApiResponse.CourseEpaos);
+            result.Epaos.Should().BeEquivalentTo(epaoApiResponse);
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse.Standard);
         }

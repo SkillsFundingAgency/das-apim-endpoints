@@ -1,10 +1,10 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
@@ -19,17 +19,17 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Epaos.Queries.GetDeliveryAreaLi
         [Test, MoqAutoData]
         public async Task Then_Gets_DeliveryAreas_From_Assessors_Api(
             GetDeliveryAreaListQuery query,
-            GetDeliveryAreaListResponse apiResponse,
+            List<GetDeliveryAreaListItem> apiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockApiClient,
             GetDeliveryAreaListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetDeliveryAreaListResponse>(It.IsAny<GetDeliveryAreasRequest>()))
+                .Setup(client => client.GetAll<GetDeliveryAreaListItem>(It.IsAny<GetDeliveryAreasRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.DeliveryAreas.Should().BeEquivalentTo(apiResponse.DeliveryAreas);
+            result.DeliveryAreas.Should().BeEquivalentTo(apiResponse);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SFA.DAS.FindEpao.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Built(
             GetCourseEpaosRequest actual)
         {
-            actual.GetUrl.Should().Be($"api/v1/standards/{actual.CourseId}/organisations");
+            actual.GetAllUrl.Should().Be($"api/v1/standards/{actual.CourseId}/organisations");
         }
     }
 }
