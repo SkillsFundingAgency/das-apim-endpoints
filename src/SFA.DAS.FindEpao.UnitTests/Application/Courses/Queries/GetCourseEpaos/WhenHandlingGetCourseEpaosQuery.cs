@@ -5,7 +5,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -27,13 +26,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
         {
             mockAssessorsApiClient
                 .Setup(client => client.Get<GetCourseEpaoListResponse>(
-                    It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId), 
-                    true))
+                    It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
                 .ReturnsAsync(epaoApiResponse);
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardResponse>(
-                    It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId),
-                    true))
+                    It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -24,7 +24,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Epaos.Queries.GetDeliveryAreaLi
             GetDeliveryAreaListQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetDeliveryAreaListResponse>(It.IsAny<GetDeliveryAreasRequest>(), true))
+                .Setup(client => client.Get<GetDeliveryAreaListResponse>(It.IsAny<GetDeliveryAreasRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
