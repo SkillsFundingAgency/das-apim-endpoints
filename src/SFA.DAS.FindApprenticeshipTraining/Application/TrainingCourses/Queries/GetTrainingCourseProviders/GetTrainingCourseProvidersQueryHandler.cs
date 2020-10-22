@@ -30,7 +30,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            // at present the below route will send 'M4' or 'NN6' to the postcode.io outcode API and not bring back a location.GeoPoint
             var location = await _locationHelper.GetLocationInformation(request.Location);
             
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));

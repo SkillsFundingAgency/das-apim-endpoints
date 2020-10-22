@@ -29,14 +29,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             
             
             GetLocationsListItem getLocationsListItem  = null;
-            if (location.Split(",").Length == 2)
+            if (location.Split(",").Length == 2 && !Regex.IsMatch(location.Split(",").First().Trim(), OutcodeRegex))
             {
                 
                 var locationInformation = location.Split(",");
                 var locationName = locationInformation.First().Trim();
                 var authorityName = locationInformation.Last().Trim();
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
-            }   
+            }
+
+            if (location.Split(",").Length == 2 && Regex.IsMatch(location.Split(",").First().Trim(), OutcodeRegex))
+            {
+                getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeAndDistrictRequest(location));
+            }
+
             if (Regex.IsMatch(location, PostcodeRegex))
             {
                 getLocationsListItem =  await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
@@ -44,14 +50,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
             if(Regex.IsMatch(location, OutcodeRegex))
             {
-                // below will hit this endpoint: api/search?query={HttpUtility.UrlEncode(_outcode)
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
-
-                // I think something has to happen here to make the one district result have location info
             }
 
-
-            // is the error below beccause with the outcode journey, not all results return an item with a Location.geopoint ?
             return getLocationsListItem != null 
                 ? new LocationItem(location, getLocationsListItem.Location.GeoPoint) 
                 : null;
