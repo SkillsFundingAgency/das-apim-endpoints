@@ -124,7 +124,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         /*******/
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
-            string outcode,
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
@@ -134,11 +133,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProvidersQueryHandler handler)
         {
+            var outcode = "CV1";
+
             query.Location = $"{outcode}";
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
-                        It.Is<GetLocationByOutcodeRequest>(c => c.GetUrl.Contains(outcode)), true))
+                        It.Is<GetLocationByOutcodeRequest>(c => c.GetUrl.Contains(outcode))))
                 .ReturnsAsync(apiLocationResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
@@ -146,10 +147,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
                     && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
                     && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
-                ), true))
+                )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString())), true))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
 
 
