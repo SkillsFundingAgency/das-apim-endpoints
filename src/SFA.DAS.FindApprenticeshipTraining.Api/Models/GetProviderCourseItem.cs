@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
@@ -15,6 +16,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int? NationalOverallCohort { get; set; }
         
         public decimal? NationalOverallAchievementRate { get ; set ; }
+        public decimal DistanceInMiles { get ; set ; }
+
         public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, string sectorSubjectArea, int level)
         {
             var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
@@ -34,7 +37,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
-                Feedback = getFeedbackResponse
+                Feedback = getFeedbackResponse,
+                DistanceInMiles = source.ProviderStandard.ProviderDistance
             };
         }
 
