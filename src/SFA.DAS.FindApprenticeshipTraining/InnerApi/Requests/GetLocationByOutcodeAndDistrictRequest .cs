@@ -12,6 +12,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _outcode = outcode;
         }
 
-        public string GetUrl => $"api/postcodes?postcode={HttpUtility.UrlEncode(_outcode)}";
+        public string GetUrl => $"api/postcodes/outcode?outcode={HttpUtility.UrlEncode(_outcode)}";
     }
 }
