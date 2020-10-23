@@ -75,7 +75,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 new GetDeliveryTypeItem
                 {
                     DeliveryModes = "100PercentEmployer|DayRelease",
-                    DistanceInMiles = 2.5m
+                    DistanceInMiles = 2.5m,
+                    National = true
                 },
                 new GetDeliveryTypeItem
                 {
@@ -95,6 +96,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease)?.DistanceInMiles.Should().Be(3.1m);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease)?.DistanceInMiles.Should().Be(2.5m);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace)?.DistanceInMiles.Should().Be(2.5m);
+            response.DeliveryModes.FirstOrDefault().National.Should().BeTrue();
         }
         
         [Test]
@@ -127,6 +129,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.DeliveryModes.Count.Should().Be(1);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == deliveryModeType)?.DistanceInMiles.Should().Be(2.5m);
+            response.DeliveryModes.FirstOrDefault().National.Should().BeFalse();
         }
 
         [Test, AutoData]
