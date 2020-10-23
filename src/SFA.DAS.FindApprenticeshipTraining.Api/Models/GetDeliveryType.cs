@@ -11,6 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Town { get; set; }
         public string Postcode { get; set; }
         public string County { get; set; }
+        public bool National { get ; set ; }
     }
     public enum DeliveryModeType
     {
