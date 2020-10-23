@@ -162,5 +162,89 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Location.Name.Should().Be(query.Location);
             result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            var postcode = "CV1 1AA";
+
+            query.Location = $"{postcode}";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
+                                                                     && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
+                .ReturnsAsync(apiLocationResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Name.Should().Be(query.Location);
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_An_Outcode_And_District_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            var outcode = "CV1";
+            var location = $"{outcode} West Midlands";
+
+            query.Location = $"{location}";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByOutcodeAndDistrictRequest>(c => c.GetUrl.Contains(outcode))))
+                .ReturnsAsync(apiLocationResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Name.Should().Be(query.Location);
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
     }
 }
