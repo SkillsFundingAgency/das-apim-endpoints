@@ -11,45 +11,46 @@ using NUnit.Framework;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
+using SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
+namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Epaos
 {
-    public class WhenGettingCourseList
+    public class WhenGettingDeliveryAreaList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator(
-            GetCourseListResult mediatorResult,
+        public async Task Then_Gets_Delivery_Areas_From_Mediator(
+            GetDeliveryAreaListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy] EpaosController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCourseListQuery>(),
+                    It.IsAny<GetDeliveryAreaListQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList() as ObjectResult;
+            var controllerResult = await controller.GetDeliveryAreas() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetCourseListResponse;
+            var model = controllerResult.Value as GetDeliveryAreaListResponse;
             Assert.IsNotNull(model);
-            model.Courses.Should().BeEquivalentTo(mediatorResult.Courses);
+            model.DeliveryAreas.Should().BeEquivalentTo(mediatorResult.DeliveryAreas);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy] EpaosController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCourseListQuery>(),
+                    It.IsAny<GetDeliveryAreaListQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetList() as BadRequestResult;
+            var controllerResult = await controller.GetDeliveryAreas() as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
