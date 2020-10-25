@@ -217,7 +217,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProvidersQueryHandler handler)
         {
             var outcode = "CV1";
-            var location = $"{outcode} West Midlands";
+            var location = $"{outcode} Birmingham, West Midlands";
 
             query.Location = $"{location}";
             mockLocationApiClient
