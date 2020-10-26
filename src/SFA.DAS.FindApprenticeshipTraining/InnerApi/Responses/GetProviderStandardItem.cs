@@ -10,6 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Email { get; set; }
         public string Phone { get; set; }
         public int StandardId { get; set; }
+        public decimal ProviderDistance { get; set; }
         public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
         public IEnumerable<GetFeedbackAttributeItem> FeedbackAttributes { get; set; }
