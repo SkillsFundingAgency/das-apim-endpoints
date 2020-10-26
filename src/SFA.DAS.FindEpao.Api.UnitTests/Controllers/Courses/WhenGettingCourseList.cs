@@ -19,7 +19,6 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Courses_From_Mediator(
-            int standardCode,
             GetCourseListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller)
@@ -41,7 +40,6 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            int standardCode,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller)
         {
