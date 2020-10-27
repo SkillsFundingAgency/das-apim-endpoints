@@ -444,6 +444,52 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
+        public void Then_If_National_At_Workplace_Is_Selected_As_Delivery_Mode_Filter_Then_Null_Returned_If_No_National_At_Workplace(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer",
+                    DistanceInMiles = 2.5m,
+                    National = false
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.Workplace,
+                DeliveryModeType.National
+            }, new List<FeedbackRatingType>());
+
+            response.Should().BeNull();
+        }
+        
+        [Test, AutoData]
+        public void Then_If_National_At_Workplace_Is_Selected_As_Delivery_Mode_Filter_Then_Not_Null_Returned_If_National_At_Workplace(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer",
+                    DistanceInMiles = 2.5m,
+                    National = true
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.Workplace,
+                DeliveryModeType.National
+            }, new List<FeedbackRatingType>());
+
+            response.Should().NotBeNull();
+        }
+
+        [Test, AutoData]
         public void Then_If_There_Are_Ratings_To_Filter_Then_Matches_On_Values(string sectorSubjectArea, GetProvidersListItem source)
         {
             source.FeedbackRatings = new List<GetFeedbackRatingItem>
