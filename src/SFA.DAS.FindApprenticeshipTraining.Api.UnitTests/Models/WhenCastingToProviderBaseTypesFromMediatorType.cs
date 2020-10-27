@@ -75,7 +75,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 new GetDeliveryTypeItem
                 {
                     DeliveryModes = "100PercentEmployer|DayRelease",
-                    DistanceInMiles = 2.5m
+                    DistanceInMiles = 2.5m,
+                    National = true
                 },
                 new GetDeliveryTypeItem
                 {
@@ -95,6 +96,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease)?.DistanceInMiles.Should().Be(3.1m);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease)?.DistanceInMiles.Should().Be(2.5m);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace)?.DistanceInMiles.Should().Be(2.5m);
+            response.DeliveryModes.FirstOrDefault().National.Should().BeTrue();
         }
         
         [Test]
@@ -127,6 +129,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.DeliveryModes.Count.Should().Be(1);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == deliveryModeType)?.DistanceInMiles.Should().Be(2.5m);
+            response.DeliveryModes.FirstOrDefault().National.Should().BeFalse();
         }
 
         [Test, AutoData]
@@ -438,6 +441,52 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             }, new List<FeedbackRatingType>());
 
             response.Should().BeNull();
+        }
+
+        [Test, AutoData]
+        public void Then_If_National_At_Workplace_Is_Selected_As_Delivery_Mode_Filter_Then_Null_Returned_If_No_National_At_Workplace(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer",
+                    DistanceInMiles = 2.5m,
+                    National = false
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.Workplace,
+                DeliveryModeType.National
+            }, new List<FeedbackRatingType>());
+
+            response.Should().BeNull();
+        }
+        
+        [Test, AutoData]
+        public void Then_If_National_At_Workplace_Is_Selected_As_Delivery_Mode_Filter_Then_Not_Null_Returned_If_National_At_Workplace(string sectorSubjectArea, GetProvidersListItem source)
+        {
+            source.AchievementRates = null;
+            source.DeliveryTypes = new List<GetDeliveryTypeItem>
+            {
+                new GetDeliveryTypeItem
+                {
+                    DeliveryModes = "100PercentEmployer",
+                    DistanceInMiles = 2.5m,
+                    National = true
+                }
+            };
+            
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
+            {
+                DeliveryModeType.Workplace,
+                DeliveryModeType.National
+            }, new List<FeedbackRatingType>());
+
+            response.Should().NotBeNull();
         }
 
         [Test, AutoData]

@@ -157,7 +157,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Address2 = deliveryTypeItem.Address2,
                 County = deliveryTypeItem.County,
                 Postcode = deliveryTypeItem.Postcode,
-                Town = deliveryTypeItem.Town
+                Town = deliveryTypeItem.Town,
+                National = deliveryTypeItem.National
             };
         }
 
