@@ -16,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int? NationalOverallCohort { get; set; }
         
         public decimal? NationalOverallAchievementRate { get ; set ; }
-        public decimal DistanceInMiles { get ; set ; }
+        public GetProviderAddress ProviderAddress { get ; set ; }
 
         public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, string sectorSubjectArea, int level)
         {
@@ -27,6 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             
             return new GetProviderCourseItem
             {
+                ProviderAddress = source.ProviderStandard.ProviderAddress,
                 Website = source.ProviderStandard.ContactUrl,
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
@@ -38,7 +39,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
                 Feedback = getFeedbackResponse,
-                DistanceInMiles = source.ProviderStandard.ProviderDistance
             };
         }
 

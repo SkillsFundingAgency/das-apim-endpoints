@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.ContactUrl);
             actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
-            actual.DistanceInMiles.Should().Be(providerStandardItem.ProviderStandard.ProviderDistance);
+            actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
             actual.Feedback.TotalEmployerResponses.Should().Be(129);
             actual.Feedback.TotalFeedbackRating.Should().Be(3);
         }
