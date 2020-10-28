@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public decimal? NationalOverallAchievementRate { get ; set ; }
         public GetProviderAddress ProviderAddress { get ; set ; }
 
-        public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, string sectorSubjectArea, int level)
+        public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, string sectorSubjectArea, int level, bool hasLocation)
         {
             var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
             var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, sectorSubjectArea, level);
@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             
             return new GetProviderCourseItem
             {
-                ProviderAddress = source.ProviderStandard.ProviderAddress,
+                ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress,hasLocation),
                 Website = source.ProviderStandard.ContactUrl,
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,

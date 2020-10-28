@@ -10,9 +10,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Address4 { get; set; }
         public string Town { get; set; }
         public string Postcode { get; set; }
-        public decimal DistanceInMiles { get; set; }
+        public decimal? DistanceInMiles { get; set; }
         
-        public static implicit operator GetProviderAddress(GetProviderStandardItemAddress source)
+        public GetProviderAddress Map(GetProviderStandardItemAddress source, bool hasLocation)
         {
             return new GetProviderAddress
             {
@@ -22,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Address4 = source.Address4,
                 Town = source.Town,
                 Postcode = source.Postcode,
-                DistanceInMiles = source.DistanceInMiles
+                DistanceInMiles = hasLocation ?  source.DistanceInMiles : (decimal?) null
             };
         }
     }
