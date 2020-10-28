@@ -6,6 +6,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
     {
         public int Ukprn { get; set; }
         public string Name { get; set; }
+        public string TradingName { get; set; }
         public string ContactUrl { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

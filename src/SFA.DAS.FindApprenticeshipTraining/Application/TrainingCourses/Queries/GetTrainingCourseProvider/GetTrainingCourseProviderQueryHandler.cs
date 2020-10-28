@@ -44,7 +44,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
-
             await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask, ukprnsCount);
 
             if (providerTask.Result == null && location != null)
