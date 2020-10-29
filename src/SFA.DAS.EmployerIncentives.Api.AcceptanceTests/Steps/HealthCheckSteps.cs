@@ -1,8 +1,8 @@
-﻿using System.Net;
+﻿using FluentAssertions;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -46,7 +46,33 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                         .WithStatusCode((int)StatusCodeFromDescription(status))
                 );
         }
-        
+
+        [Given(@"the Accounts Api is ready and (.*)")]
+        public void GivenTheAccountsApiIsReadyAnd(string status)
+        {
+            _context.AccountsApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/ping")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
+        [Given(@"the Finance Api is ready and (.*)")]
+        public void GivenTheFinanceApiIsReadyAnd(string status)
+        {
+            _context.FinanceApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/finance/heartbeat")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
         [When(@"I ping the Outer Api")]
         public async Task WhenIPingTheOuterApi()
         {

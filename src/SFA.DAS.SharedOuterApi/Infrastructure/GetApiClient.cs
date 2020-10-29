@@ -1,9 +1,10 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -39,6 +40,17 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<TResponse>(json);
+        }
+
+        public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+
+            return response.StatusCode;
         }
 
         protected abstract Task AddAuthenticationHeader();

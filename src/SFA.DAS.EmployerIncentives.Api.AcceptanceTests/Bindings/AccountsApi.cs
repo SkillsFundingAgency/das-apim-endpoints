@@ -3,12 +3,12 @@
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
 {
     [Binding]
-    [Scope(Tag = "customerEngagementFinanceApi")]
-    public class CustomerEngagementFinanceApi
+    [Scope(Tag = "accountsApi")]
+    public class AccountsApi
     {
         private readonly TestContext _context;
 
-        public CustomerEngagementFinanceApi(TestContext context)
+        public AccountsApi(TestContext context)
         {
             _context = context;
         }
@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
         [BeforeScenario(Order = 1)]
         public void Initialise()
         {
-            _context.FinanceApi = new MockApi();
+            _context.AccountsApi = new MockApi();
         }
     }
 }
