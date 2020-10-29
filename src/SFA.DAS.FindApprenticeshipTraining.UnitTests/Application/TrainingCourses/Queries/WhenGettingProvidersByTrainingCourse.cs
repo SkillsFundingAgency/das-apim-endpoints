@@ -121,7 +121,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Location.Should().BeNull();
         }
 
-        /*******/
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
             GetTrainingCourseProvidersQuery query,
@@ -161,6 +160,46 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             result.Location.Name.Should().Be(query.Location);
             result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Outcode_Returns_No_Results_Then_No_Location_Is_Returned(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            var outcode = "NO1SE";
+
+            query.Location = $"{outcode}";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByOutcodeRequest>(c => c.GetUrl.Contains(outcode))))
+                .ReturnsAsync(new GetLocationsListItem
+                {
+                    Location = null
+                });
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains($"courses/{query.Id}/providers?lat=&lon=&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Should().BeNull();
         }
 
         [Test, MoqAutoData]

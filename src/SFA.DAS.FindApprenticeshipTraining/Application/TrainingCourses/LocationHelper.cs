@@ -51,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
             }
 
-            return getLocationsListItem != null 
+            return getLocationsListItem?.Location != null
                 ? new LocationItem(location, getLocationsListItem.Location.GeoPoint) 
                 : null;
         }
