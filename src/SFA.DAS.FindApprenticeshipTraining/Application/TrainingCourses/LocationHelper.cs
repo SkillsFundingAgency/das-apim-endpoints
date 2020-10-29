@@ -37,6 +37,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             else if (Regex.IsMatch(location, OutcodeDistrictRegex))
             {
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeAndDistrictRequest(location.Split(' ').FirstOrDefault()));
+                if (getLocationsListItem.Location != null)
+                {
+                    location = $"{getLocationsListItem.Outcode} {getLocationsListItem.DistrictName}";
+                }
             }
             else if(Regex.IsMatch(location, OutcodeRegex))
             {

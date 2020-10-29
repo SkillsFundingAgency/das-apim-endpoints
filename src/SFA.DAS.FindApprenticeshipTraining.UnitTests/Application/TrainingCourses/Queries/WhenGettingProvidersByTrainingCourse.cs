@@ -282,7 +282,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            result.Location.Name.Should().Be(query.Location);
+            result.Location.Name.Should().Be($"{apiLocationResponse.Outcode} {apiLocationResponse.DistrictName}");
             result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
         }
     }
