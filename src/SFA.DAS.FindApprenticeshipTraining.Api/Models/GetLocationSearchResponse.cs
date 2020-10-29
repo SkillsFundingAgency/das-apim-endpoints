@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetLocationSearchResponse
             {
-                Locations = source.Locations.Select(c=>(GetLocationSearchResponseItem)c).ToList()
+                Locations = source.Locations.Select(c => (GetLocationSearchResponseItem)c).ToList(),
             };
         }
         
@@ -26,9 +26,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetLocationSearchResponseItem
             {
-                Name = string.IsNullOrEmpty(source.Postcode) ?
-                    $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
-                Location = source.Location
+                Name = !string.IsNullOrEmpty(source.DistrictName) ? $"{source.Outcode} {source.DistrictName}" : string.IsNullOrEmpty(source.Postcode) ?
+                    $"{source.LocationName}, {source.LocalAuthorityName}" : $"{source.Postcode}",
+                Location = source.Location,
             };
         }
 
