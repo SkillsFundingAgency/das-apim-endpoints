@@ -1,7 +1,8 @@
 using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Clients
 {
@@ -14,9 +15,14 @@ namespace SFA.DAS.EmployerIncentives.Clients
             _client = client;
         }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request, bool ensureSuccessResponseCode = true)
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            return _client.Get<TResponse>(request, ensureSuccessResponseCode);
+            return _client.Get<TResponse>(request);
+        }
+
+        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        {
+            return _client.GetResponseCode(request);
         }
     }
 }

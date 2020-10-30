@@ -16,6 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             //Arrange
             source.Postcode = null;
+            source.DistrictName = null;
 
             //Act
             var actual = (GetLocationSearchResponseItem)source;
@@ -30,6 +31,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             //Arrange
             source.Postcode = "";
+            source.DistrictName = null;
 
             //Act
             var actual = (GetLocationSearchResponseItem)source;
@@ -43,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         public void Then_The_Fields_are_Correctly_Mapped_When_Postcode_Is_Not_Null(GetLocationsListItem source)
         {
             //Act
+            source.DistrictName = null;
             var actual = (GetLocationSearchResponseItem)source;
 
             //Assert

@@ -14,5 +14,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
         public IEnumerable<GetFeedbackAttributeItem> FeedbackAttributes { get; set; }
         public IEnumerable<GetFeedbackRatingItem> FeedbackRatings { get; set; }
+        public GetProviderStandardItemAddress ProviderAddress { get ; set ; }
     }
 }

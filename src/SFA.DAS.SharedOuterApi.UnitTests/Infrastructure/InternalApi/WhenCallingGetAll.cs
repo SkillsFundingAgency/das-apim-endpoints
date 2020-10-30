@@ -97,6 +97,36 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
                      ItExpr.IsAny<CancellationToken>()
                  );
          }
+
+         [Test, AutoData]
+         public async Task Then_If_Returns_Not_Found_Result_Returns_Empty_List(
+             TestInternalApiConfiguration config)
+         {
+             //Arrange
+             config.Url = "https://test.local";
+             var configuration = config;
+             var response = new HttpResponseMessage
+             {
+                 Content = new StringContent(""),
+                 StatusCode = HttpStatusCode.NotFound
+             };
+             var getTestRequest = new GetAllTestRequest();
+             var expectedUrl = $"{config.Url}{getTestRequest.GetAllUrl}";
+             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
+             var client = new HttpClient(httpMessageHandler.Object);
+             var clientFactory = new Mock<IHttpClientFactory>();
+             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+             
+             var hostingEnvironment = new Mock<IWebHostEnvironment>();
+             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+
+             //Act
+             var actualResult = await actual.GetAll<string>(getTestRequest);
+             
+             //Assert
+             Assert.IsEmpty(actualResult);
+         }
         
         private class GetAllTestRequest : IGetAllApiRequest
         {

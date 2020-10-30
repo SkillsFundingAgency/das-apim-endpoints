@@ -24,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Locations.Que
         {
             mockApiClient
                 .Setup(client => client.Get<GetLocationsListResponse>(
-                    It.Is<GetLocationsQueryRequest>(c=>c.GetUrl.Contains(query.SearchTerm)), true))
+                    It.Is<GetLocationsQueryRequest>(c=>c.GetUrl.Contains(query.SearchTerm))))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

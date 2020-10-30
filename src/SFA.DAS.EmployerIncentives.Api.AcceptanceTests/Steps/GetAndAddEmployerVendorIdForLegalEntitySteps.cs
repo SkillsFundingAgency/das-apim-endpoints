@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"employer vendor Id is retrieved from the Finance API")]
         public void ThenEmployerVendorIdIsRetrievedFromTheFinanceAPI()
         {
-            _context.FinanceApiV1.MockServer.FindLogEntries(Request.Create()
+            _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                     .WithPath($"/Finance/{CompanyName}/vendor/aleid={_hashedLegalEntityId}")
                     .WithParam("api-version", "2019-06-01")
                     .UsingGet()).Should().HaveCount(1);
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
         private void SetResponseFromFinanceApi()
         {
-            _context.FinanceApiV1.MockServer
+            _context.FinanceApi.MockServer
                 .Given(ExpectedGetVendorDataApiRequest)
                 .RespondWith(
                     Response.Create()
