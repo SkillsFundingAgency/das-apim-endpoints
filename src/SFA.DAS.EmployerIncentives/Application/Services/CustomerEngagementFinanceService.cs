@@ -20,6 +20,5 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             return await _client.Get<GetVendorRegistrationCaseStatusUpdateResponse>(new GetVendorRegistrationStatusByLastStatusChangeDateRequest(dateTimeFrom, dateTimeTo));
         }
-
     }
 }

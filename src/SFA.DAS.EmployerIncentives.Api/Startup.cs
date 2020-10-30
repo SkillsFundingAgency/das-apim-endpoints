@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +17,7 @@ using SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSear
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {
@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
@@ -60,11 +60,14 @@ namespace SFA.DAS.EmployerIncentives.Api
 
             services.AddHealthChecks()
                 .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
-                .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck));
+                .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck))
+                .AddCheck<CustomerEngagementFinanceApiHealthCheck>(nameof(CustomerEngagementFinanceApiHealthCheck))
+                .AddCheck<AccountsApiHealthCheck>(nameof(AccountsApiHealthCheck))
+                ;
 
             services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
             services.AddServiceRegistration();
-            
+
             services
                 .AddMvc(o =>
                 {
@@ -74,11 +77,12 @@ namespace SFA.DAS.EmployerIncentives.Api
                     }
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => {
+                .AddJsonOptions(options =>
+                {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
-            
-            
+
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
@@ -105,7 +109,7 @@ namespace SFA.DAS.EmployerIncentives.Api
                 .UseAuthentication();
 
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -115,7 +119,7 @@ namespace SFA.DAS.EmployerIncentives.Api
             });
 
             app.UseHealthChecks();
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
