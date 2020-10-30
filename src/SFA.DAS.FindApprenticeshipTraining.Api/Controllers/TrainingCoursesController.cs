@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
+using SFA.DAS.FindApprenticeshipTraining.Api.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
@@ -108,6 +109,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var mappedProviders = result.Providers
                     .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes, providerRatings))
                     .Where(x=>x!=null)
+                    .OrderByProviderRating()
                     .ToList();
                 var model = new GetTrainingCourseProvidersResponse
                 {
