@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPut("legalentities/{hashedLegalEntityId}/employervendorid")]
-        public async Task<IActionResult> GetAndAddEmployerVendorId(string hashedLegalEntityId)
+        public async Task<IActionResult> AddEmployerVendorId(string hashedLegalEntityId)
         {
             await _mediator.Send(new GetAndAddEmployerVendorIdCommand(hashedLegalEntityId));
 
