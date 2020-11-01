@@ -214,5 +214,61 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(1).Take(1).First().ProviderId.Should().Be(1);
             list.Last().ProviderId.Should().Be(3);
         }
+
+        [Test]
+        public void Then_If_All_Score_Same_With_No_Location_Then_Order_By_Name()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Name = "Third",
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Name = "Second",
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Name = "First",
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100
+                }
+            };
+            
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
+            list.Last().ProviderId.Should().Be(1);
+        }
+
+        [Test]
+        public void Then_If_There_Is_A_Location_Then_Scored_And_Sorted_By_Distance()
+        {
+            
+        }
     }
 }

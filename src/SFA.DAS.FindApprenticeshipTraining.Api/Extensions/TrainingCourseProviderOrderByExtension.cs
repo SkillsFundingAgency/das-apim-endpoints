@@ -6,54 +6,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 {
     public static class TrainingCourseProviderOrderByExtension
     {
+        private static Dictionary<int, decimal> ProviderScores => new Dictionary<int, decimal>();
+        
         public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderRating(this IEnumerable<GetTrainingCourseProviderListItem> source)
         {
-            var achievementRateScores = new Dictionary<int, decimal>();
-            
             var getTrainingCourseProviderListItems = source.ToList();
 
-            foreach (var listItem in getTrainingCourseProviderListItems)
-            {
-                var feedbackScore = GetFeedbackScore(listItem.Feedback.TotalFeedbackRating);
-                achievementRateScores.Add(listItem.ProviderId, feedbackScore);    
-            }
+            AddFeedbackRateScore(getTrainingCourseProviderListItems);
 
-            var totalRates = getTrainingCourseProviderListItems.Count(c => c.OverallAchievementRate.HasValue && c.OverallAchievementRate != 0);
-
-            var percentileRate = 100f / (totalRates - 1);
-
-            var score = 100f;
-            foreach (var listItem in getTrainingCourseProviderListItems
-                .Where(c=>c.OverallAchievementRate.HasValue)
-                .OrderByDescending(c=>c.OverallAchievementRate))
-            {
-                var scoreValue = GetAchievementRateScore(score);
-                if (achievementRateScores.ContainsKey(listItem.ProviderId))
-                {
-                    achievementRateScores[listItem.ProviderId] += scoreValue;
-                }
-                else
-                {
-                    achievementRateScores.Add(listItem.ProviderId, scoreValue);    
-                }
-                
-                score -= percentileRate;
-            }
-
-            foreach (var listItem in getTrainingCourseProviderListItems.Where(c=>!c.OverallAchievementRate.HasValue))
-            {
-                if (achievementRateScores.ContainsKey(listItem.ProviderId))
-                {
-                    achievementRateScores[listItem.ProviderId] += GetAchievementRateScore(null);
-                }
-                else
-                {
-                    achievementRateScores.Add(listItem.ProviderId,GetAchievementRateScore(null));    
-                }
-                
-            }
-
-            var returnList = achievementRateScores.Join(getTrainingCourseProviderListItems,
+            AddAchievementRateScore(getTrainingCourseProviderListItems);
+            
+            var returnList = ProviderScores.Join(getTrainingCourseProviderListItems,
                     achievementRateScore => achievementRateScore.Key,
                     getTrainingCourseProviderListItem => getTrainingCourseProviderListItem.ProviderId,
                     (achievementRateScore, getTrainingCourseProviderListItem) =>
@@ -62,9 +25,58 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .Select(c=>c.getTrainingCourseProviderListItem)
                 .OrderByDescending(c=>c.OverallCohort)
                 .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
+                .ThenBy(c=>c.Name)
                 .ToList();
 
             return returnList;
+        }
+
+        private static void AddAchievementRateScore(IReadOnlyCollection<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
+        {
+            var totalRates =
+                getTrainingCourseProviderListItems.Count(
+                    c => c.OverallAchievementRate.HasValue && c.OverallAchievementRate != 0);
+
+            var percentileRate = 100f / (totalRates - 1);
+
+            var score = 100f;
+            foreach (var listItem in getTrainingCourseProviderListItems
+                .Where(c => c.OverallAchievementRate.HasValue)
+                .OrderByDescending(c => c.OverallAchievementRate))
+            {
+                var scoreValue = GetAchievementRateScore(score);
+                if (ProviderScores.ContainsKey(listItem.ProviderId))
+                {
+                    ProviderScores[listItem.ProviderId] += scoreValue;
+                }
+                else
+                {
+                    ProviderScores.Add(listItem.ProviderId, scoreValue);
+                }
+
+                score -= percentileRate;
+            }
+
+            foreach (var listItem in getTrainingCourseProviderListItems.Where(c => !c.OverallAchievementRate.HasValue))
+            {
+                if (ProviderScores.ContainsKey(listItem.ProviderId))
+                {
+                    ProviderScores[listItem.ProviderId] += GetAchievementRateScore(null);
+                }
+                else
+                {
+                    ProviderScores.Add(listItem.ProviderId, GetAchievementRateScore(null));
+                }
+            }
+        }
+
+        private static void AddFeedbackRateScore(IEnumerable<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
+        {
+            foreach (var listItem in getTrainingCourseProviderListItems)
+            {
+                var feedbackScore = GetFeedbackScore(listItem.Feedback.TotalFeedbackRating);
+                ProviderScores.Add(listItem.ProviderId, feedbackScore);
+            }
         }
 
         private static decimal GetFeedbackScore(int score)
@@ -84,6 +96,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
             {
                 return 1;
             }
+
             if (rate > 70)
             {
                 return 4;
