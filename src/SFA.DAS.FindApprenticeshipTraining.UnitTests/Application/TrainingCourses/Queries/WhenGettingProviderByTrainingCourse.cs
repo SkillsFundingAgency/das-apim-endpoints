@@ -440,8 +440,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
                     c.GetUrl.Contains(query.CourseId.ToString())
-                    && c.GetUrl.Contains(query.ProviderId.ToString()
-                    ))))
+                    && c.GetUrl.Contains(query.ProviderId.ToString())
+                    && c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                    )))
                 .ReturnsAsync(apiProviderStandardResponse);
 
             mockApiClient
