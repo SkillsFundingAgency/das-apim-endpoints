@@ -8,13 +8,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     public class ProviderCourseBase
     {
         public int ProviderId { get ; set ; }
-
         public string Name { get ; set ; }
         public List<GetDeliveryType> DeliveryModes { get ; set ; }
         public int? OverallCohort { get; set; }
         public decimal? OverallAchievementRate { get ; set ; }
         public GetProviderFeedbackResponse Feedback { get ; set ; }
-        
+        public bool HasLocation { get ; set ; }
         private string MapLevel(int level)
         {
             if (level == 2)
@@ -100,6 +99,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                     {
                         case DeliveryModeType.Workplace when !hasWorkPlace:
                             item.DeliveryModeType = DeliveryModeType.Workplace;
+                            item.DistanceInMiles = 0m;
                             filterDeliveryModes.Add(item);
                             hasWorkPlace = true;
                             break;

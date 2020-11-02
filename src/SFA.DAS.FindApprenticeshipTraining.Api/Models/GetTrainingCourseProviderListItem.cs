@@ -49,8 +49,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 DeliveryModes = getDeliveryTypes,
-                Feedback = getFeedbackResponse
+                Feedback = getFeedbackResponse,
+                HasLocation = hasLocation
             };
         }
+
+        public decimal Score { get ; set ; }
     }
 }

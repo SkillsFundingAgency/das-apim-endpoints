@@ -28,6 +28,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
+            response.HasLocation.Should().BeTrue();
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
 
         }
@@ -95,12 +96,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.DeliveryModes.Count.Should().Be(3);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease)?.DistanceInMiles.Should().Be(3.1m);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease)?.DistanceInMiles.Should().Be(2.5m);
-            response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace)?.DistanceInMiles.Should().Be(2.5m);
+            response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace)?.DistanceInMiles.Should().Be(0m);
             response.DeliveryModes.FirstOrDefault().National.Should().BeTrue();
         }
         
         [Test]
-        [InlineAutoData("100PercentEmployer",DeliveryModeType.Workplace)]
         [InlineAutoData("BlockRelease",DeliveryModeType.BlockRelease)]
         [InlineAutoData("DayRelease",DeliveryModeType.DayRelease)]
         public void Then_Maps_Delivery_Types_Returning_The_Smallest_Distance_Only_For_One_Type(string deliveryModeString, DeliveryModeType deliveryModeType, string sectorSubjectArea, GetProvidersListItem source)
@@ -133,7 +133,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_Maps_All_DeliveryType_Fields(string sectorSubjectArea, GetProvidersListItem source, GetDeliveryTypeItem item)
+        public void Then_Maps_All_DeliveryType_Fields_And_Sets_At_WorkPlace_Distance_To_Zero(string sectorSubjectArea, GetProvidersListItem source, GetDeliveryTypeItem item)
         {
             source.AchievementRates = null;
             item.DeliveryModes = "100PercentEmployer";
@@ -141,7 +141,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
             
-            response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes));
+            response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes).Excluding(c=>c.DistanceInMiles));
+            response.DeliveryModes.First().DeliveryModeType.Should().Be(DeliveryModeType.Workplace);
+            response.DeliveryModes.First().DistanceInMiles.Should().Be(0m);
         }
 
         [Test, AutoData]
