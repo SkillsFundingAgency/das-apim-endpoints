@@ -32,7 +32,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Location = "";
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
-                    c.GetUrl.Contains(query.Id.ToString())
+                    c.GetUrl.Contains(query.Id.ToString()) 
+                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}")
                 )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient

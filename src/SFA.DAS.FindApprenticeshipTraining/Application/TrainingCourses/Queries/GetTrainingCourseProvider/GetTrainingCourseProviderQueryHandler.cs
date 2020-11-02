@@ -32,25 +32,28 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
-            var location = await _locationHelper.GetLocationInformation(request.Location);
+            var locationTask = _locationHelper.GetLocationInformation(request.Location);
+            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
+
+            await Task.WhenAll(locationTask, courseTask);
 
             var ukprnsCount = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(
-                new GetUkprnsForStandardAndLocationRequest(request.CourseId, location?.GeoPoint?.FirstOrDefault() ?? 0,
-                    location?.GeoPoint?.LastOrDefault() ?? 0));
-            
-            var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, location?.GeoPoint?.FirstOrDefault(), location?.GeoPoint?.LastOrDefault()));
-            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
+                new GetUkprnsForStandardAndLocationRequest(request.CourseId, locationTask.Result?.GeoPoint?.FirstOrDefault() ?? 0,
+                    locationTask.Result?.GeoPoint?.LastOrDefault() ?? 0));
+
+            var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault()));
             var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(new GetProviderAdditionalStandardsRequest(request.ProviderId));
 
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
-            await Task.WhenAll(courseTask, providerTask, coursesTask, providerCoursesTask, ukprnsCount);
 
-            if (providerTask.Result == null && location != null)
+            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount);
+
+            if (providerTask.Result == null && locationTask.Result != null)
             {
                 providerTask = Task.FromResult(
                     await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
-                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId)));
+                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description)));
 
                 providerTask.Result.DeliveryTypes = new List<GetDeliveryTypeItem> 
                 {
@@ -78,7 +81,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
                 TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(),
                 TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(),
-                Location = location
+                Location = locationTask.Result
             };
         }
 
