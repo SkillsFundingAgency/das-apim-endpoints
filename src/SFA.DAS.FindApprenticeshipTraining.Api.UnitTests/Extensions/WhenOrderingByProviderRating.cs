@@ -3,6 +3,7 @@ using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using SFA.DAS.FindApprenticeshipTraining.Api.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 
@@ -66,6 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(3).Take(1).First().ProviderId.Should().Be(2);
             list.Last().ProviderId.Should().Be(5);
         }
+        
         [Test]
         public void Then_The_Percentile_Is_Calculated_And_Rank_Assigned_For_AchievementRates()
         {
@@ -123,7 +125,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.First().ProviderId.Should().Be(3);
             list.Last().ProviderId.Should().Be(1);
         }
-
+        
         [Test]
         public void Then_If_The_Scores_Are_The_Same_Ordered_By_Cohort_Size()
         {
@@ -132,32 +134,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 1,
-                    OverallAchievementRate = 84.8m,
                     OverallCohort = 100,
                     Feedback = new GetProviderFeedbackResponse
                     {
-                        
+                        TotalFeedbackRating = 4
                     } 
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
-                    OverallAchievementRate = 84.8m,
                     OverallCohort = 1000,
                     Feedback = new GetProviderFeedbackResponse
                     {
-                        
-                    } 
+                        TotalFeedbackRating = 4
+                    }  
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
-                    OverallAchievementRate = 84.8m,
                     OverallCohort = 10,
                     Feedback = new GetProviderFeedbackResponse
                     {
-                        
-                    } 
+                        TotalFeedbackRating = 4
+                    }  
                 }
             };
             
@@ -176,7 +175,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 1,
-                    OverallAchievementRate = 84.8m,
+                    Name = "test 1",
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -187,7 +186,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
-                    OverallAchievementRate = 84.8m,
+                    Name = "test 2",
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -198,7 +197,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
-                    OverallAchievementRate = 84.8m,
+                    Name = "test 3",
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -214,7 +213,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(1).Take(1).First().ProviderId.Should().Be(1);
             list.Last().ProviderId.Should().Be(3);
         }
-
+        
         [Test]
         public void Then_If_All_Score_Same_With_No_Location_Then_Order_By_Name()
         {
@@ -224,7 +223,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     Name = "Third",
-                    OverallAchievementRate = 84.8m,
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -236,7 +234,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     Name = "Second",
-                    OverallAchievementRate = 84.8m,
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -248,7 +245,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     Name = "First",
-                    OverallAchievementRate = 84.8m,
                     Feedback = new GetProviderFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
@@ -264,11 +260,366 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
             list.Last().ProviderId.Should().Be(1);
         }
-
+        
         [Test]
         public void Then_If_There_Is_A_Location_Then_Scored_And_Sorted_By_Distance()
         {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 1
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 5.1m
+                        }
+                    } ,
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 15.1m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
             
+            list = list.OrderByProviderRating().ToList();
+            
+            list.First().ProviderId.Should().Be(1);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(3);
+            list.Skip(2).Take(1).First().ProviderId.Should().Be(2);
+            list.Last().ProviderId.Should().Be(4);
+        }
+        
+        [Test]
+        public void Then_Delivery_Type_Of_Workplace_Counts_As_Zero_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 1
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 5.1m
+                        }
+                    } ,
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 15.1m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating().ToList();
+            
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
+            list.Skip(2).Take(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(2);
+        }
+        
+        [Test]
+        public void Then_If_Matched_In_Group_Then_Ordered_By_Closest()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 3.9m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating().ToList();
+            
+            list.First().ProviderId.Should().Be(2);
+            list.Last().ProviderId.Should().Be(1);
+        }
+        
+        [Test]
+        public void Then_If_All_Are_At_Workplace_Then_Not_Grouped_By_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Name = "Third",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 10
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Name = "Second",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 15
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Name = "First",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 100
+                        }
+                    }
+                }
+            };
+            
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
+            list.Last().ProviderId.Should().Be(1);
+        }
+        
+        [Test]
+        public void Then_If_All_Are_Same_Score_And_Distance_Then_Ordered_By_OverAllCohort()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Name = "Test",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 10,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 11
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Name = "Test",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 100,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 11
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Name = "Test",
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalEmployerResponses = 100
+                    },
+                    OverallCohort = 1000,
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 11
+                        }
+                    }
+                }
+            };
+            
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
+            list.Last().ProviderId.Should().Be(1);
         }
     }
 }
