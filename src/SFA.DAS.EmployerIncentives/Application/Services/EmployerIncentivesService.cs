@@ -140,6 +140,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
         }
 
+        public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
+        {
+            return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
+                { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId} });
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
@@ -154,6 +160,5 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
-
     }
 }
