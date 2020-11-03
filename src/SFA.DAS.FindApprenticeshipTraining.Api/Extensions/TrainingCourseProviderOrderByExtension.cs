@@ -103,22 +103,46 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 
         private static void AddAchievementRateScore(IReadOnlyCollection<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
         {
-            var totalRates =
-                getTrainingCourseProviderListItems.Count(
-                    c => c.OverallAchievementRate.HasValue && c.OverallAchievementRate != 0);
+            
+            var providerAchievementRates
+                = getTrainingCourseProviderListItems.Where(
+                c => c.OverallAchievementRate.HasValue && c.OverallAchievementRate != 0)
+                    .ToList();
 
-            var percentileRate = 100f / (totalRates - 1);
+            var distinctAchievementRates = providerAchievementRates
+                .Select(c=>c.OverallAchievementRate)
+                .Distinct()
+                .ToList();
+            
+            var distinctRateCount = (double) distinctAchievementRates
+                .Count - 1;
+            
+            var proportionOfValues = providerAchievementRates.Select(value => new 
+            {
+                Value = value,
+                Proportion = providerAchievementRates
+                    .Count(x => value.OverallAchievementRate > x.OverallAchievementRate) / distinctRateCount
+            });
 
-            var score = 100f;
+            var percentileValues = distinctAchievementRates
+                .Select(u => new {
+                Value = u ?? 0,
+                Proportion = proportionOfValues
+                    .Where(v => v.Value.OverallAchievementRate == u)
+                    .Select(x => x.Proportion)
+                    .Sum() * 100
+            }).ToList();
+            
+            
             foreach (var listItem in getTrainingCourseProviderListItems
                 .Where(c => c.OverallAchievementRate.HasValue)
                 .OrderByDescending(c => c.OverallAchievementRate))
             {
-                var scoreValue = GetAchievementRateScore(score);
+                var score = percentileValues.FirstOrDefault(x => x.Value == listItem.OverallAchievementRate); 
+                var scoreValue = GetAchievementRateScore((float)(score?.Proportion??0));
                 
                 _providerScores[listItem.ProviderId] += scoreValue;
                 
-                score -= percentileRate;
             }
 
             foreach (var listItem in getTrainingCourseProviderListItems.Where(c => !c.OverallAchievementRate.HasValue))

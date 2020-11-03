@@ -111,6 +111,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 },
                 new GetTrainingCourseProviderListItem
                 {
+                    ProviderId = 6,
+                    OverallAchievementRate = 81.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
                     ProviderId = 5,
                     OverallAchievementRate = null,
                     Feedback = new GetProviderFeedbackResponse
