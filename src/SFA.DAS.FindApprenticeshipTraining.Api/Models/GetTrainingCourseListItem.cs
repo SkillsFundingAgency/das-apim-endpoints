@@ -21,6 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
+        public string ApprovalBody { get; set; }
         public StandardDate StandardDates { get; set; }
 
 
@@ -44,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 SectorSubjectAreaTier2Description = source.SectorSubjectAreaTier2Description,
                 SectorSubjectAreaTier2 = source.SectorSubjectAreaTier2,
                 OtherBodyApprovalRequired = source.OtherBodyApprovalRequired,
+                ApprovalBody = source.ApprovalBody,
                 StandardDates = source.StandardDates
             };
         }
