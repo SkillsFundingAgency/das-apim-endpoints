@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
         [BeforeScenario(Order = 1)]
         public void Initialise()
         {
-            _context.AccountsApi = new MockApi();
+            if (_context.AccountsApi == null)
+                _context.AccountsApi = new MockApi();
         }
     }
 }

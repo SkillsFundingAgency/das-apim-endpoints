@@ -30,19 +30,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            var location = await _locationHelper.GetLocationInformation(request.Location);
+            var locationTask =  _locationHelper.GetLocationInformation(request.Location);
+            var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
+
+            await Task.WhenAll(locationTask, courseTask);
             
-            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
-            var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.GeoPoint?.FirstOrDefault(), location?.GeoPoint?.LastOrDefault(), request.SortOrder));
-
-            await Task.WhenAll(courseTask, providersTask);
-
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder));
+            
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providersTask.Result.Providers,
-                Total = providersTask.Result.TotalResults,
-                Location = location
+                Providers = providers.Providers,
+                Total = providers.TotalResults,
+                Location = locationTask.Result
             }; 
         }
     }

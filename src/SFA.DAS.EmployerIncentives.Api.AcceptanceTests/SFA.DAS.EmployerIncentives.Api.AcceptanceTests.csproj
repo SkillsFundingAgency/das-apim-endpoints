@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\UpdateVendorRegistrationCaseStatusForLegalEntities - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
@@ -37,6 +41,9 @@
     </Compile>
     <Compile Update="Features\SendBankDetailsRequiredEmail.feature.cs">
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Features\GetAndAddEmployerVendorIdForLegalEntity.feature.cs">
+      <DependentUpon>GetAndAddEmployerVendorIdForLegalEntity.feature</DependentUpon>
     </Compile>
     <Compile Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs">
       <DesignTime>True</DesignTime>
@@ -72,6 +79,12 @@
     <SpecFlowFeatureFiles Update="Features\SendBankDetailsRequiredEmail.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SendBankDetailsRequiredEmail.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\GetAndAddEmployerVendorIdForLegalEntity.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+      <LastGenOutput>UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs</LastGenOutput>
+      <Generator>SpecFlowSingleFileGenerator</Generator>
     </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

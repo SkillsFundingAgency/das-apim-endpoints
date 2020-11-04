@@ -74,7 +74,7 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
         {
             // Return sample values for Account 100 and ALE 2000 
             _fakeCustomerEngagementApi.Given(
-                    Request.Create().WithPath($"/Finance/{_customerEngagementCompanyName}/vendor/{_hashedLegalEntityId}")
+                    Request.Create().WithPath($"/Finance/{_customerEngagementCompanyName}/vendor/aleid={_hashedLegalEntityId}")
                         .UsingGet()
                 )
                 .RespondWith(

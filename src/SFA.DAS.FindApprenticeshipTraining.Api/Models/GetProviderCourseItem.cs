@@ -32,6 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
+                TradingName = source.ProviderStandard.TradingName,
                 ProviderId = source.ProviderStandard.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 NationalOverallCohort = nationalRate?.OverallCohort,
