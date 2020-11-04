@@ -45,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetTrainingCourseProviderListItem
             {
                 Name = source.Name,
+                TradingName = source.TradingName,
                 ProviderId = source.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,

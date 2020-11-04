@@ -61,6 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,5, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
@@ -88,6 +89,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,2, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.NationalOverallCohort.Should().Be(item3.OverallCohort);
@@ -114,6 +116,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetProviderCourseItem().Map(source, sectorSubjectArea, 1, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().BeNull();
             response.NationalOverallCohort.Should().BeNull();
