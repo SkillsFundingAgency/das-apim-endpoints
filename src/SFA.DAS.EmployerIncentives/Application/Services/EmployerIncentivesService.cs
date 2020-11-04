@@ -1,5 +1,6 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
@@ -155,5 +156,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
+        public async Task EarningsResilienceCheck()
+        {
+            await _client.Post<string>(new EarningsResilenceCheckRequest());
+        }
     }
 }
