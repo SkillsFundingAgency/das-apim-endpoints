@@ -136,7 +136,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}/providers/{providerId}")]
-        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location)
+        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location, [FromQuery]double lat=0, [FromQuery]double lon=0)
         {
             try
             {
@@ -144,7 +144,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     CourseId = id, 
                     ProviderId = providerId,
-                    Location = location
+                    Location = location,
+                    Lat = lat,
+                    Lon = lon
                 });
                 var model = new GetTrainingCourseProviderResponse
                 {
