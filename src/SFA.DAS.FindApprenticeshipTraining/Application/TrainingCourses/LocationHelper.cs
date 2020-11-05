@@ -21,11 +21,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             _locationApiClient = locationApiClient;
         }
 
-        public async Task<LocationItem> GetLocationInformation(string location)
+        public async Task<LocationItem> GetLocationInformation(string location, double lat, double lon)
         {
             if (string.IsNullOrEmpty(location))
             {
                 return null;
+            }
+            
+            if (lat != 0 && lon != 0)
+            {
+                return new LocationItem(location, new []{ lat, lon});
             }
 
             GetLocationsListItem getLocationsListItem  = null;

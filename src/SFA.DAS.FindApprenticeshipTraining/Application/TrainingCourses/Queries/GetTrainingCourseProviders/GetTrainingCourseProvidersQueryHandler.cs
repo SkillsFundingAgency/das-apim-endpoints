@@ -31,16 +31,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            Task<LocationItem> locationTask ;
-            if(request.Lat == 0 && request.Lon == 0)
-            {
-                locationTask = _locationHelper.GetLocationInformation(request.Location);
-            }
-            else
-            {
-                locationTask = Task.FromResult(new LocationItem(request.Location, new []{ request.Lat, request.Lon}));
-            }
-
+            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
+            
             var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
             await Task.WhenAll(locationTask, courseTask);
