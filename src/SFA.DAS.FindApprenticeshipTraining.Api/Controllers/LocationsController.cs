@@ -29,13 +29,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             try
             {
                 var queryResult = await _mediator.Send(new GetLocationsQuery {SearchTerm = searchTerm});
-                
+
                 var response = new GetLocationSearchResponse
                 {
                     Locations = queryResult.Locations
-                        .Select(c=>(GetLocationSearchResponse.GetLocationSearchResponseItem)c),
+                        .Select(c => (GetLocationSearchResponseItem)c),
                 };
-
                 return Ok(response);
             }
             catch (Exception e)

@@ -1,0 +1,49 @@
+parameters:
+  DeploymentName:
+  DeploymentCondition: false
+  DeploymentApprovals:
+  ServiceConnection:
+  AppServiceName:
+  DeploymentPackagePath:
+  ApimResourceGroup:
+  ApimInstanceName:
+  AppServiceResourceGroup:
+  ApiVersionSetName:
+  ApiPath: 
+  ApiBaseUrl:
+  ProductId:
+  ApplicationIdentifierUri:
+
+jobs:
+- deployment: ${{ parameters.DeploymentName }}
+  dependsOn: DeployInfrastructure
+  condition: ${{ parameters.DeploymentCondition }}
+  variables:
+    ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
+  environment: ${{ parameters.DeploymentApprovals }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: ${{ parameters.AppServiceName }}
+            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
+        - checkout: das-platform-automation
+        - task: AzurePowerShell@5
+          displayName: Import-ApimSwaggerApiDefinition - ${{ parameters.AppServiceName }}
+          inputs:
+            azureSubscription: ${{ parameters.ServiceConnection }}
+            ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+            ScriptArguments:
+              -ApimResourceGroup ${{ parameters.ApimResourceGroup }} `
+              -InstanceName ${{ parameters.ApimInstanceName }} `
+              -AppServiceResourceGroup ${{ parameters.AppServiceResourceGroup }} `
+              -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+              -ApiPath ${{ parameters.ApiPath }} `
+              -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+              -ProductId ${{ parameters.ProductId }} `
+              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }}
+            azurePowerShellVersion: LatestVersion
+            pwsh: true

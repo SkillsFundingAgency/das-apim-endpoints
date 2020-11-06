@@ -16,7 +16,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     {
         private readonly TestContext _context;
         private readonly DateTime _dateTimeFrom = DateTime.SpecifyKind(new DateTime(2020, 9, 1, 9, 0, 0), DateTimeKind.Utc);
-        private readonly DateTime _dateTimeTo = DateTime.SpecifyKind(new DateTime(2020, 9, 1, 10, 0, 0), DateTimeKind.Utc);
         private readonly string[] _hashedLegalEntitiesFromFinanceJson = new[] { "DW5T8V", "HEN123" };
         private HttpResponseMessage _response;
 
@@ -28,14 +27,14 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             SetResponseFromFinanceApi(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate);
             SetupExpectedEmployerIncentivesApiCalls();
 
-            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}&to={_dateTimeTo:yyyy-MM-ddTHH:mm:ssZ}";
+            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
             _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(""));
         }
 
         [Then(@"latest VRF cases are retrieved from Finance API")]
         public void ThenLatestVRFCasesAreRetrievedFromFinanceAPI()
         {
-            _context.FinanceApiV1.MockServer.FindLogEntries(Request.Create()
+            _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath("/Finance/Registrations")
                 .UsingGet()).Should().HaveCount(1);
         }
@@ -56,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             SetResponseFromFinanceApi(TestData.FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType);
             SetupExpectedEmployerIncentivesApiCalls();
 
-            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}&to={_dateTimeTo:yyyy-MM-ddTHH:mm:ssZ}";
+            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
             _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(""));
         }
 
@@ -72,7 +71,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
         private void SetResponseFromFinanceApi(byte[] testData)
         {
-            _context.FinanceApiV1.MockServer
+            _context.FinanceApi.MockServer
                 .Given(ExpectedFinanceApiRequest)
                 .RespondWith(
                     Response.Create()
@@ -87,7 +86,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             Request.Create()
                 .WithPath("/Finance/Registrations")
                 .WithParam("DateTimeFrom", $"{_dateTimeFrom.ToLocalTime():yyyy-MM-ddTHH:mm:ssZ}")
-                .WithParam("DateTimeTo", $"{_dateTimeTo.ToLocalTime():yyyy-MM-ddTHH:mm:ssZ}")
                 .WithParam("VendorType", "EMPLOYER")
                 .WithParam("api-version", "2019-06-01")
                 .UsingGet();

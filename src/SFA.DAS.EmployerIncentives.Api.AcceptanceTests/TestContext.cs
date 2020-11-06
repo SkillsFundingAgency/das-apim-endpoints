@@ -1,15 +1,60 @@
 ﻿using System;
 using System.Net.Http;
+using SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings;
 
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
 {
+    public static class MockServers
+    {
+        public static MockApi InnerApi { get; set; }
+        public static MockApi AccountsApi { get; set; }
+        public static MockApi CommitmentsV2InnerApi { get; set; }
+        public static MockApi FinanceApi { get; set; }
+    }
+
+
     public class TestContext : IDisposable
     {
-        public MockApi InnerApi { get; set; }
-        public MockApi CommitmentsV2InnerApi { get; set; }
-        public MockApi FinanceApiV1 { get; set; }
+        public MockApi InnerApi
+        {
+            get => MockServers.InnerApi;
+            set
+            {
+                MockServers.InnerApi = value;
+                CleanUpOuterApi();
+            }
+        }
+
+        public MockApi CommitmentsV2InnerApi
+        {
+            get => MockServers.CommitmentsV2InnerApi;
+            set { 
+                MockServers.CommitmentsV2InnerApi = value;
+                CleanUpOuterApi();
+            }
+        }
+
+        public MockApi FinanceApi
+        {
+            get => MockServers.FinanceApi;
+            set
+            {
+                MockServers.FinanceApi = value;
+                CleanUpOuterApi();
+            }
+        }
+
+        public MockApi AccountsApi
+        {
+            get => MockServers.AccountsApi;
+            set
+            {
+                MockServers.AccountsApi = value;
+                CleanUpOuterApi();
+            }
+        }
+
         public HttpClient OuterApiClient { get; set; }
-        public LocalWebApplicationFactory<Startup> Factory { get; set; }
 
         private bool _isDisposed;
 
@@ -25,14 +70,22 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
 
             if (disposing)
             {
-                Factory?.Dispose();
-                OuterApiClient?.Dispose();
-                InnerApi?.Dispose();
-                CommitmentsV2InnerApi?.Dispose();
-                FinanceApiV1?.Dispose();
+                InnerApi?.Reset();
+                CommitmentsV2InnerApi?.Reset();
+                FinanceApi?.Reset();
+                AccountsApi?.Reset();
             }
 
             _isDisposed = true;
+        }
+
+        private void CleanUpOuterApi()
+        {
+            OuterApi.Factory?.Dispose();
+            OuterApi.Client?.Dispose();
+
+            OuterApi.Factory = null;
+            OuterApi.Client = null;
         }
     }
 }

@@ -12,37 +12,37 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetLocationSearchResponse
             {
-                Locations = source.Locations.Select(c=>(GetLocationSearchResponseItem)c).ToList()
+                Locations = source.Locations.Select(c => (GetLocationSearchResponseItem)c).ToList(),
             };
         }
         
-        public class GetLocationSearchResponseItem
-        {
-            public LocationResponse Location { get; set; }
-            public string Name { get; set; }
+    }  
+    public class GetLocationSearchResponseItem
+    {
+        public LocationResponse Location { get; set; }
+        public string Name { get; set; }
 
-            public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
+        public static implicit operator GetLocationSearchResponseItem(GetLocationsListItem source)
+        {
+            return new GetLocationSearchResponseItem
             {
-                return new GetLocationSearchResponseItem
+                Name = !string.IsNullOrEmpty(source.DistrictName) ? $"{source.Outcode} {source.DistrictName}" : string.IsNullOrEmpty(source.Postcode) ?
+                    $"{source.LocationName}, {source.LocalAuthorityName}" : $"{source.Postcode}",
+                Location = source.Location,
+            };
+        }
+
+        public class LocationResponse
+        {
+            public double[] GeoPoint { get; set; }
+
+            public static implicit operator LocationResponse(GetLocationsListItem.Coordinates source)
+            {
+                return new LocationResponse
                 {
-                    Name = string.IsNullOrEmpty(source.Postcode) ?
-                        $"{source.LocationName}, {source.LocalAuthorityName}" : source.Postcode,
-                    Location = source.Location
+                    GeoPoint = source.GeoPoint
                 };
             }
-
-            public class LocationResponse
-            {
-                public double[] GeoPoint { get; set; }
-
-                public static implicit operator LocationResponse(GetLocationsListItem.Coordinates source)
-                {
-                    return new LocationResponse
-                    {
-                        GeoPoint = source.GeoPoint
-                    };
-                }
-            }
         }
-    }    
+    }
 }

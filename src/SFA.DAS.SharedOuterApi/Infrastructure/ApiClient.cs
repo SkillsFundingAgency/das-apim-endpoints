@@ -91,7 +91,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             AddVersionHeader(request.Version);
             var response = await HttpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<TResponse>();
+            }
+
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<IEnumerable<TResponse>>(json);
         }

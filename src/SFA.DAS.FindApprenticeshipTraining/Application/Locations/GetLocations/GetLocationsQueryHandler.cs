@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations
 {

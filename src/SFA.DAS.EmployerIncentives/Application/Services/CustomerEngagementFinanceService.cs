@@ -18,10 +18,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetVendorRegistrationCasesByLastStatusChangeDate(DateTime dateTimeFrom, DateTime dateTimeTo)
         {
-            var response = await _client.Get<GetVendorRegistrationCaseStatusUpdateResponse>(new GetVendorRegistrationStatusByLastStatusChangeDateRequest(dateTimeFrom, dateTimeTo), false);
-
-            return response;
+            return await _client.Get<GetVendorRegistrationCaseStatusUpdateResponse>(new GetVendorRegistrationStatusByLastStatusChangeDateRequest(dateTimeFrom, dateTimeTo));
         }
 
+        public Task<GetVendorByApprenticeshipLegalEntityIdResponse> GetVendorByApprenticeshipLegalEntityId(string companyName, string hashedLegalEntityId)
+        {
+            return _client.Get<GetVendorByApprenticeshipLegalEntityIdResponse>(new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId));
+        }
     }
 }

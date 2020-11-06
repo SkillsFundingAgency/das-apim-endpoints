@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetApplicationHandler handler
             )
         {
-            commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true))
+            commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
                 .ReturnsAsync(new GetApprenticeshipResponse());
 
             employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
@@ -48,12 +48,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             apprenticeshipResponse.Id = applicationResponse.Apprenticeships.First().ApprenticeshipId;
 
             commitmentsClient
-                .Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true))
+                .Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
                 .ReturnsAsync(new GetApprenticeshipResponse());
             commitmentsClient
                 .Setup(client => client.Get<GetApprenticeshipResponse>(
                     It.Is<GetApprenticeshipRequest>(c => 
-                        c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}")), true))
+                        c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}"))))
                 .ReturnsAsync(apprenticeshipResponse);
 
             employerIncentivesService
@@ -82,7 +82,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Application.Apprenticeships.Count().Should().Be(0);
-            commitmentsClient.Verify(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>(), true), Times.Never);
+            commitmentsClient.Verify(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()), Times.Never);
         }
     }
 }

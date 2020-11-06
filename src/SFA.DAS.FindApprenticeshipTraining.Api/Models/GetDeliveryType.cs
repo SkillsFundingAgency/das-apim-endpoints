@@ -11,6 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Town { get; set; }
         public string Postcode { get; set; }
         public string County { get; set; }
+        public bool National { get ; set ; }
     }
     public enum DeliveryModeType
     {
@@ -19,6 +20,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         [Description("DayRelease")]
         DayRelease = 1,
         [Description("BlockRelease")]
-        BlockRelease = 2
+        BlockRelease = 2,
+        [Description("NotFound")]
+        NotFound = 3,
+        [Description("National")]
+        National = 4
     }
 }

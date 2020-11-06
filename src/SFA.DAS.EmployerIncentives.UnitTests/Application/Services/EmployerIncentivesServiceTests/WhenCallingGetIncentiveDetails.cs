@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             client.Setup(x =>
                     x.Get<GetIncentiveDetailsResponse>(
-                        It.IsAny<GetIncentiveDetailsRequest>(), true))
+                        It.IsAny<GetIncentiveDetailsRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetIncentiveDetails();
