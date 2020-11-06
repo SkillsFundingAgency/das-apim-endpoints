@@ -10,6 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public int Id { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public string LevelEquivalent { get; set; }
         public decimal Version { get; set; }
         [JsonIgnore]
         public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
@@ -32,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
+
 
         private int GetFundingDetails(string prop)
         {
@@ -81,4 +83,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public DateTime EffectiveFrom { get; set; }
     }
+
+
 }
