@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
 
             response.Feedback.FeedbackAttributes.Strengths.Should().BeEmpty();
             response.Feedback.FeedbackAttributes.Weaknesses.Should().BeEmpty();
@@ -67,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
 
             response.Feedback.FeedbackAttributes.Strengths.Should().BeEmpty();
             response.Feedback.FeedbackAttributes.Weaknesses.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
@@ -99,7 +99,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
 
             response.Feedback.FeedbackAttributes.Strengths.Should().NotBeEmpty();
             response.Feedback.FeedbackAttributes.Strengths.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
@@ -131,7 +131,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
             
             response.Feedback.FeedbackAttributes.Weaknesses.Should().ContainInOrder(new List<string>{"Yattribute", "Zattribute", "Attribute"});
         }
@@ -155,7 +155,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
             
             response.Feedback.FeedbackAttributes.Strengths.Should().ContainInOrder(new List<string>{"Seventh Attribute"});
         }
@@ -228,7 +228,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>());
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
             
             response.Feedback.FeedbackAttributes.Strengths.Should().ContainInOrder(new List<string>{"Fourth Attribute", "Third Attribute", "First Attribute"});
             response.Feedback.FeedbackAttributes.Weaknesses.Should().ContainInOrder(new List<string>{"Eighth Attribute", "Ninth Attribute", "Tenth Attribute"});
