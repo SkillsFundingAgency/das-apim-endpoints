@@ -39,14 +39,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             _taskList.Add(levelsTask);
 
             await Task.WhenAll(standardTask, providersTask, levelsTask);
-            
-            standardTask.Result.LevelEquivalent = levelsTask.Result.Levels.Where(x => x.Code == standardTask.Result.Level).FirstOrDefault().Name;
+
+            standardTask.Result.LevelEquivalent = levelsTask.Result.Levels.SingleOrDefault(x => x.Code == standardTask.Result.Level)?.Name; ;
 
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
                 ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
-                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count,
+                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count
             };
         }
     }
