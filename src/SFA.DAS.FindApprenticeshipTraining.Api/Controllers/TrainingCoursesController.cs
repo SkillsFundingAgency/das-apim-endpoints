@@ -82,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         TotalProviders  = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
-                    },
+                    }
                 };
                 return Ok(model);
             }

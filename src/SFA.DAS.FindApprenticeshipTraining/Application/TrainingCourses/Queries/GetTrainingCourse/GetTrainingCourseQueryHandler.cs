@@ -14,8 +14,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private List<Task> _taskList;
-        private bool _saveLevelsToCache;
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly CacheHelper _cacheHelper;
 
@@ -28,19 +26,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
-            _taskList = new List<Task>();
-
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
             var providersTask = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(new GetUkprnsForStandardAndLocationRequest(request.Id, request.Lat, request.Lon));
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
-                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _saveLevelsToCache);
-            _taskList.Add(levelsTask);
-
+                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
+            
             await Task.WhenAll(standardTask, providersTask, levelsTask);
-
-            standardTask.Result.LevelEquivalent = levelsTask.Result.Levels.SingleOrDefault(x => x.Code == standardTask.Result.Level)?.Name; ;
+            
+            standardTask.Result.LevelEquivalent = levelsTask.Result.Levels.SingleOrDefault(x => x.Code == standardTask.Result.Level)?.Name;
 
             return new GetTrainingCourseResult
             {

@@ -34,7 +34,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
 
-
         private int GetFundingDetails(string prop)
         {
             var funding = ApprenticeshipFunding
@@ -83,6 +82,4 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public DateTime EffectiveFrom { get; set; }
     }
-
-
 }
