@@ -8,6 +8,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public string LevelEquivalent { get; set; }
         public decimal Version { get; set; }
         public long MaxFunding { get; set; }
         public string OverviewOfRole { get; set; }
@@ -32,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Id = source.Id,
                 Title = source.Title,
                 Level = source.Level,
+                LevelEquivalent = source.LevelEquivalent,
                 Version = source.Version,
                 MaxFunding = source.MaxFunding,
                 OverviewOfRole = source.OverviewOfRole,

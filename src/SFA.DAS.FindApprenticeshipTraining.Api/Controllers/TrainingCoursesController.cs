@@ -95,19 +95,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         
         [HttpGet]
         [Route("{id}/providers")]
-        public async Task<IActionResult> GetProviders(int id, [FromQuery]string location, [FromQuery] List<DeliveryModeType> deliveryModes = null,
-            [FromQuery]ProviderCourseSortOrder.SortOrder sortOrder = ProviderCourseSortOrder.SortOrder.Distance, [FromQuery] List<FeedbackRatingType> providerRatings = null)
+        public async Task<IActionResult> GetProviders(int id, [FromQuery]GetCourseProvidersRequest request)
         {
             try
             {
                 var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
                 {
                     Id = id, 
-                    Location = location, 
-                    SortOrder = (short)sortOrder
+                    Location = request.Location, 
+                    SortOrder = (short)request.SortOrder,
+                    Lat = request.Lat,
+                    Lon = request.Lon
                 });
                 var mappedProviders = result.Providers
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, deliveryModes, providerRatings, result.Location?.GeoPoint != null))
+                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.ProviderRatings, result.Location?.GeoPoint != null))
                     .Where(x=>x!=null)
                     .OrderByProviderRating()
                     .ToList();
@@ -137,7 +138,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}/providers/{providerId}")]
-        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location)
+        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location, [FromQuery]double lat=0, [FromQuery]double lon=0)
         {
             try
             {
@@ -145,7 +146,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     CourseId = id, 
                     ProviderId = providerId,
-                    Location = location
+                    Location = location,
+                    Lat = lat,
+                    Lon = lon
                 });
                 var model = new GetTrainingCourseProviderResponse
                 {
