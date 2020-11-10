@@ -59,6 +59,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
                 var authorityName = locationInformation.Last().Trim();
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
             }
+            else if (location.Length > 2)
+            {
+                var locations = await _locationApiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(location));
+
+                var locationsListItem = locations.Locations.FirstOrDefault();
+                if (locationsListItem != null)
+                {
+                    getLocationsListItem = locationsListItem;
+                    location = $"{locationsListItem.LocationName}, {locationsListItem.LocalAuthorityName}";    
+                }
+                
+            }
 
             return getLocationsListItem?.Location != null
                 ? new LocationItem(location, getLocationsListItem.Location.GeoPoint) 

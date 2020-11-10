@@ -326,5 +326,111 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<IGetApiRequest>()), Times.Never);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_A_Partial_Location_Name_Then_This_Is_Searched_And_Matched_On_The_First_Result(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListResponse apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Lat = 0;
+            query.Lon = 0;
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListResponse>(
+                        It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(query.Location))))
+                .ReturnsAsync(apiLocationResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains($"lat={apiLocationResponse.Locations.FirstOrDefault().Location.GeoPoint.First().ToString()}")
+                    && c.GetUrl.Contains($"lon={apiLocationResponse.Locations.FirstOrDefault().Location.GeoPoint.Last().ToString()}")
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Name.Should().Be($"{apiLocationResponse.Locations.FirstOrDefault().LocationName}, {apiLocationResponse.Locations.FirstOrDefault().LocalAuthorityName}");
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Locations.FirstOrDefault().Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Doing_A_Partial_Search_And_No_Matches_Then_Null_Location_Returned(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Lat = 0;
+            query.Lon = 0;
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListResponse>(
+                        It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(query.Location))))
+                .ReturnsAsync(new GetLocationsListResponse{Locations = new List<GetLocationsListItem>()});
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Should().BeNull();
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_A_Partial_Location_Name_Which_Is_Less_Than_Three_Characters_Then_Location_Is_Set_To_Null(GetTrainingCourseProvidersQuery query,
+                GetProvidersListResponse apiResponse,
+                GetStandardsListItem apiCourseResponse,
+                GetLocationsListResponse apiLocationResponse,
+                [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+                [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+                [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+                GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Location = "Co";
+            query.Lat = 0;
+            query.Lon = 0;
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Should().BeNull();
+        }
     }
 }
