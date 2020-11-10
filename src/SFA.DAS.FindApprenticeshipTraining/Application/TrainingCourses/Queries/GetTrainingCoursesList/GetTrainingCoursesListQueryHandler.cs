@@ -16,7 +16,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly ICacheStorageService _cacheStorageService;
         private List<Task> _taskList;
         private bool _saveStandardsToCache;
         private bool _saveSectorsToCache;
@@ -26,7 +25,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
-            _cacheStorageService = cacheStorageService;
             _cacheHelper = new CacheHelper(cacheStorageService);
         }
 
