@@ -18,5 +18,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(c=>c.ApprenticeshipFunding)
             );
         }
+
+        [Test, AutoData]
+        public void And_If_More_Than_One_Typical_Job_Title_Then_Titles_Are_Ordered_Alphabetically(
+            GetStandardsListItem source)
+        {
+            source.TypicalJobTitles = "B,Z,A,V";
+
+            var response = (GetTrainingCourseListItem) source;
+
+            response.TypicalJobTitles.Should().Be("A,B,V,Z");
+        }
     }
 }
