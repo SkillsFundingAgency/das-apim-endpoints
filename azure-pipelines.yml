@@ -68,8 +68,8 @@ stages:
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)\ApimEndpointsArtifacts\azure\template.json
-      ParametersPath: $(Pipeline.Workspace)\ApimEndpointsArtifacts\azure\template.parameters.json
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
       ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
       TemplateSecrets:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
