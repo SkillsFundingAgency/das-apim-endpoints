@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -19,7 +20,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [HttpPatch("legalentities/vendorregistrationform/status")]
         public async Task<IActionResult> RefreshVendorRegistrationFormStatus(DateTime from)
         {
-            await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from));
+            var nextRunDateTime = await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from));
+
+            return new OkObjectResult(nextRunDateTime);
+        }
+
+        [HttpPut("legalentities/{hashedLegalEntityId}/employervendorid")]
+        public async Task<IActionResult> AddEmployerVendorId(string hashedLegalEntityId)
+        {
+            await _mediator.Send(new GetAndAddEmployerVendorIdCommand(hashedLegalEntityId));
 
             return NoContent();
         }

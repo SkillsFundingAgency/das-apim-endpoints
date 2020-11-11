@@ -41,11 +41,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
                 .Create();
 
             client.Setup(x => x.Get<ApprenticeshipResponse>(It.Is<IGetApiRequest>(p => 
-                    p.GetUrl == $"api/apprenticeships/{apprenticeshipId1}"), true))
+                    p.GetUrl == $"api/apprenticeships/{apprenticeshipId1}")))
                 .ReturnsAsync(apprenticeDetails1);
 
             client.Setup(x => x.Get<ApprenticeshipResponse>(It.Is<IGetApiRequest>(p =>
-                    p.GetUrl == $"api/apprenticeships/{apprenticeshipId2}"), true))
+                    p.GetUrl == $"api/apprenticeships/{apprenticeshipId2}")))
                 .ReturnsAsync(apprenticeDetails2);
 
             var result = await sut.GetApprenticeshipDetails(accountId, new [] { apprenticeshipId1, apprenticeshipId2} );
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> client,
             [Greedy] CommitmentsService sut)
         {
-            client.Setup(x => x.Get<ApprenticeshipResponse>(It.IsAny<IGetApiRequest>(), true))
+            client.Setup(x => x.Get<ApprenticeshipResponse>(It.IsAny<IGetApiRequest>()))
                 .ReturnsAsync(apprenticeshipDetail);
 
             Assert.ThrowsAsync<UnauthorizedAccessException>(()=> sut.GetApprenticeshipDetails(accountId, apprenticeshipIds));

@@ -11,6 +11,9 @@ parameters:
 - name: FindEpao
   type: boolean
   default: false
+- name: Forecasting
+  type: boolean
+  default: false
 
 trigger:
   branches:
@@ -29,12 +32,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.2.1
+    ref: refs/tags/0.2.4
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.2.0
+    ref: refs/tags/4.2.2
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
@@ -139,6 +142,23 @@ stages:
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -230,6 +250,23 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -323,6 +360,23 @@ stages:
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -414,3 +468,20 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)

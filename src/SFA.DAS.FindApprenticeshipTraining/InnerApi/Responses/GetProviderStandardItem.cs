@@ -6,6 +6,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
     {
         public int Ukprn { get; set; }
         public string Name { get; set; }
+        public string TradingName { get; set; }
         public string ContactUrl { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -14,5 +15,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
         public IEnumerable<GetFeedbackAttributeItem> FeedbackAttributes { get; set; }
         public IEnumerable<GetFeedbackRatingItem> FeedbackRatings { get; set; }
+        public GetProviderStandardItemAddress ProviderAddress { get ; set ; }
     }
 }

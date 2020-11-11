@@ -1,3 +1,5 @@
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 
@@ -5,14 +7,11 @@ namespace SFA.DAS.FindEpao.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetStandardsRequest
     {
-        [Test]
-        public void Then_The_Url_Is_Correctly_Built()
+        [Test, AutoData]
+        public void Then_The_Url_Is_Correctly_Built(
+            GetStandardsRequest actual)
         {
-            //Arrange Act
-            var actual = new GetStandardsRequest();
-            
-            //Assert
-            Assert.AreEqual("api/courses/standards", actual.GetUrl);
+            actual.GetUrl.Should().Be("api/courses/standards");
         }
     }
 }

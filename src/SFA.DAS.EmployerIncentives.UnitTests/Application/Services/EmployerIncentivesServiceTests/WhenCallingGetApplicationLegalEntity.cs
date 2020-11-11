@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                 x.Get<long>(It.Is<GetApplicationLegalEntityRequest>(
                     c => 
                         c.GetUrl.Contains("accountlegalentity")
-                ), true), Times.Once);
+                )), Times.Once);
         }
     }
 }

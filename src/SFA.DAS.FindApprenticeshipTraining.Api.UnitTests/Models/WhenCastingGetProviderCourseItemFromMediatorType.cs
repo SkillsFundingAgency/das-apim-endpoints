@@ -36,12 +36,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                     FeedbackCount = 1,
                 }
             };
-            var actual =new GetProviderCourseItem().Map(providerStandardItem, "",1);
+            var actual =new GetProviderCourseItem().Map(providerStandardItem, "",1, true);
             
             actual.Should().BeEquivalentTo(providerStandardItem.Course, options => options.ExcludingMissingMembers());
 
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.ContactUrl);
             actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
+            actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
             actual.Feedback.TotalEmployerResponses.Should().Be(129);
             actual.Feedback.TotalFeedbackRating.Should().Be(3);
         }
@@ -57,9 +58,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item2
             };
             
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,5);
+            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,5, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
@@ -84,9 +86,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item3
             };
             
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,2);
+            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,2, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.NationalOverallCohort.Should().Be(item3.OverallCohort);
@@ -110,9 +113,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 item2
             };
             
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea, 1);
+            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea, 1, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
+            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
             response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
             response.OverallCohort.Should().BeNull();
             response.NationalOverallCohort.Should().BeNull();

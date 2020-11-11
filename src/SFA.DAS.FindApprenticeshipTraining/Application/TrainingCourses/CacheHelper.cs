@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services;
@@ -63,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
         public bool FilterApplied(GetStandardsListRequest request)
         {
-            return !string.IsNullOrEmpty(request.Keyword) || request.Levels != null || request.RouteIds != null;
+            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != OrderBy.Score;
         }
         internal class SaveToCache
         {

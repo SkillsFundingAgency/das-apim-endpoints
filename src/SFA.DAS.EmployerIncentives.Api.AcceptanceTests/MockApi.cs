@@ -23,6 +23,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
             GC.SuppressFinalize(this);
         }
 
+        public void Reset()
+        {
+            MockServer.Reset();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (_isDisposed) return;

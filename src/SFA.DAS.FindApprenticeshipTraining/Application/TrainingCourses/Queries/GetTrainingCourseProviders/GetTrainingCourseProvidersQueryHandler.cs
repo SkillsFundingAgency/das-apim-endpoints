@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Domain.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
@@ -30,19 +31,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            var location = await _locationHelper.GetLocationInformation(request.Location);
+            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
             
-            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
-            var providersTask = _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, location?.GeoPoint?.FirstOrDefault(), location?.GeoPoint?.LastOrDefault(), request.SortOrder));
+            var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
-            await Task.WhenAll(courseTask, providersTask);
-
+            await Task.WhenAll(locationTask, courseTask);
+            
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder));
+            
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providersTask.Result.Providers,
-                Total = providersTask.Result.TotalResults,
-                Location = location
+                Providers = providers.Providers,
+                Total = providers.TotalResults,
+                Location = locationTask.Result
             }; 
         }
     }

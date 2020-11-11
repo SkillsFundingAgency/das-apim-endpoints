@@ -20,26 +20,44 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_Gets_Standards_From_Courses_Api_With_Totals(
             GetTrainingCourseQuery query,
             GetStandardsListItem coursesApiResponse,
+            GetLevelsListResponse levelsApiResponse,
             GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
             GetTrainingCourseQueryHandler handler)
         {
+
+            // arrange
+
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString())), true))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(coursesApiResponse);
+
 
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
             mockCourseDeliveryApiClient
                 .Setup(client =>
                     client.Get<GetUkprnsForStandardAndLocationResponse>(
                         It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
-                            c.GetUrl.Equals(url))), true))
+                            c.GetUrl.Equals(url)))))
                 .ReturnsAsync(courseDirectoryApiResponse);
 
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
+
+            levelsApiResponse.Levels.FirstOrDefault().Name = "GCSE";
+            levelsApiResponse.Levels.FirstOrDefault().Code = 2;
+            coursesApiResponse.Level = 2;
+            coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
+                .SingleOrDefault(x => x.Code == coursesApiResponse.Level).Name;
+
+            // act
             var result = await handler.Handle(query, CancellationToken.None);
 
+            // asert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
+            result.Course.LevelEquivalent.Should().Be("GCSE");
             result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
             result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
         }
