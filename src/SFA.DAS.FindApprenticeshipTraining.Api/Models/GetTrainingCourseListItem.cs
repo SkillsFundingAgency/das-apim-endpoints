@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Keywords = source.Keywords,
                 TypicalDuration = source.TypicalDuration,
                 Route = source.Route,
-                TypicalJobTitles = source.TypicalJobTitles.Split(',').Length <=1? source.TypicalJobTitles : OrderJobTitles(source.TypicalJobTitles),
+                TypicalJobTitles = source.TypicalJobTitles.Split('|').Length <=1? source.TypicalJobTitles : string.Join("|", source.TypicalJobTitles.Split('|').OrderBy(x => x)),
                 CoreSkillsCount = source.CoreSkillsCount,
                 StandardPageUrl = source.StandardPageUrl,
                 IntegratedDegree = source.IntegratedDegree,
@@ -49,16 +49,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OtherBodyApprovalRequired = source.OtherBodyApprovalRequired,
                 StandardDates = source.StandardDates
             };
-        }
-        private static string OrderJobTitles(string jobTitles)
-        {
-            var titles = jobTitles.Split(',').OrderBy(x => x);
-            var titleString = "";
-            foreach (var title in titles)
-            {
-                titleString += title + ",";
-            }
-            return titleString.TrimEnd(',');
         }
     }
 
