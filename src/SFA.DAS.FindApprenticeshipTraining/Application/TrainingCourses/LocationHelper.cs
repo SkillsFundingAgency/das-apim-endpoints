@@ -51,11 +51,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             {
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
             }
-            else if (location.Split(",").Length == 2)
+            else if (location.Split(",").Length >= 2)
             {
                 
                 var locationInformation = location.Split(",");
-                var locationName = locationInformation.First().Trim();
+                var locationName = string.Join(",",locationInformation.Take(locationInformation.Length-1)).Trim();
                 var authorityName = locationInformation.Last().Trim();
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
             }

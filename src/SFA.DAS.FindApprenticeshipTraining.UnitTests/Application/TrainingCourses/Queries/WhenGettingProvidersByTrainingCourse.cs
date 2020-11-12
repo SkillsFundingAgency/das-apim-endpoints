@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -68,6 +69,50 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
                         It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                .ReturnsAsync(apiLocationResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
+                    c.GetUrl.Contains(query.Id.ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                    && c.GetUrl.Contains($"&sortOrder={query.SortOrder}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Total.Should().Be(apiResponse.TotalResults);
+            result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.Location.Name.Should().Be(query.Location);
+            result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_A_Location_Name_With_A_Comma_Is_Is_Searched_And_Passed_To_The_Provider_Search(
+            string locationName,
+            string authorityName,
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.Location = $"{locationName}, {locationName}, {authorityName} ";
+            query.Lat = 0;
+            query.Lon = 0;
+            var encodedLocation = "?locationName=" + HttpUtility.UrlEncode($"{locationName}, {locationName}");
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(encodedLocation) && c.GetUrl.Contains(authorityName.Trim()))))
                 .ReturnsAsync(apiLocationResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
