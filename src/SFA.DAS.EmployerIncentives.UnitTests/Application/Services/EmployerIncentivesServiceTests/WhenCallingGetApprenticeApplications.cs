@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_Applications_For_The_Account(
             long accountId,
+            long accountLegalEntityId,
             IEnumerable<ApprenticeApplication> apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service
@@ -29,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         It.Is<GetApplicationsRequest>(c => c.GetUrl.Contains(accountId.ToString()))))
                 .ReturnsAsync(apiResponse);
 
-            var actual = await service.GetApprenticeApplications(accountId);
+            var actual = await service.GetApprenticeApplications(accountId, accountLegalEntityId);
 
             actual.Should().BeEquivalentTo(apiResponse);
         }

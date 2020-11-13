@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request);
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
         Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request);
-        Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId);
+        Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId, long accountLegalEntityId);
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
     }
 }

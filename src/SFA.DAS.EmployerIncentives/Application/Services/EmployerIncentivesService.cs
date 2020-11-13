@@ -135,9 +135,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId)
+        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId, long accountLegalEntityId)
         {
-            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
+            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId, accountLegalEntityId));
         }
 
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
