@@ -20,6 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     {
         private readonly TestContext _context;
         private long _accountId;
+        private long _accountLegalEntityId;
         private Fixture _fixture;
         private HttpResponseMessage _response;
 
@@ -29,10 +30,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _context = testContext;
         }
 
-        [Given(@"the caller wants to search for apprentice applications by Account Id")]
+        [Given(@"the caller wants to search for apprentice applications by Account Id and Account Legal Entity Id")]
         public void GivenTheCallerWantsToSearchForApprenticeApplicationsByAccountId()
         {
             _accountId = _fixture.Create<long>();
+            _accountLegalEntityId = _fixture.Create<long>();
         }
 
         [Given(@"this search request finds no applications")]
@@ -41,7 +43,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             var response = new List<ApprenticeApplication>();
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -53,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the request to list all applications")]
         public async Task WhenTheOuterApiReceivesTheRequestToListAllApplications()
         {
-            _response = await _context.OuterApiClient.GetAsync($"/accounts/{_accountId}/applications");
+            _response = await _context.OuterApiClient.GetAsync($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications");
         }
 
         [Then(@"the result should return Ok, but with no applications")]
@@ -82,7 +84,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             };
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -116,7 +118,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -154,7 +156,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -187,7 +189,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -224,7 +226,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/applications")
+                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
