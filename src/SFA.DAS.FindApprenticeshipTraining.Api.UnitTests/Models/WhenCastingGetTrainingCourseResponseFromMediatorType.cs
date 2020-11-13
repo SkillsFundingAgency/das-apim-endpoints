@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
@@ -16,6 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source, options=> options
                 .Excluding(c=>c.ApprenticeshipFunding)
+                .Excluding(tc => tc.TypicalJobTitles)
             );
         }
 
@@ -25,9 +27,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.TypicalJobTitles = "B|Z|A|V";
 
+            var expected = new List<string>{"A","B","V","Z"};
+
             var response = (GetTrainingCourseListItem) source;
 
-            response.TypicalJobTitles.Should().Be("A|B|V|Z");
+            Assert.AreEqual(response.TypicalJobTitles, expected);
         }
     }
 }
