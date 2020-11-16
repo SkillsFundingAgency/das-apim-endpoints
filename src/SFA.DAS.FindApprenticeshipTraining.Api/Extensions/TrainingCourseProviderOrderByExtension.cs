@@ -95,7 +95,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .Where(providerFilter)
                 .OrderByDescending(c=>c.Score)
                 .ThenBy(c=>c.DeliveryModes
-                    .OrderByDescending(x=>x.DistanceInMiles)
+                    .OrderBy(x=>x.DistanceInMiles)
                     .First().DistanceInMiles)
                 .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)

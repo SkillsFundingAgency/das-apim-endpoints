@@ -702,7 +702,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         new GetDeliveryType
                         {
                             DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 3.9m
+                            DistanceInMiles = 5.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 0m
                         }
                     },
                     HasLocation = true
