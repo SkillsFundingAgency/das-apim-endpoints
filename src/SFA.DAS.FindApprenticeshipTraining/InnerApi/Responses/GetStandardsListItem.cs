@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using static System.String;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -24,8 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Route { get; set; }
 
         public string TypicalJobTitles { get; set; }
-
-        public string CoreSkillsCount { get; set; }
+        public string CoreSkillsCount => GetCoreSkillsCount();
 
         public string StandardPageUrl { get; set; }
 
@@ -34,6 +34,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
         public string ApprovalBody { get; set; }
+        private List<Duty> Duties { get; set; }
+        private List<Skill> Skills { get; set; }
+        private bool CoreAndOptions { get; set; }
 
         private int GetFundingDetails(string prop)
         {
@@ -63,6 +66,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public StandardDate StandardDates { get; set; }
 
+        private string GetCoreSkillsCount()
+        {
+            if (Duties.Any() && Duties != null && Skills.Any() && Skills != null)
+            {
+                if (CoreAndOptions)
+                {
+                    var mappedSkillsList = GetMappedSkillsList(this);
+                    return GetSkillDetailFromMappedCoreSkill(this, mappedSkillsList);
+                }
+                return Join("|",
+                    Skills.Select(s => s.Detail));
+            }
+
+            return null;
+        }
+
+        private static IEnumerable<string> GetMappedSkillsList(GetStandardsListItem standard)
+        {
+            return standard.Duties
+                .Where(d => d.IsThisACoreDuty.Equals(1) && d.MappedSkills != null)
+                .SelectMany(d => d.MappedSkills)
+                .Select(s => s.ToString());
+        }
+
+        private static string GetSkillDetailFromMappedCoreSkill(GetStandardsListItem standard, IEnumerable<string> mappedSkillsList)
+        {
+            return Join("|", standard.Skills
+                .Where(s => mappedSkillsList.Contains(s.SkillId))
+                .Select(s => s.Detail));
+        }
     }
 
     public class ApprenticeshipFunding
@@ -82,5 +115,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public DateTime? EffectiveTo { get; set; }
 
         public DateTime EffectiveFrom { get; set; }
+    }
+
+    public class Duty
+    {
+        public long IsThisACoreDuty { get; set; }
+        public List<Guid> MappedSkills { get; set; }
+    }
+    public class Skill
+    {
+        public string SkillId { get; set; }
+        public string Detail { get; set; }
     }
 }

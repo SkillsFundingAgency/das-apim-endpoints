@@ -44,7 +44,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             Assert.IsNotNull(model);
             model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options => options
                 .Excluding(tc => tc.ApprenticeshipFunding)
-                .Excluding(tc => tc.StandardDates));
+                .Excluding(tc => tc.StandardDates)
+                .Excluding(tc => tc.Duties)
+                .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.CoreAndOptions));
 
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
             model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);

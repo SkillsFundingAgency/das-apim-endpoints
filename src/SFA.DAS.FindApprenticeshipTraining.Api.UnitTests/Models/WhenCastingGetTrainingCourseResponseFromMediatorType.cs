@@ -16,6 +16,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source, options=> options
                 .Excluding(c=>c.ApprenticeshipFunding)
+                .Excluding(tc => tc.Duties)
+                .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.CoreAndOptions)
             );
         }
     }
