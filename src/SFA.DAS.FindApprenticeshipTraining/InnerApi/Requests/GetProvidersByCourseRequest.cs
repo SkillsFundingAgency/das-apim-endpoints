@@ -11,6 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         private readonly string _sectorSubjectArea;
         private readonly int _level;
 
+        private const short AllLevels = 1;
         public GetProvidersByCourseRequest (  int id,  string sectorSubjectArea, int level, double? latitude = null, double? longitude = null, int sortOrder = 0)
         {
             _latitude = latitude;
@@ -19,6 +20,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _courseId = id;
             _sectorSubjectArea = sectorSubjectArea;
             _level = level;
+            if (level > 3)
+            {
+                _level = AllLevels;
+            }
         }
         
         public string GetUrl => $"api/courses/{_courseId}/providers?lat={_latitude}&lon={_longitude}&sortOrder={_sortOrder}&sectorSubjectArea={_sectorSubjectArea}&level={_level}";
