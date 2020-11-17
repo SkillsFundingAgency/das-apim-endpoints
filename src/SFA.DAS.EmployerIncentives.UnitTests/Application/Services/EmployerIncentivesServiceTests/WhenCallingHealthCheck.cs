@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         [Test]
         public async Task Then_Health_Check_Should_Return_False()
         {
-            var sut = new EmployerIncentivesService(null);
+            var sut = new EmployerIncentivesService(null, null);
 
             var result = await sut.IsHealthy();
             result.Should().Be(false);
