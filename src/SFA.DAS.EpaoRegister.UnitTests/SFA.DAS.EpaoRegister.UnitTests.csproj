@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.DataCollections\SFA.DAS.EpaoRegister.csproj" />
+    <ProjectReference Include="..\SFA.DAS.EpaoRegister\SFA.DAS.EpaoRegister.csproj" />
   </ItemGroup>
 
 </Project>

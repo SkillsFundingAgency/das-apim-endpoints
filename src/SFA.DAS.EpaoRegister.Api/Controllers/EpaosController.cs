@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SFA.DAS.DataCollections.Api.Controllers
+namespace SFA.DAS.EpaoRegister.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.DataCollections.Api.AppStart;
+using SFA.DAS.EpaoRegister.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.DataCollections.Api
+namespace SFA.DAS.EpaoRegister.Api
 {
     public class Startup
     {

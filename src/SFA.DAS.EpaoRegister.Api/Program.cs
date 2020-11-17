@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace SFA.DAS.DataCollections.Api
+namespace SFA.DAS.EpaoRegister.Api
 {
     public class Program
     {

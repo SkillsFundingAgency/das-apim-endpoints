@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.DataCollections.Api.AppStart
+namespace SFA.DAS.EpaoRegister.Api.AppStart
 {
     public static class AddServiceRegistrationExtensions
     {
