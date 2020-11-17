@@ -80,17 +80,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.Api.UnitTests", "SFA.DAS.FindEpao.Api.UnitTests\SFA.DAS.FindEpao.Api.UnitTests.csproj", "{A819EEA4-B38A-48AB-8076-44342DF909A1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataCollections", "DataCollections", "{384B2933-A0A7-4E05-B502-1B167F28E3C7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EpaoRegister", "EpaoRegister", "{384B2933-A0A7-4E05-B502-1B167F28E3C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4C8ECB1F-A469-4A34-9029-9DB343AC95C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DataCollections.Api", "SFA.DAS.DataCollections.Api\SFA.DAS.DataCollections.Api.csproj", "{C9DCE5DE-9EA9-44E6-A981-5CC9643D72BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EpaoRegister.Api", "SFA.DAS.EpaoRegister.Api\SFA.DAS.EpaoRegister.Api.csproj", "{C9DCE5DE-9EA9-44E6-A981-5CC9643D72BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DataCollections", "SFA.DAS.DataCollections\SFA.DAS.DataCollections.csproj", "{02FCB1F7-CF97-438F-9F99-731E6B1F5503}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EpaoRegister", "SFA.DAS.EpaoRegister\SFA.DAS.EpaoRegister.csproj", "{02FCB1F7-CF97-438F-9F99-731E6B1F5503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DataCollections.UnitTests", "SFA.DAS.DataCollections.UnitTests\SFA.DAS.DataCollections.UnitTests.csproj", "{9789EBB0-21B6-4AC9-B076-B3C729ADA5FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EpaoRegister.UnitTests", "SFA.DAS.EpaoRegister.UnitTests\SFA.DAS.EpaoRegister.UnitTests.csproj", "{9789EBB0-21B6-4AC9-B076-B3C729ADA5FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DataCollections.Api.UnitTests", "SFA.DAS.DataCollections.Api.UnitTests\SFA.DAS.DataCollections.Api.UnitTests.csproj", "{7070BF58-804D-490F-885F-1E1E764E3D2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EpaoRegister.Api.UnitTests", "SFA.DAS.EpaoRegister.Api.UnitTests\SFA.DAS.EpaoRegister.Api.UnitTests.csproj", "{7070BF58-804D-490F-885F-1E1E764E3D2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

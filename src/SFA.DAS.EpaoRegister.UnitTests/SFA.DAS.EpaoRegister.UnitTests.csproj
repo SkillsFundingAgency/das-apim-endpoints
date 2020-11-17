@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.DataCollections.Api\SFA.DAS.DataCollections.Api.csproj" />
-    <ProjectReference Include="..\SFA.DAS.DataCollections\SFA.DAS.DataCollections.csproj" />
+    <ProjectReference Include="..\SFA.DAS.DataCollections\SFA.DAS.EpaoRegister.csproj" />
   </ItemGroup>
 
 </Project>

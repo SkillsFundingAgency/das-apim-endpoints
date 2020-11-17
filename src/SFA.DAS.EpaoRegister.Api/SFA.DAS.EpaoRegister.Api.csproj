@@ -52,11 +52,7 @@
     </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.DataCollections\SFA.DAS.DataCollections.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\SFA.DAS.DataCollections\SFA.DAS.EpaoRegister.csproj" />
   </ItemGroup>
 
 

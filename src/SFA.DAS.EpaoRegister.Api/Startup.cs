@@ -69,7 +69,7 @@ namespace SFA.DAS.DataCollections.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DataCollectionsOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EpaoRegisterOuterApi", Version = "v1" });
             });
         }
 
@@ -88,13 +88,13 @@ namespace SFA.DAS.DataCollections.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=AssessorOrganisations}/{action=index}/{id?}");//todo
+                    pattern: "api/{controller=Epao}/{action=index}/{id?}");//todo
             });
         
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DataCollectionsOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EpaoRegisterOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
