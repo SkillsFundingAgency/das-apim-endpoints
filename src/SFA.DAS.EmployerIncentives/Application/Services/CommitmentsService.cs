@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
@@ -18,12 +17,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
     public class CommitmentsService : ICommitmentsService
     {
         private readonly ICommitmentsApiClient<CommitmentsConfiguration> _client;
-        private readonly ILogger<CommitmentsService> _logger;
 
-        public CommitmentsService(ICommitmentsApiClient<CommitmentsConfiguration> client, ILogger<CommitmentsService> logger)
+        public CommitmentsService(ICommitmentsApiClient<CommitmentsConfiguration> client)
         {
             _client = client;
-            _logger = logger;
         }
 
         public async Task<bool> IsHealthy()
@@ -58,8 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         private async Task CheckApprenticeshipIsAssignedToAccountAndAddToBag(long accountId, long apprenticeshipId, ConcurrentBag<ApprenticeshipResponse> apprenticeshipResponses)
         {
             var apprenticeship = await _client.Get<ApprenticeshipResponse>(new GetApprenticeshipDetailsRequest(apprenticeshipId));
-            var json = JsonConvert.SerializeObject(apprenticeship);
-            _logger.LogInformation($"Response from Commitments API: {json}");
+            
             if (apprenticeship.EmployerAccountId != accountId)
             {
                 throw new UnauthorizedAccessException($"Employer Account {accountId} does not have access to apprenticeship Id {apprenticeshipId}");
