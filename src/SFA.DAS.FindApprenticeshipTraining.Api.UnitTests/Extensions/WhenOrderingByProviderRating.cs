@@ -737,6 +737,246 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(1).First().ProviderId.Should().Be(1);
             list.Last().ProviderId.Should().Be(2);
         }
+
+        [Test]
+        public void Then_If_There_Are_Multiple_Filters_Then_Closest_Is_Used()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.8m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.DayRelease, DeliveryModeType.BlockRelease}).ToList();
+            
+            list.First().ProviderId.Should().Be(2);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(3);
+        }
+        
+        [Test]
+        public void Then_If_There_Is_A_Delivery_Filter_For_DayRelease_Then_That_Mode_Is_Used_For_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.8m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.DayRelease}).ToList();
+            
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).First().ProviderId.Should().Be(2);
+            list.Last().ProviderId.Should().Be(1);
+        }
+        
+        [Test]
+        public void Then_If_There_Is_A_Delivery_Filter_For_Block_Release_Then_That_Mode_Is_Used_For_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.BlockRelease}).ToList();
+            
+            list.First().ProviderId.Should().Be(2);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(3);
+        }
         
         [Test]
         public void Then_If_All_Are_At_Workplace_Then_Not_Grouped_By_Distance()

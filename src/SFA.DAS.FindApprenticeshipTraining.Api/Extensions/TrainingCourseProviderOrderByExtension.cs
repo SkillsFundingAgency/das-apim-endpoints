@@ -9,8 +9,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
     public static class TrainingCourseProviderOrderByExtension
     {
         private static Dictionary<int, decimal> _providerScores;
-        
-        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderRating(this IEnumerable<GetTrainingCourseProviderListItem> source)
+        private static DeliveryModeType _filteredDeliveryMode;
+
+        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderRating(
+            this IEnumerable<GetTrainingCourseProviderListItem> source, List<DeliveryModeType> requestDeliveryModes = null)
         {
              
             _providerScores = new Dictionary<int, decimal>();
@@ -48,6 +50,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
             {
                 return scoredAndSortedProviders;
             }
+
+            _filteredDeliveryMode = DeliveryModeType.NotFound;
+            if (requestDeliveryModes !=null  && requestDeliveryModes.Count == 1)
+            {
+                _filteredDeliveryMode = requestDeliveryModes.First();
+            }
             
             returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersThatAreAtWorkplaceOnly));
             returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix));
@@ -67,28 +75,49 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
         private static bool GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
         {
             return listItem.Score >= 6 
-                   &&listItem.DeliveryModes.Any(deliveryType=>deliveryType.DeliveryModeType != DeliveryModeType.Workplace && deliveryType.DistanceInMiles < 5 );
+                   &&listItem.DeliveryModes
+                       .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
+                       .Any(deliveryType=> 
+                       deliveryType.DistanceInMiles < 5 );
         }
+
         private static bool GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
         {
             return listItem.Score >= 6 
-                      && listItem.DeliveryModes.Any(deliveryType=>deliveryType.DistanceInMiles >= 5 && deliveryType.DistanceInMiles < 10);
+                      && listItem.DeliveryModes
+                          .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
+                          .Any(deliveryType=> 
+                          deliveryType.DistanceInMiles >= 5 
+                          && deliveryType.DistanceInMiles < 10);
         }
 
         private static bool GetProvidersWithinTenMilesWithScoreLessThanSix(GetTrainingCourseProviderListItem listItem)
         {
             return listItem.Score < 6
-                   && listItem.DeliveryModes.Any(deliveryType => deliveryType.DistanceInMiles < 10);
+                   && listItem.DeliveryModes
+                       .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
+                       .Any(deliveryType => deliveryType.DistanceInMiles < 10);
         }
 
         private static bool GetProvidersWithinTenToUnderFifteenMiles(GetTrainingCourseProviderListItem listItem)
         {
-            return listItem.DeliveryModes.Any(deliveryType =>
-                deliveryType.DistanceInMiles >= 10 && deliveryType.DistanceInMiles < 15);
+            return listItem.DeliveryModes
+                .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
+                .Any(deliveryType =>  deliveryType.DistanceInMiles >= 10 
+                                                               && deliveryType.DistanceInMiles < 15);
         }
+
         private static bool GetProvidersOverFifteenMiles(GetTrainingCourseProviderListItem listItem)
         {
-            return listItem.DeliveryModes.Any(deliveryType => deliveryType.DistanceInMiles >= 15);
+            return listItem.DeliveryModes
+                .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
+                .Any(deliveryType => deliveryType.DistanceInMiles >= 15);
+        }
+
+        private static bool FilterDeliveryType(GetDeliveryType deliveryType)
+        {
+            return deliveryType.DeliveryModeType != DeliveryModeType.Workplace 
+                   && (_filteredDeliveryMode == DeliveryModeType.NotFound || deliveryType.DeliveryModeType == _filteredDeliveryMode);
         }
 
         private static IEnumerable<GetTrainingCourseProviderListItem> AddFilteredProviders(
@@ -101,8 +130,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .Where(providerFilter)
                 .OrderByDescending(c=>c.Score)
                 .ThenBy(c=>c.DeliveryModes
-                    .OrderByDescending(x=>x.DistanceInMiles)
-                    .First().DistanceInMiles)
+                    .Where(FilterDeliveryType)
+                    .OrderBy(x=>x.DistanceInMiles)
+                    .FirstOrDefault()?.DistanceInMiles)
                 .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)
                 .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
