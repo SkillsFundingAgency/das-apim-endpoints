@@ -28,13 +28,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProvidersQueryHandler handler)
         {
+            apiCourseResponse.Level = 1;
             query.Location = "";
             query.Lat = 0;
             query.Lon = 0;
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
                     c.GetUrl.Contains(query.Id.ToString()) 
-                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}")
+                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}&level={apiCourseResponse.Level}")
                 )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
