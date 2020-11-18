@@ -21,12 +21,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
     public class EmployerIncentivesService : IEmployerIncentivesService
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
-        private readonly ILogger<EmployerIncentivesService> _logger;
 
-        public EmployerIncentivesService(IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> client, ILogger<EmployerIncentivesService> logger)
+        public EmployerIncentivesService(IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> client)
         {
             _client = client;
-            _logger = logger;
         }
 
         public async Task<bool> IsHealthy()
@@ -101,8 +99,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
-            var json = JsonConvert.SerializeObject(requestData);
-            _logger.LogInformation($"Create Incentive Application request sent to EI API: {json}");
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
         }
 
