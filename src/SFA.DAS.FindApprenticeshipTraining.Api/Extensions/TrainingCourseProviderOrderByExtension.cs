@@ -49,6 +49,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 return scoredAndSortedProviders;
             }
             
+            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersThatAreAtWorkplaceOnly));
             returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix));
             returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix));
             returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinTenMilesWithScoreLessThanSix));
@@ -58,10 +59,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
             return returnList.ToList();
         }
 
+        private static bool GetProvidersThatAreAtWorkplaceOnly(GetTrainingCourseProviderListItem listItem)
+        {
+            return listItem.DeliveryModes.All(c => c.DeliveryModeType == DeliveryModeType.Workplace);
+        }
+        
         private static bool GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
         {
             return listItem.Score >= 6 
-                   && listItem.DeliveryModes.Any(deliveryType=>deliveryType.DistanceInMiles < 5 || deliveryType.DeliveryModeType == DeliveryModeType.Workplace);
+                   &&listItem.DeliveryModes.Any(deliveryType=>deliveryType.DeliveryModeType != DeliveryModeType.Workplace && deliveryType.DistanceInMiles < 5 );
         }
         private static bool GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
         {
@@ -95,7 +101,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .Where(providerFilter)
                 .OrderByDescending(c=>c.Score)
                 .ThenBy(c=>c.DeliveryModes
-                    .OrderBy(x=>x.DistanceInMiles)
+                    .OrderByDescending(x=>x.DistanceInMiles)
                     .First().DistanceInMiles)
                 .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)

@@ -669,7 +669,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         }
         
         [Test]
-        public void Then_If_Matched_In_Group_Then_Ordered_By_Closest()
+        public void Then_If_Matched_In_Group_Then_Ordered_By_Closest_Excluding_Workplace_If_Other_Delivery_Options()
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
@@ -685,7 +685,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         new GetDeliveryType
                         {
                             DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
+                            DistanceInMiles = 3.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 0m
                         }
                     },
                     HasLocation = true
@@ -702,7 +719,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         new GetDeliveryType
                         {
                             DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 5.9m
+                            DistanceInMiles = 4.9m
                         },
                         new GetDeliveryType
                         {
@@ -716,8 +733,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             
             list = list.OrderByProviderRating().ToList();
             
-            list.First().ProviderId.Should().Be(2);
-            list.Last().ProviderId.Should().Be(1);
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(2);
         }
         
         [Test]
