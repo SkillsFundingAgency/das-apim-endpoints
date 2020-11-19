@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
 
-            // arrange
+            //Arrange
 
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
@@ -46,16 +46,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
 
-            levelsApiResponse.Levels.FirstOrDefault().Name = "GCSE";
-            levelsApiResponse.Levels.FirstOrDefault().Code = 2;
+            levelsApiResponse.Levels.First().Name = "GCSE";
+            levelsApiResponse.Levels.First().Code = 2;
             coursesApiResponse.Level = 2;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
-                .SingleOrDefault(x => x.Code == coursesApiResponse.Level).Name;
+                .Single(x => x.Code == coursesApiResponse.Level).Name;
 
-            // act
+            //Act
             var result = await handler.Handle(query, CancellationToken.None);
 
-            // asert
+            //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.Course.LevelEquivalent.Should().Be("GCSE");
             result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
