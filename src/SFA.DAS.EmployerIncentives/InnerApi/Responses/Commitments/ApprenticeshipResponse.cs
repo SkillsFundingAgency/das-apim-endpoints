@@ -21,5 +21,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments
         public bool HasHadDataLockSuccess { get; set; }
         public DateTime? OriginalStartDate { get; set; }
         public ApprenticeshipEmployerType? ApprenticeshipEmployerTypeOnApproval { get; set; }
+        public long ProviderId { get; set; }
     }
 }
