@@ -52,6 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
                 .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.TypicalJobTitles)
                 .Excluding(tc => tc.CoreAndOptions)
                 .Excluding(tc => tc.CoreDuties)
             );
