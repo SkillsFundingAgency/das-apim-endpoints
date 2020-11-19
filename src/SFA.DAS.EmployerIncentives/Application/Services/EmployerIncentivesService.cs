@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
@@ -19,7 +21,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
     public class EmployerIncentivesService : IEmployerIncentivesService
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
-
 
         public EmployerIncentivesService(IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> client)
         {
