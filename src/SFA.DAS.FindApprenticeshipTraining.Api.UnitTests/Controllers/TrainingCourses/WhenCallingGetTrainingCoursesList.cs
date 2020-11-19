@@ -38,9 +38,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
-                .Excluding(tc => tc.Duties)
                 .Excluding(tc => tc.Skills)
                 .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
             );
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
             model.Levels.Should().BeEquivalentTo(mediatorResult.Levels);
@@ -72,9 +72,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
-                .Excluding(tc => tc.Duties)
                 .Excluding(tc => tc.Skills)
                 .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
             );
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
