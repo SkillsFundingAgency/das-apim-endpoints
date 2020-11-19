@@ -32,13 +32,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.TypicalJobTitles = "B|Z|A|V";
 
-            var expected = new List<string>{"A","B","V","Z"};
+            var expected = new List<string> {"A", "B", "V", "Z"};
 
             var response = (GetTrainingCourseListItem) source;
 
             Assert.AreEqual(response.TypicalJobTitles, expected);
-            
-            [Test, AutoData]
+        }
+
+        [Test, AutoData]
         public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_True(
             GetStandardsListItem source)
         {
