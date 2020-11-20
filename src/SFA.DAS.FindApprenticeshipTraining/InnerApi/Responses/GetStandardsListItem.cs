@@ -33,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
+        public string ApprovalBody { get; set; }
 
         private int GetFundingDetails(string prop)
         {
