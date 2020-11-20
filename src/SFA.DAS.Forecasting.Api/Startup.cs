@@ -55,7 +55,7 @@ namespace SFA.DAS.Forecasting.Api
             }
 
             services.AddMediatR(typeof(GetFrameworkCoursesQuery).Assembly);
-            services.AddMediatR(typeof(GetStandardCoursesQuery).Assembly);
+                
             services.AddServiceRegistration();
 
             services
