@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EpaoRegister.Api.AppStart;
+using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -46,7 +48,7 @@ namespace SFA.DAS.EpaoRegister.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            //services.AddMediatR(typeof(GetEpaoListQuery).Assembly);todo
+            services.AddMediatR(typeof(GetEpaosQuery).Assembly);
             services.AddServiceRegistration();
             
             services
@@ -87,7 +89,7 @@ namespace SFA.DAS.EpaoRegister.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Epao}/{action=index}/{id?}");//todo
+                    pattern: "api/{controller=Epaos}/{action=index}/{id?}");//todo
             });
         
             app.UseSwagger();
