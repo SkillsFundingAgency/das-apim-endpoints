@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -17,7 +18,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source, options=> options
                 .Excluding(c=>c.ApprenticeshipFunding)
+                .Excluding(tc => tc.Skills)
                 .Excluding(tc => tc.TypicalJobTitles)
+                .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
+                .Excluding(tc => tc.CoreSkillsCount)
             );
         }
 
@@ -27,11 +32,33 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.TypicalJobTitles = "B|Z|A|V";
 
-            var expected = new List<string>{"A","B","V","Z"};
+            var expected = new List<string> {"A", "B", "V", "Z"};
 
             var response = (GetTrainingCourseListItem) source;
 
             Assert.AreEqual(response.TypicalJobTitles, expected);
+        }
+
+        [Test, AutoData]
+        public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_True(
+            GetStandardsListItem source)
+        {
+            source.CoreAndOptions = true;
+
+            var response = (GetTrainingCourseListItem) source;
+
+            response.CoreSkillsCount.Should().BeEquivalentTo(source.CoreDuties);
+        }
+        [Test, AutoData]
+        public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_False(
+            GetStandardsListItem source)
+        {
+            source.CoreAndOptions = false;
+            var expectedSkills = string.Join("|", source.Skills.Select(s => s));
+
+            var response = (GetTrainingCourseListItem)source;
+
+            response.CoreSkillsCount.Should().BeEquivalentTo(expectedSkills);
         }
     }
 }

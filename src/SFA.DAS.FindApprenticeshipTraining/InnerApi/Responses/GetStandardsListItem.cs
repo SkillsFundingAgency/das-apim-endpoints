@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using static System.String;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -24,8 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Route { get; set; }
 
         public string TypicalJobTitles { get; set; }
-
-        public string CoreSkillsCount { get; set; }
+        public string CoreSkillsCount => GetCoreSkillsCount();
 
         public string StandardPageUrl { get; set; }
 
@@ -34,6 +34,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public decimal SectorSubjectAreaTier2 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
         public string ApprovalBody { get; set; }
+        public List<string> Skills { get; set; }
+        public bool CoreAndOptions { get; set; }
+        public string CoreDuties { get; set; }
 
         private int GetFundingDetails(string prop)
         {
@@ -63,6 +66,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public StandardDate StandardDates { get; set; }
 
+        private string GetCoreSkillsCount()
+        {
+                if (CoreAndOptions)
+                {
+                    return CoreDuties;
+                }
+                return Join("|", Skills.Select(s => s));
+        }
     }
 
     public class ApprenticeshipFunding
