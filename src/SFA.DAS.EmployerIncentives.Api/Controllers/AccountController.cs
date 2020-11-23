@@ -107,7 +107,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(queryResult.ApprenticeApplications);
+            return Ok(queryResult);
         }
     }
 }

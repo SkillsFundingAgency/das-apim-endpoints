@@ -20,7 +20,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplications
 
             return new GetApplicationsResult
             {
-                ApprenticeApplications = response
+                ApprenticeApplications = response.ApprenticeApplications,
+                BankDetailsStatus = response.BankDetailsStatus
             };
         }
     }

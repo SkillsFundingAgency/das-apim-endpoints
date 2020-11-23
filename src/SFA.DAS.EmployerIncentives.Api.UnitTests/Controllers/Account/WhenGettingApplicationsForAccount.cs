@@ -38,9 +38,9 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as IEnumerable<ApprenticeApplication>;
+            var model = controllerResult.Value as GetApplicationsResult;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo(mediatorResult.ApprenticeApplications);
+            model.Should().BeEquivalentTo(mediatorResult);
         }
     }
 }

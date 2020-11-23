@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
+using SFA.DAS.EmployerIncentives.InnerApi;
 using SFA.DAS.EmployerIncentives.Models;
 using System;
 using System.Collections.Generic;
@@ -40,7 +42,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"this search request finds no applications")]
         public void GivenThisSearchRequestFindsNoApplications()
         {
-            var response = new List<ApprenticeApplication>();
+            var applications = new List<ApprenticeApplication>();
+            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.NotSupplied };
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
@@ -68,9 +71,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<IEnumerable<ApprenticeApplication>>(content, options);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
-            result.Count().Should().Be(0);
+            result.ApprenticeApplications.Count().Should().Be(0);
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.NotSupplied);
         }
 
         [Given(@"this search request finds one in progress application")]
@@ -78,10 +82,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             var inProgressApplication = _fixture.Create<ApprenticeApplication>();
             inProgressApplication.Status = "InProgress";
-            var response = new List<ApprenticeApplication>
+            var applications = new List<ApprenticeApplication>
             {
                 inProgressApplication
             };
+            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.NotSupplied };
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
@@ -103,10 +108,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<IEnumerable<ApprenticeApplication>>(content, options);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
-            result.Count().Should().Be(1);
-            result.ToList()[0].Status.Should().Be("InProgress");
+            result.ApprenticeApplications.Count().Should().Be(1);
+            result.ApprenticeApplications.ToList()[0].Status.Should().Be("InProgress");
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.NotSupplied);
         }
 
         [Given(@"this search request finds one submitted application")]
@@ -114,7 +120,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             var submittedApplication = _fixture.Create<ApprenticeApplication>();
             submittedApplication.Status = "Submitted";
-            var response = new List<ApprenticeApplication> { submittedApplication };
+            var applications = new List<ApprenticeApplication> { submittedApplication };
+            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.InProgress };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -137,10 +144,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<List<ApprenticeApplication>>(content, options);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
-            result.Count().Should().Be(1);
-            result.ToList()[0].Status.Should().Be("Submitted");
+            result.ApprenticeApplications.Count().Should().Be(1);
+            result.ApprenticeApplications.ToList()[0].Status.Should().Be("Submitted");
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.InProgress);
         }
 
         [Given(@"this search request finds one application for multiple apprentices")]
@@ -153,6 +161,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 application.Status = "Submitted";
                 application.ApplicationId = applicationId;
             }
+            var response = new GetApplicationsResult { ApprenticeApplications = multipleApprenticesApplication, BankDetailsStatus = InnerApi.BankDetailsStatus.Completed };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -162,7 +171,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(multipleApprenticesApplication)));
+                        .WithBody(JsonSerializer.Serialize(response)));
         }
 
         [Then(@"the result should return Ok, with one submitted application for multiple apprentices")]
@@ -175,9 +184,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<IEnumerable<ApprenticeApplication>>(content, options);
-            result.Should().NotBeNull();
-            result.Count().Should().Be(10);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
+            result.ApprenticeApplications.Should().NotBeNull();
+            result.ApprenticeApplications.Count().Should().Be(10);
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.Completed);
         }
 
         [Given(@"this search request finds multiple submitted applications")]
@@ -186,6 +196,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             var multipleApplications = _fixture.CreateMany<ApprenticeApplication>(2).ToList();
             multipleApplications[0].Status = "Submitted";
             multipleApplications[1].Status = "Submitted";
+            var response = new GetApplicationsResult { ApprenticeApplications = multipleApplications, BankDetailsStatus = InnerApi.BankDetailsStatus.Rejected };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -195,7 +206,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(multipleApplications)));
+                        .WithBody(JsonSerializer.Serialize(response)));
         }
 
         [Then(@"the result should return Ok, with multiple submitted applications")]
@@ -208,13 +219,14 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<IEnumerable<ApprenticeApplication>>(content, options);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
-            var applications = result.ToList();
+            result.ApprenticeApplications.Count().Should().Be(2);
+            var applications = result.ApprenticeApplications.ToList();
             applications[0].Status.Should().Be("Submitted");
             applications[1].Status.Should().Be("Submitted");
             applications[0].ApplicationId.Should().NotBe(applications[1].ApplicationId);
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.Rejected);
         }
 
         [Given(@"this search request finds multiple applications with statuses of in progress and submitted")]
@@ -223,6 +235,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             var multipleApplications = _fixture.CreateMany<ApprenticeApplication>(2).ToList();
             multipleApplications[0].Status = "Submitted";
             multipleApplications[1].Status = "InProgress";
+            var response = new GetApplicationsResult { ApprenticeApplications = multipleApplications, BankDetailsStatus = InnerApi.BankDetailsStatus.Completed };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -232,7 +245,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(multipleApplications)));
+                        .WithBody(JsonSerializer.Serialize(response)));
         }
 
         [Then(@"the result should return Ok, with multiple applications with statuses of in progress and submitted")]
@@ -245,13 +258,14 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            var result = JsonSerializer.Deserialize<IEnumerable<ApprenticeApplication>>(content, options);
+            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
-            var applications = result.ToList();
+            result.ApprenticeApplications.Count().Should().Be(2);
+            var applications = result.ApprenticeApplications.ToList();
             applications[0].Status.Should().Be("Submitted");
             applications[1].Status.Should().Be("InProgress");
             applications[0].ApplicationId.Should().NotBe(applications[1].ApplicationId);
+            result.BankDetailsStatus.Should().Be(BankDetailsStatus.Completed);
         }
 
     }
