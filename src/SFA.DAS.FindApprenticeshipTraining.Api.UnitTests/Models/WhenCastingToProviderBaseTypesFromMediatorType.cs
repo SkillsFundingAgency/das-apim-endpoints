@@ -400,7 +400,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 DeliveryModeType.BlockRelease
             }, new List<FeedbackRatingType>(), true);
 
-            response.Should().BeNull();
+            response.Should().NotBeNull();
         }
         [Test, AutoData]
         public void Then_If_There_Are_Multiple_Delivery_Modes_Filtered_And_Match_Then_It_Is_Returned_Correctly(string sectorSubjectArea, GetProvidersListItem source)

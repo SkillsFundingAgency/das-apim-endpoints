@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
@@ -15,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Keywords { get; set; }
         public int TypicalDuration { get; set; }
         public string Route { get; set; }
-        public string TypicalJobTitles { get; set; }
+        public List<string> TypicalJobTitles { get; set; }
         public string CoreSkillsCount { get; set; }
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
@@ -40,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Keywords = source.Keywords,
                 TypicalDuration = source.TypicalDuration,
                 Route = source.Route,
-                TypicalJobTitles = source.TypicalJobTitles,
+                TypicalJobTitles = source.TypicalJobTitles.Split('|').Length <=1? new List<string>() : source.TypicalJobTitles.Split('|').OrderBy(x => x).ToList(),
                 CoreSkillsCount = source.CoreSkillsCount,
                 StandardPageUrl = source.StandardPageUrl,
                 IntegratedDegree = source.IntegratedDegree,
