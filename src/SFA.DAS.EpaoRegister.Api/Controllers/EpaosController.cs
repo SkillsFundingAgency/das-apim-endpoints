@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.EpaoRegister.Api.Models;
+using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 
 namespace SFA.DAS.EpaoRegister.Api.Controllers
 {
@@ -8,23 +13,26 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
     [Route("[controller]/")]
     public class EpaosController : ControllerBase
     {
+        private readonly ILogger<EpaosController> _logger;
+        private readonly IMediator _mediator;
 
-        public EpaosController()
+        public EpaosController(ILogger<EpaosController> logger,
+            IMediator mediator)
         {
-            
+            _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            throw new NotImplementedException();
-            /*try
+            try
             {
-                var queryResult = await _mediator.Send(new GetCourseListQuery());
+                var queryResult = await _mediator.Send(new GetEpaosQuery());
                 
-                var model = new GetCourseListResponse
+                var model = new GetEpaosApiModel
                 {
-                    Courses = queryResult.Courses.Select(c=>(GetCourseListItem)c).ToList()
+                    Epaos = queryResult.Epaos.Select(item => (EpaoListItem)item)
                 };
 
                 return Ok(model);
@@ -33,7 +41,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
             {
                 _logger.LogError(e, "Error attempting to get list of Epaos");
                 return BadRequest();
-            }*/
+            }
         }
     }
 }

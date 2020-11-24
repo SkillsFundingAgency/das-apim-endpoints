@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -16,8 +17,8 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
 {
     public class WhenGettingEpaos
     {
-        [Test, MoqAutoData, Ignore("for now")]
-        public async Task Then_Gets_Training_Courses_From_Mediator(
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Epaos_From_Mediator(
             GetEpaosResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
@@ -32,7 +33,8 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaosApiModel;
-            model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos);
+            model.Epaos.Should().BeEquivalentTo(
+                mediatorResult.Epaos.Select(item => (EpaoListItem)item));
         }
     }
 }
