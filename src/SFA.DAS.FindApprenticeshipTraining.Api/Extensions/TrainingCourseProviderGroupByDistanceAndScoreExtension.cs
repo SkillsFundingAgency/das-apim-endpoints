@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .ThenBy(c=>c.Name);
         }
 
-        private static decimal GetDeliveryModeDistance(IReadOnlyCollection<GetDeliveryType> deliveryTypes)
+        private static decimal GetDeliveryModeDistance(List<GetDeliveryType> deliveryTypes)
         {
             
             if (deliveryTypes.All(delMode => delMode.DeliveryModeType == DeliveryModeType.Workplace))
