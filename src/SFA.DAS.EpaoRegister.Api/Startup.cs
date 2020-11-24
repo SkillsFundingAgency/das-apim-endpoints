@@ -48,8 +48,9 @@ namespace SFA.DAS.EpaoRegister.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetEpaosQuery).Assembly);
             services.AddServiceRegistration();
+            services.AddMediatR(typeof(GetEpaosQuery).Assembly);
+            services.AddMediatRValidation();
             
             services
                 .AddMvc(o =>
