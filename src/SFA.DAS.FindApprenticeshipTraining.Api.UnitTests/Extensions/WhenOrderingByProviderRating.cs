@@ -67,6 +67,43 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(3).Take(1).First().ProviderId.Should().Be(2);
             list.Last().ProviderId.Should().Be(5);
         }
+
+        [Test]
+        public void Then_If_Only_One_Has_Percentile_Score_Then_That_Scores_Highest()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                }
+            };
+
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+        }
         
         [Test]
         public void Then_The_Percentile_Is_Calculated_And_Rank_Assigned_For_AchievementRates()
@@ -126,6 +163,201 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     {
                         
                     } 
+                }
+            };
+
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+            list.Last().ProviderId.Should().Be(1);
+        }
+        
+        
+        [Test]
+        public void Then_The_Percentile_Is_Calculated_And_Rank_Assigned_For_AchievementRates_And_If_Same_Ordered_By_PassRate()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    OverallAchievementRate = 52.6m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    OverallAchievementRate = 81.6m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    OverallAchievementRate = 81.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 7,
+                    OverallAchievementRate = 81.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 6,
+                    OverallAchievementRate = 82.8m,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 5,
+                    OverallAchievementRate = null,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        
+                    } 
+                }
+            };
+
+            list = list.OrderByProviderRating().ToList();
+
+            list.First().ProviderId.Should().Be(3);
+            list.Last().ProviderId.Should().Be(1);
+        }
+        
+        [Test]
+        public void Then_The_Percentile_Is_Calculated_And_Rank_Assigned_For_AchievementRates_And_If_Same_Ordered_By_PassRate_With_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    OverallAchievementRate = 52.6m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    OverallAchievementRate = 81.6m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    OverallAchievementRate = 84.8m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    OverallAchievementRate = 81.8m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 7,
+                    OverallAchievementRate = 81.8m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 6,
+                    OverallAchievementRate = 82.8m,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 5,
+                    OverallAchievementRate = null,
+                    Feedback = new GetProviderFeedbackResponse(),
+                    HasLocation = true,
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1
+                        }
+                    }
                 }
             };
 
@@ -437,7 +669,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         }
         
         [Test]
-        public void Then_If_Matched_In_Group_Then_Ordered_By_Closest()
+        public void Then_If_Matched_In_Group_Then_Ordered_By_Closest_Excluding_Workplace_If_Other_Delivery_Options()
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
@@ -453,7 +685,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         new GetDeliveryType
                         {
                             DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
+                            DistanceInMiles = 3.9m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 0m
                         }
                     },
                     HasLocation = true
@@ -470,7 +719,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         new GetDeliveryType
                         {
                             DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 3.9m
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.Workplace,
+                            DistanceInMiles = 0m
                         }
                     },
                     HasLocation = true
@@ -479,8 +733,249 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             
             list = list.OrderByProviderRating().ToList();
             
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(2);
+        }
+
+        [Test]
+        public void Then_If_There_Are_Multiple_Filters_Then_Closest_Is_Used()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.8m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.DayRelease, DeliveryModeType.BlockRelease}).ToList();
+            
             list.First().ProviderId.Should().Be(2);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(3);
+        }
+        
+        [Test]
+        public void Then_If_There_Is_A_Delivery_Filter_For_DayRelease_Then_That_Mode_Is_Used_For_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.8m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.DayRelease}).ToList();
+            
+            list.First().ProviderId.Should().Be(3);
+            list.Skip(1).First().ProviderId.Should().Be(2);
             list.Last().ProviderId.Should().Be(1);
+        }
+        
+        [Test]
+        public void Then_If_There_Is_A_Delivery_Filter_For_Block_Release_Then_That_Mode_Is_Used_For_Distance()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 1.2m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 1.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 3m
+                        }
+                    },
+                    HasLocation = true
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    Feedback = new GetProviderFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    },
+                    DeliveryModes = new List<GetDeliveryType>
+                    {
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.DayRelease,
+                            DistanceInMiles = 4.9m
+                        },
+                        new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.BlockRelease,
+                            DistanceInMiles = 0m
+                        }
+                    },
+                    HasLocation = true
+                }
+            };
+            
+            list = list.OrderByProviderRating(new List<DeliveryModeType> {DeliveryModeType.BlockRelease}).ToList();
+            
+            list.First().ProviderId.Should().Be(2);
+            list.Skip(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(3);
         }
         
         [Test]

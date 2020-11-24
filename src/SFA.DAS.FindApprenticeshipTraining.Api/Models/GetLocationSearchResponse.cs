@@ -26,8 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetLocationSearchResponseItem
             {
-                Name = !string.IsNullOrEmpty(source.DistrictName) ? $"{source.Outcode} {source.DistrictName}" : string.IsNullOrEmpty(source.Postcode) ?
-                    $"{source.LocationName}, {source.LocalAuthorityName}" : $"{source.Postcode}",
+                Name = source.DisplayName,
                 Location = source.Location,
             };
         }
