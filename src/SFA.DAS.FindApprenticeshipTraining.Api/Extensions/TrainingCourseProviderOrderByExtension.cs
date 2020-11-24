@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 {
@@ -11,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
         private static Dictionary<int, decimal> _providerScores;
         private static DeliveryModeType _filteredDeliveryMode;
 
-        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderRating(
+        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderScore(
             this IEnumerable<GetTrainingCourseProviderListItem> source, List<DeliveryModeType> requestDeliveryModes = null)
         {
              
@@ -23,8 +21,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 
             AddAchievementRateScore(getTrainingCourseProviderListItems);
 
-            var returnList = new List<GetTrainingCourseProviderListItem>();
-            
             var scoredAndSortedProviders = 
                 _providerScores.Join(getTrainingCourseProviderListItems,
                     achievementRateScore => achievementRateScore.Key,
@@ -44,101 +40,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
                 .ThenBy(c=>c.Name)
                 .ToList();
-            
+
+            _filteredDeliveryMode = DeliveryModeType.NotFound;
+            if (requestDeliveryModes !=null  && requestDeliveryModes.Count(c => c!=DeliveryModeType.National) == 1) //TODO need to exclude national
+            {
+                _filteredDeliveryMode = requestDeliveryModes.First(c => c!=DeliveryModeType.National);
+            }
+
             if (!getTrainingCourseProviderListItems.All(c => c.HasLocation) 
-                || getTrainingCourseProviderListItems.All(c=>c.DeliveryModes.All(x=>x.DeliveryModeType == DeliveryModeType.Workplace)))
+                || getTrainingCourseProviderListItems.All(c=>c.DeliveryModes.All(x=>x.DeliveryModeType == DeliveryModeType.Workplace))
+                || _filteredDeliveryMode == DeliveryModeType.Workplace)
             {
                 return scoredAndSortedProviders;
             }
 
-            _filteredDeliveryMode = DeliveryModeType.NotFound;
-            if (requestDeliveryModes !=null  && requestDeliveryModes.Count == 1)
-            {
-                _filteredDeliveryMode = requestDeliveryModes.First();
-            }
-            
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersThatAreAtWorkplaceOnly));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinTenMilesWithScoreLessThanSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinTenToUnderFifteenMiles));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersOverFifteenMiles));
-            
-            return returnList.ToList();
+            return scoredAndSortedProviders.OrderByScoreAndDistance(_filteredDeliveryMode);
         }
-
-        private static bool GetProvidersThatAreAtWorkplaceOnly(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.DeliveryModes.All(c => c.DeliveryModeType == DeliveryModeType.Workplace);
-        }
-        
-        private static bool GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score >= 6 
-                   &&listItem.DeliveryModes
-                       .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
-                       .Any(deliveryType=> 
-                       deliveryType.DistanceInMiles < 5 );
-        }
-
-        private static bool GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score >= 6 
-                      && listItem.DeliveryModes
-                          .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
-                          .Any(deliveryType=> 
-                          deliveryType.DistanceInMiles >= 5 
-                          && deliveryType.DistanceInMiles < 10);
-        }
-
-        private static bool GetProvidersWithinTenMilesWithScoreLessThanSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score < 6
-                   && listItem.DeliveryModes
-                       .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
-                       .Any(deliveryType => deliveryType.DistanceInMiles < 10);
-        }
-
-        private static bool GetProvidersWithinTenToUnderFifteenMiles(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.DeliveryModes
-                .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
-                .Any(deliveryType =>  deliveryType.DistanceInMiles >= 10 
-                                                               && deliveryType.DistanceInMiles < 15);
-        }
-
-        private static bool GetProvidersOverFifteenMiles(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.DeliveryModes
-                .Where(c=>c.DeliveryModeType!=DeliveryModeType.Workplace)
-                .Any(deliveryType => deliveryType.DistanceInMiles >= 15);
-        }
-
-        private static bool FilterDeliveryType(GetDeliveryType deliveryType)
-        {
-            return deliveryType.DeliveryModeType != DeliveryModeType.Workplace 
-                   && (_filteredDeliveryMode == DeliveryModeType.NotFound || deliveryType.DeliveryModeType == _filteredDeliveryMode);
-        }
-
-        private static IEnumerable<GetTrainingCourseProviderListItem> AddFilteredProviders(
-            IEnumerable<GetTrainingCourseProviderListItem> scoredAndSortedProviders, 
-            IEnumerable<GetTrainingCourseProviderListItem> returnList, 
-            Func<GetTrainingCourseProviderListItem, bool> providerFilter)
-        {
-            return scoredAndSortedProviders
-                .Except(returnList)
-                .Where(providerFilter)
-                .OrderByDescending(c=>c.Score)
-                .ThenBy(c=>c.DeliveryModes
-                    .Where(FilterDeliveryType)
-                    .OrderBy(x=>x.DistanceInMiles)
-                    .FirstOrDefault()?.DistanceInMiles)
-                .ThenByDescending(c=>c.OverallAchievementRate)
-                .ThenByDescending(c=>c.OverallCohort)
-                .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
-                .ThenBy(c=>c.Name);
-        }
-
         private static void AddAchievementRateScore(IReadOnlyCollection<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
         {
             
@@ -196,7 +113,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 _providerScores[listItem.ProviderId] += GetAchievementRateScore(null);
             }
         }
-
         private static void AddFeedbackRateScore(IEnumerable<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
         {
             foreach (var listItem in getTrainingCourseProviderListItems)
@@ -205,7 +121,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 _providerScores.Add(listItem.ProviderId, feedbackScore);
             }
         }
-
         private static decimal GetFeedbackScore(int score)
         {
             return score switch
