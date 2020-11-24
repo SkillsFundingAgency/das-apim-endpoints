@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -13,13 +14,32 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Validation;
 using SFA.DAS.Testing.AutoFixture;
+using ValidationResult = SFA.DAS.SharedOuterApi.Validation.ValidationResult;
 
 namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 {
     public class WhenHandlingGetEpaoCoursesQuery
     {
-        // todo: validation failure (malformed epaoid)
+        [Test, MoqAutoData]
+        public void And_Validation_Error_Then_Throws_ValidationException(
+            GetEpaoCoursesQuery query,
+            string propertyName,
+            ValidationResult validationResult,
+            [Frozen] Mock<IValidator<GetEpaoCoursesQuery>> mockValidator,
+            GetEpaoCoursesQueryHandler handler)
+        {
+            validationResult.AddError(propertyName);
+            mockValidator
+                .Setup(validator => validator.ValidateAsync(It.IsAny<GetEpaoCoursesQuery>()))
+                .ReturnsAsync(validationResult);
+
+            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+
+            act.Should().Throw<ValidationException>()
+                .WithMessage($"*{propertyName}*");
+        }
 
         [Test, MoqAutoData]
         public void And_No_Epao_Courses_Then_Throws_EntityNotFoundException(
