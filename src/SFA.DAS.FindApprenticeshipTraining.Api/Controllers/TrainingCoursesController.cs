@@ -157,6 +157,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Lat = lat,
                     Lon = lon
                 });
+
+                if (result.ProviderStandard == null)
+                {
+                    if (result.Course == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(new GetTrainingCourseProviderResponse
+                    {
+                        TrainingCourse =  result.Course,
+                        Location = new GetLocationSearchResponseItem
+                        {
+                            Name = result.Location?.Name,
+                            Location = new GetLocationSearchResponseItem.LocationResponse
+                            {
+                                GeoPoint = result.Location?.GeoPoint
+                            }
+                        }
+                    });
+                }
+                
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
