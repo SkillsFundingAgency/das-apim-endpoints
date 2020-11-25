@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -20,18 +21,28 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_And_Sectors_And_Levels_From_Courses_Api_With_Request_Params(
+            Guid sectorId,
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
-            
+            var sectorsApiResponse = new GetSectorsListResponse
+            {
+                Sectors = new List<GetSectorsListItem>
+                {
+                    new GetSectorsListItem
+                    {
+                        Id = sectorId,
+                        Route = query.RouteIds.First()
+                    }
+                }
+            };
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) 
-                                                      && c.RouteIds.Equals(query.RouteIds)
+                                                      && c.RouteIds.Contains(sectorId)
                                                       && c.Levels.Equals(query.Levels)
                                                       )))
                 .ReturnsAsync(apiResponse);
@@ -64,7 +75,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             var query = new GetTrainingCoursesListQuery
             {
                 Levels = new List<int>(),
-                RouteIds = new List<Guid>()
+                RouteIds = new List<string>()
             };
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
@@ -100,7 +111,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
@@ -115,6 +126,43 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         }
 
         [Test, MoqAutoData]
+        public async Task Then_Sector_Ids_Are_Looked_Up_If_There_Is_A_Sector_Filter(
+            Guid sectorId,
+            GetTrainingCoursesListQuery query,
+            GetStandardsListResponse apiResponse,
+            GetLevelsListResponse levelsApiResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            var sectorsApiResponse = new GetSectorsListResponse
+            {
+                Sectors = new List<GetSectorsListItem>
+                {
+                    new GetSectorsListItem
+                    {
+                        Id = sectorId,
+                        Route = query.RouteIds.First()
+                    }
+                }
+            };
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Contains(sectorId))))
+                .ReturnsAsync(apiResponse);
+            
+            var actual = await handler.Handle(query, CancellationToken.None);
+            
+            Assert.IsNotNull(actual);
+        }
+        
+        [Test, MoqAutoData]
         public async Task Then_The_Sectors_Are_Returned_From_The_Cache_If_Available(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
@@ -127,7 +175,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Arrange
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
@@ -159,7 +207,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
@@ -185,7 +233,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Arrange
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Equals(query.RouteIds))))
+                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))

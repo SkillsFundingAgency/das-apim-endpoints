@@ -51,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_And_Levels_And_OrderBy_If_Supplied(
             string keyword,
             List<int> levels,
-            List<Guid> routeIds,
+            List<string> routeIds,
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
