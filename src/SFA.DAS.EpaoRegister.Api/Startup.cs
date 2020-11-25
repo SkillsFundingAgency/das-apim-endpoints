@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -51,15 +52,18 @@ namespace SFA.DAS.EpaoRegister.Api
             services.AddServiceRegistration();
             services.AddMediatR(typeof(GetEpaosQuery).Assembly);
             services.AddMediatRValidation();
-            
-            services
-                .AddMvc(o =>
+
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            }).AddMvc(o =>
+            {
+                if (!_configuration.IsLocalOrDev())
                 {
-                    if (!_configuration.IsLocalOrDev())
-                    {
-                        o.Filters.Add(new AuthorizeFilter("default"));
-                    }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    o.Filters.Add(new AuthorizeFilter("default"));
+                }
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             if (_configuration["Environment"] != "DEV")
             {
