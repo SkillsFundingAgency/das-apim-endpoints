@@ -61,5 +61,38 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
             result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Standard_Found_Returns_Empty_Response(
+            GetTrainingCourseQuery query,
+            GetLevelsListResponse levelsApiResponse,
+            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
+            GetTrainingCourseQueryHandler handler)
+        {
+
+            //Arrange
+
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
+                .ReturnsAsync((GetStandardsListItem) null);
+
+
+            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
+            mockCourseDeliveryApiClient
+                .Setup(client =>
+                    client.Get<GetUkprnsForStandardAndLocationResponse>(
+                        It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
+                            c.GetUrl.Equals(url)))))
+                .ReturnsAsync(courseDirectoryApiResponse);
+
+            //Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            //Assert
+            result.Course.Should().BeNull();
+        }
+        
     }
 }

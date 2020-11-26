@@ -30,6 +30,9 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
         Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request);
         Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId);
+
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
+        
+        Task EarningsResilienceCheck();
     }
 }
