@@ -30,6 +30,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\EarningsResilienceCheck.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\GetApplicationsForAccount.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -55,6 +58,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\EarningsResilienceCheck.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EarningsResilienceCheck.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\GetApplicationsForAccount.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>GetApplicationsForAccount.feature.cs</LastGenOutput>
