@@ -8,56 +8,56 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Forecasting.Api.Controllers;
-using SFA.DAS.Forecasting.Api.Models;
-using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
+using SFA.DAS.Approvals.Api.Controllers;
+using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
 {
-    public class WhenCallingGetStandardsList
+    public class WhenGettingAllStandards
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Mediator(
-            GetStandardCoursesResult mediatorResult,
+            int standardCode,
+            GetStandardsResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetStandardCoursesQuery>(),
+                    It.IsAny<GetStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetStandardsList() as ObjectResult;
+            var controllerResult = await controller.GetStandards() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsListResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards,
-                o => o
-                    .Excluding(s => s.ApprenticeshipFunding)
-                    .Excluding(s => s.MaxFunding)
-                    .Excluding(s => s.TypicalDuration)
-                    .Excluding(s => s.StandardDates)
-                );
+            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards, options => options
+                .Excluding(c=>c.StandardDates)
+                .Excluding(c=>c.TypicalDuration)
+            );
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
+            int standardCode,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetStandardCoursesQuery>(),
+                    It.IsAny<GetStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetFrameworksList() as BadRequestResult;
+            var controllerResult = await controller.GetStandards() as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
+        
     }
 }

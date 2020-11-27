@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Forecasting.Api.UnitTests.Models
 {
@@ -16,7 +17,15 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
             var response = (ApprenticeshipCourse)source;
 
             response.Should().BeEquivalentTo(source,
-                o => o.Excluding(s => s.ApprenticeshipFunding));
+                o => o
+                    .Excluding(s => s.ApprenticeshipFunding)
+                    .Excluding(s => s.MaxFunding)
+                    .Excluding(s => s.TypicalDuration)
+                    .Excluding(s => s.StandardDates)
+                );
+
+            response.Duration.Should().Be(source.TypicalDuration);
+            response.FundingCap.Should().Be(source.MaxFunding);
             
             for (var i = 0; i < response.FundingPeriods.Count; i++)
             {
@@ -30,7 +39,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
         public void And_No_Standard_Funding_Periods_Then_Duration_Is_Zero(
             GetStandardsListItem source)
         {
-            source.ApprenticeshipFunding = new List<GetStandardsListItem.FundingPeriod>();
+            source.ApprenticeshipFunding = new List<ApprenticeshipFunding>();
 
             var response = (ApprenticeshipCourse)source;
 

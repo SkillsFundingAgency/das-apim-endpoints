@@ -7,6 +7,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public abstract class StandardApiResponseBase
     {
+        public StandardDate StandardDates { get; set; }
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
         
         [JsonIgnore]
@@ -36,6 +37,15 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
         }
+    }
+    
+    public class StandardDate
+    {
+        public DateTime? LastDateStarts { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
+
+        public DateTime EffectiveFrom { get; set; }
     }
     
     public class ApprenticeshipFunding

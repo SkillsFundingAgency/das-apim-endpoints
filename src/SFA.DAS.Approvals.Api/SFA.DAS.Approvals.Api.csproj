@@ -39,6 +39,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.Approvals\SFA.DAS.Approvals.csproj" />
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
