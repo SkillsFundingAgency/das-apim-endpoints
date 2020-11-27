@@ -29,7 +29,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList() as ObjectResult;
+            var controllerResult = await controller.GetEpaos() as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaosApiModel;
