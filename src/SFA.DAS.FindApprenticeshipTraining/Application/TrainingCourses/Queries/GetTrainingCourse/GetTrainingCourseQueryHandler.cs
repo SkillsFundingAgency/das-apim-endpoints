@@ -34,6 +34,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
             
             await Task.WhenAll(standardTask, providersTask, levelsTask);
+
+            if (standardTask.Result == null)
+            {
+                return new GetTrainingCourseResult();
+            }
             
             standardTask.Result.LevelEquivalent = levelsTask.Result.Levels.SingleOrDefault(x => x.Code == standardTask.Result.Level)?.Name;
 
