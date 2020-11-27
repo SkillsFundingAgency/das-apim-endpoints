@@ -9,10 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="InnerApi\Requests" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
