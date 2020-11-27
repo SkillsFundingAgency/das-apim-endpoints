@@ -13,22 +13,22 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.TrainingCourses.Queries
 {
-    public class WhenGettingTrainingCourses
+    public class WhenGettingTrainingCourseFrameworks
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_From_Courses_Api(
-            GetStandardsQuery query,
-            GetStandardsListResponse apiResponse,
+        public async Task Then_Gets_Frameworks_From_Courses_Api(
+            GetFrameworksQuery query,
+            GetFrameworksListResponse apiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
-            GetStandardsQueryHandler handler)
+            GetFrameworksQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
+                .Setup(client => client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Frameworks.Should().BeEquivalentTo(apiResponse.Frameworks);
         }
     }
 }
