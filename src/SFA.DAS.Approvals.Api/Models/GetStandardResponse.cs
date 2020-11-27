@@ -31,7 +31,6 @@ namespace SFA.DAS.Approvals.Api.Models
                 EffectiveTo = source.StandardDates.EffectiveTo,
                 LastDateForNewStarts = source.StandardDates.LastDateStarts,
                 ApprenticeshipFunding = source.ApprenticeshipFunding.Select(c=>(GetStandardFundingResponse)c).ToList()
-                    
             };
         }
     }
