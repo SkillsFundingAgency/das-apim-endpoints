@@ -43,7 +43,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 
             if (epaoCoursesListItems == null || epaoCoursesListItems.Count == 0)
             {
-                throw new EntityNotFoundException<EpaoCourse>();
+                throw new EntityNotFoundException<GetStandardResponse>();
             }
             
             var courseTasks = new List<Task<GetStandardResponse>>();
@@ -55,18 +55,18 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
             }
             await Task.WhenAll(courseTasks);
 
-            var epaoCourses = new List<EpaoCourse>();
-            for (var i = 0; i < courseTasks.Count; i++)
+            var epaoCourses = new List<GetStandardResponse>();
+            foreach (var task in courseTasks)
             {
-                var course = courseTasks[i].Result;
-                epaoCourses.Add(new EpaoCourse
-                {
-                    Course = course,
-                    GetEpaoCoursesListItem = epaoCoursesListItems[i]
-                });
+                var course = task.Result;
+                epaoCourses.Add(course);
             }
 
-            return new GetEpaoCoursesResult{EpaoCourses = epaoCourses};
+            return new GetEpaoCoursesResult
+            {
+                EpaoId = request.EpaoId,
+                Courses = epaoCourses
+            };
         }
     }
 }

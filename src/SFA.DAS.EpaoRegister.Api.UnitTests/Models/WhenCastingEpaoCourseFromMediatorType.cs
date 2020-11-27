@@ -6,21 +6,22 @@ using SFA.DAS.EpaoRegister.InnerApi.Responses;
 
 namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
 {
-    public class WhenCastingEpaoListItemFromMediatorType
+    public class WhenCastingEpaoCourseFromMediatorType
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
-            GetEpaosListItem source)
+            GetStandardResponse source)
         {
-            var response = (EpaoListItem)source;
+            var response = (EpaoCourse)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Id.Should().Be(source.Id);
+            response.Periods.Should().BeEquivalentTo(source.StandardDates);
         }
 
         [Test]
         public void And_Source_Is_Null_Then_Returns_Null()
         {
-            var response = (EpaoListItem)null;
+            var response = (EpaoCourse)null;
 
             response.Should().BeNull();
         }

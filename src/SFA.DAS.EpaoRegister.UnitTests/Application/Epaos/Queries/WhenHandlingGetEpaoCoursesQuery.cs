@@ -54,7 +54,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<EntityNotFoundException<EpaoCourse>>();
+            act.Should().Throw<EntityNotFoundException<GetStandardResponse>>();
         }
 
         [Test, MoqAutoData]
@@ -75,19 +75,11 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                 .ReturnsAsync(getStandardResponses[0])
                 .ReturnsAsync(getStandardResponses[1])
                 .ReturnsAsync(getStandardResponses[2]);
-            var expectedEpaoCourses = new List<EpaoCourse>();
-            for (var i = 0; i < apiResponse.Count; i++)
-            {
-                expectedEpaoCourses.Add(new EpaoCourse
-                {
-                    Course = getStandardResponses[i],
-                    GetEpaoCoursesListItem = apiResponse[i]
-                });
-            }
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.EpaoCourses.Should().BeEquivalentTo(expectedEpaoCourses);
+            result.EpaoId.Should().Be(query.EpaoId);
+            result.Courses.Should().BeEquivalentTo(getStandardResponses);
         }
     }
 }

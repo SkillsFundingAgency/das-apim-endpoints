@@ -5,6 +5,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 {
     public class GetEpaoCoursesResult
     {
-        public IReadOnlyList<EpaoCourse> EpaoCourses { get; set; }
+        public string EpaoId { get; set; }
+        public IReadOnlyList<GetStandardResponse> Courses { get; set; }
     }
 }
