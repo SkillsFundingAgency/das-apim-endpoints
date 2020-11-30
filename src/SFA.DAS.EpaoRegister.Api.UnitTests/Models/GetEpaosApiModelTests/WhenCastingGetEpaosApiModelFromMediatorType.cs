@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Models;
-using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
-using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
+namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaosApiModelTests
 {
     public class WhenCastingGetEpaosApiModelFromMediatorType
     {
@@ -19,24 +16,6 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
             var response = (GetEpaosApiModel)source;
 
             response.Epaos.Count().Should().Be(source.Epaos.Count());
-        }
-
-        [Test, AutoData]
-        public void Then_Creates_Links(
-            GetEpaosResult source)
-        {
-            var expectedLinks = new List<Link>
-            {
-                new Link
-                {
-                    Rel = "self",
-                    Href = "/epaos"
-                }
-            };
-
-            var response = (GetEpaosApiModel) source;
-
-            response.Links.Should().BeEquivalentTo(expectedLinks);
         }
 
         [Test]

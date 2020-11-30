@@ -63,6 +63,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {
+            controller.Url = Mock.Of<IUrlHelper>();
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetEpaoQuery>(query => query.EpaoId == epaoId),

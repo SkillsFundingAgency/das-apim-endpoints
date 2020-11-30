@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EpaoRegister.Api.Infrastructure;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -8,7 +10,7 @@ namespace SFA.DAS.EpaoRegister.Api.Models
     public class GetEpaosApiModel
     {
         public IEnumerable<EpaoListItem> Epaos { get; set; }
-        public IEnumerable<Link> Links => BuildLinks();
+        public IEnumerable<Link> Links { get; private set; }
 
         public static implicit operator GetEpaosApiModel(GetEpaosResult source)
         {
@@ -18,16 +20,21 @@ namespace SFA.DAS.EpaoRegister.Api.Models
             };
         }
 
-        private IEnumerable<Link> BuildLinks()
+        public void BuildLinks(IUrlHelper urlHelper)
         {
-            return new List<Link>
+            Links = new List<Link>
             {
                 new Link
                 {
                     Rel = "self",
-                    Href = "/epaos"
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpaos)
                 }
             };
+
+            foreach (var epao in Epaos)
+            {
+                epao.BuildLinks(urlHelper);
+            }
         }
     }
 }
