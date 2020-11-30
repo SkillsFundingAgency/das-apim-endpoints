@@ -7,6 +7,7 @@ using MediatR;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
 
@@ -34,6 +35,11 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
 
             var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
             var apiResult = await _assessorsApiClient.Get<SearchEpaosListItem>(apiRequest);
+
+            if (apiResult == default)
+            {
+                throw new EntityNotFoundException<SearchEpaosListItem>();
+            }
 
             return new GetEpaoResult {Epao = apiResult};
         }

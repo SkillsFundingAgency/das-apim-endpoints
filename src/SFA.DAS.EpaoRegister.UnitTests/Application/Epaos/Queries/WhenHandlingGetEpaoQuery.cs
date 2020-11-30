@@ -10,6 +10,7 @@ using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
 using SFA.DAS.Testing.AutoFixture;
@@ -38,7 +39,21 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                 .WithMessage($"*{propertyName}*");
         }
 
-        //todo: not found
+        [Test, MoqAutoData]
+        public void And_No_Epao_Courses_Then_Throws_EntityNotFoundException(
+            GetEpaoQuery query,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            GetEpaoQueryHandler handler)
+        {
+            mockAssessorsApiClient
+                .Setup(client => client.Get<SearchEpaosListItem>(
+                    It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(default(SearchEpaosListItem));
+
+            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+
+            act.Should().Throw<EntityNotFoundException<SearchEpaosListItem>>();
+        }
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Epao_From_Assessor_Api(
