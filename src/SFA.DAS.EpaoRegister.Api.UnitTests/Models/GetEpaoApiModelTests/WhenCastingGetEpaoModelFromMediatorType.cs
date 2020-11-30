@@ -1,45 +1,43 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Models;
-using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
+using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
+namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoApiModelTests
 {
-    public class WhenCastingGetEpaoCoursesApiModelFromMediatorType
+    public class WhenCastingGetEpaoModelFromMediatorType
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
-            GetEpaoCoursesResult source)
+            SearchEpaosListItem source)
         {
-            var response = (GetEpaoCoursesApiModel)source;
+            var response = (GetEpaoApiModel)source;
 
-            response.EpaoId.Should().BeEquivalentTo(source.EpaoId);
-            response.Courses.Count().Should().Be(source.Courses.Count);
+            response.Should().BeEquivalentTo(source);
         }
 
         [Test, AutoData]
         public void Then_Creates_Links(
-            GetEpaoCoursesResult source)
+            SearchEpaosListItem source)
         {
             var expectedLinks = new List<Link>
             {
                 new Link
                 {
                     Rel = "self",
-                    Href = $"/epaos{source.EpaoId}/courses"
+                    Href = $"/epaos{source.Id}"
                 },
                 new Link
                 {
-                    Rel = "epao",
-                    Href = $"/epaos{source.EpaoId}"
+                    Rel = "courses",
+                    Href = $"/epaos{source.Id}/courses"
                 }
             };
 
-            var response = (GetEpaoCoursesApiModel) source;
+            var response = (GetEpaoApiModel) source;
 
             response.Links.Should().BeEquivalentTo(expectedLinks);
         }
@@ -47,7 +45,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
         [Test]
         public void And_Source_Is_Null_Then_Returns_Null()
         {
-            var response = (GetEpaoCoursesApiModel)null;
+            var response = (GetEpaoApiModel)null;
 
             response.Should().BeNull();
         }

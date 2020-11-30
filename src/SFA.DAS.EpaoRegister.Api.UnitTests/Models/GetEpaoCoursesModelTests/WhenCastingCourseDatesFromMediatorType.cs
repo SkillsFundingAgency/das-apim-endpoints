@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 
-namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models
+namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoCoursesModelTests
 {
     public class WhenCastingCourseDatesFromMediatorType
     {
