@@ -33,14 +33,9 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
             }
 
             var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
-            var searchItems = (await _assessorsApiClient.GetAll<SearchEpaosListItem>(apiRequest))?.ToList();
-            
-            if (searchItems == null || searchItems.Count > 1)
-            {
-                throw new ArgumentException();
-            }
+            var apiResult = await _assessorsApiClient.Get<SearchEpaosListItem>(apiRequest);
 
-            return new GetEpaoResult {Epao = searchItems[0]};
+            return new GetEpaoResult {Epao = apiResult};
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Built(
             GetEpaosRequest actual)
         {
-            actual.GetAllUrl.Should().Be("api/v1/organisations");
+            actual.GetAllUrl.Should().Be("api/ao/assessment-organisations");
         }
     }
 }
