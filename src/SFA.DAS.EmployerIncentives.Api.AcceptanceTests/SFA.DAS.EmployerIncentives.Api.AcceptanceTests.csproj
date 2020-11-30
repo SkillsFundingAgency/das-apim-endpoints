@@ -30,6 +30,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\ActivateCollectionCalendarPeriod.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\EarningsResilienceCheck.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -58,6 +61,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\ActivateCollectionCalendarPeriod.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ActivateCollectionCalendarPeriod.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\EarningsResilienceCheck.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EarningsResilienceCheck.feature.cs</LastGenOutput>

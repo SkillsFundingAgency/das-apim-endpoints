@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
@@ -34,5 +35,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         
         Task EarningsResilienceCheck();
+
+        Task ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequestData requestData);
     }
 }
