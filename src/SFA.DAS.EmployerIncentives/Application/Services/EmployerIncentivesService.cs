@@ -156,7 +156,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequestData requestData)
         {
-            await _client.Post<ActivateCollectionCalendarPeriodRequestData>(new ActivateCollectionCalendarPeriodRequest { Data = requestData });
+            await _client.Patch<ActivateCollectionCalendarPeriodRequestData>(new ActivateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

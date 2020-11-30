@@ -22,10 +22,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await sut.ActivateCollectionCalendarPeriod(request);
 
             client.Verify(x =>
-                x.Post<ActivateCollectionCalendarPeriodRequestData>(It.Is<ActivateCollectionCalendarPeriodRequest>(
+                x.Patch<ActivateCollectionCalendarPeriodRequestData>(It.Is<ActivateCollectionCalendarPeriodRequest>(
                     c => ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodNumber == request.CollectionPeriodNumber &&
                     ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodYear == request.CollectionPeriodYear &&
-                          c.PostUrl.Equals("collectionCalendar/period/activate"))
+                          c.PatchUrl.Equals("collectionCalendar/period/activate"))
                 ), Times.Once);
         }
     }

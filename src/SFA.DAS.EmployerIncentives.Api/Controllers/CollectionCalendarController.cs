@@ -18,9 +18,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("/collectionCalendar/period/activate")]
-        public async Task<IActionResult> ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequest request)
+        public async Task<IActionResult> ActivateCollectionCalendarPeriod([FromBody] ActivateCollectionCalendarPeriodRequest request)
         {
             await _mediator.Send(new ActivateCollectionCalendarPeriodCommand(request.CollectionPeriodNumber, request.CollectionPeriodYear));
 
