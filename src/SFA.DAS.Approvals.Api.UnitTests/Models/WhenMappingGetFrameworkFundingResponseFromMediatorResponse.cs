@@ -2,17 +2,17 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Models
 {
-    public class WhenMappingGetStandardFundingResponseFromMediatorResponse
+    public class WhenMappingGetFrameworkFundingResponseFromMediatorResponse
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(ApprenticeshipFunding source)
+        public void Then_The_Fields_Are_Mapped(GetFrameworksListItem.FundingPeriod source)
         {
             //Act
-            var actual = (GetStandardFundingResponse)source;
+            var actual = (GetFrameworkFundingResponse)source;
             
             //Assert
             actual.Should().BeEquivalentTo(source);
