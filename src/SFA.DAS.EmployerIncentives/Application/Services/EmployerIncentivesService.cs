@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
@@ -151,6 +152,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task EarningsResilienceCheck()
         {
             await _client.Post<string>(new EarningsResilenceCheckRequest());
+        }
+
+        public async Task ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequestData requestData)
+        {
+            await _client.Post<ActivateCollectionCalendarPeriodRequestData>(new ActivateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
