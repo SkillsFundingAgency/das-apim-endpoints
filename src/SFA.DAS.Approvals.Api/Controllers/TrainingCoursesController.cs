@@ -45,5 +45,27 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("frameworks")]
+        public async Task<IActionResult> GetFrameworks()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetFrameworksQuery());
+                
+                var model = new GetFrameworksListResponse
+                {
+                    Frameworks = queryResult.Frameworks.Select(c=>(GetFrameworkResponse)c).ToList()
+                };
+                
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,"Error attempting to get list of frameworks");
+                return BadRequest();
+            }
+        }
     }
 }
