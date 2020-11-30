@@ -27,8 +27,8 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaosApiModelTests
                     Href = expectedGetEpaosUrl
                 }
             };
-            SetupMockUrlHelper(mockUrlHelper, expectedGetEpaosUrl, null, null);
-
+            mockUrlHelper.SetupAllEpaoRoutes(expectedGetEpaosUrl, null, null);
+            
             model.BuildLinks(mockUrlHelper.Object);
 
             model.Links.Should().BeEquivalentTo(expectedLinks);
@@ -54,7 +54,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaosApiModelTests
                     Href = expectedGetEpaoCoursesUrl
                 }
             };
-            SetupMockUrlHelper(mockUrlHelper, null, expectedGetEpaoUrl, expectedGetEpaoCoursesUrl);
+            mockUrlHelper.SetupAllEpaoRoutes(null, expectedGetEpaoUrl, expectedGetEpaoCoursesUrl);
 
             model.BuildLinks(mockUrlHelper.Object);
 
@@ -62,22 +62,6 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaosApiModelTests
             {
                 epao.Links.Should().BeEquivalentTo(expectedLinks);
             }
-        }
-
-        private void SetupMockUrlHelper(Mock<IUrlHelper> mockUrlHelper, string expectedGetEpaosUrl, string expectedGetEpaoUrl, string expectedGetEpaoCoursesUrl)
-        {
-            mockUrlHelper
-                .Setup(helper => helper.RouteUrl(
-                    It.Is<UrlRouteContext>(context => context.RouteName == RouteNames.GetEpaos)))
-                .Returns(expectedGetEpaosUrl);
-            mockUrlHelper
-                .Setup(helper => helper.RouteUrl(
-                    It.Is<UrlRouteContext>(context => context.RouteName == RouteNames.GetEpao)))
-                .Returns(expectedGetEpaoUrl);
-            mockUrlHelper
-                .Setup(helper => helper.RouteUrl(
-                    It.Is<UrlRouteContext>(context => context.RouteName == RouteNames.GetEpaoCourses)))
-                .Returns(expectedGetEpaoCoursesUrl);
         }
     }
 }
