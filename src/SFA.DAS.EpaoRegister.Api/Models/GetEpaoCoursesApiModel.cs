@@ -24,7 +24,16 @@ namespace SFA.DAS.EpaoRegister.Api.Models
         {
             return new List<Link>
             {
-                new Link{}
+                new Link
+                {
+                    Rel = "self",
+                    Href = $"/epaos{EpaoId}/courses"
+                },
+                new Link
+                {
+                    Rel = "epao",
+                    Href = $"/epaos{EpaoId}"
+                }
             };
         }
     }

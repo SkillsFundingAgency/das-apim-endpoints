@@ -11,7 +11,7 @@ namespace SFA.DAS.EpaoRegister.Api.Models
         public uint Ukprn { get; set; }
         public string Email { get; set; }
         public EpaoAddress Address { get; set; }
-        public IEnumerable<Link> Links { get; set; }
+        public IEnumerable<Link> Links => BuildLinks();
 
         public static explicit operator GetEpaoApiModel(SearchEpaosListItem source)
         {
@@ -25,6 +25,23 @@ namespace SFA.DAS.EpaoRegister.Api.Models
                 Ukprn = source.Ukprn,
                 Email = source.Email,
                 Address = (EpaoAddress)source.Address
+            };
+        }
+
+        private IEnumerable<Link> BuildLinks()
+        {
+            return new List<Link>
+            {
+                new Link
+                {
+                    Rel = "self",
+                    Href = $"/epaos{Id}"
+                },
+                new Link
+                {
+                    Rel = "courses",
+                    Href = $"/epaos{Id}/courses"
+                }
             };
         }
     }
