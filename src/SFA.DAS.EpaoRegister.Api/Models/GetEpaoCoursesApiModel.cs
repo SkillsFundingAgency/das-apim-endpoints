@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.Models
 {

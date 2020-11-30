@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.Models
 {

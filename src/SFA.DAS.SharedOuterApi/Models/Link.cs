@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EpaoRegister.Api.Models
+﻿namespace SFA.DAS.SharedOuterApi.Models
 {
     public class Link
     {
