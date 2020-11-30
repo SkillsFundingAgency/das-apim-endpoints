@@ -1,5 +1,7 @@
 ﻿using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EpaoRegister.Api.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.Models
@@ -11,7 +13,7 @@ namespace SFA.DAS.EpaoRegister.Api.Models
         public uint Ukprn { get; set; }
         public string Email { get; set; }
         public EpaoAddress Address { get; set; }
-        public IEnumerable<Link> Links => BuildLinks();
+        public IEnumerable<Link> Links { get; private set; }
 
         public static explicit operator GetEpaoApiModel(SearchEpaosListItem source)
         {
@@ -28,44 +30,20 @@ namespace SFA.DAS.EpaoRegister.Api.Models
             };
         }
 
-        private IEnumerable<Link> BuildLinks()
+        public void BuildLinks(IUrlHelper urlHelper)
         {
-            return new List<Link>
+            Links = new List<Link>
             {
                 new Link
                 {
                     Rel = "self",
-                    Href = $"/epaos{Id}"
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpao, new {EpaoId = Id})
                 },
                 new Link
                 {
                     Rel = "courses",
-                    Href = $"/epaos{Id}/courses"
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpaoCourses, new {EpaoId = Id})
                 }
-            };
-        }
-    }
-
-    public class EpaoAddress
-    {
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string Address3 { get; set; }
-        public string City { get; set; }
-        public string Postcode { get; set; }
-
-        public static explicit operator EpaoAddress(SearchEpaosAddress source)
-        {
-            if (source == null)
-                return null;
-
-            return new EpaoAddress
-            {
-                Address1 = source.Address1,
-                Address2 = source.Address2,
-                Address3 = source.Address3,
-                City = source.City,
-                Postcode = source.Postcode
             };
         }
     }

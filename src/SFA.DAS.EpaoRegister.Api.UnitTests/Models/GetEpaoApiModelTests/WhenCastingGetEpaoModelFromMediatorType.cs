@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoApiModelTests
 {
@@ -17,29 +15,6 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoApiModelTests
             var response = (GetEpaoApiModel)source;
 
             response.Should().BeEquivalentTo(source);
-        }
-
-        [Test, AutoData]
-        public void Then_Creates_Links(
-            SearchEpaosListItem source)
-        {
-            var expectedLinks = new List<Link>
-            {
-                new Link
-                {
-                    Rel = "self",
-                    Href = $"/epaos{source.Id}"
-                },
-                new Link
-                {
-                    Rel = "courses",
-                    Href = $"/epaos{source.Id}/courses"
-                }
-            };
-
-            var response = (GetEpaoApiModel) source;
-
-            response.Links.Should().BeEquivalentTo(expectedLinks);
         }
 
         [Test]
