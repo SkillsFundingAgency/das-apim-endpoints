@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class GetStandardRequest : IGetApiRequest
+    public class GetStandardRequest : IGetApiRequest // todo: remove once merged up to date
     {
         private readonly int _id;
 

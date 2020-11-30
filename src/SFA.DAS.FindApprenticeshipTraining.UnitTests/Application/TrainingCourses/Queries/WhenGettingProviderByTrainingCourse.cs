@@ -456,6 +456,78 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             Assert.IsTrue(result.ProviderStandard.DeliveryTypes.Select(x => x.DeliveryModes).ToList().TrueForAll(x => x.Equals("NotFound")));
         }
 
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Provider_Is_Not_Found_For_Location_And_Without_Location_Null_Returned(
+            string locationName,
+            string authorityName,
+            GetTrainingCourseProviderQuery query,
+            GetOverallAchievementRateResponse apiResponse,
+            GetProviderStandardItem apiProviderStandardResponse,
+            GetStandardsListItem apiCourseResponse,
+            GetStandardsListResponse allCoursesApiResponse,
+            GetLocationsListItem apiLocationResponse,
+            GetOverallAchievementRateResponse apiAchievementRateResponse,
+            GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            GetTrainingCourseProviderQueryHandler handler)
+        {
+            query.Location = $"{locationName}, {authorityName} ";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                .ReturnsAsync(apiLocationResponse);
+
+            mockApiClient
+                .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
+                    c.GetUrl.Contains(query.CourseId.ToString())
+                    && c.GetUrl.Contains(query.ProviderId.ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.First().ToString())
+                    && c.GetUrl.Contains(apiLocationResponse.Location.GeoPoint.Last().ToString())
+                )))
+                .ReturnsAsync((GetProviderStandardItem)null);
+            mockApiClient
+                .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
+                    c.GetUrl.Contains(query.CourseId.ToString())
+                    && c.GetUrl.Contains(query.ProviderId.ToString())
+                    && c.GetUrl.Contains("?lat=&lon=")
+                )))
+                .ReturnsAsync((GetProviderStandardItem)null);
+            mockApiClient
+                .Setup(x => x.Get<GetUkprnsForStandardAndLocationResponse>(
+                    It.Is<GetUkprnsForStandardAndLocationRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
+                .ReturnsAsync(ukprnsCountResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetProviderAdditionalStandardsItem>(It.Is<GetProviderAdditionalStandardsRequest>(
+                    c =>
+                        c.GetUrl.Contains(query.ProviderId.ToString()
+                        ))))
+                .ReturnsAsync(new GetProviderAdditionalStandardsItem
+                {
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                });
+            mockCoursesApiClient
+                .Setup(client =>
+                    client.Get<GetStandardsListItem>(
+                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .ReturnsAsync(allCoursesApiResponse);
+            mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
+                    c =>
+                        c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                )))
+                .ReturnsAsync(apiAchievementRateResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.ProviderStandard.Should().BeNull();
+            
+        }
+
         private static void ArrangeClients(GetTrainingCourseProviderQuery query, GetProviderStandardItem apiProviderStandardResponse,
             GetStandardsListItem apiCourseResponse, GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetStandardsListResponse allCoursesApiResponse, GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,

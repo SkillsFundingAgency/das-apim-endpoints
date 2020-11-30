@@ -11,7 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.HealthCheck
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
     public class WhenCallingPingOnTheCourseDeliveryApiClient
     {
