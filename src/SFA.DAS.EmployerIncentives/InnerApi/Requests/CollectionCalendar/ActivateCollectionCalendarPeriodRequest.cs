@@ -2,13 +2,14 @@
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar
 {
-    public class ActivateCollectionCalendarPeriodRequest : IPostApiRequest
+    public class ActivateCollectionCalendarPeriodRequest : IPatchApiRequest<ActivateCollectionCalendarPeriodRequestData>
     {
         public ActivateCollectionCalendarPeriodRequest()
         {
         }
 
-        public string PostUrl => "collectionCalendar/period/activate";
-        public object Data { get; set; }
+        public string PatchUrl => "collectionCalendar/period/activate";
+
+        public ActivateCollectionCalendarPeriodRequestData Data { get; set; }
     }
 }

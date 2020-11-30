@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
         {
             var actual = new ActivateCollectionCalendarPeriodRequest { Data = data };
 
-            actual.PostUrl.Should().Be("collectionCalendar/period/activate");
+            actual.PatchUrl.Should().Be("collectionCalendar/period/activate");
             actual.Data.Should().BeEquivalentTo(data);
         }
     }
