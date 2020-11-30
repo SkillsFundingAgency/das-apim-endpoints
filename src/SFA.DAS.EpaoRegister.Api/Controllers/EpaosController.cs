@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.Controllers
 {
@@ -35,10 +37,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
             {
                 var queryResult = await _mediator.Send(new GetEpaosQuery());
                 
-                var model = new GetEpaosApiModel
-                {
-                    Epaos = queryResult.Epaos.Select(item => (EpaoListItem)item)
-                };
+                var model = (GetEpaosApiModel)queryResult;
 
                 return Ok(model);
             }
