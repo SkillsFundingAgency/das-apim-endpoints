@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Controllers;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
-using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -41,7 +40,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
         [Test, MoqAutoData]
         public async Task And_EntityNotFoundException_Then_Returns_NotFound(
             string epaoId,
-            EntityNotFoundException<GetEpaoResponse> notFoundException,
+            NotFoundException<GetEpaoCoursesResult> notFoundException,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {

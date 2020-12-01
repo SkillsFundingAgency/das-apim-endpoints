@@ -9,7 +9,6 @@ using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
-using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.EpaoRegister.Api.Controllers
@@ -60,7 +59,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
 
                 return Ok(model);
             }
-            catch (EntityNotFoundException<GetEpaoResponse> ex)
+            catch (NotFoundException<GetEpaoResult> ex)
             {
                 _logger.LogInformation(ex, $"Epao not found for EpaoId:[{epaoId}]");
                 return NotFound();
@@ -89,7 +88,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
 
                 return Ok(model);
             }
-            catch (EntityNotFoundException<GetEpaoResponse> ex)
+            catch (NotFoundException<GetEpaoCoursesResult> ex)
             {
                 _logger.LogInformation(ex, $"Epao courses not found for EpaoId:[{epaoId}]");
                 return NotFound();

@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -34,11 +32,11 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
             }
 
             var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
-            var apiResult = await _assessorsApiClient.Get<InnerApi.Responses.GetEpaoResponse>(apiRequest);
+            var apiResult = await _assessorsApiClient.Get<GetEpaoResponse>(apiRequest);
 
             if (apiResult == default)
             {
-                throw new EntityNotFoundException<InnerApi.Responses.GetEpaoResponse>();
+                throw new NotFoundException<GetEpaoResult>();
             }
 
             return new GetEpaoResult {Epao = apiResult};
