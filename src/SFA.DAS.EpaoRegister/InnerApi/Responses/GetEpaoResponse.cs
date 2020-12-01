@@ -9,7 +9,7 @@ namespace SFA.DAS.EpaoRegister.InnerApi.Responses
         public string Name { get; set; }
         public uint? Ukprn { get; set; }
         public string Email { get; set; }
-        public string Status { get; set; }
+        public EpaoStatus Status { get; set; }
         public int? OrganisationTypeId { get; set; }
         [JsonProperty("organisationData")]
         public GetEpaoAddress Address { get; set; }

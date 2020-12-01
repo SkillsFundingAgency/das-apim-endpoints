@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -23,6 +24,8 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetEpaosQueryHandler handler)
         {
+            apiResponse[0].Status = EpaoStatus.Live;
+            apiResponse[1].Status = EpaoStatus.New;
             mockAssessorsApiClient
                 .Setup(client => client.GetAll<GetEpaosListItem>(
                     It.IsAny<GetEpaosRequest>()))
@@ -30,7 +33,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Epaos.Should().BeEquivalentTo(apiResponse);
+            result.Epaos.Should().BeEquivalentTo(apiResponse.Where(item => item.Status == EpaoStatus.Live));
         }
     }
 }

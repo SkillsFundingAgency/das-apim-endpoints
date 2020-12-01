@@ -30,7 +30,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
 
         [HttpGet]
         [Route("", Name = RouteNames.GetEpaos)]
-        public async Task<IActionResult> GetEpaos() //todo: filter by status
+        public async Task<IActionResult> GetEpaos()
         {
             try
             {
