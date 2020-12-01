@@ -41,7 +41,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
         [Test, MoqAutoData]
         public async Task And_EntityNotFoundException_Then_Returns_NotFound(
             string epaoId,
-            EntityNotFoundException<SearchEpaosListItem> notFoundException,
+            EntityNotFoundException<GetEpaoResponse> notFoundException,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {

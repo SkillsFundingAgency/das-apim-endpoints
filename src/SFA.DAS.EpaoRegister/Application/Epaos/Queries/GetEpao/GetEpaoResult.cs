@@ -4,6 +4,6 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
 {
     public class GetEpaoResult
     {
-        public SearchEpaosListItem Epao { get; set; }
+        public InnerApi.Responses.GetEpaoResponse Epao { get; set; }
     }
 }

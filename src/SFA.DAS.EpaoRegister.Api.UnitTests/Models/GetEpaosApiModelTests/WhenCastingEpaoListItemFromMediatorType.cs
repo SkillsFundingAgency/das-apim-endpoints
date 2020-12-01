@@ -14,7 +14,8 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaosApiModelTests
         {
             var response = (EpaoListItem)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Should().BeEquivalentTo(source, options => 
+                options.ExcludingMissingMembers());
         }
 
         [Test]

@@ -46,24 +46,24 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             GetEpaoQueryHandler handler)
         {
             mockAssessorsApiClient
-                .Setup(client => client.Get<SearchEpaosListItem>(
+                .Setup(client => client.Get<GetEpaoResponse>(
                     It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(default(SearchEpaosListItem));
+                .ReturnsAsync(default(GetEpaoResponse));
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<EntityNotFoundException<SearchEpaosListItem>>();
+            act.Should().Throw<EntityNotFoundException<GetEpaoResponse>>();
         }
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Epao_From_Assessor_Api(
             GetEpaoQuery query,
-            SearchEpaosListItem apiResponse,
+            GetEpaoResponse apiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetEpaoQueryHandler handler)
         {
             mockAssessorsApiClient
-                .Setup(client => client.Get<SearchEpaosListItem>(
+                .Setup(client => client.Get<GetEpaoResponse>(
                     It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
 

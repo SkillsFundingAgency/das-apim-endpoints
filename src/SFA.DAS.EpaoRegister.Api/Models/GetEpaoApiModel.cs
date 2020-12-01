@@ -10,12 +10,12 @@ namespace SFA.DAS.EpaoRegister.Api.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public uint Ukprn { get; set; }
+        public uint? Ukprn { get; set; }
         public string Email { get; set; }
         public EpaoAddress Address { get; set; }
         public IEnumerable<Link> Links { get; private set; }
 
-        public static explicit operator GetEpaoApiModel(SearchEpaosListItem source)
+        public static explicit operator GetEpaoApiModel(GetEpaoResponse source)
         {
             if (source == null)
                 return null;

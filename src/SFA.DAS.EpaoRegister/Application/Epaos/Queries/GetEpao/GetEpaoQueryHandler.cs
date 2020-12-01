@@ -34,11 +34,11 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
             }
 
             var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
-            var apiResult = await _assessorsApiClient.Get<SearchEpaosListItem>(apiRequest);
+            var apiResult = await _assessorsApiClient.Get<InnerApi.Responses.GetEpaoResponse>(apiRequest);
 
             if (apiResult == default)
             {
-                throw new EntityNotFoundException<SearchEpaosListItem>();
+                throw new EntityNotFoundException<InnerApi.Responses.GetEpaoResponse>();
             }
 
             return new GetEpaoResult {Epao = apiResult};

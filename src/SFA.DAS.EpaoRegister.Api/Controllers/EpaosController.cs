@@ -60,7 +60,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
 
                 return Ok(model);
             }
-            catch (EntityNotFoundException<SearchEpaosListItem> ex)
+            catch (EntityNotFoundException<GetEpaoResponse> ex)
             {
                 _logger.LogInformation(ex, $"Epao not found for EpaoId:[{epaoId}]");
                 return NotFound();
@@ -89,7 +89,7 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
 
                 return Ok(model);
             }
-            catch (EntityNotFoundException<SearchEpaosListItem> ex)
+            catch (EntityNotFoundException<GetEpaoResponse> ex)
             {
                 _logger.LogInformation(ex, $"Epao courses not found for EpaoId:[{epaoId}]");
                 return NotFound();

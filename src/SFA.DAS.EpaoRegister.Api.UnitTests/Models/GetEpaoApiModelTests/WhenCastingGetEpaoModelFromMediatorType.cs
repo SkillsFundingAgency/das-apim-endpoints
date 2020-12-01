@@ -10,11 +10,12 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoApiModelTests
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
-            SearchEpaosListItem source)
+            GetEpaoResponse source)
         {
             var response = (GetEpaoApiModel)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Should().BeEquivalentTo(source, options => 
+                options.ExcludingMissingMembers());
         }
 
         [Test]
