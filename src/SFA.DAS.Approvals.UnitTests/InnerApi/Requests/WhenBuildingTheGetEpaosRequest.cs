@@ -12,7 +12,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetEpaosRequest();
             
             //Assert
-            Assert.AreEqual("api/v1/organisations", actual.GetUrl);
+            Assert.AreEqual("api/v1/organisations", actual.GetAllUrl);
         }
     }
 }

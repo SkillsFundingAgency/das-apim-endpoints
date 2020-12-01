@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -18,16 +19,16 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Epaos.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_Epaos_Returned(
             GetEpaosQuery query,
-            GetEpaosListResponse apiResponse,
+            List<GetEpaosListItem> apiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> apiClient,
             GetEpaosQueryHandler handler
             )
         {
-            apiClient.Setup(x => x.Get<GetEpaosListResponse>(It.IsAny<GetEpaosRequest>())).ReturnsAsync(apiResponse);
+            apiClient.Setup(x => x.GetAll<GetEpaosListItem>(It.IsAny<GetEpaosRequest>())).ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Epaos.Should().BeEquivalentTo(apiResponse.Epaos);
+            actual.Epaos.Should().BeEquivalentTo(apiResponse);
         }
         
     }

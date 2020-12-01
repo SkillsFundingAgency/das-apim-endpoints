@@ -19,7 +19,6 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Mediator(
-            int standardCode,
             GetStandardsResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -44,7 +43,6 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            int standardCode,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {

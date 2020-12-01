@@ -13,7 +13,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
         {
             var actual = (GetEpaoResponse) source;
             
-            actual.Should().BeEquivalentTo(source, options=> options.Excluding(c=>c.Ukprn));
+            actual.Should().BeEquivalentTo(source);
         }
     }
 }

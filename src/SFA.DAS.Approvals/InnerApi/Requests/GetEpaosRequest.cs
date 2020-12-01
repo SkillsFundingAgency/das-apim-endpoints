@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
-    public class GetEpaosRequest : IGetApiRequest
+    public class GetEpaosRequest : IGetAllApiRequest
     {
-        public string GetUrl => "api/v1/organisations";
+        public string GetAllUrl => "api/v1/organisations";
     }
 }

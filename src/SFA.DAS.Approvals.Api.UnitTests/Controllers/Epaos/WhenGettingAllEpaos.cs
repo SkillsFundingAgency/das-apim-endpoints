@@ -10,46 +10,46 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models;
-using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+using SFA.DAS.Approvals.Application.Epaos.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Epaos
 {
-    public class WhenGettingAllFrameworks
+    public class WhenGettingAllEpaos
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Frameworks_From_Mediator(
-            GetFrameworksResult mediatorResult,
+        public async Task Then_Gets_Epaos_From_Mediator(
+            GetEpaosResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
+            [Greedy] EpaosController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetFrameworksQuery>(),
+                    It.IsAny<GetEpaosQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetFrameworks() as ObjectResult;
+            var controllerResult = await controller.GetEpaos() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetFrameworksListResponse;
+            var model = controllerResult.Value as GetEpaosListResponse;
             Assert.IsNotNull(model);
-            model.Frameworks.Should().BeEquivalentTo(mediatorResult.Frameworks);
+            model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
+            [Greedy] EpaosController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetFrameworksQuery>(),
+                    It.IsAny<GetEpaosQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetFrameworks() as BadRequestResult;
+            var controllerResult = await controller.GetEpaos() as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
