@@ -1,9 +1,7 @@
 ﻿namespace SFA.DAS.EpaoRegister.InnerApi.Responses
 {
-    public enum EpaoStatus
+    public static class EpaoStatus
     {
-        New,
-        Applying,
-        Live
+        public const string Live = "Live";
     }
 }

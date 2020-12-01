@@ -25,7 +25,6 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             GetEpaosQueryHandler handler)
         {
             apiResponse[0].Status = EpaoStatus.Live;
-            apiResponse[1].Status = EpaoStatus.New;
             mockAssessorsApiClient
                 .Setup(client => client.GetAll<GetEpaosListItem>(
                     It.IsAny<GetEpaosRequest>()))
