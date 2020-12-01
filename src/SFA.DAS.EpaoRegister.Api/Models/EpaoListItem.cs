@@ -8,7 +8,7 @@ namespace SFA.DAS.EpaoRegister.Api.Models
     public class EpaoListItem
     {
         public string Id { get; set; }
-        public uint Ukprn { get; set; }
+        public uint? Ukprn { get; set; }
         public string Name { get; set; }
         public IEnumerable<Link> Links { get; private set; }
 
@@ -29,12 +29,12 @@ namespace SFA.DAS.EpaoRegister.Api.Models
                 new Link
                 {
                     Rel = "self",
-                    Href = urlHelper.RouteUrl(RouteNames.GetEpao, new {EpaoId = Id})
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpao, new {EpaoId = Id}, ProtocolNames.Https)
                 },
                 new Link
                 {
                     Rel = "courses",
-                    Href = urlHelper.RouteUrl(RouteNames.GetEpaoCourses, new {EpaoId = Id})
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpaoCourses, new {EpaoId = Id}, ProtocolNames.Https)
                 }
             };
         }

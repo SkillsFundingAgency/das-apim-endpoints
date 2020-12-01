@@ -63,6 +63,8 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
             [Greedy] EpaosController controller)
         {
             controller.Url = Mock.Of<IUrlHelper>();
+            var expectedModel = (GetEpaoCoursesApiModel) mediatorResult;
+            expectedModel.BuildLinks(controller.Url);
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetEpaoCoursesQuery>(query => query.EpaoId == epaoId),
@@ -73,7 +75,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaoCoursesApiModel;
-            model.Should().BeEquivalentTo((GetEpaoCoursesApiModel)mediatorResult);
+            model.Should().BeEquivalentTo(expectedModel);
         }
     }
 }
