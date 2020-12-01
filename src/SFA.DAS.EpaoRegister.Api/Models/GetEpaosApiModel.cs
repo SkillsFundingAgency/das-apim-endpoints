@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using SFA.DAS.EpaoRegister.Api.Infrastructure;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 using SFA.DAS.SharedOuterApi.Models;
@@ -27,7 +29,7 @@ namespace SFA.DAS.EpaoRegister.Api.Models
                 new Link
                 {
                     Rel = "self",
-                    Href = urlHelper.RouteUrl(RouteNames.GetEpaos)
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpaos, null, ProtocolNames.Https)
                 }
             };
 

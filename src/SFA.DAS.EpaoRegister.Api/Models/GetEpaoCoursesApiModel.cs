@@ -29,12 +29,12 @@ namespace SFA.DAS.EpaoRegister.Api.Models
                 new Link
                 {
                     Rel = "self",
-                    Href = urlHelper.RouteUrl(RouteNames.GetEpaoCourses, new {EpaoId})
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpaoCourses, new {EpaoId}, ProtocolNames.Https)
                 },
                 new Link
                 {
                     Rel = "epao",
-                    Href = urlHelper.RouteUrl(RouteNames.GetEpao, new {EpaoId})
+                    Href = urlHelper.RouteUrl(RouteNames.GetEpao, new {EpaoId}, ProtocolNames.Https)
                 }
             };
         }
