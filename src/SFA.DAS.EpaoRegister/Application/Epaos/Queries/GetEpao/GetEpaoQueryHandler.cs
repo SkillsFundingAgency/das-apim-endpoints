@@ -1,12 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
 
@@ -33,14 +32,14 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
             }
 
             var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
-            var searchItems = (await _assessorsApiClient.GetAll<SearchEpaosListItem>(apiRequest))?.ToList();
-            
-            if (searchItems == null || searchItems.Count > 1)
+            var apiResult = await _assessorsApiClient.Get<GetEpaoResponse>(apiRequest);
+
+            if (apiResult == default)
             {
-                throw new ArgumentException();
+                throw new NotFoundException<GetEpaoResult>();
             }
 
-            return new GetEpaoResult {Epao = searchItems[0]};
+            return new GetEpaoResult {Epao = apiResult};
         }
     }
 }

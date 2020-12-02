@@ -42,7 +42,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         }
 
         [Test, MoqAutoData]
-        public void And_No_Epao_Courses_Then_Throws_EntityNotFoundException(
+        public void And_No_Epao_Courses_Then_Throws_NotFoundException(
             GetEpaoCoursesQuery query,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetEpaoCoursesQueryHandler handler)
@@ -54,7 +54,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<EntityNotFoundException<GetStandardResponse>>();
+            act.Should().Throw<NotFoundException<GetEpaoCoursesResult>>();
         }
 
         [Test, MoqAutoData]

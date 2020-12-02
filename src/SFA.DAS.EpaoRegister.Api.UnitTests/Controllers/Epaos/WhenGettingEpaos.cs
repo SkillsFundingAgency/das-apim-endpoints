@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -23,6 +22,9 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {
+            controller.Url = Mock.Of<IUrlHelper>();
+            var expectedModel = (GetEpaosApiModel) mediatorResult;
+            expectedModel.BuildLinks(controller.Url);
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetEpaosQuery>(),
@@ -33,8 +35,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaosApiModel;
-            model.Epaos.Should().BeEquivalentTo(
-                mediatorResult.Epaos.Select(item => (EpaoListItem)item));
+            model.Should().BeEquivalentTo(expectedModel);
         }
     }
 }

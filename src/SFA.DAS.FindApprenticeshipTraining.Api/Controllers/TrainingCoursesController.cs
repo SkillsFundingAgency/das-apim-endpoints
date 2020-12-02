@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
         {
             try
             {

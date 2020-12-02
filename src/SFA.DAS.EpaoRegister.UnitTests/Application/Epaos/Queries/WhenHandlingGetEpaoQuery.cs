@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
 using SFA.DAS.Testing.AutoFixture;
@@ -40,39 +40,36 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_Epao_From_Assessor_Api(
+        public void And_No_Epao_Courses_Then_Throws_NotFoundException(
             GetEpaoQuery query,
-            SearchEpaosListItem apiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetEpaoQueryHandler handler)
         {
             mockAssessorsApiClient
-                .Setup(client => client.GetAll<SearchEpaosListItem>(
+                .Setup(client => client.Get<GetEpaoResponse>(
                     It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(new List<SearchEpaosListItem>{apiResponse});
+                .ReturnsAsync(default(GetEpaoResponse));
+
+            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+
+            act.Should().Throw<NotFoundException<GetEpaoResult>>();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Epao_From_Assessor_Api(
+            GetEpaoQuery query,
+            GetEpaoResponse apiResponse,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            GetEpaoQueryHandler handler)
+        {
+            mockAssessorsApiClient
+                .Setup(client => client.Get<GetEpaoResponse>(
+                    It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Epao.Should().BeEquivalentTo(apiResponse);
         }
-
-        [Test, MoqAutoData]
-        public void And_Multiple_Results_Then_Throws_ArgumentException(
-            GetEpaoQuery query,
-            List<SearchEpaosListItem> apiResponse,
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            GetEpaoQueryHandler handler)
-        {
-            mockAssessorsApiClient
-                .Setup(client => client.GetAll<SearchEpaosListItem>(
-                    It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(apiResponse);
-
-            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
-
-            act.Should().Throw<ArgumentException>();
-        }
-
-        //todo: validation check (incomplete epao id)
     }
 }

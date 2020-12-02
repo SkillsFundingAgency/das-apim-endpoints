@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
@@ -20,7 +21,8 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos
         public async Task<GetEpaosResult> Handle(GetEpaosQuery request, CancellationToken cancellationToken)
         {
             var apiRequest = new GetEpaosRequest();
-            var epaos = await _assessorsApiClient.GetAll<GetEpaosListItem>(apiRequest);
+            var epaos = (await _assessorsApiClient.GetAll<GetEpaosListItem>(apiRequest))
+                .Where(item => item.Status == EpaoStatus.Live);
 
             return new GetEpaosResult {Epaos = epaos};
         }

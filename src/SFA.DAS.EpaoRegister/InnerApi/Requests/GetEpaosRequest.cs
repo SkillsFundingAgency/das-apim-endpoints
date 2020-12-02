@@ -4,6 +4,6 @@ namespace SFA.DAS.EpaoRegister.InnerApi.Requests
 {
     public class GetEpaosRequest : IGetAllApiRequest
     {
-        public string GetAllUrl => "api/v1/organisations";
+        public string GetAllUrl => "api/ao/assessment-organisations";
     }
 }

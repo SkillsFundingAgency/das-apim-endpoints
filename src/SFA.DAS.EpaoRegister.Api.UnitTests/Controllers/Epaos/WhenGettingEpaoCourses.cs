@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Api.Controllers;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
-using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -41,7 +40,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
         [Test, MoqAutoData]
         public async Task And_EntityNotFoundException_Then_Returns_NotFound(
             string epaoId,
-            EntityNotFoundException<SearchEpaosListItem> notFoundException,
+            NotFoundException<GetEpaoCoursesResult> notFoundException,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {
@@ -63,6 +62,9 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EpaosController controller)
         {
+            controller.Url = Mock.Of<IUrlHelper>();
+            var expectedModel = (GetEpaoCoursesApiModel) mediatorResult;
+            expectedModel.BuildLinks(controller.Url);
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetEpaoCoursesQuery>(query => query.EpaoId == epaoId),
@@ -73,7 +75,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaoCoursesApiModel;
-            model.Should().BeEquivalentTo((GetEpaoCoursesApiModel)mediatorResult);
+            model.Should().BeEquivalentTo(expectedModel);
         }
     }
 }

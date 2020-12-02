@@ -43,7 +43,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 
             if (epaoCoursesListItems == null || epaoCoursesListItems.Count == 0)
             {
-                throw new EntityNotFoundException<GetStandardResponse>();
+                throw new NotFoundException<GetEpaoCoursesResult>();
             }
             
             var courseTasks = new List<Task<GetStandardResponse>>();
