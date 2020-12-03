@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface ICacheStorageService
     {

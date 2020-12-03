@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,14 +8,10 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Infrastructure.Services
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
 {
     public class WhenUsingTheCacheStorageService
     {

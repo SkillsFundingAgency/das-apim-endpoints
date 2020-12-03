@@ -3,12 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -17,10 +13,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private List<Task> _taskList;
-        private bool _saveStandardsToCache;
-        private bool _saveSectorsToCache;
-        private bool _saveLevelsToCache;
         private readonly CacheHelper _cacheHelper;
 
         public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, ICacheStorageService cacheStorageService)
@@ -31,10 +23,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
-            _taskList = new List<Task>();
-            
-            var sectors = await _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
-                new GetSectorsListRequest(),nameof(GetSectorsListResponse), out _saveSectorsToCache);
+            var taskList = new List<Task>();
+        bool saveStandardsToCache;
+
+        var sectors = await _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
+                new GetSectorsListRequest(),nameof(GetSectorsListResponse), out var saveSectorsToCache);
 
             var routeFilters = sectors
                 .Sectors
@@ -54,9 +47,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             if (_cacheHelper.FilterApplied(standardsRequest))
             {
                 standardsTask = _apiClient.Get<GetStandardsListResponse>(standardsRequest);
-                _saveStandardsToCache = false;
+                saveStandardsToCache = false;
                 
-                _taskList.Add(standardsTask);
+                taskList.Add(standardsTask);
             }
             else
             {
@@ -67,18 +60,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     RouteIds = routeFilters,
                     Levels = request.Levels,
                     OrderBy = request.OrderBy
-                }, nameof(GetStandardsListResponse), out _saveStandardsToCache);
-                _taskList.Add(standardsTask);
+                }, nameof(GetStandardsListResponse), out saveStandardsToCache);
+                taskList.Add(standardsTask);
             }
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
-                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _saveLevelsToCache);
-            _taskList.Add(levelsTask);
+                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out var saveLevelsToCache);
+            taskList.Add(levelsTask);
             
-            await Task.WhenAll(_taskList);
+            await Task.WhenAll(taskList);
 
             await _cacheHelper.UpdateCachedItems(Task.FromResult(sectors), levelsTask, standardsTask, 
-                new CacheHelper.SaveToCache{Levels = _saveLevelsToCache, Sectors = _saveSectorsToCache, Standards = _saveStandardsToCache});
+                new CacheHelper.SaveToCache{Levels = saveLevelsToCache, Sectors = saveSectorsToCache, Standards = saveStandardsToCache});
             
             return new GetTrainingCoursesListResult
             {
@@ -90,7 +83,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 OrderBy = request.OrderBy
             };
         }
-        
     }
-    
 }

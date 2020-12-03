@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Infrastructure.Services
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 {
     public class CacheStorageService : ICacheStorageService
     {
