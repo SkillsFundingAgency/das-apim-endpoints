@@ -38,7 +38,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
                 throw new ValidationException(validationResult.DataAnnotationResult, null, null);
             }
 
-            var apiRequest = new GetEpaoCoursesRequest{EpaoId = request.EpaoId};
+            var apiRequest = new GetEpaoCoursesRequest(request.EpaoId);
             var epaoCoursesListItems = (await _assessorsApiClient.GetAll<GetEpaoCoursesListItem>(apiRequest))?.ToList();
 
             if (epaoCoursesListItems == null || epaoCoursesListItems.Count == 0)
