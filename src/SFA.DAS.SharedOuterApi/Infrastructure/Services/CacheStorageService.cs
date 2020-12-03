@@ -36,6 +36,4 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             await _distributedCache.RemoveAsync(key);
         }
     }
-
-    
 }

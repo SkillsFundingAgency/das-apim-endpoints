@@ -58,11 +58,65 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_EpaoCourses_From_Assessor_Api_And_Courses_From_Courses_Api(
+        public async Task Then_Gets_EpaoCourses_From_Assessor_Api(
             GetEpaoCoursesQuery query,
             List<GetEpaoCoursesListItem> apiResponse,
             List<GetStandardResponse> getStandardResponses,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            GetEpaoCoursesQueryHandler handler)
+        {
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
+                    It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .SetupSequence(client => client.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()))
+                .ReturnsAsync(getStandardResponses[0])
+                .ReturnsAsync(getStandardResponses[1])
+                .ReturnsAsync(getStandardResponses[2]);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.EpaoId.Should().Be(query.EpaoId);
+            result.Courses.Should().BeEquivalentTo(getStandardResponses);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Courses_Cached_Then_Gets_Courses_From_Cache(
+            GetEpaoCoursesQuery query,
+            List<GetEpaoCoursesListItem> apiResponse,
+            List<GetStandardResponse> getStandardResponses,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            GetEpaoCoursesQueryHandler handler)
+        {
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
+                    It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(apiResponse);
+            /*mockCacheStorageService
+                .Setup(service => service.RetrieveFromCache<>())*/
+            mockCoursesApiClient
+                .SetupSequence(client => client.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()))
+                .ReturnsAsync(getStandardResponses[0])
+                .ReturnsAsync(getStandardResponses[1])
+                .ReturnsAsync(getStandardResponses[2]);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.EpaoId.Should().Be(query.EpaoId);
+            result.Courses.Should().BeEquivalentTo(getStandardResponses);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Courses_Not_Cached_Then_Gets_Courses_From_Api(
+            GetEpaoCoursesQuery query,
+            List<GetEpaoCoursesListItem> apiResponse,
+            List<GetStandardResponse> getStandardResponses,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetEpaoCoursesQueryHandler handler)
         {
