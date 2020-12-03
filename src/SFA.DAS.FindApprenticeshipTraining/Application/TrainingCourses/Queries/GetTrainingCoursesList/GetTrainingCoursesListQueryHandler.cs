@@ -6,6 +6,7 @@ using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList
@@ -39,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Keyword = request.Keyword,
                 RouteIds = routeFilters,
                 Levels = request.Levels,
-                OrderBy = request.OrderBy
+                OrderBy = (CoursesOrderBy)request.OrderBy
             };
 
             Task<GetStandardsListResponse> standardsTask;
@@ -59,7 +60,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Keyword = request.Keyword,
                     RouteIds = routeFilters,
                     Levels = request.Levels,
-                    OrderBy = request.OrderBy
+                    OrderBy = (CoursesOrderBy)request.OrderBy
                 }, nameof(GetStandardsListResponse), out saveStandardsToCache);
                 taskList.Add(standardsTask);
             }

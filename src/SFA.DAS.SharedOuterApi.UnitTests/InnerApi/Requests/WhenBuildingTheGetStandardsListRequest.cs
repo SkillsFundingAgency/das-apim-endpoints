@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetStandardsListRequest
     {
@@ -16,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             List<int> levels,
             string keyword)
         {
-            var orderBy = OrderBy.Title;
+            var orderBy = CoursesOrderBy.Title;
             var actual = new GetStandardsListRequest
             {
                 Keyword = keyword, 
@@ -33,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
             string keyword)
         {
-            var orderBy = OrderBy.Score;
+            var orderBy = CoursesOrderBy.Score;
             var actual = new GetStandardsListRequest
             { 
                 Keyword = keyword,
@@ -49,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             List<int> levels,
             string keyword)
         {
-            var orderBy = OrderBy.Score;
+            var orderBy = CoursesOrderBy.Score;
             var actual = new GetStandardsListRequest
             {
                 Keyword = keyword, 
@@ -66,7 +65,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             List<Guid> routeIds,
             string keyword)
         {
-            var orderBy = OrderBy.Score;
+            var orderBy = CoursesOrderBy.Score;
             var actual = new GetStandardsListRequest
             { 
                 Keyword = keyword, 
