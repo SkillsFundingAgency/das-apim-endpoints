@@ -31,7 +31,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
                 throw new ValidationException(validationResult.DataAnnotationResult, null, null);
             }
 
-            var apiRequest = new GetEpaoRequest{EpaoId = request.EpaoId};
+            var apiRequest = new GetEpaoRequest(request.EpaoId);
             var apiResult = await _assessorsApiClient.Get<GetEpaoResponse>(apiRequest);
 
             if (apiResult == default)
