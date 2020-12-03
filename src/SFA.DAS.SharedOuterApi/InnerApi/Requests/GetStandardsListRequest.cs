@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetStandardsListRequest : IGetApiRequest
     {
         public string Keyword { get ; set ; }
+        public CoursesOrderBy OrderBy { get; set; }
         public List<Guid> RouteIds { get; set; }
-        public string GetUrl => BuildUrl();
-
         public List<int> Levels { get ; set ; }
-        public OrderBy OrderBy { get; set; }
+        public string GetUrl => BuildUrl();
 
         private string BuildUrl()
         {
@@ -31,5 +29,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 
             return url;
         }
+    }
+
+    public enum CoursesOrderBy
+    {
+        Score,
+        Title
     }
 }

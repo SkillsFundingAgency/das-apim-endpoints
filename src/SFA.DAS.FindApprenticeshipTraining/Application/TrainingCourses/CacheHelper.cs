@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
@@ -60,8 +60,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
         public bool FilterApplied(GetStandardsListRequest request)
         {
-            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != OrderBy.Score;
+            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != CoursesOrderBy.Score;
         }
+
         internal class SaveToCache
         {
             public bool Sectors { get; set; }
