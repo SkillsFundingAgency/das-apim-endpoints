@@ -13,6 +13,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EpaoRegister.Api.AppStart;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
+using SFA.DAS.EpaoRegister.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -66,6 +67,22 @@ namespace SFA.DAS.EpaoRegister.Api
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection(nameof(EpaoRegisterConfiguration))
+                    .Get<EpaoRegisterConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
+            }
+
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
@@ -95,7 +112,7 @@ namespace SFA.DAS.EpaoRegister.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Epaos}/{action=index}/{id?}");//todo
+                    pattern: "api/{controller=Epaos}/{action=index}/{id?}");
             });
         
             app.UseSwagger();
