@@ -6,7 +6,6 @@ namespace SFA.DAS.EpaoRegister.InnerApi.Responses
     {
         public int Id { get; set; }
         public GetStandardDates StandardDates { get; set; }
-
     }
 
 

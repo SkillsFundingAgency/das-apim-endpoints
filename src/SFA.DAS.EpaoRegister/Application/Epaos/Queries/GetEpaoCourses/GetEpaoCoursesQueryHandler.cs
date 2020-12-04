@@ -16,18 +16,22 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 {
     public class GetEpaoCoursesQueryHandler : IRequestHandler<GetEpaoCoursesQuery, GetEpaoCoursesResult>
     {
+        private const int ExpirationInHours = 1;
         private readonly IValidator<GetEpaoCoursesQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly ICacheStorageService _cacheStorageService;
 
         public GetEpaoCoursesQueryHandler(
             IValidator<GetEpaoCoursesQuery> validator,
             IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
-            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
+            ICacheStorageService cacheStorageService)
         {
             _validator = validator;
             _assessorsApiClient = assessorsApiClient;
             _coursesApiClient = coursesApiClient;
+            _cacheStorageService = cacheStorageService;
         }
 
         public async Task<GetEpaoCoursesResult> Handle(GetEpaoCoursesQuery request, CancellationToken cancellationToken)
@@ -38,34 +42,35 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
                 throw new ValidationException(validationResult.DataAnnotationResult, null, null);
             }
 
-            var apiRequest = new GetEpaoCoursesRequest(request.EpaoId);
-            var epaoCoursesListItems = (await _assessorsApiClient.GetAll<GetEpaoCoursesListItem>(apiRequest))?.ToList();
+            var epaoCourses = (await _assessorsApiClient.GetAll<GetEpaoCoursesListItem>(
+                new GetEpaoCoursesRequest(request.EpaoId)))
+                ?.ToList();
 
-            if (epaoCoursesListItems == null || epaoCoursesListItems.Count == 0)
+            if (epaoCourses == null || epaoCourses.Count == 0)
             {
                 throw new NotFoundException<GetEpaoCoursesResult>();
             }
+
+            var courses = await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
+                    nameof(GetStandardsListRequest));
+
+            if (courses == default)
+            {
+                courses = await _coursesApiClient.Get<GetStandardsListResponse>(
+                    new GetStandardsListRequest());
+                await _cacheStorageService.SaveToCache(nameof(GetStandardsListRequest), courses, ExpirationInHours);
+            }
+
+            var matchingCourses = courses.Standards
+                .Where(response => epaoCourses
+                    .Select(item => item.StandardCode)
+                    .Contains(response.Id))
+                .ToList();
             
-            var courseTasks = new List<Task<GetStandardResponse>>();
-            foreach (var epaoCoursesListItem in epaoCoursesListItems)
-            {
-                var getCourseTask = _coursesApiClient.Get<GetStandardResponse>(
-                    new GetStandardRequest(epaoCoursesListItem.StandardCode));
-                courseTasks.Add(getCourseTask);
-            }
-            await Task.WhenAll(courseTasks);
-
-            var epaoCourses = new List<GetStandardResponse>();
-            foreach (var task in courseTasks)
-            {
-                var course = task.Result;
-                epaoCourses.Add(course);
-            }
-
             return new GetEpaoCoursesResult
             {
                 EpaoId = request.EpaoId,
-                Courses = epaoCourses
+                Courses = matchingCourses
             };
         }
     }
