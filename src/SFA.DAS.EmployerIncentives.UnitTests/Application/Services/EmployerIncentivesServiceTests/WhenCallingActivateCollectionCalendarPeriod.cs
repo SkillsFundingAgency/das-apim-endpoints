@@ -25,7 +25,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                 x.Patch<ActivateCollectionCalendarPeriodRequestData>(It.Is<ActivateCollectionCalendarPeriodRequest>(
                     c => ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodNumber == request.CollectionPeriodNumber &&
                     ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodYear == request.CollectionPeriodYear &&
-                          c.PatchUrl.Equals("collectionCalendar/period/activate"))
+                    ((ActivateCollectionCalendarPeriodRequestData)c.Data).Active == request.Active &&
+                          c.PatchUrl.Equals("collectionCalendar/period/active"))
                 ), Times.Once);
         }
     }

@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath("/collectionCalendar/period/activate")
+                    Request.Create().WithPath("/collectionCalendar/period/active")
                         .UsingPatch())
                 .RespondWith(
                     Response.Create()
@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public async Task WhenTheOuterApiReceivesTheCollectionCalendarPeriodActivationRequest()
         {
             var request = new ActivateCollectionCalendarPeriodRequest { CollectionPeriodNumber = 1, CollectionPeriodYear = 2020 };
-            _response = await _context.OuterApiClient.PatchAsync("collectionCalendar/period/activate", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+            _response = await _context.OuterApiClient.PatchAsync("collectionCalendar/period/active", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
         }
 
         [Then(@"the response code of Ok is returned")]

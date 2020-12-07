@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar
         {
         }
 
-        public string PatchUrl => "collectionCalendar/period/activate";
+        public string PatchUrl => "collectionCalendar/period/active";
 
         public ActivateCollectionCalendarPeriodRequestData Data { get; set; }
     }

@@ -20,7 +20,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
             var request = new ActivateCollectionCalendarPeriodRequestData
             {
                 CollectionPeriodNumber = command.CollectionPeriodNumber,
-                CollectionPeriodYear = command.CollectionPeriodYear
+                CollectionPeriodYear = command.CollectionPeriodYear,
+                Active = command.Active
             };
 
             await _employerIncentivesService.ActivateCollectionCalendarPeriod(request);

@@ -9,11 +9,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingActivateCollectionCalendarPeriodRequest
     {
         [Test, AutoData]
-        public void Then_The_Post_Url_Is_Correctly_Built(ActivateCollectionCalendarPeriodRequestData data)
+        public void Then_The_Patch_Url_Is_Correctly_Built(ActivateCollectionCalendarPeriodRequestData data)
         {
             var actual = new ActivateCollectionCalendarPeriodRequest { Data = data };
 
-            actual.PatchUrl.Should().Be("collectionCalendar/period/activate");
+            actual.PatchUrl.Should().Be("collectionCalendar/period/active");
             actual.Data.Should().BeEquivalentTo(data);
         }
     }
