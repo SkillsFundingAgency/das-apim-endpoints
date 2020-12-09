@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             var request = new BankDetailsRepeatReminderEmailsRequest
             {
-               ApplicationCutOfDate = _fixture.Create<DateTime>()
+               ApplicationCutOffDate = _fixture.Create<DateTime>()
             };
 
             _response = await _context.OuterApiClient.PostAsync($"email/bank-details-repeat-reminders", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));

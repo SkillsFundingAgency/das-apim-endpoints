@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Email
             mockMediator
                 .Verify(mediator => mediator.Send(
                     It.Is<SendBankDetailsRepeatReminderEmailsCommand>(c =>
-                        c.ApplicationCutOffDate.Equals(sendEmailRequest.ApplicationCutOfDate)),
+                        c.ApplicationCutOffDate.Equals(sendEmailRequest.ApplicationCutOffDate)),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
     }

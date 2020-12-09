@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
 {
     public class BankDetailsRepeatReminderEmailsRequest
     {
-        public DateTime ApplicationCutOfDate { get; set; }
+        public DateTime ApplicationCutOffDate { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("bank-details-repeat-reminders")]
         public async Task<IActionResult> SendBankDetailsRepeatReminderEmails(BankDetailsRepeatReminderEmailsRequest request)
         {
-            await _mediator.Send(new SendBankDetailsRepeatReminderEmailsCommand(request.ApplicationCutOfDate));
+            await _mediator.Send(new SendBankDetailsRepeatReminderEmailsCommand(request.ApplicationCutOffDate));
 
             return new OkResult();
         }
