@@ -98,6 +98,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<SendBankDetailsEmailRequest>(request);
         }
 
+        public async Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest)
+        {
+            var request = new PostBankDetailsRepeatReminderEmailsRequest { Data = sendBankDetailsRepeatReminderEmailsRequest };
+
+            await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
+        }
+
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
