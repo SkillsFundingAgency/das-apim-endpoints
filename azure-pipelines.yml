@@ -185,7 +185,7 @@ stages:
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Approvals
-      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
@@ -483,7 +483,7 @@ stages:
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
-      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)    
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -614,7 +614,7 @@ stages:
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Approvals
-      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
       ServiceConnection: SFA-DIG-PreProd (ARM)
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
@@ -626,4 +626,4 @@ stages:
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
-      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)      
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
