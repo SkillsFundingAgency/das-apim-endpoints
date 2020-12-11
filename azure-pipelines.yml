@@ -66,6 +66,8 @@ stages:
   - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
+  - name: OuterApiArray
+    value: '[$(ApprovalsOuterApiObject)]'
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
