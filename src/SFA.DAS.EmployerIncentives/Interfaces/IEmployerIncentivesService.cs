@@ -36,6 +36,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         
         Task EarningsResilienceCheck();
 
-        Task ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequestData requestData);
+        Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

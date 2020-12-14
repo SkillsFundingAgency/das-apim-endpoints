@@ -14,22 +14,22 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.CollectionCalendar
 {
-    public class WhenActivatingCollectionCalendarPeriod
+    public class WhenUpdatingCollectionCalendarPeriod
     {
         [Test, MoqAutoData]
-        public async Task Then_ActivateCollectionPeriodCommand_Is_Sent(
-            ActivateCollectionCalendarPeriodRequest request,
+        public async Task Then_UpdateCollectionPeriodCommand_Is_Sent(
+            UpdateCollectionCalendarPeriodRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CollectionCalendarController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send<Unit>(
-                    It.Is<ActivateCollectionCalendarPeriodCommand>(c =>
+                    It.Is<UpdateCollectionCalendarPeriodCommand>(c =>
                         c.CollectionPeriodNumber == request.CollectionPeriodNumber &&
                         c.CollectionPeriodYear == request.CollectionPeriodYear
                     ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
-            var controllerResult = await controller.ActivateCollectionCalendarPeriod(request) as OkResult;
+            var controllerResult = await controller.UpdateCollectionCalendarPeriod(request) as OkResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
