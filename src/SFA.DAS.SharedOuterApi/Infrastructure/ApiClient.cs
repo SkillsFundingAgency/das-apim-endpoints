@@ -1,8 +1,7 @@
-using System.Collections.Generic;
-using System;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -34,6 +33,20 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return JsonConvert.DeserializeObject<TResponse>(json);
+        }
+
+        public async Task Post<TData>(IPostApiRequest<TData> request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+
+            var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task Delete(IDeleteApiRequest request)
