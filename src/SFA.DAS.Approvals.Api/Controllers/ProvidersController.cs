@@ -22,6 +22,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAll()
         {
