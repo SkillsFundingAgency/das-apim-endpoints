@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using NLog.Web;
 
 namespace SFA.DAS.EpaoRegister.Api
 {
@@ -14,7 +15,9 @@ namespace SFA.DAS.EpaoRegister.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseApplicationInsights()
+                        .UseStartup<Startup>()
+                        .UseNLog();
                 });
     }
 }
