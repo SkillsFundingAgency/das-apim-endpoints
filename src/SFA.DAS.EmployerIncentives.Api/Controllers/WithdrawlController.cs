@@ -1,10 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest;
 using SFA.DAS.EmployerIncentives.Application.Commands.WithdrawApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
