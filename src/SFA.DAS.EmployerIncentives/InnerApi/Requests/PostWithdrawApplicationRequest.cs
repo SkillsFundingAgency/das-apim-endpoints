@@ -10,18 +10,18 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
             Data = request;
         }
 
-        public string PostUrl => $"withdrawls";
+        public string PostUrl => $"withdrawals";
         public WithdrawRequest Data { get; set; }
     }
 
-    public enum WithdrawlType
+    public enum WithdrawalType
     {
         Employer = 1
     }
 
     public class WithdrawRequest
     {
-        public WithdrawlType WithdrawlType { get; set; }
+        public WithdrawalType WithdrawalType { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long ULN { get; set; }
         public ServiceRequest ServiceRequest { get; set; }       

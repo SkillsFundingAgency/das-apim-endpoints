@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
     [ApiController]
-    public class WithdrawlController : ControllerBase
+    public class WithdrawalController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public WithdrawlController(IMediator mediator)
+        public WithdrawalController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPut]
-        [Route("/withdrawls")]
+        [HttpPost]
+        [Route("/withdrawals")]
         public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest request)
         {
             await _mediator.Send(new WithdrawCommand(request), CancellationToken.None);

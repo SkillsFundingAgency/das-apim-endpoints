@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -13,8 +12,8 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {
     [Binding]
-    [Scope(Feature = "Withdrawl")]
-    public class WithdrawlSteps
+    [Scope(Feature = "Withdrawal")]
+    public class WithdrawalSteps
     {
         private readonly TestContext _context;
         private PostWithdrawApplicationRequest _request;
@@ -22,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private HttpStatusCode _innerResponseStatusCode;
         private readonly Fixture _fixture;
 
-        public WithdrawlSteps(TestContext context)
+        public WithdrawalSteps(TestContext context)
         {
             _fixture = new Fixture();
             _context = context;
@@ -34,21 +33,21 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _request = new PostWithdrawApplicationRequest(
                 new WithdrawRequest
                 {
-                    WithdrawlType = WithdrawlType.Employer,
+                    WithdrawalType = WithdrawalType.Employer,
                     AccountLegalEntityId = _fixture.Create<long>(),
                     ULN = _fixture.Create<long>(),
                     ServiceRequest = _fixture.Create<ServiceRequest>()
                 });
         }
 
-        [Given(@"the Employer Incentives Api receives the WithDrawl request")]
-        public void GivenTheEmployerIncentivesApiShouldReceiveTheJobRequest()
+        [Given(@"the Employer Incentives Api receives the Withdrawal request")]
+        public void GivenTheEmployerIncentivesApiShouldReceiveTheWithdrawalRequest()
         {
             _innerResponseStatusCode = HttpStatusCode.Accepted;
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/withdrawls")
+                    Request.Create().WithPath($"/withdrawals")
                         .UsingPost())
                 .RespondWith(
                     Response.Create()
@@ -56,10 +55,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
-        [When(@"the Outer Api receives the Job request")]
-        public async Task WhenTheOuterApiReceivesTheJobRequest()
+        [When(@"the Outer Api receives the Withdrawal request")]
+        public async Task WhenTheOuterApiReceivesTheWithdrawalRequest()
         {
-           _response = await  _context.OuterApiClient.PostAsJsonAsync($"withdrawls", _request);
+           _response = await  _context.OuterApiClient.PostAsJsonAsync($"withdrawals", _request);
         }
 
         [Then(@"the response of Accepted is returned")]

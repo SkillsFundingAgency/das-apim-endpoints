@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
         {
             var actual = new PostWithdrawApplicationRequest(withdrawRequest);
 
-            actual.PostUrl.Should().Be($"withdrawls");
+            actual.PostUrl.Should().Be($"withdrawals");
             actual.Data.Should().BeEquivalentTo(withdrawRequest);
         }
     }
