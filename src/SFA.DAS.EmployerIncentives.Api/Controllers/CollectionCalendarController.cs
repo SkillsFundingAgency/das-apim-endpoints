@@ -19,12 +19,12 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("/collectionCalendar/period/active")]
-        public async Task<IActionResult> ActivateCollectionCalendarPeriod([FromBody] ActivateCollectionCalendarPeriodRequest request)
+        [Route("/collectionPeriods")]
+        public async Task<IActionResult> UpdateCollectionCalendarPeriod([FromBody] UpdateCollectionCalendarPeriodRequest request)
         {
-            await _mediator.Send(new ActivateCollectionCalendarPeriodCommand(request.CollectionPeriodNumber, 
-                                                                             request.CollectionPeriodYear,
-                                                                             request.Active));
+            await _mediator.Send(new UpdateCollectionCalendarPeriodCommand(request.CollectionPeriodNumber, 
+                                                                           request.CollectionPeriodYear,
+                                                                           request.Active));
 
             return new OkResult();
         }

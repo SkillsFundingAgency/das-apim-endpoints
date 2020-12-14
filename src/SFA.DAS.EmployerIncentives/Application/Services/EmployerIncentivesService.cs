@@ -154,9 +154,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<string>(new EarningsResilenceCheckRequest());
         }
 
-        public async Task ActivateCollectionCalendarPeriod(ActivateCollectionCalendarPeriodRequestData requestData)
+        public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
         {
-            await _client.Patch<ActivateCollectionCalendarPeriodRequestData>(new ActivateCollectionCalendarPeriodRequest { Data = requestData });
+            await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

@@ -11,22 +11,22 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
-    public class WhenCallingActivateCollectionCalendarPeriod
+    public class WhenCallingUpdateCollectionCalendarPeriod
     {
         [Test, MoqAutoData]
         public async Task Then_The_InnerApi_Is_Called(
-           ActivateCollectionCalendarPeriodRequestData request,
+           UpdateCollectionCalendarPeriodRequestData request,
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
            EmployerIncentivesService sut)
         {
-            await sut.ActivateCollectionCalendarPeriod(request);
+            await sut.UpdateCollectionCalendarPeriod(request);
 
             client.Verify(x =>
-                x.Patch<ActivateCollectionCalendarPeriodRequestData>(It.Is<ActivateCollectionCalendarPeriodRequest>(
-                    c => ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodNumber == request.CollectionPeriodNumber &&
-                    ((ActivateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodYear == request.CollectionPeriodYear &&
-                    ((ActivateCollectionCalendarPeriodRequestData)c.Data).Active == request.Active &&
-                          c.PatchUrl.Equals("collectionCalendar/period/active"))
+                x.Patch<UpdateCollectionCalendarPeriodRequestData>(It.Is<UpdateCollectionCalendarPeriodRequest>(
+                    c => ((UpdateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodNumber == request.CollectionPeriodNumber &&
+                    ((UpdateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodYear == request.CollectionPeriodYear &&
+                    ((UpdateCollectionCalendarPeriodRequestData)c.Data).Active == request.Active &&
+                          c.PatchUrl.Equals("collectionPeriods"))
                 ), Times.Once);
         }
     }
