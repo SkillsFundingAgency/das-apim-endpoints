@@ -71,7 +71,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(getStandardResponses);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -107,7 +107,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
             mockCacheStorageService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListRequest)))
+                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetAvailableToStartStandardsListRequest)))
                 .ReturnsAsync(responseFromCache);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -145,7 +145,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(responseFromApi);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -153,7 +153,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             result.EpaoId.Should().Be(query.EpaoId);
             result.Courses.Should().BeEquivalentTo(matchingStandards);
             mockCacheStorageService.Verify(service => service.SaveToCache(
-                nameof(GetStandardsListRequest), 
+                nameof(GetAvailableToStartStandardsListRequest), 
                 responseFromApi, 
                 expectedExpirationInHours));
         }

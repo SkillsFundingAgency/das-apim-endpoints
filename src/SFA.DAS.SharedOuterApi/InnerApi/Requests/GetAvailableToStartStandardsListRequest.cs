@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public class GetStandardsListRequest : IGetApiRequest
+    public class GetAvailableToStartStandardsListRequest : IGetApiRequest
     {
         public string Keyword { get ; set ; }
         public CoursesOrderBy OrderBy { get; set; }
@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
+            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}&filterAvailableToStart=true";
 
             if (RouteIds != null && RouteIds.Any())
             {

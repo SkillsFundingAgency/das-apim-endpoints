@@ -58,7 +58,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             return itemsTask;
         }
 
-        public bool FilterApplied(GetStandardsListRequest request)
+        public bool FilterApplied(GetAvailableToStartStandardsListRequest request)
         {
             return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != CoursesOrderBy.Score;
         }
