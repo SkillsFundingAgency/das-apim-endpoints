@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 
     public enum WithdrawalType
     {
-        Employer = 1
+        Employer = 1,
+        Compliance = 2
     }
 
     public class WithdrawRequest
