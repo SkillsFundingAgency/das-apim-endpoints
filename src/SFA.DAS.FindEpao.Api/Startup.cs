@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -85,6 +86,11 @@ namespace SFA.DAS.FindEpao.Api
             }
 
             app.UseAuthentication();
+
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
             
             app.UseRouting();
             app.UseEndpoints(endpoints =>
