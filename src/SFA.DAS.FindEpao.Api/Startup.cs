@@ -51,6 +51,7 @@ namespace SFA.DAS.FindEpao.Api
             }
 
             services.AddMediatR(typeof(GetCourseListQuery).Assembly);
+            services.AddMediatRValidation();
             services.AddServiceRegistration();
             
             services
