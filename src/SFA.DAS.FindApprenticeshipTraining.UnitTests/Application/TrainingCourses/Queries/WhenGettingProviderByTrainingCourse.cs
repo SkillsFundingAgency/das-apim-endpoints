@@ -94,7 +94,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(c =>
                     c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
@@ -131,7 +131,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(apiResponse);
 
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
 
             var additionalCourses = allCoursesApiResponse.Standards.Select(c => c.Id).ToList();
@@ -298,7 +298,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.Is<GetUkprnsForStandardAndLocationRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(ukprnsCountResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
@@ -367,7 +367,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.Is<GetUkprnsForStandardAndLocationRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(ukprnsCountResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
@@ -440,7 +440,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
@@ -512,7 +512,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
@@ -560,7 +560,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
             mockApiClient.Setup(client => client.Get<GetOverallAchievementRateResponse>(It.Is<GetOverallAchievementRateRequest>(
                     c =>
