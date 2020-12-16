@@ -4,6 +4,7 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries
@@ -18,7 +19,7 @@ namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries
         }
         public async Task<GetStandardsResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
         {
-            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsRequest());
+            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
             
             return new GetStandardsResult
             {
