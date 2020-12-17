@@ -11,6 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
+using SFA.DAS.FindEpao.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -67,7 +68,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             List<GetDeliveryAreaListItem> areasFromCache,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
+            [Frozen] Mock<ICachedDeliveryAreasService> mockCacheService,
             GetCourseEpaoQueryHandler handler)
         {
             courseEpaosApiResponse[0].EpaoId = query.EpaoId;
@@ -80,7 +81,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                     It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
                 .ReturnsAsync(courseEpaosApiResponse);
             mockCacheService
-                .Setup(service => service.RetrieveFromCache<IEnumerable<GetDeliveryAreaListItem>>(nameof(GetDeliveryAreasRequest)))
+                .Setup(service => service.GetDeliveryAreas())
                 .ReturnsAsync(areasFromCache);
 
             mockCoursesApiClient
@@ -95,50 +96,6 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_DeliveryAreas_Not_Cached_Then_Gets_From_Api_And_Stores_In_Cache(
-            GetCourseEpaoQuery query,
-            GetEpaoResponse epaoApiResponse,
-            List<GetCourseEpaoListItem> courseEpaosApiResponse,
-            GetStandardsListItem coursesApiResponse,
-            List<GetDeliveryAreaListItem> areasApiResponse,
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
-            GetCourseEpaoQueryHandler handler)
-        {
-            var expectedExpirationInHours = 1;
-            courseEpaosApiResponse[0].EpaoId = query.EpaoId;
-            mockAssessorsApiClient
-                .Setup(client => client.Get<GetEpaoResponse>(
-                    It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(epaoApiResponse);
-            mockAssessorsApiClient
-                .Setup(client => client.GetAll<GetCourseEpaoListItem>(
-                    It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
-                .ReturnsAsync(courseEpaosApiResponse);
-            mockAssessorsApiClient
-                .Setup(client => client.GetAll<GetDeliveryAreaListItem>(
-                    It.IsAny<GetDeliveryAreasRequest>()))
-                .ReturnsAsync(areasApiResponse);
-            mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(
-                    It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
-                .ReturnsAsync(coursesApiResponse);
-            mockCacheService
-                .Setup(service => service.RetrieveFromCache<IEnumerable<GetDeliveryAreaListItem>>(nameof(GetDeliveryAreasRequest)))
-                .ReturnsAsync((IEnumerable<GetDeliveryAreaListItem>)null);
-
-            var result = await handler.Handle(query, CancellationToken.None);
-            
-            result.DeliveryAreas.Should().BeEquivalentTo(areasApiResponse);
-            mockCacheService.Verify(service =>
-                service.SaveToCache(
-                    nameof(GetDeliveryAreasRequest),
-                    areasApiResponse.AsEnumerable(),
-                    expectedExpirationInHours));
         }
     }
 }
