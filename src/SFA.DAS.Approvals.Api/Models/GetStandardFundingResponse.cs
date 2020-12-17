@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models

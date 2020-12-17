@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses
 {
@@ -23,7 +24,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         {
             public DateTime EffectiveFrom { get; set; }
             public DateTime? EffectiveTo { get; set; }
-            public int FundingCap { get; set; }
+            [JsonProperty("FundingCap")]
+            public int MaxEmployerLevyCap { get; set; }
         }
     }
 }

@@ -7,14 +7,14 @@ namespace SFA.DAS.Approvals.Api.Models
     {
         public DateTime? EffectiveTo { get ; set ; }
         public DateTime EffectiveFrom { get ; set ; }
-        public int FundingCap { get; set; }
+        public int MaxEmployerLevyCap { get; set; }
         public static implicit operator GetFrameworkFundingResponse(GetFrameworksListItem.FundingPeriod source)
         {
             return new GetFrameworkFundingResponse
             {
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
-                FundingCap = source.FundingCap
+                MaxEmployerLevyCap = source.MaxEmployerLevyCap
             };
         }
     }
