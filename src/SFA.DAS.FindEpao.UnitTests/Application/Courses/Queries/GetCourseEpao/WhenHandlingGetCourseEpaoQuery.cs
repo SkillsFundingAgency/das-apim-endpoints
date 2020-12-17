@@ -86,7 +86,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Epao.Should().BeEquivalentTo(epaoApiResponse);
-            result.DeliveryAreas.Should().BeEquivalentTo(courseEpaosApiResponse.Single(item => item.EpaoId == query.EpaoId).DeliveryAreas);
+            result.EpaoDeliveryAreas.Should().BeEquivalentTo(courseEpaosApiResponse.Single(item => item.EpaoId == query.EpaoId).DeliveryAreas);
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
         }

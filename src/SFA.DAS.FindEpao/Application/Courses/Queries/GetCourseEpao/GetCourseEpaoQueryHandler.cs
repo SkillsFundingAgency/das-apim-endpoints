@@ -50,7 +50,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             {
                 Epao = epao,
                 Course = course,
-                DeliveryAreas = courseEpaos.Single(item => item.EpaoId == request.EpaoId).DeliveryAreas,
+                EpaoDeliveryAreas = courseEpaos.Single(item => item.EpaoId == request.EpaoId).DeliveryAreas,
                 CourseEpaosCount = courseEpaos.Count()
             };
         }
