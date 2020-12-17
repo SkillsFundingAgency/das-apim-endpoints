@@ -8,10 +8,8 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public string Id { get; set; }
         public string Name { get; set; }
         public uint? Ukprn { get; set; }
-        public string Email { get; set; }
         public string Status { get; set; }
         public int? OrganisationTypeId { get; set; }
-        public string PrimaryContact { get; set; }
         public string PrimaryContactName { get; set; }
         public GetEpaoOrganisationData OrganisationData { get; set; }
     }
