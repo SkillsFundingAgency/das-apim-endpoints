@@ -23,8 +23,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
 
             client.Verify(x =>
                 x.Patch<UpdateCollectionCalendarPeriodRequestData>(It.Is<UpdateCollectionCalendarPeriodRequest>(
-                    c => ((UpdateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodNumber == request.CollectionPeriodNumber &&
-                    ((UpdateCollectionCalendarPeriodRequestData)c.Data).CollectionPeriodYear == request.CollectionPeriodYear &&
+                    c => ((UpdateCollectionCalendarPeriodRequestData)c.Data).PeriodNumber == request.PeriodNumber &&
+                    ((UpdateCollectionCalendarPeriodRequestData)c.Data).AcademicYear == request.AcademicYear &&
                     ((UpdateCollectionCalendarPeriodRequestData)c.Data).Active == request.Active &&
                           c.PatchUrl.Equals("collectionPeriods"))
                 ), Times.Once);

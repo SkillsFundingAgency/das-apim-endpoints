@@ -22,8 +22,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/collectionPeriods")]
         public async Task<IActionResult> UpdateCollectionCalendarPeriod([FromBody] UpdateCollectionCalendarPeriodRequest request)
         {
-            await _mediator.Send(new UpdateCollectionCalendarPeriodCommand(request.CollectionPeriodNumber, 
-                                                                           request.CollectionPeriodYear,
+            await _mediator.Send(new UpdateCollectionCalendarPeriodCommand(request.PeriodNumber, 
+                                                                           request.AcademicYear,
                                                                            request.Active));
 
             return new OkResult();
