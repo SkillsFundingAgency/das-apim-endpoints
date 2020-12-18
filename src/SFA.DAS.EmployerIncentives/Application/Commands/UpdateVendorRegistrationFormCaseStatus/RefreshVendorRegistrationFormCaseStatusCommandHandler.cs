@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
 using SFA.DAS.EmployerIncentives.Extensions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
@@ -16,13 +17,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> _logger;
+        private readonly IMediator _mediator;
 
         public RefreshVendorRegistrationFormCaseStatusCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger)
+            IEmployerIncentivesService incentivesService, ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger,
+            IMediator mediator)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public async Task<DateTime> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
@@ -48,23 +52,29 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 _logger.LogError($"[VRF Refresh] [SkipCode={response.SkipCode}] returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
             }
 
-            FindLatestUpdateForEachLegalEntity(response);
-
-            Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
-            {
-                return _incentivesService.UpdateVendorRegistrationCaseStatus(
-                    new UpdateVendorRegistrationCaseStatusRequest
-                    {
-                        CaseId = @case.CaseId,
-                        HashedLegalEntityId = @case.ApprenticeshipLegalEntityId,
-                        Status = @case.CaseStatus,
-                        CaseStatusLastUpdatedDate = @case.CaseStatusLastUpdatedDate
-                    });
-            }
+            FindLatestUpdateForEachLegalEntity(response);                      
 
             await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
 
             return await Task.FromResult(nextRunDateTime);
+        }
+
+        private async Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
+        {
+            var vendorId = await _incentivesService.GetVrfVendorId(@case.ApprenticeshipLegalEntityId);
+            if (String.IsNullOrWhiteSpace(vendorId))
+            {
+                await _mediator.Send(new GetAndAddEmployerVendorIdCommand(@case.ApprenticeshipLegalEntityId));
+            }
+
+            await _incentivesService.UpdateVendorRegistrationCaseStatus(
+                new UpdateVendorRegistrationCaseStatusRequest
+                {
+                    CaseId = @case.CaseId,
+                    HashedLegalEntityId = @case.ApprenticeshipLegalEntityId,
+                    Status = @case.CaseStatus,
+                    CaseStatusLastUpdatedDate = @case.CaseStatusLastUpdatedDate
+                });
         }
 
         private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request)

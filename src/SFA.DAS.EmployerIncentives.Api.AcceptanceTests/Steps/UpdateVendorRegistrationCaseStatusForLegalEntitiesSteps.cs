@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private readonly DateTime _dateTimeFrom = DateTime.SpecifyKind(new DateTime(2020, 9, 1, 9, 0, 0), DateTimeKind.Utc);
         private readonly string[] _hashedLegalEntitiesFromFinanceJson = new[] { "DW5T8V", "HEN123" };
         private HttpResponseMessage _response;
+        private const string CompanyName = "ESFA";
 
         public UpdateVendorRegistrationCaseStatusForLegalEntitiesSteps(TestContext context) { _context = context; }
 
@@ -49,6 +50,15 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 .UsingPatch()).Should().HaveCount(2);
         }
 
+        [Then(@"VRF vendor ids are retrieved from the Finance API for legal entities that are unpopulated")]
+        public void ThenVRFVendorIdsAreRetrievedFromTheFinanceAPIForLegalEntitiesThatAreUnpopulated()
+        {
+            _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
+                .WithPath(x => x.Contains($"/Finance/{CompanyName}/vendor/aleid="))
+                .UsingGet()).Should().HaveCount(1);
+        }
+
+
         private void SetResponseFromFinanceApi()
         {
             _context.FinanceApi.MockServer
@@ -59,7 +69,37 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate)
                 );
+            _context.FinanceApi.MockServer
+                 .Given(ExpectedGetVendorDataApiRequest1)
+                 .RespondWith(
+                     Response.Create()
+                         .WithStatusCode((int)HttpStatusCode.OK)
+                         .WithHeader("Content-Type", "application/json")
+                         .WithBody(TestData.FinanceAPI_V1__VendorDataResponse)
+                 );
+            _context.FinanceApi.MockServer
+                .Given(ExpectedGetVendorDataApiRequest2)
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(TestData.FinanceAPI_V1__VendorDataResponse)
+                );
         }
+
+        public IRequestMatcher ExpectedGetVendorDataApiRequest1 =>
+
+          Request.Create()
+                .WithPath($"/Finance/{CompanyName}/vendor/aleid={_hashedLegalEntitiesFromFinanceJson[0]}")
+                .WithParam("api-version", "2019-06-01")
+                .UsingGet();
+
+        public IRequestMatcher ExpectedGetVendorDataApiRequest2 =>
+
+          Request.Create()
+              .WithPath($"/Finance/{CompanyName}/vendor/aleid={_hashedLegalEntitiesFromFinanceJson[1]}")
+              .WithParam("api-version", "2019-06-01")
+              .UsingGet();
 
         public IRequestMatcher ExpectedFinanceApiRequest =>
 
@@ -88,6 +128,24 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK));
+
+            //_context.InnerApi.MockServer
+            //    .Given(
+            //        Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/employervendorid")
+            //            .UsingGet())
+            //    .RespondWith(
+            //            Response.Create()
+            //            .WithStatusCode((int)HttpStatusCode.OK)
+            //            .WithBody("To Process"));
+
+            //_context.InnerApi.MockServer
+            //    .Given(
+            //        Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/employervendorid")
+            //            .UsingGet())
+            //    .RespondWith(
+            //            Response.Create()
+            //            .WithStatusCode((int)HttpStatusCode.OK)
+            //            .WithBody(string.Empty));
         }
     }
 }

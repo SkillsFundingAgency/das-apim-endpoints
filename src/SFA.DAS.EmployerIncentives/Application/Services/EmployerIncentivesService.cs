@@ -153,6 +153,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<string>(new EarningsResilenceCheckRequest());
         }
 
+        public async Task<string> GetVrfVendorId(string hashedLegalEntityId)
+        {
+            return await _client.Get<string>(new GetVrfVendorIdRequest(hashedLegalEntityId));
+        }
+
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
         {
             var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
@@ -168,6 +173,5 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        
     }
 }

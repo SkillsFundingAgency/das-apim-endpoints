@@ -34,5 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         
         Task EarningsResilienceCheck();
+
+        Task<string> GetVrfVendorId(string hashedLegalEntityId);
     }
 }

@@ -1,8 +1,10 @@
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
@@ -164,6 +166,38 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             incentivesService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_vendor_ids_are_updated_with_the_vendor_registration_form_Details_if_not_already_set(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<IMediator> mediator,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler,
+            GetVendorRegistrationCaseStatusUpdateResponse vendorResponse)
+        {
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
+                .ReturnsAsync(vendorResponse);
+
+            incentivesService.Setup(x => x.GetVrfVendorId(It.IsAny<string>())).ReturnsAsync(string.Empty);
+
+            await handler.Handle(command, CancellationToken.None);
+
+            foreach (var @case in vendorResponse.RegistrationCases)
+            {
+                incentivesService.Verify(
+                    x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r =>
+                            r.CaseId == @case.CaseId &&
+                            r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId &&
+                            r.Status == @case.CaseStatus &&
+                            r.CaseStatusLastUpdatedDate == @case.CaseStatusLastUpdatedDate)),
+                    Times.Once());
+                incentivesService.Verify(x => x.GetVrfVendorId(It.Is<string>(r => r == @case.ApprenticeshipLegalEntityId)), Times.Once);
+
+                mediator.Verify(x => x.Send(It.Is<GetAndAddEmployerVendorIdCommand>(r => r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId), It.IsAny<CancellationToken>()), Times.Once);
+            }
         }
     }
 }
