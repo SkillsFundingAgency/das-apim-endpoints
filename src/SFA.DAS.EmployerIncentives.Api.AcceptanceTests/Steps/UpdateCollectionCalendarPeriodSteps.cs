@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the collection calendar period update request")]
         public async Task WhenTheOuterApiReceivesTheCollectionCalendarPeriodUpdateRequest()
         {
-            var request = new UpdateCollectionCalendarPeriodRequest { CollectionPeriodNumber = 1, CollectionPeriodYear = 2020 };
+            var request = new UpdateCollectionCalendarPeriodRequest { PeriodNumber = 1, AcademicYear = 2021 };
             _response = await _context.OuterApiClient.PatchAsync("collectionPeriods", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
         }
 
