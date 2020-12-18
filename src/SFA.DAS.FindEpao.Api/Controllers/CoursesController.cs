@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindEpao.Api.Models;
+using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 
@@ -42,6 +43,28 @@ namespace SFA.DAS.FindEpao.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get list of training courses");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetCourseQuery{CourseId = id});
+                
+                var model = new GetCourseResponse
+                {
+                    Course = queryResult.Course
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get course id [{id}]");
                 return BadRequest();
             }
         }
