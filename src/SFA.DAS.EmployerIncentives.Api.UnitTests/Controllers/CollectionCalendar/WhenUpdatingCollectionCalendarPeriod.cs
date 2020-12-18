@@ -25,8 +25,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.CollectionCalenda
             mockMediator
                 .Setup(mediator => mediator.Send<Unit>(
                     It.Is<UpdateCollectionCalendarPeriodCommand>(c =>
-                        c.CollectionPeriodNumber == request.CollectionPeriodNumber &&
-                        c.CollectionPeriodYear == request.CollectionPeriodYear
+                        c.PeriodNumber == request.PeriodNumber &&
+                        c.AcademicYear == request.AcademicYear
                     ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
             var controllerResult = await controller.UpdateCollectionCalendarPeriod(request) as OkResult;

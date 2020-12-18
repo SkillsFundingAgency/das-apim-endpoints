@@ -19,8 +19,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
         {
             var request = new UpdateCollectionCalendarPeriodRequestData
             {
-                CollectionPeriodNumber = command.CollectionPeriodNumber,
-                CollectionPeriodYear = command.CollectionPeriodYear,
+                PeriodNumber = command.PeriodNumber,
+                AcademicYear = command.AcademicYear,
                 Active = command.Active
             };
 
