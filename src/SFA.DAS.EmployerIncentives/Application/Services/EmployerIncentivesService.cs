@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
@@ -59,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var response = await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
+            var response = await _client.Get<AccountLegalEntity>(new InnerApi.Requests.GetLegalEntityRequest(accountId, accountLegalEntityId));
 
             return response;
         }
@@ -153,9 +154,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<string>(new EarningsResilenceCheckRequest());
         }
 
-        public async Task<string> GetVrfVendorId(string hashedLegalEntityId)
+        public async Task<AccountLegalEntity> GetLegalEntityByHashedId(string hashedLegalEntityId)
         {
-            return await _client.Get<string>(new GetVrfVendorIdRequest(hashedLegalEntityId));
+            return await _client.Get<AccountLegalEntity>(new GetLegalEntityByHashedIdRequest(hashedLegalEntityId));
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

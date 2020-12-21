@@ -9,6 +9,7 @@ using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFo
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Globalization;
@@ -181,7 +182,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1)))
                 .ReturnsAsync(vendorResponse);
 
-            incentivesService.Setup(x => x.GetVrfVendorId(It.IsAny<string>())).ReturnsAsync(string.Empty);
+            var response = new AccountLegalEntity { VrfVendorId = string.Empty };
+            incentivesService.Setup(x => x.GetLegalEntityByHashedId(It.IsAny<string>())).ReturnsAsync(response);
 
             await handler.Handle(command, CancellationToken.None);
 
@@ -194,7 +196,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                             r.Status == @case.CaseStatus &&
                             r.CaseStatusLastUpdatedDate == @case.CaseStatusLastUpdatedDate)),
                     Times.Once());
-                incentivesService.Verify(x => x.GetVrfVendorId(It.Is<string>(r => r == @case.ApprenticeshipLegalEntityId)), Times.Once);
+                incentivesService.Verify(x => x.GetLegalEntityByHashedId(It.Is<string>(r => r == @case.ApprenticeshipLegalEntityId)), Times.Once);
 
                 mediator.Verify(x => x.Send(It.Is<GetAndAddEmployerVendorIdCommand>(r => r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId), It.IsAny<CancellationToken>()), Times.Once);
             }

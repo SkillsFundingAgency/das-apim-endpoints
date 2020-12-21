@@ -4,32 +4,33 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
     [TestFixture]
-    public class WhenCallingGetEmployerVendorId
+    public class WhenCallingGetLegalEntityByHashedId
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_The_Vendor_Id(
             string hashedLegalEntityId,
+            AccountLegalEntity response,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service
         )
         {
-            var vrfStatus = "Status";
             client.Setup(x =>
-                    x.Get<string>(
-                        It.Is<GetVrfVendorIdRequest>(c => c.HashedLegalEntityId == hashedLegalEntityId)))
-                .ReturnsAsync(vrfStatus);
+                    x.Get<AccountLegalEntity>(
+                        It.Is<GetLegalEntityByHashedIdRequest>(c => c.HashedLegalEntityId == hashedLegalEntityId)))
+                .ReturnsAsync(response);
 
-            var actual = await service.GetVrfVendorId(hashedLegalEntityId);
+            var actual = await service.GetLegalEntityByHashedId(hashedLegalEntityId);
 
-            actual.Should().BeEquivalentTo(vrfStatus);
+            actual.Should().BeEquivalentTo(response);
         }
     }
 }

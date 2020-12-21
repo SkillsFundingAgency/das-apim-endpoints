@@ -61,8 +61,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
         private async Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
         {
-            var vendorId = await _incentivesService.GetVrfVendorId(@case.ApprenticeshipLegalEntityId);
-            if (String.IsNullOrWhiteSpace(vendorId))
+            var accountLegalEntity = await _incentivesService.GetLegalEntityByHashedId(@case.ApprenticeshipLegalEntityId);
+            if (String.IsNullOrWhiteSpace(accountLegalEntity?.VrfVendorId))
             {
                 await _mediator.Send(new GetAndAddEmployerVendorIdCommand(@case.ApprenticeshipLegalEntityId));
             }
