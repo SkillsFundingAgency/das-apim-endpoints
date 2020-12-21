@@ -28,7 +28,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
                 .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -46,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
                 .ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Delete(IDeleteApiRequest request)
@@ -56,7 +57,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var response = await HttpClient.DeleteAsync(request.DeleteUrl)
                 .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Patch<TData>(IPatchApiRequest<TData> request)
@@ -68,7 +69,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
                 .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Put(IPutApiRequest request)
@@ -82,7 +83,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
                 .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Put<TData>(IPutApiRequest<TData> request)
@@ -95,7 +96,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
                 .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
@@ -120,6 +121,39 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;
+        }
+    }
+
+    public class HttpRequestContentException : HttpRequestException
+    {
+        public string ErrorContent { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
+        public HttpRequestContentException(string message, HttpStatusCode statusCode, string errorContent) : base(message)
+        {
+            StatusCode = statusCode;
+            ErrorContent = errorContent;
+        }
+    }
+
+    public static class HttpResponseMessageExtensions
+    {
+        public static async Task EnsureSuccessStatusCodeIncludeContentInException(this HttpResponseMessage response)
+        {
+            string errorContent = null;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    // do nothing
+                }
+
+                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, errorContent);
+            }
         }
     }
 }
