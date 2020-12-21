@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath(x => x.Contains($"/Finance/{CompanyName}/vendor/aleid="))
-                .UsingGet()).Should().HaveCount(1);
+                .UsingGet()).Should().HaveCount(2);
         }
 
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(TestData.FinanceAPI_V1__VendorDataResponse)
+                        .WithBody(TestData.FinanceAPI_V1__VendorDataResponse2)
                 );
         }
 
@@ -129,23 +129,21 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK));
 
-            //_context.InnerApi.MockServer
-            //    .Given(
-            //        Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/employervendorid")
-            //            .UsingGet())
-            //    .RespondWith(
-            //            Response.Create()
-            //            .WithStatusCode((int)HttpStatusCode.OK)
-            //            .WithBody("To Process"));
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/employervendorid")
+                        .UsingPut())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK));
 
-            //_context.InnerApi.MockServer
-            //    .Given(
-            //        Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/employervendorid")
-            //            .UsingGet())
-            //    .RespondWith(
-            //            Response.Create()
-            //            .WithStatusCode((int)HttpStatusCode.OK)
-            //            .WithBody(string.Empty));
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/employervendorid")
+                        .UsingPut())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK));
         }
     }
 }
