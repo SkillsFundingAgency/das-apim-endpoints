@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         private async Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
         {
             var accountLegalEntity = await _incentivesService.GetLegalEntityByHashedId(@case.ApprenticeshipLegalEntityId);
-            if (String.IsNullOrWhiteSpace(accountLegalEntity?.VrfVendorId))
+            if (!VendorIdIsPopulated(accountLegalEntity?.VrfVendorId))
             {
                 await _mediator.Send(new GetAndAddEmployerVendorIdCommand(@case.ApprenticeshipLegalEntityId));
             }
@@ -105,5 +105,19 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             _logger.LogInformation($"[VRF Refresh] Number of unique Legal Entities found: [{response.RegistrationCases.Count}]. Updating their VRF Case status...");
         }
 
+        private bool VendorIdIsPopulated(string vendorId)
+        {
+            if (String.IsNullOrWhiteSpace(vendorId))
+            {
+                return false;
+            }
+
+            if (vendorId == "000000")
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
