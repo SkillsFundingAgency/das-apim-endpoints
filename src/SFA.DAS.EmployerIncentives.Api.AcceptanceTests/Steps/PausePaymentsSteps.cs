@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SFA.DAS.EmployerIncentives.Api.Models;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -19,6 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private PostPausePaymentsRequest _request;
         private HttpResponseMessage _response;
         private HttpStatusCode _innerResponseStatusCode;
+        private SingleMessageResponse _innerResponse;
         private readonly Fixture _fixture;
 
         public PausePaymentsSteps(TestContext context)
@@ -27,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _context = context;
         }
 
-        [Given(@"the caller wants to pause/resume payments for an apprenticeship incentive")]
+        [Given(@"the caller wants to pause payments for an apprenticeship incentive")]
         public void GivenTheCallerWantsToPauseResumePayments()
         {
             _request = new PostPausePaymentsRequest(
@@ -55,6 +58,45 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
+
+        [Given(@"the Employer Incentives Api receives request but cannot find the incentive")]
+        public void GivenTheEmployerIncentivesApiReceivesRequestButCannotFindTheIncentive()
+        {
+
+            _innerResponseStatusCode = HttpStatusCode.NotFound;
+            _innerResponse = new SingleMessageResponse { Message = "Not Found ...."}; 
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/pause-payments")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)_innerResponseStatusCode)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(_innerResponse))
+                );
+        }
+
+        [Given(@"the Employer Incentives Api receives request but returns an already paused status")]
+        public void GivenTheEmployerIncentivesApiReceivesRequestButReturnsAnAlreadyPausedStatus()
+        {
+            _innerResponseStatusCode = HttpStatusCode.BadRequest;
+            _innerResponse = new SingleMessageResponse { Message = "Already paused ...." };
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/pause-payments")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)_innerResponseStatusCode)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(_innerResponse))
+                );
+        }
+
+
         [When(@"the Outer Api receives the Pause Payments request")]
         public async Task WhenTheOuterApiReceivesThePausePaymentsRequest()
         {
@@ -62,9 +104,31 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         }
 
         [Then(@"the response of OK is returned")]
-        public void ThenReturnAcceptedToTheCaller()
+        public void ThenReturnOkToTheCaller()
         {
             _response.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
+
+        [Then(@"the response of Not Found is returned")]
+        public void ThenReturnNotFoundToTheCaller()
+        {
+            _response.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+
+        [Then(@"the response of Bad Request is returned")]
+        public void ThenReturnBadRequestToTheCaller()
+        {
+            _response.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        }
+
+        [Then(@"the response body contains the full message")]
+        public async Task ThenReturnNotFoundBodyToTheCaller()
+        {
+            var content = await _response.Content.ReadAsStringAsync();
+
+            var errorMessage = JsonConvert.DeserializeObject<SingleMessageResponse>(content);
+            errorMessage.Message.Should().Be(_innerResponse.Message);
+        }
+
     }
 }
