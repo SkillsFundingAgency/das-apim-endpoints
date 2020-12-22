@@ -123,37 +123,4 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return response.StatusCode;
         }
     }
-
-    public class HttpRequestContentException : HttpRequestException
-    {
-        public string ErrorContent { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-        public HttpRequestContentException(string message, HttpStatusCode statusCode, string errorContent) : base(message)
-        {
-            StatusCode = statusCode;
-            ErrorContent = errorContent;
-        }
-    }
-
-    public static class HttpResponseMessageExtensions
-    {
-        public static async Task EnsureSuccessStatusCodeIncludeContentInException(this HttpResponseMessage response)
-        {
-            string errorContent = null;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                try
-                {
-                    errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                }
-                catch
-                {
-                    // do nothing
-                }
-
-                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, errorContent);
-            }
-        }
-    }
 }
