@@ -10,6 +10,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts
         }
 
         public string HashedLegalEntityId { get; private set; }
-        public string GetUrl => "/legalentities/{hashedLegalEntityId}";
+        public string GetUrl => $"/legalentities?hashedLegalEntityId={HashedLegalEntityId}";
     }
 }
