@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -17,8 +18,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 {
     public class GetCourseEpaoQueryHandler : IRequestHandler<GetCourseEpaoQuery, GetCourseEpaoResult>
     {
-        private const int DeliveryAreaCacheDurationInHours = 1;
-
         private readonly IValidator<GetCourseEpaoQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -60,7 +59,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             {
                 Epao = epaoTask.Result,
                 Course = courseTask.Result,
-                EpaoDeliveryAreas = courseEpaosTask.Result.Single(item => item.EpaoId == request.EpaoId).DeliveryAreas,
+                EpaoDeliveryAreas = courseEpaosTask.Result.Single(item => string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase)).DeliveryAreas,
                 CourseEpaosCount = courseEpaosTask.Result.Count(),
                 DeliveryAreas = areasTask.Result
             };

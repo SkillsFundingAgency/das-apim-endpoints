@@ -71,7 +71,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             [Frozen] Mock<ICachedDeliveryAreasService> mockCacheService,
             GetCourseEpaoQueryHandler handler)
         {
-            courseEpaosApiResponse[0].EpaoId = query.EpaoId;
+            courseEpaosApiResponse[0].EpaoId = query.EpaoId.ToLower();
             mockAssessorsApiClient
                 .Setup(client => client.Get<GetEpaoResponse>(
                     It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
@@ -92,7 +92,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Epao.Should().BeEquivalentTo(epaoApiResponse);
-            result.EpaoDeliveryAreas.Should().BeEquivalentTo(courseEpaosApiResponse.Single(item => item.EpaoId == query.EpaoId).DeliveryAreas);
+            result.EpaoDeliveryAreas.Should().BeEquivalentTo(courseEpaosApiResponse.Single(item => string.Equals(item.EpaoId, query.EpaoId, StringComparison.CurrentCultureIgnoreCase)).DeliveryAreas);
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
