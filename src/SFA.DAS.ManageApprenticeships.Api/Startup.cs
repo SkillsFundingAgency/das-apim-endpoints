@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ManageApprenticeships.Api.AppStart;
+using SFA.DAS.ManageApprenticeships.Application.Queries.GetFrameworks;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -46,7 +48,7 @@ namespace SFA.DAS.ManageApprenticeships.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            //services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
+            services.AddMediatR(typeof(GetFrameworksQuery).Assembly);
             services.AddServiceRegistration();
 
             services

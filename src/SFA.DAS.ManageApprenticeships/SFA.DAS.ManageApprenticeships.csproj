@@ -5,13 +5,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Application\Queries\GetFrameworks" />
       <Folder Include="Application\Queries\GetProviders" />
       <Folder Include="Application\Queries\GetStandards" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="6.0.0" />
     </ItemGroup>
 
 </Project>
