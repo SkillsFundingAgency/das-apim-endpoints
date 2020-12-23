@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ManageApprenticeships.Api.Models;
+using SFA.DAS.ManageApprenticeships.Application.Queries.GetFrameworks;
 using SFA.DAS.ManageApprenticeships.Application.Queries.GetStandards;
 
 namespace SFA.DAS.ManageApprenticeships.Api.Controllers
@@ -46,7 +47,22 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
         [Route("frameworks")]
         public async Task<IActionResult> GetFrameworks()
         {
-            return Ok();
+            try
+            {
+                var result = await _mediator.Send(new GetFrameworksQuery());
+                
+                var response = new GetFrameworksListResponse
+                {
+                    Frameworks = result.Frameworks.Select(c=>(GetFrameworkResponse)c)
+                };
+                
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting list of frameworks");
+                return BadRequest();
+            }
         }
     }
 }
