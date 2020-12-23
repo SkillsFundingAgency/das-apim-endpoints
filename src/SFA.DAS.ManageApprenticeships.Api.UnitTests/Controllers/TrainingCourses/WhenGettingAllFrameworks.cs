@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.ManageApprenticeships.Api.Controllers;
 using SFA.DAS.ManageApprenticeships.Api.Models;
 using SFA.DAS.ManageApprenticeships.Application.Queries.GetFrameworks;
-using SFA.DAS.ManageApprenticeships.Application.Queries.GetStandards;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.TrainingCourses
