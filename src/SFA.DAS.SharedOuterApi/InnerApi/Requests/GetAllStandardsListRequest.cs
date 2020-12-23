@@ -5,17 +5,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public class GetStandardsListRequest : IGetApiRequest
+    public class GetAllStandardsListRequest : IGetApiRequest
     {
-        public string Keyword { get ; set ; }
-        public CoursesOrderBy OrderBy { get; set; }
-        public List<Guid> RouteIds { get; set; }
+        public List<Guid> RouteIds { get ; set ; }
         public List<int> Levels { get ; set ; }
         public string GetUrl => BuildUrl();
 
         private string BuildUrl()
         {
-            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}";
+            var url = $"api/courses/standards?filterAvailableToStart=false";
 
             if (RouteIds != null && RouteIds.Any())
             {
@@ -29,11 +27,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 
             return url;
         }
-    }
-
-    public enum CoursesOrderBy
-    {
-        Score,
-        Title
     }
 }
