@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Validation;
 
-namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
+namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 {
-    public class GetEpaoQueryValidator : EpaoIdValidator, IValidator<GetEpaoQuery>
+    public class GetCourseEpaoQueryValidator : EpaoIdValidator, IValidator<GetCourseEpaoQuery>
     {
-        public Task<ValidationResult> ValidateAsync(GetEpaoQuery item)
+        public Task<ValidationResult> ValidateAsync(GetCourseEpaoQuery item)
         {
             var result = new ValidationResult();
             
