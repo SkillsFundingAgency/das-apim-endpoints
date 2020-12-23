@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse
@@ -18,11 +18,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse
         }
         public async Task<GetCourseResult> Handle(GetCourseQuery request, CancellationToken cancellationToken)
         {
-            var course = await _coursesApiClient.Get<GetStandardsListItem>(
-                new GetStandardRequest
-                {
-                    StandardId = request.CourseId
-                });
+            var course = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
             
             return new GetCourseResult
             {

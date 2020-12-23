@@ -5,9 +5,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
