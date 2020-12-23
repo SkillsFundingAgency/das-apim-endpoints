@@ -5,6 +5,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,23 +30,24 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         {
             var currentDateTime = DateTime.UtcNow;
             var toDateDateTime = request.FromDateTime.AddDays(1);
-
             request.ToDateTime = toDateDateTime;
-
-            var response = await GetUpdatesFromFinanceApi(request);
-
             var nextRunDateTime = toDateDateTime < currentDateTime ? toDateDateTime : currentDateTime;
 
-            if (!response.RegistrationCases.Any())
+            var updates = new List<VendorRegistrationCase>();
+            GetVendorRegistrationCaseStatusUpdateResponse response = null;
+
+            do
+            {
+                response = await GetUpdatesFromFinanceApi(request, response?.SkipCode);
+                updates.AddRange(response.RegistrationCases);
+            } while (!string.IsNullOrEmpty(response.SkipCode));
+
+
+            if (response.RegistrationCases.Count == 0)
             {
                 _logger.LogInformation($"[VRF Refresh] No cases returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
 
                 return await Task.FromResult(nextRunDateTime);
-            }
-
-            if (!string.IsNullOrEmpty(response.SkipCode))
-            {
-                _logger.LogError($"[VRF Refresh] [SkipCode={response.SkipCode}] returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
             }
 
             FindLatestUpdateForEachLegalEntity(response);
@@ -64,14 +66,20 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
             await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
 
+            if (!string.IsNullOrEmpty(response.SkipCode))
+            {
+                _logger.LogInformation($"[VRF Refresh] [SkipCode={response.SkipCode}] returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
+
+            }
+
             return await Task.FromResult(nextRunDateTime);
         }
 
-        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request)
+        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request, string skipCode)
         {
             _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
 
-            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime);
+            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime, skipCode);
 
             if (response?.RegistrationCases == null)
             {
