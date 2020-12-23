@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Application\Queries\GetProviders" />
       <Folder Include="Application\Queries\GetStandards" />
     </ItemGroup>
 
