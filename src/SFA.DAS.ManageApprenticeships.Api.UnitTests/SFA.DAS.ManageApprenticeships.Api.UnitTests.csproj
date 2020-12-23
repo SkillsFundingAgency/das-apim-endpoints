@@ -17,4 +17,13 @@
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.ManageApprenticeships.Api\SFA.DAS.ManageApprenticeships.Api.csproj" />
+      <ProjectReference Include="..\SFA.DAS.ManageApprenticeships\SFA.DAS.ManageApprenticeships.csproj" />
+    </ItemGroup>
+
 </Project>
