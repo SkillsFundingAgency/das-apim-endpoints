@@ -35,7 +35,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 .Where(c=>request.RouteIds.Contains(c.Route)).Select(x=>x.Id)
                 .ToList();
             
-            var standardsRequest = new GetStandardsListRequest
+            var standardsRequest = new GetAvailableToStartStandardsListRequest
             {
                 Keyword = request.Keyword,
                 RouteIds = routeFilters,
@@ -55,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             else
             {
                 standardsTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_apiClient,
-                    new GetStandardsListRequest
+                    new GetAvailableToStartStandardsListRequest
                 {
                     Keyword = request.Keyword,
                     RouteIds = routeFilters,
