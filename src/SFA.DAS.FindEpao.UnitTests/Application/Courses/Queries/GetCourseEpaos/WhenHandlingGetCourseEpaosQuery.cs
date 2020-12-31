@@ -26,6 +26,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
             GetStandardsListItem coursesApiResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
             GetCourseEpaosQueryHandler handler)
         {
             mockAssessorsApiClient
@@ -36,6 +37,9 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                 .Setup(client => client.Get<GetStandardsListItem>(
                     It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
+            mockCourseEpaoFilter
+                .Setup(service => service.IsValidCourseEpao(It.IsAny<GetCourseEpaoListItem>()))
+                .Returns(true);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -64,11 +68,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                 .ReturnsAsync(coursesApiResponse);
             mockCourseEpaoFilter
                 .Setup(service => service.IsValidCourseEpao(It.Is<GetCourseEpaoListItem>(item => item.EpaoId == epaoApiResponse[0].EpaoId)))
-                .Returns(false);
+                .Returns(true);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Epaos.Should().BeEquivalentTo(epaoApiResponse.Where(item => item.EpaoId != epaoApiResponse[0].EpaoId));
+            result.Epaos.Should().BeEquivalentTo(epaoApiResponse.Where(item => item.EpaoId == epaoApiResponse[0].EpaoId).ToList());
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
         }
