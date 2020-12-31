@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.FindEpao.Application.Courses.Services;
 using SFA.DAS.FindEpao.Application.Epaos.Services;
 using SFA.DAS.FindEpao.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -23,6 +24,7 @@ namespace SFA.DAS.FindEpao.Api.AppStart
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedDeliveryAreasService, CachedDeliveryAreasService>();
+            services.AddTransient<ICourseEpaoIsValidFilterService, CourseEpaoIsValidFilterService>();
         }
     }
 }
