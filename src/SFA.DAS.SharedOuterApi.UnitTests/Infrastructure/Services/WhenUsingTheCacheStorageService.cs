@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,6 +70,23 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
 
             //Act
             var item = await service.RetrieveFromCache<TestObject>(keyName);
+            
+            //Assert
+            Assert.IsNull(item);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_List_Does_Not_Exist_Then_Default_Is_Returned(
+            string keyName,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            CacheStorageService service)
+        {
+            //Arrange
+            distributedCache.Setup(x => x.GetAsync(keyName, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new byte[0]);
+
+            //Act
+            var item = await service.RetrieveFromCache<List<TestObject>>(keyName);
             
             //Assert
             Assert.IsNull(item);

@@ -1,20 +1,20 @@
+using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindEpao.Api.AppStart;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.FindEpao.Api
@@ -50,21 +50,27 @@ namespace SFA.DAS.FindEpao.Api
             }
 
             services.AddMediatR(typeof(GetCourseListQuery).Assembly);
+            services.AddMediatRValidation();
             services.AddServiceRegistration();
-            
-            services
-                .AddMvc(o =>
+
+            services.Configure<RouteOptions>(options =>
+                {
+                    options.LowercaseUrls = true;
+                    options.LowercaseQueryStrings = true;
+                }).AddMvc(o =>
                 {
                     if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<AssessorsApiHealthCheck>("Assessors API health check");
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
@@ -84,6 +90,11 @@ namespace SFA.DAS.FindEpao.Api
             }
 
             app.UseAuthentication();
+
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
             
             app.UseRouting();
             app.UseEndpoints(endpoints =>

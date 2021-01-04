@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
@@ -157,6 +158,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task<AccountLegalEntity> GetLegalEntityByHashedId(string hashedLegalEntityId)
         {
             return await _client.Get<AccountLegalEntity>(new GetLegalEntityByHashedIdRequest(hashedLegalEntityId));
+        }
+        
+        public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
+        {
+            await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

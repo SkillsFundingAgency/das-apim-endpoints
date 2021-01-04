@@ -4,6 +4,7 @@ using MediatR;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList
@@ -19,7 +20,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList
 
         public async Task<GetCourseListResult> Handle(GetCourseListQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsRequest());
+            var courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
             
             return new GetCourseListResult
             {

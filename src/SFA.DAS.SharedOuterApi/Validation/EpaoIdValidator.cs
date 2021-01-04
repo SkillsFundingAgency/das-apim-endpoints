@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using SFA.DAS.SharedOuterApi.Validation;
 
-namespace SFA.DAS.EpaoRegister.Application.Epaos.Validators
+namespace SFA.DAS.SharedOuterApi.Validation
 {
     public abstract class EpaoIdValidator
     {

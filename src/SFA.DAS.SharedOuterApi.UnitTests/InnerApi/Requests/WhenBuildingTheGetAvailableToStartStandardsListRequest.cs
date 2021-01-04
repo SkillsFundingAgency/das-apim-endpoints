@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingTheGetStandardsListRequest
+    public class WhenBuildingTheGetAvailableToStartStandardsListRequest
     {
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed(
@@ -16,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             string keyword)
         {
             var orderBy = CoursesOrderBy.Title;
-            var actual = new GetStandardsListRequest
+            var actual = new GetAvailableToStartStandardsListRequest
             {
                 Keyword = keyword, 
                 RouteIds = routeIds,
@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
         }
 
         [Test, AutoData]
@@ -33,14 +33,14 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             string keyword)
         {
             var orderBy = CoursesOrderBy.Score;
-            var actual = new GetStandardsListRequest
+            var actual = new GetAvailableToStartStandardsListRequest
             { 
                 Keyword = keyword,
                 OrderBy = orderBy
             };
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}");
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true");
         }
 
         [Test, AutoData]
@@ -49,7 +49,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             string keyword)
         {
             var orderBy = CoursesOrderBy.Score;
-            var actual = new GetStandardsListRequest
+            var actual = new GetAvailableToStartStandardsListRequest
             {
                 Keyword = keyword, 
                 Levels = levels,
@@ -57,7 +57,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&levels=" + string.Join("&levels=", levels));
         }
         
         [Test, AutoData]
@@ -66,7 +66,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             string keyword)
         {
             var orderBy = CoursesOrderBy.Score;
-            var actual = new GetStandardsListRequest
+            var actual = new GetAvailableToStartStandardsListRequest
             { 
                 Keyword = keyword, 
                 RouteIds = routeIds,
@@ -74,7 +74,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&routeIds=" + string.Join("&routeIds=", routeIds));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }
