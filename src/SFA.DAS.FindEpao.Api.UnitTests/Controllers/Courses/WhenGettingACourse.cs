@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,34 +10,33 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos;
+using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
 {
-    public class WhenGettingCourseEpaos
+    public class WhenGettingACourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Course_Epaos_From_Mediator(
+        public async Task Then_Gets_Training_Courses_From_Mediator(
             int courseId,
-            GetCourseEpaosResult mediatorResult,
+            GetCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetCourseEpaosQuery>(query => query.CourseId == courseId),
+                    It.Is<GetCourseQuery>(c => c.CourseId.Equals(courseId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.CourseEpaos(courseId) as ObjectResult;
+            var controllerResult = await controller.Get(courseId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetCourseEpaoListResponse;
+            var model = controllerResult.Value as GetCourseResponse;
             Assert.IsNotNull(model);
-            model.Course.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
-            model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos.Select(item => (GetCourseEpaoListItem)item));
+            model.Course.Should().BeEquivalentTo(mediatorResult.Course);
         }
 
         [Test, MoqAutoData]
@@ -49,11 +47,11 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCourseEpaosQuery>(),
+                    It.IsAny<GetCourseQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.CourseEpaos(courseId) as BadRequestResult;
+            var controllerResult = await controller.Get(courseId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
