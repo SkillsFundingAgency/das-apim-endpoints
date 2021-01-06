@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\UpdateVendorRegistrationCaseStatusForLegalEntities - Copy.feature.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
@@ -50,6 +46,9 @@
     </Compile>
     <Compile Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs">
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Features\PausePayments.feature.cs">
+      <DependentUpon>PausePayments.feature</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -96,6 +95,10 @@
     <SpecFlowFeatureFiles Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\PausePayments.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 
