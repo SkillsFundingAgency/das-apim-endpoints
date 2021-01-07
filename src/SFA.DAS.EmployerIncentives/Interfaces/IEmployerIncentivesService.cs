@@ -33,8 +33,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
 
         Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId);
 
-        Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId);
-
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         
         Task EarningsResilienceCheck();
