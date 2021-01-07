@@ -1,6 +1,7 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,10 +26,16 @@ namespace SFA.DAS.EmployerIncentives.Clients
             return _client.GetAll<TResponse>(request);
         }
 
+        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+        {
+            return _client.GetPaged<TResponse>(request);
+        }
+
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
             return _client.GetResponseCode(request);
         }
+
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             return _client.Post<TResponse>(request);

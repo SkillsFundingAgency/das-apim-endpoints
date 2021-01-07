@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
@@ -50,6 +51,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
             throw new System.NotImplementedException();
         }

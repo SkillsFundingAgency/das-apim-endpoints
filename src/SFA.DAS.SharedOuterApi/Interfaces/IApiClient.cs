@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.SharedOuterApi.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
@@ -6,6 +7,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     public interface IApiClient<T> : IGetApiClient<T>
     {
         Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request);
+        Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request);
         Task<TResponse> Post<TResponse>(IPostApiRequest request);
         Task Delete(IDeleteApiRequest request);
         Task Patch<TData>(IPatchApiRequest<TData> request);
