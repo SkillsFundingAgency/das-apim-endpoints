@@ -50,7 +50,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options=>options
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
+                .Excluding(tc => tc.Skills)
                 .Excluding(tc => tc.TypicalJobTitles)
+                .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
             );
             model.TrainingCourseProvider.Should()
                 .BeEquivalentTo(mediatorResult.ProviderStandard, 
@@ -74,6 +77,78 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
         }
 
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_No_Provider_For_That_Standard_Then_Null_Is_Returned(
+            int standardCode,
+            int providerId,
+            string location,
+            double lat, 
+            double lon,
+            GetTrainingCourseProviderResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy]TrainingCoursesController controller)
+        {
+            mediatorResult.ProviderStandard = null;
+            mediatorResult.TotalProviders = 0;
+            mediatorResult.TotalProvidersAtLocation = 0;
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseProviderQuery>(
+                        c
+                            =>c.CourseId.Equals(standardCode)
+                              && c.ProviderId.Equals(providerId)
+                              && c.Location.Equals(location)
+                              && c.Lat.Equals(lat)
+                              && c.Lon.Equals(lon)
+                    ),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as ObjectResult;
+            
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCourseProviderResponse;
+            Assert.IsNotNull(model);
+            model.TrainingCourse.Should().NotBeNull();
+            model.Location.Should().NotBeNull();
+            model.TrainingCourseProvider.Should().BeNull();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_No_Course_Or_Provider_Then_Not_Found_Returned(
+            int standardCode,
+            int providerId,
+            string location,
+            double lat, 
+            double lon,
+            GetTrainingCourseProviderResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy]TrainingCoursesController controller)
+        {
+            mediatorResult.ProviderStandard = null;
+            mediatorResult.Course = null;
+            mediatorResult.TotalProviders = 0;
+            mediatorResult.TotalProvidersAtLocation = 0;
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseProviderQuery>(
+                        c
+                            =>c.CourseId.Equals(standardCode)
+                              && c.ProviderId.Equals(providerId)
+                              && c.Location.Equals(location)
+                              && c.Lat.Equals(lat)
+                              && c.Lon.Equals(lon)
+                    ),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as StatusCodeResult;
+            
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+        
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int standardCode,

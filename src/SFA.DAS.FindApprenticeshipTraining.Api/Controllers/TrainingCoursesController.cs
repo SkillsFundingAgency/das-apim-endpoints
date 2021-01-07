@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<Guid> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
         {
             try
             {
@@ -75,6 +75,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Lat = lat,
                     Lon = lon
                 });
+
+                if (result.Course == null)
+                {
+                    _logger.LogInformation($"Training course {id} not found");
+                    return NotFound();
+                }
+                
                 var model = new GetTrainingCourseResponse
                 {
                     TrainingCourse = result.Course,
@@ -110,7 +117,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var mappedProviders = result.Providers
                     .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.ProviderRatings, result.Location?.GeoPoint != null))
                     .Where(x=>x!=null)
-                    .OrderByProviderRating(request.DeliveryModes)
+                    .OrderByProviderScore(request.DeliveryModes)
                     .ToList();
                 var model = new GetTrainingCourseProvidersResponse
                 {
@@ -150,6 +157,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Lat = lat,
                     Lon = lon
                 });
+
+                if (result.ProviderStandard == null)
+                {
+                    if (result.Course == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(new GetTrainingCourseProviderResponse
+                    {
+                        TrainingCourse =  result.Course,
+                        Location = new GetLocationSearchResponseItem
+                        {
+                            Name = result.Location?.Name,
+                            Location = new GetLocationSearchResponseItem.LocationResponse
+                            {
+                                GeoPoint = result.Location?.GeoPoint
+                            }
+                        }
+                    });
+                }
+                
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
