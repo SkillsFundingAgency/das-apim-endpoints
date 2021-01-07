@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
     public enum JobType
     {
+        [Obsolete]
         RefreshLegalEntities = 1,
         UpdateVrfCaseDetailsForNewApplications = 2,
         UpdateVrfCaseStatusForIncompleteCases = 3

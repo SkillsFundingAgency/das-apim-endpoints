@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
@@ -7,6 +5,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using Accounts = SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
@@ -17,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var response = await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
+            var response = await _client.Get<AccountLegalEntity>(new InnerApi.Requests.GetLegalEntityRequest(accountId, accountLegalEntityId));
 
             return response;
         }
@@ -157,6 +157,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
         {
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
+        }
+
+        public async Task RefreshLegalEntities(IEnumerable<Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages)
+        {
+            var requestData = new RefreshLegalEntitiesRequestData { AccountLegalEntities = accountLegalEntities, PageNumber = pageNumber, PageSize = pageSize, TotalPages = totalPages };
+            await _client.Patch(new RefreshLegalEntitiesRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
