@@ -11,6 +11,7 @@ using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
 using SFA.DAS.Testing.AutoFixture;

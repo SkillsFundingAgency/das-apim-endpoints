@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -83,6 +84,11 @@ namespace SFA.DAS.Reservations.Api
             }
 
             app.UseAuthentication();
+
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
             
             app.UseRouting();
             app.UseEndpoints(endpoints =>
