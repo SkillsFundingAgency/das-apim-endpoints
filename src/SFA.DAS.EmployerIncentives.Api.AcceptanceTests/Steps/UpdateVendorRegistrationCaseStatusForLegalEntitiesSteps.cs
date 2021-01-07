@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     {
         private readonly TestContext _context;
         private readonly DateTime _dateTimeFrom = DateTime.SpecifyKind(new DateTime(2020, 9, 1, 9, 0, 0), DateTimeKind.Utc);
-        private readonly string[] _hashedLegalEntitiesFromFinanceJson = new[] { "DW5T8V", "HEN123" };
+        private readonly string[] _hashedLegalEntitiesFromFinanceJson = { "DW5T8V", "HEN123" };
         private HttpResponseMessage _response;
 
         public UpdateVendorRegistrationCaseStatusForLegalEntitiesSteps(TestContext context) { _context = context; }
@@ -27,20 +27,29 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             SetResponseFromFinanceApi();
             SetupExpectedEmployerIncentivesApiCalls();
 
-            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
+            const string url = "legalentities/vendorregistrationform";
             _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(""));
         }
 
-        [Then(@"latest VRF cases are retrieved from Finance API")]
-        public void ThenLatestVRFCasesAreRetrievedFromFinanceAPI()
+        [Then(@"VRF case updates are retrieved from Finance API")]
+        public void ThenLatestVrfCasesAreRetrievedFromFinanceApi()
         {
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath("/Finance/Registrations")
                 .UsingGet()).Should().HaveCount(1);
         }
 
+        [Then(@"the latest update date is retrieved from Employer Incentives API")]
+        public void ThenTheLatestUpdateDateIsRetrievedFromEmployerIncentivesApi()
+        {
+            _context.InnerApi.MockServer.FindLogEntries(Request.Create()
+                .WithPath("/accounts/last-vrf-update-date")
+                .UsingGet()).Should().HaveCount(1);
+        }
+
+
         [Then(@"VRF case details are updated for legal entities")]
-        public void ThenVRFCaseDetailsAreUpdatedForLegalEntities()
+        public void ThenVrfCaseDetailsAreUpdatedForLegalEntities()
         {
             _response.EnsureSuccessStatusCode();
 
@@ -65,13 +74,21 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             Request.Create()
                 .WithPath("/Finance/Registrations")
-                .WithParam("DateTimeFrom", $"{_dateTimeFrom.ToLocalTime():yyyy-MM-ddTHH:mm:ssZ}")
+                .WithParam("DateTimeFrom", $"{_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}")
                 .WithParam("VendorType", "EMPLOYER")
                 .WithParam("api-version", "2019-06-01")
                 .UsingGet();
 
         private void SetupExpectedEmployerIncentivesApiCalls()
         {
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath("/accounts/last-vrf-update-date")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithBodyAsJson(new { LastUpdateDateTime = _dateTimeFrom })
+                        .WithStatusCode((int)HttpStatusCode.OK));
 
             _context.InnerApi.MockServer
                 .Given(

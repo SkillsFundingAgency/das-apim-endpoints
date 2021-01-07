@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -17,12 +16,12 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPatch("legalentities/vendorregistrationform/status")]
-        public async Task<IActionResult> RefreshVendorRegistrationFormStatus(DateTime from)
+        [HttpPatch("legalentities/vendorregistrationform")]
+        public async Task<IActionResult> RefreshVendorRegistrationFormStatus()
         {
-            var nextRunDateTime = await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from));
+            await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand());
 
-            return new OkObjectResult(nextRunDateTime);
+            return NoContent();
         }
 
         [HttpPut("legalentities/{hashedLegalEntityId}/employervendorid")]

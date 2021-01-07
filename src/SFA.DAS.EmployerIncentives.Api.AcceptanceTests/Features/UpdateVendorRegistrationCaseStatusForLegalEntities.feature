@@ -9,6 +9,7 @@ Feature: UpdateVendorRegistrationCaseStatusForLegalEntities
 
 Scenario: A VRF case status update job is triggered
 	When Refresh Vendor Registration Form Status is invoked
-	Then latest VRF cases are retrieved from Finance API
+	Then the latest update date is retrieved from Employer Incentives API 
+	And VRF case updates are retrieved from Finance API
 	And VRF case details are updated for legal entities
 
