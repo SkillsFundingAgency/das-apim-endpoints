@@ -36,15 +36,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             {
                 response = await GetUpdatesFromFinanceApi(lastUpdateDateTime, response?.SkipCode);
                 await SendUpdates(response);
-            } while (!string.IsNullOrEmpty(response?.SkipCode));
+            } while (response != null && !string.IsNullOrEmpty(response.SkipCode));
 
             return Unit.Value;
         }
 
         private async Task SendUpdates(GetVendorRegistrationCaseStatusUpdateResponse response)
         {
-            FindLatestUpdateForEachLegalEntity(response);
-
             Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
             {
                 return _incentivesService.UpdateVendorRegistrationCaseStatus(
@@ -57,7 +55,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                     });
             }
 
-            await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
+            await Task.WhenAll(response.RegistrationCases
+                .Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId))
+                .Select(UpdateVendorRegistrationCaseStatus));
         }
 
         private async Task<DateTime> GetLastUpdateDateTime()
@@ -84,19 +84,5 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
             return response;
         }
-
-        private void FindLatestUpdateForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)
-        {
-            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
-
-            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId));
-
-            response.RegistrationCases = filtered.GroupBy(x => x.ApprenticeshipLegalEntityId,
-                    (_, g) => g.OrderByDescending(e => e.CaseStatusLastUpdatedDate).First())
-                .ToList();
-
-            _logger.LogInformation($"[VRF Refresh] Number of unique Legal Entities found: [{response.RegistrationCases.Count}]. Updating their VRF Case status...");
-        }
-
     }
 }

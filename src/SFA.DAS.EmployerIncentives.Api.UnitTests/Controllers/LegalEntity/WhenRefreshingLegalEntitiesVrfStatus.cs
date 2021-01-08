@@ -21,9 +21,9 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.LegalEntity
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<RefreshVendorRegistrationFormCaseStatusCommand>(),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
-            var controllerResult = await controller.RefreshVendorRegistrationFormStatus() as NoContentResult;
+            var controllerResult = await controller.RefreshVendorRegistrationFormStatus() as OkResult;
 
             Assert.IsNotNull(controllerResult);
         }

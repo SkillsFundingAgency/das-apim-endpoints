@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath(p => p.Contains("/legalentities/"))
-                .UsingPatch()).Should().HaveCount(2);
+                .UsingPatch()).Should().HaveCount(4);
         }
 
         private void SetResponseFromFinanceApi()
@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/vendorregistrationform/status")
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/vendorregistrationform")
                         .UsingPatch())
                 .RespondWith(
                     Response.Create()
@@ -100,7 +100,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/vendorregistrationform/status")
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/vendorregistrationform")
                         .UsingPatch())
                 .RespondWith(
                     Response.Create()

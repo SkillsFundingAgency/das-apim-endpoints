@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand());
 
-            return NoContent();
+            return new OkResult();
         }
 
         [HttpPut("legalentities/{hashedLegalEntityId}/employervendorid")]
