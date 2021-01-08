@@ -23,6 +23,9 @@ parameters:
 - name: ManageApprenticeships
   type: boolean
   default: false
+- name: Recruit
+  type: boolean
+  default: false
   
 trigger:
   branches:
@@ -219,6 +222,23 @@ stages:
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)      
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -379,6 +399,23 @@ stages:
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)      
+
 - stage: Deploy_TEST2
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -538,6 +575,23 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       
 - stage: Deploy_PP
   dependsOn: Build
@@ -698,3 +752,20 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
