@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Recruit.Api.AppStart;
+using SFA.DAS.Recruit.Application.Queries.GetStandards;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -48,8 +49,8 @@ namespace SFA.DAS.Recruit.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            //services.AddMediatR(typeof(GetCourseListQuery).Assembly);
-            //services.AddServiceRegistration();
+            services.AddMediatR(typeof(GetStandardsQuery).Assembly);
+            services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>
                 {
