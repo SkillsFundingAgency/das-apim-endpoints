@@ -31,14 +31,21 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         {
             var lastUpdateDateTime = await GetLastUpdateDateTime();
             GetVendorRegistrationCaseStatusUpdateResponse response = null;
+            var pageNo = 0;
 
             do
             {
+                pageNo++;
                 response = await GetUpdatesFromFinanceApi(lastUpdateDateTime, response?.SkipCode);
                 await SendUpdates(response);
-            } while (response != null && !string.IsNullOrEmpty(response.SkipCode));
+            } while (HasNextPage(response) && pageNo < 5);
 
             return Unit.Value;
+        }
+
+        private static bool HasNextPage(GetVendorRegistrationCaseStatusUpdateResponse response)
+        {
+            return response != null && !string.IsNullOrEmpty(response.SkipCode);
         }
 
         private async Task SendUpdates(GetVendorRegistrationCaseStatusUpdateResponse response)

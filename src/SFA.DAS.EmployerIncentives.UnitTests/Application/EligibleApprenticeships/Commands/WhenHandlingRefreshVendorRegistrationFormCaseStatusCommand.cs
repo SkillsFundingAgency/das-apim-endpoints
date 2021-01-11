@@ -110,5 +110,21 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             financeService.Verify(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(lastUpdateResponse.LastUpdateDateTime.Value, null), Times.Once);
             financeService.Verify(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(lastUpdateResponse.LastUpdateDateTime.Value, skipCode), Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_paging_limit_is_enforced(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler,
+            RefreshVendorRegistrationFormCaseStatusCommand command,
+            string skipCode)
+        {
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(It.IsAny<DateTime>(), It.IsAny<string>()))
+                .ReturnsAsync(new GetVendorRegistrationCaseStatusUpdateResponse { SkipCode = skipCode });
+
+            await handler.Handle(command, CancellationToken.None);
+
+            financeService.Verify(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(It.IsAny<DateTime>(), It.IsAny<string>()), Times.Exactly(5));
+        }
     }
 }
