@@ -97,17 +97,17 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("/accounts/{accountId}/applications")]
-        public async Task<IActionResult> GetApplications(long accountId)
+        [HttpGet("/accounts/{accountId}/legalentity/{accountLegalEntityId}/applications")]
+        public async Task<IActionResult> GetApplications(long accountId, long accountLegalEntityId)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { AccountId = accountId });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { AccountId = accountId, AccountLegalEntityId = accountLegalEntityId });
 
             if (queryResult?.ApprenticeApplications == null)
             {
                 return NotFound();
             }
 
-            return Ok(queryResult.ApprenticeApplications);
+            return Ok(queryResult);
         }
     }
 }

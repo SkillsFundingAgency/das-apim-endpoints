@@ -1,10 +1,10 @@
-﻿using SFA.DAS.EmployerIncentives.InnerApi;
+﻿
 using SFA.DAS.EmployerIncentives.Models;
 using System.Collections.Generic;
 
-namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplications
+namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
 {
-    public class GetApplicationsResult
+    public class GetApplicationsResponse
     {
         public IEnumerable<ApprenticeApplication> ApprenticeApplications { get; set; }
         public BankDetailsStatus BankDetailsStatus { get; set; }
