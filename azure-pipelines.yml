@@ -17,7 +17,10 @@ parameters:
 - name: EpaoRegister
   type: boolean
   default: false
-
+- name: Approvals
+  type: boolean
+  default: false
+  
 trigger:
   branches:
     include:
@@ -178,6 +181,23 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -304,6 +324,23 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+    
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -430,6 +467,23 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -556,3 +610,20 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
