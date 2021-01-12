@@ -12,7 +12,6 @@ using NUnit.Framework;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses

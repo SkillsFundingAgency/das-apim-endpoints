@@ -8,4 +8,11 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         string PostUrl { get; }
         object Data { get; set; }
     }
+
+    public interface IPostApiRequest<TData> : IBaseApiRequest
+    {
+        [JsonIgnore]
+        string PostUrl { get; }
+        TData Data { get; set; }
+    }
 }

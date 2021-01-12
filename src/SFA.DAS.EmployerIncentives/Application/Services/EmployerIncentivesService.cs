@@ -1,5 +1,6 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
@@ -135,9 +136,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId)
+        public async Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId)
         {
-            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
+            return await _client.Get<GetApplicationsResponse>(new GetApplicationsRequest(accountId, accountLegalEntityId));
         }
 
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
@@ -149,6 +150,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task EarningsResilienceCheck()
         {
             await _client.Post<string>(new EarningsResilenceCheckRequest());
+        }
+
+        public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
+        {
+            await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()

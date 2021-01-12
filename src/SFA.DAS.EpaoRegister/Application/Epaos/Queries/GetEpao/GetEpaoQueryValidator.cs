@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.EpaoRegister.Application.Epaos.Validators;
 using SFA.DAS.SharedOuterApi.Validation;
 
 namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao
