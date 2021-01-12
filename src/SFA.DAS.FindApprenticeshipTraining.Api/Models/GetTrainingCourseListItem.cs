@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int Level { get; set; }
         public string LevelEquivalent { get; set; }
         public decimal Version { get; set; }
-        public long MaxFunding { get; set; }
+        public int MaxFunding { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
         public int TypicalDuration { get; set; }
@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public DateTime EffectiveFrom { get; set; }
 
-        public static implicit operator StandardDate(InnerApi.Responses.StandardDate source)
+        public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.StandardDate source)
         {
             return new StandardDate
             {

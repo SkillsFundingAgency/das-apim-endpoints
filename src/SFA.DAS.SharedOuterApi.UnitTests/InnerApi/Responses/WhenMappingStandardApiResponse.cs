@@ -1,32 +1,27 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses
 {
-    public class WhenBuildingTheGetStandardsListItemResponse
+    public class WhenMappingStandardApiResponse
     {
+        private class TestStandardResponse : StandardApiResponseBase
+        {
+            
+        }
         
         [Test]
         public void Then_If_There_Is_No_Available_Funding_Zero_Is_Returned_For_MaxFunding()
         {
             //Arrange/Act
             var standard = 
-                    new GetStandardsListItem
+                    new TestStandardResponse
                     {
-                        Title = "Available",
                         ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                        StandardDates = 
-                            new StandardDate
-                            {
-                                EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                                LastDateStarts = null
-                            }
-                        
                     };
             
             //Assert
@@ -38,17 +33,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         {
             //Arrange/Act
             var standard =
-                new GetStandardsListItem
+                new TestStandardResponse
                 {
-                    Title = "Available",
-                    ApprenticeshipFunding = new List<ApprenticeshipFunding>(),
-                    StandardDates =
-                        new StandardDate
-                        {
-                            EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                            LastDateStarts = null
-                        }
-
+                    ApprenticeshipFunding = new List<ApprenticeshipFunding>()
                 };
 
             //Assert
@@ -59,9 +46,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         public void Then_The_ApprenticeshipFunding_Price_With_No_EffectiveTo_Date_And_Has_A_From_Date_In_The_Past_Is_Used(int fundingPrice)
         {
             //Arrange / Act
-            var standard = new GetStandardsListItem
+            var standard = new TestStandardResponse
             {
-                Title = "Available",
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
                     new ApprenticeshipFunding
@@ -70,14 +56,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         EffectiveTo = null,
                         MaxEmployerLevyCap = fundingPrice
                     }
-                },
-                StandardDates = 
-                    new StandardDate
-                    {
-                        EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                        LastDateStarts = null
-                    }
-                
+                }
             };
             
             //Assert
@@ -88,9 +67,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         public void Then_The_Current_Funding_Price_Is_Used(int notFundingPrice, int fundingPrice)
         {
             //Arrange / Act
-            var standard = new GetStandardsListItem
+            var standard = new TestStandardResponse
             {
-                Title = "Available",
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
                     new ApprenticeshipFunding
@@ -105,14 +83,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         EffectiveTo = null,
                         MaxEmployerLevyCap = fundingPrice
                     }
-                },
-                StandardDates = 
-                    new StandardDate
-                    {
-                        EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                        LastDateStarts = null
-                    }
-                
+                }
             };
             
             //Assert
@@ -123,9 +94,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         public void Then_The_Typical_Duration_Is_Used(int notDuration, int duration)
         {
             //Arrange / Act
-            var standard = new GetStandardsListItem
+            var standard = new TestStandardResponse
             {
-                Title = "Available",
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
                     new ApprenticeshipFunding
@@ -140,13 +110,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         EffectiveTo = null,
                         Duration = duration
                     }
-                },
-                StandardDates =
-                    new StandardDate
-                    {
-                        EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                        LastDateStarts = null
-                    }
+                }
 
             };
 
@@ -158,9 +122,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         public void Then_The_Future_Price_Is_Not_Used(int fundingPrice, int notFundingPrice)
         {
             //Arrange / Act
-            var standard = new GetStandardsListItem
+            var standard = new TestStandardResponse
             {
-                Title = "Available",
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
                     new ApprenticeshipFunding
@@ -175,14 +138,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
                         EffectiveTo = null,
                         MaxEmployerLevyCap = notFundingPrice
                     }
-                },
-                StandardDates =
-                    new StandardDate
-                    {
-                        EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
-                        LastDateStarts = null
-                    }
-                
+                }
             };
             
             //Assert
