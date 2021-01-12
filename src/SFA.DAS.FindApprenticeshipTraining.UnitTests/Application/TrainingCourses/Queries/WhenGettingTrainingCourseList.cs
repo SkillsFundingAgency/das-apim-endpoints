@@ -10,8 +10,8 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             };
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) 
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) 
                                                       && c.RouteIds.Contains(sectorId)
                                                       && c.Levels.Equals(query.Levels)
                                                       )))
@@ -79,7 +79,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             };
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.IsAny<GetStandardsListRequest>()))
+                    It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
@@ -111,7 +111,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
@@ -154,7 +154,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(levelsApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Contains(sectorId))))
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) && c.RouteIds.Contains(sectorId))))
                 .ReturnsAsync(apiResponse);
             
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -175,7 +175,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Arrange
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
@@ -207,7 +207,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
@@ -233,7 +233,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Arrange
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.Is<GetStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
+                    It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))

@@ -18,7 +18,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
     public class WhenCallingGetStandardsList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Frameworks_From_Mediator(
+        public async Task Then_Gets_Standards_From_Mediator(
             GetStandardCoursesResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller)
@@ -36,7 +36,12 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
             var model = controllerResult.Value as GetStandardsListResponse;
             Assert.IsNotNull(model);
             model.Standards.Should().BeEquivalentTo(mediatorResult.Standards,
-                o => o.Excluding(s => s.ApprenticeshipFunding));
+                o => o
+                    .Excluding(s => s.ApprenticeshipFunding)
+                    .Excluding(s => s.MaxFunding)
+                    .Excluding(s => s.TypicalDuration)
+                    .Excluding(s => s.StandardDates)
+                );
         }
 
         [Test, MoqAutoData]

@@ -14,7 +14,13 @@ parameters:
 - name: Forecasting
   type: boolean
   default: false
-
+- name: EpaoRegister
+  type: boolean
+  default: false
+- name: Approvals
+  type: boolean
+  default: false
+  
 trigger:
   branches:
     include:
@@ -159,6 +165,40 @@ stages:
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -267,6 +307,40 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+    
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -377,6 +451,40 @@ stages:
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -485,3 +593,37 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)

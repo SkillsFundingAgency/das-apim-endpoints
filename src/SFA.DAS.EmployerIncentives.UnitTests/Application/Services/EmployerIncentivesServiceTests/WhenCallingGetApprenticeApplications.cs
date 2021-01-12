@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -19,17 +20,18 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_Applications_For_The_Account(
             long accountId,
-            IEnumerable<ApprenticeApplication> apiResponse,
+            long accountLegalEntityId,
+            GetApplicationsResponse apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service
         )
         {
             client.Setup(x =>
-                    x.Get<IEnumerable<ApprenticeApplication>>(
+                    x.Get<GetApplicationsResponse>(
                         It.Is<GetApplicationsRequest>(c => c.GetUrl.Contains(accountId.ToString()))))
                 .ReturnsAsync(apiResponse);
 
-            var actual = await service.GetApprenticeApplications(accountId);
+            var actual = await service.GetApprenticeApplications(accountId, accountLegalEntityId);
 
             actual.Should().BeEquivalentTo(apiResponse);
         }
