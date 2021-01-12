@@ -22,6 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
         [Test, MoqAutoData]
         public async Task Then_Gets_Applications_From_Mediator(
             long accountId,
+            long accountLegalEntityId,
             GetApplicationsResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]AccountController controller)
@@ -33,13 +34,13 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetApplications(accountId) as ObjectResult;
+            var controllerResult = await controller.GetApplications(accountId, accountLegalEntityId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as IEnumerable<ApprenticeApplication>;
+            var model = controllerResult.Value as GetApplicationsResult;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo(mediatorResult.ApprenticeApplications);
+            model.Should().BeEquivalentTo(mediatorResult);
         }
     }
 }
