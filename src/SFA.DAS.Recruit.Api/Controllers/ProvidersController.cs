@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetProvider;
 using SFA.DAS.Recruit.Application.Queries.GetProviders;
 
 namespace SFA.DAS.Recruit.Api.Controllers
@@ -40,27 +39,6 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting all providers");
-                return BadRequest();
-            }
-        }
-        
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetProvider(int id)
-        {
-            try
-            {
-                var response = await _mediator.Send(new GetProviderQuery
-                {
-                    Id = id
-                });
-                var model = (GetProviderResponse) response.Provider;
-                
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error getting provider {id}");
                 return BadRequest();
             }
         }
