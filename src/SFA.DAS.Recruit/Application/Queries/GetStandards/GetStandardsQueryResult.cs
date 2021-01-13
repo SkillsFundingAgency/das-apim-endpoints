@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.Recruit.Domain;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetStandards
 {
     public class GetStandardsQueryResult
     {
-        public IEnumerable<GetStandardsListItem> Standards { get ; set ; }
+        public IEnumerable<TrainingProgramme> TrainingProgrammes { get ; set ; }
     }
 }

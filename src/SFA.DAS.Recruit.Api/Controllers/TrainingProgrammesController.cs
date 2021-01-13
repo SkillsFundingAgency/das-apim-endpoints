@@ -32,7 +32,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
                 
                 var response = new GetTrainingProgrammesListResponse
                 {
-                    TrainingProgrammes = result.Standards.Select(c=>(GetTrainingProgrammeResponse)c)
+                    TrainingProgrammes = result.TrainingProgrammes.Select(c=>(GetTrainingProgrammeResponse)c)
                 };
                 
                 return Ok(response);

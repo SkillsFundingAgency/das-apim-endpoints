@@ -2,25 +2,20 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.Recruit.Domain;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models
 {
     public class WhenMappingGetTrainingProgrammeResponseFromMediatorType
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped(GetStandardsListItem source)
+        public void Then_The_Fields_Are_Correctly_Mapped(TrainingProgramme source)
         {
             //Arrange
             var actual = (GetTrainingProgrammeResponse) source;
             
             //Assert
-            actual.Should().BeEquivalentTo(source, options=> options
-                .Excluding(x=>x.ApprenticeshipFunding)
-                .Excluding(x=>x.StandardDates)
-                .Excluding(x=>x.TypicalDuration)
-            );
-            actual.Duration.Should().Be(source.TypicalDuration);
+            actual.Should().BeEquivalentTo(source);
         }
     }
 }

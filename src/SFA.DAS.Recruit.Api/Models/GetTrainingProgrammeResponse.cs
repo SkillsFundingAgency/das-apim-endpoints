@@ -1,24 +1,36 @@
-﻿using SFA.DAS.Recruit.InnerApi.Responses;
+﻿using System;
+using SFA.DAS.Recruit.Domain;
 
 namespace SFA.DAS.Recruit.Api.Models
 {
     public class GetTrainingProgrammeResponse
     {
-        public int Id { get; set; }
-        public int Level { get; set; }
+        public string Id { get; set; }
+        public GetTrainingProgrammeTrainingType ApprenticeshipType { get; set; }
         public string Title { get; set; }
+        public DateTime? EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
+        public GetTrainingProgrammeApprenticeshipLevel ApprenticeshipLevel { get; set; }
         public int Duration { get; set; }
-        public int MaxFunding { get; set; }
+        public bool IsActive { get; set; }
+        public int? EducationLevelNumber { get; set; }
+        
+        
 
-        public static implicit operator GetTrainingProgrammeResponse(GetStandardsListItem source)
+        public static implicit operator GetTrainingProgrammeResponse(TrainingProgramme source)
         {
             return new GetTrainingProgrammeResponse
             {
-                Id= source.Id,
-                Duration = source.TypicalDuration,
-                Level = source.Level,
+                Id = source.Id,
+                ApprenticeshipType = (GetTrainingProgrammeTrainingType)source.ApprenticeshipType,
                 Title = source.Title,
-                MaxFunding = source.MaxFunding
+                EffectiveFrom = source.EffectiveFrom,
+                EffectiveTo = source.EffectiveTo,
+                ApprenticeshipLevel = (GetTrainingProgrammeApprenticeshipLevel)source.ApprenticeshipLevel,
+                Duration = source.Duration,
+                IsActive = source.IsActive,
+                EducationLevelNumber = source.EducationLevelNumber,
+                
             };
         }
     }
