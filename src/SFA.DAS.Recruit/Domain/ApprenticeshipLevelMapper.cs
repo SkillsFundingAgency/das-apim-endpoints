@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Recruit.Domain
 {
-    public static class ApprenticeshipLevelHelper
+    public static class ApprenticeshipLevelMapper
     {
         public static bool TryRemapFromInt(int value, out ApprenticeshipLevel result)
         {

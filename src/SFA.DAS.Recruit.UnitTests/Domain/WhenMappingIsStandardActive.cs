@@ -15,7 +15,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(1);
             standard.StandardDates.EffectiveTo = null;
 
-            var result = IsStandardActiveHelper.IsStandardActive(standard);
+            var result = IsStandardActiveMapper.IsStandardActive(standard);
             
             result.Should().BeFalse();
         }
@@ -25,7 +25,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         {
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow;
             standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(-1);
-            var result = IsStandardActiveHelper.IsStandardActive(standard);
+            var result = IsStandardActiveMapper.IsStandardActive(standard);
             result.Should().BeFalse();
         }
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         {
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow;
             standard.StandardDates.EffectiveTo = DateTime.UtcNow;
-            var result = IsStandardActiveHelper.IsStandardActive(standard);
+            var result = IsStandardActiveMapper.IsStandardActive(standard);
             result.Should().BeTrue();
         }
 
@@ -43,7 +43,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         {
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow;
             standard.StandardDates.EffectiveTo = null;
-            var result = IsStandardActiveHelper.IsStandardActive(standard);
+            var result = IsStandardActiveMapper.IsStandardActive(standard);
             result.Should().BeTrue();
         }
 
@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         {
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
             standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(1);
-            var result = IsStandardActiveHelper.IsStandardActive(standard);
+            var result = IsStandardActiveMapper.IsStandardActive(standard);
             result.Should().BeTrue();
         }
     }

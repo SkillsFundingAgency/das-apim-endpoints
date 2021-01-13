@@ -24,7 +24,7 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
-                ApprenticeshipLevel = ApprenticeshipLevelHelper.RemapFromInt(source.Level),
+                ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.Duration,
                 IsActive = false,
                 EducationLevelNumber = source.Level
@@ -40,7 +40,7 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
                 EffectiveTo = source.StandardDates.EffectiveTo,
-                ApprenticeshipLevel = ApprenticeshipLevelHelper.RemapFromInt(source.Level),
+                ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
                 //todo IsActive = false,
                 EducationLevelNumber = source.Level

@@ -3,7 +3,7 @@ using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Domain
 {
-    public static class IsStandardActiveHelper
+    public static class IsStandardActiveMapper
     {
         public static bool IsStandardActive(GetStandardsListItem standard)
         {
