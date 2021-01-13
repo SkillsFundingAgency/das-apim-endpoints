@@ -33,7 +33,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             {
                 Data = new CreateApprenticeshipRequestData
                 {
-                    RequestId = guid,
+                    RegistrationId  = guid,
                     ApprenticeshipId = apprenticeshipId,
                     Email = email,
                 }

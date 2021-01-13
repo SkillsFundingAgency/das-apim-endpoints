@@ -12,7 +12,7 @@ namespace SFA.DAS.ApprenticeCommitments.InnerApi.Requests
 
     public class CreateApprenticeshipRequestData
     {
-        public Guid RequestId { get; set; }
+        public Guid RegistrationId  { get; set; }
         public long ApprenticeshipId { get; set; }
         public string Email { get; set; }
     }
