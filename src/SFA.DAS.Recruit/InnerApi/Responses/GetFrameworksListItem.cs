@@ -17,6 +17,8 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public int PathwayCode { get ; set ; }
         public int FrameworkCode { get ; set ; }
         public int ProgType { get ; set ; }
+        public DateTime EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
 
         public class FundingPeriod
         {
