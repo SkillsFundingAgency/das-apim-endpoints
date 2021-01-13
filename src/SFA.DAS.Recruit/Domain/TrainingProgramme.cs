@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Domain
@@ -25,10 +24,10 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
-                //todo ApprenticeshipLevel = MapApprenticeshipLevel(source.Level),
+                ApprenticeshipLevel = ApprenticeshipLevelHelper.RemapFromInt(source.Level),
                 Duration = source.Duration,
                 IsActive = false,
-                //todo EducationLevelNumber = source.Level
+                EducationLevelNumber = source.Level
             };
         }
 
@@ -41,37 +40,11 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
                 EffectiveTo = source.StandardDates.EffectiveTo,
-                //todo ApprenticeshipLevel = MapApprenticeshipLevel(source.Level),
+                ApprenticeshipLevel = ApprenticeshipLevelHelper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
                 //todo IsActive = false,
-                //todo EducationLevelNumber = source.Level
+                EducationLevelNumber = source.Level
             };
-        }
-
-        private static int MapApprenticeshipLevel(int value)
-        {
-            switch (value)
-            {
-                case 5: // Foundation Degree
-                    value = (int)ApprenticeshipLevel.Higher;
-                    break;
-                case 7: // Masters
-                    value = (int)ApprenticeshipLevel.Degree;
-                    break;
-            }
-            if (Enum.IsDefined(typeof(ApprenticeshipLevel), value))
-            {
-                return value;
-            }
-
-            return 0;
-        }
-
-        private static bool IsStandardActive(GetStandardsListItem standard)
-        {
-            return standard.StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
-                   && (!standard.StandardDates.EffectiveTo.HasValue ||
-                       standard.StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }

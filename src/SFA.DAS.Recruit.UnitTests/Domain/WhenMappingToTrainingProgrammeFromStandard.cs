@@ -12,6 +12,9 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         public void Then_The_Fields_Are_Correctly_Mapped(GetStandardsListItem source)
         {
             //Arrange
+            source.Level = (int) ApprenticeshipLevel.Advanced;
+
+            //Act
             var actual = (TrainingProgramme) source;
             
             //Assert
@@ -20,10 +23,10 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             actual.Title.Should().Be(source.Title);
             actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
             actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);
-            //todo actual.ApprenticeshipLevel.Should().Be(source.Level);
+            actual.ApprenticeshipLevel.Should().Be(ApprenticeshipLevelHelper.RemapFromInt(source.Level));
             actual.Duration.Should().Be(source.TypicalDuration);
-            //todo actual.IsActive.Should().Be();
-            //todo actual.EducationLevelNumber.Should().Be(source.PathwayCode);
+            actual.IsActive.Should().Be(IsStandardActiveHelper.IsStandardActive(source));
+            actual.EducationLevelNumber.Should().Be(source.Level);
         }
     }
 }

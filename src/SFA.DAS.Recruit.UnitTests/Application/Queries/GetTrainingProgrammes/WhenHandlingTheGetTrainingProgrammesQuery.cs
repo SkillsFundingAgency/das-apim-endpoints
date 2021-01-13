@@ -25,6 +25,11 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingProgrammesQueryHandler handler)
         {
+            foreach (var framework in apiResponse.Frameworks)
+            {
+                framework.Level = (int) ApprenticeshipLevel.Advanced;
+            }
+
             mockApiClient
                 .Setup(client => client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
                 .ReturnsAsync(apiResponse);
@@ -44,6 +49,10 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingProgrammesQueryHandler handler)
         {
+            foreach (var standard in apiResponse.Standards)
+            {
+                standard.Level = (int) ApprenticeshipLevel.Advanced;
+            }
             mockApiClient
                 .Setup(client => client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
                 .ReturnsAsync(new GetFrameworksListResponse());
