@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Domain
@@ -19,7 +20,15 @@ namespace SFA.DAS.Recruit.Domain
         {
             return new TrainingProgramme
             {
-                Id = source.Id
+                Id = source.Id,
+                ApprenticeshipType = TrainingType.Framework,
+                Title = source.Title,
+                EffectiveFrom = null,
+                EffectiveTo = null,
+                //todo ApprenticeshipLevel = source.Level,
+                Duration = source.Duration,
+                IsActive = false,
+                //todo EducationLevelNumber = source.PathwayCode
             };
         }
 
@@ -27,8 +36,23 @@ namespace SFA.DAS.Recruit.Domain
         {
             return new TrainingProgramme
             {
-                Id = source.Id.ToString()
+                Id = source.Id.ToString(),
+                ApprenticeshipType = TrainingType.Standard,
+                Title = source.Title,
+                EffectiveFrom = source.StandardDates.EffectiveFrom,
+                EffectiveTo = source.StandardDates.EffectiveTo,
+                //todo ApprenticeshipLevel = source.Level,
+                Duration = source.TypicalDuration,
+                //todo IsActive = false,
+                //todo EducationLevelNumber = source.PathwayCode
             };
+        }
+
+        private static bool IsStandardActive(GetStandardsListItem standard)
+        {
+            return standard.StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
+                   && (!standard.StandardDates.EffectiveTo.HasValue ||
+                       standard.StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 }

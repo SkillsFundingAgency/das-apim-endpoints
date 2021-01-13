@@ -16,6 +16,14 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             
             //Assert
             actual.Id.Should().Be(source.Id);
+            actual.ApprenticeshipType.Should().Be(TrainingType.Framework);
+            actual.Title.Should().Be(source.Title);
+            actual.EffectiveFrom.Should().BeNull();
+            actual.EffectiveTo.Should().BeNull();
+            //todo actual.ApprenticeshipLevel.Should().Be(source.Level);
+            actual.Duration.Should().Be(source.Duration);
+            actual.IsActive.Should().BeFalse();
+            //todo actual.EducationLevelNumber.Should().Be(source.PathwayCode);
         }
     }
 }
