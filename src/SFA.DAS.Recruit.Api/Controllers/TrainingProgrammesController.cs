@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetStandards;
+using SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardsQuery());
+                var result = await _mediator.Send(new GetTrainingProgrammesQuery());
                 
                 var response = new GetTrainingProgrammesListResponse
                 {

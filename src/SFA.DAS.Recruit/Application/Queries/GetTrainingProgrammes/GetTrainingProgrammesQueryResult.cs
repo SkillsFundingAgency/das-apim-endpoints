@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetStandards
+namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes
 {
-    public class GetStandardsQueryResult
+    public class GetTrainingProgrammesQueryResult
     {
         public IEnumerable<TrainingProgramme> TrainingProgrammes { get ; set ; }
     }

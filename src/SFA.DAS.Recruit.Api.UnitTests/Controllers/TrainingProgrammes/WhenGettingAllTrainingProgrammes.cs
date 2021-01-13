@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetStandards;
+using SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
@@ -19,13 +19,13 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_TrainingProgrammes_From_Mediator(
-            GetStandardsQueryResult mediatorResult,
+            GetTrainingProgrammesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingProgrammesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetStandardsQuery>(),
+                    It.IsAny<GetTrainingProgrammesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetStandardsQuery>(),
+                    It.IsAny<GetTrainingProgrammesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
