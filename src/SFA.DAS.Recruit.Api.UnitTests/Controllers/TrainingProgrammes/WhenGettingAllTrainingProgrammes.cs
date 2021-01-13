@@ -10,50 +10,50 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetFrameworks;
+using SFA.DAS.Recruit.Application.Queries.GetStandards;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingCourses
+namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
 {
-    public class WhenGettingAllFrameworks
+    public class WhenGettingAllTrainingProgrammes
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Frameworks_From_Mediator(
-            GetFrameworksQueryResult mediatorResult,
+        public async Task Then_Gets_TrainingProgrammes_From_Mediator(
+            GetStandardsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] TrainingCoursesController controller)
+            [Greedy] TrainingProgrammesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetFrameworksQuery>(),
+                    It.IsAny<GetStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetFrameworks() as ObjectResult;
+            var controllerResult = await controller.GetAll() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetFrameworksListResponse;
+            var model = controllerResult.Value as GetTrainingProgrammesListResponse;
             Assert.IsNotNull(model);
-            model.Frameworks.Should().BeEquivalentTo(mediatorResult.Frameworks, options=>options
-                .Excluding(c=>c.FundingPeriods)
-                .Excluding(c=>c.IsActiveFramework)
-                .Excluding(c=>c.CurrentFundingCap)
+            model.TrainingProgrammes.Should().BeEquivalentTo(mediatorResult.Standards, options=>options
+                .Excluding(c=>c.ApprenticeshipFunding)
+                .Excluding(c=>c.StandardDates)
+                .Excluding(c=>c.TypicalDuration)
             );
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] TrainingCoursesController controller)
+            [Greedy] TrainingProgrammesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetFrameworksQuery>(),
+                    It.IsAny<GetStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetFrameworks() as BadRequestResult;
+            var controllerResult = await controller.GetAll() as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

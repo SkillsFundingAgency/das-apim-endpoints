@@ -6,13 +6,13 @@ using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models
 {
-    public class WhenMappingGetStandardResponseFromMediatorType
+    public class WhenMappingGetTrainingProgrammeResponseFromMediatorType
     {
         [Test, AutoData]
         public void Then_The_Fields_Are_Correctly_Mapped(GetStandardsListItem source)
         {
             //Arrange
-            var actual = (GetStandardResponse) source;
+            var actual = (GetTrainingProgrammeResponse) source;
             
             //Assert
             actual.Should().BeEquivalentTo(source, options=> options

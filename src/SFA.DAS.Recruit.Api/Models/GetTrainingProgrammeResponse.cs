@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Recruit.Api.Models
 {
-    public class GetStandardResponse
+    public class GetTrainingProgrammeResponse
     {
         public int Id { get; set; }
         public int Level { get; set; }
@@ -10,9 +10,9 @@ namespace SFA.DAS.Recruit.Api.Models
         public int Duration { get; set; }
         public int MaxFunding { get; set; }
 
-        public static implicit operator GetStandardResponse(GetStandardsListItem source)
+        public static implicit operator GetTrainingProgrammeResponse(GetStandardsListItem source)
         {
-            return new GetStandardResponse
+            return new GetTrainingProgrammeResponse
             {
                 Id= source.Id,
                 Duration = source.TypicalDuration,
