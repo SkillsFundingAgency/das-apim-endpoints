@@ -23,12 +23,12 @@ namespace SFA.DAS.Recruit.Domain
                 Id = source.Id,
                 ApprenticeshipType = TrainingType.Framework,
                 Title = source.Title,
-                EffectiveFrom = null,
-                EffectiveTo = null,
-                //todo ApprenticeshipLevel = source.Level,
+                EffectiveFrom = source.EffectiveFrom,
+                EffectiveTo = source.EffectiveTo,
+                //todo ApprenticeshipLevel = MapApprenticeshipLevel(source.Level),
                 Duration = source.Duration,
                 IsActive = false,
-                //todo EducationLevelNumber = source.PathwayCode
+                //todo EducationLevelNumber = source.Level
             };
         }
 
@@ -41,11 +41,30 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
                 EffectiveTo = source.StandardDates.EffectiveTo,
-                //todo ApprenticeshipLevel = source.Level,
+                //todo ApprenticeshipLevel = MapApprenticeshipLevel(source.Level),
                 Duration = source.TypicalDuration,
                 //todo IsActive = false,
-                //todo EducationLevelNumber = source.PathwayCode
+                //todo EducationLevelNumber = source.Level
             };
+        }
+
+        private static int MapApprenticeshipLevel(int value)
+        {
+            switch (value)
+            {
+                case 5: // Foundation Degree
+                    value = (int)ApprenticeshipLevel.Higher;
+                    break;
+                case 7: // Masters
+                    value = (int)ApprenticeshipLevel.Degree;
+                    break;
+            }
+            if (Enum.IsDefined(typeof(ApprenticeshipLevel), value))
+            {
+                return value;
+            }
+
+            return 0;
         }
 
         private static bool IsStandardActive(GetStandardsListItem standard)
