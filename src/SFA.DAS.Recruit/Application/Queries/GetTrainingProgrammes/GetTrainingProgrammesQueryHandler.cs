@@ -23,12 +23,14 @@ namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes
         }
         public async Task<GetTrainingProgrammesQueryResult> Handle(GetTrainingProgrammesQuery request, CancellationToken cancellationToken)
         {
-            var frameworks = await _coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
-            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+            var frameworksTask = _coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
+            var standardsTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+
+            await Task.WhenAll(frameworksTask, standardsTask);
 
             var trainingProgrammes = new List<TrainingProgramme>();
-            trainingProgrammes.AddRange(frameworks.Frameworks?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
-            trainingProgrammes.AddRange(standards.Standards?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
+            trainingProgrammes.AddRange(frameworksTask.Result.Frameworks?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
+            trainingProgrammes.AddRange(standardsTask.Result.Standards?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
             
             return new GetTrainingProgrammesQueryResult
             {
