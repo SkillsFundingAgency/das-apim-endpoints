@@ -29,9 +29,15 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public async Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email)
         {
-            //var bag = new ConcurrentBag<ApprenticeshipItem>();
-            //var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag));
-            //await Task.WhenAll(tasks);
+            var response = await _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
+            {
+                Data = new CreateApprenticeshipRequestData
+                {
+                    RequestId = guid,
+                    ApprenticeshipId = apprenticeshipId,
+                    Email = email,
+                }
+            });
         }
     }
 }

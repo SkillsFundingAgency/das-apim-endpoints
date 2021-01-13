@@ -8,7 +8,9 @@ namespace SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands
 {
     public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand>
     {
-        public ApprenticeCommitmentsService service { get; set; }
+        private readonly ApprenticeCommitmentsService service;
+
+        public CreateApprenticeshipCommandHandler(ApprenticeCommitmentsService service) => this.service = service;
 
         public async Task<Unit> Handle(CreateApprenticeshipCommand command, CancellationToken cancellationToken)
         {

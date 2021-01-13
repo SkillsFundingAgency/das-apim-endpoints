@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,9 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeCommitments.Api.AppStart;
 using SFA.DAS.ApprenticeCommitments.Api.ErrorHandler;
+using SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.ApprenticeCommitments.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 
@@ -50,13 +53,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             }
 
             services.AddHealthChecks()
-            //    .AddCheck<ApprenticeCommitmentsHealthCheck>(nameof(ApprenticeCommitmentsHealthCheck))
-            //    .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck))
-            //    .AddCheck<CustomerEngagementFinanceApiHealthCheck>(nameof(CustomerEngagementFinanceApiHealthCheck))
-            //    .AddCheck<AccountsApiHealthCheck>(nameof(AccountsApiHealthCheck))
+                .AddCheck<ApprenticeCommitmentsHealthCheck>(nameof(ApprenticeCommitmentsHealthCheck))
                 ;
 
-            //services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
+            services.AddMediatR(GetType().Assembly, typeof(CreateApprenticeshipCommandHandler).Assembly);
             services.AddServiceRegistration();
 
             services
