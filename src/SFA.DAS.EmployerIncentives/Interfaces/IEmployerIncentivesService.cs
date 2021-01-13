@@ -37,6 +37,8 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         
         Task EarningsResilienceCheck();
 
+        Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
+
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

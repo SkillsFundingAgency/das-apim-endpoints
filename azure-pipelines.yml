@@ -31,6 +31,7 @@ pr: none
 variables:
 - group: Release Management Resources
 - group: Wildcard Cert Variables v2
+- group: RELEASE das-apim-endpoints
 
 resources:
   repositories:
@@ -63,9 +64,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
+  - group: AT das-apim-endpoints
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -206,9 +207,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
+  - group: TEST das-apim-endpoints
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -349,9 +350,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: DEV das-apim-endpoints
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
+  - group: TEST2 das-apim-endpoints
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -492,9 +493,9 @@ stages:
   pool:
     name: DAS - Continuous Deployment
   variables:
-  - group: PP das-apim-endpoints
-  - group: PreProd Management Resources
-  - group: PreProd Shared Resources
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
