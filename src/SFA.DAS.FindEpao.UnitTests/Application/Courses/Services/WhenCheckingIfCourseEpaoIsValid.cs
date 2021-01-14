@@ -22,12 +22,9 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Services
         //dateStandardApprovedOnRegister
         [InlineAutoData(false, "Live", DateOccurrence.Future, DateOccurrence.Past, null)]
         [InlineAutoData(false, "Live", null, DateOccurrence.Past, null)]
-        //effectiveFrom
-        [InlineAutoData(false, "Live", DateOccurrence.Past, DateOccurrence.Future, null)]
-        [InlineAutoData(false, "Live", DateOccurrence.Past, null, null)]
         //effectiveTo
         [InlineAutoData(false, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Past)]
-        [InlineAutoData(false, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Present)]
+        [InlineAutoData(true, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Present)]
         public void Check_Validity(
             bool isValid,
             string status,

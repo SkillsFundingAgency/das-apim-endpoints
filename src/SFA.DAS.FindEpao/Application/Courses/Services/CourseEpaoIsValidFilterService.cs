@@ -20,13 +20,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
                 return false;
             }
 
-            if (!courseEpao.CourseEpaoDetails.EffectiveFrom.HasValue || 
-                courseEpao.CourseEpaoDetails.EffectiveFrom?.Date > DateTime.Today)
-            {
-                return false;
-            }
-
-            if (courseEpao.CourseEpaoDetails.EffectiveTo.HasValue && courseEpao.CourseEpaoDetails.EffectiveTo.Value.Date <= DateTime.Today)
+            if (courseEpao.CourseEpaoDetails.EffectiveTo.HasValue && courseEpao.CourseEpaoDetails.EffectiveTo.Value.Date < DateTime.Today)
             {
                 return false;
             }
