@@ -20,6 +20,9 @@ parameters:
 - name: Approvals
   type: boolean
   default: false
+- name: ManageApprenticeships
+  type: boolean
+  default: false
   
 trigger:
   branches:
@@ -200,6 +203,23 @@ stages:
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -342,6 +362,23 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -486,6 +523,23 @@ stages:
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -628,3 +682,20 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
