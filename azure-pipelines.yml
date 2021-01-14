@@ -628,3 +628,289 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
+- stage: Deploy_PROD
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+  displayName: Deploy to PROD
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: PROD
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
+- stage: Deploy_MO
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+  displayName: Deploy to MO
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: MO
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      DeploymentApprovals: SFA-ASM-ModelOffice-ARM
+      ServiceConnection: SFA-DIG-PreProd (ARM)
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
