@@ -99,6 +99,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<SendBankDetailsEmailRequest>(request);
         }
 
+        public async Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest)
+        {
+            var request = new PostBankDetailsRepeatReminderEmailsRequest { Data = sendBankDetailsRepeatReminderEmailsRequest };
+
+            await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
+        }
+
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
@@ -138,9 +145,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId)
+        public async Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId)
         {
-            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
+            return await _client.Get<GetApplicationsResponse>(new GetApplicationsRequest(accountId, accountLegalEntityId));
         }
 
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
