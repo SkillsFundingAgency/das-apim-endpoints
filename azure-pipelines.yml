@@ -682,7 +682,7 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
-       
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_ManageApprenticeships
