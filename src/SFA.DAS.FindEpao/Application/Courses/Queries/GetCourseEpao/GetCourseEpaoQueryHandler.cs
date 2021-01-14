@@ -62,11 +62,11 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 throw new NotFoundException<GetCourseEpaoResult>();
             }
 
-            var filteredEpaos = courseEpaosTask.Result
+            var filteredCourseEpaos = courseEpaosTask.Result
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
 
-            if (!filteredEpaos.Any(item => string.Equals(item.EpaoId.ToLower(),
+            if (!filteredCourseEpaos.Any(item => string.Equals(item.EpaoId.ToLower(),
                     request.EpaoId.ToLower(), StringComparison.CurrentCultureIgnoreCase)))
             {
                 _logger.LogInformation($"Course [{request.CourseId}], EPAO [{request.EpaoId}] not active.");
@@ -77,8 +77,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             {
                 Epao = epaoTask.Result,
                 Course = courseTask.Result,
-                EpaoDeliveryAreas = courseEpaosTask.Result.Single(item => string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase)).DeliveryAreas,
-                CourseEpaosCount = courseEpaosTask.Result.Count(),
+                EpaoDeliveryAreas = filteredCourseEpaos.Single(item => string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase)).DeliveryAreas,
+                CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result
             };
         }
