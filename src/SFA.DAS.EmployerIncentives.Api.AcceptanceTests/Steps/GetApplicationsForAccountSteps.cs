@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public void GivenThisSearchRequestFindsNoApplications()
         {
             var applications = new List<ApprenticeApplication>();
-            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.NotSupplied };
+            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.NotSupplied, FirstSubmittedApplicationId = Guid.NewGuid() };
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
@@ -77,51 +77,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             result.BankDetailsStatus.Should().Be(BankDetailsStatus.NotSupplied);
         }
 
-        [Given(@"this search request finds one in progress application")]
-        public void GivenThisSearchRequestFindsOneInProgressApplication()
-        {
-            var inProgressApplication = _fixture.Create<ApprenticeApplication>();
-            inProgressApplication.Status = "InProgress";
-            var applications = new List<ApprenticeApplication>
-            {
-                inProgressApplication
-            };
-            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.NotSupplied };
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
-                        .UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(response)));
-        }
-
-        [Then(@"the result should return Ok, with one in progress application")]
-        public async Task ThenTheResultShouldReturnOkWithOneInProgressApplication()
-        {
-            _response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await _response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
-            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
-            result.Should().NotBeNull();
-            result.ApprenticeApplications.Count().Should().Be(1);
-            result.ApprenticeApplications.ToList()[0].Status.Should().Be("InProgress");
-            result.BankDetailsStatus.Should().Be(BankDetailsStatus.NotSupplied);
-        }
-
         [Given(@"this search request finds one submitted application")]
         public void GivenThisSearchRequestFindsOneSubmittedApplication()
         {
             var submittedApplication = _fixture.Create<ApprenticeApplication>();
-            submittedApplication.Status = "Submitted";
             var applications = new List<ApprenticeApplication> { submittedApplication };
-            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.InProgress };
+            var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.InProgress, FirstSubmittedApplicationId = Guid.NewGuid() };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -147,7 +108,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
             result.ApprenticeApplications.Count().Should().Be(1);
-            result.ApprenticeApplications.ToList()[0].Status.Should().Be("Submitted");
             result.BankDetailsStatus.Should().Be(BankDetailsStatus.InProgress);
         }
 
@@ -155,13 +115,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public void GivenThisSearchRequestFindsOneApplicationForMultipleApprentices()
         {
             var multipleApprenticesApplication = _fixture.CreateMany<ApprenticeApplication>(10);
-            var applicationId = _fixture.Create<Guid>();
-            foreach(var application in multipleApprenticesApplication)
-            {
-                application.Status = "Submitted";
-                application.ApplicationId = applicationId;
-            }
-            var response = new GetApplicationsResult { ApprenticeApplications = multipleApprenticesApplication, BankDetailsStatus = InnerApi.BankDetailsStatus.Completed };
+
+            var response = new GetApplicationsResult { ApprenticeApplications = multipleApprenticesApplication, BankDetailsStatus = InnerApi.BankDetailsStatus.Completed, FirstSubmittedApplicationId = Guid.NewGuid() };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -194,9 +149,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public void GivenThisSearchRequestFindsMultipleSubmittedApplications()
         {
             var multipleApplications = _fixture.CreateMany<ApprenticeApplication>(2).ToList();
-            multipleApplications[0].Status = "Submitted";
-            multipleApplications[1].Status = "Submitted";
-            var response = new GetApplicationsResult { ApprenticeApplications = multipleApplications, BankDetailsStatus = InnerApi.BankDetailsStatus.Rejected };
+            var response = new GetApplicationsResult { ApprenticeApplications = multipleApplications, BankDetailsStatus = InnerApi.BankDetailsStatus.Rejected, FirstSubmittedApplicationId = Guid.NewGuid() };
 
             _context.InnerApi.MockServer
                 .Given(
@@ -222,51 +175,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
             result.Should().NotBeNull();
             result.ApprenticeApplications.Count().Should().Be(2);
-            var applications = result.ApprenticeApplications.ToList();
-            applications[0].Status.Should().Be("Submitted");
-            applications[1].Status.Should().Be("Submitted");
-            applications[0].ApplicationId.Should().NotBe(applications[1].ApplicationId);
             result.BankDetailsStatus.Should().Be(BankDetailsStatus.Rejected);
         }
-
-        [Given(@"this search request finds multiple applications with statuses of in progress and submitted")]
-        public void GivenThisSearchRequestFindsMultipleApplicationsWithStatusesOfInProgressAndSubmitted()
-        {
-            var multipleApplications = _fixture.CreateMany<ApprenticeApplication>(2).ToList();
-            multipleApplications[0].Status = "Submitted";
-            multipleApplications[1].Status = "InProgress";
-            var response = new GetApplicationsResult { ApprenticeApplications = multipleApplications, BankDetailsStatus = InnerApi.BankDetailsStatus.Completed };
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create().WithPath($"/accounts/{_accountId}/legalentity/{_accountLegalEntityId}/applications")
-                        .UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(response)));
-        }
-
-        [Then(@"the result should return Ok, with multiple applications with statuses of in progress and submitted")]
-        public async Task ThenTheResultShouldReturnOkWithMultipleApplicationsWithStatusesOfInProgressAndSubmitted()
-        {
-            _response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await _response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
-            var result = JsonSerializer.Deserialize<GetApplicationsResult>(content, options);
-            result.Should().NotBeNull();
-            result.ApprenticeApplications.Count().Should().Be(2);
-            var applications = result.ApprenticeApplications.ToList();
-            applications[0].Status.Should().Be("Submitted");
-            applications[1].Status.Should().Be("InProgress");
-            applications[0].ApplicationId.Should().NotBe(applications[1].ApplicationId);
-            result.BankDetailsStatus.Should().Be(BankDetailsStatus.Completed);
-        }
-
     }
 }
