@@ -553,7 +553,7 @@ stages:
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -569,7 +569,7 @@ stages:
       DeploymentName: Deploy_FindApprenticeshipTraining
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -586,7 +586,7 @@ stages:
       DeploymentName: Deploy_Reservations
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -603,7 +603,7 @@ stages:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -620,7 +620,7 @@ stages:
       DeploymentName: Deploy_FindEpao
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -637,7 +637,7 @@ stages:
       DeploymentName: Deploy_Forecasting
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -654,7 +654,7 @@ stages:
       DeploymentName: Deploy_EpaoRegister
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -671,7 +671,7 @@ stages:
       DeploymentName: Deploy_Approvals
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -688,7 +688,7 @@ stages:
       DeploymentName: Deploy_ManageApprenticeships
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -905,8 +905,8 @@ stages:
     parameters:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
-      DeploymentApprovals: SFA-ASM-ModelOffice-ARM
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
