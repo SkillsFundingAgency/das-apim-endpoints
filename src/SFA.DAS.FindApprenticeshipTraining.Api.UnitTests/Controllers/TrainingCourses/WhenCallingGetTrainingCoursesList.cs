@@ -38,6 +38,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
+                .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.TypicalJobTitles)
+                .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
             );
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
             model.Levels.Should().BeEquivalentTo(mediatorResult.Levels);
@@ -47,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         public async Task Then_Gets_Training_Courses_From_Mediator_With_Keyword_And_RouteIds_And_Levels_And_OrderBy_If_Supplied(
             string keyword,
             List<int> levels,
-            List<Guid> routeIds,
+            List<string> routeIds,
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -69,6 +73,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
                 .Excluding(tc=>tc.ApprenticeshipFunding)
                 .Excluding(tc=>tc.StandardDates)
+                .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.TypicalJobTitles)
+                .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties)
             );
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);

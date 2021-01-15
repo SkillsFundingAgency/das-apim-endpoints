@@ -33,5 +33,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
             [JsonProperty("coordinates")]
             public double[] GeoPoint { get; set; }
         }
+
+        [JsonIgnore] 
+        public string DisplayName => GetDisplayName();
+
+        private string GetDisplayName()
+        {
+            return !string.IsNullOrEmpty(DistrictName) ? $"{Outcode} {DistrictName}" :
+                string.IsNullOrEmpty(Postcode) ? $"{LocationName}, {LocalAuthorityName}" : $"{Postcode}";
+        }
     }
 }

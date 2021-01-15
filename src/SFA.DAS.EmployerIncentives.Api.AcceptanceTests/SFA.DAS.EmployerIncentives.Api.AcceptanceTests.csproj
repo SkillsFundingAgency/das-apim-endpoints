@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\UpdateVendorRegistrationCaseStatusForLegalEntities - Copy.feature.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
@@ -30,11 +26,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\UpdateCollectionCalendarPeriod.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Features\EarningsResilienceCheck.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\GetApplicationsForAccount.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Features\SendBankDetailsReminderEmail.feature.cs">
       <DependentUpon>SendBankDetailsReminderEmail.feature</DependentUpon>
+    </Compile>
+    <Compile Update="Features\SendBankDetailsRepeatReminderEmails.feature.cs">
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Features\SendBankDetailsRequiredEmail.feature.cs">
       <DesignTime>True</DesignTime>
@@ -44,6 +49,9 @@
     </Compile>
     <Compile Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs">
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Features\PausePayments.feature.cs">
+      <DependentUpon>PausePayments.feature</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -55,6 +63,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\UpdateCollectionCalendarPeriod.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>UpdateCollectionCalendarPeriod.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\EarningsResilienceCheck.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EarningsResilienceCheck.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\GetApplicationsForAccount.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>GetApplicationsForAccount.feature.cs</LastGenOutput>
@@ -69,6 +85,10 @@
       <LastGenOutput>SendBankDetailsRequiredEmail.feature.cs</LastGenOutput>
       <Generator>SpecFlowSingleFileGenerator</Generator>
     </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\SendBankDetailsRepeatReminderEmails.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SendBankDetailsRepeatReminderEmails.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\SendBankDetailsRequiredEmail.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SendBankDetailsRequiredEmail.feature.cs</LastGenOutput>
@@ -82,6 +102,10 @@
     <SpecFlowFeatureFiles Update="Features\UpdateVendorRegistrationCaseStatusForLegalEntities.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UpdateVendorRegistrationCaseStatusForLegalEntities.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\PausePayments.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>
   </ItemGroup>
 

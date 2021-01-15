@@ -15,7 +15,7 @@ namespace SFA.DAS.Forecasting.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
-            services.AddTransient(typeof(IApiClient<>), typeof(ApiClient<>));
+            services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         }
     }

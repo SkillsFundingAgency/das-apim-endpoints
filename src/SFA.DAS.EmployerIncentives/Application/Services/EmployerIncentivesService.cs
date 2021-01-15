@@ -1,5 +1,9 @@
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
@@ -19,7 +23,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
     public class EmployerIncentivesService : IEmployerIncentivesService
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
-
 
         public EmployerIncentivesService(IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> client)
         {
@@ -96,6 +99,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<SendBankDetailsEmailRequest>(request);
         }
 
+        public async Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest)
+        {
+            var request = new PostBankDetailsRepeatReminderEmailsRequest { Data = sendBankDetailsRepeatReminderEmailsRequest };
+
+            await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
+        }
+
         public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
@@ -135,15 +145,25 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public async Task<IEnumerable<ApprenticeApplication>> GetApprenticeApplications(long accountId)
+        public async Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId)
         {
-            return await _client.Get<IEnumerable<ApprenticeApplication>>(new GetApplicationsRequest(accountId));
+            return await _client.Get<GetApplicationsResponse>(new GetApplicationsRequest(accountId, accountLegalEntityId));
         }
 
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
         {
             return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
                 { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId} });
+        }
+
+        public async Task EarningsResilienceCheck()
+        {
+            await _client.Post<string>(new EarningsResilenceCheckRequest());
+        }
+
+        public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
+        {
+            await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
@@ -160,5 +180,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                     throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
             }
         }
+
+        
     }
 }

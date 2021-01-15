@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
@@ -32,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
-            var locationTask = _locationHelper.GetLocationInformation(request.Location);
+            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
 
             await Task.WhenAll(locationTask, courseTask);
@@ -45,7 +44,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(new GetProviderAdditionalStandardsRequest(request.ProviderId));
 
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
-                new GetStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
+                new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
 
             await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount);
 
@@ -55,13 +54,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
                         new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description)));
 
-                providerTask.Result.DeliveryTypes = new List<GetDeliveryTypeItem> 
+                if (providerTask.Result != null)
                 {
-                    new GetDeliveryTypeItem
+                    providerTask.Result.DeliveryTypes = new List<GetDeliveryTypeItem> 
                     {
-                        DeliveryModes = "NotFound"
-                    } 
-                };
+                        new GetDeliveryTypeItem
+                        {
+                            DeliveryModes = "NotFound"
+                        } 
+                    };    
+                }
             }
             
             var overallAchievementRates =

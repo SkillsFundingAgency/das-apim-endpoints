@@ -5,6 +5,7 @@ using MediatR;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
@@ -31,10 +32,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 });
 
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(
-                new GetStandardRequest
-                {
-                    StandardId = request.CourseId
-                });
+                new GetStandardRequest(request.CourseId));
 
             await Task.WhenAll(epaosTask, courseTask);
 

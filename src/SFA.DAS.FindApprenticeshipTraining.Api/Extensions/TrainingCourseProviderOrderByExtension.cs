@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 {
     public static class TrainingCourseProviderOrderByExtension
     {
         private static Dictionary<int, decimal> _providerScores;
-        
-        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderRating(this IEnumerable<GetTrainingCourseProviderListItem> source)
+        private static DeliveryModeType _filteredDeliveryMode;
+
+        public static IEnumerable<GetTrainingCourseProviderListItem> OrderByProviderScore(
+            this IEnumerable<GetTrainingCourseProviderListItem> source, List<DeliveryModeType> requestDeliveryModes = null)
         {
              
             _providerScores = new Dictionary<int, decimal>();
@@ -21,8 +21,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
 
             AddAchievementRateScore(getTrainingCourseProviderListItems);
 
-            var returnList = new List<GetTrainingCourseProviderListItem>();
-            
             var scoredAndSortedProviders = 
                 _providerScores.Join(getTrainingCourseProviderListItems,
                     achievementRateScore => achievementRateScore.Key,
@@ -37,70 +35,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                     return getTrainingCourseProviderListItem;
                 })
                 .OrderByDescending(c=>c.Score)
+                .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)
                 .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
                 .ThenBy(c=>c.Name)
                 .ToList();
-            
+
+            _filteredDeliveryMode = DeliveryModeType.NotFound;
+            if (requestDeliveryModes !=null  && requestDeliveryModes.Count(c => c!=DeliveryModeType.National) == 1) //TODO need to exclude national
+            {
+                _filteredDeliveryMode = requestDeliveryModes.First(c => c!=DeliveryModeType.National);
+            }
+
             if (!getTrainingCourseProviderListItems.All(c => c.HasLocation) 
-                || getTrainingCourseProviderListItems.All(c=>c.DeliveryModes.All(x=>x.DeliveryModeType == DeliveryModeType.Workplace)))
+                || getTrainingCourseProviderListItems.All(c=>c.DeliveryModes.All(x=>x.DeliveryModeType == DeliveryModeType.Workplace))
+                || _filteredDeliveryMode == DeliveryModeType.Workplace)
             {
                 return scoredAndSortedProviders;
             }
-            
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinTenMilesWithScoreLessThanSix));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersWithinTenToUnderFifteenMiles));
-            returnList.AddRange(AddFilteredProviders(scoredAndSortedProviders, returnList, GetProvidersOverFifteenMiles));
-            
-            return returnList.ToList();
-        }
 
-        private static bool GetProvidersUnderFiveMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score >= 6 
-                   && listItem.DeliveryModes.Any(deliveryType=>deliveryType.DistanceInMiles < 5 || deliveryType.DeliveryModeType == DeliveryModeType.Workplace);
+            return scoredAndSortedProviders.OrderByScoreAndDistance(_filteredDeliveryMode);
         }
-        private static bool GetProvidersWithinFiveToTenMilesWithScoreGreaterThanOrEqualToSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score >= 6 
-                      && listItem.DeliveryModes.Any(deliveryType=>deliveryType.DistanceInMiles >= 5 && deliveryType.DistanceInMiles < 10);
-        }
-
-        private static bool GetProvidersWithinTenMilesWithScoreLessThanSix(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.Score < 6
-                   && listItem.DeliveryModes.Any(deliveryType => deliveryType.DistanceInMiles < 10);
-        }
-
-        private static bool GetProvidersWithinTenToUnderFifteenMiles(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.DeliveryModes.Any(deliveryType =>
-                deliveryType.DistanceInMiles >= 10 && deliveryType.DistanceInMiles < 15);
-        }
-        private static bool GetProvidersOverFifteenMiles(GetTrainingCourseProviderListItem listItem)
-        {
-            return listItem.DeliveryModes.Any(deliveryType => deliveryType.DistanceInMiles >= 15);
-        }
-
-        private static IEnumerable<GetTrainingCourseProviderListItem> AddFilteredProviders(
-            IEnumerable<GetTrainingCourseProviderListItem> scoredAndSortedProviders, 
-            IEnumerable<GetTrainingCourseProviderListItem> returnList, 
-            Func<GetTrainingCourseProviderListItem, bool> providerFilter)
-        {
-            return scoredAndSortedProviders
-                .Except(returnList)
-                .Where(providerFilter)
-                .OrderByDescending(c=>c.Score)
-                .ThenBy(c=>c.DeliveryModes
-                    .OrderByDescending(x=>x.DistanceInMiles)
-                    .First().DistanceInMiles)
-                .ThenByDescending(c=>c.OverallCohort)
-                .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
-                .ThenBy(c=>c.Name);
-        }
-
         private static void AddAchievementRateScore(IReadOnlyCollection<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
         {
             
@@ -132,25 +87,32 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                     .Select(x => x.Proportion)
                     .Sum() * 100
             }).ToList();
-            
-            
-            foreach (var listItem in getTrainingCourseProviderListItems
-                .Where(c => c.OverallAchievementRate.HasValue)
-                .OrderByDescending(c => c.OverallAchievementRate))
+
+            if (getTrainingCourseProviderListItems.Count(c => c.OverallAchievementRate.HasValue) == 1)
             {
-                var score = percentileValues.FirstOrDefault(x => x.Value == listItem.OverallAchievementRate); 
-                var scoreValue = GetAchievementRateScore((float)(score?.Proportion??0));
-                
-                _providerScores[listItem.ProviderId] += scoreValue;
-                
+                _providerScores[
+                    getTrainingCourseProviderListItems.First(c => c.OverallAchievementRate.HasValue).ProviderId] += 4;
             }
+            else
+            {
+                foreach (var listItem in getTrainingCourseProviderListItems
+                    .Where(c => c.OverallAchievementRate.HasValue)
+                    .OrderByDescending(c => c.OverallAchievementRate))
+                {
+                    var score = percentileValues.FirstOrDefault(x => x.Value == listItem.OverallAchievementRate); 
+                    var scoreValue = GetAchievementRateScore((float)(score?.Proportion??0));
+                
+                    _providerScores[listItem.ProviderId] += scoreValue;
+                
+                }    
+            }
+            
 
             foreach (var listItem in getTrainingCourseProviderListItems.Where(c => !c.OverallAchievementRate.HasValue))
             {
                 _providerScores[listItem.ProviderId] += GetAchievementRateScore(null);
             }
         }
-
         private static void AddFeedbackRateScore(IEnumerable<GetTrainingCourseProviderListItem> getTrainingCourseProviderListItems)
         {
             foreach (var listItem in getTrainingCourseProviderListItems)
@@ -159,7 +121,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 _providerScores.Add(listItem.ProviderId, feedbackScore);
             }
         }
-
         private static decimal GetFeedbackScore(int score)
         {
             return score switch

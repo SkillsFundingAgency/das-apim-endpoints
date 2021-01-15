@@ -44,11 +44,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             Assert.IsNotNull(model);
             model.TrainingCourse.Should().BeEquivalentTo(mediatorResult.Course, options => options
                 .Excluding(tc => tc.ApprenticeshipFunding)
-                .Excluding(tc => tc.StandardDates));
+                .Excluding(tc => tc.StandardDates)
+                .Excluding(tc => tc.Skills)
+                .Excluding(tc => tc.TypicalJobTitles)
+                .Excluding(tc => tc.CoreAndOptions)
+                .Excluding(tc => tc.CoreDuties));
 
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
             model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
 
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Null_Response_Then_Not_Found_Returned(
+            int standardCode,
+            GetTrainingCourseResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy]TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseQuery>(c=>
+                        c.Id.Equals(standardCode)
+                    ),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetTrainingCourseResult());
+
+            var controllerResult = await controller.Get(standardCode) as StatusCodeResult;
+            
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]

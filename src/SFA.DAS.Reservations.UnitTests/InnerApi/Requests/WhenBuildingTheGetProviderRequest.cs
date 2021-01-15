@@ -8,19 +8,16 @@ namespace SFA.DAS.Reservations.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetProviderRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(
-            int ukPrn,
-            string baseUrl)
+        public void Then_The_Url_Is_Correctly_Built(int ukPrn)
         {
             //Arrange Act
             var actual = new GetProviderRequest
             {
-                Ukprn = ukPrn,
-                BaseUrl = baseUrl
+                Ukprn = ukPrn
             };
             
             //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}api/providers/{ukPrn}");
+            actual.GetUrl.Should().Be($"api/providers/{ukPrn}");
         }
     }
 }

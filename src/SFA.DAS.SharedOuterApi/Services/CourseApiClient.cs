@@ -34,6 +34,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.Post<TResponse>(request);
         }
 
+        public Task Post<TData>(IPostApiRequest<TData> request)
+        {
+            return _apiClient.Post(request);
+        }
+
         public Task Delete(IDeleteApiRequest request)
         {
             return _apiClient.Delete(request);
@@ -52,6 +57,6 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task Put<TData>(IPutApiRequest<TData> request)
         {
             return _apiClient.Put(request);
-        }
+        }        
     }
 }

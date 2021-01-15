@@ -21,11 +21,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             _locationApiClient = locationApiClient;
         }
 
-        public async Task<LocationItem> GetLocationInformation(string location)
+        public async Task<LocationItem> GetLocationInformation(string location, double lat, double lon)
         {
             if (string.IsNullOrEmpty(location))
             {
                 return null;
+            }
+            
+            if (lat != 0 && lon != 0)
+            {
+                return new LocationItem(location, new []{ lat, lon});
             }
 
             GetLocationsListItem getLocationsListItem  = null;
@@ -39,20 +44,33 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeAndDistrictRequest(location.Split(' ').FirstOrDefault()));
                 if (getLocationsListItem.Location != null)
                 {
-                    location = $"{getLocationsListItem.Outcode} {getLocationsListItem.DistrictName}";
+                    location = getLocationsListItem.DisplayName;
                 }
             }
             else if(Regex.IsMatch(location, OutcodeRegex))
             {
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
             }
-            else if (location.Split(",").Length == 2)
+            else if (location.Split(",").Length >= 2)
             {
                 
                 var locationInformation = location.Split(",");
-                var locationName = locationInformation.First().Trim();
+                var locationName = string.Join(",",locationInformation.Take(locationInformation.Length-1)).Trim();
                 var authorityName = locationInformation.Last().Trim();
                 getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
+            }
+            
+            if (location.Length >= 2 && getLocationsListItem?.Location == null)
+            {
+                var locations = await _locationApiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(location));
+
+                var locationsListItem = locations?.Locations?.FirstOrDefault();
+                if (locationsListItem != null)
+                {
+                    getLocationsListItem = locationsListItem;
+                    location = getLocationsListItem.DisplayName;    
+                }
+                
             }
 
             return getLocationsListItem?.Location != null

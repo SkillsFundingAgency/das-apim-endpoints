@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Forecasting.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Forecasting.Api.Models
 {
@@ -21,9 +22,9 @@ namespace SFA.DAS.Forecasting.Api.Models
             {
                 Id = standard.Id,
                 Title = standard.Title,
-                FundingCap = standard.FundingCap,
+                FundingCap = standard.MaxFunding,
                 Level = standard.Level,
-                Duration = GetDuration(standard),
+                Duration = standard.TypicalDuration,
                 CourseType = ApprenticeshipCourseType.Standard,
                 FundingPeriods = standard.ApprenticeshipFunding?.Select(c => (FundingPeriod) c).ToList()
             };
@@ -43,24 +44,13 @@ namespace SFA.DAS.Forecasting.Api.Models
             };
         }
 
-        private static int GetDuration(GetStandardsListItem standard)
-        {
-            var duration = standard.ApprenticeshipFunding
-                .FirstOrDefault(c =>
-                    c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
-                                                           || c.EffectiveTo >= DateTime.UtcNow));
-            return duration?.Duration
-                   ?? standard.ApprenticeshipFunding.FirstOrDefault()?.Duration
-                   ?? 0;
-        }
-
         public class FundingPeriod
         {
             public DateTime EffectiveFrom { get; set; }
             public DateTime? EffectiveTo { get; set; }
             public int FundingCap { get; set; }
 
-            public static implicit operator FundingPeriod(GetStandardsListItem.FundingPeriod fundingPeriod)
+            public static implicit operator FundingPeriod(ApprenticeshipFunding fundingPeriod)
             {
                 return new FundingPeriod
                 {
