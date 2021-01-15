@@ -10,7 +10,7 @@ namespace SFA.DAS.FindEpao.Api.Models
         public string Name { get; set; }
         public string City { get; set; }
         public string Postcode { get; set; }
-        public DateTime? EffectiveFrom { get; set; }
+        public DateTime EffectiveFrom { get; set; }
 
         public IEnumerable<EpaoDeliveryArea> DeliveryAreas { get; set; }
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.FindEpao.Api.Models
                 City = source.City,
                 Postcode = source.Postcode,
                 DeliveryAreas = source.DeliveryAreas.Select(area => (EpaoDeliveryArea)area),
-                EffectiveFrom = source.CourseEpaoDetails.EffectiveFrom
+                EffectiveFrom = (DateTime) source.CourseEpaoDetails.EffectiveFrom
             };
         }
     }
