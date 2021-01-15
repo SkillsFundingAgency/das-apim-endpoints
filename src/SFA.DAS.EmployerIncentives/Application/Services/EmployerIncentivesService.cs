@@ -168,8 +168,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task RefreshLegalEntities(IEnumerable<Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages)
         {
-            var requestData = new RefreshLegalEntitiesRequestData { AccountLegalEntities = accountLegalEntities, PageNumber = pageNumber, PageSize = pageSize, TotalPages = totalPages };
-            await _client.Patch(new RefreshLegalEntitiesRequest { Data = requestData });
+            var accountLegalEntitiesData = new Dictionary<string, object>
+            {
+                { "AccountLegalEntities", accountLegalEntities },
+                { "PageNumber", pageNumber },
+                { "PageSize", pageSize },
+                { "TotalPages", totalPages }
+            };
+            var request = new RefreshLegalEntitiesRequestData { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
+            await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
