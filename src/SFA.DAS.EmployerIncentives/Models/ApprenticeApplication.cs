@@ -11,5 +11,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public long ULN { get; set; }
         public DateTime ApplicationDate { get; set; }
         public decimal TotalIncentiveAmount { get; set; }
+        public string CourseName { get; set; }
     }
 }
