@@ -759,7 +759,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DIG-PreProd (ARM)
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
