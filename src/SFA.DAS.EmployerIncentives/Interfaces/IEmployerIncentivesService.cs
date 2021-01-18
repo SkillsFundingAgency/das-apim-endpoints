@@ -34,6 +34,8 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         Task EarningsResilienceCheck();
         Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime();
+        Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
+
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

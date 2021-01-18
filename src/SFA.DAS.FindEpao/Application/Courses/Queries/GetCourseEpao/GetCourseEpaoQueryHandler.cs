@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.FindEpao.Interfaces;
@@ -18,20 +18,27 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 {
     public class GetCourseEpaoQueryHandler : IRequestHandler<GetCourseEpaoQuery, GetCourseEpaoResult>
     {
+        private readonly ILogger<GetCourseEpaoQueryHandler> _logger;
         private readonly IValidator<GetCourseEpaoQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ICachedDeliveryAreasService _cachedDeliveryAreasService;
+        private readonly ICourseEpaoIsValidFilterService _courseEpaoIsValidFilterService;
 
-        public GetCourseEpaoQueryHandler(IValidator<GetCourseEpaoQuery> validator,
+        public GetCourseEpaoQueryHandler(
+            ILogger<GetCourseEpaoQueryHandler> logger,
+            IValidator<GetCourseEpaoQuery> validator,
             IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ICachedDeliveryAreasService cachedDeliveryAreasService)
+            ICachedDeliveryAreasService cachedDeliveryAreasService,
+            ICourseEpaoIsValidFilterService courseEpaoIsValidFilterService)
         {
+            _logger = logger;
             _validator = validator;
             _assessorsApiClient = assessorsApiClient;
             _coursesApiClient = coursesApiClient;
             _cachedDeliveryAreasService = cachedDeliveryAreasService;
+            _courseEpaoIsValidFilterService = courseEpaoIsValidFilterService;
         }
 
         public async Task<GetCourseEpaoResult> Handle(GetCourseEpaoQuery request, CancellationToken cancellationToken)
@@ -52,6 +59,17 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             if (epaoTask.Result == default)
             {
+                throw new NotFoundException<GetCourseEpaoResult>();
+            }
+
+            var filteredEpaos = courseEpaosTask.Result
+                .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
+                .ToList();
+
+            if (!filteredEpaos.Any(item => string.Equals(item.EpaoId.ToLower(),
+                    request.EpaoId.ToLower(), StringComparison.CurrentCultureIgnoreCase)))
+            {
+                _logger.LogInformation($"Course [{request.CourseId}], EPAO [{request.EpaoId}] not active.");
                 throw new NotFoundException<GetCourseEpaoResult>();
             }
 
