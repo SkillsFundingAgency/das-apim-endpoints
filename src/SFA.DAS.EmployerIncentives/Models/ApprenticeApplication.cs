@@ -12,5 +12,8 @@ namespace SFA.DAS.EmployerIncentives.Models
         public DateTime ApplicationDate { get; set; }
         public decimal TotalIncentiveAmount { get; set; }
         public string CourseName { get; set; }
+        public string SubmittedByEmail { get; set; }
+        public PaymentStatus FirstPaymentStatus { get; set; }
+        public PaymentStatus SecondPaymentStatus { get; set; }
     }
 }
