@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
 {
     public static class MessageHandler
     {
