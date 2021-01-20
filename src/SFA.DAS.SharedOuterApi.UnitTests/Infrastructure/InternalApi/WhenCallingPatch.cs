@@ -1,18 +1,18 @@
-using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Hosting;
-using Moq;
-using Moq.Protected;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using Microsoft.AspNetCore.Hosting;
+using Moq;
+using Moq.Protected;
+using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
 {
     public class WhenCallingPatch
     {
