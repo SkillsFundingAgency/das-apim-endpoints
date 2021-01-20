@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
-    public class ApprenticeCommitmentsService //: IEmployerIncentivesService
+    public class ApprenticeCommitmentsService 
     {
         private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
 

@@ -10,7 +10,7 @@ namespace SFA.DAS.ApprenticeCommitments.Infrastructure
 {
     public class ApprenticeCommitmentsHealthCheck : IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Employer Incentives Api Health Check";
+        private const string HealthCheckResultDescription = "Apprentice Commitments Api Health Check";
         private readonly ApprenticeCommitmentsService service;
 
         public ApprenticeCommitmentsHealthCheck(ApprenticeCommitmentsService service)

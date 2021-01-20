@@ -122,6 +122,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitmen
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApprenticeCommitments", "ApprenticeCommitments", "{004A1C54-DC52-4F7D-81A3-ADF890B32C4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests", "SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests\SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.csproj", "{854A0A07-AB2B-451C-A293-A31BE8E72A5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6FA56C79-CA84-4B2D-AB2C-2B1068516F0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -280,6 +284,10 @@ Global
 		{0352E8B5-EC2D-4398-BB14-0A9EAB3304D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0352E8B5-EC2D-4398-BB14-0A9EAB3304D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0352E8B5-EC2D-4398-BB14-0A9EAB3304D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{854A0A07-AB2B-451C-A293-A31BE8E72A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{854A0A07-AB2B-451C-A293-A31BE8E72A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{854A0A07-AB2B-451C-A293-A31BE8E72A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{854A0A07-AB2B-451C-A293-A31BE8E72A5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -332,6 +340,8 @@ Global
 		{1789CBEA-9661-4242-A1E1-F626654CE687} = {F4C1F622-D68E-4E39-9CAB-DDFC4514C3E5}
 		{4729B939-AA32-48DF-9CC5-85CFB897DAF1} = {004A1C54-DC52-4F7D-81A3-ADF890B32C4C}
 		{0352E8B5-EC2D-4398-BB14-0A9EAB3304D4} = {004A1C54-DC52-4F7D-81A3-ADF890B32C4C}
+		{854A0A07-AB2B-451C-A293-A31BE8E72A5B} = {6FA56C79-CA84-4B2D-AB2C-2B1068516F0C}
+		{6FA56C79-CA84-4B2D-AB2C-2B1068516F0C} = {004A1C54-DC52-4F7D-81A3-ADF890B32C4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
