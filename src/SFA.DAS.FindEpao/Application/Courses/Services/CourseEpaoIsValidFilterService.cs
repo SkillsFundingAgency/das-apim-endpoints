@@ -25,6 +25,11 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
                 return false;
             }
 
+            if (!courseEpao.CourseEpaoDetails.EffectiveFrom.HasValue)
+            {
+                return false;
+            }
+
             return true;
         }
     }
