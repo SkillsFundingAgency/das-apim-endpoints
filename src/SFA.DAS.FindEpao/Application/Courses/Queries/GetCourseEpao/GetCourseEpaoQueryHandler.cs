@@ -21,7 +21,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
         private readonly ILogger<GetCourseEpaoQueryHandler> _logger;
         private readonly IValidator<GetCourseEpaoQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ICachedDeliveryAreasService _cachedDeliveryAreasService;
         private readonly ICachedCoursesService _cachedCoursesService;
         private readonly ICourseEpaoIsValidFilterService _courseEpaoIsValidFilterService;
@@ -30,7 +29,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             ILogger<GetCourseEpaoQueryHandler> logger,
             IValidator<GetCourseEpaoQuery> validator,
             IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
-            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             ICachedDeliveryAreasService cachedDeliveryAreasService,
             ICachedCoursesService cachedCoursesService,
             ICourseEpaoIsValidFilterService courseEpaoIsValidFilterService)
@@ -38,7 +36,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             _logger = logger;
             _validator = validator;
             _assessorsApiClient = assessorsApiClient;
-            _coursesApiClient = coursesApiClient;
             _cachedDeliveryAreasService = cachedDeliveryAreasService;
             _cachedCoursesService = cachedCoursesService;
             _courseEpaoIsValidFilterService = courseEpaoIsValidFilterService;
@@ -57,10 +54,9 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 new GetCourseEpaosRequest {CourseId = request.CourseId});
             var epaoCoursesTask = _assessorsApiClient.GetAll<GetEpaoCourseListItem>(new GetEpaoCoursesRequest(request.EpaoId));
             var areasTask = _cachedDeliveryAreasService.GetDeliveryAreas();
-            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
             var coursesTask = _cachedCoursesService.GetCourses();
             
-            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, courseTask, coursesTask);
+            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask);
 
             if (epaoTask.Result == default)
             {
@@ -88,7 +84,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             return new GetCourseEpaoResult
             {
                 Epao = epaoTask.Result,
-                Course = courseTask.Result,//todo: get from course list
+                Course = coursesTask.Result.Standards.Single(item => item.Id == request.CourseId),
                 EpaoDeliveryAreas = courseEpao.DeliveryAreas,
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
