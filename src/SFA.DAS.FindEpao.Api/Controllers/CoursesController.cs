@@ -109,10 +109,13 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                     Course = queryResult.Course,
                     Epao = queryResult.Epao,
                     CourseEpaosCount = queryResult.CourseEpaosCount,
-                    EpaoDeliveryAreas =
-                        queryResult.EpaoDeliveryAreas.Select(area => (EpaoDeliveryArea) area),
-                    DeliveryAreas =
-                        queryResult.DeliveryAreas.Select(item => (GetDeliveryAreaListItem) item)
+                    EffectiveFrom = queryResult.EffectiveFrom,
+                    EpaoDeliveryAreas = queryResult.EpaoDeliveryAreas
+                        .Select(area => (EpaoDeliveryArea) area),
+                    DeliveryAreas = queryResult.DeliveryAreas
+                        .Select(item => (GetDeliveryAreaListItem) item),
+                    OtherCourses = queryResult.OtherCourses
+                        .Select(item => (GetCourseListItem)item)
                 };
 
                 return Ok(model);
