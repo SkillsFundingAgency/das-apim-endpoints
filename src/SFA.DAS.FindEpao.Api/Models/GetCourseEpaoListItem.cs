@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SFA.DAS.FindEpao.Api.Models
@@ -9,6 +10,7 @@ namespace SFA.DAS.FindEpao.Api.Models
         public string Name { get; set; }
         public string City { get; set; }
         public string Postcode { get; set; }
+        public DateTime EffectiveFrom { get; set; }
 
         public IEnumerable<EpaoDeliveryArea> DeliveryAreas { get; set; }
 
@@ -20,7 +22,8 @@ namespace SFA.DAS.FindEpao.Api.Models
                 Name = source.Name,
                 City = source.City,
                 Postcode = source.Postcode,
-                DeliveryAreas = source.DeliveryAreas.Select(area => (EpaoDeliveryArea)area)
+                DeliveryAreas = source.DeliveryAreas.Select(area => (EpaoDeliveryArea)area),
+                EffectiveFrom = (DateTime) source.CourseEpaoDetails.EffectiveFrom
             };
         }
     }

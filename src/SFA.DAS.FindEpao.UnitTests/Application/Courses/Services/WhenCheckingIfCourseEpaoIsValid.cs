@@ -25,6 +25,9 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Services
         //effectiveTo
         [InlineAutoData(false, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Past)]
         [InlineAutoData(true, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Present)]
+        //effectiveFrom
+        [InlineAutoData(false, "Live", DateOccurrence.Past, null, DateOccurrence.Future)]
+        [InlineAutoData(true, "Live", DateOccurrence.Past, DateOccurrence.Past, DateOccurrence.Future)]
         public void Check_Validity(
             bool isValid,
             string status,
