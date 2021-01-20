@@ -98,16 +98,19 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_Epao_From_Assessors_Api_And_Course_From_Courses_Api_And_DeliveryAreas_From_Cache(
+        public async Task Then_Gets_Epao_From_Assessors_Api_And_Course_From_Courses_Api_And_DeliveryAreas_From_Cache_And_Other_Courses_From_Cache(
             GetCourseEpaoQuery query,
             GetEpaoResponse epaoApiResponse,
             List<GetCourseEpaoListItem> courseEpaosApiResponse,
+            List<GetEpaoCourseListItem> epaoCoursesApiResponse,
             GetStandardsListItem coursesApiResponse,
             List<GetDeliveryAreaListItem> areasFromCache,
+            GetStandardsListResponse coursesFromCache,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICachedDeliveryAreasService> mockCacheService,
+            [Frozen] Mock<ICachedDeliveryAreasService> mockCachedAreasService,
             [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
+            [Frozen] Mock<ICacheStorageService> mockCachedCoursesService,
             GetCourseEpaoQueryHandler handler)
         {
             courseEpaosApiResponse[0].EpaoId = query.EpaoId.ToLower();
@@ -119,16 +122,23 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                 .Setup(client => client.GetAll<GetCourseEpaoListItem>(
                     It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
                 .ReturnsAsync(courseEpaosApiResponse);
-            mockCacheService
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetEpaoCourseListItem>(
+                    It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(epaoCoursesApiResponse);
+            mockCachedAreasService
                 .Setup(service => service.GetDeliveryAreas())
                 .ReturnsAsync(areasFromCache);
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(
                     It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
+            mockCachedCoursesService
+                .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetAllStandardsListRequest)))
+                .ReturnsAsync(coursesFromCache);
             mockCourseEpaoFilter
-                .Setup(service => service.IsValidCourseEpao(It.Is<GetCourseEpaoListItem>(item => item.EpaoId == query.EpaoId.ToLower())))
-                .Returns(true);
+                .Setup(service => service.IsValidCourseEpao(It.IsAny<GetCourseEpaoListItem>()))
+                .Returns<GetCourseEpaoListItem>(item => item.EpaoId == query.EpaoId.ToLower());
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -137,7 +147,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count(item => item.EpaoId == query.EpaoId.ToLower()));//filter returns true
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
+            //todo: result.OtherCourses.Should().BeEquivalentTo()//get course for each "other courses"
             //todo: effectivefromdate
+            result.EffectiveFrom.Should().Be(courseEpaosApiResponse
+                .Single(item => item.EpaoId == query.EpaoId.ToLower())
+                .CourseEpaoDetails.EffectiveFrom.Value);
         }
     }
 }
