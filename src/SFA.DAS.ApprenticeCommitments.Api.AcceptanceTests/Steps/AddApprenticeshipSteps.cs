@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Common;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.InnerApi.Requests;
 using TechTalk.SpecFlow;
-using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -21,7 +18,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class AddApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private HttpResponseMessage _response;
         private CreateApprenticeshipCommand _request;
         private Dictionary<string, string> _errors;
 
