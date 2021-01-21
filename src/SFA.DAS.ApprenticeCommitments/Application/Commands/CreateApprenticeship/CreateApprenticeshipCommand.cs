@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {
     public class CreateApprenticeshipCommand : IRequest
     {

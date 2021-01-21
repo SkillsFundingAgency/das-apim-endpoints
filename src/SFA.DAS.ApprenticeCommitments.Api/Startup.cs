@@ -13,11 +13,11 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeCommitments.Api.AppStart;
 using SFA.DAS.ApprenticeCommitments.Api.ErrorHandler;
-using SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.ApprenticeCommitments.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 
 namespace SFA.DAS.ApprenticeCommitments.Api
 {

@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {

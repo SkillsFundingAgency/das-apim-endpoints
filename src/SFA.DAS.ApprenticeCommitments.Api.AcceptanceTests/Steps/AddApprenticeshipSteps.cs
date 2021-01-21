@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using SFA.DAS.ApprenticeCommitments.Apprenticeship.Commands;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
