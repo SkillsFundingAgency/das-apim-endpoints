@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api;
+using SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
 {

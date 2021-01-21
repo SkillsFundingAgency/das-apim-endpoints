@@ -14,7 +14,7 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
 {
     public class WhenCallingPostResponse
     {

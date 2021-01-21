@@ -84,13 +84,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Approvals", "Approvals", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{161FC2A1-D2F7-4EBB-A944-390CDA476701}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Approvals.Api", "SFA.DAS.Approvals.Api\SFA.DAS.Approvals.Api.csproj", "{4149FED7-DC00-4133-89CC-930CB7FFB647}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.Api", "SFA.DAS.Approvals.Api\SFA.DAS.Approvals.Api.csproj", "{4149FED7-DC00-4133-89CC-930CB7FFB647}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Approvals", "SFA.DAS.Approvals\SFA.DAS.Approvals.csproj", "{90E17E22-0FCD-46BC-A76E-99D3033A53AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals", "SFA.DAS.Approvals\SFA.DAS.Approvals.csproj", "{90E17E22-0FCD-46BC-A76E-99D3033A53AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Approvals.UnitTests", "SFA.DAS.Approvals.UnitTests\SFA.DAS.Approvals.UnitTests.csproj", "{3D180DE0-1332-4552-95F7-81A2FE7D9307}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.UnitTests", "SFA.DAS.Approvals.UnitTests\SFA.DAS.Approvals.UnitTests.csproj", "{3D180DE0-1332-4552-95F7-81A2FE7D9307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Approvals.Api.UnitTests", "SFA.DAS.Approvals.Api.UnitTests\SFA.DAS.Approvals.Api.UnitTests.csproj", "{C246D034-D084-4977-AB34-92FD7F8C7118}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.Api.UnitTests", "SFA.DAS.Approvals.Api.UnitTests\SFA.DAS.Approvals.Api.UnitTests.csproj", "{C246D034-D084-4977-AB34-92FD7F8C7118}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EpaoRegister", "EpaoRegister", "{384B2933-A0A7-4E05-B502-1B167F28E3C7}"
 EndProject
@@ -108,13 +108,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManageApprenticeships", "Ma
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F4C1F622-D68E-4E39-9CAB-DDFC4514C3E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ManageApprenticeships", "SFA.DAS.ManageApprenticeships\SFA.DAS.ManageApprenticeships.csproj", "{C5F92EAD-0326-4D61-BE94-289501861E82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ManageApprenticeships", "SFA.DAS.ManageApprenticeships\SFA.DAS.ManageApprenticeships.csproj", "{C5F92EAD-0326-4D61-BE94-289501861E82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ManageApprenticeships.Api", "SFA.DAS.ManageApprenticeships.Api\SFA.DAS.ManageApprenticeships.Api.csproj", "{66A57725-EB0A-4E83-8AC0-49A4F0B13B29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ManageApprenticeships.Api", "SFA.DAS.ManageApprenticeships.Api\SFA.DAS.ManageApprenticeships.Api.csproj", "{66A57725-EB0A-4E83-8AC0-49A4F0B13B29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ManageApprenticeships.UnitTests", "SFA.DAS.ManageApprenticeships.UnitTests\SFA.DAS.ManageApprenticeships.UnitTests.csproj", "{2F6C67BC-7FB6-4027-A30F-66C501504AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ManageApprenticeships.UnitTests", "SFA.DAS.ManageApprenticeships.UnitTests\SFA.DAS.ManageApprenticeships.UnitTests.csproj", "{2F6C67BC-7FB6-4027-A30F-66C501504AC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ManageApprenticeships.Api.UnitTests", "SFA.DAS.ManageApprenticeships.Api.UnitTests\SFA.DAS.ManageApprenticeships.Api.UnitTests.csproj", "{1789CBEA-9661-4242-A1E1-F626654CE687}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ManageApprenticeships.Api.UnitTests", "SFA.DAS.ManageApprenticeships.Api.UnitTests\SFA.DAS.ManageApprenticeships.Api.UnitTests.csproj", "{1789CBEA-9661-4242-A1E1-F626654CE687}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Recruit", "Recruit", "{637A92FC-6109-454D-A659-3F026C94ADB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{23107AE7-B188-4621-B85F-9F83F8F2AC25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit.Api.UnitTests", "SFA.DAS.Recruit.Api.UnitTests\SFA.DAS.Recruit.Api.UnitTests.csproj", "{3134D3A3-DBAB-44A5-954B-AA3316A9D175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit.UnitTests", "SFA.DAS.Recruit.UnitTests\SFA.DAS.Recruit.UnitTests.csproj", "{E170EAC0-EF15-418C-8872-A4A5740CD16F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit", "SFA.DAS.Recruit\SFA.DAS.Recruit.csproj", "{7D37BA6C-78A2-4665-A201-2280141005E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit.Api", "SFA.DAS.Recruit.Api\SFA.DAS.Recruit.Api.csproj", "{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -218,7 +230,6 @@ Global
 		{A819EEA4-B38A-48AB-8076-44342DF909A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A819EEA4-B38A-48AB-8076-44342DF909A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A819EEA4-B38A-48AB-8076-44342DF909A1}.Release|Any CPU.Build.0 = Release|Any CPU
-
 		{4149FED7-DC00-4133-89CC-930CB7FFB647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4149FED7-DC00-4133-89CC-930CB7FFB647}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4149FED7-DC00-4133-89CC-930CB7FFB647}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -267,6 +278,22 @@ Global
 		{1789CBEA-9661-4242-A1E1-F626654CE687}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1789CBEA-9661-4242-A1E1-F626654CE687}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1789CBEA-9661-4242-A1E1-F626654CE687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3134D3A3-DBAB-44A5-954B-AA3316A9D175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3134D3A3-DBAB-44A5-954B-AA3316A9D175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3134D3A3-DBAB-44A5-954B-AA3316A9D175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3134D3A3-DBAB-44A5-954B-AA3316A9D175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E170EAC0-EF15-418C-8872-A4A5740CD16F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E170EAC0-EF15-418C-8872-A4A5740CD16F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E170EAC0-EF15-418C-8872-A4A5740CD16F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E170EAC0-EF15-418C-8872-A4A5740CD16F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D37BA6C-78A2-4665-A201-2280141005E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D37BA6C-78A2-4665-A201-2280141005E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D37BA6C-78A2-4665-A201-2280141005E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D37BA6C-78A2-4665-A201-2280141005E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -317,6 +344,11 @@ Global
 		{66A57725-EB0A-4E83-8AC0-49A4F0B13B29} = {40F870DE-B080-45B3-AA54-0AC005349881}
 		{2F6C67BC-7FB6-4027-A30F-66C501504AC2} = {F4C1F622-D68E-4E39-9CAB-DDFC4514C3E5}
 		{1789CBEA-9661-4242-A1E1-F626654CE687} = {F4C1F622-D68E-4E39-9CAB-DDFC4514C3E5}
+		{23107AE7-B188-4621-B85F-9F83F8F2AC25} = {637A92FC-6109-454D-A659-3F026C94ADB1}
+		{3134D3A3-DBAB-44A5-954B-AA3316A9D175} = {23107AE7-B188-4621-B85F-9F83F8F2AC25}
+		{E170EAC0-EF15-418C-8872-A4A5740CD16F} = {23107AE7-B188-4621-B85F-9F83F8F2AC25}
+		{7D37BA6C-78A2-4665-A201-2280141005E4} = {637A92FC-6109-454D-A659-3F026C94ADB1}
+		{AAB2293B-00FF-42A1-B3BC-BFEBA1D3B52F} = {637A92FC-6109-454D-A659-3F026C94ADB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
