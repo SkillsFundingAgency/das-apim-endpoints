@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public decimal? PaymentAmount { get; set; }
         public DateTime? PaymentDate { get; set; }
         public bool LearnerMatchNotFound { get; set; }
+        public bool HasDataLock { get; set; }
     }
 }
