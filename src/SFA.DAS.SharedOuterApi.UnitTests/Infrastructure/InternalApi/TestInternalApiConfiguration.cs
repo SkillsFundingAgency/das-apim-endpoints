@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Api
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
 {
     public class TestInternalApiConfiguration : IInternalApiConfiguration
     {
