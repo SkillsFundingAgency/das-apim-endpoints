@@ -15,9 +15,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
 
         [BeforeScenario(Order = 1)]
         public void Initialise()
-        {
-            if(_context.InnerApi == null)
-                _context.InnerApi = new MockApi();
+        { 
+            _context.InnerApi ??= new MockApi();
         }
     }
 }
