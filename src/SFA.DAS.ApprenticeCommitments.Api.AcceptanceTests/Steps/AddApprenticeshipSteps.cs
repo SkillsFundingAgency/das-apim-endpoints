@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.InnerApi.Requests;
 using TechTalk.SpecFlow;
+using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -20,9 +23,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private readonly TestContext _context;
         private HttpResponseMessage _response;
         private CreateApprenticeshipCommand _request;
+        private Dictionary<string, string> _errors;
+
         public AddApprenticeshipSteps(TestContext context)
         {
             _context = context;
+            _errors = new Dictionary<string, string>();
+            _errors.Add("apprenticeshipId", "Not valid");
+            _errors.Add("email", "Not valid");
         }
 
         [Given(@"apprenticeship details are valid")]
@@ -32,6 +40,16 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             {
                 ApprenticeshipId = 1020,
                 Email = "Test@Test.com"
+            };
+        }
+
+        [Given(@"apprenticeship details are not valid")]
+        public void GivenApprenticeshipDetailsAreNotValid()
+        {
+            _request = new CreateApprenticeshipCommand
+            {
+                ApprenticeshipId = 0,
+                Email = "noemail"
             };
         }
 
@@ -48,8 +66,23 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 );
         }
 
-        [When(@"the apprenticeship is saved")]
-        public async Task WhenTheApprenticeshipIsSaved()
+        [Given(@"the inner api will return a bad request")]
+        public void GivenTheInnerApiWillReturnABadRequest()
+        {
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/apprenticeships")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.BadRequest)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(_errors))
+                );
+        }
+
+        [When(@"the apprenticeship is posted")]
+        public async Task WhenTheApprenticeshipIsPosted()
         {
             await _context.OuterApiClient.Post("apprenticeships", _request);
         }
@@ -58,6 +91,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenTheResultShouldBeAccepted()
         {
             _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        }
+
+        [Then(@"the result should be Bad Request")]
+        public void ThenTheResultShouldBeBadRequest()
+        {
+            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Then(@"the request to the inner api was mapped correctly")]
@@ -73,5 +112,16 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.Email.Should().Be(_request.Email);
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
         }
+
+        [Then(@"the result should contain errors")]
+        public async Task ThenTheResultShouldContainErrors()
+        {
+            var content = await _context.OuterApiClient.Response.Content.ReadAsStringAsync();
+
+            var errors = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+
+            errors.Should().BeEquivalentTo(_errors);
+        }
+
     }
 }
