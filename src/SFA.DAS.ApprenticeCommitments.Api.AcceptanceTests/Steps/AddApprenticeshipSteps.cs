@@ -1,8 +1,12 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.InnerApi.Requests;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -54,6 +58,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenTheResultShouldBeAccepted()
         {
             _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        }
+
+        [Then(@"the request to the inner api was mapped correctly")]
+        public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Count().Should().Be(1);
+            var log = logs.First();
+            
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(log.RequestMessage.Body);
+            innerApiRequest.Should().NotBeNull();
+            innerApiRequest.RegistrationId.Should().NotBe(Guid.Empty);
+            innerApiRequest.Email.Should().Be(_request.Email);
+            innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
         }
     }
 }
