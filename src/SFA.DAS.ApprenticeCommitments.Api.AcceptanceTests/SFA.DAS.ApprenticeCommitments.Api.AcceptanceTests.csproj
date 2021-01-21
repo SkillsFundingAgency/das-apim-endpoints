@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\HealthChecks - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\HealthChecks.feature.cs" />
   </ItemGroup>
 

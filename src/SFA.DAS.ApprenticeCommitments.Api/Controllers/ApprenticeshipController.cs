@@ -17,7 +17,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
         {
             await _mediator.Send(request);
-            return Ok();
+            return Accepted();
         }
     }
 }

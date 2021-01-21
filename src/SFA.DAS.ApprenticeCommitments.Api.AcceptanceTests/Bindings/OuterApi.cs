@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
@@ -8,7 +7,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
     [Scope(Tag = "outerApi")]
     public class OuterApi
     {
-        public static HttpClient Client { get; set; }
+        public static ApprenticeCommitmentsApi Client { get; set; }
 
         private readonly TestContext _context;
         
@@ -17,7 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
             _context = context;
         }
         
-        [BeforeScenario()]
+        [BeforeScenario(Order = 10)]
         public void Initialise()
         {
             if (Client == null)
@@ -31,10 +30,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
                 };
 
                 var factory = new LocalWebApplicationFactory<Startup>(config);
-                Client = factory.CreateClient();
+                Client = new ApprenticeCommitmentsApi(factory.CreateClient());
             }
 
             _context.OuterApiClient = Client;
         }
+
+        [AfterFeature()]
+        public static void CleanUpFeature()
+        {
+            Client?.Dispose();
+            Client = null;
+        }
+
     }
 }
