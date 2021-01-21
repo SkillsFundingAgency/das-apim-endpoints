@@ -13,7 +13,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public ApprenticeshipController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost]
-        [Route("/apprenticeship")]
+        [Route("/apprenticeships")]
         public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
         {
             await _mediator.Send(request);
