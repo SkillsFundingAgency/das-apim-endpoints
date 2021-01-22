@@ -6,6 +6,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
     [Scope(Tag = "innerApi")]
     public class InnerApi
     {
+        public static MockApi Client { get; set; }
+
         private readonly TestContext _context;
 
         public InnerApi(TestContext context)
@@ -16,7 +18,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
         [BeforeScenario(Order = 1)]
         public void Initialise()
         { 
-            _context.InnerApi ??= new MockApi();
+            Client??= new MockApi();
+            _context.InnerApi = Client;
+        }
+
+        [AfterScenario()]
+        public static void CleanUp()
+        {
+            Client?.Reset();
+        }
+
+        [AfterFeature()]
+        public static void CleanUpFeature()
+        {
+            Client?.Dispose();
+            Client = null;
         }
     }
 }

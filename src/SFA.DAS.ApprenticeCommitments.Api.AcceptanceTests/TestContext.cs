@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 {
@@ -22,7 +21,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 
             if (disposing)
             {
-                InnerApi?.Dispose();
             }
 
             _isDisposed = true;
