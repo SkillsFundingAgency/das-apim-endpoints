@@ -437,22 +437,22 @@ stages:
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)      
 
-- template: pipeline-templates/job/deploy-api.yml
-  parameters:
-    DeploymentName: Deploy_Campaign
-    DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
-    DeploymentApprovals: DEV
-    ServiceConnection: SFA-DAS-DevTest-ARM
-    AppServiceName: $(CampaignOuterApiAppServiceName)
-    DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-    ApimResourceGroup: $(ApimResourceGroup)
-    ApimInstanceName: $(InstanceName)
-    AppServiceResourceGroup: $(ResourceGroupName)
-    ApiVersionSetName: $(CampaignOuterApiVersionSetName)
-    ApiPath: $(CampaignOuterApiPath)
-    ApiBaseUrl: $(CampaignOuterApiBaseUrl)
-    ProductId: $(CampaignProductId)
-    ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)     
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Campaign
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(CampaignOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(CampaignOuterApiVersionSetName)
+      ApiPath: $(CampaignOuterApiPath)
+      ApiBaseUrl: $(CampaignOuterApiBaseUrl)
+      ProductId: $(CampaignProductId)
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)     
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -1002,22 +1002,22 @@ stages:
   #     ProductId: $(RecruitProductId)
   #     ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
   
-#  - template: pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_Campaign
-#      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
-#      DeploymentApprovals: PROD
-#      ServiceConnection: SFA-DAS-Prod-ARM
-#      AppServiceName: $(CampaignOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-#      ApimResourceGroup: $(ApimResourceGroup)
-#      ApimInstanceName: $(InstanceName)
-#      AppServiceResourceGroup: $(ResourceGroupName)
-#      ApiVersionSetName: $(CampaignOuterApiVersionSetName)
-#      ApiPath: $(CampaignOuterApiPath)
-#      ApiBaseUrl: $(CampaignOuterApiBaseUrl)
-#      ProductId: $(CampaignProductId)
-#      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+  #  - template: pipeline-templates/job/deploy-api.yml
+  #    parameters:
+  #      DeploymentName: Deploy_Campaign
+  #      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
+  #      DeploymentApprovals: PROD
+  #      ServiceConnection: SFA-DAS-Prod-ARM
+  #      AppServiceName: $(CampaignOuterApiAppServiceName)
+  #      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
+  #      ApimResourceGroup: $(ApimResourceGroup)
+  #      ApimInstanceName: $(InstanceName)
+  #      AppServiceResourceGroup: $(ResourceGroupName)
+  #      ApiVersionSetName: $(CampaignOuterApiVersionSetName)
+  #      ApiPath: $(CampaignOuterApiPath)
+  #      ApiBaseUrl: $(CampaignOuterApiBaseUrl)
+  #      ProductId: $(CampaignProductId)
+  #      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
 - stage: Deploy_MO
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
