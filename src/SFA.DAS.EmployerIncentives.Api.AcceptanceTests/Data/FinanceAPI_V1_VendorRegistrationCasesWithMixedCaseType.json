@@ -1,0 +1,36 @@
+{
+    "RegistrationCases": [
+        {
+            "CaseID": "AF230449027",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "P0007983",
+            "ApprenticeshipLegalEntityID": "DW5T8V",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "New",
+            "VendorName": "",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-13",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-13 08:38:21"
+        },
+        {
+            "CaseID": "AF23049000",
+            "VendorType": "EMPLOYER",
+            "SubmittedVendorIdentifier": "",
+            "ApprenticeshipLegalEntityID": "HEN123",
+            "UKPRN": "",
+            "URN": "114286",
+            "VendorCompanyRegistrationNo": "",
+            "CaseType": "Amend",
+            "VendorName": "Eden Learning Trust",
+            "CaseStatusReasons": [],
+            "CaseStatus": "To Process",
+            "CaseReceivedDate": "2020-08-09",
+            "CaseRequestedEffectiveDate": "2020-09-01",
+            "CaseStatusLastUpdatedDate": "2020-08-14 08:14:47"
+        }
+    ]
+}
