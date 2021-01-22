@@ -830,7 +830,7 @@ stages:
       DeploymentName: Deploy_Campaign
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: SFA-DAS-PreProd-ARM
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1007,7 +1007,7 @@ stages:
   #      DeploymentName: Deploy_Campaign
   #      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
   #      DeploymentApprovals: PROD
-  #      ServiceConnection: SFA-DAS-Prod-ARM
+  #      ServiceConnection: SFA-DIG-Prod-ARM
   #      AppServiceName: $(CampaignOuterApiAppServiceName)
   #      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
   #      ApimResourceGroup: $(ApimResourceGroup)
@@ -1166,7 +1166,7 @@ stages:
     #     DeploymentName: Deploy_Recruit
     #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
     #     DeploymentApprovals: MO
-    #     ServiceConnection: SFA-DIG-ModelOffice-ARM
+    #     ServiceConnection: SFA-ASM-ModelOffice-ARM
     #     AppServiceName: $(RecruitOuterApiAppServiceName)
     #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
     #     ApimResourceGroup: $(ApimResourceGroup)
@@ -1183,7 +1183,7 @@ stages:
     #      DeploymentName: Deploy_Campaign
     #      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
     #      DeploymentApprovals: MO
-    #      ServiceConnection: SFA-DAS-ModelOffice-ARM
+    #      ServiceConnection: SFA-ASM-ModelOffice-ARM
     #      AppServiceName: $(CampaignOuterApiAppServiceName)
     #      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
     #      ApimResourceGroup: $(ApimResourceGroup)
