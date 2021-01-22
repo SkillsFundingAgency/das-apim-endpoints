@@ -20,11 +20,6 @@
 
 
     <ItemGroup>
-      <Folder Include="Application\Queries\TrainingCourses" />
-    </ItemGroup>
-
-
-    <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.Campaign\SFA.DAS.Campaign.csproj" />
     </ItemGroup>
 

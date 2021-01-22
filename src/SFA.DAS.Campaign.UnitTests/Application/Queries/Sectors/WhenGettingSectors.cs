@@ -24,12 +24,15 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Sectors
             GetSectorsQueryHandler handler
         )
         {
+            //Arrange
             cacheStorageService.Setup(x => x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
                 .ReturnsAsync((GetSectorsListResponse)default);
             apiClient.Setup(x => x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>())).ReturnsAsync(apiResponse);
 
+            //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
+            //Assert
             actual.Sectors.Should().BeEquivalentTo(apiResponse.Sectors);
             cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse), apiResponse, 23));
         }
@@ -42,11 +45,14 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Sectors
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetSectorsQueryHandler handler)
         {
+            //Arrange
             cacheStorageService.Setup(x => x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
                 .ReturnsAsync(apiResponse);
             
+            //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
+            //Assert
             actual.Sectors.Should().BeEquivalentTo(apiResponse.Sectors);
             apiClient.Verify(x => x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
         }
