@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public string LastName { get; set; }
         public string CourseName { get; set; }
         public decimal TotalIncentiveAmount { get; set; }
+        public long Uln { get; set; }
     }
 }
