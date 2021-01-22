@@ -1,17 +1,17 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerIncentives.Extensions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand>
+    public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand, DateTime>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
@@ -27,20 +27,24 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
+        public async Task<DateTime> Handle(RefreshVendorRegistrationFormCaseStatusCommand request, CancellationToken cancellationToken)
         {
-            var lastUpdateDateTime = await GetLastUpdateDateTime();
+            var currentDateTime = DateTime.UtcNow;
+            var toDateDateTime = request.FromDateTime.AddDays(1);
+            request.ToDateTime = toDateDateTime;
+
             GetVendorRegistrationCaseStatusUpdateResponse response = null;
             var pageNo = 0;
 
             do
             {
                 pageNo++;
-                response = await GetUpdatesFromFinanceApi(lastUpdateDateTime, response?.SkipCode);
+                response = await GetUpdatesFromFinanceApi(request, response?.SkipCode);
                 await SendUpdates(response);
             } while (HasNextPage(response) && pageNo < 5);
 
-            return Unit.Value;
+            var nextRunDateTime = toDateDateTime < currentDateTime ? toDateDateTime : currentDateTime;
+            return await Task.FromResult(nextRunDateTime);
         }
 
         private static bool HasNextPage(GetVendorRegistrationCaseStatusUpdateResponse response)
@@ -67,28 +71,19 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 .Select(UpdateVendorRegistrationCaseStatus));
         }
 
-        private async Task<DateTime> GetLastUpdateDateTime()
+        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request, string skipCode)
         {
-            var response = await _incentivesService.GetLatestVendorRegistrationCaseUpdateDateTime();
+            _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}] [SkipCode='{skipCode}']", request.FromDateTime, request.ToDateTime, skipCode);
 
-            return response.LastUpdateDateTime ?? DateTime.SpecifyKind(DateTime.Parse("01/08/2020", new CultureInfo("en-GB")), DateTimeKind.Utc);
-        }
-
-        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(DateTime fromDateTime, string skipCode)
-        {
-            _logger.LogInformation("[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom: {fromDateTime}]", fromDateTime);
-
-            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(fromDateTime, skipCode);
+            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime, skipCode);
 
             if (response?.RegistrationCases == null)
             {
-                _logger.LogError("[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom: {fromDateTime}, SkipCode: {SkipCode}]", fromDateTime, skipCode);
-                return response;
+                _logger.LogError($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()} [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
+                throw new ArgumentNullException($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()} [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]");
             }
 
-            _logger.LogInformation("[VRF Refresh] {Cases} cases returned by the Finance API with parameters: [DateTimeFrom: {fromDateTime}, SkipCode: {SkipCode}]",
-                response.RegistrationCases.Count, fromDateTime, skipCode);
-
+            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
             return response;
         }
     }
