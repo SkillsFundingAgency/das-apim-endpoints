@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"Refresh Vendor Registration Form Status is invoked")]
         public async Task WhenRefreshVendorRegistrationFormStatusIsInvoked()
         {
-            SetResponseFromFinanceApi();
+            SetResponseFromFinanceApi(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate);
             SetupExpectedEmployerIncentivesApiCalls();
 
             var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
@@ -49,7 +49,27 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 .UsingPatch()).Should().HaveCount(4);
         }
 
-        private void SetResponseFromFinanceApi()
+        [When(@"Refresh Vendor Registration Form Status is invoked and New and other case types exist in VRF")]
+        public async Task WhenRefreshVendorRegistrationFormStatusIsInvokedAndNewAndOtherCaseTypesExistInVRF()
+        {
+            SetResponseFromFinanceApi(TestData.FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType);
+            SetupExpectedEmployerIncentivesApiCalls();
+
+            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
+            _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(""));
+        }
+
+        [Then(@"VRF case details are updated only for legal entities with a case type of New")]
+        public void ThenVRFCaseDetailsAreUpdatedOnlyForLegalEntitiesWithACaseTypeOfNew()
+        {
+            _response.EnsureSuccessStatusCode();
+
+            _context.InnerApi.MockServer.FindLogEntries(Request.Create()
+                .WithPath(p => p.Contains("/legalentities/"))
+                .UsingPatch()).Should().HaveCount(1);
+        }
+
+        private void SetResponseFromFinanceApi(byte[] testData)
         {
             _context.FinanceApi.MockServer
                 .Given(ExpectedFinanceApiRequest)
@@ -57,7 +77,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate)
+                        .WithBody(testData)
                 );
         }
 
