@@ -114,7 +114,7 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                         .Select(area => (EpaoDeliveryArea) area),
                     DeliveryAreas = queryResult.DeliveryAreas
                         .Select(item => (GetDeliveryAreaListItem) item),
-                    OtherCourses = queryResult.OtherCourses
+                    AllCourses = queryResult.AllCourses
                         .Select(item => (GetCourseListItem)item)
                 };
 

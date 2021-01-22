@@ -137,7 +137,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count(item => item.EpaoId == query.EpaoId.ToLower()));//filter returns true
             result.Course.Should().BeEquivalentTo(coursesFromCache.Standards.Single(item => item.Id == query.CourseId));
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
-            result.OtherCourses.Should().BeEquivalentTo(
+            result.AllCourses.Should().BeEquivalentTo(
                 coursesFromCache.Standards.Where(item =>
                     epaoCoursesApiResponse.Any(listItem => listItem.StandardCode == item.Id)));
             result.EffectiveFrom.Should().Be(courseEpaosApiResponse

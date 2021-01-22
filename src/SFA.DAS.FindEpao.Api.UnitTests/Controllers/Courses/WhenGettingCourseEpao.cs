@@ -46,8 +46,8 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
             model!.DeliveryAreas.Should().BeEquivalentTo(
                 mediatorResult.DeliveryAreas.Select(item => (GetDeliveryAreaListItem) item));
             model!.EffectiveFrom.Should().Be(mediatorResult.EffectiveFrom);
-            model!.OtherCourses.Should().BeEquivalentTo(
-                mediatorResult.OtherCourses.Select(item => (GetCourseListItem)item));
+            model!.AllCourses.Should().BeEquivalentTo(
+                mediatorResult.AllCourses.Select(item => (GetCourseListItem)item));
         }
 
         [Test, MoqAutoData]

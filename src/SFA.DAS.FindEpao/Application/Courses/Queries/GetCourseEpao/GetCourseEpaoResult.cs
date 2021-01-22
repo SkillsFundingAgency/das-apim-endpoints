@@ -12,6 +12,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
         public DateTime EffectiveFrom { get; set; }
         public IEnumerable<EpaoDeliveryArea> EpaoDeliveryAreas { get; set; }
         public IEnumerable<GetDeliveryAreaListItem> DeliveryAreas { get; set; }
-        public IEnumerable<GetStandardsListItem> OtherCourses { get; set; }
+        public IEnumerable<GetStandardsListItem> AllCourses { get; set; }
     }
 }

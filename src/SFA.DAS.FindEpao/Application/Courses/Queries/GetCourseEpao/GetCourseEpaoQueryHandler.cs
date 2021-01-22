@@ -77,7 +77,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var courseEpao = filteredCourseEpaos.Single(item => 
                 string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase));
 
-            var otherCourses = coursesTask.Result.Standards
+            var allCourses = coursesTask.Result.Standards
                 .Where(course => epaoCoursesTask.Result
                     .Any(item => item.StandardCode == course.Id));
 
@@ -89,7 +89,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                OtherCourses = otherCourses
+                AllCourses = allCourses
             };
         }
     }
