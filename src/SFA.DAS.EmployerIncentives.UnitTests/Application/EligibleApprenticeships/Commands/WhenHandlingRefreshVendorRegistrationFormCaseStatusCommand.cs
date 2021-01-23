@@ -9,6 +9,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,10 +29,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1), null))
                 .ReturnsAsync(vendorResponse);
 
-
             await handler.Handle(command, CancellationToken.None);
 
-            foreach (var @case in vendorResponse.RegistrationCases)
+            foreach (var @case in vendorResponse.RegistrationCases.Where(x => x.CaseStatus == "NEW"))
             {
                 incentivesService.Verify(
                     x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r =>

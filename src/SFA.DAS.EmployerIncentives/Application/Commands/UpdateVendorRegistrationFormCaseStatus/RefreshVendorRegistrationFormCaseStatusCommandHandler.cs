@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
             }
 
             await Task.WhenAll(response.RegistrationCases
-                .Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId))
+                .Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId) && c.CaseType?.ToUpper() == "NEW")
                 .Select(UpdateVendorRegistrationCaseStatus));
         }
 
