@@ -89,15 +89,5 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Data {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType {
-            get {
-                object obj = ResourceManager.GetObject("FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

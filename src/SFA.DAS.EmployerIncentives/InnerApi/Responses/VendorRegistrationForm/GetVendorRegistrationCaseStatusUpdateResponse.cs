@@ -15,6 +15,5 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm
         public string ApprenticeshipLegalEntityId { get; set; }
         public string CaseStatus { get; set; }
         public DateTime CaseStatusLastUpdatedDate { get; set; }
-        public string CaseType { get; set; }
     }
 }
