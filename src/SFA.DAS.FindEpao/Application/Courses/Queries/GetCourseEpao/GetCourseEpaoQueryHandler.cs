@@ -76,9 +76,12 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             var courseEpao = filteredCourseEpaos.Single(item => 
                 string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase));
-
+            
+            var filterAdditionalCourses = epaoCoursesTask.Result
+                .Where(x => _courseEpaoIsValidFilterService.ValidateEpaoStandardDates(x.DateStandardApprovedOnRegister,
+                    x.EffectiveTo, x.EffectiveFrom)).ToList();
             var allCourses = coursesTask.Result.Standards
-                .Where(course => epaoCoursesTask.Result
+                .Where(course =>filterAdditionalCourses 
                     .Any(item => item.StandardCode == course.Id));
 
             return new GetCourseEpaoResult

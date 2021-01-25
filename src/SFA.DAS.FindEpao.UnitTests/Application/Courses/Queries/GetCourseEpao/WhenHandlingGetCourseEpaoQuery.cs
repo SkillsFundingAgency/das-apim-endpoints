@@ -92,7 +92,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_Epao_From_Assessors_Api_And_Course_From_Courses_Api_And_DeliveryAreas_From_Cache_And_Other_Courses_From_Cache(
+        public async Task Then_Gets_Epao_From_Assessors_Api_And_Course_From_Courses_Api_And_DeliveryAreas_From_Cache_And_Other_Courses_From_Cache_Filtered(
             GetCourseEpaoQuery query,
             GetEpaoResponse epaoApiResponse,
             List<GetCourseEpaoListItem> courseEpaosApiResponse,
@@ -129,6 +129,9 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             mockCourseEpaoFilter
                 .Setup(service => service.IsValidCourseEpao(It.IsAny<GetCourseEpaoListItem>()))
                 .Returns<GetCourseEpaoListItem>(item => item.EpaoId == query.EpaoId.ToLower());
+            mockCourseEpaoFilter
+                .Setup(service => service.ValidateEpaoStandardDates(It.IsAny<DateTime?>(),It.IsAny<DateTime?>(),It.IsAny<DateTime?>()))
+                .Returns(true);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -140,6 +143,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.AllCourses.Should().BeEquivalentTo(
                 coursesFromCache.Standards.Where(item =>
                     epaoCoursesApiResponse.Any(listItem => listItem.StandardCode == item.Id)));
+            foreach (var courseListItem in epaoCoursesApiResponse)
+            {
+                mockCourseEpaoFilter.Verify(x=>x.ValidateEpaoStandardDates(courseListItem.DateStandardApprovedOnRegister,courseListItem.EffectiveTo,courseListItem.EffectiveFrom), 
+                    Times.Once);    
+            }
             result.EffectiveFrom.Should().Be(courseEpaosApiResponse
                 .Single(item => item.EpaoId == query.EpaoId.ToLower())
                 .CourseEpaoDetails.EffectiveFrom!.Value);//nulls removed in filter
