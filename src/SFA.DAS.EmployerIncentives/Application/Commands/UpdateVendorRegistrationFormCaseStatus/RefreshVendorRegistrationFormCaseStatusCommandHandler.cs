@@ -85,8 +85,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         private void FindLatestUpdateForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)
         {
             _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
-
-            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId));
+            
+            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId)
+                                                            && c.CaseType?.ToUpper() == "NEW");
 
             response.RegistrationCases = filtered.GroupBy(x => x.ApprenticeshipLegalEntityId,
                     (_, g) => g.OrderByDescending(e => e.CaseStatusLastUpdatedDate).First())
