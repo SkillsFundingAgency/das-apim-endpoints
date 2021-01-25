@@ -1,9 +1,9 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.EpaoRegister.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.EpaoRegister.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetEpaoCoursesRequest
     {
