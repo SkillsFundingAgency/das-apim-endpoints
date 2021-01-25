@@ -1,4 +1,5 @@
-﻿@innerApi
+﻿@loginApi
+@innerApi
 @outerApi
 Feature: AddApprenticeship
 	When an Apprenticeship is approved and forwarded here
@@ -8,9 +9,11 @@ Feature: AddApprenticeship
 Scenario Outline: New apprenticeship is recieved and is valid 
 	Given apprenticeship details are valid
 	And the inner api is ready
+	And the apprentice login api is ready
 	When the apprenticeship is posted
 	Then the result should be Accepted
 	And the request to the inner api was mapped correctly
+	And the invitation was sent successfully
 
 Scenario Outline: New apprenticeship is recieved and is NOT valid 
 	Given apprenticeship details are not valid

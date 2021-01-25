@@ -5,8 +5,9 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
-using SFA.DAS.ApprenticeCommitments.InnerApi.Requests;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -59,6 +60,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
+                );
+        }
+
+        [Given(@"the apprentice login api is ready")]
+        public void GivenTheApprenticeLoginApiIsReady()
+        {
+            _context.LoginApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/invitations/{_context.LoginConfig.ClientId}")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
                 );
         }
 
@@ -119,5 +133,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             errors.Should().BeEquivalentTo(_errors);
         }
 
+        [Then(@"the invitation was sent successfully")]
+        public void ThenTheInvitationWasSentSuccessfully()
+        {
+            var logs = _context.LoginApi.MockServer.LogEntries;
+            logs.Count().Should().Be(1);
+            var log = logs.First();
+
+            var loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(log.RequestMessage.Body);
+            loginApiRequest.Should().NotBeNull();
+            loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
+            loginApiRequest.Email.Should().Be(_request.Email);
+            loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
+            loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
+        }
     }
 }

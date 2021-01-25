@@ -16,6 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ApprenticeCommitmentsService>();
+            services.AddTransient<ApprenticeLoginService>();
         }
     }
 }

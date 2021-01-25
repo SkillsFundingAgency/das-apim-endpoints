@@ -1,9 +1,10 @@
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.ApprenticeCommitments.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Apis;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {

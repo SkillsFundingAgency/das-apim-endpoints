@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
                     {"AzureAD:identifier", ""}
                 };
 
-                var factory = new LocalWebApplicationFactory<Startup>(config);
+                var factory = new LocalWebApplicationFactory<Startup>(config, _context);
                 Client = new ApprenticeCommitmentsApi(factory.CreateClient());
             }
 
@@ -42,6 +42,5 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
             Client?.Dispose();
             Client = null;
         }
-
     }
 }
