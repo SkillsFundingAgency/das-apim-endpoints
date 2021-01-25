@@ -24,9 +24,10 @@ namespace SFA.DAS.ApprenticeCommitments.Infrastructure
             var isHealthy = await service.IsHealthy();
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
+            var data = new Dictionary<string, object> {{"Duration", durationString}};
 
-            return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, new Dictionary<string, object> { { "Duration", durationString } })
-                : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, new Dictionary<string, object> { { "Duration", durationString } }));
+            return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, data)
+                : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, data));
         }
     }
 }
