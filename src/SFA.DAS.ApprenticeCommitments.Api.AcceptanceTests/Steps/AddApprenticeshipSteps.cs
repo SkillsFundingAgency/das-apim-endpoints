@@ -68,7 +68,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         {
             _context.LoginApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/invitations/{_context.LoginConfig.ClientId}")
+                    Request.Create().WithPath($"/invitations/{_context.LoginConfig.IdentityServerClientId}")
                         .UsingPost())
                 .RespondWith(
                     Response.Create()

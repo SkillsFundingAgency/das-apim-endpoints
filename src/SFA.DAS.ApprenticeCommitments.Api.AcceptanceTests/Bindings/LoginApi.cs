@@ -25,7 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
             {
                 CallbackUrl = "http://loginapi/callback",
                 RedirectUrl = "http://loginapi/redirectUrl",
-                ClientId = "ABCD",
+                IdentityServerClientId = "ABCD",
                 Url = Client.BaseAddress + "/"
             };
         }

@@ -36,7 +36,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         {
             await _client.Post<SendInvitationResponse>(new SendInvitationRequest
             {
-                ClientId = _configuration.ClientId,
+                ClientId = _configuration.IdentityServerClientId,
                 Data = new SendInvitationRequestData
                 {
                     SourceId  = guid,

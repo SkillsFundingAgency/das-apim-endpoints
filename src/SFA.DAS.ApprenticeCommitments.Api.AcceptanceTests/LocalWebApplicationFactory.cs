@@ -25,7 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
                 s.Configure<ApprenticeLoginConfiguration>(c =>
                 {
                     c.Url = _testContext.LoginConfig.Url;
-                    c.ClientId = _testContext.LoginConfig.ClientId;
+                    c.IdentityServerClientId = _testContext.LoginConfig.IdentityServerClientId;
                     c.CallbackUrl = _testContext.LoginConfig.CallbackUrl;
                     c.RedirectUrl = _testContext.LoginConfig.RedirectUrl;
                 });

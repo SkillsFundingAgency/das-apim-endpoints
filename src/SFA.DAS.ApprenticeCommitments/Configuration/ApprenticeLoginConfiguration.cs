@@ -6,7 +6,7 @@ namespace SFA.DAS.ApprenticeCommitments.Configuration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }
-        public string ClientId { get; set; }
+        public string IdentityServerClientId { get; set; }
         public string CallbackUrl { get; set; }
         public string RedirectUrl { get; set; }
     }
