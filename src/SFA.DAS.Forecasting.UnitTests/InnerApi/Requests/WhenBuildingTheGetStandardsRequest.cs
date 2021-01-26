@@ -12,7 +12,7 @@ namespace SFA.DAS.Forecasting.UnitTests.InnerApi.Requests
         {
             var actual = new GetStandardsRequest();
 
-            actual.GetUrl.Should().Be("api/courses/standards");
+            actual.GetUrl.Should().Be("api/courses/standards?filter=ActiveAvailable");
 
         }
     }

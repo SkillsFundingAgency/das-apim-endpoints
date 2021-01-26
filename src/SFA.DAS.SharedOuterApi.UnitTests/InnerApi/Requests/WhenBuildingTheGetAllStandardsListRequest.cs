@@ -22,7 +22,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?filterAvailableToStart=false&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?filter=Active&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
         }
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
@@ -31,7 +31,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             var actual = new GetAllStandardsListRequest();
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?filterAvailableToStart=false");
+                .Be($"api/courses/standards?filter=Active");
         }
 
         [Test, AutoData]
@@ -44,7 +44,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?filterAvailableToStart=false&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?filter=Active&levels=" + string.Join("&levels=", levels));
         }
         
         [Test, AutoData]
@@ -57,7 +57,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?filterAvailableToStart=false&routeIds=" + string.Join("&routeIds=", routeIds));
+                .Be($"api/courses/standards?filter=Active&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }

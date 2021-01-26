@@ -13,7 +13,7 @@ namespace SFA.DAS.Reservations.UnitTests.InnerApi.Requests
             var actual = new GetStandardsRequest();
             
             //Assert
-            Assert.AreEqual("api/courses/standards", actual.GetUrl);
+            Assert.AreEqual("api/courses/standards?filter=ActiveAvailable", actual.GetUrl);
         }
     }
 }
