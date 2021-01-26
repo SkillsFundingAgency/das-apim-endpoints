@@ -1080,7 +1080,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: MO
-      ServiceConnection: SFA-DIG-ModelOffice-ARM
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
