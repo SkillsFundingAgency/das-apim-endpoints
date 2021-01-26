@@ -26,7 +26,7 @@ parameters:
 - name: Recruit
   type: boolean
   default: false
-  
+
 trigger:
   branches:
     include:
@@ -188,7 +188,7 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-      
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Approvals
@@ -238,7 +238,7 @@ stages:
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
-      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)      
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -365,7 +365,7 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-    
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Approvals
@@ -415,7 +415,7 @@ stages:
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
-      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)      
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -542,7 +542,7 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-      
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Approvals
@@ -593,7 +593,7 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
-      
+
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -914,7 +914,7 @@ stages:
   #     ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
   #     ProductId: $(ApprovalsProductId)
   #     ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
-  
+
   # - template: pipeline-templates/job/deploy-api.yml
   #   parameters:
   #     DeploymentName: Deploy_Recruit
@@ -931,7 +931,7 @@ stages:
   #     ApiBaseUrl: $(RecruitOuterApiBaseUrl)
   #     ProductId: $(RecruitProductId)
   #     ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
-  
+
 - stage: Deploy_MO
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -1058,36 +1058,36 @@ stages:
   #     ProductId: $(EpaoRegisterProductId)
   #     ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
 
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_Approvals
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
-  #     DeploymentApprovals: MO
-  #     ServiceConnection: SFA-ASM-ModelOffice-ARM
-  #     AppServiceName: $(ApprovalsOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
-  #     ApiPath: $(ApprovalsOuterApiPath)
-  #     ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
-  #     ProductId: $(ApprovalsProductId)
-  #     ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
-    # - template: pipeline-templates/job/deploy-api.yml
-    #   parameters:
-    #     DeploymentName: Deploy_Recruit
-    #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
-    #     DeploymentApprovals: MO
-    #     ServiceConnection: SFA-DIG-ModelOffice-ARM
-    #     AppServiceName: $(RecruitOuterApiAppServiceName)
-    #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-    #     ApimResourceGroup: $(ApimResourceGroup)
-    #     ApimInstanceName: $(InstanceName)
-    #     AppServiceResourceGroup: $(ResourceGroupName)
-    #     ApiVersionSetName: $(RecruitOuterApiVersionSetName)
-    #     ApiPath: $(RecruitOuterApiPath)
-    #     ApiBaseUrl: $(RecruitOuterApiBaseUrl)
-    #     ProductId: $(RecruitProductId)
-    #     ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)

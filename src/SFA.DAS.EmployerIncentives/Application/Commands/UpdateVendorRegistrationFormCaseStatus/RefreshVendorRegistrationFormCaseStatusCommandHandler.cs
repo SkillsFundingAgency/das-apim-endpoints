@@ -17,8 +17,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> _logger;
 
-        public RefreshVendorRegistrationFormCaseStatusCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger)
+        public RefreshVendorRegistrationFormCaseStatusCommandHandler(
+            ICustomerEngagementFinanceService financeService,
+            IEmployerIncentivesService incentivesService,
+            ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
@@ -29,27 +31,29 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         {
             var currentDateTime = DateTime.UtcNow;
             var toDateDateTime = request.FromDateTime.AddDays(1);
-
             request.ToDateTime = toDateDateTime;
 
-            var response = await GetUpdatesFromFinanceApi(request);
+            GetVendorRegistrationCaseStatusUpdateResponse response = null;
+            var pageNo = 0;
+
+            do
+            {
+                pageNo++;
+                response = await GetUpdatesFromFinanceApi(request, response?.SkipCode);
+                await SendUpdates(response);
+            } while (HasNextPage(response) && pageNo < 5);
 
             var nextRunDateTime = toDateDateTime < currentDateTime ? toDateDateTime : currentDateTime;
+            return await Task.FromResult(nextRunDateTime);
+        }
 
-            if (!response.RegistrationCases.Any())
-            {
-                _logger.LogInformation($"[VRF Refresh] No cases returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
+        private static bool HasNextPage(GetVendorRegistrationCaseStatusUpdateResponse response)
+        {
+            return response != null && !string.IsNullOrEmpty(response.SkipCode);
+        }
 
-                return await Task.FromResult(nextRunDateTime);
-            }
-
-            if (!string.IsNullOrEmpty(response.SkipCode))
-            {
-                _logger.LogError($"[VRF Refresh] [SkipCode={response.SkipCode}] returned by the Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
-            }
-
-            FindLatestUpdateForEachLegalEntity(response);
-
+        private async Task SendUpdates(GetVendorRegistrationCaseStatusUpdateResponse response)
+        {
             Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
             {
                 return _incentivesService.UpdateVendorRegistrationCaseStatus(
@@ -62,16 +66,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                     });
             }
 
-            await Task.WhenAll(response.RegistrationCases.Select(UpdateVendorRegistrationCaseStatus));
-
-            return await Task.FromResult(nextRunDateTime);
+            await Task.WhenAll(response.RegistrationCases
+                .Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId) && c.CaseType?.ToUpper() == "NEW")
+                .Select(UpdateVendorRegistrationCaseStatus));
         }
 
-        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request)
+        private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request, string skipCode)
         {
-            _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
+            _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}] [SkipCode='{skipCode}']", request.FromDateTime, request.ToDateTime, skipCode);
 
-            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime);
+            var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime, skipCode);
 
             if (response?.RegistrationCases == null)
             {
@@ -79,22 +83,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 throw new ArgumentNullException($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()} [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]");
             }
 
+            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
             return response;
         }
-
-        private void FindLatestUpdateForEachLegalEntity(GetVendorRegistrationCaseStatusUpdateResponse response)
-        {
-            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
-            
-            var filtered = response.RegistrationCases.Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId)
-                                                            && c.CaseType?.ToUpper() == "NEW");
-
-            response.RegistrationCases = filtered.GroupBy(x => x.ApprenticeshipLegalEntityId,
-                    (_, g) => g.OrderByDescending(e => e.CaseStatusLastUpdatedDate).First())
-                .ToList();
-
-            _logger.LogInformation($"[VRF Refresh] Number of unique Legal Entities found: [{response.RegistrationCases.Count}]. Updating their VRF Case status...");
-        }
-
     }
 }
