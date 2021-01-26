@@ -1,7 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeCommitments.InnerApi.Requests
+namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
     public class CreateApprenticeshipRequest : IPostApiRequest
     {

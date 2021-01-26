@@ -37,7 +37,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<ApprenticeCommitmentsConfiguration>(_configuration.GetSection("ApprenticeCommitmentsInnerApi"));
+            services.Configure<ApprenticeLoginConfiguration>(_configuration.GetSection("ApprenticeLoginApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeLoginConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -53,7 +55,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             }
 
             services.AddHealthChecks()
-                .AddCheck<ApprenticeCommitmentsHealthCheck>(nameof(ApprenticeCommitmentsHealthCheck));
+                .AddCheck<ApprenticeCommitmentsHealthCheck>(nameof(ApprenticeCommitmentsHealthCheck))
+                .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck));
 
             services.AddMediatR(GetType().Assembly, typeof(CreateApprenticeshipCommandHandler).Assembly);
             services.AddServiceRegistration();

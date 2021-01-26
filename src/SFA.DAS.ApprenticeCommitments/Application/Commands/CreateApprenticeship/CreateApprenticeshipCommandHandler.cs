@@ -8,13 +8,21 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 {
     public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand>
     {
-        private readonly ApprenticeCommitmentsService _service;
+        private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
+        private readonly ApprenticeLoginService _apprenticeLoginService;
 
-        public CreateApprenticeshipCommandHandler(ApprenticeCommitmentsService service) => _service = service;
+        public CreateApprenticeshipCommandHandler(ApprenticeCommitmentsService apprenticeCommitmentsService, ApprenticeLoginService apprenticeLoginService)
+        {
+            _apprenticeCommitmentsService = apprenticeCommitmentsService;
+            _apprenticeLoginService = apprenticeLoginService;
+        }
 
         public async Task<Unit> Handle(CreateApprenticeshipCommand command, CancellationToken cancellationToken)
         {
-            await _service.CreateApprenticeship(Guid.NewGuid(), command.ApprenticeshipId, command.Email);
+            var id = Guid.NewGuid();
+            await _apprenticeCommitmentsService.CreateApprenticeship(id, command.ApprenticeshipId, command.Email);
+            await _apprenticeLoginService.SendInvitation(id, command.Email);
+
             return Unit.Value;
         }
     }

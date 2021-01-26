@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeCommitments.InnerApi.Requests
+namespace SFA.DAS.ApprenticeCommitments.Apis
 {
     public class GetHealthRequest : IGetApiRequest
     {

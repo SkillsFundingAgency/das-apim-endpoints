@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Infrastructure
 {
-    public class ApprenticeCommitmentsHealthCheck : IHealthCheck
+    public class ApprenticeLoginApiHealthCheck : IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Apprentice Commitments Api Health Check";
-        private readonly ApprenticeCommitmentsService service;
+        private const string HealthCheckResultDescription = "Apprentice Login Api Health Check";
+        private readonly ApprenticeLoginService service;
 
-        public ApprenticeCommitmentsHealthCheck(ApprenticeCommitmentsService service)
+        public ApprenticeLoginApiHealthCheck(ApprenticeLoginService service)
         {
             this.service = service;
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.Infrastructure
             var isHealthy = await service.IsHealthy();
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
-            var data = new Dictionary<string, object> { { "Duration", durationString } };
+            var data = new Dictionary<string, object> {{"Duration", durationString}};
 
             return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, data)
                 : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, data));

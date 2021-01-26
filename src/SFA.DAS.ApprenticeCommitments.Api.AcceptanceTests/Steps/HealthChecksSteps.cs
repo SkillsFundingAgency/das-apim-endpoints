@@ -50,6 +50,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 );
         }
 
+        [Given(@"the Apprentice Login Api is ready and (.*)")]
+        public void GivenTheApprenticeLoginApiIsReadyAnd(string status)
+        {
+            _context.LoginApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/ping")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
         [Then(@"the result should show (.*)")]
         public async Task ThenTheResultShouldShow(string status)
         {
