@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindEpao.Api.AppStart;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
+using SFA.DAS.FindEpao.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -66,6 +67,22 @@ namespace SFA.DAS.FindEpao.Api
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection("FindEpaoConfiguration")
+                    .Get<FindEpaoConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
+            }
+            
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()

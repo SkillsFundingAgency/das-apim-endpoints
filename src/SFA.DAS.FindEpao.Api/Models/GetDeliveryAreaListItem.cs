@@ -1,6 +1,4 @@
-﻿using SFA.DAS.FindEpao.InnerApi.Responses;
-
-namespace SFA.DAS.FindEpao.Api.Models
+﻿namespace SFA.DAS.FindEpao.Api.Models
 {
     public class GetDeliveryAreaListItem
     {
