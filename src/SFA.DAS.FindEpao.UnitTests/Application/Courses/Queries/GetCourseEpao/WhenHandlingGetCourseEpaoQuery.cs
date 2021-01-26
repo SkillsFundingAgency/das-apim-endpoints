@@ -152,5 +152,54 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                 .Single(item => item.EpaoId == query.EpaoId.ToLower())
                 .CourseEpaoDetails.EffectiveFrom!.Value);//nulls removed in filter
         }
+
+        [Test, MoqAutoData]
+        public async Task And_Organisation_Website_Does_Not_Have_Protocol_Then_Protocol_Is_Added(
+            GetCourseEpaoQuery query,
+            GetEpaoResponse epaoApiResponse,
+            List<GetCourseEpaoListItem> courseEpaosApiResponse,
+            List<GetEpaoCourseListItem> epaoCoursesApiResponse,
+            List<GetDeliveryAreaListItem> areasFromCache,
+            GetStandardsListResponse coursesFromCache,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<ICachedDeliveryAreasService> mockCachedAreasService,
+            [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
+            [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
+            GetCourseEpaoQueryHandler handler)
+        {
+            epaoApiResponse.OrganisationData.WebsiteLink = "www.test.com";
+
+            courseEpaosApiResponse[0].EpaoId = query.EpaoId.ToLower();
+            coursesFromCache.Standards.First().Id = epaoCoursesApiResponse.First().StandardCode;
+            coursesFromCache.Standards.ElementAt(1).Id = query.CourseId;
+            mockAssessorsApiClient
+                .Setup(client => client.Get<GetEpaoResponse>(
+                    It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(epaoApiResponse);
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetCourseEpaoListItem>(
+                    It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
+                .ReturnsAsync(courseEpaosApiResponse);
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetEpaoCourseListItem>(
+                    It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
+                .ReturnsAsync(epaoCoursesApiResponse);
+            mockCachedAreasService
+                .Setup(service => service.GetDeliveryAreas())
+                .ReturnsAsync(areasFromCache);
+            mockCachedCoursesService
+                .Setup(client => client.GetCourses())
+                .ReturnsAsync(coursesFromCache);
+            mockCourseEpaoFilter
+                .Setup(service => service.IsValidCourseEpao(It.IsAny<GetCourseEpaoListItem>()))
+                .Returns<GetCourseEpaoListItem>(item => item.EpaoId == query.EpaoId.ToLower());
+            mockCourseEpaoFilter
+                .Setup(service => service.ValidateEpaoStandardDates(It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Epao.OrganisationData.WebsiteLink.Should().Be("https://www.test.com");
+        }
     }
 }

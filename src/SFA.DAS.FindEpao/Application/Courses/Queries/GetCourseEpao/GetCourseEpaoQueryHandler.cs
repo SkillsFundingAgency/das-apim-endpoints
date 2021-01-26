@@ -86,7 +86,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             return new GetCourseEpaoResult
             {
-                Epao = epaoTask.Result,
+                Epao = CheckWebsiteProtocol(epaoTask.Result),
                 Course = coursesTask.Result.Standards.Single(item => item.Id == request.CourseId),
                 EpaoDeliveryAreas = courseEpao.DeliveryAreas,
                 CourseEpaosCount = filteredCourseEpaos.Count,
@@ -94,6 +94,14 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
                 AllCourses = allCourses
             };
+        }
+
+        private GetEpaoResponse CheckWebsiteProtocol(GetEpaoResponse epao)
+        {
+            if (!epao.OrganisationData.WebsiteLink.StartsWith("http"))
+                epao.OrganisationData.WebsiteLink = "https://" + epao.OrganisationData.WebsiteLink;
+
+            return epao;
         }
     }
 }
