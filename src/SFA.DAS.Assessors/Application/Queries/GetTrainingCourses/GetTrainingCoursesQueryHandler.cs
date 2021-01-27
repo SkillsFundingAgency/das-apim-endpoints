@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
 {
-    public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
+    public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
 
@@ -16,12 +16,12 @@ namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
         {
             _coursesApiClient = coursesApiClient;
         }
-        public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
+        public async Task<GetTrainingCoursesResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
             var standardsList = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
 
 
-            return new GetTrainingCoursesQueryResult
+            return new GetTrainingCoursesResult
             {
                 TrainingCourses = standardsList.Standards
             };

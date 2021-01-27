@@ -3,7 +3,7 @@ using SFA.DAS.Assessors.InnerApi.Responses;
 
 namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
 {
-    public class GetTrainingCoursesQueryResult
+    public class GetTrainingCoursesResult
     {
         public IEnumerable<GetStandardsListItem> TrainingCourses { get ; set ; }
     }
