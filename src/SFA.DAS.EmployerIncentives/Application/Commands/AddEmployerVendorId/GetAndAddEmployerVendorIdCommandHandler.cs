@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 {
@@ -23,14 +23,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Requesting Vendor By Apprenticeship Service LegalEntityId: {command.HashedLegalEntityId}");
+            _logger.LogInformation($"Requesting Vendor By Apprenticeship Service LegalEntityId: {request.HashedLegalEntityId}");
 
-            var employerVendorId = await GetEmployerVendorId(command.HashedLegalEntityId);
+            var employerVendorId = await GetEmployerVendorId(request.HashedLegalEntityId);
 
-            await _incentivesService.AddEmployerVendorIdToLegalEntity(command.HashedLegalEntityId, employerVendorId);
-            
+            if (!string.IsNullOrEmpty(employerVendorId))
+                await _incentivesService.AddEmployerVendorIdToLegalEntity(request.HashedLegalEntityId, employerVendorId);
+
             return Unit.Value;
         }
 
@@ -46,12 +47,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 
                 if (response == null)
                 {
-                    throw new ApplicationException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response");
+                    throw new ArgumentException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response");
                 }
 
                 if (response.Vendor == null)
                 {
-                    throw new ApplicationException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response for Vendor");
+                    throw new ArgumentException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response for Vendor");
+                }
+
+                if (response.Vendor != null && string.IsNullOrEmpty(response.Vendor.VendorIdentifier))
+                {
+                    _logger.LogInformation($"No VendorId received for LegalEntityId: {hashedLegalEntityId}. Error message: {response.Vendor.ErrorText}");
                 }
 
                 return response.Vendor.VendorIdentifier;
