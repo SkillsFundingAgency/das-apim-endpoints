@@ -1077,6 +1077,23 @@ stages:
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: MO
