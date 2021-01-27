@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
+﻿using System;
+
+namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
 {
     public class IncentiveApplicationApprenticeshipDto
     {
@@ -7,5 +9,6 @@
         public string LastName { get; set; }
         public decimal TotalIncentiveAmount { get; set; }
         public long Uln { get; set; }
+        public DateTime PlannedStartDate { get; set; }
     }
 }

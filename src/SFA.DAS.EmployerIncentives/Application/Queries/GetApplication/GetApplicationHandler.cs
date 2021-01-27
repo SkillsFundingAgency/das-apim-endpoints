@@ -65,7 +65,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 LastName = x.LastName,
                 TotalIncentiveAmount = x.TotalIncentiveAmount,
                 CourseName = commitmentApprenticeships.SingleOrDefault(y => y.Id == x.ApprenticeshipId)?.CourseName,
-                Uln = x.Uln
+                Uln = x.Uln,
+                PlannedStartDate = x.PlannedStartDate
             });
         }
 
