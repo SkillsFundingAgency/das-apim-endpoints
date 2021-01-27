@@ -14,13 +14,24 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
                 return false;
             }
 
-            if (!courseEpao.CourseEpaoDetails.DateStandardApprovedOnRegister.HasValue || 
-                courseEpao.CourseEpaoDetails.DateStandardApprovedOnRegister?.Date > DateTime.Today)
+            return ValidateEpaoStandardDates(courseEpao.CourseEpaoDetails.DateStandardApprovedOnRegister, courseEpao.CourseEpaoDetails.EffectiveTo, courseEpao.CourseEpaoDetails.EffectiveFrom);
+        }
+
+        public bool ValidateEpaoStandardDates(DateTime? dateStandardApprovedOnRegister, DateTime? effectiveTo, DateTime? effectiveFrom)
+        {
+            if (!dateStandardApprovedOnRegister.HasValue ||
+                dateStandardApprovedOnRegister.Value.Date > DateTime.Today)
             {
                 return false;
             }
 
-            if (courseEpao.CourseEpaoDetails.EffectiveTo.HasValue && courseEpao.CourseEpaoDetails.EffectiveTo.Value.Date < DateTime.Today)
+            if (effectiveTo.HasValue &&
+                effectiveTo.Value.Date < DateTime.Today)
+            {
+                return false;
+            }
+
+            if (!effectiveFrom.HasValue)
             {
                 return false;
             }
