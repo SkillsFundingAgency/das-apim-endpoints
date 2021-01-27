@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
             Data = data;
         }
         public string BaseUrl { get; set; }
-        public string PatchUrl => $"{BaseUrl}legalentities/{Data.HashedLegalEntityId}/vendorregistrationform/status";
+        public string PatchUrl => $"{BaseUrl}legalentities/{Data.HashedLegalEntityId}/vendorregistrationform";
         public UpdateVendorRegistrationCaseStatusRequest Data { get; set; }
     }
 
