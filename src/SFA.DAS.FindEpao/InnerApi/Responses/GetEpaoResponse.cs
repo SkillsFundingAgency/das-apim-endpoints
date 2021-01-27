@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         {
             get
             {
-                if (!_websiteLink.StartsWith("http"))
+                if (!_websiteLink.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
                     _websiteLink = "https://" + _websiteLink;
                 return _websiteLink;
             }
