@@ -49,7 +49,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 Apprenticeships = new List<IncentiveApplicationApprenticeship>(),
                 LegalEntityId = applicationDto.LegalEntityId,
                 SubmittedByEmail = applicationDto.SubmittedByEmail,
-                SubmittedByName = applicationDto.SubmittedByName
+                SubmittedByName = applicationDto.SubmittedByName,
+                NewAgreementRequired = applicationDto.NewAgreementRequired
             };
         }
 
