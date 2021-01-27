@@ -915,22 +915,22 @@ stages:
   #     ProductId: $(ApprovalsProductId)
   #     ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_Recruit
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
-  #     DeploymentApprovals: PROD
-  #     ServiceConnection: SFA-DIG-Prod-ARM
-  #     AppServiceName: $(RecruitOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(RecruitOuterApiVersionSetName)
-  #     ApiPath: $(RecruitOuterApiPath)
-  #     ApiBaseUrl: $(RecruitOuterApiBaseUrl)
-  #     ProductId: $(RecruitProductId)
-  #     ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
 
 - stage: Deploy_MO
   dependsOn: Build
