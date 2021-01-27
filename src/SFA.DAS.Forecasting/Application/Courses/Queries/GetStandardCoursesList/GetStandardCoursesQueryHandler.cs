@@ -5,6 +5,7 @@ using MediatR;
 using SFA.DAS.Forecasting.InnerApi.Requests;
 using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList
@@ -19,7 +20,7 @@ namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList
 
         public async Task<GetStandardCoursesResult> Handle(GetStandardCoursesQuery request, CancellationToken cancellationToken)
         {
-            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsRequest());
+            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
 
             return new GetStandardCoursesResult
             {
