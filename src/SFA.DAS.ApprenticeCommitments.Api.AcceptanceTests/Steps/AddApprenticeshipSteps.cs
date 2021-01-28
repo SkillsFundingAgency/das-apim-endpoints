@@ -144,6 +144,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             loginApiRequest.Should().NotBeNull();
             loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
             loginApiRequest.Email.Should().Be(_request.Email);
+            loginApiRequest.GivenName.Should().Be("Unknown");
+            loginApiRequest.FamilyName.Should().Be("Unknown");
             loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
             loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
         }
