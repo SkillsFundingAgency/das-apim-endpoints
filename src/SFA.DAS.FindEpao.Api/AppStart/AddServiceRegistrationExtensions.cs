@@ -24,6 +24,7 @@ namespace SFA.DAS.FindEpao.Api.AppStart
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedDeliveryAreasService, CachedDeliveryAreasService>();
+            services.AddTransient<ICachedCoursesService, CachedCoursesService>();
             services.AddTransient<ICourseEpaoIsValidFilterService, CourseEpaoIsValidFilterService>();
         }
     }
