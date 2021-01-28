@@ -41,6 +41,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                 {
                     SourceId  = guid,
                     Email = email,
+                    GivenName = "Unknown",
+                    FamilyName = "Unknown",
                     Callback = _configuration.CallbackUrl,
                     UserRedirect = _configuration.RedirectUrl
                 }
