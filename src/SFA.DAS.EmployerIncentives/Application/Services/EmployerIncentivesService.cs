@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
@@ -153,7 +151,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
         {
             return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
-                { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId} });
+            { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId } });
         }
 
         public async Task EarningsResilienceCheck()
@@ -164,6 +162,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
         {
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
+        }
+
+        public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
+        {
+            return await _client.Get<GetLatestVendorRegistrationCaseUpdateDateTimeResponse>(new GetLatestVendorRegistrationCaseUpdateDateTimeRequest());
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
@@ -181,6 +184,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        
+
     }
 }

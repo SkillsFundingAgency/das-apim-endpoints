@@ -73,9 +73,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Data {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate {
+        internal static byte[] FinanceAPI_V1__VendorDataResponse_Error {
             get {
-                object obj = ResourceManager.GetObject("FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate", resourceCulture);
+                object obj = ResourceManager.GetObject("FinanceAPI_V1__VendorDataResponse_Error", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Data {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType {
+        internal static byte[] FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate {
             get {
-                object obj = ResourceManager.GetObject("FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType", resourceCulture);
+                object obj = ResourceManager.GetObject("FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate", resourceCulture);
                 return ((byte[])(obj));
             }
         }

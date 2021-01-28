@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"Refresh Vendor Registration Form Status is invoked")]
         public async Task WhenRefreshVendorRegistrationFormStatusIsInvoked()
         {
-            SetResponseFromFinanceApi(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate);
+            SetResponseFromFinanceApi();
             SetupExpectedEmployerIncentivesApiCalls();
 
             var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
@@ -46,30 +46,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath(p => p.Contains("/legalentities/"))
-                .UsingPatch()).Should().HaveCount(2);
+                .UsingPatch()).Should().HaveCount(3);
         }
 
-        [When(@"Refresh Vendor Registration Form Status is invoked and New and other case types exist in VRF")]
-        public async Task WhenRefreshVendorRegistrationFormStatusIsInvokedAndNewAndOtherCaseTypesExistInVRF()
-        {
-            SetResponseFromFinanceApi(TestData.FinanceAPI_V1_VendorRegistrationCasesWithMixedCaseType);
-            SetupExpectedEmployerIncentivesApiCalls();
-
-            var url = $"legalentities/vendorregistrationform/status?from={_dateTimeFrom:yyyy-MM-ddTHH:mm:ssZ}";
-            _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(""));
-        }
-
-        [Then(@"VRF case details are updated only for legal entities with a case type of New")]
-        public void ThenVRFCaseDetailsAreUpdatedOnlyForLegalEntitiesWithACaseTypeOfNew()
-        {
-            _response.EnsureSuccessStatusCode();
-
-            _context.InnerApi.MockServer.FindLogEntries(Request.Create()
-                .WithPath(p => p.Contains("/legalentities/"))
-                .UsingPatch()).Should().HaveCount(1);
-        }
-
-        private void SetResponseFromFinanceApi(byte[] testData)
+        private void SetResponseFromFinanceApi()
         {
             _context.FinanceApi.MockServer
                 .Given(ExpectedFinanceApiRequest)
@@ -77,7 +57,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(testData)
+                        .WithBody(TestData.FinanceAPI_V1__VendorRegistrationCasesbyLastStatusChangeDate)
                 );
         }
 
@@ -95,7 +75,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/vendorregistrationform/status")
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[0]}/vendorregistrationform")
                         .UsingPatch())
                 .RespondWith(
                     Response.Create()
@@ -103,7 +83,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/vendorregistrationform/status")
+                    Request.Create().WithPath($"/legalentities/{_hashedLegalEntitiesFromFinanceJson[1]}/vendorregistrationform")
                         .UsingPatch())
                 .RespondWith(
                     Response.Create()
