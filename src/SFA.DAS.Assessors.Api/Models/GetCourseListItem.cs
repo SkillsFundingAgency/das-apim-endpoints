@@ -10,6 +10,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public int Level { get; set; }
         public int MaxFunding { get; set; }
         public int TypicalDuration { get; set; }
+        public bool IsActive { get; set; }
         public StandardDate StandardDates { get; set; }
 
         public static implicit operator GetCourseListItem(GetStandardsListItem source)
@@ -21,6 +22,7 @@ namespace SFA.DAS.Assessors.Api.Models
                 Level = source.Level,
                 MaxFunding = source.MaxFunding,
                 TypicalDuration = source.TypicalDuration,
+                IsActive = source.IsActive,
                 StandardDates = source.StandardDates
             };
         }
