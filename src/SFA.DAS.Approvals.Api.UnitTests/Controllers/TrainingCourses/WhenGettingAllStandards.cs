@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,10 +36,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsListResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards, options => options
-                .Excluding(c=>c.StandardDates)
-                .Excluding(c=>c.TypicalDuration)
-            );
+            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards.Select(item => (GetStandardResponse)item));
         }
 
         [Test, MoqAutoData]
