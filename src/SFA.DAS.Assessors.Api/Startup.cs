@@ -71,8 +71,7 @@ namespace SFA.DAS.Assessors.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
