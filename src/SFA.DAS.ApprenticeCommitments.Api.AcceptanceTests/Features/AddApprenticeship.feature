@@ -1,6 +1,7 @@
 ﻿@loginApi
 @innerApi
 @outerApi
+@commitmentsV2InnerApi
 Feature: AddApprenticeship
 	When an Apprenticeship is approved and forwarded here
 	As an outer API
@@ -9,6 +10,7 @@ Feature: AddApprenticeship
 Scenario Outline: New apprenticeship is recieved and is valid 
 	Given apprenticeship details are valid
 	And the inner api is ready
+	And the Approvals API is ready
 	And the apprentice login api is ready
 	When the apprenticeship is posted
 	Then the result should be Accepted

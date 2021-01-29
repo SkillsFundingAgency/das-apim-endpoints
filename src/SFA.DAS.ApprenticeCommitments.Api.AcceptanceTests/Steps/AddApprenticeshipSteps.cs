@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using TechTalk.SpecFlow;
@@ -21,6 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private readonly TestContext _context;
         private CreateApprenticeshipCommand _request;
         private Dictionary<string, string> _errors;
+        private SendInvitationRequestData loginApiRequest;
 
         public AddApprenticeshipSteps(TestContext context)
         {
@@ -36,7 +38,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _request = new CreateApprenticeshipCommand
             {
                 ApprenticeshipId = 1020,
-                Email = "Test@Test.com"
+                Email = "Test@Test.com",
+                Organisation = "OrganisationName",
             };
         }
 
@@ -46,7 +49,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _request = new CreateApprenticeshipCommand
             {
                 ApprenticeshipId = 0,
-                Email = "noemail"
+                Email = "noemail",
             };
         }
 
@@ -75,6 +78,27 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                         .WithStatusCode((int)HttpStatusCode.OK)
                 );
         }
+
+        [Given(@"the Approvals API is ready")]
+        public void GivenTheApprovalsAPIIsReady()
+        {
+            _context.CommitmentsV2InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/api/apprenticeships/1020")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(new ApprenticeshipResponse
+                        {
+                            FirstName = "GivenName",
+                            LastName = "FamilyName",
+                            CourseName = "ApprenticeshipName",
+                        }))
+                ); ;
+        }
+
 
         [Given(@"the inner api will return a bad request")]
         public void GivenTheInnerApiWillReturnABadRequest()
@@ -140,12 +164,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             logs.Count().Should().Be(1);
             var log = logs.First();
 
-            var loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(log.RequestMessage.Body);
+            loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(log.RequestMessage.Body);
             loginApiRequest.Should().NotBeNull();
             loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
             loginApiRequest.Email.Should().Be(_request.Email);
-            loginApiRequest.GivenName.Should().Be("Unknown");
-            loginApiRequest.FamilyName.Should().Be("Unknown");
+            loginApiRequest.GivenName.Should().Be("GivenName");
+            loginApiRequest.FamilyName.Should().Be("FamilyName");
+            loginApiRequest.OrganisationName.Should().Be("OrganisationName");
+            loginApiRequest.ApprenticeshipName.Should().Be("ApprenticeshipName");
             loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
             loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
         }
