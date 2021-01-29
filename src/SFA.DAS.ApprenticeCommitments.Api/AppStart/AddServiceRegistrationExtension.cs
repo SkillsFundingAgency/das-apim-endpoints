@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -14,7 +15,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
+            services.AddTransient<ApprenticeLoginClient>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+            services.AddTransient<IInternalApiClient<ApprenticeLoginConfiguration>>(s =>
+                s.GetRequiredService<ApprenticeLoginClient>());
             services.AddTransient<ApprenticeCommitmentsService>();
             services.AddTransient<ApprenticeLoginService>();
         }
