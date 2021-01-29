@@ -21,9 +21,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<IInternalApiClient<ApprenticeLoginConfiguration>>(s =>
                 s.GetRequiredService<ApprenticeLoginClient>());
             services.AddTransient<ApprenticeCommitmentsService>();
-
-            services.AddTransient<IApprenticeLoginService, ApprenticeLoginService>()
-                .Decorate<IApprenticeLoginService, ApprenticeLoginServiceLogging>();
+            services.AddTransient<ApprenticeLoginService>();
         }
     }
 }

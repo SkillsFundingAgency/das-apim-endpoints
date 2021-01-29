@@ -10,9 +10,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
     public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
-        private readonly IApprenticeLoginService _apprenticeLoginService;
+        private readonly ApprenticeLoginService _apprenticeLoginService;
 
-        public CreateApprenticeshipCommandHandler(ApprenticeCommitmentsService apprenticeCommitmentsService, IApprenticeLoginService apprenticeLoginService)
+        public CreateApprenticeshipCommandHandler(ApprenticeCommitmentsService apprenticeCommitmentsService, ApprenticeLoginService apprenticeLoginService)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _apprenticeLoginService = apprenticeLoginService;

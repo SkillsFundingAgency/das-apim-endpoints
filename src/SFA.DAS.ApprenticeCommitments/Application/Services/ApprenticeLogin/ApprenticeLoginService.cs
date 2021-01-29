@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
 {
-    public class ApprenticeLoginService : IApprenticeLoginService
+    public class ApprenticeLoginService
     {
         private readonly IInternalApiClient<ApprenticeLoginConfiguration> _client;
         private readonly ApprenticeLoginConfiguration _configuration;
