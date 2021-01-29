@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerIncentives.Extensions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -73,17 +72,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
 
         private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request, string skipCode)
         {
-            _logger.LogInformation($"[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()}] [DateTimeTo={request.ToDateTime.ToIsoDateTime()}] [SkipCode='{skipCode}']", request.FromDateTime, request.ToDateTime, skipCode);
+            _logger.LogInformation("[VRF Refresh] Requesting VRF Case status with parameters: [DateTimeFrom={FromDateTime}] [DateTimeTo={ToDateTime}] [SkipCode='{SkipCode}']", request.FromDateTime, request.ToDateTime, skipCode);
 
             var response = await _financeService.GetVendorRegistrationCasesByLastStatusChangeDate(request.FromDateTime, request.ToDateTime, skipCode);
 
             if (response?.RegistrationCases == null)
             {
-                _logger.LogError($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()} [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]", request.FromDateTime, request.ToDateTime);
-                throw new ArgumentNullException($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime.ToIsoDateTime()} [DateTimeTo={request.ToDateTime.ToIsoDateTime()}]");
+                throw new ArgumentNullException($"[VRF Refresh] Error retrieving data from Finance API with parameters: [DateTimeFrom={request.FromDateTime} [DateTimeTo={request.ToDateTime}]");
             }
 
-            _logger.LogInformation($"[VRF Refresh] Number of VRF Case updates received from Finance API : [{response.RegistrationCases.Count}]");
+            _logger.LogInformation("[VRF Refresh] Number of VRF Case updates received from Finance API : [{Cases}]", response.RegistrationCases.Count);
             return response;
         }
     }
