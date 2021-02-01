@@ -1,14 +1,14 @@
+using SFA.DAS.ApprenticeCommitments.Apis;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.ApprenticeCommitments.Apis;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
-    public class ApprenticeCommitmentsService 
+    public class ApprenticeCommitmentsService
     {
         private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             {
                 Data = new CreateApprenticeshipRequestData
                 {
-                    RegistrationId  = guid,
+                    RegistrationId = guid,
                     ApprenticeshipId = apprenticeshipId,
                     Email = email,
                 }
