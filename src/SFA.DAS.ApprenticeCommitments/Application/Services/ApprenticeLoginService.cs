@@ -1,13 +1,34 @@
+using Microsoft.AspNetCore.Hosting;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
+    public class ApprenticeLoginClient : InternalApiClient<ApprenticeLoginConfiguration>
+    {
+        public ApprenticeLoginClient(
+            IHttpClientFactory httpClientFactory,
+            ApprenticeLoginConfiguration apiConfiguration,
+            IWebHostEnvironment hostingEnvironment,
+            IAzureClientCredentialHelper azureClientCredentialHelper)
+            : base(httpClientFactory, apiConfiguration, hostingEnvironment, azureClientCredentialHelper)
+        {
+        }
+
+        protected override Task AddAuthenticationHeader()
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     public class ApprenticeLoginService
     {
         private readonly IInternalApiClient<ApprenticeLoginConfiguration> _client;
