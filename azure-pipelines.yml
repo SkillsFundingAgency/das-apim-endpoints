@@ -32,8 +32,6 @@ trigger:
     include:
       - "*"
 
-pr: none
-
 variables:
 - group: Release Management Resources
 - group: Wildcard Cert Variables v2
@@ -45,7 +43,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.2.6
+    ref: refs/tags/0.3.3
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
@@ -915,22 +913,22 @@ stages:
   #     ProductId: $(ApprovalsProductId)
   #     ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
 
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_Recruit
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
-  #     DeploymentApprovals: PROD
-  #     ServiceConnection: SFA-DIG-Prod-ARM
-  #     AppServiceName: $(RecruitOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(RecruitOuterApiVersionSetName)
-  #     ApiPath: $(RecruitOuterApiPath)
-  #     ApiBaseUrl: $(RecruitOuterApiBaseUrl)
-  #     ProductId: $(RecruitProductId)
-  #     ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
 
 - stage: Deploy_MO
   dependsOn: Build

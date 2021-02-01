@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
@@ -16,9 +17,23 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
 
     public class GetEpaoOrganisationData
     {
+        
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string WebsiteLink { get; set; }
+        private string _websiteLink;
+        public string WebsiteLink
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_websiteLink))
+                    return _websiteLink;
+                
+                if (!_websiteLink.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
+                    _websiteLink = "https://" + _websiteLink;
+                return _websiteLink;
+            }
+            set => _websiteLink = value;
+        }
 
         public string Address1 { get; set; }
         public string Address2 { get; set; }
