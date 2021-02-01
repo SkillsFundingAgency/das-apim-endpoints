@@ -19,6 +19,8 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi
         public string FamilyName { get; set; }
         public string UserRedirect { get; set; }
         public string Callback { get; set; }
+        public string ApprenticeshipName { get; set; }
+        public object OrganisationName { get; set; }
     }
     public class SendInvitationResponse
     {

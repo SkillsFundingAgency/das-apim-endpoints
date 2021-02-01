@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Apis;
@@ -32,17 +31,19 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
             }
         }
 
-        public async Task SendInvitation(Guid guid, string email)
+        public async Task SendInvitation(SendInvitationModel invitation)
         {
             await _client.Post<SendInvitationResponse>(new SendInvitationRequest
             {
                 ClientId = _configuration.IdentityServerClientId,
                 Data = new SendInvitationRequestData
                 {
-                    SourceId  = guid,
-                    Email = email,
-                    GivenName = "Unknown",
-                    FamilyName = "Unknown",
+                    SourceId = invitation.SourceId,
+                    Email = invitation.Email,
+                    GivenName = invitation.GivenName,
+                    FamilyName = invitation.FamilyName,
+                    OrganisationName = invitation.OrganisationName,
+                    ApprenticeshipName = invitation.ApprenticeshipName,
                     Callback = _configuration.CallbackUrl,
                     UserRedirect = _configuration.RedirectUrl
                 }

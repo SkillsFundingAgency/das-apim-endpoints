@@ -7,6 +7,8 @@ namespace SFA.DAS.FindEpao.UnitTests.InnerApi.Requests.Responses
     public class WhenBuildingTheOrganisationWebsite
     {
         [Test]
+        [MoqInlineAutoData(null, null)]
+        [MoqInlineAutoData("", "")]
         [MoqInlineAutoData("https://www.test.com", "https://www.test.com")]
         [MoqInlineAutoData("http://www.test.com", "http://www.test.com")]
         [MoqInlineAutoData("Http://www.test.com", "Http://www.test.com")]
