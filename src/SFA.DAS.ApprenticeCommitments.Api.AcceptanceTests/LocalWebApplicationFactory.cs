@@ -29,6 +29,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
                     c.CallbackUrl = _testContext.LoginConfig.CallbackUrl;
                     c.RedirectUrl = _testContext.LoginConfig.RedirectUrl;
                 });
+                s.Configure<CommitmentsV2Configuration>(c =>
+                {
+                    c.Url = _testContext.CommitmentsV2InnerApi.BaseAddress;
+                });
             });
 
             builder.ConfigureAppConfiguration(a =>

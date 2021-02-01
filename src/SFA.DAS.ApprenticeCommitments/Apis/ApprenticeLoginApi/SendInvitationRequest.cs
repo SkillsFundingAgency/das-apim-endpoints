@@ -15,12 +15,12 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi
     {
         public Guid SourceId { get; set; }
         public string Email { get; set; }
-        [JsonProperty("given_name")]
         public string GivenName { get; set; }
-        [JsonProperty("family_name")]
         public string FamilyName { get; set; }
         public string UserRedirect { get; set; }
         public string Callback { get; set; }
+        public string ApprenticeshipName { get; set; }
+        public object OrganisationName { get; set; }
     }
     public class SendInvitationResponse
     {
