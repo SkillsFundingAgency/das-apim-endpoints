@@ -3,6 +3,7 @@ using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {

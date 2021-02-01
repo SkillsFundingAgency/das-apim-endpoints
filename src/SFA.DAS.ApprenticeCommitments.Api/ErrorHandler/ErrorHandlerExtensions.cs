@@ -28,6 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.ErrorHandler
                         context.Response.StatusCode = (int) httpException.StatusCode;
                         if (!string.IsNullOrWhiteSpace(httpException.ErrorContent))
                         {
+                            logger.LogError($"Inner Api returned error content: {httpException.ErrorContent}");
                             await context.Response.WriteAsync(httpException.ErrorContent);
                         }
                     }

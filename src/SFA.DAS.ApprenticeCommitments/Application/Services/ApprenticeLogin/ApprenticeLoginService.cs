@@ -1,34 +1,12 @@
-using Microsoft.AspNetCore.Hosting;
-using SFA.DAS.Api.Common.Interfaces;
+using System.Net;
+using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Services
+namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
 {
-    public class ApprenticeLoginClient : InternalApiClient<ApprenticeLoginConfiguration>
-    {
-        public ApprenticeLoginClient(
-            IHttpClientFactory httpClientFactory,
-            ApprenticeLoginConfiguration apiConfiguration,
-            IWebHostEnvironment hostingEnvironment,
-            IAzureClientCredentialHelper azureClientCredentialHelper)
-            : base(httpClientFactory, apiConfiguration, hostingEnvironment, azureClientCredentialHelper)
-        {
-        }
-
-        protected override Task AddAuthenticationHeader()
-        {
-            return Task.CompletedTask;
-        }
-    }
-
     public class ApprenticeLoginService
     {
         private readonly IInternalApiClient<ApprenticeLoginConfiguration> _client;
@@ -71,15 +49,5 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                 }
             });
         }
-    }
-
-    public class SendInvitationModel
-    {
-        public Guid SourceId { get; set; }
-        public string Email { get; set; }
-        public string GivenName { get; set; }
-        public string FamilyName { get; set; }
-        public string OrganisationName { get; set; }
-        public string ApprenticeshipName { get; set; }
     }
 }

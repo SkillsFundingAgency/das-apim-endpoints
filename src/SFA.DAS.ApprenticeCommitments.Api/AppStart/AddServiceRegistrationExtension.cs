@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
