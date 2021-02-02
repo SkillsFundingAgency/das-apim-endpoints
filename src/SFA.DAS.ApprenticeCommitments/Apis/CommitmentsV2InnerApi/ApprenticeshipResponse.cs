@@ -20,7 +20,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public DateTime? CompletionDate { get; set; }
         public bool HasHadDataLockSuccess { get; set; }
         public DateTime? OriginalStartDate { get; set; }
-        //public ApprenticeshipEmployerType? ApprenticeshipEmployerTypeOnApproval { get; set; }
         public long ProviderId { get; set; }
     }
 }

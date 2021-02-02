@@ -1,6 +1,6 @@
-using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         {
             try
             {
-                var status = await _client.GetResponseCode(new GetHealthRequest());
+                var status = await _client.GetResponseCode(new GetPingRequest());
                 return status == HttpStatusCode.OK;
             }
             catch

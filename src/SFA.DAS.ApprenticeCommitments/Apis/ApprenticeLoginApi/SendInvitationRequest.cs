@@ -1,13 +1,16 @@
-﻿using System;
-using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi
 {
     public class SendInvitationRequest : IPostApiRequest
     {
-        public string PostUrl => $"/invitations/{ClientId}";
-        public string ClientId { get; set; }
+        private readonly string clientId;
+
+        public SendInvitationRequest(string clientId) =>
+            this.clientId = clientId ?? throw new ArgumentNullException(nameof(clientId));
+
+        public string PostUrl => $"/invitations/{clientId}";
         public object Data { get; set; }
     }
 
@@ -22,6 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi
         public string ApprenticeshipName { get; set; }
         public object OrganisationName { get; set; }
     }
+
     public class SendInvitationResponse
     {
     }
