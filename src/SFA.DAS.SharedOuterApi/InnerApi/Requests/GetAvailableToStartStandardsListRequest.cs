@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}&filterAvailableToStart=true";
+            var url = $"api/courses/standards?keyword={Keyword}&orderby={OrderBy}&filter=ActiveAvailable";
 
             if (RouteIds != null && RouteIds.Any())
             {
