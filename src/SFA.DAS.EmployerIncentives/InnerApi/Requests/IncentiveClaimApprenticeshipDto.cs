@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public DateTime PlannedStartDate { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerTypeOnApproval { get; set; }
         public long UKPRN { get; set; }
+        public string CourseName { get; set; }
 
         public static implicit operator IncentiveClaimApprenticeshipDto(ApprenticeshipResponse from)
         {
@@ -25,7 +26,8 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
                 Uln = from.Uln,
                 PlannedStartDate = from.StartDate,
                 ApprenticeshipEmployerTypeOnApproval = MapLevyType(from.ApprenticeshipEmployerTypeOnApproval),
-                UKPRN = from.ProviderId
+                UKPRN = from.ProviderId,
+                CourseName = from.CourseName
             };
         }
 
