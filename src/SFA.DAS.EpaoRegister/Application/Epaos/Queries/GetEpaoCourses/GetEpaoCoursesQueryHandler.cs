@@ -48,7 +48,11 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 
             if (epaoCourses == null || epaoCourses.Count == 0)
             {
-                throw new NotFoundException<GetEpaoCoursesResult>();
+                return new GetEpaoCoursesResult
+                {
+                    EpaoId = request.EpaoId,
+                    Courses = new List<GetStandardResponse>()
+                };
             }
 
             var courses = await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
