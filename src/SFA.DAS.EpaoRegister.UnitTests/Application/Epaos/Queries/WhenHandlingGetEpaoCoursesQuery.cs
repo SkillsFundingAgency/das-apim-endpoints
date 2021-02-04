@@ -42,7 +42,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         }
 
         [Test, MoqAutoData]
-        public void And_No_Epao_Courses_Then_Throws_NotFoundException(
+        public async Task And_No_Epao_Courses_Then_Returns_Empty_List(
             GetEpaoCoursesQuery query,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetEpaoCoursesQueryHandler handler)
@@ -52,9 +52,9 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(new List<GetEpaoCoursesListItem>());
 
-            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+            var actual = await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<NotFoundException<GetEpaoCoursesResult>>();
+            actual.Courses.Should().BeEmpty();
         }
 
         [Test, MoqAutoData]

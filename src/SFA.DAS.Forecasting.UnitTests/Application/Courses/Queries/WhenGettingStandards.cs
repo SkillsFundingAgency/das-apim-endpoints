@@ -7,6 +7,7 @@ using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
 using SFA.DAS.Forecasting.InnerApi.Requests;
 using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
         {
             //Arrange
             mockCoursesApiClient.Setup(client =>
-                    client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
+                    client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(coursesApiResponse);
 
             //Act

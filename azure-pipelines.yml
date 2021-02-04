@@ -30,6 +30,10 @@ parameters:
   type: boolean
   default: false
 
+- name: ApprenticeCommitments
+  type: boolean
+  default: false
+  
 trigger:
   branches:
     include:
@@ -258,6 +262,23 @@ stages:
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeCommitments
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
+      ApiPath: $(ApprenticeCommitmentsOuterApiPath)
+      ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
+      ProductId: $(ApprenticeCommitmentsProductId)
+      ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -452,6 +473,23 @@ stages:
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)     
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeCommitments
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
+      ApiPath: $(ApprenticeCommitmentsOuterApiPath)
+      ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
+      ProductId: $(ApprenticeCommitmentsProductId)
+      ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
 - stage: Deploy_TEST2
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -628,6 +666,7 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -646,6 +685,23 @@ stages:
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
     
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeCommitments
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
+      ApiPath: $(ApprenticeCommitmentsOuterApiPath)
+      ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
+      ProductId: $(ApprenticeCommitmentsProductId)
+      ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+      
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -839,6 +895,23 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeCommitments
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
+      ApiPath: $(ApprenticeCommitmentsOuterApiPath)
+      ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
+      ProductId: $(ApprenticeCommitmentsProductId)
+      ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
 
 - stage: Deploy_PROD
   dependsOn: Build
