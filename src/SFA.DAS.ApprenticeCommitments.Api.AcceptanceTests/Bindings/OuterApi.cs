@@ -4,7 +4,6 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
 {
     [Binding]
-    [Scope(Tag = "outerApi")]
     public class OuterApi
     {
         public static ApprenticeCommitmentsApi Client { get; set; }
