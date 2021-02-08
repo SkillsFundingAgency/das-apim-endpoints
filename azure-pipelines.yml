@@ -954,22 +954,22 @@ stages:
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_Reservations
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-  #     DeploymentApprovals: PROD
-  #     ServiceConnection: SFA-DIG-Prod-ARM
-  #     AppServiceName: $(ReservationsOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-  #     ApiPath: $(ReservationsOuterApiPath)
-  #     ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-  #     ProductId: $(ReservationsProductId)
-  #     ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1071,24 +1071,42 @@ stages:
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
-      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
-      
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_EpaoRegister
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
-  #     DeploymentApprovals: PROD
-  #     ServiceConnection: SFA-DIG-Prod-ARM
-  #     AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
-  #     ApiPath: $(EpaoRegisterOuterApiPath)
-  #     ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
-  #     ProductId: $(EpaoRegisterProductId)
-  #     ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)   
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
 - stage: Deploy_MO
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -1183,39 +1201,39 @@ stages:
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
 
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_EpaoRegister
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
-  #     DeploymentApprovals: MO
-  #     ServiceConnection: SFA-ASM-ModelOffice-ARM
-  #     AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
-  #     ApiPath: $(EpaoRegisterOuterApiPath)
-  #     ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
-  #     ProductId: $(EpaoRegisterProductId)
-  #     ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
   
-  # - template: pipeline-templates/job/deploy-api.yml
-  #   parameters:
-  #     DeploymentName: Deploy_Reservations
-  #     DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
-  #     DeploymentApprovals: MO
-  #     ServiceConnection: SFA-ASM-ModelOffice-ARM
-  #     AppServiceName: $(ReservationsOuterApiAppServiceName)
-  #     DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-  #     ApimResourceGroup: $(ApimResourceGroup)
-  #     ApimInstanceName: $(InstanceName)
-  #     AppServiceResourceGroup: $(ResourceGroupName)
-  #     ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
-  #     ApiPath: $(ReservationsOuterApiPath)
-  #     ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
-  #     ProductId: $(ReservationsProductId)
-  #     ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
