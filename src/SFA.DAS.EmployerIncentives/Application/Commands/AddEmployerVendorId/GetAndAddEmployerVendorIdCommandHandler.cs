@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 {
@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
-
         private const string CompanyName = "ESFA";
 
         public GetAndAddEmployerVendorIdCommandHandler(ICustomerEngagementFinanceService financeService,
@@ -23,14 +22,18 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Requesting Vendor By Apprenticeship Service LegalEntityId: {command.HashedLegalEntityId}");
+            _logger.LogInformation("Requesting VendorId for LegalEntityId: [{LegalEntityId}]", request.HashedLegalEntityId);
 
-            var employerVendorId = await GetEmployerVendorId(command.HashedLegalEntityId);
+            var employerVendorId = await GetEmployerVendorId(request.HashedLegalEntityId);
 
-            await _incentivesService.AddEmployerVendorIdToLegalEntity(command.HashedLegalEntityId, employerVendorId);
-            
+            if (!string.IsNullOrEmpty(employerVendorId))
+            {
+                _logger.LogInformation("Received VendorId '{VendorId}' for LegalEntityId [{LegalEntityId}]", employerVendorId, request.HashedLegalEntityId);
+                await _incentivesService.AddEmployerVendorIdToLegalEntity(request.HashedLegalEntityId, employerVendorId);
+            }
+
             return Unit.Value;
         }
 
@@ -38,27 +41,30 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         {
             try
             {
-                _logger.LogInformation("Calling GetVendorByApprenticeshipLegalEntityId with [{companyName}] and [{hashedLegalEntityId}]");
+                _logger.LogInformation("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}]", hashedLegalEntityId);
 
                 var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(CompanyName, hashedLegalEntityId);
 
-                _logger.LogInformation("Called GetVendorByApprenticeshipLegalEntityId with [{companyName}] and [{hashedLegalEntityId}]");
-
                 if (response == null)
                 {
-                    throw new ApplicationException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response");
+                    throw new ArgumentException("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}] returned a null response", hashedLegalEntityId);
                 }
 
                 if (response.Vendor == null)
                 {
-                    throw new ApplicationException("Calling GetVendorByApprenticeshipLegalEntityId returned a null response for Vendor");
+                    throw new ArgumentException("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}] returned a null response for Vendor", hashedLegalEntityId);
+                }
+
+                if (response.Vendor != null && string.IsNullOrEmpty(response.Vendor.VendorIdentifier))
+                {
+                    _logger.LogInformation("No VendorId received for LegalEntityId: [{LegalEntityId}]. Error message: [{Error}]", hashedLegalEntityId, response.Vendor.ErrorText);
                 }
 
                 return response.Vendor.VendorIdentifier;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Problem calling GetVendorByApprenticeshipLegalEntityId with [{CompanyName}] and [{hashedLegalEntityId}] ");
+                _logger.LogError(e, "Problem calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId: [{LegalEntityId}]", hashedLegalEntityId);
                 throw;
             }
         }

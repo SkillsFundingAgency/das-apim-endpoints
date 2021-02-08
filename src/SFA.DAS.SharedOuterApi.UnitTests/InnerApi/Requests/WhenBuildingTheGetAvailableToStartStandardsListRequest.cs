@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filter=ActiveAvailable&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
         }
 
         [Test, AutoData]
@@ -40,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true");
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filter=ActiveAvailable");
         }
 
         [Test, AutoData]
@@ -57,7 +57,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&levels=" + string.Join("&levels=", levels));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filter=ActiveAvailable&levels=" + string.Join("&levels=", levels));
         }
         
         [Test, AutoData]
@@ -74,7 +74,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
             
             actual.GetUrl.Should()
-                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filterAvailableToStart=true&routeIds=" + string.Join("&routeIds=", routeIds));
+                .Be($"api/courses/standards?keyword={keyword}&orderby={orderBy}&filter=ActiveAvailable&routeIds=" + string.Join("&routeIds=", routeIds));
         }
     }
 }

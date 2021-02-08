@@ -11,4 +11,3 @@ Scenario: A VRF case status update job is triggered
 	When Refresh Vendor Registration Form Status is invoked
 	Then latest VRF cases are retrieved from Finance API
 	And VRF case details are updated for legal entities
-

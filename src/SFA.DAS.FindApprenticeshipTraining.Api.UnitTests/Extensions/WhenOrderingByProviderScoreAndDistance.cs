@@ -14,74 +14,50 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 0
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 1
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 5.1m
-                        }
-                    } ,
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 4,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 15.1m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 0},0, true, 
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 1},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 5.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(4, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 10.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(5, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 15.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(6, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 100.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(7, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 20.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(8, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 80.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(9, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 25.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(10, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 30.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(11, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 40.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(12, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 90.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(13, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 50.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(14, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 60.1m } } ),
+
+                CreateGetTrainingCourseProviderListItem(15, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 70.1m } } )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -89,7 +65,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.First().ProviderId.Should().Be(1);
             list.Skip(1).Take(1).First().ProviderId.Should().Be(3);
             list.Skip(2).Take(1).First().ProviderId.Should().Be(2);
-            list.Last().ProviderId.Should().Be(4);
+            list.Skip(3).Take(1).First().ProviderId.Should().Be(4);
+            list.Skip(4).Take(1).First().ProviderId.Should().Be(5);
+            list.Skip(5).Take(1).First().ProviderId.Should().Be(7);
+            list.Skip(6).Take(1).First().ProviderId.Should().Be(9);
+            list.Skip(7).Take(1).First().ProviderId.Should().Be(10);
+            list.Skip(8).Take(1).First().ProviderId.Should().Be(11);
+            list.Skip(9).Take(1).First().ProviderId.Should().Be(13);
+            list.Skip(10).Take(1).First().ProviderId.Should().Be(14);
+            list.Skip(11).Take(1).First().ProviderId.Should().Be(15);
+            list.Skip(12).Take(1).First().ProviderId.Should().Be(8);
+            list.Skip(13).Take(1).First().ProviderId.Should().Be(12);
+            list.Last().ProviderId.Should().Be(6);
         }
         
         [Test]
@@ -97,101 +84,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 0
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 1
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    } ,
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 4,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 5,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 1
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 0},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 1},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } ),
+
+                CreateGetTrainingCourseProviderListItem(4, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 1m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } ),
+
+                CreateGetTrainingCourseProviderListItem(5, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 1},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -208,62 +116,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 3.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 2
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 3.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 2},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m } } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -278,62 +139,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 3.9m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 3.9m } } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m } } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -348,72 +162,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 1.2m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 3m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.8m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 1.2m} } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 1.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 3m} } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.8m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore(new List<DeliveryModeType> {DeliveryModeType.DayRelease, DeliveryModeType.BlockRelease}).ToList();
@@ -428,72 +187,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 1.2m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 3m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.8m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 1.2m} } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 1.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 3m} } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.8m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore(new List<DeliveryModeType> {DeliveryModeType.DayRelease}).ToList();
@@ -508,72 +212,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 1.2m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 3m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 1.2m} } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 1.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 3m} } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore(new List<DeliveryModeType> {DeliveryModeType.BlockRelease}).ToList();
@@ -588,72 +237,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 2
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 4.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 1.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 4
-                    },
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.DayRelease,
-                            DistanceInMiles = 5.9m
-                        },
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 0m
-                        }
-                    },
-                    HasLocation = true
-                }
+                CreateGetTrainingCourseProviderListItem(1, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 2},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 4.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } ),
+
+                CreateGetTrainingCourseProviderListItem(3, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 3},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 1.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } ),
+
+                CreateGetTrainingCourseProviderListItem(2, null, new GetProviderFeedbackResponse{TotalFeedbackRating = 4},0, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.DayRelease, DistanceInMiles = 5.9m },
+                        new GetDeliveryType{DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 0m} } )
             };
             
             list = list.OrderByProviderScore(new List<DeliveryModeType> {DeliveryModeType.Workplace, DeliveryModeType.National}).ToList();
@@ -668,66 +262,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Name = "Third",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 100,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 10
-                        }
-                    }
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 4,
-                    Name = "Second",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 100,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 15
-                        }
-                    }
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Name = "First",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 100,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.Workplace,
-                            DistanceInMiles = 100
-                        }
-                    }
-                }
+                CreateGetTrainingCourseProviderListItem(
+                    1, "Third", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},100, true, 
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 10m } } 
+                    ),
+
+                CreateGetTrainingCourseProviderListItem(
+                    4, "Second", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},100, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 15m } }
+                    ),
+
+                CreateGetTrainingCourseProviderListItem(
+                    3, "First", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},100, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.Workplace, DistanceInMiles = 100m } }
+                    )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -742,66 +290,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 1,
-                    Name = "Test",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 10,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 11
-                        }
-                    }
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 4,
-                    Name = "Test",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 100,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 11
-                        }
-                    }
-                },
-                new GetTrainingCourseProviderListItem
-                {
-                    ProviderId = 3,
-                    Name = "Test",
-                    Feedback = new GetProviderFeedbackResponse
-                    {
-                        TotalFeedbackRating = 3,
-                        TotalEmployerResponses = 100
-                    },
-                    OverallCohort = 1000,
-                    HasLocation = true,
-                    DeliveryModes = new List<GetDeliveryType>
-                    {
-                        new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.BlockRelease,
-                            DistanceInMiles = 11
-                        }
-                    }
-                }
+                CreateGetTrainingCourseProviderListItem(
+                    1, "Test", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},10, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 11m } }
+                ),
+
+                CreateGetTrainingCourseProviderListItem(
+                    4, "Test", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},100, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 11m } }
+                ),
+
+                CreateGetTrainingCourseProviderListItem(
+                    3, "Test", new GetProviderFeedbackResponse{TotalFeedbackRating = 3, TotalEmployerResponses = 100},1000, true,
+                    new List<GetDeliveryType>{new GetDeliveryType{ DeliveryModeType = DeliveryModeType.BlockRelease, DistanceInMiles = 11m } }
+                )
             };
             
             list = list.OrderByProviderScore().ToList();
@@ -809,6 +311,32 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.First().ProviderId.Should().Be(3);
             list.Skip(1).Take(1).First().ProviderId.Should().Be(4);
             list.Last().ProviderId.Should().Be(1);
+        }
+
+        private GetTrainingCourseProviderListItem CreateGetTrainingCourseProviderListItem(int providerId, string name,
+            GetProviderFeedbackResponse feedback, int overallCohort, bool hasLocation,
+            List<GetDeliveryType> deliveryModes)
+        {
+            if (name != null && overallCohort != 0)
+            {
+                return new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = providerId,
+                    Name = name,
+                    Feedback = feedback,
+                    OverallCohort = overallCohort,
+                    HasLocation = hasLocation,
+                    DeliveryModes = deliveryModes
+                };
+            }
+
+            return new GetTrainingCourseProviderListItem
+            {
+                ProviderId = providerId,
+                Feedback = feedback,
+                HasLocation = hasLocation,
+                DeliveryModes = deliveryModes
+            };
         }
     }
 }
