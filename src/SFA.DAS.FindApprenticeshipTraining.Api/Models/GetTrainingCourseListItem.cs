@@ -7,7 +7,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetTrainingCourseListItem
     {
+        [Obsolete("Id is obsolete, use StandardUId or LarsCode")]
         public int Id { get; set; }
+        public string StandardUId { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public string LevelEquivalent { get; set; }
@@ -32,7 +35,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetTrainingCourseListItem
             {
-                Id = source.Id,
+                Id = source.LarsCode,
+                StandardUId = source.StandardUId,
+                LarsCode = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 LevelEquivalent = source.LevelEquivalent,

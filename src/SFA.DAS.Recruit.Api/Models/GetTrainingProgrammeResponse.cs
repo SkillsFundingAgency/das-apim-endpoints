@@ -6,6 +6,8 @@ namespace SFA.DAS.Recruit.Api.Models
     public class GetTrainingProgrammeResponse
     {
         public string Id { get; set; }
+        public string LarsCode { get; set; }
+        public string StandardUId { get; set; }
         public GetTrainingProgrammeTrainingType ApprenticeshipType { get; set; }
         public string Title { get; set; }
         public DateTime? EffectiveFrom { get; set; }
@@ -22,6 +24,8 @@ namespace SFA.DAS.Recruit.Api.Models
             return new GetTrainingProgrammeResponse
             {
                 Id = source.Id,
+                LarsCode = source.LarsCode,
+                StandardUId = source.StandardUId,
                 ApprenticeshipType = (GetTrainingProgrammeTrainingType)source.ApprenticeshipType,
                 Title = source.Title,
                 EffectiveFrom = source.EffectiveFrom,

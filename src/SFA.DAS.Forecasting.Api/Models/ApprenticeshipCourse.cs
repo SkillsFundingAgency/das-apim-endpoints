@@ -9,6 +9,8 @@ namespace SFA.DAS.Forecasting.Api.Models
     public class ApprenticeshipCourse
     {
         public string Id { get; set; }
+        public string StandardUId { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public decimal FundingCap { get; set; }
         public int Level { get; set; }
@@ -18,15 +20,19 @@ namespace SFA.DAS.Forecasting.Api.Models
 
         public static implicit operator ApprenticeshipCourse(GetStandardsListItem standard)
         {
+            // ID not obsolete here as shared with Framework Id,
+            // Need to replace it with StandardUId and callers using lars code if necessary
             return new ApprenticeshipCourse
             {
-                Id = standard.Id,
+                Id = standard.LarsCode.ToString(),
+                StandardUId = standard.StandardUId,
+                LarsCode = standard.LarsCode,
                 Title = standard.Title,
                 FundingCap = standard.MaxFunding,
                 Level = standard.Level,
                 Duration = standard.TypicalDuration,
                 CourseType = ApprenticeshipCourseType.Standard,
-                FundingPeriods = standard.ApprenticeshipFunding?.Select(c => (FundingPeriod) c).ToList()
+                FundingPeriods = standard.ApprenticeshipFunding?.Select(c => (FundingPeriod)c).ToList()
             };
         }
 
@@ -40,7 +46,7 @@ namespace SFA.DAS.Forecasting.Api.Models
                 Level = framework.Level,
                 Duration = framework.Duration,
                 CourseType = ApprenticeshipCourseType.Framework,
-                FundingPeriods = framework.FundingPeriods?.Select(c => (FundingPeriod) c).ToList()
+                FundingPeriods = framework.FundingPeriods?.Select(c => (FundingPeriod)c).ToList()
             };
         }
 

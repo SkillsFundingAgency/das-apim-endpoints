@@ -13,12 +13,16 @@ namespace SFA.DAS.Reservations.Api.Models
         public int Level { get ; set ; }
 
         public int Id { get ; set ; }
+        public int LarsCode { get; set; }
+        public string StandardUId { get; set; }
 
         public static implicit operator GetTrainingCoursesListItem(GetStandardsListItem standard)
         {
             return new GetTrainingCoursesListItem
             {
                 Id = standard.Id,
+                LarsCode = standard.LarsCode,
+                StandardUId = standard.StandardUId,
                 Level = standard.Level,
                 Title = standard.Title,
                 EffectiveTo = standard.EffectiveTo

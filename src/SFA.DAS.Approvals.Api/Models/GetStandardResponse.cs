@@ -7,7 +7,10 @@ namespace SFA.DAS.Approvals.Api.Models
 {
     public class GetStandardResponse
     {
+        [Obsolete("Id is obsolete, use StandardUId or LarsCode")]
         public int Id { get; set; }
+        public string StandardUId { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get ; set ; }
         public int Duration { get; set; }
@@ -22,7 +25,9 @@ namespace SFA.DAS.Approvals.Api.Models
         {
             return new GetStandardResponse
             {
-                Id = source.Id,
+                Id = source.LarsCode,
+                StandardUId = source.StandardUId,
+                LarsCode = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 Duration = source.TypicalDuration,
