@@ -48,6 +48,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             if (itemFromCache != null)
             {
                 itemsTask = Task.FromResult(itemFromCache);
+
+                if (itemFromCache.GetType() == typeof(GetStandardsListResponse))
+                {
+                    var castItem = itemFromCache as GetStandardsListResponse;
+                    if (castItem.Total < 1)
+                    {
+                        itemsTask = client.Get<TResponse>(request);
+                        updateCache = true;
+                    }
+                }
             }
             else
             {
