@@ -14,7 +14,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
         {
             var response = (GetTrainingCoursesListItem)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Should().BeEquivalentTo(source, options => options
+                .Excluding(r => r.StandardUId)
+                .Excluding(r => r.LarsCode));
+            response.Id.Should().Be(source.LarsCode);
         }
         
     }
