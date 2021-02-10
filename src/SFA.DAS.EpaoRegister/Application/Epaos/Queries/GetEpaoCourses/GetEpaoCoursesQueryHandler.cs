@@ -68,7 +68,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
             var matchingCourses = courses.Standards
                 .Where(response => epaoCourses
                     .Select(item => item.StandardCode)
-                    .Contains(response.Id))
+                    .Contains(response.LarsCode))
                 .ToList();
             
             return new GetEpaoCoursesResult

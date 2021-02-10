@@ -92,7 +92,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         {
             foreach (var course in matchingStandards)
             {
-                course.Id = apiResponse[0].StandardCode;
+                course.LarsCode = apiResponse[0].StandardCode;
             }
             var allStandards = new List<GetStandardResponse>(); 
             allStandards.AddRange(matchingStandards);
@@ -130,7 +130,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             var expectedExpirationInHours = 1;
             foreach (var course in matchingStandards)
             {
-                course.Id = apiResponse[0].StandardCode;
+                course.LarsCode = apiResponse[0].StandardCode;
             }
             var allStandards = new List<GetStandardResponse>(); 
             allStandards.AddRange(matchingStandards);

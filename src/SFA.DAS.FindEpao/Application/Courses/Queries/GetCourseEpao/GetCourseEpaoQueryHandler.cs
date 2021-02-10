@@ -82,12 +82,12 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                     x.EffectiveTo, x.EffectiveFrom)).ToList();
             var allCourses = coursesTask.Result.Standards
                 .Where(course =>filterAdditionalCourses 
-                    .Any(item => item.StandardCode == course.Id));
+                    .Any(item => item.StandardCode == course.LarsCode));
 
             return new GetCourseEpaoResult
             {
                 Epao = epaoTask.Result,
-                Course = coursesTask.Result.Standards.Single(item => item.Id == request.CourseId),
+                Course = coursesTask.Result.Standards.Single(item => item.LarsCode == request.CourseId),
                 EpaoDeliveryAreas = courseEpao.DeliveryAreas,
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
