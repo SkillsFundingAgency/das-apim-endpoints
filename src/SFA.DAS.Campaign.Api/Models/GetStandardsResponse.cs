@@ -11,12 +11,17 @@ namespace SFA.DAS.Campaign.Api.Models
     public class GetStandardsResponseItem
     {
         public int Id { get; set; }
+        public int LarsCode { get; set; }
+        public string StandardUId { get; set; }
 
         public static implicit operator GetStandardsResponseItem(GetStandardsListItem source)
         {
             return new GetStandardsResponseItem
             {
-                Id = source.Id
+                Id = source.Id,
+                LarsCode = source.LarsCode,
+                StandardUId = source.StandardUId
+                
             };
         }
     }

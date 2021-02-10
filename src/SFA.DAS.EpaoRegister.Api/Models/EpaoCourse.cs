@@ -14,6 +14,8 @@ namespace SFA.DAS.EpaoRegister.Api.Models
             return new EpaoCourse
             {
                 Id = source.Id,
+                LarsCode = source.LarsCode,
+                StandardUId = source.StandardUId,
                 Periods = (CourseDates)source.StandardDates
             };
         }
