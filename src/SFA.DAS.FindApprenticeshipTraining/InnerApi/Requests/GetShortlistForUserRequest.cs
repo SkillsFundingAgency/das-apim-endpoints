@@ -11,6 +11,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _shortlistUserId = shortlistUserId;
         }
 
+        public Guid ShortlistUserId => _shortlistUserId;
+
         public string GetUrl => $"api/shortlist/users/{_shortlistUserId}";
     }
 }

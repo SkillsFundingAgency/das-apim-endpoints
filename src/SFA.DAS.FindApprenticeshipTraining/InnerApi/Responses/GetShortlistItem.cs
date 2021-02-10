@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -8,5 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public Guid ShortlistUserId { get; set; }
         public GetProviderStandardItem ProviderDetails { get; set; }
         public int CourseId { get; set; }
+        [NotMapped]
+        public GetStandardsListItem Course { get; set; }
     }
 }
