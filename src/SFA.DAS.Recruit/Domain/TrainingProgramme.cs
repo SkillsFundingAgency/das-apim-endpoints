@@ -35,7 +35,7 @@ namespace SFA.DAS.Recruit.Domain
         {
             return new TrainingProgramme
             {
-                Id = source.Id.ToString(),
+                Id = source.LarsCode.ToString(),
                 ApprenticeshipType = TrainingType.Standard,
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,

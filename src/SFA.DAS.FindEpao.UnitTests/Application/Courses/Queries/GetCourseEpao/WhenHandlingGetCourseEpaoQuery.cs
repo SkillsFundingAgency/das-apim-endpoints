@@ -106,8 +106,8 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             GetCourseEpaoQueryHandler handler)
         {
             courseEpaosApiResponse[0].EpaoId = query.EpaoId.ToLower();
-            coursesFromCache.Standards.First().Id = epaoCoursesApiResponse.First().StandardCode;
-            coursesFromCache.Standards.ElementAt(1).Id = query.CourseId;
+            coursesFromCache.Standards.First().LarsCode = epaoCoursesApiResponse.First().StandardCode;
+            coursesFromCache.Standards.ElementAt(1).LarsCode = query.CourseId;
             mockAssessorsApiClient
                 .Setup(client => client.Get<GetEpaoResponse>(
                     It.Is<GetEpaoRequest>(request => request.EpaoId == query.EpaoId)))
@@ -138,11 +138,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.Epao.Should().BeEquivalentTo(epaoApiResponse);
             result.EpaoDeliveryAreas.Should().BeEquivalentTo(courseEpaosApiResponse.Single(item => string.Equals(item.EpaoId, query.EpaoId, StringComparison.CurrentCultureIgnoreCase)).DeliveryAreas);
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count(item => item.EpaoId == query.EpaoId.ToLower()));//filter returns true
-            result.Course.Should().BeEquivalentTo(coursesFromCache.Standards.Single(item => item.Id == query.CourseId));
+            result.Course.Should().BeEquivalentTo(coursesFromCache.Standards.Single(item => item.LarsCode == query.CourseId));
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
             result.AllCourses.Should().BeEquivalentTo(
                 coursesFromCache.Standards.Where(item =>
-                    epaoCoursesApiResponse.Any(listItem => listItem.StandardCode == item.Id)));
+                    epaoCoursesApiResponse.Any(listItem => listItem.StandardCode == item.LarsCode)));
             foreach (var courseListItem in epaoCoursesApiResponse)
             {
                 mockCourseEpaoFilter.Verify(x=>x.ValidateEpaoStandardDates(courseListItem.DateStandardApprovedOnRegister,courseListItem.EffectiveTo,courseListItem.EffectiveFrom), 

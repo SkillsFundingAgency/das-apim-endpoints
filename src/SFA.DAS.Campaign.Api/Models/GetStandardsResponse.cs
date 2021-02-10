@@ -16,7 +16,7 @@ namespace SFA.DAS.Campaign.Api.Models
         {
             return new GetStandardsResponseItem
             {
-                Id = source.Id
+                Id = source.LarsCode
             };
         }
     }
