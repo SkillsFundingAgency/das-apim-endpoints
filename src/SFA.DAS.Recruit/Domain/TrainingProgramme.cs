@@ -42,7 +42,7 @@ namespace SFA.DAS.Recruit.Domain
                 EffectiveTo = source.StandardDates.EffectiveTo,
                 ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
-                IsActive = IsStandardActiveMapper.IsStandardActive(source),
+                IsActive = source.IsActive,
                 EducationLevelNumber = source.Level
             };
         }

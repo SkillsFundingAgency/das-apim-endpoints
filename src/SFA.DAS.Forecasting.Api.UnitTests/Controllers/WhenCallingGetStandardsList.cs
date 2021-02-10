@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,13 +36,8 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsListResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards,
-                o => o
-                    .Excluding(s => s.ApprenticeshipFunding)
-                    .Excluding(s => s.MaxFunding)
-                    .Excluding(s => s.TypicalDuration)
-                    .Excluding(s => s.StandardDates)
-                );
+            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards
+                .Select(item => (ApprenticeshipCourse)item));
         }
 
         [Test, MoqAutoData]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,14 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
-                .Excluding(tc=>tc.ApprenticeshipFunding)
-                .Excluding(tc=>tc.StandardDates)
-                .Excluding(tc => tc.Skills)
-                .Excluding(tc => tc.TypicalJobTitles)
-                .Excluding(tc => tc.CoreAndOptions)
-                .Excluding(tc => tc.CoreDuties)
-            );
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetTrainingCourseListItem)item));
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
             model.Levels.Should().BeEquivalentTo(mediatorResult.Levels);
         }
@@ -70,14 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses, options=>options
-                .Excluding(tc=>tc.ApprenticeshipFunding)
-                .Excluding(tc=>tc.StandardDates)
-                .Excluding(tc => tc.Skills)
-                .Excluding(tc => tc.TypicalJobTitles)
-                .Excluding(tc => tc.CoreAndOptions)
-                .Excluding(tc => tc.CoreDuties)
-            );
+            model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetTrainingCourseListItem)item));
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
         }
