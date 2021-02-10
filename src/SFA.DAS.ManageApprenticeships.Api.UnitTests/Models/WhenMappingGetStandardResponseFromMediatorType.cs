@@ -12,16 +12,19 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Models
         public void Then_The_Fields_Are_Correctly_Mapped(GetStandardsListItem source)
         {
             //Arrange
-            var actual = (GetStandardResponse) source;
-            
+            var actual = (GetStandardResponse)source;
+
             //Assert
             actual.Should().BeEquivalentTo(source, options=> options
                 .Excluding(x=>x.ApprenticeshipFunding)
                 .Excluding(x=>x.StandardDates)
                 .Excluding(x=>x.TypicalDuration)
                 .Excluding(x=>x.IsActive)
+                .Excluding(x => x.StandardUId)
+                .Excluding(x => x.LarsCode)
             );
             actual.Duration.Should().Be(source.TypicalDuration);
+            actual.Id.Should().Be(source.LarsCode);
         }
     }
 }

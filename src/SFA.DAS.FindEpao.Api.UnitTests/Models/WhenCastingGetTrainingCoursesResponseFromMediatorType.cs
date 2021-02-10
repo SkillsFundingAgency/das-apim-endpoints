@@ -14,8 +14,8 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Models
         {
             var response = (GetCourseListItem)source;
 
-            response.Should().BeEquivalentTo(source);
+            response.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
+            response.Id.Should().Be(source.LarsCode);
         }
-        
     }
 }

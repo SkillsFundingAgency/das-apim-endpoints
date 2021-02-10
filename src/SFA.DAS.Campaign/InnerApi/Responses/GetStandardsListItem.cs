@@ -4,6 +4,5 @@
     {
         public string StandardUId { get; set; }
         public int LarsCode { get; set; }
-
     }
 }
