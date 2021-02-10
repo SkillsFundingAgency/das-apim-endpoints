@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,11 +25,11 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
             string sector,
             GetStandardsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
+            [Greedy] TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetStandardsQuery>(c=>c.Sector.Equals(sector)),
+                    It.Is<GetStandardsQuery>(c => c.Sector.Equals(sector)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -37,13 +39,15 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Standards, options => options);
+
+            var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem { Id = s.LarsCode });
+            model.Standards.Should().BeEquivalentTo(response);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
+            [Greedy] TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
