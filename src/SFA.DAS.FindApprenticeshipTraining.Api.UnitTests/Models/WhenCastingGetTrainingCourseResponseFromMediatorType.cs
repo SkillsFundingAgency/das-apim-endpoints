@@ -23,6 +23,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.CoreAndOptions)
                 .Excluding(tc => tc.CoreDuties)
                 .Excluding(tc => tc.CoreSkillsCount)
+                .Excluding(tc => tc.IsActive)
             );
         }
 
