@@ -8,6 +8,7 @@ using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourse
 using SFA.DAS.Reservations.InnerApi.Requests;
 using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.TrainingCourses.Queries
             GetTrainingCoursesQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetStandardsRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
