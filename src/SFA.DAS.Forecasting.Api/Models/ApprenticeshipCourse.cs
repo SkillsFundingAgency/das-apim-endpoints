@@ -20,7 +20,7 @@ namespace SFA.DAS.Forecasting.Api.Models
         {
             return new ApprenticeshipCourse
             {
-                Id = standard.Id,
+                Id = standard.LarsCode.ToString(),
                 Title = standard.Title,
                 FundingCap = standard.MaxFunding,
                 Level = standard.Level,

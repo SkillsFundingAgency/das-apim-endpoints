@@ -92,11 +92,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return providerCoursesTask
                 .Result
                 .StandardIds.Select(courseId =>
-                    coursesTask.Result.Standards.SingleOrDefault(c => c.Id.Equals(courseId)))
+                    coursesTask.Result.Standards.SingleOrDefault(c => c.LarsCode.Equals(courseId)))
                 .Where(c => c != null)
                 .Select(course => new GetAdditionalCourseListItem
                 {
-                    Id = course.Id,
+                    Id = course.LarsCode,
                     Level = course.Level,
                     Title = course.Title
                 })

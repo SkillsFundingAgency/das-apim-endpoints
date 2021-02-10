@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             var actual = (TrainingProgramme) source;
             
             //Assert
-            actual.Id.Should().Be(source.Id.ToString());
+            actual.Id.Should().Be(source.LarsCode.ToString());
             actual.ApprenticeshipType.Should().Be(TrainingType.Standard);
             actual.Title.Should().Be(source.Title);
             actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
