@@ -29,6 +29,9 @@ parameters:
 - name: Campaign
   type: boolean
   default: false
+- name: Assessors
+  type: boolean
+  default: false 
 
 - name: ApprenticeCommitments
   type: boolean
@@ -261,6 +264,23 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -471,7 +491,7 @@ stages:
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
-      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)     
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -684,6 +704,23 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
     
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -913,6 +950,23 @@ stages:
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
+
 - stage: Deploy_PROD
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -1106,6 +1160,23 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)  
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -1302,3 +1373,20 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)    
