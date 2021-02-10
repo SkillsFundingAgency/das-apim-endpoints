@@ -18,7 +18,7 @@ namespace SFA.DAS.Reservations.Api.Models
         {
             return new GetTrainingCoursesListItem
             {
-                Id = standard.Id,
+                Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
                 EffectiveTo = standard.EffectiveTo
