@@ -25,6 +25,9 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         {
             get
             {
+                if (string.IsNullOrEmpty(_websiteLink))
+                    return _websiteLink;
+                
                 if (!_websiteLink.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
                     _websiteLink = "https://" + _websiteLink;
                 return _websiteLink;
