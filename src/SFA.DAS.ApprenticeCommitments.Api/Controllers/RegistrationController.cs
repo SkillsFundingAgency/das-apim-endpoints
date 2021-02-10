@@ -2,6 +2,7 @@ using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
@@ -24,5 +25,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             }
             return new OkObjectResult(result);
         }
+
+        [HttpPost]
+        [Route("/registrations")]
+        public async Task<IActionResult> VerifyRegistration(VerifyIdentityRegistrationCommand request)
+        {
+            await _mediator.Send(request);
+            return Ok();
+        }
+
     }
 }

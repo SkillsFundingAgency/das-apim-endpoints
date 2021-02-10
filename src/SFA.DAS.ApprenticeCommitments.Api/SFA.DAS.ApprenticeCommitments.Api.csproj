@@ -21,7 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="9.5.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.0" />
         <PackageReference Include="MediatR" Version="6.0.0" />
+        <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="1.1.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
