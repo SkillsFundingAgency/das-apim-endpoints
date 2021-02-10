@@ -22,6 +22,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
                     .Excluding(s => s.MaxFunding)
                     .Excluding(s => s.TypicalDuration)
                     .Excluding(s => s.StandardDates)
+                    .Excluding(s => s.IsActive)
                 );
 
             response.Duration.Should().Be(source.TypicalDuration);

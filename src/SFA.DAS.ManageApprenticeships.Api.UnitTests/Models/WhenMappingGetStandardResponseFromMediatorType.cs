@@ -19,6 +19,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Models
                 .Excluding(x=>x.ApprenticeshipFunding)
                 .Excluding(x=>x.StandardDates)
                 .Excluding(x=>x.TypicalDuration)
+                .Excluding(x=>x.IsActive)
             );
             actual.Duration.Should().Be(source.TypicalDuration);
         }

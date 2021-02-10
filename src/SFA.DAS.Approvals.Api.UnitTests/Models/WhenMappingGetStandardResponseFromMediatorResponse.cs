@@ -18,6 +18,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c=>c.StandardDates)
                 .Excluding(c=>c.TypicalDuration)
+                .Excluding(c=>c.IsActive)
             );
             actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
             actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);
