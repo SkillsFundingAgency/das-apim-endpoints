@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,10 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseListResponse;
             Assert.IsNotNull(model);
-            model.Courses.Should().BeEquivalentTo(mediatorResult.Courses);
+            model.Courses.Should().BeEquivalentTo(mediatorResult.Courses, options => options
+            .Excluding(c => c.StandardUId)
+            .Excluding(c => c.LarsCode));
+            model.Courses.All(c => c.Id > 0).Should().BeTrue();
         }
 
         [Test, MoqAutoData]
