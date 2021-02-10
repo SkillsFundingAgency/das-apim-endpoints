@@ -1379,7 +1379,7 @@ stages:
       DeploymentName: Deploy_Assessors
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
       DeploymentApprovals: MO
-      ServiceConnection: SFA-DIG-ModelOffice-ARM
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
