@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetTrainingCourseListItem
             {
-                Id = source.Id,
+                Id = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 LevelEquivalent = source.LevelEquivalent,

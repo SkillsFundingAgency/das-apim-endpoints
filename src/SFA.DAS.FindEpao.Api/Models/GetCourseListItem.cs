@@ -13,7 +13,7 @@ namespace SFA.DAS.FindEpao.Api.Models
         {
             return new GetCourseListItem
             {
-                Id = standard.Id,
+                Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
                 IntegratedApprenticeship = standard.IntegratedApprenticeship
