@@ -162,7 +162,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Assessors", "SFA.DA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Assessors.Api", "SFA.DAS.Assessors.Api\SFA.DAS.Assessors.Api.csproj", "{BBE42F02-342A-435A-9FF8-5D3D610D5E19}"
 EndProject
+<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitments.UnitTests", "SFA.DAS.ApprenticeCommitments.UnitTests\SFA.DAS.ApprenticeCommitments.UnitTests.csproj", "{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8}"
+=======
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitments.UnitTests", "SFA.DAS.ApprenticeCommitments.UnitTests\SFA.DAS.ApprenticeCommitments.UnitTests.csproj", "{B1A4F8EE-496E-4EBE-A667-F0A416CCF476}"
+>>>>>>> parent of e20d969... revert soln file
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -374,10 +378,17 @@ Global
 		{BBE42F02-342A-435A-9FF8-5D3D610D5E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBE42F02-342A-435A-9FF8-5D3D610D5E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBE42F02-342A-435A-9FF8-5D3D610D5E19}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{B1A4F8EE-496E-4EBE-A667-F0A416CCF476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1A4F8EE-496E-4EBE-A667-F0A416CCF476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1A4F8EE-496E-4EBE-A667-F0A416CCF476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1A4F8EE-496E-4EBE-A667-F0A416CCF476}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> parent of e20d969... revert soln file
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -447,7 +458,11 @@ Global
 		{3F3967D5-DEB9-42C2-AC13-46C22B796B76} = {40E66758-AA64-4939-9DF8-FEC692A27671}
 		{3079CBF5-E4E4-44FD-9F2D-C8E04DF521B5} = {2FD6FC31-7C24-4809-8C23-CFB5B629ADF8}
 		{BBE42F02-342A-435A-9FF8-5D3D610D5E19} = {2FD6FC31-7C24-4809-8C23-CFB5B629ADF8}
+<<<<<<< HEAD
 		{392556C2-B4EC-4FBA-AFE0-69DBD26B04C8} = {DA4344E9-5130-4C43-B1DC-ADF60A14CE11}
+=======
+		{B1A4F8EE-496E-4EBE-A667-F0A416CCF476} = {DA4344E9-5130-4C43-B1DC-ADF60A14CE11}
+>>>>>>> parent of e20d969... revert soln file
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
