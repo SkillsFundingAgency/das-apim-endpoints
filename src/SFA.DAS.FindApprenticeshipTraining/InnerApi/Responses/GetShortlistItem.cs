@@ -7,9 +7,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
     {
         public Guid Id { get; set; }
         public Guid ShortlistUserId { get; set; }
-        public GetProviderStandardItem Provider { get; set; }//GetProvidersListItem
+        public GetProviderStandardItem Provider { get; set; }
         public int CourseId { get; set; }
         public string LocationDescription { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [NotMapped]
         public GetStandardsListItem Course { get; set; }

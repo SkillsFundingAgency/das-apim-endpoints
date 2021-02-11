@@ -9,6 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public GetProviderCourseItem Provider { get; set; }
         public GetTrainingCourseListItem Course { get; set; }
         public string LocationDescription { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public static implicit operator GetShortlistItem(InnerApi.Responses.GetShortlistItem source)
         {
@@ -20,7 +21,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 ShortlistUserId = source.ShortlistUserId,
                 Provider = provider,
                 Course = source.Course,
-                LocationDescription = source.LocationDescription
+                LocationDescription = source.LocationDescription,
+                CreatedDate = source.CreatedDate
             };
         }
     }

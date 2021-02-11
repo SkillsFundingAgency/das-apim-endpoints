@@ -21,6 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.Provider.Should().BeEquivalentTo(expectedProvider);
             response.Course.Should().BeEquivalentTo((GetTrainingCourseListItem)source.Course);
             response.LocationDescription.Should().Be(source.LocationDescription);
+            response.CreatedDate.Should().Be(source.CreatedDate);
         }
     }
 }
