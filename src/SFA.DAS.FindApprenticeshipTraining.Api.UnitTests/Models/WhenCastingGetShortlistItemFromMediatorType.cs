@@ -12,13 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         public void Then_Maps_Fields_Appropriately(
             InnerApi.Responses.GetShortlistItem source)
         {
-            var expectedProvider = new GetTrainingCourseProviderListItem().Map(
-                source.Provider,
-                source.Course.Route,
-                source.Course.Level,
-                null,
-                null,
-                !string.IsNullOrEmpty(source.LocationDescription));
+            var expectedProvider = new GetProviderCourseItem().Map(source);
 
             var response = (GetShortlistItem)source;
 
