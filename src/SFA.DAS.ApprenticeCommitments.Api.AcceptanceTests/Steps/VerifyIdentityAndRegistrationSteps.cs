@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         {
             _context = context;
             _f = new Fixture();
-            _validEmail = "a@a.com";
+            _validEmail = _f.Create<MailAddress>().Address;
             _validNI = "NE 01 01 01 C";
             _registrationId = Guid.NewGuid();
             _userIdentityId = Guid.NewGuid();
