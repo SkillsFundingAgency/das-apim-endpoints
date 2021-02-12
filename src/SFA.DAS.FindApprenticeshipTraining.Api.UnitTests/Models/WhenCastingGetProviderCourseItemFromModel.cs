@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
-            shortlistItem.Provider.FeedbackRatings = new List<GetFeedbackRatingItem>
+            shortlistItem.ProviderDetails.FeedbackRatings = new List<GetFeedbackRatingItem>
             {
                 new GetFeedbackRatingItem
                 {
@@ -39,9 +39,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var actual =new GetProviderCourseItem().Map(shortlistItem);
             
             actual.Should().BeEquivalentTo(shortlistItem.Course, options => options.ExcludingMissingMembers());
-            actual.Website.Should().Be(shortlistItem.Provider.ContactUrl);
-            actual.ProviderId.Should().Be(shortlistItem.Provider.Ukprn);
-            actual.ProviderAddress.Should().BeEquivalentTo(shortlistItem.Provider.ProviderAddress);
+            actual.Website.Should().Be(shortlistItem.ProviderDetails.ContactUrl);
+            actual.ProviderId.Should().Be(shortlistItem.ProviderDetails.Ukprn);
+            actual.ProviderAddress.Should().BeEquivalentTo(shortlistItem.ProviderDetails.ProviderAddress);
             actual.Feedback.TotalEmployerResponses.Should().Be(129);
             actual.Feedback.TotalFeedbackRating.Should().Be(3);
         }
@@ -55,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             shortlistItem.Course.Level = 5;
             item.SectorSubjectArea = shortlistItem.Course.Route;
             item.Level = "AllLevels";
-            shortlistItem.Provider.AchievementRates = new List<GetAchievementRateItem>
+            shortlistItem.ProviderDetails.AchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
@@ -63,9 +63,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetProviderCourseItem().Map(shortlistItem);
 
-            response.Name.Should().Be(shortlistItem.Provider.Name);
-            response.TradingName.Should().Be(shortlistItem.Provider.TradingName);
-            response.ProviderId.Should().Be(shortlistItem.Provider.Ukprn);
+            response.Name.Should().Be(shortlistItem.ProviderDetails.Name);
+            response.TradingName.Should().Be(shortlistItem.ProviderDetails.TradingName);
+            response.ProviderId.Should().Be(shortlistItem.ProviderDetails.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
         }
@@ -80,7 +80,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             shortlistItem.Course.Level = 2;
             item.SectorSubjectArea = shortlistItem.Course.Route;
             item.Level = "Two";
-            shortlistItem.Provider.AchievementRates = new List<GetAchievementRateItem>
+            shortlistItem.ProviderDetails.AchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
@@ -90,9 +90,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var response = new GetProviderCourseItem().Map(shortlistItem);
 
-            response.Name.Should().Be(shortlistItem.Provider.Name);
-            response.TradingName.Should().Be(shortlistItem.Provider.TradingName);
-            response.ProviderId.Should().Be(shortlistItem.Provider.Ukprn);
+            response.Name.Should().Be(shortlistItem.ProviderDetails.Name);
+            response.TradingName.Should().Be(shortlistItem.ProviderDetails.TradingName);
+            response.ProviderId.Should().Be(shortlistItem.ProviderDetails.Ukprn);
             response.OverallCohort.Should().Be(item.OverallCohort);
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
         }
@@ -103,7 +103,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             GetAchievementRateItem item, 
             GetAchievementRateItem item2)
         {
-            shortlistItem.Provider.AchievementRates = new List<GetAchievementRateItem>
+            shortlistItem.ProviderDetails.AchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
@@ -111,9 +111,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var response = new GetProviderCourseItem().Map(shortlistItem);
 
-            response.Name.Should().Be(shortlistItem.Provider.Name);
-            response.TradingName.Should().Be(shortlistItem.Provider.TradingName);
-            response.ProviderId.Should().Be(shortlistItem.Provider.Ukprn);
+            response.Name.Should().Be(shortlistItem.ProviderDetails.Name);
+            response.TradingName.Should().Be(shortlistItem.ProviderDetails.TradingName);
+            response.ProviderId.Should().Be(shortlistItem.ProviderDetails.Ukprn);
             response.OverallCohort.Should().BeNull();
             response.OverallAchievementRate.Should().BeNull();
         }
