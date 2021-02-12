@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
     public class WhenCallingGetAllForUser
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Providers_From_Mediator(
+        public async Task Then_Gets_Shortlist_For_User_From_Mediator(
             Guid shortlistUserId,
             GetShortlistForUserResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
