@@ -42,6 +42,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         private bool IsStandardActive()
         {
+            if (StandardDates == null) return false;
             return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
                    && (!StandardDates.EffectiveTo.HasValue ||
                        StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
