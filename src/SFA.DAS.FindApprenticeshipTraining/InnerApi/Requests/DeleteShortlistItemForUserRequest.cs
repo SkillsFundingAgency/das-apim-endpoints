@@ -14,6 +14,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _userId = userId;
         }
 
-        public string DeleteUrl => $"users/{_userId}/items/{_id}";
+        public string DeleteUrl => $"api/shortlist/users/{_userId}/items/{_id}";
     }
 }

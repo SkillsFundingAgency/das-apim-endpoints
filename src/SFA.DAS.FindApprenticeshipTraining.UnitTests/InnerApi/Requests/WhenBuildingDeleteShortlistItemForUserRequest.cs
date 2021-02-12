@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             var actual = new DeleteShortlistItemForUserRequest(id, userId);
             
             //Assert
-            actual.DeleteUrl.Should().Be($"users/{userId}/items/{id}");
+            actual.DeleteUrl.Should().Be($"api/shortlist/users/{userId}/items/{id}");
         }
     }
 }
