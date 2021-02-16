@@ -20,15 +20,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
     {
         [Test, MoqAutoData]
         public async Task Then_Creates_Shortlist_From_Mediator_Command(
+            Guid returnId,
             CreateShortListRequest shortlistRequest,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ShortlistController controller)
         {
-            var controllerResult = await controller.CreateShortlistForUser(shortlistRequest) as ObjectResult;
-
-            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
             mockMediator
-                .Verify(mediator => mediator.Send(
+                .Setup(mediator => mediator.Send(
                     It.Is<CreateShortlistForUserCommand>(command => 
                         command.ShortlistUserId == shortlistRequest.ShortlistUserId
                         && command.Lat.Equals(shortlistRequest.Lat)
@@ -38,7 +36,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
                         && command.StandardId.Equals(shortlistRequest.StandardId)
                         && command.SectorSubjectArea.Equals(shortlistRequest.SectorSubjectArea)
                     ),
-                    It.IsAny<CancellationToken>()), Times.Once);
+                    It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
+            
+            var controllerResult = await controller.CreateShortlistForUser(shortlistRequest) as CreatedResult;
+
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
+            controllerResult.Value.Should().Be(returnId);
+
         }
 
         [Test, MoqAutoData]

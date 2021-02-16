@@ -53,7 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new CreateShortlistForUserCommand
+                var result = await _mediator.Send(new CreateShortlistForUserCommand
                 {
                     Lat = shortlistRequest.Lat,
                     Lon = shortlistRequest.Lon,
@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ShortlistUserId = shortlistRequest.ShortlistUserId
                 });
 
-                return Created("", null);
+                return Created("", result);
             }
             catch (HttpRequestContentException e)
             {

@@ -3,8 +3,8 @@ using MediatR;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
 {
-    public class CreateShortlistForUserCommand : IRequest<Unit>
-    {
+    public class CreateShortlistForUserCommand : IRequest<Guid>
+    {    
         public float? Lat { get ; set ; }
         public float? Lon { get ; set ; }
         public int Ukprn { get ; set ; }

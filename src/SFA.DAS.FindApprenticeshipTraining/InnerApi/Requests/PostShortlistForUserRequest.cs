@@ -3,10 +3,10 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class PostShortlistForUserRequest : IPostApiRequest<PostShortlistData>
+    public class PostShortlistForUserRequest : IPostApiRequest
     {
         public string PostUrl => "api/shortlist";
-        public PostShortlistData Data { get; set; }
+        public object Data { get; set; }
     }
 
     public class PostShortlistData
@@ -18,5 +18,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         public string LocationDescription { get ; set ; }
         public int Ukprn { get ; set ; }
         public string SectorSubjectArea { get ; set ; }
+    }
+
+    public class PostShortListResponse
+    {
+        public Guid Id { get ; set ; }
     }
 }

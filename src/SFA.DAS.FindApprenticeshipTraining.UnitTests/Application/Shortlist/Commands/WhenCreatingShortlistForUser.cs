@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
@@ -15,23 +17,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Com
     {
         [Test, MoqAutoData]
         public async Task Then_Creates_The_Shortlist_From_The_Request_Calling_CourseDelivery_Api(
+            PostShortListResponse apiResponse,
             CreateShortlistForUserCommand command,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> courseDeliveryApiClient,
             CreateShortlistForUserCommandHandler handler)
         {
+            //Arrange
+            courseDeliveryApiClient.Setup(x=>
+                x.Post<PostShortListResponse>(It.Is<PostShortlistForUserRequest>(c=>
+                    ((PostShortlistData)c.Data).Lat.Equals(command.Lat)
+                    && ((PostShortlistData)c.Data).Lon.Equals(command.Lon)
+                    && ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
+                    && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
+                    && ((PostShortlistData)c.Data).StandardId.Equals(command.StandardId)
+                    && ((PostShortlistData)c.Data).SectorSubjectArea.Equals(command.SectorSubjectArea)
+                    && ((PostShortlistData)c.Data).ShortlistUserId.Equals(command.ShortlistUserId)))).ReturnsAsync(apiResponse);
             //Act
-            await handler.Handle(command, CancellationToken.None);
+            var actual = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            courseDeliveryApiClient.Verify(x=>
-                x.Post(It.Is<PostShortlistForUserRequest>(c=>
-                    c.Data.Lat.Equals(command.Lat)
-                    && c.Data.Lon.Equals(command.Lon)
-                    && c.Data.Ukprn.Equals(command.Ukprn)
-                    && c.Data.LocationDescription.Equals(command.LocationDescription)
-                    && c.Data.StandardId.Equals(command.StandardId)
-                    && c.Data.SectorSubjectArea.Equals(command.SectorSubjectArea)
-                    && c.Data.ShortlistUserId.Equals(command.ShortlistUserId))));
+            actual.Should().Be(apiResponse.Id);
         }
     }
 }
