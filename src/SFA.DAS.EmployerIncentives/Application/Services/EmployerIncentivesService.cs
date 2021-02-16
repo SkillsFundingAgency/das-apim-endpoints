@@ -5,6 +5,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
+using Accounts = SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -58,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var response = await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
+            var response = await _client.Get<AccountLegalEntity>(new InnerApi.Requests.GetLegalEntityRequest(accountId, accountLegalEntityId));
 
             return response;
         }
@@ -164,6 +166,19 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
+        public async Task RefreshLegalEntities(IEnumerable<Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages)
+        {
+            var accountLegalEntitiesData = new Dictionary<string, object>
+            {
+                { "AccountLegalEntities", accountLegalEntities },
+                { "PageNumber", pageNumber },
+                { "PageSize", pageSize },
+                { "TotalPages", totalPages }
+            };
+            var request = new RefreshLegalEntitiesRequestData { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
+            await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
+        }
+        
         public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
         {
             return await _client.Get<GetLatestVendorRegistrationCaseUpdateDateTimeResponse>(new GetLatestVendorRegistrationCaseUpdateDateTimeRequest());

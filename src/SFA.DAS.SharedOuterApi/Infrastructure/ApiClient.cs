@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -121,6 +122,22 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;
+        }
+
+        public async Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+        {
+            await AddAuthenticationHeader();
+            AddVersionHeader(request.Version);
+
+            var response = await HttpClient.GetAsync(request.GetPagedUrl).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new PagedResponse<TResponse>();
+            }
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<PagedResponse<TResponse>>(json);
         }
     }
 }
