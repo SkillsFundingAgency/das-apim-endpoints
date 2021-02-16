@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -112,7 +112,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Location = request.Location, 
                     SortOrder = (short)request.SortOrder,
                     Lat = request.Lat,
-                    Lon = request.Lon
+                    Lon = request.Lon,
+                    ShortlistUserId = request.ShortlistUserId
                 });
                 var mappedProviders = result.Providers
                     .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.ProviderRatings, result.Location?.GeoPoint != null))

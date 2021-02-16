@@ -38,6 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         && c.SortOrder == (short)request.SortOrder
                         && c.Lat.Equals(request.Lat)
                         && c.Lon.Equals(request.Lon)
+                        && c.ShortlistUserId.Equals(request.ShortlistUserId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);

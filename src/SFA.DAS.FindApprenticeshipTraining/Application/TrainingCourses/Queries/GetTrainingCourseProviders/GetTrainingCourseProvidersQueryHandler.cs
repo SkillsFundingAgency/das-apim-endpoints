@@ -33,7 +33,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
             
-            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder));
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,
+                locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder, request.ShortlistUserId));
             
             return new GetTrainingCourseProvidersResult
             {
