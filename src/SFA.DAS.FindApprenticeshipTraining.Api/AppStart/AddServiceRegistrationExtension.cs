@@ -26,6 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedCoursesService, CachedCoursesService>();
+            services.AddTransient<IShortlistService, ShortlistService>();
         }
     }
 }
