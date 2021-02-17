@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -15,6 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
         private readonly LocationHelper _locationHelper;
 
@@ -22,10 +24,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             ILocationApiClient<LocationApiConfiguration> locationApiClient,
-            ICacheStorageService cacheStorageService)
+            ICacheStorageService cacheStorageService,
+            IShortlistService shortlistService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
+            _shortlistService = shortlistService;
             _cacheHelper = new CacheHelper(cacheStorageService);
             _locationHelper = new LocationHelper(locationApiClient);
         }
@@ -49,7 +53,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
 
-            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask);
+            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            
+            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask);
 
             if (providerTask.Result == null && locationTask.Result != null)
             {
@@ -84,7 +90,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
                 TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(),
                 TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(),
-                Location = locationTask.Result
+                Location = locationTask.Result,
+                ShortlistItemCount = shortlistTask.Result
             };
         }
 
