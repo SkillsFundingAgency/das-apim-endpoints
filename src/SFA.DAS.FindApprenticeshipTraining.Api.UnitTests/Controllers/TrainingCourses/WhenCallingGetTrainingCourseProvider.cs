@@ -24,6 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             string location,
             double lat, 
             double lon,
+            Guid? shortlistUserId,
             GetTrainingCourseProviderResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -37,11 +38,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         && c.Location.Equals(location)
                         && c.Lat.Equals(lat)
                         && c.Lon.Equals(lon)
+                        && c.ShortlistUserId.Equals(shortlistUserId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as ObjectResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -115,6 +117,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             string location,
             double lat, 
             double lon,
+            Guid? shortlistUserId,
             GetTrainingCourseProviderResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -132,11 +135,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                               && c.Location.Equals(location)
                               && c.Lat.Equals(lat)
                               && c.Lon.Equals(lon)
+                              && c.ShortlistUserId.Equals(shortlistUserId)
                     ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as StatusCodeResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as StatusCodeResult;
             
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
