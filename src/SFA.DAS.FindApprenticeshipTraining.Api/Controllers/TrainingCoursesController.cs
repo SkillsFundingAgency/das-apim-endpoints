@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance")
+        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance", [FromQuery] Guid? shortlistUserId = null)
         {
             try
             {
@@ -42,7 +42,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Keyword = keyword, 
                     RouteIds = routeIds,
                     Levels = levels,
-                    OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title
+                    OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title,
+                    ShortlistUserId = shortlistUserId
                 });
                 
                 var model = new GetTrainingCoursesListResponse
@@ -51,7 +52,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
                     Levels = queryResult.Levels.Select(response => (GetTrainingLevelsListItem)response),
                     Total = queryResult.Total,
-                    TotalFiltered = queryResult.TotalFiltered
+                    TotalFiltered = queryResult.TotalFiltered,
+                    ShortlistItemCount = queryResult.ShortlistItemCount
                 };
 
                 return Ok(model);
@@ -65,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(int id, [FromQuery]double lat=0, [FromQuery]double lon=0)
+        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, Guid? shortlistUserId = null)
         {
             try
             {
@@ -73,7 +75,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 {
                     Id = id,
                     Lat = lat,
-                    Lon = lon
+                    Lon = lon,
+                    ShortlistUserId = shortlistUserId
                 });
 
                 if (result.Course == null)
@@ -89,7 +92,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         TotalProviders  = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
-                    }
+                    },
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
@@ -133,7 +137,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                         {
                             GeoPoint = result.Location?.GeoPoint
                         }
-                    } 
+                    },
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
@@ -201,7 +206,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                         {
                             GeoPoint = result.Location?.GeoPoint
                         }
-                    }
+                    },
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }

@@ -70,6 +70,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
             model.TrainingCourseProvider.Feedback.Should().NotBeNull();
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
+            model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }
 
         [Test, MoqAutoData]
