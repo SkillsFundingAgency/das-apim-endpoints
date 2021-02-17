@@ -39,6 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
                 Feedback = getFeedbackResponse,
+                ShortlistId = source.ProviderStandard.ShortlistId
             };
         }
 

@@ -39,20 +39,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var ukprnsCount = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(
                 new GetUkprnsForStandardAndLocationRequest(request.CourseId, locationTask.Result?.GeoPoint?.FirstOrDefault() ?? 0,
                     locationTask.Result?.GeoPoint?.LastOrDefault() ?? 0));
-
-            var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault()));
-            var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(new GetProviderAdditionalStandardsRequest(request.ProviderId));
-
+            var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(
+                new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.ShortlistUserId));
+            var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
+                new GetProviderAdditionalStandardsRequest(request.ProviderId));
+            var overallAchievementRatesTask = _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
+                new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
+            
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
 
-            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount);
+            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask);
 
             if (providerTask.Result == null && locationTask.Result != null)
             {
                 providerTask = Task.FromResult(
                     await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
-                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description)));
+                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description, null, null, request.ShortlistUserId)));
 
                 if (providerTask.Result != null)
                 {
@@ -66,21 +69,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 }
             }
             
-            var overallAchievementRates =
-                await _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
-                    new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
-
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask,
                 new CacheHelper.SaveToCache { Levels = false, Sectors = false, Standards = saveToCache });
 
-            var additionalCourses = providerCoursesTask.Result.StandardIds.Any() ? BuildAdditionalCoursesResponse(request, providerCoursesTask, coursesTask) : new List<GetAdditionalCourseListItem>(); 
+            var additionalCourses = providerCoursesTask.Result.StandardIds.Any() 
+                ? BuildAdditionalCoursesResponse(request, providerCoursesTask, coursesTask) 
+                : new List<GetAdditionalCourseListItem>(); 
 
             return new GetTrainingCourseProviderResult
             {
                 ProviderStandard = providerTask.Result,
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
-                OverallAchievementRates = overallAchievementRates.OverallAchievementRates,
+                OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
                 TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(),
                 TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(),
                 Location = locationTask.Result

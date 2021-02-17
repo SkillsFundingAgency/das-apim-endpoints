@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
@@ -11,6 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Email { get; set; }
         public string Phone { get; set; }
         public int StandardId { get; set; }
+        public Guid? ShortlistId { get; set; }
         public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
         public IEnumerable<GetFeedbackAttributeItem> FeedbackAttributes { get; set; }

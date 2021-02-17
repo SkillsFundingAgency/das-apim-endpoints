@@ -419,6 +419,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains("?lat=&lon=")
+                    && c.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
                 )))
                 .ReturnsAsync(apiProviderStandardResponse);
             mockApiClient
@@ -536,6 +537,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                    && c.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
                     )))
                 .ReturnsAsync(apiProviderStandardResponse);
 
