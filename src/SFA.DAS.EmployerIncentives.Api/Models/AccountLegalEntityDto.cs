@@ -12,6 +12,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
 
         public long AccountId { get ; set ; }
         public bool HasSignedIncentivesTerms { get; set; }
+        public long? SignedAgreementVersion { get; set; }
 
         public string VrfVendorId { get; set; }
 
@@ -24,7 +25,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 LegalEntityName = source.LegalEntityName,
                 LegalEntityId = source.LegalEntityId,
 				HasSignedIncentivesTerms = source.HasSignedIncentivesTerms,
-                VrfVendorId = source.VrfVendorId
+                VrfVendorId = source.VrfVendorId,
+                SignedAgreementVersion = source.SignedAgreementVersion
             };
         }
     }

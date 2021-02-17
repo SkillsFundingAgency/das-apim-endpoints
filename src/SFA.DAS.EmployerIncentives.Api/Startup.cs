@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddNLog();
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<EmployerIncentivesConfiguration>(_configuration.GetSection("EmployerIncentivesInnerApi"));
