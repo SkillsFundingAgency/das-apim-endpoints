@@ -493,6 +493,23 @@ stages:
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
       DeploymentName: Deploy_ApprenticeCommitments
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
       DeploymentApprovals: DEV
@@ -1582,6 +1599,23 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Assessors
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(AssessorsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
+      ApiPath: $(AssessorsOuterApiPath)
+      ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
+      ProductId: $(AssessorsProductId)
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
