@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Service
                 await _courseDeliveryApiClient.Get<GetShortlistUserItemCountResponse>(
                     new GetShortlistUserItemCountRequest(userId.Value));
 
-            return result.Count;
+            return result?.Count ?? 0;
         }
     }
 }
