@@ -31,8 +31,7 @@ parameters:
   default: false
 - name: Assessors
   type: boolean
-  default: false 
-
+  default: false
 - name: ApprenticeCommitments
   type: boolean
   default: false
@@ -44,7 +43,6 @@ trigger:
 
 variables:
 - group: Release Management Resources
-- group: Wildcard Cert Variables v2
 - group: RELEASE das-apim-endpoints
 
 resources:
@@ -1389,4 +1387,215 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)    
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
+- stage: Deploy_DEMO
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+  displayName: Deploy to DEMO
+  pool:
+    name: DAS - Continuous Deployment
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      SubscriptionId: $(SubscriptionId)
+      Location: $(ResourceGroupLocation)
+      Environment: DEV
+      TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+      ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+      TemplateSecrets:
+        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindApprenticeshipTraining
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Reservations
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ReservationsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
+      ApiPath: $(ReservationsOuterApiPath)
+      ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
+      ProductId: $(ReservationsProductId)
+      ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_FindEpao
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(FindEpaoOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
+      ApiPath: $(FindEpaoOuterApiPath)
+      ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
+      ProductId: $(FindEpaoProductId)
+      ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Forecasting
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ForecastingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
+      ApiPath: $(ForecastingOuterApiPath)
+      ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
+      ProductId: $(ForecastingProductId)
+      ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EpaoRegister
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
+      ApiPath: $(EpaoRegisterOuterApiPath)
+      ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
+      ProductId: $(EpaoRegisterProductId)
+      ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Approvals
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprovalsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
+      ApiPath: $(ApprovalsOuterApiPath)
+      ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
+      ProductId: $(ApprovalsProductId)
+      ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ManageApprenticeships
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
+      ApiPath: $(ManageApprenticeshipsOuterApiPath)
+      ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
+      ProductId: $(ManageApprenticeshipsProductId)
+      ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Recruit
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(RecruitOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(RecruitOuterApiVersionSetName)
+      ApiPath: $(RecruitOuterApiPath)
+      ApiBaseUrl: $(RecruitOuterApiBaseUrl)
+      ProductId: $(RecruitProductId)
+      ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Campaign
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(CampaignOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(CampaignOuterApiVersionSetName)
+      ApiPath: $(CampaignOuterApiPath)
+      ApiBaseUrl: $(CampaignOuterApiBaseUrl)
+      ProductId: $(CampaignProductId)
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeCommitments
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
+      ApiPath: $(ApprenticeCommitmentsOuterApiPath)
+      ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
+      ProductId: $(ApprenticeCommitmentsProductId)
+      ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
