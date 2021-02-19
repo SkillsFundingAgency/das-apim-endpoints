@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.ErrorHandler
@@ -32,6 +37,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.ErrorHandler
                             await context.Response.WriteAsync(httpException.ErrorContent);
                         }
                     }
+                    else if (contextFeature.Error is ValidationException ex)
+                    {
+                        logger.LogError(ex, "ValidationException");
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        await context.Response.WriteAsync(CreateErrorResponse(ex.Errors));
+                    }
                     else if (contextFeature.Error is Exception exception)
                     {
                         logger.LogError(exception, "Unhandled Exception");
@@ -49,5 +60,17 @@ namespace SFA.DAS.ApprenticeCommitments.Api.ErrorHandler
             });
             return app;
         }
+        private static string CreateErrorResponse(IEnumerable<ValidationFailure> errors)
+        {
+            var errorList = errors.Select(x => new ErrorItem { PropertyName = x.PropertyName, ErrorMessage = x.ErrorMessage });
+            return JsonConvert.SerializeObject(errorList, Formatting.Indented);
+        }
+
+    }
+
+    public class ErrorItem
+    {
+        public string PropertyName { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }
