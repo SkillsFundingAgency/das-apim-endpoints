@@ -34,7 +34,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
                         && command.Ukprn.Equals(shortlistRequest.Ukprn)
                         && command.LocationDescription.Equals(shortlistRequest.LocationDescription)
                         && command.StandardId.Equals(shortlistRequest.StandardId)
-                        && command.SectorSubjectArea.Equals(shortlistRequest.SectorSubjectArea)
                     ),
                     It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
             

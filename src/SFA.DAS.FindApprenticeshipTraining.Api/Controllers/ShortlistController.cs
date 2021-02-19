@@ -60,7 +60,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Ukprn = shortlistRequest.Ukprn,
                     LocationDescription = shortlistRequest.LocationDescription,
                     StandardId = shortlistRequest.StandardId,
-                    SectorSubjectArea = shortlistRequest.SectorSubjectArea,
                     ShortlistUserId = shortlistRequest.ShortlistUserId
                 });
 

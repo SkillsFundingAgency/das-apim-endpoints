@@ -10,6 +10,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests
         public int StandardId { get ; set ; }
         public string LocationDescription { get ; set ; }
         public int Ukprn { get ; set ; }
-        public string SectorSubjectArea { get ; set ; }
     }
 }

@@ -10,7 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Crea
         public int Ukprn { get ; set ; }
         public string LocationDescription { get ; set ; }
         public int StandardId { get ; set ; }
-        public string SectorSubjectArea { get ; set ; }
         public Guid ShortlistUserId { get ; set ; }
     }
 }
