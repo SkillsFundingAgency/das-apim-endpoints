@@ -53,7 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             GetAchievementRateItem item2)
         {
             shortlistItem.Course.Level = 5;
-            item.SectorSubjectArea = shortlistItem.Course.Route;
+            item.SectorSubjectArea = shortlistItem.Course.SectorSubjectAreaTier2Description;
             item.Level = "AllLevels";
             shortlistItem.ProviderDetails.AchievementRates = new List<GetAchievementRateItem>
             {
@@ -78,14 +78,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             GetAchievementRateItem item3)
         {
             shortlistItem.Course.Level = 2;
-            item.SectorSubjectArea = shortlistItem.Course.Route;
+            item.SectorSubjectArea = shortlistItem.Course.SectorSubjectAreaTier2Description;
             item.Level = "Two";
             shortlistItem.ProviderDetails.AchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
             };
-            item3.SectorSubjectArea = shortlistItem.Course.Route;
+            item3.SectorSubjectArea = shortlistItem.Course.SectorSubjectAreaTier2Description;
             item3.Level = "Two";
 
             var response = new GetProviderCourseItem().Map(shortlistItem);
