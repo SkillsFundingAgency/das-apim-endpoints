@@ -90,7 +90,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             var result = await handler.Handle(query, CancellationToken.None);
 
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, 1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, TimeSpan.FromMinutes(15)));
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
             result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
@@ -122,7 +122,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse,1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse, TimeSpan.FromMinutes(15)));
         }
 
         [Test, MoqAutoData]
@@ -218,7 +218,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse,1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse, TimeSpan.FromMinutes(15)));
         }
 
         [Test, MoqAutoData]
