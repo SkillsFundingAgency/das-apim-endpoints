@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -26,11 +27,16 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 
         public async Task SaveToCache<T>(string key, T item, int expirationInHours)
         {
+            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours));
+        }
+
+        public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow)
+        {
             var json = JsonConvert.SerializeObject(item);
 
             await _distributedCache.SetStringAsync($"{_configuration["ConfigNames"].Split(",")[0]}_{key}", json, new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(expirationInHours)
+                AbsoluteExpirationRelativeToNow = expiryTimeFromNow
             });
         }
 
