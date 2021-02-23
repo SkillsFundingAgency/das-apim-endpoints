@@ -5,6 +5,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
+using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
@@ -28,9 +30,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             }
         }
 
-        public async Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email)
+        public Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email)
         {
-            var response = await _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
+            return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
             {
                 Data = new CreateApprenticeshipRequestData
                 {
@@ -40,5 +42,27 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                 }
             });
         }
+
+        public Task<RegistrationResponse> GetRegistration(Guid id) => 
+            _client.Get<RegistrationResponse>(new GetRegistrationDetailsRequest(id));
+
+
+        public Task VerifyRegistration(VerifyIdentityRegistrationCommand command)
+        {
+            return _client.Post<VerifyRegistrationResponse>(new VerifyRegistrationRequest
+            {
+                Data = new VerifyRegistrationRequestData
+                {
+                    RegistrationId = command.RegistrationId,
+                    UserIdentityId = command.UserIdentityId,
+                    FirstName = command.FirstName,
+                    LastName = command.LastName,
+                    Email = command.Email,
+                    DateOfBirth = command.DateOfBirth
+                }
+            });
+        }
+
+
     }
 }
