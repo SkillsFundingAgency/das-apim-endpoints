@@ -17,6 +17,8 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
         public string Route { get; set; }
+        public string AssessmentPlanUrl { get; set; }
+        public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
         public string CoreSkillsCount { get; set; }
         public List<string> Skills { get; set; }
@@ -32,6 +34,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public bool CoreAndOptions { get; set; }
         public string CoreDuties { get; set; }
         public bool IntegratedApprenticeship { get; set; }
+        public List<string> Options { get; set; }
 
         public StandardVersionDetail VersionDetail { get; set; }
 
