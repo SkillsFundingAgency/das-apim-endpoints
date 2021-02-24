@@ -20,7 +20,6 @@ namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
         {
             var standardsList = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
 
-
             return new GetTrainingCoursesResult
             {
                 TrainingCourses = standardsList.Standards
