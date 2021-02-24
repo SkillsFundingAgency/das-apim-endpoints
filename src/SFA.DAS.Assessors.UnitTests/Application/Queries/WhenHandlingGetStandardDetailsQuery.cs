@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -29,6 +30,17 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.StandardDetails.Should().BeEquivalentTo(apiResponse);
+        }
+
+        [Test, MoqAutoData]
+        public void And_If_Invalid_StandardUId_Then_Throw_ArgumentException(
+            GetStandardDetailsQueryHandler handler)
+        {
+            var query = new GetStandardDetailsQuery(string.Empty);
+
+            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+
+            act.Should().Throw<ArgumentException>();
         }
 
         [Test, MoqAutoData]
