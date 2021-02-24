@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetProviderCourseItem
             {
                 ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress,hasLocation),
-                Website = source.ProviderStandard.ContactUrl,
+                Website = source.ProviderStandard.StandardInfoUrl,
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
