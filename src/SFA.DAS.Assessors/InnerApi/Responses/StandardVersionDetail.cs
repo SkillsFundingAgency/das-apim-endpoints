@@ -8,7 +8,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public DateTime? LatestStartDate { get; set; }
         public DateTime? LatestEndDate { get; set; }
         public DateTime? ApprovedForDelivery { get; set; }
-        public int TypicalDuration { get; set; }
-        public int MaxFunding { get; set; }
+        public int ProposedTypicalDuration { get; set; }
+        public int ProposedMaxFunding { get; set; }
     }
 }
