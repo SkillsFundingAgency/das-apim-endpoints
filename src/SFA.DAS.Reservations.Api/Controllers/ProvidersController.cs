@@ -32,6 +32,11 @@ namespace SFA.DAS.Reservations.Api.Controllers
                 var queryResult = await _mediator.Send(new GetProviderQuery{Ukprn = ukprn});
 
                 var model = (GetProviderResponse) queryResult.Provider;
+                
+                if (model == null)
+                {
+                    return NotFound();
+                }
 
                 return Ok(model);
             }

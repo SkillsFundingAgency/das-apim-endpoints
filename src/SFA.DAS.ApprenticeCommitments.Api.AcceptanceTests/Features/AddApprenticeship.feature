@@ -1,6 +1,5 @@
 ﻿@loginApi
 @innerApi
-@outerApi
 @commitmentsV2InnerApi
 Feature: AddApprenticeship
 	When an Apprenticeship is approved and forwarded here

@@ -1,6 +1,5 @@
 ﻿@loginApi
 @innerApi
-@outerApi
 Feature: HealthChecks
 	In order to check if the api is working
 	As a application monitor
