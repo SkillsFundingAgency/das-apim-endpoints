@@ -7,8 +7,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress
 {
     public class ChangeEmailAddressCommand : IRequest
     {
-        public long ApprenticeId { get; set; }
-        public string Email { get; set; }
+        public ChangeEmailAddressCommand(long apprenticeId, string email) =>
+            (ApprenticeId, Email) = (apprenticeId, email);
+
+        public long ApprenticeId { get; }
+        public string Email { get; }
     }
 
     public class ChangeEmailAddressCommandHandler
