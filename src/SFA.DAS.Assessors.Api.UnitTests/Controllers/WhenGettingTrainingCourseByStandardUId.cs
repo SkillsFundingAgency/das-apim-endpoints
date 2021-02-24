@@ -1,0 +1,59 @@
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.Assessors.Api.Controllers;
+using SFA.DAS.Assessors.Api.Models;
+using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
+using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
+using SFA.DAS.Testing.AutoFixture;
+
+namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
+{
+    public class WhenGettingTrainingCourseByStandardUId
+    {
+        [Test, MoqAutoData]
+        public async Task Then_Get_Training_Course_From_Mediator(
+            string standardUId,
+            GetStandardDetailsResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetStandardDetailsQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetByStandardUId(standardUId) as ObjectResult;
+
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetStandardDetailsResponse;
+            Assert.IsNotNull(model);
+            model.Should().BeEquivalentTo(mediatorResult.StandardDetails);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Exception_Then_Returns_Bad_Request(
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetStandardDetailsQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws<ArgumentException>();
+
+            var controllerResult = await controller.GetByStandardUId(string.Empty) as BadRequestResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        }
+    }
+}
