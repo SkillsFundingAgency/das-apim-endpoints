@@ -116,13 +116,16 @@ namespace SFA.DAS.Assessors.Api.Models
         public DateTime? EffectiveTo { get; set; }
         public DateTime EffectiveFrom { get; set; }
 
-        public static implicit operator StandardDatesResponse(StandardDate source) 
-            => new StandardDatesResponse 
-            {
-                LastDateStarts = source.LastDateStarts,
-                EffectiveTo = source.EffectiveTo,
-                EffectiveFrom = source.EffectiveFrom
-            };
+        public static implicit operator StandardDatesResponse(StandardDate source)
+        {
+            if (source == null) return null;
+            return new StandardDatesResponse
+               {
+                   LastDateStarts = source.LastDateStarts,
+                   EffectiveTo = source.EffectiveTo,
+                   EffectiveFrom = source.EffectiveFrom
+               };
+        }
     }
 
     public class StandardVersionDetailResponse
