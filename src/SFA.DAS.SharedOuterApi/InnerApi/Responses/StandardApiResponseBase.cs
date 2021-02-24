@@ -14,14 +14,17 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
         [JsonIgnore]
         public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
-        [JsonIgnore] public bool IsActive => IsStandardActive();
+        [JsonIgnore] 
+        public bool IsActive => IsStandardActive();
 
-        private int GetFundingDetails(string prop)
+        protected virtual int GetFundingDetails(string prop)
         {
+            if (ApprenticeshipFunding == null || ApprenticeshipFunding.Any() == false) return 0;
+
             var funding = ApprenticeshipFunding
                 .FirstOrDefault(c =>
-                    c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null
-                                                           || c.EffectiveTo >= DateTime.UtcNow));
+                    c.EffectiveFrom <= DateTime.UtcNow 
+                    && (c.EffectiveTo == null || c.EffectiveTo >= DateTime.UtcNow));
 
             if (funding == null)
             {
@@ -42,6 +45,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         private bool IsStandardActive()
         {
+            if (StandardDates == null) return false;
+
             return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
                    && (!StandardDates.EffectiveTo.HasValue ||
                        StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
