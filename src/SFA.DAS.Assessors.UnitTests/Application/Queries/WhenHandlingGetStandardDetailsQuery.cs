@@ -45,7 +45,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.StandardDetails.MaxFunding.Should().Be(apiResponse.VersionDetail.MaxFunding);
+            result.StandardDetails.MaxFunding.Should().Be(apiResponse.VersionDetail.ProposedMaxFunding);
         }
 
         [Test, MoqAutoData]
@@ -62,7 +62,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.StandardDetails.TypicalDuration.Should().Be(apiResponse.VersionDetail.TypicalDuration);
+            result.StandardDetails.TypicalDuration.Should().Be(apiResponse.VersionDetail.ProposedTypicalDuration);
         }
     }
 }
