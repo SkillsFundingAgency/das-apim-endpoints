@@ -16,5 +16,16 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source);
         }
+
+        [Test, AutoData]
+        public void And_If_StandardDates_Is_Null_Then_Mapped_Field_Is_Null(
+            StandardDetailResponse source)
+        {
+            source.StandardDates = null;
+            var response = (GetStandardDetailsResponse)source;
+
+            response.StandardDates.Should().BeNull();
+        }
+
     }
 }
