@@ -44,9 +44,9 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
                 switch (prop)
                 {
                     case nameof(MaxFunding):
-                        return VersionDetail?.MaxFunding ?? 0;
+                        return VersionDetail?.ProposedMaxFunding ?? 0;
                     case nameof(TypicalDuration):
-                        return VersionDetail?.TypicalDuration ?? 0;
+                        return VersionDetail?.ProposedTypicalDuration ?? 0;
                 }
             }
 
