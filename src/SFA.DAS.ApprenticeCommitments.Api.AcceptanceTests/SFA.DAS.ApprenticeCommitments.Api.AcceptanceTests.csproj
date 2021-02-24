@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -25,6 +25,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ApprenticeCommitments.Api\SFA.DAS.ApprenticeCommitments.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features\ChangeEmailAddress.feature.cs">
+      <DependentUpon>ChangeEmailAddress.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\ChangeEmailAddress.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>
