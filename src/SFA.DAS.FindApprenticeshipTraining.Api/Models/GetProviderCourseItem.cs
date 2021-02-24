@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetProviderCourseItem
             {
                 ProviderAddress = new GetProviderAddress().Map(shortlistItem.ProviderDetails.ProviderAddress,!string.IsNullOrEmpty(shortlistItem.LocationDescription)),
-                Website = shortlistItem.ProviderDetails.ContactUrl,
+                Website = shortlistItem.ProviderDetails.StandardInfoUrl,
                 Phone = shortlistItem.ProviderDetails.Phone,
                 Email = shortlistItem.ProviderDetails.Email,
                 Name = shortlistItem.ProviderDetails.Name,
