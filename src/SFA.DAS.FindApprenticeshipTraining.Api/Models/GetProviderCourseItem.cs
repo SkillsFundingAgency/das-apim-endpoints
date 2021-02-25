@@ -1,5 +1,6 @@
+using System.Collections.Generic;
+using System.Diagnostics;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -42,26 +43,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
 
-        public GetProviderCourseItem Map(InnerApi.Responses.GetShortlistItem shortlistItem)
-        {
-            var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.Route, shortlistItem.Course.Level);
-            var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(shortlistItem.ProviderDetails.FeedbackRatings, shortlistItem.ProviderDetails.FeedbackAttributes);
-            
-            return new GetProviderCourseItem
-            {
-                ProviderAddress = new GetProviderAddress().Map(shortlistItem.ProviderDetails.ProviderAddress,!string.IsNullOrEmpty(shortlistItem.LocationDescription)),
-                Website = shortlistItem.ProviderDetails.ContactUrl,
-                Phone = shortlistItem.ProviderDetails.Phone,
-                Email = shortlistItem.ProviderDetails.Email,
-                Name = shortlistItem.ProviderDetails.Name,
-                TradingName = shortlistItem.ProviderDetails.TradingName,
-                ProviderId = shortlistItem.ProviderDetails.Ukprn,
-                OverallCohort = achievementRate?.OverallCohort,
-                OverallAchievementRate = achievementRate?.OverallAchievementRate,
-                DeliveryModes = deliveryModes,
-                Feedback = getFeedbackResponse,
-            };
-        }
+        
     }
 }
