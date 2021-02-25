@@ -51,8 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 
                 if (itemFromCache.GetType() == typeof(GetStandardsListResponse))
                 {
-                    var castItem = itemFromCache as GetStandardsListResponse;
-                    if (castItem.Total < 1)
+                    if (itemFromCache is GetStandardsListResponse castItem && castItem.Total < 1)
                     {
                         itemsTask = client.Get<TResponse>(request);
                         updateCache = true;
