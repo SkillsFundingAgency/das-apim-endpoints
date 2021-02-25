@@ -5,7 +5,7 @@ namespace SFA.DAS.Assessors.Api.Models
 {
     public class GetCourseListItem
     {
-        public int Id { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public int MaxFunding { get; set; }
@@ -17,7 +17,7 @@ namespace SFA.DAS.Assessors.Api.Models
         {
             return new GetCourseListItem
             {
-                Id = source.LarsCode,
+                LarsCode = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 MaxFunding = source.MaxFunding,
