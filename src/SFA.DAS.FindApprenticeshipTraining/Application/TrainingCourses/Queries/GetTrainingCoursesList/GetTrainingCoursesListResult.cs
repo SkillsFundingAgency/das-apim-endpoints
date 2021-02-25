@@ -11,5 +11,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public int Total { get ; set ; }
         public int TotalFiltered { get ; set ; }
         public OrderBy OrderBy { get; set; }
+        public int ShortlistItemCount { get ; set ; }
     }
 }
