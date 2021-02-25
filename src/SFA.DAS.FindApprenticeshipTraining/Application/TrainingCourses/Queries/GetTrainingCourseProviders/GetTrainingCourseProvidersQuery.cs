@@ -1,3 +1,4 @@
+using System;
 using MediatR;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
@@ -9,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public short SortOrder { get ; set ; }
         public double Lat { get ; set ; }
         public double Lon { get ; set ; }
+        public Guid? ShortlistUserId { get ; set ; }
     }
 }

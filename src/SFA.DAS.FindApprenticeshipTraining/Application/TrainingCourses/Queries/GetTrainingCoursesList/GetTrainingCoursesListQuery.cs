@@ -10,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public List<string> RouteIds { get ; set ; }
         public List<int> Levels { get ; set ; }
         public OrderBy OrderBy { get; set; }
+        public Guid? ShortlistUserId { get ; set ; }
     }
 }
