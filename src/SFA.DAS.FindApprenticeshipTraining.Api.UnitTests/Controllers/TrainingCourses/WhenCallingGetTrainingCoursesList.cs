@@ -21,24 +21,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
     public class WhenCallingGetTrainingCoursesList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_And_Sectors_And_Levels_From_Mediator(
+        public async Task Then_Gets_Training_Courses_And_Sectors_And_Levels_From_Mediator_And_Shortlist_Count(
+            Guid? shortlistUserId,
             GetTrainingCoursesListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingCoursesListQuery>(),
+                    It.Is<GetTrainingCoursesListQuery>(c=>c.ShortlistUserId.Equals(shortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList() as ObjectResult;
+            var controllerResult = await controller.GetList(shortlistUserId:shortlistUserId) as ObjectResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
             model.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetTrainingCourseListItem)item));
             model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors);
             model.Levels.Should().BeEquivalentTo(mediatorResult.Levels);
+            model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }
         
         [Test, MoqAutoData]

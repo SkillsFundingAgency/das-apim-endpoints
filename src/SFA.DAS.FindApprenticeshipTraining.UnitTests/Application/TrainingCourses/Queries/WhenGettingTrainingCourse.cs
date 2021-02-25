@@ -11,6 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
@@ -18,13 +19,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_From_Courses_Api_With_Totals(
+        public async Task Then_Gets_Standards_From_Courses_Api_With_Totals_And_Shortlist_Count(
             GetTrainingCourseQuery query,
             GetStandardsListItem coursesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
+            [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCourseQueryHandler handler)
         {
 
@@ -33,6 +36,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync(coursesApiResponse);
+            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+                .ReturnsAsync(shortlistItemCount);
 
 
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
@@ -61,6 +66,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Course.LevelEquivalent.Should().Be("GCSE");
             result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
             result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
+            result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
         
         [Test, MoqAutoData]

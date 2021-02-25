@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -14,15 +15,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IShortlistService _shortlistService;
         private readonly LocationHelper _locationHelper;
 
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ILocationApiClient<LocationApiConfiguration> locationApiClient)
+            ILocationApiClient<LocationApiConfiguration> locationApiClient,
+            IShortlistService shortlistService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
+            _shortlistService = shortlistService;
             _locationHelper = new LocationHelper(locationApiClient);
         }
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
@@ -31,16 +35,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             
             var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
-            await Task.WhenAll(locationTask, courseTask);
+            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+
+            await Task.WhenAll(locationTask, courseTask, shortlistTask);
             
-            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder));
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,
+                locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder, request.ShortlistUserId));
             
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
                 Providers = providers.Providers,
                 Total = providers.TotalResults,
-                Location = locationTask.Result
+                Location = locationTask.Result,
+                ShortlistItemCount = shortlistTask.Result
             }; 
         }
     }

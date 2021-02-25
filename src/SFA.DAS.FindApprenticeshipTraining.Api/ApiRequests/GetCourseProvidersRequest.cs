@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 
@@ -18,6 +19,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests
         public List<FeedbackRatingType> ProviderRatings { get; set; } = null;
         [FromQuery] 
         public ProviderCourseSortOrder.SortOrder SortOrder { get; set; } = ProviderCourseSortOrder.SortOrder.Distance;
+        [FromQuery]
+        public Guid? ShortlistUserId { get; set; }
 
     }
 }
