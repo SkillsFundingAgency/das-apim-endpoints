@@ -16,6 +16,10 @@
         public static implicit operator GetProviderResponse(
             InnerApi.Responses.GetProviderResponse source)
         {
+            if (source == null)
+            {
+                return null;
+            }
             return new GetProviderResponse
             {
                 Id = source.Id,

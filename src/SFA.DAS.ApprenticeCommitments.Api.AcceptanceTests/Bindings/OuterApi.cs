@@ -4,10 +4,10 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
 {
     [Binding]
-    [Scope(Tag = "outerApi")]
     public class OuterApi
     {
         public static ApprenticeCommitmentsApi Client { get; set; }
+        public static LocalWebApplicationFactory<Startup> Factory { get; set; }
 
         private readonly TestContext _context;
         
@@ -29,8 +29,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
                     {"AzureAD:identifier", ""}
                 };
 
-                var factory = new LocalWebApplicationFactory<Startup>(config, _context);
-                Client = new ApprenticeCommitmentsApi(factory.CreateClient());
+                Factory = new LocalWebApplicationFactory<Startup>(config, _context);
+                Client = new ApprenticeCommitmentsApi(Factory.CreateClient());
             }
 
             _context.OuterApiClient = Client;
@@ -41,6 +41,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
         {
             Client?.Dispose();
             Client = null;
+            Factory?.Dispose();
+            Factory = null;
         }
     }
 }
