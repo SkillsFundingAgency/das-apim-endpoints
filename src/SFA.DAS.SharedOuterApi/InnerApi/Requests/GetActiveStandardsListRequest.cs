@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public class GetAllStandardsListRequest : IGetApiRequest
+    public class GetActiveStandardsListRequest : IGetApiRequest
     {
         public List<Guid> RouteIds { get ; set ; }
         public List<int> Levels { get ; set ; }
