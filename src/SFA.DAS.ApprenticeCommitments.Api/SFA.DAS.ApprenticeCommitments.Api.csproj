@@ -22,6 +22,7 @@
 
     <ItemGroup>
         <PackageReference Include="MediatR" Version="6.0.0" />
+        <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="1.1.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
@@ -56,8 +57,5 @@
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.ApprenticeCommitments\SFA.DAS.ApprenticeCommitments.csproj" />
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Models\" />
     </ItemGroup>
 </Project>
