@@ -58,7 +58,4 @@
       <ProjectReference Include="..\SFA.DAS.ApprenticeCommitments\SFA.DAS.ApprenticeCommitments.csproj" />
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
 </Project>
