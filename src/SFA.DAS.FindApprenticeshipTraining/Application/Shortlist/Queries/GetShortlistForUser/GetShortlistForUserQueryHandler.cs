@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
             {
                 item.Course =
                     coursesTask.Result.Standards.FirstOrDefault(listItem =>
-                        listItem.Id == item.CourseId);
+                        listItem.LarsCode == item.CourseId);
             }
 
             return new GetShortlistForUserResult
