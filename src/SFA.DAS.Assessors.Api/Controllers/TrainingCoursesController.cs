@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
+using SFA.DAS.Assessors.Application.Queries.GetStandardOptions;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
+using SFA.DAS.Assessors.InnerApi.Responses;
 
 namespace SFA.DAS.Assessors.Api.Controllers
 {
@@ -59,6 +61,28 @@ namespace SFA.DAS.Assessors.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get standard using {standardUId}");
+                return BadRequest();
+            }
+        }
+        
+        [Route("options")]
+        public async Task<IActionResult> GetStandardOptionsList()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetStandardOptionsQuery());
+
+                var model = new GetStandardOptionsResponse
+                {
+                    Standards = queryResult.Standards.Select(standard => (GetStandardOptionsItem)standard).ToList()
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError(e, "Error attempting to get list of standard options");
                 return BadRequest();
             }
         }
