@@ -38,6 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         && c.SortOrder == (short)request.SortOrder
                         && c.Lat.Equals(request.Lat)
                         && c.Lon.Equals(request.Lon)
+                        && c.ShortlistUserId.Equals(request.ShortlistUserId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
@@ -60,6 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.Total.Should().Be(mediatorResult.Total);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
+            model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }
 
         [Test, MoqAutoData]

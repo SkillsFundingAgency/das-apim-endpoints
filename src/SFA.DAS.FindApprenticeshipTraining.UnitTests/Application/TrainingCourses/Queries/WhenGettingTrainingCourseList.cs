@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -20,12 +21,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingTrainingCourseList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standards_And_Sectors_And_Levels_From_Courses_Api_With_Request_Params(
+        public async Task Then_Gets_Standards_And_Sectors_And_Levels_From_Courses_Api_And_Shortlist_Item_Count_With_Request_Params(
             Guid sectorId,
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetLevelsListResponse levelsApiResponse,
+            int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCoursesListQueryHandler handler)
         {
             var sectorsApiResponse = new GetSectorsListResponse
@@ -52,6 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
+            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+                .ReturnsAsync(shortlistItemCount);
             
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -61,8 +66,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
             result.OrderBy.Should().Be(query.OrderBy);
+            result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
-
+        
         [Test, MoqAutoData]
         public async Task Then_Caches_The_Courses_If_There_Are_No_Filters(
             GetStandardsListResponse apiResponse,

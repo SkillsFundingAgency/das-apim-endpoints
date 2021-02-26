@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -20,13 +21,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingProvidersByTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_The_Standard_And_The_List_Of_Providers_For_That_Course_From_Course_Delivery_Api_Client_With_No_Location(
+        public async Task Then_Gets_The_Standard_And_The_List_Of_Providers_For_That_Course_From_Course_Delivery_Api_Client_With_No_Location_And_ShortlistItem_Count(
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
+            int shortlistItemCount,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCourseProvidersQueryHandler handler)
         {
             apiCourseResponse.Level = 1;
@@ -42,12 +45,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
+            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+                .ReturnsAsync(shortlistItemCount);
             
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.ShortlistItemCount.Should().Be(shortlistItemCount);
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
         }
 

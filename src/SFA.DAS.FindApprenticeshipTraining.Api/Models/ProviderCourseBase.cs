@@ -10,6 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int ProviderId { get ; set ; }
         public string Name { get ; set ; }
         public string TradingName { get; set; }
+        public Guid? ShortlistId { get ; set ; }
         public List<GetDeliveryType> DeliveryModes { get ; set ; }
         public int? OverallCohort { get; set; }
         public decimal? OverallAchievementRate { get ; set ; }
