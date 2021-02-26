@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Diagnostics;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -28,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetProviderCourseItem
             {
                 ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress,hasLocation),
-                Website = source.ProviderStandard.ContactUrl,
+                Website = source.ProviderStandard.StandardInfoUrl,
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
@@ -40,9 +39,30 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
                 Feedback = getFeedbackResponse,
+                ShortlistId = source.ProviderStandard.ShortlistId
             };
         }
 
-        
+        public GetProviderCourseItem Map(InnerApi.Responses.GetShortlistItem shortlistItem)
+        {
+            var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
+            var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
+            var getFeedbackResponse = ProviderFeedbackResponse(shortlistItem.ProviderDetails.FeedbackRatings, shortlistItem.ProviderDetails.FeedbackAttributes);
+            
+            return new GetProviderCourseItem
+            {
+                ProviderAddress = new GetProviderAddress().Map(shortlistItem.ProviderDetails.ProviderAddress,!string.IsNullOrEmpty(shortlistItem.LocationDescription)),
+                Website = shortlistItem.ProviderDetails.StandardInfoUrl,
+                Phone = shortlistItem.ProviderDetails.Phone,
+                Email = shortlistItem.ProviderDetails.Email,
+                Name = shortlistItem.ProviderDetails.Name,
+                TradingName = shortlistItem.ProviderDetails.TradingName,
+                ProviderId = shortlistItem.ProviderDetails.Ukprn,
+                OverallCohort = achievementRate?.OverallCohort,
+                OverallAchievementRate = achievementRate?.OverallAchievementRate,
+                DeliveryModes = deliveryModes,
+                Feedback = getFeedbackResponse,
+            };
+        }
     }
 }

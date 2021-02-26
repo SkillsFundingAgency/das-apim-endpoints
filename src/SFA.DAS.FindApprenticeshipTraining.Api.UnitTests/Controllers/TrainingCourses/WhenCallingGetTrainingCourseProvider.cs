@@ -24,6 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             string location,
             double lat, 
             double lon,
+            Guid? shortlistUserId,
             GetTrainingCourseProviderResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -37,11 +38,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         && c.Location.Equals(location)
                         && c.Lat.Equals(lat)
                         && c.Lon.Equals(lon)
+                        && c.ShortlistUserId.Equals(shortlistUserId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as ObjectResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -51,7 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourseProvider.Should()
                 .BeEquivalentTo(mediatorResult.ProviderStandard, 
                     options => options
-                        .Excluding(c=>c.ContactUrl)
+                        .Excluding(c=>c.StandardInfoUrl)
                         .Excluding(c=>c.StandardId)
                         .Excluding(c=>c.AchievementRates)
                         .Excluding(c=>c.Ukprn)
@@ -70,6 +72,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
             model.TrainingCourseProvider.Feedback.Should().NotBeNull();
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
+            model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }
 
         [Test, MoqAutoData]
@@ -117,6 +120,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             string location,
             double lat, 
             double lon,
+            Guid? shortlistUserId,
             GetTrainingCourseProviderResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
@@ -134,11 +138,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                               && c.Location.Equals(location)
                               && c.Lat.Equals(lat)
                               && c.Lon.Equals(lon)
+                              && c.ShortlistUserId.Equals(shortlistUserId)
                     ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as StatusCodeResult;
+            var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as StatusCodeResult;
             
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

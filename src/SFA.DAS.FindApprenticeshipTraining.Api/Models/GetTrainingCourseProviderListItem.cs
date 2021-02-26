@@ -44,6 +44,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Name = source.Name,
                 TradingName = source.TradingName,
                 ProviderId = source.Ukprn,
+                ShortlistId = source.ShortlistId,
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 DeliveryModes = getDeliveryTypes,

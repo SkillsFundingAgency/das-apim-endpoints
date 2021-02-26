@@ -15,5 +15,13 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source);
         }
+
+        [Test]
+        public void Then_Maps_Null_If_Null_Source()
+        {
+            var response = (GetProviderResponse) (InnerApi.Responses.GetProviderResponse)null;
+
+            response.Should().BeNull();
+        }
     }
 }

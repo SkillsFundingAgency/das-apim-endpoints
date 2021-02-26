@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -14,21 +15,25 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
+        private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, ICacheStorageService cacheStorageService)
+        public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, 
+            IShortlistService shortlistService, 
+            ICacheStorageService cacheStorageService)
         {
             _apiClient = apiClient;
+            _shortlistService = shortlistService;
             _cacheHelper = new CacheHelper(cacheStorageService);
         }
 
         public async Task<GetTrainingCoursesListResult> Handle(GetTrainingCoursesListQuery request, CancellationToken cancellationToken)
         {
             var taskList = new List<Task>();
-        bool saveStandardsToCache;
+            bool saveStandardsToCache;
 
-        var sectors = await _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
-                new GetSectorsListRequest(),nameof(GetSectorsListResponse), out var saveSectorsToCache);
+            var sectors = await _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
+                    new GetSectorsListRequest(),nameof(GetSectorsListResponse), out var saveSectorsToCache);
 
             var routeFilters = sectors
                 .Sectors
@@ -68,6 +73,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out var saveLevelsToCache);
             taskList.Add(levelsTask);
+
+            var shortlistItemCountTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            taskList.Add(shortlistItemCountTask);
             
             await Task.WhenAll(taskList);
 
@@ -81,7 +89,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Levels = levelsTask.Result.Levels,
                 Total = standardsTask.Result.Total,
                 TotalFiltered = standardsTask.Result.TotalFiltered,
-                OrderBy = request.OrderBy
+                OrderBy = request.OrderBy,
+                ShortlistItemCount = shortlistItemCountTask.Result
             };
         }
     }
