@@ -138,7 +138,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                             GeoPoint = result.Location?.GeoPoint
                         }
                     },
-                    ShortlistItemCount = result.ShortlistItemCount
+                    ShortlistItemCount = result.ShortlistItemCount,
+                    ShowEmployerDemand = result.ShowEmployerDemand
                 };
                 return Ok(model);
             }
