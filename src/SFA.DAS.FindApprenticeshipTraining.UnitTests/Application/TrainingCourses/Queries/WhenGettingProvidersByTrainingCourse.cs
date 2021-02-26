@@ -25,10 +25,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
+            GetShowEmployerDemandResponse showEmployerDemandResponse,
             int shortlistItemCount,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
             [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCourseProvidersQueryHandler handler)
         {
@@ -45,6 +47,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
+            mockEmployerDemandApiClient
+                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(showEmployerDemandResponse);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             
@@ -53,6 +58,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.ShowEmployerDemand.Should().BeTrue();
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
         }
@@ -538,6 +544,43 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Location.Should().NotBeNull();
             result.Location.Name.Should().Be($"{apiLocationResponse.LocationName}, {apiLocationResponse.LocalAuthorityName}");
             result.Location.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_ShowDemandResponse_Not_OK_Then_ShowDemand_False(
+            GetTrainingCourseProvidersQuery query,
+            GetProvidersListResponse apiResponse,
+            GetStandardsListItem apiCourseResponse,
+            int shortlistItemCount,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
+            [Frozen] Mock<IShortlistService> shortlistService,
+            GetTrainingCourseProvidersQueryHandler handler)
+        {
+            apiCourseResponse.Level = 1;
+            query.Location = "";
+            query.Lat = 0;
+            query.Lon = 0;
+            mockApiClient
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
+                    c.GetUrl.Contains(query.Id.ToString()) 
+                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}&level={apiCourseResponse.Level}")
+                )))
+                .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .ReturnsAsync(apiCourseResponse);
+            mockEmployerDemandApiClient
+                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync((GetShowEmployerDemandResponse)null);
+            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+                .ReturnsAsync(shortlistItemCount);
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+            
+            result.ShowEmployerDemand.Should().BeFalse();
         }
     }
 }
