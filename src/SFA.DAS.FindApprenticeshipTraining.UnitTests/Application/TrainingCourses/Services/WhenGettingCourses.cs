@@ -39,7 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             var expectedExpirationInHours = 1;
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.IsAny<GetAllStandardsListRequest>()))
+                    It.IsAny<GetActiveStandardsListRequest>()))
                 .ReturnsAsync(coursesFromApi);
             mockCacheService
                 .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
