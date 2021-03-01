@@ -52,11 +52,13 @@ namespace SFA.DAS.Assessors.Api.Controllers
             {
                 var queryResponse = await _mediator.Send(new GetStandardDetailsQuery(standardUId));
 
+                if (queryResponse.StandardDetails == null) return NotFound();
+
                 return Ok((GetStandardDetailsResponse)queryResponse.StandardDetails);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of training courses");
+                _logger.LogError(e, $"Error attempting to get standard using {standardUId}");
                 return BadRequest();
             }
         }
