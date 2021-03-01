@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.Assessors.Api.Controllers;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
-using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
@@ -54,6 +53,23 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
             var controllerResult = await controller.GetByStandardUId(string.Empty) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Invalid_StandardUID_Then_Returns_Not_Found(
+            string standardUId,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetStandardDetailsQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetStandardDetailsResult(null));
+
+            var controllerResult = await controller.GetByStandardUId(standardUId) as NotFoundResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }
 }
