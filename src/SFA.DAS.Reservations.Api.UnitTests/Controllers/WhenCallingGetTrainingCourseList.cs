@@ -37,9 +37,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
             Assert.IsNotNull(model);
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Courses, options => options
-                .Excluding(s => s.StandardUId)
-                .Excluding(s => s.LarsCode));
+            model.Standards.Should().BeEquivalentTo(mediatorResult.Courses.Select(course => (GetTrainingCoursesListItem)course));
             model.Standards.All(m => m.Id > 0).Should().BeTrue();
         }
 
