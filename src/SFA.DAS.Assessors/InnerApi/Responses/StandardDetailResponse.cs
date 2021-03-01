@@ -10,7 +10,6 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public string IfateReferenceNumber { get; set; }
         public int LarsCode { get; set; }
         public string Status { get; set; }
-        public float? SearchScore { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public decimal Version { get; set; }
@@ -55,6 +54,5 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
 
             return base.GetFundingDetails(prop);
         }
-
     }
 }

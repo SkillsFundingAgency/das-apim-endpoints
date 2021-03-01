@@ -12,7 +12,6 @@ namespace SFA.DAS.Assessors.Api.Models
         public string IfateReferenceNumber { get; set; }
         public int LarsCode { get; set; }
         public string Status { get; set; }
-        public float? SearchScore { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public decimal Version { get; set; }
@@ -58,7 +57,6 @@ namespace SFA.DAS.Assessors.Api.Models
                 IfateReferenceNumber = source.IfateReferenceNumber,
                 LarsCode = source.LarsCode,
                 Status = source.Status,
-                SearchScore = source.SearchScore,
                 Title = source.Title,
                 Level = source.Level,
                 Version = source.Version,
