@@ -34,7 +34,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
             var response = mediatorResult.Standards.Select(s => new GetStandardOptionsItem
             {
-                StandardUid = s.StandardUid,
+                StandardUId = s.StandardUId,
                 LarsCode = s.LarsCode,
                 IfateReferenceNumber = s.IfateReferenceNumber,
                 Options = s.Options
