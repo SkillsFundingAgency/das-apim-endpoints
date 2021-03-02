@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7c270577-f2d4-4195-a82d-3217ec31a928",
+		"_postman_id": "0e78b910-0aeb-4332-a683-03d3b4f78b05",
 		"name": "Outer API Tests For Standards",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -74,106 +74,6 @@
 						"{{courses-api-tenant}}",
 						"oauth2",
 						"token"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Courses - Get List - None",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful GET request\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"\r",
-							"var standards = jsonData.standards;\r",
-							"\r",
-							"var approvedStandards = standards.filter(obj => obj.status == 'Approved for delivery');\r",
-							"var retiredStandards = standards.filter(obj => obj.status == 'Retired');\r",
-							"var withdrawnStandards = standards.filter(obj => obj.status == 'Withdrawn'); \r",
-							"var inDevelopmentStandards = standards.filter(obj => obj.status == 'In development');\r",
-							"var proposalStandards = standards.filter(obj => obj.status == 'Proposal in development');\r",
-							"\r",
-							"pm.test(\"Total standards from courses api with no filter matches count from ifate api\", function () {\r",
-							"    var expectedValueTotal = pm.variables.get(\"totalStandardsCountFromIfate\")\r",
-							"    pm.expect(standards.length).to.equal(expectedValueTotal);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Approved for delivery standards from courses api with no filter matches count from ifate api\", function () {\r",
-							"    var expectedValueApproved = pm.variables.get(\"approvedStandardsCountFromIfate\")\r",
-							"    pm.expect(approvedStandards.length).to.equal(expectedValueApproved);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Retired standards from courses api matches count from ifate api\", function () {\r",
-							"    var expectedValueRetired = pm.variables.get(\"retiredStandardsCountFromIfate\")\r",
-							"    pm.expect(retiredStandards.length).to.equal(expectedValueRetired);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"In development standards from courses api with no filter matches count from ifate api\", function () {\r",
-							"    var expectedValueInDevelopment = pm.variables.get(\"inDevelopmentStandardsCountFromIfate\")\r",
-							"    pm.expect(inDevelopmentStandards.length).to.equal(expectedValueInDevelopment);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Withdrawn standards from courses api with no filter matches count from ifate api\", function () {\r",
-							"    var expectedValueWithdrawn = pm.variables.get(\"withdrawnStandardsCountFromIfate\")\r",
-							"    pm.expect(withdrawnStandards.length).to.equal(expectedValueWithdrawn);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Proposed standards from courses api with no filter matches count from ifate api\", function () {\r",
-							"    var expectedValuePropsed = pm.variables.get(\"proposalStandardsCountFromIfate\")\r",
-							"    pm.expect(proposalStandards.length).to.equal(expectedValuePropsed);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"user-agent": true,
-					"accept-encoding": true,
-					"connection": true,
-					"accept": true
-				}
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Version",
-						"value": "1.0",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{courses-api-base-url}}/Standards?filter=None",
-					"host": [
-						"{{courses-api-base-url}}"
-					],
-					"path": [
-						"Standards"
-					],
-					"query": [
-						{
-							"key": "filter",
-							"value": "None"
-						}
 					]
 				}
 			},
@@ -305,49 +205,6 @@
 							"key": "filter",
 							"value": "Active"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Courses - Get Standard Options List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"\r",
-							"var standardWithOptions = jsonData.standards.filter(obj => obj.options.length != 0)[0];\r",
-							"\r",
-							"pm.environment.set(\"standardWithOptions\", standardWithOptions);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Version",
-						"value": "1.0",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{courses-api-base-url}}/Standards/options",
-					"host": [
-						"{{courses-api-base-url}}"
-					],
-					"path": [
-						"Standards",
-						"options"
 					]
 				}
 			},
@@ -839,67 +696,6 @@
 					"path": [
 						"reservations",
 						"TrainingCourses"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Standard Options - Assessors",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful GET request\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Get Standard Options count matches Courses Get List with Active filter count\", function () {\r",
-							"    pm.expect(jsonData.standards.length).to.equal(pm.variables.get(\"m_activeCount\"));\r",
-							"});\r",
-							"\r",
-							"var expectedStandard = pm.environment.get(\"standardWithOptions\");\r",
-							"\r",
-							"pm.test(\"Get Standard Options list contains the expected standard\", function (){\r",
-							"    var standard = jsonData.standards.filter(obj => obj.standardUId == expectedStandard.standardUId)[0];\r",
-							"\r",
-							"    pm.expect(standard.standardUId).to.equal(expectedStandard.standardUId);\r",
-							"    pm.expect(standard.larsCode).to.equal(expectedStandard.larsCode);\r",
-							"    pm.expect(standard.ifateReferenceNumber).to.equal(expectedStandard.ifateReferenceNumber);\r",
-							"    pm.expect(standard.options.length).to.equal(expectedStandard.options.length);\r",
-							"})\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Version",
-						"value": "1",
-						"type": "text"
-					},
-					{
-						"key": "Ocp-Apim-Subscription-Key",
-						"value": "{{apim-subscription-key}}",
-						"description": "This key is provided by DevOps which authenticates the APIM gateway.  ",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{apim-base-url}}/TrainingCourses/options",
-					"host": [
-						"{{apim-base-url}}"
-					],
-					"path": [
-						"TrainingCourses",
-						"options"
 					]
 				}
 			},
