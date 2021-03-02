@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "6e57145a-c30f-46fb-a295-d95a5e2f6287",
+		"name": "Outer API Tests For Standard Options",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Courses - Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"authToken\", jsonData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{courses-api-client-id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{courses-api-client-secret}}",
+							"type": "text"
+						},
+						{
+							"key": "resource",
+							"value": "{{courses-api-resource}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{courses-api-tenant}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{courses-api-tenant}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Courses - Get List - Active",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"m_activeCount\", jsonData.totalFiltered);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{e_courses-api-base-url}}/Standards?filter=Active",
+					"host": [
+						"{{e_courses-api-base-url}}"
+					],
+					"path": [
+						"Standards"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "Active"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Courses - Get Standard Options List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"var standardWithOptions = jsonData.standards.filter(obj => obj.options.length != 0)[0];\r",
+							"\r",
+							"pm.environment.set(\"m_standardWithOptions\", standardWithOptions);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{e_courses-api-base-url}}/Standards/options",
+					"host": [
+						"{{e_courses-api-base-url}}"
+					],
+					"path": [
+						"Standards",
+						"options"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Standard Options - Assessors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Get Standard Options count matches Courses Get List with Active filter count\", function () {\r",
+							"    pm.expect(jsonData.standards.length).to.equal(pm.variables.get(\"m_activeCount\"));\r",
+							"});\r",
+							"\r",
+							"var expectedStandard = pm.environment.get(\"m_standardWithOptions\");\r",
+							"\r",
+							"pm.test(\"Get Standard Options list contains the expected standard\", function (){\r",
+							"    var standard = jsonData.standards.filter(obj => obj.standardUId == expectedStandard.standardUId)[0];\r",
+							"\r",
+							"    pm.expect(standard.standardUId).to.equal(expectedStandard.standardUId);\r",
+							"    pm.expect(standard.larsCode).to.equal(expectedStandard.larsCode);\r",
+							"    pm.expect(standard.ifateReferenceNumber).to.equal(expectedStandard.ifateReferenceNumber);\r",
+							"    pm.expect(standard.options.length).to.equal(expectedStandard.options.length);\r",
+							"})\r",
+							"\r",
+							"pm.environment.unset(\"m_activeCount\");\r",
+							"pm.environment.unset(\"m_standardWithOptions\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1",
+						"type": "text"
+					},
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{apim-subscription-key}}",
+						"description": "This key is provided by DevOps which authenticates the APIM gateway.  ",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{e_apim-base-url}}/TrainingCourses/options",
+					"host": [
+						"{{e_apim-base-url}}"
+					],
+					"path": [
+						"TrainingCourses",
+						"options"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
