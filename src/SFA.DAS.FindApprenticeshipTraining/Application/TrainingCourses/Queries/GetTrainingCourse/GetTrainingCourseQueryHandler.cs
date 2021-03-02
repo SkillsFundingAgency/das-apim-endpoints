@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -14,12 +15,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCourseQueryHandler (ICoursesApiClient<CoursesApiConfiguration> apiClient, ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, ICacheStorageService cacheStorageService)
+        public GetTrainingCourseQueryHandler (
+            ICoursesApiClient<CoursesApiConfiguration> apiClient, 
+            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, 
+            ICacheStorageService cacheStorageService,
+            IShortlistService shortlistService)
         {
             _apiClient = apiClient;
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _shortlistService = shortlistService;
             _cacheHelper = new CacheHelper(cacheStorageService);
 
         }
@@ -31,8 +38,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
+
+            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
             
-            await Task.WhenAll(standardTask, providersTask, levelsTask);
+            await Task.WhenAll(standardTask, providersTask, levelsTask, shortlistTask);
 
             if (standardTask.Result == null)
             {
@@ -45,7 +54,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 Course = standardTask.Result,
                 ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
-                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count
+                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count,
+                ShortlistItemCount = shortlistTask.Result
             };
         }
     }

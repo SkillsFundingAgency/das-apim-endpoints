@@ -36,7 +36,12 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseResponse;
             Assert.IsNotNull(model);
-            model.Course.Should().BeEquivalentTo(mediatorResult.Course);
+            model.Course.Should().BeEquivalentTo(mediatorResult.Course, options => options
+            .Excluding(c => c.LarsCode)
+            .Excluding(c => c.StandardUId));
+
+            model.Course.Id.Should().Be(mediatorResult.Course.LarsCode);
+
         }
 
         [Test, MoqAutoData]

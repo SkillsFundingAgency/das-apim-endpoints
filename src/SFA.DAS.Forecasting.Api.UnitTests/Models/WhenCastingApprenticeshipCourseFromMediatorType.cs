@@ -23,11 +23,13 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
                     .Excluding(s => s.TypicalDuration)
                     .Excluding(s => s.StandardDates)
                     .Excluding(s => s.IsActive)
+                    .Excluding(s => s.StandardUId)
+                    .Excluding(s => s.LarsCode)
                 );
 
             response.Duration.Should().Be(source.TypicalDuration);
             response.FundingCap.Should().Be(source.MaxFunding);
-            
+            response.Id.Should().Be(source.LarsCode.ToString());
             for (var i = 0; i < response.FundingPeriods.Count; i++)
             {
                 response.FundingPeriods[i].FundingCap.Should().Be(source.ApprenticeshipFunding[i].MaxEmployerLevyCap);

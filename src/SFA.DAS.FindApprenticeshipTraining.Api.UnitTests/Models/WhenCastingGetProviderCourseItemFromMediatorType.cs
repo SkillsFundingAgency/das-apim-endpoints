@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             actual.Should().BeEquivalentTo(providerStandardItem.Course, options => options.ExcludingMissingMembers());
 
-            actual.Website.Should().Be(providerStandardItem.ProviderStandard.ContactUrl);
+            actual.Website.Should().Be(providerStandardItem.ProviderStandard.StandardInfoUrl);
             actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
             actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
             actual.Feedback.TotalEmployerResponses.Should().Be(129);

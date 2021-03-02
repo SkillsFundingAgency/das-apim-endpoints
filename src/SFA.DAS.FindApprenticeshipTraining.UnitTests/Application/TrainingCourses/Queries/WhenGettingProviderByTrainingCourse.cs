@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
@@ -19,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     public class WhenGettingProviderByTrainingCourse
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_The_Standard_And_The_Provider_For_That_Course_From_Course_Delivery_Api_Client(
+        public async Task Then_Gets_The_Standard_And_The_Provider_For_That_Course_And_Shortlist_Count_From_Course_Delivery_Api_Client(
             GetTrainingCourseProviderQuery query,
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
@@ -27,16 +28,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
+            int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCourseProviderQueryHandler handler)
         {
+            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+                .ReturnsAsync(shortlistItemCount);
             ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, mockCoursesApiClient, mockApiClient);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.ProviderStandard.Should().BeEquivalentTo(apiResponse);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
+            result.ShortlistItemCount.Should().Be(shortlistItemCount);
             mockApiClient.Verify(x => x.Get<GetProviderStandardItem>(It.IsAny<GetProviderByCourseAndUkPrnRequest>()), Times.Once);
         }
 
@@ -134,7 +140,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(allCoursesApiResponse);
 
-            var additionalCourses = allCoursesApiResponse.Standards.Select(c => c.Id).ToList();
+            var additionalCourses = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList();
 
             additionalCourses.Add(-10);
 
@@ -238,10 +244,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
-            apiCourseResponse.Id = query.CourseId;
+            apiCourseResponse.LarsCode = query.CourseId;
             allStandards.Add(new GetStandardsListItem
             {
-                Id = apiCourseResponse.Id,
+                LarsCode = apiCourseResponse.LarsCode,
                 Title = apiCourseResponse.Title,
                 Level = apiCourseResponse.Level
             });
@@ -286,7 +292,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client =>
@@ -355,7 +361,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client =>
@@ -419,6 +425,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains("?lat=&lon=")
+                    && c.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
                 )))
                 .ReturnsAsync(apiProviderStandardResponse);
             mockApiClient
@@ -432,7 +439,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client =>
@@ -504,7 +511,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList()
                 });
             mockCoursesApiClient
                 .Setup(client =>
@@ -536,6 +543,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     c.GetUrl.Contains(query.CourseId.ToString())
                     && c.GetUrl.Contains(query.ProviderId.ToString())
                     && c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
+                    && c.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
                     )))
                 .ReturnsAsync(apiProviderStandardResponse);
 
@@ -546,7 +554,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         ))))
                 .ReturnsAsync(new GetProviderAdditionalStandardsItem
                 {
-                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.Id).ToList()
+                    StandardIds = allCoursesApiResponse.Standards.Select(c => c.LarsCode).ToList()
                 });
 
             mockApiClient
