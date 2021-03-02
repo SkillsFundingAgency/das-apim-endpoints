@@ -5,7 +5,7 @@ namespace SFA.DAS.Assessors.Api.Models
 {
     public class GetStandardOptionsItem
     {
-        public string StandardUid { get; set; }
+        public string StandardUId { get; set; }
         public int LarsCode { get; set; }
         public string IfateReferenceNumber { get; set; }
         public IEnumerable<string> Options { get; set; }
@@ -14,7 +14,7 @@ namespace SFA.DAS.Assessors.Api.Models
         {
             return new GetStandardOptionsItem
             {
-                StandardUid = source.StandardUid,
+                StandardUId = source.StandardUId,
                 IfateReferenceNumber = source.IfateReferenceNumber,
                 LarsCode = source.LarsCode,
                 Options = source.Options
