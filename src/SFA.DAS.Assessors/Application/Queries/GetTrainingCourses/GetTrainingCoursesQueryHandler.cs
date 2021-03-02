@@ -23,7 +23,7 @@ namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
 
             return new GetTrainingCoursesResult
             {
-                TrainingCourses = standardsList.Standards
+                TrainingCourses = standardsList.StandardOptions
             };
         }
     }

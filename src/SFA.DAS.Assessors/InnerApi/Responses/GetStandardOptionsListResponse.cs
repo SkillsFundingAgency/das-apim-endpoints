@@ -4,6 +4,6 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
 {
     public class GetStandardOptionsListResponse
     {
-        public IEnumerable<GetStandardOptionsListItem> Standards { get; set; }
+        public IEnumerable<GetStandardOptionsListItem> StandardOptions { get; set; }
     }
 }
