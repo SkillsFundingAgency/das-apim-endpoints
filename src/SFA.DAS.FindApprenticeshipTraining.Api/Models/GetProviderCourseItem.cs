@@ -10,10 +10,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Phone { get ; set ; }
 
         public string Website { get ; set ; }
+        public string MarketingInfo { get ; set ; }
 
-        
+
         public int? NationalOverallCohort { get; set; }
-        
+
         public decimal? NationalOverallAchievementRate { get ; set ; }
         public GetProviderAddress ProviderAddress { get ; set ; }
 
@@ -32,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Email = source.ProviderStandard.Email,
                 Name = source.ProviderStandard.Name,
                 TradingName = source.ProviderStandard.TradingName,
+                MarketingInfo = source.ProviderStandard.MarketingInfo,
                 ProviderId = source.ProviderStandard.Ukprn,
                 OverallCohort = achievementRate?.OverallCohort,
                 NationalOverallCohort = nationalRate?.OverallCohort,
