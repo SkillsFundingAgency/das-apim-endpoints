@@ -14,7 +14,7 @@ namespace SFA.DAS.EpaoRegister.Api.UnitTests.Models.GetEpaoCoursesModelTests
         {
             var response = (EpaoCourse)source;
 
-            response.Id.Should().Be(source.Id);
+            response.Id.Should().Be(source.LarsCode);
             response.Periods.Should().BeEquivalentTo(source.StandardDates);
         }
 

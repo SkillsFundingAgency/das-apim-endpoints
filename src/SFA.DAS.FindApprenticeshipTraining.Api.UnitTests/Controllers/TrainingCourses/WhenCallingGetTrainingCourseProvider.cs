@@ -62,8 +62,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         .Excluding(c=>c.FeedbackAttributes)
                         .Excluding(c=>c.ProviderAddress)
                 );
+            
             model.AdditionalCourses.Courses.Should().BeEquivalentTo(mediatorResult.AdditionalCourses);
             model.TrainingCourse.Should().NotBeNull();
+            model.TrainingCourse.Id.Should().Be(mediatorResult.Course.LarsCode);
             model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.TotalProvidersAtLocation);
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.TotalProviders);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);

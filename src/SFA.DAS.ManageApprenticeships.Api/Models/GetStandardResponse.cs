@@ -14,7 +14,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Models
         {
             return new GetStandardResponse
             {
-                Id= source.Id,
+                Id= source.LarsCode,
                 Duration = source.TypicalDuration,
                 Level = source.Level,
                 Title = source.Title,

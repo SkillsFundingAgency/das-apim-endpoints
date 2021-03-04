@@ -17,7 +17,7 @@ namespace SFA.DAS.Assessors.Api.Models
         {
             return new GetCourseListItem
             {
-                Id = source.Id,
+                Id = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 MaxFunding = source.MaxFunding,
