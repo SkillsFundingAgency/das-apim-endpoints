@@ -211,6 +211,75 @@
 			"response": []
 		},
 		{
+			"name": "Courses - Get All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"m_all_count\", jsonData.totalFiltered);\r",
+							"pm.environment.set(\"m_all_standardUId\", jsonData.standards[0].standardUId);\r",
+							"pm.environment.set(\"m_all_ifateRefNum\", jsonData.standards[0].ifateReferenceNumber);\r",
+							"pm.environment.set(\"m_all_larsCode\", jsonData.standards[0].larsCode);\r",
+							"pm.environment.set(\"m_all_title\", jsonData.standards[0].title);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{courses-api-base-url}}/Standards?filter=None",
+					"host": [
+						"{{courses-api-base-url}}"
+					],
+					"path": [
+						"Standards"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "None"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Standards - Approvals",
 			"event": [
 				{
@@ -278,13 +347,15 @@
 							"\r",
 							"pm.test(\"Array matches count\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.courses.length).to.eql(pm.variables.get(\"m_activeCount\"));\r",
+							"    pm.expect(jsonData.courses.length).to.eql(pm.variables.get(\"m_all_count\"));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Body matches string\", function () {\r",
-							"    var expectedValue = \"\\\"id\\\":\" + pm.variables.get(\"m_larsCode\");\r",
-							"    expectedValue += \",\\\"title\\\":\\\"\" + pm.variables.get(\"m_title\");\r",
-							"    expectedValue += \"\\\",\\\"level\\\":\" + pm.variables.get(\"m_level\");\r",
+							"    var expectedValue = \"\\\"standardUId\\\":\\\"\" + pm.variables.get(\"m_all_standardUId\");\r",
+							"    expectedValue += \"\\\",\\\"ifateReferenceNumber\\\":\\\"\" + pm.variables.get(\"m_all_ifateRefNum\");\r",
+							"    expectedValue = \"\\\",\\\"larsCode\\\":\" + pm.variables.get(\"m_all_larsCode\");\r",
+							"    expectedValue += \",\\\"title\\\":\\\"\" + pm.variables.get(\"m_all_title\");\r",
+							"    \r",
 							"    pm.expect(pm.response.text()).to.include(expectedValue);\r",
 							"});\r",
 							"\r",

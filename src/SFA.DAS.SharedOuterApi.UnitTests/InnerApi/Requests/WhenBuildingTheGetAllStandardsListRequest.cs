@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             List<int> levels)
         {
             
-            var actual = new GetAllStandardsListRequest
+            var actual = new GetActiveStandardsListRequest
             {
                 RouteIds = routeIds,
                 Levels = levels
@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
         )
         {
-            var actual = new GetAllStandardsListRequest();
+            var actual = new GetActiveStandardsListRequest();
 
             actual.GetUrl.Should()
                 .Be($"api/courses/standards?filter=Active");
@@ -38,7 +38,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds(
             List<int> levels)
         {
-            var actual = new GetAllStandardsListRequest
+            var actual = new GetActiveStandardsListRequest
             {
                 Levels = levels
             };
@@ -51,7 +51,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed_Without_Levels(
             List<Guid> routeIds)
         {
-            var actual = new GetAllStandardsListRequest
+            var actual = new GetActiveStandardsListRequest
             { 
                 RouteIds = routeIds
             };
