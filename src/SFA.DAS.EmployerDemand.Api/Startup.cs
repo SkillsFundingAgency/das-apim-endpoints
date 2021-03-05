@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerDemand.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    //.AddCheck<employerDemandHealthCheck>("Employer Demand API health check")
+                    .AddCheck<EmployerDemandApiHealthCheck>("Employer Demand API health check")
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
             }
             
