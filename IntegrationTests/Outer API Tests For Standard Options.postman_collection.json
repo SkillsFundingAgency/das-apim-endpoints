@@ -63,7 +63,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://login.microsoftonline.com/{{courses-api-tenant}}/oauth2/token",
+					"raw": "https://login.microsoftonline.com/{{e_courses-api-tenant}}/oauth2/token",
 					"protocol": "https",
 					"host": [
 						"login",
@@ -71,7 +71,7 @@
 						"com"
 					],
 					"path": [
-						"{{courses-api-tenant}}",
+						"{{e_courses-api-tenant}}",
 						"oauth2",
 						"token"
 					]
@@ -156,7 +156,7 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
-							"var standardWithOptions = jsonData.standards.filter(obj => obj.options.length != 0)[0];\r",
+							"var standardWithOptions = jsonData.standardOptions.filter(obj => obj.options.length != 0)[0];\r",
 							"\r",
 							"pm.environment.set(\"m_standardWithOptions\", standardWithOptions);"
 						],
@@ -200,13 +200,13 @@
 							"var jsonData = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Get Standard Options count matches Courses Get List with Active filter count\", function () {\r",
-							"    pm.expect(jsonData.standards.length).to.equal(pm.variables.get(\"m_activeCount\"));\r",
+							"    pm.expect(jsonData.standardOptions.length).to.equal(pm.variables.get(\"m_activeCount\"));\r",
 							"});\r",
 							"\r",
 							"var expectedStandard = pm.environment.get(\"m_standardWithOptions\");\r",
 							"\r",
 							"pm.test(\"Get Standard Options list contains the expected standard\", function (){\r",
-							"    var standard = jsonData.standards.filter(obj => obj.standardUId == expectedStandard.standardUId)[0];\r",
+							"    var standard = jsonData.standardOptions.filter(obj => obj.standardUId == expectedStandard.standardUId)[0];\r",
 							"\r",
 							"    pm.expect(standard.standardUId).to.equal(expectedStandard.standardUId);\r",
 							"    pm.expect(standard.larsCode).to.equal(expectedStandard.larsCode);\r",
