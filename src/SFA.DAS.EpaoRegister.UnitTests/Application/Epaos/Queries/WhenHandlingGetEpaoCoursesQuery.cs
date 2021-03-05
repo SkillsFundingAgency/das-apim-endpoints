@@ -107,7 +107,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
             mockCacheStorageService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetAllStandardsListRequest)))
+                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(responseFromCache);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -153,7 +153,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             result.EpaoId.Should().Be(query.EpaoId);
             result.Courses.Should().BeEquivalentTo(matchingStandards);
             mockCacheStorageService.Verify(service => service.SaveToCache(
-                nameof(GetAllStandardsListRequest), 
+                nameof(GetStandardsListResponse), 
                 responseFromApi, 
                 expectedExpirationInHours));
         }

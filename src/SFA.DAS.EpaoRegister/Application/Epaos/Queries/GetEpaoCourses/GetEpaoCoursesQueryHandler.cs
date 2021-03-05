@@ -56,13 +56,13 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
             }
 
             var courses = await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
-                    nameof(GetAllStandardsListRequest));
+                    nameof(GetStandardsListResponse));
 
             if (courses == default)
             {
                 courses = await _coursesApiClient.Get<GetStandardsListResponse>(
                     new GetAllStandardsListRequest());
-                await _cacheStorageService.SaveToCache(nameof(GetAllStandardsListRequest), courses, ExpirationInHours);
+                await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, ExpirationInHours);
             }
 
             var matchingCourses = courses.Standards
