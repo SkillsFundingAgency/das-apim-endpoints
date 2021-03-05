@@ -27,7 +27,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.Should().BeEquivalentTo(apiResponse.StandardOptions);
+            result.StandardOptions.Should().BeEquivalentTo(apiResponse.StandardOptions);
         }
     }
 }
