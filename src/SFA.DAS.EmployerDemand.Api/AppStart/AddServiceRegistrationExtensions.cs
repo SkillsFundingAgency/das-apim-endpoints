@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-            //services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IEmployerDemandApiClient<EmployerDemandApiConfiguration>, EmployerDemandApiClient>();
         }
     }
