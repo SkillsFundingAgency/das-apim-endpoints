@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
@@ -55,21 +53,17 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
                 };
             }
 
-            var courses = await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
-                    nameof(GetStandardsListResponse));
-
-            if (courses == default)
+            var matchingCourses = new List<GetStandardResponse>();
+            foreach (var epaoCoursesListItem in epaoCourses)
             {
-                courses = await _coursesApiClient.Get<GetStandardsListResponse>(
-                    new GetAllStandardsListRequest());
-                await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, ExpirationInHours);
+                var course =
+                    await _coursesApiClient.Get<GetStandardResponse>(
+                        new GetStandardRequest(epaoCoursesListItem.StandardCode));
+                if (course != null)
+                {
+                    matchingCourses.Add(course);    
+                }
             }
-
-            var matchingCourses = courses.Standards
-                .Where(response => epaoCourses
-                    .Select(item => item.StandardCode)
-                    .Contains(response.LarsCode))
-                .ToList();
             
             return new GetEpaoCoursesResult
             {
