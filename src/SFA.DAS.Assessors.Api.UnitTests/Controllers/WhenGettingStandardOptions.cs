@@ -32,7 +32,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
             var model = controllerResult.Value as GetStandardOptionsResponse;
 
-            var expectedResponse = mediatorResult.Standards.Select(s => new GetStandardOptionsItem
+            var expectedResponse = mediatorResult.StandardOptions.Select(s => new GetStandardOptionsItem
             {
                 StandardUId = s.StandardUId,
                 LarsCode = s.LarsCode,

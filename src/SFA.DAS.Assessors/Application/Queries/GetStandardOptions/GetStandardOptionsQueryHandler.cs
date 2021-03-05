@@ -23,7 +23,7 @@ namespace SFA.DAS.Assessors.Application.Queries.GetStandardOptions
 
             return new GetStandardOptionsResult
             {
-                Standards = standardOptionsListResponse.StandardOptions
+                StandardOptions = standardOptionsListResponse.StandardOptions
             };
         }
     }
