@@ -43,6 +43,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
+        internal async Task<CurrentApprenticeshipResponse> GetCurrentApprenticeship(Guid apprenticeId)
+        {
+            var response = await _client.Get<CurrentApprenticeshipResponse>(
+                            new GetCurrentApprenticeshipRequest(apprenticeId));
+            return response;
+        }
+
         internal Task ChangeEmailAddress(long apprenticeshipId, string email)
         {
             return _client.Post<ChangeEmailAddressResponse>(
