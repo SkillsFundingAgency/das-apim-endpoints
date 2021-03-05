@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
     public class LocationApiClient : ILocationApiClient<LocationApiConfiguration>
     {

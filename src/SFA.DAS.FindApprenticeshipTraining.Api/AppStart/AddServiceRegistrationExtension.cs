@@ -3,7 +3,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Services;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
-using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
