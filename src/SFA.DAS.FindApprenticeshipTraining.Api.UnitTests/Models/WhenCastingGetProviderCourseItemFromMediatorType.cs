@@ -45,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
             actual.Feedback.TotalEmployerResponses.Should().Be(129);
             actual.Feedback.TotalFeedbackRating.Should().Be(3);
+            actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
         }
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level_Higher_Than_Three(string sectorSubjectArea,
