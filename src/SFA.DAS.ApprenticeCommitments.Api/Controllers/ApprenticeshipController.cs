@@ -23,11 +23,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Accepted();
         }
 
-        [HttpGet("/apprentices/{apprenticeId}/currentapprenticeship")]
-        public async Task<IActionResult> GetCurrentApprenticeship(Guid apprenticeId)
+        [HttpGet("/apprentices/{apprenticeId}/apprenticeship/{apprenticeshipId}")]
+        public async Task<IActionResult> GetCurrentApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {
             var response = await _mediator.Send(
-                new CurrentApprenticeshipQuery(apprenticeId));
+                new ApprenticeshipQuery(apprenticeId, apprenticeshipId));
 
             if (response == default)
                 return NotFound();

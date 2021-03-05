@@ -43,10 +43,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
-        internal async Task<CurrentApprenticeshipResponse> GetCurrentApprenticeship(Guid apprenticeId)
+        internal async Task<ApprenticeshipResponse> GetApprenticeship(
+            Guid apprenticeId, long apprenticeshipId)
         {
-            var response = await _client.Get<CurrentApprenticeshipResponse>(
-                            new GetCurrentApprenticeshipRequest(apprenticeId));
+            var response = await _client.Get<ApprenticeshipResponse>(
+                            new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
             return response;
         }
 

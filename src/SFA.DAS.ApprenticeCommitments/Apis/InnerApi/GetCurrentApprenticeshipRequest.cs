@@ -3,13 +3,14 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class GetCurrentApprenticeshipRequest : IGetApiRequest
+    public class GetApprenticeshipRequest : IGetApiRequest
     {
         private readonly Guid _apprenticeId;
+        private readonly long _apprenticeshipId;
 
-        public GetCurrentApprenticeshipRequest(Guid apprenticeId)
-            => _apprenticeId = apprenticeId;
+        public GetApprenticeshipRequest(Guid apprenticeId, long apprenticeshipId)
+        => (_apprenticeId, _apprenticeshipId) = (apprenticeId, apprenticeshipId);
 
-        public string GetUrl => $"apprentices/{_apprenticeId}/currentapprenticeship";
+        public string GetUrl => $"apprentices/{_apprenticeId}/apprenticeship/{_apprenticeshipId}";
     }
 }

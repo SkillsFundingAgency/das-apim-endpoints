@@ -12,32 +12,28 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
     [Binding]
-    [Scope(Feature = "CurrentApprenticeship")]
-    public class CurrentApprenticeshipSteps
+    [Scope(Feature = "GetApprenticeship")]
+    public class GetApprenticeshipSteps
     {
         private readonly TestContext _context;
         private readonly Fixture _fixture = new Fixture();
         private Guid _apprenticeId;
-        private CurrentApprenticeshipResponse _apprenticeship;
+        private ApprenticeshipResponse _apprenticeship;
 
-        public CurrentApprenticeshipSteps(TestContext context)
-            => _context = context;
-
-        [Given("an apprentice has registered")]
-        public void GivenAnApprenticeHasRegistered()
+        public GetApprenticeshipSteps(TestContext context)
         {
+            _context = context;
             _apprenticeId = _fixture.Create<Guid>();
+            _apprenticeship = _fixture.Create<ApprenticeshipResponse>();
         }
 
-        [Given("there is a current apprenticeship")]
-        public void GivenThereIsACurrentApprenticeship()
+        [Given("there is an apprenticeship")]
+        public void GivenThereIsAnApprenticeship()
         {
-            _apprenticeship = _fixture.Create<CurrentApprenticeshipResponse>();
-
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/currentapprenticeship")
+                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeship/{_apprenticeship.Id}")
                         .UsingGet()
                       )
                 .RespondWith(
@@ -48,13 +44,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                             );
         }
 
-        [Given("there is no current apprenticeship")]
-        public void GivenThereIsNoCurrentApprenticeship()
+        [Given("there is no apprenticeship")]
+        public void GivenThereIsNoApprenticeship()
         {
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/currentapprenticeship")
+                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeship/*")
                         .UsingGet()
                       )
                 .RespondWith(
@@ -63,11 +59,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 );
         }
 
-        [When("the current apprenticeship overview is requested")]
-        public async Task WhenTheCurrentApprenticeshipOverviewIsRequested()
+        [When("the apprenticeship overview is requested")]
+        public async Task WhenTheApprenticeshipOverviewIsRequested()
         {
             await _context.OuterApiClient
-                .Get($"apprentices/{_apprenticeId}/currentapprenticeship");
+                .Get($"apprentices/{_apprenticeId}/apprenticeship/{_apprenticeship.Id}");
         }
 
         [Then("the result should be OK")]
@@ -84,14 +80,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .Should().Be(HttpStatusCode.NotFound);
         }
 
-        [Then("and the current apprenticeship is returned")]
-        public async Task ThenAndTheCurrentApprenticeshipIsReturned()
+        [Then("and the apprenticeship is returned")]
+        public async Task ThenAndTheApprenticeshipIsReturned()
         {
             var content = await _context.OuterApiClient
                 .Response.Content.ReadAsStringAsync();
 
             var result = JsonConvert
-                .DeserializeObject<CurrentApprenticeshipResponse>(content);
+                .DeserializeObject<ApprenticeshipResponse>(content);
             
             result.Should().BeEquivalentTo(_apprenticeship);
         }
