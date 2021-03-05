@@ -127,7 +127,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetEpaoCoursesQueryHandler handler)
         {
-            var expectedExpirationInHours = 1;
+            var expectedExpirationInHours = 6;
             foreach (var course in matchingStandards)
             {
                 course.LarsCode = apiResponse[0].StandardCode;

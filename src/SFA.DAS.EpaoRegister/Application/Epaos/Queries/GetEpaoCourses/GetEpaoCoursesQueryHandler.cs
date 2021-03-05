@@ -16,7 +16,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 {
     public class GetEpaoCoursesQueryHandler : IRequestHandler<GetEpaoCoursesQuery, GetEpaoCoursesResult>
     {
-        private const int ExpirationInHours = 1;
+        private const int ExpirationInHours = 6;
         private readonly IValidator<GetEpaoCoursesQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
