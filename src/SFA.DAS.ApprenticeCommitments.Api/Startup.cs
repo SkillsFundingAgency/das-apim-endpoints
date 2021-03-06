@@ -19,6 +19,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Api.Controllers;
 
 namespace SFA.DAS.ApprenticeCommitments.Api
 {
@@ -110,6 +111,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapFallbackToController(
+                    nameof(QueryForwardingController.ForwardToInnerApi),
+                    "QueryForwarding");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "api/{controller=ApprenticeCommitments}/{action=index}/{id?}");

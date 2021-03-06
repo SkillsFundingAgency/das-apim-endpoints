@@ -22,6 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<ApprenticeCommitmentsService>();
             services.AddTransient<ApprenticeLoginService>();
             services.AddTransient<CommitmentsV2Service>();
+            services.AddTransient<GenericInnerApiQueryClient>();
         }
     }
 }
