@@ -11,6 +11,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public GetApprenticeshipRequest(Guid apprenticeId, long apprenticeshipId)
         => (_apprenticeId, _apprenticeshipId) = (apprenticeId, apprenticeshipId);
 
-        public string GetUrl => $"apprentices/{_apprenticeId}/apprenticeship/{_apprenticeshipId}";
+        public string GetUrl => $"apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}";
     }
 }

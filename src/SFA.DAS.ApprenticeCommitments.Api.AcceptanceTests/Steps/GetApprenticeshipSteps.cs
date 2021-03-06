@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
@@ -20,6 +20,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private Guid _apprenticeId;
         private ApprenticeshipResponse _apprenticeship;
 
+        private string ApprenticeshipsApiRoot => $"/apprentices/{_apprenticeId}/apprenticeships";
+
         public GetApprenticeshipSteps(TestContext context)
         {
             _context = context;
@@ -30,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("there is an apprenticeship")]
         public void GivenThereIsAnApprenticeship()
         {
-            var getApprenticeshipsResponse = new GetApprenticeshipsResonse
+            var getApprenticeshipsResponse = new GetApprenticeshipsRepsonse
             {
                 Apprenticeships = new[]
                 {
@@ -41,7 +43,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeships")
+                        .WithPath(ApprenticeshipsApiRoot)
                         .UsingGet()
                       )
                 .RespondWith(
@@ -54,7 +56,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeship/{_apprenticeship.Id}")
+                        .WithPath($"{ApprenticeshipsApiRoot}/{_apprenticeship.Id}")
                         .UsingGet()
                       )
                 .RespondWith(
@@ -71,7 +73,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeship/*")
+                        .WithPath($"{ApprenticeshipsApiRoot}/*")
                         .UsingGet()
                       )
                 .RespondWith(
@@ -84,14 +86,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheListOfApprenticeshipsIsRequested()
         {
             await _context.OuterApiClient
-                .Get($"apprentices/{_apprenticeId}/apprenticeships");
+                .Get(ApprenticeshipsApiRoot);
         }
 
         [When("the apprenticeship overview is requested")]
         public async Task WhenTheApprenticeshipOverviewIsRequested()
         {
             await _context.OuterApiClient
-                .Get($"apprentices/{_apprenticeId}/apprenticeship/{_apprenticeship.Id}");
+                .Get($"{ApprenticeshipsApiRoot}/{_apprenticeship.Id}");
         }
 
         [Then("the result should be OK")]
@@ -129,7 +131,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             var result = JsonConvert
                 .DeserializeObject<ApprenticeshipResponse>(content);
-            
+
             result.Should().BeEquivalentTo(_apprenticeship);
         }
     }
