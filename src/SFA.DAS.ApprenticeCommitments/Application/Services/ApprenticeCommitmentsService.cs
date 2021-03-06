@@ -1,6 +1,5 @@
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
-using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -43,14 +42,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
-        internal async Task<ApprenticeshipResponse> GetApprenticeship(
-            Guid apprenticeId, long apprenticeshipId)
-        {
-            var response = await _client.Get<ApprenticeshipResponse>(
-                            new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
-            return response;
-        }
-
         internal Task ChangeEmailAddress(long apprenticeshipId, string email)
         {
             return _client.Post<ChangeEmailAddressResponse>(
@@ -63,9 +54,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     }
                 });
         }
-
-        public Task<RegistrationResponse> GetRegistration(Guid id) =>
-            _client.Get<RegistrationResponse>(new GetRegistrationDetailsRequest(id));
 
         public Task VerifyRegistration(VerifyIdentityRegistrationCommand command)
         {

@@ -1,9 +1,7 @@
-using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
-using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -13,18 +11,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         private readonly IMediator _mediator;
 
         public RegistrationController(IMediator mediator) => _mediator = mediator;
-
-        [HttpGet]
-        [Route("/registrations/{registrationId}")]
-        public async Task<IActionResult> Get(Guid registrationId)
-        {
-            var result = await _mediator.Send(new RegistrationQuery { RegistrationId = registrationId });
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return new OkObjectResult(result);
-        }
 
         [HttpPost]
         [Route("/registrations")]
