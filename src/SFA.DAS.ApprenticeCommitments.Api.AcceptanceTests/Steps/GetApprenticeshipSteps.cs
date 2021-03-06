@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
@@ -30,6 +30,27 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("there is an apprenticeship")]
         public void GivenThereIsAnApprenticeship()
         {
+            var getApprenticeshipsResponse = new GetApprenticeshipsResonse
+            {
+                Apprenticeships = new[]
+                {
+                    _apprenticeship.Id,
+                }
+            };
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeships")
+                        .UsingGet()
+                      )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(getApprenticeshipsResponse))
+                            );
+
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
@@ -59,6 +80,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 );
         }
 
+        [When(@"the list of apprenticeships is requested")]
+        public async Task WhenTheListOfApprenticeshipsIsRequested()
+        {
+            await _context.OuterApiClient
+                .Get($"apprentices/{_apprenticeId}/apprenticeships");
+        }
+
         [When("the apprenticeship overview is requested")]
         public async Task WhenTheApprenticeshipOverviewIsRequested()
         {
@@ -80,7 +108,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .Should().Be(HttpStatusCode.NotFound);
         }
 
-        [Then("and the apprenticeship is returned")]
+        [Then(@"the result should contain the apprenticeship")]
+        public async Task ThenTheResultShouldContainTheApprenticeship()
+        {
+            var content = await _context.OuterApiClient
+                .Response.Content.ReadAsStringAsync();
+
+            var response = JsonConvert.DeserializeObject<GetApprenticeshipsRepsonse>(content);
+            response.Should().BeEquivalentTo(new
+            {
+                Apprenticeships = new[] { _apprenticeship.Id }
+            });
+        }
+
+        [Then("the apprenticeship is returned")]
         public async Task ThenAndTheApprenticeshipIsReturned()
         {
             var content = await _context.OuterApiClient
