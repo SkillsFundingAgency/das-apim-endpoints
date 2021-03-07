@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 
     public class ChangeEmailAddressRequestData
     {
-        public long ApprenticeshipId { get; set; }
+        public Guid ApprenticeshipId { get; set; }
         public string Email { get; set; }
     }
 

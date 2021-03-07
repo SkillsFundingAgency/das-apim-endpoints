@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
@@ -23,7 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         [HttpPost("/apprentices/{apprenticeId}/email")]
         public async Task<IActionResult> ChangeApprenticeEmailAddress(
-            long apprenticeId,
+            Guid apprenticeId,
             ApprenticeEmailAddressRequest request)
         {
             await _mediator.Send(
