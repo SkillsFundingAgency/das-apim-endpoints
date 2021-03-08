@@ -10,7 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
 {
     internal class CacheHelper
     {
-        private const int ExpirationInMinutes = 2;
+        private const int ExpirationInHours = 2;
         private readonly ICacheStorageService _cacheStorageService;
 
         public CacheHelper (ICacheStorageService cacheStorageService)
@@ -25,17 +25,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
         {
             if (saveToCache.Sectors)
             {
-                await _cacheStorageService.SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, TimeSpan.FromHours(ExpirationInMinutes));
+                await _cacheStorageService.SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, TimeSpan.FromHours(ExpirationInHours));
             }
 
             if (saveToCache.Levels)
             {
-                await _cacheStorageService.SaveToCache(nameof(GetLevelsListResponse), levelsTask.Result, TimeSpan.FromHours(ExpirationInMinutes));
+                await _cacheStorageService.SaveToCache(nameof(GetLevelsListResponse), levelsTask.Result, TimeSpan.FromHours(ExpirationInHours));
             }
 
             if (saveToCache.Standards)
             {
-                await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), standardsTask.Result, TimeSpan.FromHours(ExpirationInMinutes));
+                await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), standardsTask.Result, TimeSpan.FromHours(ExpirationInHours));
             }
         }
 

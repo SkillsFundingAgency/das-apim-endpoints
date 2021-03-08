@@ -294,7 +294,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            cacheStorageService.Verify(x => x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, 1));
+            cacheStorageService.Verify(x => x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, TimeSpan.FromHours(2)));
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
         }
 
