@@ -23,6 +23,20 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             standard.MaxFunding.Should().Be(0);
         }
 
+        [Test]
+        public void Then_If_There_Is_Null_Funding_Zero_Is_Returned()
+        {
+            //Arrange/Act
+            var standard = 
+                new TestStandardResponse
+                {
+                    ApprenticeshipFunding = null
+                };
+            
+            //Assert
+            standard.MaxFunding.Should().Be(0);
+        }
+
         [Test, AutoData]
         public void Then_The_ApprenticeshipFunding_Price_With_No_EffectiveTo_Date_And_Has_A_From_Date_In_The_Past_Is_Used(int fundingPrice)
         {
