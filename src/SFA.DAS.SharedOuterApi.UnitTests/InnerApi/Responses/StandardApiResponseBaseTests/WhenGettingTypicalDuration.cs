@@ -22,6 +22,20 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             //Assert
             standard.TypicalDuration.Should().Be(0);
         }
+        
+        [Test]
+        public void Then_If_There_Is_Null_Available_Funding_Zero_Is_Returned_For_TypicalDuration()
+        {
+            //Arrange/Act
+            var standard =
+                new TestStandardResponse
+                {
+                    ApprenticeshipFunding = null
+                };
+
+            //Assert
+            standard.TypicalDuration.Should().Be(0);
+        }
 
         [Test, AutoData]
         public void Then_The_Typical_Duration_Is_Used(int notDuration, int duration)
