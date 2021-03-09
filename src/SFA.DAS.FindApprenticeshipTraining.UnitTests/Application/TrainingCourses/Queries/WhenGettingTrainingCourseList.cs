@@ -96,7 +96,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             var result = await handler.Handle(query, CancellationToken.None);
 
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, 1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, TimeSpan.FromHours(2)));
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
             result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
@@ -128,7 +128,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse,1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse, TimeSpan.FromHours(2)));
         }
 
         [Test, MoqAutoData]
@@ -224,7 +224,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse,1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetLevelsListResponse),levelsApiResponse, TimeSpan.FromHours(2)));
         }
 
         [Test, MoqAutoData]
@@ -260,8 +260,44 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
             mockApiClient.Verify(x=>x.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()), Times.Never);
         }
-        
-        
+
+        [Test, MoqAutoData]
+        public async Task Then_Caches_The_Courses_If_The_Cache_Has_An_Empty_Course_List(
+            GetStandardsListResponse cachedStandards,
+            GetStandardsListResponse apiResponse,
+            GetSectorsListResponse sectorsApiResponse,
+            GetLevelsListResponse levelsApiResponse,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
+            GetTrainingCoursesListQueryHandler handler)
+        {
+            cachedStandards.Total = 0;
+            var query = new GetTrainingCoursesListQuery
+            {
+                Levels = new List<int>(),
+                RouteIds = new List<string>()
+            };
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(cachedStandards);
+
+            mockApiClient
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.IsAny<GetAvailableToStartStandardsListRequest>()))
+                .ReturnsAsync(apiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .ReturnsAsync(sectorsApiResponse);
+            mockApiClient
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .ReturnsAsync(levelsApiResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            cacheStorageService.Verify(x => x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, TimeSpan.FromHours(2)));
+            result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
+        }
+
     }
 }
 
