@@ -30,7 +30,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             }
         }
 
-        public Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email)
+        public Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email, string organisation)
         {
             return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
             {
@@ -39,6 +39,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     RegistrationId = guid,
                     ApprenticeshipId = apprenticeshipId,
                     Email = email,
+                    Organisation = organisation,
                 }
             });
         }

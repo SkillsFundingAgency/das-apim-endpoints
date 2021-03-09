@@ -36,7 +36,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             await _apprenticeCommitmentsService.CreateApprenticeship(
                 id,
                 command.ApprenticeshipId,
-                command.Email);
+                command.Email,
+                command.Organisation);
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
             {
