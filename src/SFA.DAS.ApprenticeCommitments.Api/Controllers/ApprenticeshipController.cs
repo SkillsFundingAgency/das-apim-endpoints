@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         [HttpPost("/apprentices/{apprenticeId}/email")]
         public async Task<IActionResult> ChangeApprenticeEmailAddress(
-            long apprenticeId,
+            Guid apprenticeId,
             ApprenticeEmailAddressRequest request)
         {
             await _mediator.Send(

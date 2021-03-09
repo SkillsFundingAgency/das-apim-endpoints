@@ -1,5 +1,6 @@
 using MediatR;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,10 +8,10 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress
 {
     public class ChangeEmailAddressCommand : IRequest
     {
-        public ChangeEmailAddressCommand(long apprenticeId, string email) =>
+        public ChangeEmailAddressCommand(Guid apprenticeId, string email) =>
             (ApprenticeId, Email) = (apprenticeId, email);
 
-        public long ApprenticeId { get; }
+        public Guid ApprenticeId { get; }
         public string Email { get; }
     }
 
