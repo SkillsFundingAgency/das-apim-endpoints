@@ -22,7 +22,7 @@ namespace SFA.DAS.Approvals.Api.Models
         {
             return new GetStandardResponse
             {
-                Id = source.Id,
+                Id = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level,
                 Duration = source.TypicalDuration,

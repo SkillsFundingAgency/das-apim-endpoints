@@ -31,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
             var shortlistFromApi = apiResponse.Shortlist.ToList();
             for (var i = 0; i < shortlistFromApi.Count; i++)
             {
-                standards[i].Id = shortlistFromApi[i].CourseId;
+                standards[i].LarsCode = shortlistFromApi[i].CourseId;
             }
             cachedCourses.Standards = standards;
             mockCourseDeliveryApiClient
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
             foreach (var item in result.Shortlist)
             {
                 item.Course.Should().NotBeNull();
-                item.Course.Should().BeEquivalentTo(cachedCourses.Standards.Single(listItem => listItem.Id == item.CourseId));
+                item.Course.Should().BeEquivalentTo(cachedCourses.Standards.Single(listItem => listItem.LarsCode == item.CourseId));
             }
         }
     }

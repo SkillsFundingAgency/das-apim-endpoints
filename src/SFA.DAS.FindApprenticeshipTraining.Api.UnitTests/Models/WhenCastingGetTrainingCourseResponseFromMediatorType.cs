@@ -16,15 +16,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             var response = (GetTrainingCourseListItem)source;
 
-            response.Should().BeEquivalentTo(source, options=> options
-                .Excluding(c=>c.ApprenticeshipFunding)
+            response.Should().BeEquivalentTo(source, options => options
+                .Excluding(c => c.ApprenticeshipFunding)
                 .Excluding(tc => tc.Skills)
                 .Excluding(tc => tc.TypicalJobTitles)
                 .Excluding(tc => tc.CoreAndOptions)
                 .Excluding(tc => tc.CoreDuties)
                 .Excluding(tc => tc.CoreSkillsCount)
                 .Excluding(tc => tc.IsActive)
+                .Excluding(tc => tc.LarsCode)
+                .Excluding(tc => tc.StandardUId)
             );
+
+            response.Id.Should().Be(source.LarsCode);
         }
 
         [Test, AutoData]
