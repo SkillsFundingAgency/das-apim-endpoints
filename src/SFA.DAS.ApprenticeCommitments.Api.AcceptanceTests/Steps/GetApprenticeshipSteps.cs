@@ -3,6 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -32,11 +33,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("there is an apprenticeship")]
         public void GivenThereIsAnApprenticeship()
         {
-            var getApprenticeshipsResponse = new GetApprenticeshipsRepsonse
+            var getApprenticeshipsResponse = new[]
             {
-                Apprenticeships = new[]
+                new ApprenticeshipResponse
                 {
-                    _apprenticeship.Id,
+                    Id = _apprenticeship.Id,
                 }
             };
 
@@ -79,7 +80,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.NotFound)
-                );
+                            );
         }
 
         [When(@"the list of apprenticeships is requested")]
@@ -116,10 +117,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var content = await _context.OuterApiClient
                 .Response.Content.ReadAsStringAsync();
 
-            var response = JsonConvert.DeserializeObject<GetApprenticeshipsRepsonse>(content);
-            response.Should().BeEquivalentTo(new
+            var response = JsonConvert.DeserializeObject<List<ApprenticeshipResponse>>(content);
+            response.Should().BeEquivalentTo(new[]
             {
-                Apprenticeships = new[] { _apprenticeship.Id }
+                new { _apprenticeship.Id }
             });
         }
 

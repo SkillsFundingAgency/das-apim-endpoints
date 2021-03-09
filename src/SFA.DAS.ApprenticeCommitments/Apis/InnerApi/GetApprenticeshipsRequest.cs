@@ -15,8 +15,8 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public string GetUrl => $"apprentices/{_apprenticeId}/apprenticeships";
     }
 
-    public class GetApprenticeshipsRepsonse
+    public class ApprenticeshipsRepsonse
     {
-        public IEnumerable<long> Apprenticeships { get; set; }
+        public long Id { get; set; }
     }
 }
