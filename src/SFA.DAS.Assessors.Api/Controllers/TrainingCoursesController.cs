@@ -65,5 +65,27 @@ namespace SFA.DAS.Assessors.Api.Controllers
 
             return Ok(model);
         }
+
+        [HttpGet]
+        [Route("active")]
+        public async Task<IActionResult> GetActiveList()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetActiveTrainingCoursesQuery());
+
+                var model = new GetCourseListResponse
+                {
+                    Courses = queryResult.TrainingCourses.Select(c => (GetCourseListItem)c).ToList()
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get list of training courses");
+                return BadRequest();
+            }
+        }
     }
 }
