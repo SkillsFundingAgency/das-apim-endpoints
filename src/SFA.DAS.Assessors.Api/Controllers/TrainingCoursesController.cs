@@ -74,7 +74,7 @@ namespace SFA.DAS.Assessors.Api.Controllers
 
                 var model = new GetStandardOptionsResponse
                 {
-                    StandardOptions = queryResult.Standards.Select(standard => (GetStandardOptionsItem)standard).ToList()
+                    StandardOptions = queryResult.StandardOptions.Select(standard => (GetStandardOptionsItem)standard).ToList()
                 };
 
                 return Ok(model);
