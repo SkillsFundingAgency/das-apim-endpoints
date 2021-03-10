@@ -20,7 +20,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList
 
         public async Task<GetCourseListResult> Handle(GetCourseListQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+            var courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
             
             return new GetCourseListResult
             {

@@ -18,7 +18,7 @@ namespace SFA.DAS.Assessors.Application.Queries.GetTrainingCourses
         }
         public async Task<GetTrainingCoursesResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
-            var standardsList = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+            var standardsList = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
 
             return new GetTrainingCoursesResult
             {

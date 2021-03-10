@@ -72,7 +72,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAllStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
                 .ReturnsAsync(getStandardResponses);
 
             var result = await handler.Handle(query, CancellationToken.None);
