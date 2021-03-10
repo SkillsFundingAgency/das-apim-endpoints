@@ -18,6 +18,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         private int GetFundingDetails(string prop)
         {
+            if (ApprenticeshipFunding == null)
+            {
+                return 0;
+            }
+            
             var funding = ApprenticeshipFunding
                 .FirstOrDefault(c =>
                     c.EffectiveFrom <= DateTime.UtcNow && (c.EffectiveTo == null

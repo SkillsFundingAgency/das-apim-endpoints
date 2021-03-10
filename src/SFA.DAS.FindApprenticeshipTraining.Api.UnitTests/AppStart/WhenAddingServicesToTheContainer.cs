@@ -24,8 +24,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
             var serviceCollection = new ServiceCollection();
+            
             var configuration = GenerateConfiguration();
             serviceCollection.AddSingleton(hostEnvironment.Object);
+            serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
             serviceCollection.AddConfigurationOptions(configuration);
             serviceCollection.AddDistributedMemoryCache();
             serviceCollection.AddServiceRegistration();
