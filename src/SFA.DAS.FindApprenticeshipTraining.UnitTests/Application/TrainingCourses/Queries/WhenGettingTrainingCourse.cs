@@ -25,38 +25,38 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetLevelsListResponse levelsApiResponse,
             GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
             int shortlistItemCount,
+            GetShowEmployerDemandResponse showEmployerDemandResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
             [Frozen] Mock<IShortlistService> shortlistService,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
             GetTrainingCourseQueryHandler handler)
         {
-
             //Arrange
+            levelsApiResponse.Levels.First().Name = "GCSE";
+            levelsApiResponse.Levels.First().Code = 2;
+            coursesApiResponse.Level = 2;
+            coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
+                .Single(x => x.Code == coursesApiResponse.Level).Name;
+            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
 
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync(coursesApiResponse);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
-
-
-            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
             mockCourseDeliveryApiClient
                 .Setup(client =>
                     client.Get<GetUkprnsForStandardAndLocationResponse>(
                         It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
                             c.GetUrl.Equals(url)))))
                 .ReturnsAsync(courseDirectoryApiResponse);
-
             mockCoursesApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
-
-            levelsApiResponse.Levels.First().Name = "GCSE";
-            levelsApiResponse.Levels.First().Code = 2;
-            coursesApiResponse.Level = 2;
-            coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
-                .Single(x => x.Code == coursesApiResponse.Level).Name;
+            mockEmployerDemandApiClient
+                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(showEmployerDemandResponse);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -67,6 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
             result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
+            result.ShowEmployerDemand.Should().BeTrue();
         }
         
         [Test, MoqAutoData]
@@ -101,5 +102,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Course.Should().BeNull();
         }
         
+        /*[Test, MoqAutoData]
+        public async Task And_ShowDemandResponse_Not_OK_Then_ShowDemand_False(
+
+            mockEmployerDemandApiClient
+                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync((GetShowEmployerDemandResponse)null);
+
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+            
+            result.ShowEmployerDemand.Should().BeFalse();
+        }*/
     }
 }

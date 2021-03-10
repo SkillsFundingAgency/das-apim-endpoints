@@ -8,5 +8,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public int ProvidersCount { get; set; }
         public int ProvidersCountAtLocation { get ; set ; }
         public int ShortlistItemCount { get ; set ; }
+        public bool ShowEmployerDemand { get; set; }
     }
 }

@@ -55,7 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = standardTask.Result,
                 ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
                 ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count,
-                ShortlistItemCount = shortlistTask.Result
+                ShortlistItemCount = shortlistTask.Result,
+                ShowEmployerDemand = true
             };
         }
     }
