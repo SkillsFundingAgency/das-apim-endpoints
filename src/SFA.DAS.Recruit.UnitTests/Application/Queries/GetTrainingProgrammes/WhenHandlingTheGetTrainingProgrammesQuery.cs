@@ -34,7 +34,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
                 .Setup(client => client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAllStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
                 .ReturnsAsync(new GetStandardsListResponse());
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -57,7 +57,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
                 .Setup(client => client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
                 .ReturnsAsync(new GetFrameworksListResponse());
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAllStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

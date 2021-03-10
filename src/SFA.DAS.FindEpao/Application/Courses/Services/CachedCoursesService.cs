@@ -30,7 +30,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
             if (courses != null) 
                 return courses;
             
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
             await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, DeliveryAreaCacheDurationInHours);
 
             return courses;
