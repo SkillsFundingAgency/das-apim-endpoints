@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     {
         private readonly TestContext _context;
         private CreateApprenticeshipCommand _request;
-        private IEnumerable<ApprenticeshipResponse> _approvedApprenticeships;
+        private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
 
         public AddApprenticeshipSteps(TestContext context)
         {
@@ -69,7 +69,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
-            _approvedApprenticeships = table.CreateSet<ApprenticeshipResponse>();
+            _approvedApprenticeships = table.CreateSet<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>();
 
             foreach (var approval in _approvedApprenticeships)
             {
