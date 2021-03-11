@@ -10,23 +10,23 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Courses.Queries.GetCourse;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Courses
+namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 {
     public class WhenGettingACourse
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Courses_From_Mediator(
             int courseId,
-            GetCourseResult mediatorResult,
+            GetRegisterDemandResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetCourseQuery>(c => c.CourseId.Equals(courseId)),
+                    It.Is<GetRegisterDemandQuery>(c => c.CourseId.Equals(courseId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Courses
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCourseQuery>(),
+                    It.IsAny<GetRegisterDemandQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 

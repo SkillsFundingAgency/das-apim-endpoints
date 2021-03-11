@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.EmployerDemand.InnerApi.Responses;
 
-namespace SFA.DAS.EmployerDemand.Application.Courses.Queries.GetCourse
+namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand
 {
-    public class GetCourseResult
+    public class GetRegisterDemandResult
     {
         public GetStandardsListItem Course { get; set; }
     }

@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Courses.Queries.GetCourse;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 
 namespace SFA.DAS.EmployerDemand.Api.Controllers
 {
@@ -24,12 +24,12 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         }
 
         [HttpGet]
-        [Route("create/{id}")]
-        public async Task<IActionResult> Create(int id)
+        [Route("create/{courseId}")]
+        public async Task<IActionResult> Create(int courseId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetCourseQuery{CourseId = id});
+                var queryResult = await _mediator.Send(new GetRegisterDemandQuery{CourseId = courseId});
                 
                 var model = new GetCourseResponse
                 {
@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get course id [{id}]");
+                _logger.LogError(e, $"Error attempting to get course id [{courseId}]");
                 return BadRequest();
             }
         }
