@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Courses
             int courseId,
             GetCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -30,20 +30,20 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Courses
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Get(courseId) as ObjectResult;
+            var controllerResult = await controller.Create(courseId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseResponse;
             Assert.IsNotNull(model);
-            model.Course.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
+            model.TrainingCourse.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int courseId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CoursesController controller)
+            [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Courses
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.Get(courseId) as BadRequestResult;
+            var controllerResult = await controller.Create(courseId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

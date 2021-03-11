@@ -2,6 +2,6 @@
 {
     public class GetCourseResponse
     {
-        public GetCourseListItem Course { get; set; }
+        public GetCourseListItem TrainingCourse { get; set; }
     }
 }

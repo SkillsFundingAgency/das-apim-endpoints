@@ -10,13 +10,13 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class CoursesController : ControllerBase
+    public class DemandController : ControllerBase
     {
-        private readonly ILogger<CoursesController> _logger;
+        private readonly ILogger<DemandController> _logger;
         private readonly IMediator _mediator;
 
-        public CoursesController(
-            ILogger<CoursesController> logger,
+        public DemandController(
+            ILogger<DemandController> logger,
             IMediator mediator)
         {
             _logger = logger;
@@ -24,8 +24,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [Route("create/{id}")]
+        public async Task<IActionResult> Create(int id)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 
                 var model = new GetCourseResponse
                 {
-                    Course = queryResult.Course
+                    TrainingCourse = queryResult.Course
                 };
 
                 return Ok(model);
