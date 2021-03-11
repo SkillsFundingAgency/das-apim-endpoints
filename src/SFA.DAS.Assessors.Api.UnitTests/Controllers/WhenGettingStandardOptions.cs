@@ -37,6 +37,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                 StandardUId = s.StandardUId,
                 LarsCode = s.LarsCode,
                 IfateReferenceNumber = s.IfateReferenceNumber,
+                Version = s.Version,
                 Options = s.Options
             });
 
