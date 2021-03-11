@@ -65,6 +65,7 @@ namespace SFA.DAS.Assessors.Api.Controllers
             }
         }
         
+        [HttpGet]
         [Route("options")]
         public async Task<IActionResult> GetStandardOptionsList()
         {
