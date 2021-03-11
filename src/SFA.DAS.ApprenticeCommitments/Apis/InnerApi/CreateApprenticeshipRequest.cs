@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public long ApprenticeshipId { get; set; }
         public string Email { get; set; }
         public string EmployerName { get; set; }
-        public long AccountLegalEntityId { get; set; }
+        public long EmployerAccountLegalEntityId { get; set; }
     }
 
     public class CreateApprenticeshipResponse

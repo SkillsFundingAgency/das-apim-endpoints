@@ -112,7 +112,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.Email.Should().Be(_request.Email);
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
-            innerApiRequest.AccountLegalEntityId.Should().Be(_request.AccountLegalEntityId);
+            innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
         }
 
         [Then("the inner API should return these errors")]
