@@ -21,7 +21,6 @@ namespace SFA.DAS.Assessors.Api.Models
         public string AssessmentPlanUrl { get; set; }
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
-        public string CoreSkillsCount { get; set; }
         public List<string> Skills { get; set; }
         public List<string> Knowledge { get; set; }
         public List<string> Behaviours { get; set; }
@@ -66,7 +65,6 @@ namespace SFA.DAS.Assessors.Api.Models
                 AssessmentPlanUrl = source.AssessmentPlanUrl,
                 TrailBlazerContact = source.TrailBlazerContact,
                 TypicalJobTitles = source.TypicalJobTitles,
-                CoreSkillsCount = source.CoreSkillsCount,
                 Skills = source.Skills,
                 Knowledge = source.Knowledge,
                 Behaviours = source.Behaviours,
