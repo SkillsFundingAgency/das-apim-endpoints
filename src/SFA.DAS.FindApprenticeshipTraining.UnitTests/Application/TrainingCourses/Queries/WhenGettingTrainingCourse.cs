@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
@@ -55,8 +56,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
             mockEmployerDemandApiClient
-                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync(showEmployerDemandResponse);
+                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(HttpStatusCode.OK);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -139,8 +140,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
             mockEmployerDemandApiClient
-                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync((GetShowEmployerDemandResponse)null);
+                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(HttpStatusCode.Forbidden);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);

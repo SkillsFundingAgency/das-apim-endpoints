@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -41,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
-            var showEmployerDemandTask = _employerDemandApiClient.Get<GetShowEmployerDemandResponse>(new GetShowEmployerDemandRequest());
+            var showEmployerDemandTask = _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest());
 
             await Task.WhenAll(locationTask, courseTask, shortlistTask, showEmployerDemandTask);
             
@@ -55,7 +56,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Total = providers.TotalResults,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result,
-                ShowEmployerDemand = showEmployerDemandTask.Result != default
+                ShowEmployerDemand = showEmployerDemandTask.Result == HttpStatusCode.OK
             }; 
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -48,8 +49,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockEmployerDemandApiClient
-                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync(showEmployerDemandResponse);
+                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(HttpStatusCode.OK);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             
@@ -573,8 +574,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockEmployerDemandApiClient
-                .Setup(client => client.Get<GetShowEmployerDemandResponse>(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync((GetShowEmployerDemandResponse)null);
+                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
+                .ReturnsAsync(HttpStatusCode.Forbidden);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             
@@ -582,5 +583,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             result.ShowEmployerDemand.Should().BeFalse();
         }
+        
     }
 }
