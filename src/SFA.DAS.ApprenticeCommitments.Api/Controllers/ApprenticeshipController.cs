@@ -1,10 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
-using SFA.DAS.ApprenticeCommitments.Application.Queries.Apprenticeship;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -12,8 +14,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
 
-        public ApprenticeshipController(IMediator mediator) => _mediator = mediator;
+        public ApprenticeshipController(IMediator mediator, IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
+        {
+            _mediator = mediator;
+            _client = client;
+        }
 
         [HttpPost]
         [Route("/apprenticeships")]
@@ -24,15 +31,17 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
-        public async Task<IActionResult> GetCurrentApprenticeship(Guid apprenticeId, long apprenticeshipId)
+        public async Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {
-            var response = await _mediator.Send(
-                new ApprenticeshipQuery(apprenticeId, apprenticeshipId));
 
-            if (response == default)
+            var response = await _client.Get<ApprenticeshipResponse>(new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
+
+            if (response == null)
+            {
                 return NotFound();
-            else
-                return Ok(response);
+            }
+
+            return Ok(response);
         }
 
         [HttpPost("/apprentices/{apprenticeId}/email")]
