@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {
@@ -33,10 +34,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 command.EmployerAccountId,
                 command.ApprenticeshipId);
 
-            await _apprenticeCommitmentsService.CreateApprenticeship(
-                id,
-                command.ApprenticeshipId,
-                command.Email);
+            await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
+            {
+                RegistrationId = id,
+                ApprenticeshipId = command.ApprenticeshipId,
+                Email = command.Email,
+                EmployerName = command.EmployerName,
+                EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId
+            });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
             {
@@ -44,7 +49,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 Email = command.Email,
                 GivenName = apprentice.FirstName,
                 FamilyName = apprentice.LastName,
-                OrganisationName = command.Organisation,
+                OrganisationName = command.EmployerName,
                 ApprenticeshipName = apprentice.CourseName,
             });
 
