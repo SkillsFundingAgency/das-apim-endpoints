@@ -24,7 +24,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
             GetStandardDetailsQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByStandardUIdRequest>()))
+                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -52,7 +52,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
         {
             apiResponse.ApprenticeshipFunding = null;
             mockApiClient
-                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByStandardUIdRequest>()))
+                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -69,7 +69,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
         {
             apiResponse.ApprenticeshipFunding = null;
             mockApiClient
-                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByStandardUIdRequest>()))
+                .Setup(client => client.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -19,7 +19,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_Get_Training_Course_From_Mediator(
-            string standardUId,
+            string id,
             GetStandardDetailsResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
@@ -30,7 +30,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetByStandardUId(standardUId) as ObjectResult;
+            var controllerResult = await controller.GetStandardById(id) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -50,14 +50,14 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .Throws<ArgumentException>();
 
-            var controllerResult = await controller.GetByStandardUId(string.Empty) as BadRequestResult;
+            var controllerResult = await controller.GetStandardById(string.Empty) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
 
         [Test, MoqAutoData]
         public async Task And_Invalid_StandardUID_Then_Returns_Not_Found(
-            string standardUId,
+            string id,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
         {
@@ -67,7 +67,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetStandardDetailsResult(null));
 
-            var controllerResult = await controller.GetByStandardUId(standardUId) as NotFoundResult;
+            var controllerResult = await controller.GetStandardById(id) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
