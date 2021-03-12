@@ -19,7 +19,6 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public string AssessmentPlanUrl { get; set; }
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
-        public string CoreSkillsCount { get; set; }
         public List<string> Skills { get; set; }
         public List<string> Knowledge { get; set; }
         public List<string> Behaviours { get; set; }
