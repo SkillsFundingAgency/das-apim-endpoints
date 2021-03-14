@@ -9,6 +9,7 @@ using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
-        private readonly LocationHelper _locationHelper;
+        private readonly ILocationLookupService _locationLookupService;
 
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
@@ -31,12 +32,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
-            _locationHelper = new LocationHelper(locationApiClient);
+            _locationLookupService = new LocationLookupService(locationApiClient);
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
+            var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
             
             var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
