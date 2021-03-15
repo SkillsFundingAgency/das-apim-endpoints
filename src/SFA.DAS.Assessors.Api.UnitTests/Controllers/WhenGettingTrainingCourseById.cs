@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 {
-    public class WhenGettingTrainingCourseByStandardUId
+    public class WhenGettingTrainingCourseById
     {
         [Test, MoqAutoData]
         public async Task Then_Get_Training_Course_From_Mediator(
@@ -56,7 +56,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task And_Invalid_StandardUID_Then_Returns_Not_Found(
+        public async Task And_Invalid_Id_Then_Returns_Not_Found(
             string id,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
