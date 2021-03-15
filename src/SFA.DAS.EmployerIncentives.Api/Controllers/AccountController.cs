@@ -52,11 +52,11 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("/accounts/{accountId}/legalentities")]
         public async Task<IActionResult> AddLegalEntity(long accountId, LegalEntityRequest request)
         {
-            var queryResult = await _mediator.Send(new CreateAccountLegalEntityCommand
+            await _mediator.Send(new CreateAccountLegalEntityCommand
             {
                 AccountId = accountId,
                 OrganisationName = request.OrganisationName,
@@ -64,12 +64,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                 AccountLegalEntityId = request.AccountLegalEntityId
             });
 
-            var response = new CreatedAccountLegalEntityResponse
-            {
-                AccountLegalEntity = queryResult.AccountLegalEntity
-            };
-
-            return Created("", response);
+            return Created("", null);
         }
 
         [HttpDelete("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
