@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using AutoFixture.NUnit3;
@@ -19,7 +18,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
     public class WhenCallingGetLocationInformation
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_The_Standard_And_The_List_Of_Providers_For_That_Course_From_Course_Delivery_Api_Client_With_No_Location_And_ShortlistItem_Count(
+        public async Task And_No_Location_Then_Does_Not_Call_Api(
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
         {
@@ -27,13 +26,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var lat = 0;
             var lon = 0;
 
-            var result = await service.GetLocationInformation(location, lat, lon);
+            await service.GetLocationInformation(location, lat, lon);
 
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_A_Location_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_A_Location_Supplied_It_Is_Searched_And_Returned(
             string locationName,
             string authorityName,
             GetLocationsListItem apiLocationResponse,
@@ -56,7 +55,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_A_Location_Name_With_A_Comma_Is_Is_Searched_And_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_A_Location_Name_With_A_Comma_Is_Is_Searched_And_Returned(
             string locationName,
             string authorityName,
             GetLocationsListItem apiLocationResponse,
@@ -80,13 +79,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_A_Location_But_It_Does_Not_Have_Location_And_Authority_Supplied_It_Is_Not_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_A_Location_But_It_Does_Not_Have_Location_And_Authority_Supplied_It_Is_Null(
             string locationName,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
         {
-            var location = $"{locationName} ";
+            var location = $"{locationName} ";//no regex match
             var lat = 0;
             var lon = 0;
             
@@ -97,7 +96,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
@@ -121,7 +120,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Outcode_Returns_No_Results_Then_No_Location_Is_Returned(
-            GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
         {
@@ -145,7 +143,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
@@ -169,7 +167,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_An_Outcode_And_District_Supplied_It_Is_Searched_And_Passed_To_The_Provider_Search(
+        public async Task Then_If_There_Is_An_Outcode_And_District_Supplied_It_Is_Searched_And_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
@@ -199,7 +197,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var lat = 25;
             var lon = 2;
 
-            var result = await service.GetLocationInformation(location, lat, lon);
+            await service.GetLocationInformation(location, lat, lon);
             
             mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<IGetApiRequest>()), Times.Never);
         }
@@ -248,8 +246,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_Partial_Location_Name_Which_Is_Less_Than_Two_Characters_Then_Location_Is_Set_To_Null(
-            GetLocationsListResponse apiLocationResponse,
-            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
         {
             var location = "C";
