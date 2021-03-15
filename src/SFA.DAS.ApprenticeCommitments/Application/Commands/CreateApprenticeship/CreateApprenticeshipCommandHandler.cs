@@ -40,7 +40,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 ApprenticeshipId = command.ApprenticeshipId,
                 Email = command.Email,
                 EmployerName = command.EmployerName,
-                EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId
+                EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
+                TrainingProviderId = 1, // Fill in with the real ID in CS-286
+                TrainingProviderName = "Provisional Training Provider Name",
             });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
