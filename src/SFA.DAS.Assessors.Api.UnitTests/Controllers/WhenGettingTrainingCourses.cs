@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -37,22 +38,6 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
             var model = controllerResult.Value as GetCourseListResponse;
             Assert.IsNotNull(model);
             model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.Select(item => (GetCourseListItem)item));
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] TrainingCoursesController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingCoursesQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
-
-            var controllerResult = await controller.GetList() as BadRequestResult;
-
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }

@@ -40,22 +40,6 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] TrainingCoursesController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetStandardDetailsQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws<ArgumentException>();
-
-            var controllerResult = await controller.GetByStandardUId(string.Empty) as BadRequestResult;
-
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        }
-
-        [Test, MoqAutoData]
         public async Task And_Invalid_StandardUID_Then_Returns_Not_Found(
             string standardUId,
             [Frozen] Mock<IMediator> mockMediator,
