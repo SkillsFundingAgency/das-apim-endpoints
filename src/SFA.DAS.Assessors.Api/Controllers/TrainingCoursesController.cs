@@ -39,10 +39,13 @@ namespace SFA.DAS.Assessors.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{standardUId}")]
-        public async Task<IActionResult> GetByStandardUId(string standardUId)
+        [Route("{id}")]
+        public async Task<IActionResult> GetStandardById(string id)
         {
-            var queryResponse = await _mediator.Send(new GetStandardDetailsQuery(standardUId));
+            // Id can be standardUId, LarsCode or IfateReferenceNumber
+            // It will return one record, either uniquely via the StandardUid
+            // Or the latest active via LarsCode / IFateReferenceNumber
+            var queryResponse = await _mediator.Send(new GetStandardDetailsQuery(id));
 
             if (queryResponse.StandardDetails == null) return NotFound();
 

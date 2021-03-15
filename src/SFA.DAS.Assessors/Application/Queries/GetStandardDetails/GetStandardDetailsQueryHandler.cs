@@ -20,9 +20,9 @@ namespace SFA.DAS.Assessors.Application.Queries.GetStandardDetails
 
         public async Task<GetStandardDetailsResult> Handle(GetStandardDetailsQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.StandardUId)) throw new ArgumentException("StandardUId is required", nameof(GetStandardDetailsQuery.StandardUId));
+            if (string.IsNullOrEmpty(request.Id)) throw new ArgumentException("Standard Id is required", nameof(GetStandardDetailsQuery.Id));
 
-            var standardDetails = await _coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByStandardUIdRequest(request.StandardUId));
+            var standardDetails = await _coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(request.Id));
 
             return new GetStandardDetailsResult(standardDetails);
         }
