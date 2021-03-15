@@ -41,6 +41,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 Email = command.Email,
                 EmployerName = command.EmployerName,
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
+                TrainingProviderId = 1, // Fill in with the real ID in CS-286
                 TrainingProviderName = "Provisional Training Provider Name",
             });
 
