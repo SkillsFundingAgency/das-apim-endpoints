@@ -20,7 +20,7 @@ namespace SFA.DAS.SharedOuterApi.AppStart
 
                     if (contextFeature != null)
                     {
-                        logger.LogError(contextFeature.Error, $"Unexpected error occured");
+                        logger.LogError(contextFeature.Error, $"Unexpected error occurred");
                     }
                 });
             });
