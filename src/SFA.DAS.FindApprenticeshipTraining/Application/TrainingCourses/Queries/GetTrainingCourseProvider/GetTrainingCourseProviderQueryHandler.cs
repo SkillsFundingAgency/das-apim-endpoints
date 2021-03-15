@@ -9,7 +9,6 @@ using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -24,15 +23,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public GetTrainingCourseProviderQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ILocationApiClient<LocationApiConfiguration> locationApiClient,
             ICacheStorageService cacheStorageService,
-            IShortlistService shortlistService)
+            IShortlistService shortlistService, 
+            ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
             _shortlistService = shortlistService;
+            _locationLookupService = locationLookupService;
             _cacheHelper = new CacheHelper(cacheStorageService);
-            _locationLookupService = new LocationLookupService(locationApiClient);
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
