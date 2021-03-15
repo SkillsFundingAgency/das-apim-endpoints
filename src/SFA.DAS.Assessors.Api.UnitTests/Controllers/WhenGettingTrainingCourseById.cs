@@ -41,7 +41,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task And_Invalid_StandardId_Then_Returns_Not_Found(
-            string standardUId,
+            string id,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
         {
