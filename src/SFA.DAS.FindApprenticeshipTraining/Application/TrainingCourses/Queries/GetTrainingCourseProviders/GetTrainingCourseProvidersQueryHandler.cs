@@ -9,7 +9,6 @@ using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {
@@ -24,15 +23,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ILocationApiClient<LocationApiConfiguration> locationApiClient,
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
-            IShortlistService shortlistService)
+            IShortlistService shortlistService, 
+            ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
-            _locationLookupService = new LocationLookupService(locationApiClient);
+            _locationLookupService = locationLookupService;
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
@@ -47,8 +46,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask, shortlistTask, showEmployerDemandTask);
             
-            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,
-                locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder, request.ShortlistUserId));
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
+                request.Id, 
+                courseTask.Result.SectorSubjectAreaTier2Description, 
+                courseTask.Result.Level,
+                locationTask.Result?.GeoPoint?.FirstOrDefault(), 
+                locationTask.Result?.GeoPoint?.LastOrDefault(), 
+                request.SortOrder, 
+                request.ShortlistUserId));
             
             return new GetTrainingCourseProvidersResult
             {
