@@ -45,5 +45,6 @@ jobs:
               -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
               -ProductId ${{ parameters.ProductId }} `
               -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }}
+              -Verbose:([System.Convert]::ToBoolean("$(system.debug)"))
             azurePowerShellVersion: LatestVersion
             pwsh: true
