@@ -9,6 +9,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
         public MockApi InnerApi { get; set; }
         public MockApi LoginApi { get; set; }
         public MockApi CommitmentsV2InnerApi { get; set; }
+        public MockApi TrainingProviderInnerApi { get; set; }
         public ApprenticeLoginConfiguration LoginConfig { get; set; }
     }
 }

@@ -40,9 +40,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             services.Configure<ApprenticeCommitmentsConfiguration>(_configuration.GetSection("ApprenticeCommitmentsInnerApi"));
             services.Configure<ApprenticeLoginConfiguration>(_configuration.GetSection("ApprenticeLoginApi"));
             services.Configure<CommitmentsV2Configuration>(_configuration.GetSection("CommitmentsV2InnerApi"));
+            services.Configure<TrainingProviderConfiguration>(_configuration.GetSection("TrainingProviderInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeLoginConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2Configuration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
