@@ -28,67 +28,42 @@ namespace SFA.DAS.Assessors.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetTrainingCoursesQuery());
+            var queryResult = await _mediator.Send(new GetTrainingCoursesQuery());
                 
-                var model = new GetCourseListResponse
-                {
-                    Courses = queryResult.TrainingCourses.Select(c=>(GetCourseListItem)c).ToList()
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
+            var model = new GetCourseListResponse
             {
-                _logger.LogError(e, "Error attempting to get list of training courses");
-                return BadRequest();
-            }
+                Courses = queryResult.TrainingCourses.Select(c=>(GetCourseListItem)c).ToList()
+            };
+
+            return Ok(model);
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetStandardById(string id)
         {
-            try
-            {
-                // Id can be standardUId, LarsCode or IfateReferenceNumber
-                // It will return one record, either uniquely via the StandardUid
-                // Or the latest active via LarsCode / IFateReferenceNumber
-                var queryResponse = await _mediator.Send(new GetStandardDetailsQuery(id));
+            // Id can be standardUId, LarsCode or IfateReferenceNumber
+            // It will return one record, either uniquely via the StandardUid
+            // Or the latest active via LarsCode / IFateReferenceNumber
+            var queryResponse = await _mediator.Send(new GetStandardDetailsQuery(id));
 
-                if (queryResponse.StandardDetails == null) return NotFound();
+            if (queryResponse.StandardDetails == null) return NotFound();
 
-                return Ok((GetStandardDetailsResponse)queryResponse.StandardDetails);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get standard using {id}");
-                return BadRequest();
-            }
+            return Ok((GetStandardDetailsResponse)queryResponse.StandardDetails);
         }
         
         [HttpGet]
         [Route("options")]
         public async Task<IActionResult> GetStandardOptionsList()
         {
-            try
+            var queryResult = await _mediator.Send(new GetStandardOptionsQuery());
+
+            var model = new GetStandardOptionsResponse
             {
-                var queryResult = await _mediator.Send(new GetStandardOptionsQuery());
+                StandardOptions = queryResult.StandardOptions.Select(standard => (GetStandardOptionsItem)standard).ToList()
+            };
 
-                var model = new GetStandardOptionsResponse
-                {
-                    StandardOptions = queryResult.StandardOptions.Select(standard => (GetStandardOptionsItem)standard).ToList()
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-
-                _logger.LogError(e, "Error attempting to get list of standard options");
-                return BadRequest();
-            }
+            return Ok(model);
         }
     }
 }
