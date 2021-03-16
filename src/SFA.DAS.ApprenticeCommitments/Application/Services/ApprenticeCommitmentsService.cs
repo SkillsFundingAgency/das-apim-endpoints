@@ -30,25 +30,12 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             }
         }
 
-        public Task CreateApprenticeship(Guid guid, long apprenticeshipId, string email)
+        public Task CreateApprenticeship(CreateApprenticeshipRequestData data) 
         {
             return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
             {
-                Data = new CreateApprenticeshipRequestData
-                {
-                    RegistrationId = guid,
-                    ApprenticeshipId = apprenticeshipId,
-                    Email = email,
-                }
+                Data = data
             });
-        }
-
-        internal async Task<ApprenticeshipResponse> GetApprenticeship(
-            Guid apprenticeId, long apprenticeshipId)
-        {
-            var response = await _client.Get<ApprenticeshipResponse>(
-                            new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
-            return response;
         }
 
         internal Task ChangeEmailAddress(Guid apprenticeshipId, string email)
