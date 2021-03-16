@@ -56,7 +56,8 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.2.2
+    ##TO DO: revert to latest master
+    ref: refs/heads/DASD-8523-FixTransientImportSwaggerIssue
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
