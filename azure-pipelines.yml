@@ -35,6 +35,9 @@ parameters:
 - name: ApprenticeCommitments
   type: boolean
   default: false
+- name: EmployerDemand
+  type: boolean
+  default: false
   
 trigger:
   branches:
@@ -297,6 +300,23 @@ stages:
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+
 - stage: Deploy_TEST
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -524,6 +544,23 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -753,6 +790,23 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       
 - stage: Deploy_PP
   dependsOn: Build
@@ -1633,3 +1687,21 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      
