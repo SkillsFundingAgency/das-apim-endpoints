@@ -11,12 +11,9 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private const int PortLoginApi = 5001;
         private const int PortRoatpApi = 37951;
 
-
-        private const long EmployerAccountId = 1876;
-        private const long ApprenticeshipId = 986872;
-        private const long TrainingProviderId = 100077078;
-
-
+        private const long EmployerAccountId = 1000;
+        private const long ApprenticeshipId = 20000;
+        private const long TrainingProviderId = 1007777;
 
         private static WireMockServer _fakeInnerApi;
         private static WireMockServer _fakeCommitmentsV2Api;
@@ -25,6 +22,25 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
         static void Main(string[] args)
         {
+            if (args.Contains("--h"))
+            {
+                Console.WriteLine("Optional parameters (!inner, !commitment, !login, !roatp) will exclude that fake API");
+                Console.WriteLine("examples:");
+                Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis --h                 <-- shows this page");
+                Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !inner              <-- excludes fake inner api");
+                Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !inner !commitments <-- excludes fake inner and commitments api");
+                Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !login !roatp       <-- excludes fake login and roatp api");
+
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine("Currently supported values");
+                Console.WriteLine($"EmployerAccountId : {EmployerAccountId}");
+                Console.WriteLine($"ApprenticeshipId : {ApprenticeshipId}");
+                Console.WriteLine($"TrainingProviderId : {TrainingProviderId}");
+
+                return;
+            }
+
             try
             {
                 if (!args.Contains("!inner", StringComparer.CurrentCultureIgnoreCase))
