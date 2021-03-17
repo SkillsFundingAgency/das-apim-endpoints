@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            ClientReturnsApprenticeWith(client, accountId-1, apprenticeshipId);
+            ClientReturnsApprenticeshipWith(client, accountId-1, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
             Func<Task> func = async () => await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            ClientReturnsApprenticeWith(client, accountId, apprenticeshipId);
+            ClientReturnsApprenticeshipWith(client, accountId, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
             var response = await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
@@ -54,7 +54,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             response.Id.Should().Be(apprenticeshipId);
         }
 
-        private void ClientReturnsApprenticeWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
+        private void ClientReturnsApprenticeshipWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
         {
             client.Setup(x =>
                     x.Get<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
