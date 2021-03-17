@@ -29,6 +29,22 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return _server;
         }
 
+        public ApprenticeCommitmentsInnerApiBuilder WithPing()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath($"/ping")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                );
+
+            return this;
+        }
+
         public ApprenticeCommitmentsInnerApiBuilder WithAnyNewApprenticeship()
         {
             _server

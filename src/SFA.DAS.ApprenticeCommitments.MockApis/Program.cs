@@ -46,6 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 if (!args.Contains("!inner", StringComparer.CurrentCultureIgnoreCase))
                 {
                     _fakeInnerApi = ApprenticeCommitmentsInnerApiBuilder.Create(PortInnerApi)
+                        .WithPing()
                         .WithAnyNewApprenticeship()
                         .Build();
                 }
@@ -53,6 +54,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 if (!args.Contains("!commitments", StringComparer.CurrentCultureIgnoreCase))
                 {
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
+                        .WithPing()
                         .WithAValidApprentice(EmployerAccountId, ApprenticeshipId)
                         .Build();
                 }
@@ -60,6 +62,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 if (!args.Contains("!login", StringComparer.CurrentCultureIgnoreCase))
                 {
                     _fakeApprenticeLoginApi = ApprenticeLoginApiBuilder.Create(PortLoginApi)
+                        .WithPing()
                         .WithAnyInvitation()
                         .Build();
                 }
@@ -67,6 +70,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 if (!args.Contains("!roatp", StringComparer.CurrentCultureIgnoreCase))
                 {
                     _fakeTrainingProviderApi = TrainingProviderApiBuilder.Create(PortRoatpApi)
+                        .WithPing()
                         .WithValidSearch(TrainingProviderId)
                         .Build();
                 }
