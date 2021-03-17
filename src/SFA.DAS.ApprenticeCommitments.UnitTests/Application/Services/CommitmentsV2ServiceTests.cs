@@ -32,11 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            client.Setup(x =>
-                    x.Get<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
-                        It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
-                .ReturnsAsync(new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
-                    {EmployerAccountId = accountId-1, Id = apprenticeshipId});
+            ClientReturnsApprenticeWith(client, accountId-1, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
             Func<Task> func = async () => await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
@@ -50,16 +46,21 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            client.Setup(x =>
-                    x.Get<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
-                        It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
-                .ReturnsAsync(new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
-                    { EmployerAccountId = accountId, Id = apprenticeshipId });
+            ClientReturnsApprenticeWith(client, accountId, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
             var response = await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
             response.EmployerAccountId.Should().Be(accountId);
             response.Id.Should().Be(apprenticeshipId);
+        }
+
+        private void ClientReturnsApprenticeWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
+        {
+            client.Setup(x =>
+                    x.Get<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
+                        It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
+                .ReturnsAsync(new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
+                    { EmployerAccountId = accountId, Id = apprenticeshipId });
         }
     }
 }

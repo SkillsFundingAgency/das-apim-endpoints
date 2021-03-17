@@ -33,10 +33,8 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             TrainingProviderResponse[] results,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
-            client.Setup(x => 
-                x.Get<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
-                .ReturnsAsync(new SearchResponse { SearchResults = results });
-
+            ClientReturnsSearchWith(client, results);
+            
             var sut = new TrainingProviderService(client.Object);
             
             Func<Task> func = async () => await sut.GetTrainingProviderDetails(trainingProviderId);
@@ -50,15 +48,20 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             TrainingProviderResponse result,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
-            client.Setup(x =>
-                    x.Get<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
-                .ReturnsAsync(new SearchResponse {SearchResults = new[] {result}});
+            ClientReturnsSearchWith(client, new [] { result });
 
             var sut = new TrainingProviderService(client.Object);
 
             var response = await sut.GetTrainingProviderDetails(trainingProviderId);
 
             response.Should().Be(result);
+        }
+
+        private void ClientReturnsSearchWith(Mock<IInternalApiClient<TrainingProviderConfiguration>> client, TrainingProviderResponse[] results)
+        {
+            client.Setup(x =>
+                    x.Get<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
+                .ReturnsAsync(new SearchResponse { SearchResults = results });
         }
     }
 }
