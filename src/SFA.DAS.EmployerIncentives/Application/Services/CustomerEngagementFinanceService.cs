@@ -10,10 +10,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
     public class CustomerEngagementFinanceService : ICustomerEngagementFinanceService
     {
         private readonly ICustomerEngagementFinanceApiClient<CustomerEngagementFinanceConfiguration> _client;
+        private readonly IDateTimeService _dateTimeService;
 
-        public CustomerEngagementFinanceService(ICustomerEngagementFinanceApiClient<CustomerEngagementFinanceConfiguration> client)
+        public CustomerEngagementFinanceService(
+            ICustomerEngagementFinanceApiClient<CustomerEngagementFinanceConfiguration> client,
+            IDateTimeService dateTimeService)
         {
             _client = client;
+            _dateTimeService = dateTimeService;
         }
 
         public async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetVendorRegistrationCasesByLastStatusChangeDate(DateTime dateTimeFrom, DateTime dateTimeTo, string skipCode = null)
@@ -23,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public Task<GetVendorByApprenticeshipLegalEntityIdResponse> GetVendorByApprenticeshipLegalEntityId(string companyName, string hashedLegalEntityId)
         {
-            return _client.Get<GetVendorByApprenticeshipLegalEntityIdResponse>(new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId));
+            return _client.Get<GetVendorByApprenticeshipLegalEntityIdResponse>(new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId, _dateTimeService));
         }
     }
 }

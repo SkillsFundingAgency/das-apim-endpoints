@@ -12,14 +12,18 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
-        private const string CompanyName = "ESFA";
+        private readonly string CompanyName;
 
-        public GetAndAddEmployerVendorIdCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
+        public GetAndAddEmployerVendorIdCommandHandler(
+            ICustomerEngagementFinanceService financeService,
+            IEmployerIncentivesService incentivesService, 
+            ILogger<GetAndAddEmployerVendorIdCommandHandler> logger,
+            IDateTimeService dateTimeService)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
             _logger = logger;
+            CompanyName = dateTimeService.Today >= new DateTime(2021, 4, 6) ? "104 - ESFA" : "ESFA";
         }
 
         public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand request, CancellationToken cancellationToken)
