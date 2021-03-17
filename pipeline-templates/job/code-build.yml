@@ -3,7 +3,7 @@ jobs:
   pool:
     name: DAS - Continuous Integration
     ##TO DO: remove this
-    demands: Agent.Name -equals azure-pipelines-build-agent-58b69f6d7b-p7tdq
+    demands: Agent.Name -equals azure-pipelines-build-agent-58b69f6d7b-xgjz9
   variables:
   - group: Prod Management Resources
   - name: buildConfiguration
