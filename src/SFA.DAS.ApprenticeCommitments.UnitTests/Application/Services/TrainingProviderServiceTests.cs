@@ -17,18 +17,16 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
     public class TrainingProviderServiceTests
     {
         [Test, AutoData]
-        public async Task WhenNoTrainingProviderIsFound(
+        public void WhenNoTrainingProviderIsFound(
             long trainingProviderId,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
             var sut = new TrainingProviderService(client.Object);
-            Func<Task> func = async () => await sut.GetTrainingProviderDetails(trainingProviderId);
-
-            func.Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId)).Should().Throw<HttpRequestContentException>();
         }
 
         [Test, AutoData]
-        public async Task WhenMultipleTrainingProvidersAreFound(
+        public void WhenMultipleTrainingProvidersAreFound(
             long trainingProviderId,
             TrainingProviderResponse[] results,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
@@ -36,10 +34,8 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, results);
             
             var sut = new TrainingProviderService(client.Object);
-            
-            Func<Task> func = async () => await sut.GetTrainingProviderDetails(trainingProviderId);
 
-            func.Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId)).Should().Throw<HttpRequestContentException>();
         }
 
         [Test, AutoData]

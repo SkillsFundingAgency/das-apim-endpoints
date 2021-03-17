@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             CreateApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
-            (TrainingProviderResponse trainingProvider, Apis.CommitmentsV2InnerApi.ApprenticeshipResponse apprentice) = await GetExternalData(command);
+            var (trainingProvider, apprentice) = await GetExternalData(command);
             var id = Guid.NewGuid();
 
             await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
