@@ -139,6 +139,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
             innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
+            innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
         }
 
         [Then(@"the Training Provider Name should be '(.*)'")]

@@ -15,19 +15,17 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
     public class CommitmentsV2ServiceTests
     {
         [Test, AutoData]
-        public async Task WhenApprenticeshipIsNotFound(
+        public void WhenApprenticeshipIsNotFound(
             long accountId,
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
             var sut = new CommitmentsV2Service(client.Object);
-            Func<Task> func = async () => await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
-            
-            func.Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
         }
 
         [Test, AutoData]
-        public async Task WhenApprenticeshipIsFoundButWithWrongAccountId(
+        public void WhenApprenticeshipIsFoundButWithWrongAccountId(
             long accountId,
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
@@ -35,9 +33,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsApprenticeWith(client, accountId-1, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
-            Func<Task> func = async () => await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
-
-            func.Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
         }
 
         [Test, AutoData]
