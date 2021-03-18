@@ -4,6 +4,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using System.Linq;
+using System.Net;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
@@ -12,6 +14,19 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
 
         public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
+
+        public async Task<bool> IsHealthy()
+        {
+            try
+            {
+                var status = await _client.GetResponseCode(new GetPingRequest());
+                return status == HttpStatusCode.OK;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
         {
