@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class TrainingProviderConfirmationRequest : IPostApiRequest
+    public class TrainingProviderConfirmationRequest : IPostApiRequest<TrainingProviderConfirmationRequestData>
     {
         private readonly Guid _apprenticeId;
         private readonly long _apprenticeshipId;
@@ -21,15 +21,11 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 
         public string PostUrl => $"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/trainingproviderconfirmation";
 
-        public object Data { get; set; }
+        public TrainingProviderConfirmationRequestData Data { get; set; }
     }
 
     public class TrainingProviderConfirmationRequestData
     {
         public bool TrainingProviderCorrect { get; set; }
-    }
-
-    public class TrainingProviderConfirmationResponse
-    {
     }
 }

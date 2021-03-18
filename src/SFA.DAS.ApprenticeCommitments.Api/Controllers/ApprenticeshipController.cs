@@ -48,9 +48,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             Guid apprenticeId, long apprenticeshipId,
             [FromBody] TrainingProviderConfirmationRequestData request)
         {
-            await _client.Post<ApprenticeshipResponse>(
+            await _client.Post(
                 new TrainingProviderConfirmationRequest(
                     apprenticeId, apprenticeshipId, request.TrainingProviderCorrect));
+
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/employerconfirmation")]
+        public async Task<IActionResult> EmployerConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] EmployerConfirmationRequestData request)
+        {
+            await _client.Post(
+                new EmployerConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.EmployerCorrect));
 
             return Ok();
         }
