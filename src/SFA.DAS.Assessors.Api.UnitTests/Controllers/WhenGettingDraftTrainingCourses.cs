@@ -30,7 +30,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetActiveList() as ObjectResult;
+            var controllerResult = await controller.GetDraftList() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -50,7 +50,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetActiveList() as BadRequestResult;
+            var controllerResult = await controller.GetDraftList() as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
