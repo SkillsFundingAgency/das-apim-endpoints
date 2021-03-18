@@ -35,7 +35,10 @@ parameters:
 - name: ApprenticeCommitments
   type: boolean
   default: false
-  
+- name: EmployerDemand
+  type: boolean
+  default: false
+
 trigger:
   branches:
     include:
@@ -279,7 +282,7 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
-      
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_ApprenticeCommitments
@@ -296,6 +299,23 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -525,6 +545,23 @@ stages:
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+
 - stage: Deploy_TEST2
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -701,7 +738,7 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
-      
+
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -735,8 +772,8 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
-    
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_ApprenticeCommitments
@@ -753,7 +790,24 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
-      
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -980,7 +1034,24 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -1140,7 +1211,7 @@ stages:
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
-      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)   
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1191,7 +1262,24 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)  
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -1234,7 +1322,7 @@ stages:
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
 
-  
+
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1303,7 +1391,7 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-  
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
@@ -1405,6 +1493,23 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -1633,3 +1738,20 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)

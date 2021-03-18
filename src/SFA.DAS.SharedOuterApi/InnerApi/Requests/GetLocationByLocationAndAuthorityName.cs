@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetLocationByLocationAndAuthorityName : IGetApiRequest
     {

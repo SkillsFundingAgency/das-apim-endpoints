@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.ProvidersCount);
             model.ProvidersCount.ProvidersAtLocation.Should().Be(mediatorResult.ProvidersCountAtLocation);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
-
+            model.ShowEmployerDemand.Should().Be(mediatorResult.ShowEmployerDemand);
         }
 
         [Test, MoqAutoData]

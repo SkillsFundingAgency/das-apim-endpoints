@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -15,17 +16,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
 
         public GetTrainingCourseQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> apiClient, 
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, 
+            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             ICacheStorageService cacheStorageService,
             IShortlistService shortlistService)
         {
             _apiClient = apiClient;
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
             _cacheHelper = new CacheHelper(cacheStorageService);
 
@@ -40,8 +44,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+
+            var showEmployerDemandTask = _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest());
             
-            await Task.WhenAll(standardTask, providersTask, levelsTask, shortlistTask);
+            await Task.WhenAll(standardTask, providersTask, levelsTask, shortlistTask, showEmployerDemandTask);
 
             if (standardTask.Result == null)
             {
@@ -55,7 +61,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = standardTask.Result,
                 ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
                 ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count,
-                ShortlistItemCount = shortlistTask.Result
+                ShortlistItemCount = shortlistTask.Result,
+                ShowEmployerDemand = showEmployerDemandTask.Result == HttpStatusCode.OK
             };
         }
     }

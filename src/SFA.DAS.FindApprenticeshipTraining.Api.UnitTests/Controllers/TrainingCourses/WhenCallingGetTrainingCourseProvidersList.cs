@@ -62,6 +62,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
+            model.ShowEmployerDemand.Should().Be(mediatorResult.ShowEmployerDemand);
         }
 
         [Test, MoqAutoData]
