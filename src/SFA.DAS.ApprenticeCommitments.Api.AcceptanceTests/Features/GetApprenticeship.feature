@@ -1,25 +1,16 @@
 ﻿@innerApi
 Feature: GetApprenticeship
 	As an apprentice
-	I need to have a start screen showing all the steps of my commitment statement
-	So that I know what steps are involved in signing my commitment statement
-	And I can be directed to sign every aspect of my statement
+	I need to retrieve an individual apprenticeship
+	So I can review the details and confirm it
 
-Scenario: List apprenticeships
+Scenario: The apprenticeship exists
 	Given there is an apprenticeship
-	When the list of apprenticeships is requested
+	When the apprenticeship is requested
 	Then the result should be OK
-	And the result should contain the apprenticeship
+	And the result should contain the anticipated values
 
-
-Scenario: Apprenticeship overview
-	Given there is an apprenticeship
-	When the apprenticeship overview is requested
-	Then the result should be OK
-	And the apprenticeship is returned
-
-Scenario: No current apprenticeship
+Scenario: The apprenticeship does not exist
 	Given there is no apprenticeship
-	When the apprenticeship overview is requested
+	When the apprenticeship is requested
 	Then the result should be NotFound
-

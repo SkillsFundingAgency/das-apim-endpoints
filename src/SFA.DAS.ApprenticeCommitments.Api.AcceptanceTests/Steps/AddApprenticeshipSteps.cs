@@ -111,6 +111,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.RegistrationId.Should().NotBe(Guid.Empty);
             innerApiRequest.Email.Should().Be(_request.Email);
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
+            innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
+            innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
+            innerApiRequest.TrainingProviderName.Should().Be("Provisional Training Provider Name");
         }
 
         [Then("the inner API should return these errors")]
@@ -142,7 +145,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             loginApiRequest.Email.Should().Be(_request.Email);
             loginApiRequest.GivenName.Should().Be(expectedCommitment.FirstName);
             loginApiRequest.FamilyName.Should().Be(expectedCommitment.LastName);
-            loginApiRequest.OrganisationName.Should().Be(_request.Organisation);
+            loginApiRequest.OrganisationName.Should().Be(_request.EmployerName);
             loginApiRequest.ApprenticeshipName.Should().Be(expectedCommitment.CourseName);
             loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
             loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
