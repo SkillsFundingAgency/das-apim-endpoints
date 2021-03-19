@@ -255,7 +255,7 @@
                 }
             },
             "copy": {
-                "name": "roleAssignemntLoop",
+                "name": "roleAssignmentLoop",
                 "count": "[length(parameters('outerApiArray'))]"
             }
         },
@@ -283,7 +283,7 @@
                 }
             },
             "copy": {
-                "name": "staginRoleAssignemntLoop",
+                "name": "stagingRoleAssignmentLoop",
                 "count": "[length(parameters('outerApiArray'))]"
             }
         }
