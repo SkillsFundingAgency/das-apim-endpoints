@@ -33,6 +33,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
                 {
                     c.Url = _testContext.CommitmentsV2InnerApi.BaseAddress;
                 });
+                s.Configure<TrainingProviderConfiguration>(c =>
+                {
+                    c.Url = _testContext.TrainingProviderInnerApi.BaseAddress;
+                });
             });
 
             builder.ConfigureAppConfiguration(a =>
