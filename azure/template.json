@@ -244,7 +244,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[createArray(reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.managedServiceIdentityId.value, reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.stagingManagedServiceIdentityId.value)[copyIndex()]]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -256,6 +256,34 @@
             },
             "copy": {
                 "name": "roleAssignemntLoop",
+                "count": "[length(parameters('outerApiArray'))]"
+            }
+        },
+        {
+            "apiVersion": "2020-06-01",
+            "name": "[concat('role-assignment-staging-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "principalId": {
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.stagingManagedServiceIdentityId.value]"
+                    },
+                    "assignmentType": {
+                        "value": "ServiceBusSender"
+                    },
+                    "resourceName": {
+                        "value": "[parameters('sharedServiceBusName')]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "staginRoleAssignemntLoop",
                 "count": "[length(parameters('outerApiArray'))]"
             }
         }
