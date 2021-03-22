@@ -5,7 +5,13 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
 {
     public class CreateDemandConfirmationEmail : SendEmailCommand
     {
-        public CreateDemandConfirmationEmail(string recipientEmail, string recipientName, string standardName, int standardLevel, string location, int? numberOfApprentices)
+        public CreateDemandConfirmationEmail(
+            string recipientEmail, 
+            string recipientName, 
+            string standardName, 
+            int standardLevel, 
+            string location, 
+            int? numberOfApprentices)
         {
             TemplateId = EmailConstants.CreateDemandConfirmationTemplateId;
             RecipientAddress = recipientEmail;
@@ -16,7 +22,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", numberOfApprentices.ToString() }
+                {"AEDNumberOfApprentices", numberOfApprentices.HasValue ? numberOfApprentices.ToString() : "Not sure" }
             };
         }
     }

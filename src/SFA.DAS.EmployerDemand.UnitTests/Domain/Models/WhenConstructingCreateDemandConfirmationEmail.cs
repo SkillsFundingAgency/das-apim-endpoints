@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string standardName, 
             int standardLevel, 
             string location, 
-            int numberOfApprentices)
+            int? numberOfApprentices)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -40,6 +40,31 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
 
-        //todo: and no number of apprentices
+        [Test, AutoData]
+        public void And_No_NumberOfApprentices_Then_NotSure_Text(
+            string recipientEmail, 
+            string recipientName,
+            string standardName, 
+            int standardLevel, 
+            string location)
+        {
+            var expectedTokens = new Dictionary<string, string>
+            {
+                {"AEDEmployerName", recipientName },
+                {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
+                {"AEDApprenticeshipLocation", location },
+                {"AEDNumberOfApprentices", "Not sure" }
+            };
+
+            var email = new CreateDemandConfirmationEmail(
+                recipientEmail, 
+                recipientName,
+                standardName, 
+                standardLevel, 
+                location, 
+                null);
+
+            email.Tokens.Should().BeEquivalentTo(expectedTokens);
+        }
     }
 }
