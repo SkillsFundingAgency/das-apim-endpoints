@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
     public class WhenCreatingPostCreateCourseDemandRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(CreateCourseDemandRequest data)
+        public void Then_The_Url_Is_Correctly_Constructed(CreateCourseDemandData data)
         {
             var actual = new PostCreateCourseDemandRequest(data);
             

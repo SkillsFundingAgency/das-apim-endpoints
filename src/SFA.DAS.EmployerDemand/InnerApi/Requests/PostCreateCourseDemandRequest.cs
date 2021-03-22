@@ -5,18 +5,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
-    public class PostCreateCourseDemandRequest : IPostApiRequest<CreateCourseDemandRequest>
+    public class PostCreateCourseDemandRequest : IPostApiRequest
     {
-        public PostCreateCourseDemandRequest (CreateCourseDemandRequest data)
+        public PostCreateCourseDemandRequest (CreateCourseDemandData data)
         {
             Data = data;
         }
 
         public string PostUrl => "api/demand/create";
-        public CreateCourseDemandRequest Data { get; set; }
+        public object Data { get; set; }
     }
 
-    public class CreateCourseDemandRequest
+    public class CreateCourseDemandData
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
         public string ContactEmailAddress { get; set; }
 
         [JsonProperty("numberOfApprentices")]
-        public long NumberOfApprentices { get; set; }
+        public int NumberOfApprentices { get; set; }
 
         [JsonProperty("course")]
         public Course Course { get; set; }
@@ -40,13 +40,13 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
     public class Course
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("level")]
-        public long Level { get; set; }
+        public int Level { get; set; }
     }
 
     public class Location
@@ -61,6 +61,11 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
     public class LocationPoint
     {
         [JsonProperty("geoPoint")]
-        public List<long> GeoPoint { get; set; }
+        public List<double> GeoPoint { get; set; }
+    }
+    
+    public class PostCreateCourseDemand
+    {
+        public Guid Id { get ; set ; }
     }
 }
