@@ -8,6 +8,14 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
     public class WhenGettingIsActive
     {
         [Test, AutoData]
+        public void And_StandardDates_Are_Not_Available_Then_False(TestStandardResponse standard)
+        {
+            standard.StandardDates = null;
+
+            standard.IsActive.Should().BeFalse();
+        }
+
+        [Test, AutoData]
         public void And_EffectiveFrom_After_Today_Then_False(TestStandardResponse standard)
         {
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(1);
