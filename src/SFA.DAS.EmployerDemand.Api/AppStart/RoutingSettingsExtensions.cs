@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
 
         public static void AddRouting(this RoutingSettings routingSettings)
         {
-            routingSettings.RouteToEndpoint(typeof(SendEmailCommand), NotificationsMessageHandler);
+            routingSettings.RouteToEndpoint(typeof(EmailTemplateArguments), NotificationsMessageHandler);
         }
     }
 }

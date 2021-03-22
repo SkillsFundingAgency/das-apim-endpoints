@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.Models
 {
-    public abstract class SendEmailCommand
+    public abstract class EmailTemplateArguments
     {
         public string TemplateId { get; set; }
         public string RecipientAddress { get; set; }

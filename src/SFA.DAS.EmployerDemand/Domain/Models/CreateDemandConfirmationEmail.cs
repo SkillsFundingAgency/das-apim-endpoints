@@ -3,7 +3,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
 {
-    public class CreateDemandConfirmationEmail : SendEmailCommand
+    public class CreateDemandConfirmationEmail : EmailTemplateArguments
     {
         public CreateDemandConfirmationEmail(
             string recipientEmail, 

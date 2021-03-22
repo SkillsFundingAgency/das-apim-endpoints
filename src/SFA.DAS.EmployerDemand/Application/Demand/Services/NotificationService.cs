@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Services
             _messageSession = messageSession;
         }
 
-        public Task Send(SendEmailCommand email)
+        public Task Send(EmailTemplateArguments email)
         {
             return _messageSession.Send(email);
         }
