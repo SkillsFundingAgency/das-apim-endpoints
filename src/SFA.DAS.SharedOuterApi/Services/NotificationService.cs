@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.EmployerDemand.Application.Demand.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class NotificationService
+    public class NotificationService : INotificationService
     {
         private readonly IMessageSession _messageSession;
 
