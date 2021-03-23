@@ -20,6 +20,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IEmployerDemandApiClient<EmployerDemandApiConfiguration>, EmployerDemandApiClient>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }
 }
