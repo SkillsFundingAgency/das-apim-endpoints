@@ -65,5 +65,27 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             return this;
         }
+
+        public CommitmentsV2ApiBuilder WithAnyApprenticeship()
+        {
+            var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
+                .Create();
+
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath($"/api/apprenticeships/*")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(response)
+                );
+
+            return this;
+        }
+
+
     }
 }

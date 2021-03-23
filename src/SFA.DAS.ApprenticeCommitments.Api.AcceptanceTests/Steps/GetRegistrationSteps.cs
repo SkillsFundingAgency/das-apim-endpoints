@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _registrationId = _f.Create<Guid>();
             _registrationResponse =
                 _f.Build<RegistrationResponse>()
-                    .With(m => m.RegistrationId, _registrationId)
+                    .With(m => m.ApprenticeshipId, _registrationId)
                     .Create();
         }
 
@@ -89,7 +89,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var response = JsonConvert.DeserializeObject<RegistrationResponse>(content);
             response.Should().NotBeNull();
             response.Email.Should().Be(_registrationResponse.Email);
-            response.RegistrationId.Should().Be(_registrationId);
+            response.ApprenticeshipId.Should().Be(_registrationId);
         }
     }
 }

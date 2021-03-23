@@ -134,7 +134,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.Should().NotBeNull();
-            innerApiRequest.RegistrationId.Should().NotBe(Guid.Empty);
+            innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
             innerApiRequest.Email.Should().Be(_request.Email);
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);

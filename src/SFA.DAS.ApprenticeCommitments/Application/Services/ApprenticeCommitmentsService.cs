@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task CreateApprenticeship(CreateApprenticeshipRequestData data) 
         {
-            return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
+            return _client.Post(new CreateApprenticeshipRequest
             {
                 Data = data
             });
@@ -68,6 +68,21 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     DateOfBirth = command.DateOfBirth
                 }
             });
+        }
+
+        public Task<RegistrationsRemindersInvitationsResponse> GetReminderRegistrations() =>
+            _client.Get<RegistrationsRemindersInvitationsResponse>(new GetRegistrationsNeedingRemindersRequest());
+
+        public Task InvitationReminderSent(Guid apprenticeId, DateTime sentOn)
+        {
+            return _client.Post(
+                new InvitationReminderSentRequest(apprenticeId)
+                {
+                    Data = new InvitationReminderSentData
+                    {
+                        SentOn = sentOn
+                    }
+                });
         }
     }
 }

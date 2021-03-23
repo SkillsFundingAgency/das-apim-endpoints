@@ -2,6 +2,7 @@ using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationReminders;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 
@@ -18,7 +19,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [Route("/registrations/{registrationId}")]
         public async Task<IActionResult> Get(Guid registrationId)
         {
-            var result = await _mediator.Send(new RegistrationQuery { RegistrationId = registrationId });
+            var result = await _mediator.Send(new RegistrationQuery { ApprenticeshipId = registrationId });
             if (result == null)
             {
                 return NotFound();
@@ -33,6 +34,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             await _mediator.Send(request);
             return Ok();
         }
+
+        [HttpPost]
+        [Route("/registrations/reminders")]
+        public async Task<IActionResult> SendReminders(SendInvitationRemindersCommand request)
+        {
+            await _mediator.Send(request);
+            return Ok();
+        }
+
 
     }
 }

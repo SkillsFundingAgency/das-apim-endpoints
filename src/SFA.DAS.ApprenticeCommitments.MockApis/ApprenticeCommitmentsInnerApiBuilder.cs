@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using AutoFixture;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -11,11 +13,14 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
     {
         private readonly WireMockServer _server;
         private readonly Fixture _fixture;
+        private IEnumerable<RegistrationsRemindersInvitationsResponse.Registration> _registrationsInNeedOfReminders;
 
         public ApprenticeCommitmentsInnerApiBuilder(int port)
         {
             _fixture = new Fixture();
             _server = WireMockServer.StartWithAdminInterface(port, true);
+
+            _registrationsInNeedOfReminders = _fixture.CreateMany<RegistrationsRemindersInvitationsResponse.Registration>();
         }
 
         public static ApprenticeCommitmentsInnerApiBuilder Create(int port)
@@ -60,5 +65,39 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             return this;
         }
+
+        public ApprenticeCommitmentsInnerApiBuilder WithReminderSent()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/registrations/*/reminder")
+                        .UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.Accepted)
+                );
+
+            return this;
+        }
+
+        public ApprenticeCommitmentsInnerApiBuilder WithRegistrationReminders()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/registrations/reminders")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(new RegistrationsRemindersInvitationsResponse{ Registrations = _registrationsInNeedOfReminders })
+                );
+
+            return this;
+        }
+
     }
 }
