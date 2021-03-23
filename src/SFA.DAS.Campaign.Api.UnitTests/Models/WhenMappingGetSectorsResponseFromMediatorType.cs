@@ -9,13 +9,13 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
     public class WhenMappingGetSectorsResponseFromMediatorType
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped(GetSectorsListItem source)
+        public void Then_The_Fields_Are_Correctly_Mapped(GetRoutesListItem source)
         {
             //Act
             var actual = (GetSectorResponseItem) source;
             
             //Assert
-            actual.Route.Should().Be(source.Route);
+            actual.Route.Should().Be(source.Name);
         }
     }
 }

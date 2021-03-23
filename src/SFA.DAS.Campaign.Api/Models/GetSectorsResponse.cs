@@ -13,11 +13,11 @@ namespace SFA.DAS.Campaign.Api.Models
     {
         public string Route { get; set; }
         
-        public static implicit operator GetSectorResponseItem (GetSectorsListItem source)
+        public static implicit operator GetSectorResponseItem (GetRoutesListItem source)
         {
             return new GetSectorResponseItem
             {
-                Route = source.Route
+                Route = source.Name
             };
         }
     }

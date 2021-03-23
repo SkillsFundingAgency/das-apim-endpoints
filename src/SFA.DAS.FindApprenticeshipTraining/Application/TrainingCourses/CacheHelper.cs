@@ -18,14 +18,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             _cacheStorageService = cacheStorageService;
         }
         
-        public async Task UpdateCachedItems(Task<GetSectorsListResponse> sectorsTask,
+        public async Task UpdateCachedItems(Task<GetRoutesListResponse> sectorsTask,
             Task<GetLevelsListResponse> levelsTask,
             Task<GetStandardsListResponse> standardsTask,
             SaveToCache saveToCache)
         {
             if (saveToCache.Sectors)
             {
-                await _cacheStorageService.SaveToCache(nameof(GetSectorsListResponse), sectorsTask.Result, TimeSpan.FromHours(ExpirationInHours));
+                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), sectorsTask.Result, TimeSpan.FromHours(ExpirationInHours));
             }
 
             if (saveToCache.Levels)
