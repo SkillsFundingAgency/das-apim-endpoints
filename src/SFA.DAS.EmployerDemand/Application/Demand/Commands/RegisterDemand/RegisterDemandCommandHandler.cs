@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -12,10 +13,14 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
     public class RegisterDemandCommandHandler : IRequestHandler<RegisterDemandCommand, Guid>
     {
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _apiClient;
+        private readonly INotificationService _notificationService;
 
-        public RegisterDemandCommandHandler (IEmployerDemandApiClient<EmployerDemandApiConfiguration> apiClient)
+        public RegisterDemandCommandHandler (
+            IEmployerDemandApiClient<EmployerDemandApiConfiguration> apiClient,
+            INotificationService notificationService)
         {
             _apiClient = apiClient;
+            _notificationService = notificationService;
         }
         public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
@@ -40,6 +45,14 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Level = request.CourseLevel
                 }
             }));
+
+            await _notificationService.Send(new CreateDemandConfirmationEmail(
+                request.ContactEmailAddress, 
+                request.OrganisationName, 
+                request.CourseTitle,
+                request.CourseLevel, 
+                request.LocationName, 
+                request.NumberOfApprentices));
 
             return result.Id;
         }
