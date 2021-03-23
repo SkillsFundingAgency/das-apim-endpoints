@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using NServiceBus;
 
 namespace SFA.DAS.SharedOuterApi.Models
 {
-    public abstract class EmailTemplateArguments
+    public abstract class EmailTemplateArguments : IMessage
     {
         public string TemplateId { get; set; }
         public string RecipientAddress { get; set; }
