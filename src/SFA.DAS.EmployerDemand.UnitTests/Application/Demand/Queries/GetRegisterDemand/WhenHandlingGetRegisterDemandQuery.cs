@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegiste
     public class WhenHandlingGetRegisterDemandQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standard_From_Courses_Api_And_Location(
+        public async Task Then_Gets_Standard_And_Location_Data_For_RegisterDemand(
             GetRegisterDemandQuery query,
             GetStandardsListItem apiResponse,
             LocationItem location,
