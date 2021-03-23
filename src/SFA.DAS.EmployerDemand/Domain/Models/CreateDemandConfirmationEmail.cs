@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
 {

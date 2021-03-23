@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.Messages;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 

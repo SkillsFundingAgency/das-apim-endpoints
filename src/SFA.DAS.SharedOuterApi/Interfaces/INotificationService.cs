@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {

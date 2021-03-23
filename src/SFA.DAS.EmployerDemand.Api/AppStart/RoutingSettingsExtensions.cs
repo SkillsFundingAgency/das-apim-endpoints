@@ -1,5 +1,6 @@
 ﻿using NServiceBus;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Api.AppStart
 {
