@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string standardName, 
             int standardLevel, 
             string location, 
-            int? numberOfApprentices)
+            int numberOfApprentices)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 standardName, 
                 standardLevel, 
                 location, 
-                null);
+                0);
 
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
