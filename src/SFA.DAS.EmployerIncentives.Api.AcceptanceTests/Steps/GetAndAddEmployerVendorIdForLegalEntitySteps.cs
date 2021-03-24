@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private readonly TestContext _context;
         private const string HashedLegalEntityId = "DW5T8V";
         private const string CompanyName = "ESFA";
+        private const string ApiVersion = "2021-04-06";
         private const string ExpectedEmployerVendorId = "P0004320";
 
         public GetAndAddEmployerVendorIdForLegalEntitySteps(TestContext context) { _context = context; }
@@ -35,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithParam("api-version", ApiVersion)
                 .UsingGet()).Should().HaveCount(1);
         }
 
@@ -55,7 +56,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
                 .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithParam("api-version", ApiVersion)
                 .UsingGet()).Should().HaveCount(1);
         }
 
@@ -108,7 +109,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             Request.Create()
                 .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithParam("api-version", ApiVersion)
                 .UsingGet();
     }
 }

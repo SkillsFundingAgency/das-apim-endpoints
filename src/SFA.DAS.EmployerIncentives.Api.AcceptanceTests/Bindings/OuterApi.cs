@@ -29,6 +29,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
                     {"EmployerIncentivesInnerApi:url", _context?.InnerApi?.BaseAddress + "/"},
                     {"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/"},
                     {"CustomerEngagementFinanceApi:url", _context?.FinanceApi?.BaseAddress + "/"},
+                    {"CustomerEngagementFinanceApi:companyName", "ESFA" },
+                    {"CustomerEngagementFinanceApi:apiVersion", "2021-04-06"},
                     {"AccountsInnerApi:url", _context?.AccountsApi?.BaseAddress + "/"},
                     {"AzureAD:tenant", ""},
                     {"AzureAD:identifier", ""}

@@ -8,14 +8,14 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetVendorByApprenticeshipLegalEntityIdRequest
     {
         [Test, AutoData]
-        public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl,string companyName, string hashedLegalEntityId)
+        public void Then_The_GetUrl_Is_Correctly_Built(string baseUrl,string companyName, string hashedLegalEntityId, string apiVersion)
         {
-            var actual = new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId)
+            var actual = new GetVendorByApprenticeshipLegalEntityId(companyName, hashedLegalEntityId, apiVersion)
             {
                 BaseUrl = baseUrl
             };
 
-            actual.GetUrl.Should().Be($"{baseUrl}Finance/{companyName}/vendor/aleid={hashedLegalEntityId}?api-version=2019-06-01");
+            actual.GetUrl.Should().Be($"{baseUrl}Finance/{companyName}/vendor/aleid={hashedLegalEntityId}?api-version={apiVersion}");
         }
     }
 }

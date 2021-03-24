@@ -4,6 +4,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Configuration;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 {
@@ -12,14 +13,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
-        private const string CompanyName = "ESFA";
+        private readonly CustomerEngagementFinanceConfiguration _configuration;
 
         public GetAndAddEmployerVendorIdCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
+            IEmployerIncentivesService incentivesService, ILogger<GetAndAddEmployerVendorIdCommandHandler> logger,
+            CustomerEngagementFinanceConfiguration configuration)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand request, CancellationToken cancellationToken)
@@ -43,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             {
                 _logger.LogInformation("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}]", hashedLegalEntityId);
 
-                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(CompanyName, hashedLegalEntityId);
+                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(_configuration.CompanyName, hashedLegalEntityId, _configuration.ApiVersion);
 
                 if (response == null)
                 {
