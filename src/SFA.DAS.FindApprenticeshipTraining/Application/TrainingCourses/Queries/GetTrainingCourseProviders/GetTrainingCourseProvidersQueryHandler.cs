@@ -3,6 +3,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
@@ -19,19 +21,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly ILocationLookupService _locationLookupService;
+        private readonly FindApprenticeshipTrainingConfiguration _config;
 
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             IShortlistService shortlistService, 
-            ILocationLookupService locationLookupService)
+            ILocationLookupService locationLookupService,
+            IOptions<FindApprenticeshipTrainingConfiguration> config)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
+            _config = config.Value;
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
@@ -42,9 +47,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
-            var showEmployerDemandTask = _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest());
-
-            await Task.WhenAll(locationTask, courseTask, shortlistTask, showEmployerDemandTask);
+            await Task.WhenAll(locationTask, courseTask, shortlistTask);
+            
+            var showEmployerDemand = _config.EmployerDemandFeatureToggle && await _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest()) == HttpStatusCode.OK;
             
             var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
                 request.Id, 
@@ -62,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Total = providers.TotalResults,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result,
-                ShowEmployerDemand = showEmployerDemandTask.Result == HttpStatusCode.OK
+                ShowEmployerDemand = showEmployerDemand
             }; 
         }
     }
