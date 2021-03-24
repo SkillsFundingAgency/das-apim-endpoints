@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             
             var endpointConfiguration = new EndpointConfiguration(EndpointName)
                 .UseErrorQueue($"{EndpointName}-errors")
-                
+                .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()
                 .UseNLogFactory();
@@ -44,6 +44,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
             {
                 endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                
             }
             else
             {

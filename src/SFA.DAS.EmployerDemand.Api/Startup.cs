@@ -17,7 +17,6 @@ using SFA.DAS.EmployerDemand.Api.AppStart;
 using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.UnitOfWork.NServiceBus.DependencyResolution.Microsoft;
 
 namespace SFA.DAS.EmployerDemand.Api
 {
@@ -56,7 +55,6 @@ namespace SFA.DAS.EmployerDemand.Api
             services.AddMediatR(typeof(GetLocationsQuery).Assembly);
             //services.AddMediatRValidation();
             services.AddServiceRegistration();
-            services.AddNServiceBusUnitOfWork();
             
 
             services.Configure<RouteOptions>(options =>

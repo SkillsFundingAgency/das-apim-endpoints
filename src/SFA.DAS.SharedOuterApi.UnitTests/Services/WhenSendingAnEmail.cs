@@ -16,12 +16,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         [Test, MoqAutoData]
         public async Task Then_Sends_Correct_Message_To_Notification_Service(
             SendEmailCommand email,
-            [Frozen] Mock<IEventPublisher> mockMessageSession,
+            [Frozen] Mock<IMessageSession> mockMessageSession,
             NotificationService service)
         {
             await service.Send(email);
 
-            mockMessageSession.Verify(session => session.Publish(email));
+            mockMessageSession.Verify(session => session.Send(email, It.IsAny<SendOptions>()));
         }
     }
 
