@@ -22,7 +22,8 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" }
+                {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" },
+                {"AEDStopSharingURL",""}
             };
         }
     }
