@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
+using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -45,14 +46,16 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Level = request.CourseLevel
                 }
             }));
-
-            await _notificationService.Send(new CreateDemandConfirmationEmail(
-                request.ContactEmailAddress, 
-                request.OrganisationName, 
+            var emailModel = new CreateDemandConfirmationEmail(
+                request.ContactEmailAddress,
+                request.OrganisationName,
                 request.CourseTitle,
-                request.CourseLevel, 
-                request.LocationName, 
-                request.NumberOfApprentices));
+                request.CourseLevel,
+                request.LocationName,
+                request.NumberOfApprentices);
+            
+            
+            await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
 
             return result.Id;
         }

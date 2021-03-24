@@ -15,6 +15,7 @@
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
         <PackageReference Include="SFA.DAS.Api.Common" Version="1.0.8" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
+        <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
         <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
         <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
     </ItemGroup>

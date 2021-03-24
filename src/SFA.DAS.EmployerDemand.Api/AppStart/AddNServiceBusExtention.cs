@@ -9,6 +9,7 @@ using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration.NLog;
 using SFA.DAS.NServiceBus.Hosting;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerDemand.Api.AppStart
@@ -29,10 +30,15 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
 
                     var endpointConfiguration = new EndpointConfiguration(EndpointName)
                         .UseErrorQueue($"{EndpointName}-errors")
-                        .UseLicense(configuration.NServiceBusLicense)
+                        
                         .UseMessageConventions()
                         .UseNewtonsoftJsonSerializer()
                         .UseNLogFactory();
+
+                    if (!string.IsNullOrEmpty(configuration.NServiceBusLicense))
+                    {
+                        endpointConfiguration.UseLicense(configuration.NServiceBusLicense);
+                    }
 
                     endpointConfiguration.SendOnly();
 
@@ -49,7 +55,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
 
                     return endpoint;
                 })
-                .AddSingleton<IMessageSession>(s => s.GetService<IEndpointInstance>())
+                .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
                 .AddHostedService<NServiceBusHostedService>();
         }
     }

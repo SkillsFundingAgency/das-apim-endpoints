@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
+using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -44,10 +45,10 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 )))
                 .ReturnsAsync(apiResponse);
 
-            EmailTemplateArguments actualEmail = null;
+            SendEmailCommand actualEmail = null;
             mockNotificationService
-                .Setup(service => service.Send(It.IsAny<EmailTemplateArguments>()))
-                .Callback((EmailTemplateArguments args) => actualEmail = args)
+                .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
+                .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
             var expectedEmail = new CreateDemandConfirmationEmail(
                 command.ContactEmailAddress,
@@ -62,7 +63,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             
             //Assert
             actual.Should().Be(apiResponse.Id);
-            actualEmail.Should().BeEquivalentTo(expectedEmail);
+            actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
+            actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
+            actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
         }
 
         [Test, MoqAutoData]
@@ -83,7 +86,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             
             //Assert
             act.Should().Throw<HttpRequestContentException>();
-            mockNotificationService.Verify(service => service.Send(It.IsAny<EmailTemplateArguments>()), 
+            mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
         }
     }
