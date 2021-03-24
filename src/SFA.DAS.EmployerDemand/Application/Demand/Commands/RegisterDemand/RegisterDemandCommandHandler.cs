@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -25,7 +26,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         }
         public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Post<PostCreateCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
+            var result = await _apiClient.PostWithResponseCode<PostCreateCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
             {
                 Id = request.Id,
                 ContactEmailAddress = request.ContactEmailAddress,
@@ -46,18 +47,22 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Level = request.CourseLevel
                 }
             }));
-            var emailModel = new CreateDemandConfirmationEmail(
-                request.ContactEmailAddress,
-                request.OrganisationName,
-                request.CourseTitle,
-                request.CourseLevel,
-                request.LocationName,
-                request.NumberOfApprentices);
+            
+            if (result.StatusCode == HttpStatusCode.Created)
+            {
+                var emailModel = new CreateDemandConfirmationEmail(
+                    request.ContactEmailAddress,
+                    request.OrganisationName,
+                    request.CourseTitle,
+                    request.CourseLevel,
+                    request.LocationName,
+                    request.NumberOfApprentices);
             
             
-            await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
+                await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
+            }
 
-            return result.Id;
+            return result.Body.Id;
         }
     }
 }

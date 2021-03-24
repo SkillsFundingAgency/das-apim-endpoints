@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -22,15 +23,16 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
     public class WhenHandlingRegisterDemandCommand
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_Email_Sent(
+        public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Created(
             RegisterDemandCommand command,
-            PostCreateCourseDemand apiResponse,
+            PostCreateCourseDemand responseBody,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            apiClient.Setup(x => x.Post<PostCreateCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
+            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Created);
+            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
                     
                     ((CreateCourseDemandData)c.Data).Id.Equals(command.Id)
                     && ((CreateCourseDemandData)c.Data).ContactEmailAddress.Equals(command.ContactEmailAddress)
@@ -62,10 +64,32 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            actual.Should().Be(apiResponse.Id);
+            actual.Should().Be(apiResponse.Body.Id);
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
+        }
+        
+         [Test, MoqAutoData]
+        public async Task Then_The_Api_Is_Called_And_Email_Not_Sent_If_ResponseCode_Is_Not_Created(
+            RegisterDemandCommand command,
+            PostCreateCourseDemand responseBody,
+            [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            [Frozen]Mock<INotificationService> mockNotificationService,
+            RegisterDemandCommandHandler handler)
+        {
+            //Arrange
+            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Accepted);
+            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
+                )))
+                .ReturnsAsync(apiResponse);
+
+            //Act
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            //Assert
+            actual.Should().Be(apiResponse.Body.Id);
+            mockNotificationService.Verify(x=>x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -78,7 +102,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         {
             //Arrange
             apiClient
-                .Setup(client => client.Post<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
                 .ThrowsAsync(apiException);
 
             //Act
