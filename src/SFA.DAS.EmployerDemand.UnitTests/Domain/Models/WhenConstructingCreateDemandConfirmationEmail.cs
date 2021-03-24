@@ -22,7 +22,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", numberOfApprentices.ToString() }
+                {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
+                {"AEDStopSharingURL", "" }
             };
 
             var email = new CreateDemandConfirmationEmail(
@@ -53,7 +54,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", "Not sure" }
+                {"AEDNumberOfApprentices", "Not sure" },
+                {"AEDStopSharingURL", "" }
             };
 
             var email = new CreateDemandConfirmationEmail(
