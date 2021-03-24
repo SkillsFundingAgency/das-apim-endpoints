@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,6 +22,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             services.AddTransient<IEmployerDemandApiClient<EmployerDemandApiConfiguration>, EmployerDemandApiClient>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
+            
         }
     }
 }

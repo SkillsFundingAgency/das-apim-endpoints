@@ -10,12 +10,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerDemand.Api.AppStart;
 using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.UnitOfWork.NServiceBus.DependencyResolution.Microsoft;
 
 namespace SFA.DAS.EmployerDemand.Api
 {
@@ -54,7 +56,8 @@ namespace SFA.DAS.EmployerDemand.Api
             services.AddMediatR(typeof(GetLocationsQuery).Assembly);
             //services.AddMediatRValidation();
             services.AddServiceRegistration();
-            services.AddNServiceBus();
+            services.AddNServiceBusUnitOfWork();
+            
 
             services.Configure<RouteOptions>(options =>
                 {
@@ -114,6 +117,11 @@ namespace SFA.DAS.EmployerDemand.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerDemandOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+        
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration).GetAwaiter().GetResult();
         }
     }
 }
