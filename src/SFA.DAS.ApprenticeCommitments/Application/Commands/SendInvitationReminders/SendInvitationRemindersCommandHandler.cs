@@ -32,20 +32,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationRemin
         public async Task<Unit> Handle(SendInvitationRemindersCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Getting Registrations which are due a reminder");
-            var list = (await _apprenticeCommitmentsService.GetReminderRegistrations()).Registrations;
+            var list = (await _apprenticeCommitmentsService.GetReminderRegistrations(command.InvitationCutOffTime)).Registrations;
 
-            // This just wouldn't work 
-            //Parallel.ForEach(list, new ParallelOptions {MaxDegreeOfParallelism = 4}, async registration =>
-            //{
-            //    await SendReminder(registration);
-            //});
-
-            await Task.WhenAll(list.Select(x=>SendReminder(x, command.SendNow)));
+            await Task.WhenAll(list.Select(x=>SendReminder(x)));
 
             return Unit.Value;
         }
 
-        private async Task SendReminder(RegistrationsRemindersInvitationsResponse.Registration registration, DateTime sentOn)
+        private async Task SendReminder(RegistrationsRemindersInvitationsResponse.Registration registration)
         {
             try
             {
@@ -65,7 +59,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationRemin
                 });
 
                 _logger.LogInformation($"Updating Registration for Apprentice {registration.ApprenticeId}");
-                await _apprenticeCommitmentsService.InvitationReminderSent(registration.ApprenticeId, sentOn);
+                await _apprenticeCommitmentsService.InvitationReminderSent(registration.ApprenticeId, DateTime.UtcNow);
             }
             catch (Exception e)
             {

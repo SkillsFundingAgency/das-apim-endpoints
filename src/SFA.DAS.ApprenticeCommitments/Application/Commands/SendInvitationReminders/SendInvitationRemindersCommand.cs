@@ -5,7 +5,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationRemin
 {
     public class SendInvitationRemindersCommand : IRequest
     {
-        public DateTime SendNow { set; get; }
-        public int RemindAfterDays { set; get; }
+        public DateTime InvitationCutOffTime { set; get; }
     }
 }

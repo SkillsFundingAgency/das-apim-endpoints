@@ -70,8 +70,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
-        public Task<RegistrationsRemindersInvitationsResponse> GetReminderRegistrations() =>
-            _client.Get<RegistrationsRemindersInvitationsResponse>(new GetRegistrationsNeedingRemindersRequest());
+        public Task<RegistrationsRemindersInvitationsResponse> GetReminderRegistrations(DateTime invitationCutOffTime) => 
+            _client.Get<RegistrationsRemindersInvitationsResponse>(new GetRegistrationsNeedingRemindersRequest(invitationCutOffTime));
 
         public Task InvitationReminderSent(Guid apprenticeId, DateTime sentOn)
         {

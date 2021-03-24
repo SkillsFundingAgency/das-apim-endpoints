@@ -147,7 +147,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             var body = log.RequestMessage.Body;
             var request = JsonConvert.DeserializeObject<InvitationReminderSentData>(body);
-            request.SentOn.Should().Be(_command.SendNow);
+            request.SentOn.Should().BeBefore(DateTime.UtcNow);
         }
 
         [Then(@"all invitations are sent")]
