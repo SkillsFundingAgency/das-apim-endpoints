@@ -9,13 +9,13 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         private readonly long _apprenticeshipId;
 
         public EmployerConfirmationRequest(
-            Guid apprentice, long apprenticeship, bool trainingProviderCorrect)
+            Guid apprentice, long apprenticeship, bool employerCorrect)
         {
             _apprenticeId = apprentice;
             _apprenticeshipId = apprenticeship;
             Data = new EmployerConfirmationRequestData
             {
-                EmployerCorrect = trainingProviderCorrect
+                EmployerCorrect = employerCorrect
             };
         }
 
