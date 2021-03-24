@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -15,6 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly LocationHelper _locationHelper;
 
@@ -22,13 +24,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             ILocationApiClient<LocationApiConfiguration> locationApiClient,
+            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             IShortlistService shortlistService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
+            _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
             _locationHelper = new LocationHelper(locationApiClient);
         }
+
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
             var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
@@ -37,7 +42,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
-            await Task.WhenAll(locationTask, courseTask, shortlistTask);
+            var showEmployerDemandTask = _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest());
+
+            await Task.WhenAll(locationTask, courseTask, shortlistTask, showEmployerDemandTask);
             
             var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,
                 locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder, request.ShortlistUserId));
@@ -48,7 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Providers = providers.Providers,
                 Total = providers.TotalResults,
                 Location = locationTask.Result,
-                ShortlistItemCount = shortlistTask.Result
+                ShortlistItemCount = shortlistTask.Result,
+                ShowEmployerDemand = showEmployerDemandTask.Result == HttpStatusCode.OK
             }; 
         }
     }

@@ -1,8 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
-using SFA.DAS.ApprenticeCommitments.Application.Queries.Apprenticeship;
+using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -12,8 +14,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
 
-        public ApprenticeshipController(IMediator mediator) => _mediator = mediator;
+        public ApprenticeshipController(IMediator mediator, IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
+        {
+            _mediator = mediator;
+            _client = client;
+        }
 
         [HttpPost]
         [Route("/apprenticeships")]
@@ -24,15 +31,28 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
-        public async Task<IActionResult> GetCurrentApprenticeship(Guid apprenticeId, long apprenticeshipId)
+        public async Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {
-            var response = await _mediator.Send(
-                new ApprenticeshipQuery(apprenticeId, apprenticeshipId));
+            var response = await _client.Get<ApprenticeshipResponse>(new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
 
-            if (response == default)
+            if (response == null)
+            {
                 return NotFound();
-            else
-                return Ok(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/trainingproviderconfirmation")]
+        public async Task<IActionResult> TrainingProviderConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] TrainingProviderConfirmationRequestData request)
+        {
+            await _client.Post<ApprenticeshipResponse>(
+                new TrainingProviderConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.TrainingProviderCorrect));
+
+            return Ok();
         }
 
         [HttpPost("/apprentices/{apprenticeId}/email")]

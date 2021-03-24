@@ -10,5 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalFiltered { get ; set ; }
         public GetLocationSearchResponseItem Location { get; set; }
         public int ShortlistItemCount { get ; set ; }
+        public bool ShowEmployerDemand { get; set; }
     }
 }
