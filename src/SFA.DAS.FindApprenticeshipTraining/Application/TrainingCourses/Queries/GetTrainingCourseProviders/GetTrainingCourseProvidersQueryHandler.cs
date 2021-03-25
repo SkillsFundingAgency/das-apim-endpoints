@@ -18,25 +18,25 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
-        private readonly LocationHelper _locationHelper;
+        private readonly ILocationLookupService _locationLookupService;
 
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ILocationApiClient<LocationApiConfiguration> locationApiClient,
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
-            IShortlistService shortlistService)
+            IShortlistService shortlistService, 
+            ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
-            _locationHelper = new LocationHelper(locationApiClient);
+            _locationLookupService = locationLookupService;
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
-            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
+            var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
             
             var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
@@ -46,8 +46,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask, shortlistTask, showEmployerDemandTask);
             
-            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(request.Id, courseTask.Result.SectorSubjectAreaTier2Description, courseTask.Result.Level,
-                locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.SortOrder, request.ShortlistUserId));
+            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
+                request.Id, 
+                courseTask.Result.SectorSubjectAreaTier2Description, 
+                courseTask.Result.Level,
+                locationTask.Result?.GeoPoint?.FirstOrDefault(), 
+                locationTask.Result?.GeoPoint?.LastOrDefault(), 
+                request.SortOrder, 
+                request.ShortlistUserId));
             
             return new GetTrainingCourseProvidersResult
             {

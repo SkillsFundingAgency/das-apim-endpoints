@@ -9,6 +9,7 @@ using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegisterDemand
@@ -16,12 +17,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegiste
     public class WhenHandlingGetRegisterDemandQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Standard_From_Courses_Api(
+        public async Task Then_Gets_Standard_From_Courses_Api_And_Location(
             GetRegisterDemandQuery query,
             GetStandardsListItem apiResponse,
+            LocationItem location,
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetRegisterDemandQueryHandler handler)
         {
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0)).ReturnsAsync(location);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.IsAny<GetStandardRequest>()))
                 .ReturnsAsync(apiResponse);
@@ -29,6 +33,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegiste
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Course.Should().BeEquivalentTo(apiResponse);
+            result.Location.Should().BeEquivalentTo(location);
         }
     }
 }

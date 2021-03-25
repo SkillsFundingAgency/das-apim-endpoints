@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using SFA.DAS.FindApprenticeshipTraining.Domain.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {

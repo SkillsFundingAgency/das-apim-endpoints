@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
-    public class GetLocationsListResponse
-    {
-        public IEnumerable<GetLocationsListItem> Locations { get; set; }
-    }
-
     public class GetLocationsListItem
     {
         [JsonProperty("localAuthorityName")]
