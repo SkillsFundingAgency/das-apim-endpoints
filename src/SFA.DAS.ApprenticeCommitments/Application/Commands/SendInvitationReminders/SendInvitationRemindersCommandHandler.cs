@@ -52,8 +52,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationRemin
                 {
                     SourceId = registration.ApprenticeId,
                     Email = registration.Email,
-                    GivenName = registration.FirstName,
-                    FamilyName = registration.LastName,
+                    GivenName = apprenticeship.FirstName,
+                    FamilyName = apprenticeship.LastName,
                     OrganisationName = registration.EmployerName,
                     ApprenticeshipName = apprenticeship.CourseName
                 });

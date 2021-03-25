@@ -127,8 +127,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.Should().NotBeNull();
             innerApiRequest.SourceId.Should().Be(reminder.ApprenticeId);
             innerApiRequest.Email.Should().Be(reminder.Email);
-            innerApiRequest.GivenName.Should().Be(reminder.FirstName);
-            innerApiRequest.FamilyName.Should().Be(reminder.LastName);
+            innerApiRequest.GivenName.Should().Be(_commitmentsApprenticeshipResponse.FirstName);
+            innerApiRequest.FamilyName.Should().Be(_commitmentsApprenticeshipResponse.LastName);
             innerApiRequest.ApprenticeshipName.Should().Be(_commitmentsApprenticeshipResponse.CourseName);
             innerApiRequest.OrganisationName.Should().Be(reminder.EmployerName);
             innerApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
