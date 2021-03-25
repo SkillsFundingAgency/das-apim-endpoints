@@ -19,20 +19,20 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly ApprenticeLoginService _apprenticeLoginService;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly CoursesService _coursesService;
 
         public CreateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginService apprenticeLoginService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
-            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+            CoursesService coursesService)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _apprenticeLoginService = apprenticeLoginService;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
-            _coursesApiClient = coursesApiClient;
+            _coursesService = coursesService;
         }
 
         public async Task<Unit> Handle(
@@ -78,17 +78,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             await Task.WhenAll(trainingProviderTask, apprenticeTask);
 
-            var course = await _coursesApiClient.Get<StandardApiResponse>(new GetStandardDetailsByIdRequest(apprenticeTask.Result.CourseCode));
-            //var course = await _coursesService.GetCourse(apprenticeTask.Result.CourseCode);
+            var course = await _coursesService.GetCourse(apprenticeTask.Result.CourseCode);
 
             return (trainingProviderTask.Result, apprenticeTask.Result, course);
         }
-    }
-
-    public class StandardApiResponse : StandardApiResponseBase
-    {
-        public string Title { get; set; }
-        public int Level { get; set; }
-        public string Option { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
 {
@@ -19,10 +20,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<ApprenticeLoginClient>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IInternalApiClient<ApprenticeLoginConfiguration>, ApprenticeLoginClient>();
+            services.AddTransient<CourseApiClient>();
             services.AddTransient<ApprenticeCommitmentsService>();
             services.AddTransient<ApprenticeLoginService>();
             services.AddTransient<CommitmentsV2Service>();
             services.AddTransient<TrainingProviderService>();
+            services.AddTransient<CoursesService>();
         }
     }
 }
