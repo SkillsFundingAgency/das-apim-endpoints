@@ -57,8 +57,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
                         .WithPing()
-                        .WithAValidApprentice(EmployerAccountId, ApprenticeshipId)
-                        .WithAnyApprenticeship()
+                        .WithAnyApprenticeship(EmployerAccountId)
                         .Build();
                 }
 

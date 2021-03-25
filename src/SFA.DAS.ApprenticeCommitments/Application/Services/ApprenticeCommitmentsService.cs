@@ -56,11 +56,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task VerifyRegistration(VerifyIdentityRegistrationCommand command)
         {
-            return _client.Post<VerifyRegistrationResponse>(new VerifyRegistrationRequest
+            return _client.Post(new VerifyRegistrationRequest
             {
                 Data = new VerifyRegistrationRequestData
                 {
-                    RegistrationId = command.RegistrationId,
+                    ApprenticeId = command.ApprenticeId,
                     UserIdentityId = command.UserIdentityId,
                     FirstName = command.FirstName,
                     LastName = command.LastName,

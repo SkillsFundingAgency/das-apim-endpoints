@@ -66,9 +66,10 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
-        public CommitmentsV2ApiBuilder WithAnyApprenticeship()
+        public CommitmentsV2ApiBuilder WithAnyApprenticeship(long accountId)
         {
             var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
+                .With(x => x.EmployerAccountId, accountId)
                 .Create();
 
             _server
