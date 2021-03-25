@@ -1,5 +1,5 @@
 ﻿using NServiceBus;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Notifications.Messages.Commands;
 
 namespace SFA.DAS.EmployerDemand.Api.AppStart
 {
@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
 
         public static void AddRouting(this RoutingSettings routingSettings)
         {
-            routingSettings.RouteToEndpoint(typeof(EmailTemplateArguments), NotificationsMessageHandler);
+            routingSettings.RouteToEndpoint(typeof(SendEmailCommand), NotificationsMessageHandler);
         }
     }
 }
