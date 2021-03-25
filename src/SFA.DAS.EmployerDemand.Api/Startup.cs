@@ -54,6 +54,7 @@ namespace SFA.DAS.EmployerDemand.Api
             services.AddMediatR(typeof(GetLocationsQuery).Assembly);
             //services.AddMediatRValidation();
             services.AddServiceRegistration();
+            services.AddNServiceBus();
 
             services.Configure<RouteOptions>(options =>
                 {

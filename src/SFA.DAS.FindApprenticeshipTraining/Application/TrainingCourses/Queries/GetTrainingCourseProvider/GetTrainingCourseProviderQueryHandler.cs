@@ -18,24 +18,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
-        private readonly LocationHelper _locationHelper;
+        private readonly ILocationLookupService _locationLookupService;
 
         public GetTrainingCourseProviderQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ILocationApiClient<LocationApiConfiguration> locationApiClient,
             ICacheStorageService cacheStorageService,
-            IShortlistService shortlistService)
+            IShortlistService shortlistService, 
+            ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
             _shortlistService = shortlistService;
+            _locationLookupService = locationLookupService;
             _cacheHelper = new CacheHelper(cacheStorageService);
-            _locationHelper = new LocationHelper(locationApiClient);
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
-            var locationTask = _locationHelper.GetLocationInformation(request.Location, request.Lat, request.Lon);
+            var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
 
             await Task.WhenAll(locationTask, courseTask);
