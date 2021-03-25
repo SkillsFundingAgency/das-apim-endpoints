@@ -1,10 +1,18 @@
-﻿namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
+﻿using System;
+
+namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
     public class ApprenticeshipResponse
     {
         public long Id { get; set; }
         public string EmployerName { get; set; }
         public string TrainingProviderName { get; set; }
+        public string CourseName { get; set; }
+        public int CourseLevel { get; set; }
+        public string CourseOption { get; set; }
+        public DateTime PlannedStartDate { get; set; }
+        public DateTime PlannedEndDate { get; set; }
+        public int DurationInMonths { get; set; }
         public bool? TrainingProviderCorrect { get; set; }
         public bool? EmployerCorrect { get; set; }
     }
