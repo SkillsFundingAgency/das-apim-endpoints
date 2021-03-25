@@ -3,17 +3,19 @@ using AutoFixture.NUnit3;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.EmployerDemand.Application.Demand.Services;
-using SFA.DAS.EmployerDemand.Domain.Models;
+using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.NServiceBus.Services;
+using SFA.DAS.SharedOuterApi.Models.Messages;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Services
+namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 {
     public class WhenSendingAnEmail
     {
         [Test, MoqAutoData]
         public async Task Then_Sends_Correct_Message_To_Notification_Service(
-            CreateDemandConfirmationEmail email,
+            SendEmailCommand email,
             [Frozen] Mock<IMessageSession> mockMessageSession,
             NotificationService service)
         {
@@ -22,4 +24,5 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Services
             mockMessageSession.Verify(session => session.Send(email, It.IsAny<SendOptions>()));
         }
     }
+
 }

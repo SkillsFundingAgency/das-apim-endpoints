@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using NServiceBus;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerDemand.Application.Demand.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class NotificationService
+    public class NotificationService : INotificationService
     {
         private readonly IMessageSession _messageSession;
 
@@ -13,7 +14,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Services
             _messageSession = messageSession;
         }
 
-        public Task Send(EmailTemplateArguments email)
+        public Task Send(SendEmailCommand email)
         {
             return _messageSession.Send(email);
         }

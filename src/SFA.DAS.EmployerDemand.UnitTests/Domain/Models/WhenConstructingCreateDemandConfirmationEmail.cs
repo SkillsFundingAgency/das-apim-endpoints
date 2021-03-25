@@ -15,14 +15,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string standardName, 
             int standardLevel, 
             string location, 
-            int? numberOfApprentices)
+            int numberOfApprentices)
         {
             var expectedTokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", numberOfApprentices.ToString() }
+                {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
+                {"AEDStopSharingURL", "" }
             };
 
             var email = new CreateDemandConfirmationEmail(
@@ -53,7 +54,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDEmployerName", recipientName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
-                {"AEDNumberOfApprentices", "Not sure" }
+                {"AEDNumberOfApprentices", "Not sure" },
+                {"AEDStopSharingURL", "" }
             };
 
             var email = new CreateDemandConfirmationEmail(
@@ -62,7 +64,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 standardName, 
                 standardLevel, 
                 location, 
-                null);
+                0);
 
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }

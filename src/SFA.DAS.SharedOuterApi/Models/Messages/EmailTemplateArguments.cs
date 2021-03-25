@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using NServiceBus;
 
-namespace SFA.DAS.SharedOuterApi.Models
+namespace SFA.DAS.SharedOuterApi.Models.Messages
 {
     public abstract class EmailTemplateArguments
     {
