@@ -3,7 +3,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 {
-    public class TestContext
+    public class TestContext : IDisposable
     {
         public ApprenticeCommitmentsApi OuterApiClient { get; set; }
         public MockApi InnerApi { get; set; }
@@ -11,5 +11,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
         public MockApi CommitmentsV2InnerApi { get; set; }
         public MockApi TrainingProviderInnerApi { get; set; }
         public ApprenticeLoginConfiguration LoginConfig { get; set; }
+
+        private MockApi? _coursesInnerApi;
+        public MockApi CoursesInnerApi => _coursesInnerApi ??= new MockApi();
+
+        public void Dispose()
+        {
+            _coursesInnerApi?.Dispose();
+        }
     }
 }

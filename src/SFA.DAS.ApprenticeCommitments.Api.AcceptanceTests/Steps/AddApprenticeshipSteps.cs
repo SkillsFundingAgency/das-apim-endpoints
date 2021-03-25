@@ -27,6 +27,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private CreateApprenticeshipCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
+        private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
 
         public AddApprenticeshipSteps(TestContext context)
         {
@@ -91,7 +92,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             }
         }
 
-        [Given(@"the following training providers exist")]
+        [Given("the following training providers exist")]
         public void GivenTheFollowingTrainingProvidersExist(Table table)
         {
             _trainingProviderResponses = table.CreateSet<Apis.TrainingProviderApi.TrainingProviderResponse>();
@@ -111,6 +112,26 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                             .WithHeader("Content-Type", "application/json")
                             .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new [] { trainingProvider }}))
                     );
+            }
+        }
+
+        [Given("the following courses exist")]
+        public void GivenTheFollowingCoursesExist(Table table)
+        {
+            _courseResponses = table.CreateSet<Apis.Courses.StandardResponse>();
+
+            foreach (var course in _courseResponses)
+            {
+                _context.CoursesInnerApi.MockServer
+                    .Given(
+                        Request.Create()
+                            .WithPath($"/api/courses/standards/{course.Id}")
+                            .UsingGet())
+                    .RespondWith(
+                        Response.Create()
+                            .WithStatusCode((int)HttpStatusCode.OK)
+                            .WithHeader("Content-Type", "application/json")
+                            .WithBody(JsonConvert.SerializeObject(course)));
             }
         }
 
@@ -142,7 +163,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
         }
 
-        [Then(@"the Training Provider Name should be '(.*)'")]
+        [Then("the Training Provider Name should be '(.*)'")]
         public void ThenTheTrainingProviderNameShouldBe(string trainingProviderName)
         {
             var logs = _context.InnerApi.MockServer.LogEntries;
@@ -152,6 +173,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
+        }
+
+        [Then("the course should be `(.*)` level (.*)")]
+        public void ThenTheCourseLevelShouldBe(string name, int level)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.CourseName.Should().Be(name);
+            innerApiRequest.CourseLevel.Should().Be(level);
         }
 
         [Then("the inner API should return these errors")]
