@@ -66,7 +66,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                 .AddCheck<ApprenticeCommitmentsHealthCheck>(nameof(ApprenticeCommitmentsHealthCheck))
                 .AddCheck<CommitmentsV2HealthCheck>(nameof(CommitmentsV2HealthCheck))
                 .AddCheck<TrainingProviderApiHealthCheck>(nameof(TrainingProviderApiHealthCheck))
-                .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck));
+                .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck))
+                .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck));
 
             services.AddMediatR(GetType().Assembly, typeof(CreateApprenticeshipCommandHandler).Assembly);
             services.AddFluentValidation(new[] { typeof(CreateApprenticeshipCommandHandler).Assembly });

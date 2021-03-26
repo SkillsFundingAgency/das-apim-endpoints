@@ -12,6 +12,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public CoursesService(CourseApiClient client) => _client = client;
 
+        public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
+
         public async Task<StandardApiResponse> GetCourse(string courseCode)
         {
             var course = await _client.Get<StandardApiResponse>(
