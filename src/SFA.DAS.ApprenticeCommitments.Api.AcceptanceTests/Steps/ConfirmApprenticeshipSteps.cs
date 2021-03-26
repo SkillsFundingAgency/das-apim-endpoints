@@ -32,6 +32,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             };
         }
 
+        [Given(@"an Employer confirmation is requested")]
+        public void GivenAEmployerConfirmationIsRequested()
+        {
+            _command = new EmployerConfirmationRequestData()
+            {
+                EmployerCorrect = true
+            };
+        }
+
         [Given("the inner API will accept the confirmation")]
         public void GivenTheInnerAPIWillAcceptTheConfirmation()
         {
@@ -43,6 +52,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK));
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/*/apprenticeships/*/employerconfirmation")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK));
         }
 
         [When("we confirm the training provider")]
@@ -50,6 +68,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         {
             await _context.OuterApiClient.Post(
                 $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/trainingproviderconfirmation",
+                _command);
+        }
+
+        [When(@"we confirm the employer")]
+        public async Task WhenWeConfirmTheEmployer()
+        {
+            await _context.OuterApiClient.Post(
+                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/employerconfirmation",
                 _command);
         }
 

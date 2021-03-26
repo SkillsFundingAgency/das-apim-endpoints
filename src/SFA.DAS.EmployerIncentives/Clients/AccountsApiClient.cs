@@ -65,5 +65,10 @@ namespace SFA.DAS.EmployerIncentives.Clients
         {
             return _client.Put(request);
         }
+
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
