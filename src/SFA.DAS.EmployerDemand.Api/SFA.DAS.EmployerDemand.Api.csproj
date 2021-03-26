@@ -37,7 +37,9 @@
         <PackageReference Include="SFA.DAS.Api.Common" Version="1.0.8" />
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
+        <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     </ItemGroup>
     
     

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Domain.Models
+﻿namespace SFA.DAS.SharedOuterApi.Models
 {
     public class LocationItem
     {
