@@ -1,7 +1,4 @@
 ﻿@loginApi
-@innerApi
-@commitmentsV2InnerApi
-@trainingProviderInnerApi
 Feature: HealthChecks
 	In order to check if the api is working
 	As a application monitor

@@ -1,5 +1,4 @@
-﻿@innerApi
-Feature: ConfirmApprenticeshipFeature
+﻿Feature: ConfirmApprenticeshipFeature
 
 Scenario: Confirm the training provider
 	Given a Training Provider confirmation
