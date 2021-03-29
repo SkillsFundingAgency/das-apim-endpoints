@@ -86,14 +86,12 @@ stages:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
-  - name: ServiceConnection
-    value: SFA-DAS-DevTest-ARM
   - name: AppRoleAssignmentsServiceConnection
     value: das-app-role-assignments-CDS
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -109,7 +107,7 @@ stages:
       DeploymentName: Deploy_FindApprenticeshipTraining
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -129,7 +127,7 @@ stages:
       DeploymentName: Deploy_Reservations
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -149,7 +147,7 @@ stages:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -169,7 +167,7 @@ stages:
       DeploymentName: Deploy_FindEpao
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -189,7 +187,7 @@ stages:
       DeploymentName: Deploy_Forecasting
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -209,7 +207,7 @@ stages:
       DeploymentName: Deploy_EpaoRegister
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -229,7 +227,7 @@ stages:
       DeploymentName: Deploy_Approvals
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -249,7 +247,7 @@ stages:
       DeploymentName: Deploy_ManageApprenticeships
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -269,7 +267,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -289,7 +287,7 @@ stages:
       DeploymentName: Deploy_Campaign
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -309,7 +307,7 @@ stages:
       DeploymentName: Deploy_Assessors
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -329,7 +327,7 @@ stages:
       DeploymentName: Deploy_ApprenticeCommitments
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -349,7 +347,7 @@ stages:
       DeploymentName: Deploy_EmployerDemand
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -374,14 +372,12 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
-  - name: ServiceConnection
-    value: SFA-DAS-DevTest-ARM
   - name: AppRoleAssignmentsServiceConnection
     value: das-app-role-assignments-CDS
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -397,7 +393,7 @@ stages:
       DeploymentName: Deploy_FindApprenticeshipTraining
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -414,7 +410,7 @@ stages:
       DeploymentName: Deploy_Reservations
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -431,7 +427,7 @@ stages:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -448,7 +444,7 @@ stages:
       DeploymentName: Deploy_FindEpao
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -465,7 +461,7 @@ stages:
       DeploymentName: Deploy_Forecasting
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -482,7 +478,7 @@ stages:
       DeploymentName: Deploy_EpaoRegister
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -499,7 +495,7 @@ stages:
       DeploymentName: Deploy_Approvals
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -516,7 +512,7 @@ stages:
       DeploymentName: Deploy_ManageApprenticeships
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -533,7 +529,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -550,7 +546,7 @@ stages:
       DeploymentName: Deploy_Campaign
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -567,7 +563,7 @@ stages:
       DeploymentName: Deploy_Assessors
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -584,7 +580,7 @@ stages:
       DeploymentName: Deploy_ApprenticeCommitments
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -601,7 +597,7 @@ stages:
       DeploymentName: Deploy_EmployerDemand
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -623,14 +619,12 @@ stages:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
-  - name: ServiceConnection
-    value: SFA-DAS-DevTest-ARM
   - name: AppRoleAssignmentsServiceConnection
     value: das-app-role-assignments-CDS    
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -646,7 +640,7 @@ stages:
       DeploymentName: Deploy_FindApprenticeshipTraining
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -663,7 +657,7 @@ stages:
       DeploymentName: Deploy_Reservations
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -680,7 +674,7 @@ stages:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -697,7 +691,7 @@ stages:
       DeploymentName: Deploy_FindEpao
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -714,7 +708,7 @@ stages:
       DeploymentName: Deploy_Forecasting
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -731,7 +725,7 @@ stages:
       DeploymentName: Deploy_EpaoRegister
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -748,7 +742,7 @@ stages:
       DeploymentName: Deploy_Approvals
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -765,7 +759,7 @@ stages:
       DeploymentName: Deploy_ManageApprenticeships
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -782,7 +776,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -800,7 +794,7 @@ stages:
       DeploymentName: Deploy_Campaign
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -817,7 +811,7 @@ stages:
       DeploymentName: Deploy_Assessors
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -834,7 +828,7 @@ stages:
       DeploymentName: Deploy_ApprenticeCommitments
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -851,7 +845,7 @@ stages:
       DeploymentName: Deploy_EmployerDemand
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1576,14 +1570,12 @@ stages:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
-  - name: ServiceConnection
-    value: SFA-DAS-DevTest-ARM
   - name: AppRoleAssignmentsServiceConnection
     value: das-app-role-assignments-CDS    
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       SubscriptionId: $(SubscriptionId)
       Location: $(ResourceGroupLocation)
       Environment: DEV
@@ -1599,7 +1591,7 @@ stages:
       DeploymentName: Deploy_FindApprenticeshipTraining
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindApprenticeshipTraining }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1616,7 +1608,7 @@ stages:
       DeploymentName: Deploy_Reservations
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Reservations }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1633,7 +1625,7 @@ stages:
       DeploymentName: Deploy_EmployerIncentives
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerIncentives }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1650,7 +1642,7 @@ stages:
       DeploymentName: Deploy_FindEpao
       DeploymentCondition: and(succeeded(), eq(${{ parameters.FindEpao }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1667,7 +1659,7 @@ stages:
       DeploymentName: Deploy_Forecasting
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Forecasting }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1684,7 +1676,7 @@ stages:
       DeploymentName: Deploy_EpaoRegister
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EpaoRegister }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1701,7 +1693,7 @@ stages:
       DeploymentName: Deploy_Approvals
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Approvals }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1718,7 +1710,7 @@ stages:
       DeploymentName: Deploy_ManageApprenticeships
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ManageApprenticeships }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1735,7 +1727,7 @@ stages:
       DeploymentName: Deploy_Recruit
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Recruit }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1752,7 +1744,7 @@ stages:
       DeploymentName: Deploy_Campaign
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Campaign }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1769,7 +1761,7 @@ stages:
       DeploymentName: Deploy_Assessors
       DeploymentCondition: and(succeeded(), eq(${{ parameters.Assessors }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1786,7 +1778,7 @@ stages:
       DeploymentName: Deploy_ApprenticeCommitments
       DeploymentCondition: and(succeeded(), eq(${{ parameters.ApprenticeCommitments }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
@@ -1803,7 +1795,7 @@ stages:
       DeploymentName: Deploy_EmployerDemand
       DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
       DeploymentApprovals: DEV
-      ServiceConnection: $(ServiceConnection)
+      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
       ApimResourceGroup: $(ApimResourceGroup)
