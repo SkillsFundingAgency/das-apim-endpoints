@@ -86,8 +86,6 @@ stages:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
-  - name: AppRoleAssignmentsServiceConnection
-    value: das-app-role-assignments-CDS
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -118,7 +116,7 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -138,7 +136,7 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -158,7 +156,7 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -178,7 +176,7 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -198,7 +196,7 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)      
 
@@ -218,7 +216,7 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -238,7 +236,7 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -258,7 +256,7 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -278,7 +276,7 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -298,7 +296,7 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -318,7 +316,7 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -338,7 +336,7 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -358,7 +356,7 @@ stages:
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: $(AppRoleAssignmentsServiceConnection)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
       ResourceEnvironmentName: $(ResourceEnvironmentName)
 
@@ -372,8 +370,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
-  - name: AppRoleAssignmentsServiceConnection
-    value: das-app-role-assignments-CDS
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -619,8 +615,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
-  - name: AppRoleAssignmentsServiceConnection
-    value: das-app-role-assignments-CDS    
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
@@ -1570,8 +1564,6 @@ stages:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
-  - name: AppRoleAssignmentsServiceConnection
-    value: das-app-role-assignments-CDS    
   jobs:
   - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
     parameters:
