@@ -4,7 +4,6 @@ using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
