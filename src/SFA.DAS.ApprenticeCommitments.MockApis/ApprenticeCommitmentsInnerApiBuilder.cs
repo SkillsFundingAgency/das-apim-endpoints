@@ -99,5 +99,21 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
+        public ApprenticeCommitmentsInnerApiBuilder WithRegistrationSeen()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/registrations/*/firstseen")
+                        .UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.Accepted)
+                );
+
+            return this;
+        }
+
     }
 }
