@@ -20,17 +20,17 @@ namespace SFA.DAS.Campaign.Application.Queries.Sectors
         }
         public async Task<GetSectorsQueryResult> Handle(GetSectorsQuery request, CancellationToken cancellationToken)
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse));
+            var response = await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
             if (response == null)
             {
-                response = await _coursesApiClient.Get<GetSectorsListResponse>(new GetSectorsListRequest());
+                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
 
-                await _cacheStorageService.SaveToCache(nameof(GetSectorsListResponse), response, 23);
+                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
             }
             
             return new GetSectorsQueryResult
             {
-                Sectors = response.Sectors
+                Sectors = response.Routes
             };
         }
     }

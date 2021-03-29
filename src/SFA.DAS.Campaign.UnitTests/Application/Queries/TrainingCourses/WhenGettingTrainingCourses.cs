@@ -20,7 +20,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.TrainingCourses
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Sector_Looked_Up_And_Returns_Standards(
-            Guid routeId,
+            int routeId,
             GetStandardsQuery query,
             GetStandardsListResponse apiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClient,
@@ -30,15 +30,15 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.TrainingCourses
         {
             //Arrange
             cacheStorageService
-                .Setup(x => x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
-                .ReturnsAsync(new GetSectorsListResponse
+                .Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync(new GetRoutesListResponse
                 {
-                    Sectors = new List<GetSectorsListItem>
+                    Routes = new List<GetRoutesListItem>
                     {
-                        new GetSectorsListItem
+                        new GetRoutesListItem
                         {
                             Id = routeId,
-                            Route = query.Sector
+                            Name = query.Sector
                         }
                     }
                 });
@@ -53,7 +53,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.TrainingCourses
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Sectors_Cache_Is_Empty_They_Are_Looked_Up_And_Added(
-            Guid routeId,
+            int routeId,
             GetStandardsQuery query,
             GetStandardsListResponse apiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClient,
@@ -61,21 +61,21 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.TrainingCourses
             GetStandardsQueryHandler handler)
         {
             //Arrange
-            var sectorsApiResponse = new GetSectorsListResponse
+            var sectorsApiResponse = new GetRoutesListResponse
             {
-                Sectors = new List<GetSectorsListItem>
+                Routes = new List<GetRoutesListItem>
                 {
-                    new GetSectorsListItem
+                    new GetRoutesListItem
                     {
                         Id = routeId,
-                        Route = query.Sector
+                        Name = query.Sector
                     }
                 }
             };
             cacheStorageService
-                .Setup(x => x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
-                .ReturnsAsync((GetSectorsListResponse) default);
-            apiClient.Setup(x => x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>())).ReturnsAsync(sectorsApiResponse);
+                .Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse) default);
+            apiClient.Setup(x => x.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>())).ReturnsAsync(sectorsApiResponse);
             apiClient.Setup(x => x.Get<GetStandardsListResponse>(It.Is<GetAvailableToStartStandardsListRequest>(c=>c.RouteIds.Contains(routeId)))).ReturnsAsync(apiResponse);
             
             //Act
@@ -83,25 +83,24 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.TrainingCourses
             
             //Assert
             actual.Standards.Should().BeEquivalentTo(apiResponse.Standards);
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse, 23));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetRoutesListResponse),sectorsApiResponse, 23));
 
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Sector_Does_Not_Exist_Then_No_Standards_Are_Returned(
-            Guid routeId,
             GetStandardsQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetStandardsQueryHandler handler)
         {
             //Arrange
             cacheStorageService
-                .Setup(x => x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
-                .ReturnsAsync((GetSectorsListResponse) default);
-            apiClient.Setup(x => x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>())).ReturnsAsync(sectorsApiResponse);
+                .Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse) default);
+            apiClient.Setup(x => x.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>())).ReturnsAsync(routesApiResponse);
             
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);

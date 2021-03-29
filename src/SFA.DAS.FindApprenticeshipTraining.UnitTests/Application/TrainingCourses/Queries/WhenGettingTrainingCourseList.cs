@@ -22,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_And_Sectors_And_Levels_From_Courses_Api_And_Shortlist_Item_Count_With_Request_Params(
-            Guid sectorId,
+            int sectorId,
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetLevelsListResponse levelsApiResponse,
@@ -31,14 +31,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistService> shortlistService,
             GetTrainingCoursesListQueryHandler handler)
         {
-            var sectorsApiResponse = new GetSectorsListResponse
+            var sectorsApiResponse = new GetRoutesListResponse
             {
-                Sectors = new List<GetSectorsListItem>
+                Routes = new List<GetRoutesListItem>
                 {
-                    new GetSectorsListItem
+                    new GetRoutesListItem
                     {
                         Id = sectorId,
-                        Route = query.RouteIds.First()
+                        Name = query.RouteIds.First()
                     }
                 }
             };
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                                                       )))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
                 .ReturnsAsync(sectorsApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
@@ -61,7 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
-            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Routes);
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
@@ -72,7 +72,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         [Test, MoqAutoData]
         public async Task Then_Caches_The_Courses_If_There_Are_No_Filters(
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
@@ -88,8 +88,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+                .ReturnsAsync(routesApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
@@ -98,7 +98,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse), apiResponse, TimeSpan.FromHours(2)));
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
-            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(routesApiResponse.Routes);
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
@@ -109,7 +109,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_The_Sectors_Are_Added_To_The_Cache_If_Not_Available(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -120,20 +120,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+                .ReturnsAsync(routesApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
             
             await handler.Handle(query, CancellationToken.None);
             
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetSectorsListResponse),sectorsApiResponse, TimeSpan.FromHours(2)));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetRoutesListResponse),routesApiResponse, TimeSpan.FromHours(2)));
         }
 
         [Test, MoqAutoData]
         public async Task Then_Sector_Ids_Are_Looked_Up_If_There_Is_A_Sector_Filter(
-            Guid sectorId,
+            int sectorId,
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
             GetLevelsListResponse levelsApiResponse,
@@ -141,19 +141,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
-            var sectorsApiResponse = new GetSectorsListResponse
+            var sectorsApiResponse = new GetRoutesListResponse
             {
-                Sectors = new List<GetSectorsListItem>
+                Routes = new List<GetRoutesListItem>
                 {
-                    new GetSectorsListItem
+                    new GetRoutesListItem
                     {
                         Id = sectorId,
-                        Route = query.RouteIds.First()
+                        Name = query.RouteIds.First()
                     }
                 }
             };
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
                 .ReturnsAsync(sectorsApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
@@ -172,7 +172,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_The_Sectors_Are_Returned_From_The_Cache_If_Available(
             GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -188,24 +188,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(levelsApiResponse);
             cacheStorageService
                 .Setup(x =>
-                    x.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse)))
-                .ReturnsAsync(sectorsApiResponse);
+                    x.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync(routesApiResponse);
             
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
 
             //Assert
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
-            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(routesApiResponse.Routes);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
-            mockApiClient.Verify(x=>x.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()), Times.Never);
+            mockApiClient.Verify(x=>x.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()), Times.Never);
         }
 
         [Test, MoqAutoData]
         public async Task Then_The_Levels_Are_Added_To_The_Cache_If_Not_Available( GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -216,8 +216,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+                .ReturnsAsync(routesApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
@@ -230,7 +230,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         [Test, MoqAutoData]
         public async Task Then_The_Levels_Are_Returned_From_The_Cache_If_Available(GetTrainingCoursesListQuery query,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -242,8 +242,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+                .ReturnsAsync(routesApiResponse);
             cacheStorageService
                 .Setup(x =>
                     x.RetrieveFromCache<GetLevelsListResponse>(nameof(GetLevelsListResponse)))
@@ -254,7 +254,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             //Assert
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);
-            result.Sectors.Should().BeEquivalentTo(sectorsApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(routesApiResponse.Routes);
             result.Levels.Should().BeEquivalentTo(levelsApiResponse.Levels);
             result.Total.Should().Be(apiResponse.Total);
             result.TotalFiltered.Should().Be(apiResponse.TotalFiltered);
@@ -265,7 +265,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_Caches_The_Courses_If_The_Cache_Has_An_Empty_Course_List(
             GetStandardsListResponse cachedStandards,
             GetStandardsListResponse apiResponse,
-            GetSectorsListResponse sectorsApiResponse,
+            GetRoutesListResponse routesApiResponse,
             GetLevelsListResponse levelsApiResponse,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
@@ -286,8 +286,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(apiResponse);
             mockApiClient
-                .Setup(client => client.Get<GetSectorsListResponse>(It.IsAny<GetSectorsListRequest>()))
-                .ReturnsAsync(sectorsApiResponse);
+                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+                .ReturnsAsync(routesApiResponse);
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);

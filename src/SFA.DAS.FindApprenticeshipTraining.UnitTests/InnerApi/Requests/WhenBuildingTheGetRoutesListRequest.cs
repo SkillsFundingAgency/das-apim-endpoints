@@ -1,18 +1,17 @@
-using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingTheGetSectorsListRequest
+    public class WhenBuildingTheGetRoutesListRequest
     {
         [Test]
         public void Then_The_Url_Is_Correctly_Constructed()
         {
-            var actual = new GetSectorsListRequest();
+            var actual = new GetRoutesListRequest();
 
-            actual.GetUrl.Should().Be($"api/courses/sectors");
+            actual.GetUrl.Should().Be($"api/courses/routes");
         }
     }
 }
