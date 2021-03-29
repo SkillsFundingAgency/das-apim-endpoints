@@ -117,7 +117,6 @@ stages:
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -136,7 +135,6 @@ stages:
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -155,7 +153,6 @@ stages:
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -174,7 +171,6 @@ stages:
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -193,7 +189,6 @@ stages:
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -212,7 +207,6 @@ stages:
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -231,7 +225,6 @@ stages:
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -250,7 +243,6 @@ stages:
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -269,7 +261,6 @@ stages:
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -288,7 +279,6 @@ stages:
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -307,7 +297,6 @@ stages:
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -326,7 +315,6 @@ stages:
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -345,7 +333,6 @@ stages:
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      AppRoleAssignmentsScriptPath: $(Pipeline.Workspace)/das-infrastructure-config/Configuration/app-role-assignments/scripts/Set-AppRoleAssignments.ps1
 
 - stage: Deploy_TEST
   dependsOn: Build
