@@ -9,7 +9,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
     {
         public string Keyword { get ; set ; }
         public CoursesOrderBy OrderBy { get; set; }
-        public List<Guid> RouteIds { get; set; }
+        public List<int> RouteIds { get; set; }
         public List<int> Levels { get ; set ; }
         public string GetUrl => BuildUrl();
 

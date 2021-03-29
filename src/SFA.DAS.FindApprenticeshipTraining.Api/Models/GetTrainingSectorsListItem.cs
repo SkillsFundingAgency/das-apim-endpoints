@@ -7,14 +7,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     {
         public string Route { get ; set ; }
 
-        public Guid Id { get ; set ; }
+        public int Id { get ; set ; }
 
-        public static implicit operator GetTrainingSectorsListItem(GetSectorsListItem sectorsListItem)
+        public static implicit operator GetTrainingSectorsListItem(GetRoutesListItem routesListItem)
         {
             return new GetTrainingSectorsListItem
             {
-                Id = sectorsListItem.Id,
-                Route = sectorsListItem.Route
+                Id = routesListItem.Id,
+                Route = routesListItem.Name
             };
         }
     }

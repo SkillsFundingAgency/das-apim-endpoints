@@ -10,12 +10,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
-            GetSectorsListItem source
+            GetRoutesListItem source
         )
         {
             var response = (GetTrainingSectorsListItem) source;
             
-            response.Should().BeEquivalentTo(source);
+            response.Id.Should().Be(source.Id);
+            response.Route.Should().Be(source.Name);
         }
     }
 }
