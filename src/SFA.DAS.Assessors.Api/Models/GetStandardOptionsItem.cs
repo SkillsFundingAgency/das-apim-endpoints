@@ -8,7 +8,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public string StandardUId { get; set; }
         public int LarsCode { get; set; }
         public string IfateReferenceNumber { get; set; }
-        public decimal Version { get; set; }
+        public string Version { get; set; }
         public IEnumerable<string> Options { get; set; }
 
         public static implicit operator GetStandardOptionsItem(GetStandardOptionsListItem source)
