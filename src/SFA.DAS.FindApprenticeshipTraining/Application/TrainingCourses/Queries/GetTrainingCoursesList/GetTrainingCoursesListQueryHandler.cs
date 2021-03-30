@@ -32,12 +32,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var taskList = new List<Task>();
             bool saveStandardsToCache;
 
-            var sectors = await _cacheHelper.GetRequest<GetSectorsListResponse>(_apiClient,
-                    new GetSectorsListRequest(),nameof(GetSectorsListResponse), out var saveSectorsToCache);
+            var sectors = await _cacheHelper.GetRequest<GetRoutesListResponse>(_apiClient,
+                    new GetRoutesListRequest(),nameof(GetRoutesListResponse), out var saveSectorsToCache);
 
             var routeFilters = sectors
-                .Sectors
-                .Where(c=>request.RouteIds.Contains(c.Route)).Select(x=>x.Id)
+                .Routes
+                .Where(c=>request.RouteIds.Contains(c.Name)).Select(x=>x.Id)
                 .ToList();
             
             var standardsRequest = new GetAvailableToStartStandardsListRequest
@@ -85,7 +85,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCoursesListResult
             {
                 Courses = standardsTask.Result.Standards,
-                Sectors = sectors.Sectors,
+                Sectors = sectors.Routes,
                 Levels = levelsTask.Result.Levels,
                 Total = standardsTask.Result.Total,
                 TotalFiltered = standardsTask.Result.TotalFiltered,

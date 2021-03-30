@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,9 +36,11 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Sectors
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetSectorsResponse;
             Assert.IsNotNull(model);
-            model.Sectors.Should().BeEquivalentTo(mediatorResult.Sectors, options => options
-                .Excluding(c=>c.Id)
-            );
+
+            foreach (var sector in model.Sectors)
+            {
+                mediatorResult.Sectors.Should().Contain(c => c.Name.Equals(sector.Route));
+            }
         }
 
         [Test, MoqAutoData]

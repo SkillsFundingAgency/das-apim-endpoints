@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,6 +22,13 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
+            var result = await PostWithResponseCode<TResponse>(request);
+            
+            return result.Body;
+        }
+
+        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        {
             await AddAuthenticationHeader();
 
             AddVersionHeader(request.Version);
@@ -34,7 +42,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<TResponse>(json);
+            return new ApiResponse<TResponse>(JsonConvert.DeserializeObject<TResponse>(json), response.StatusCode);
         }
 
         public async Task Post<TData>(IPostApiRequest<TData> request)
