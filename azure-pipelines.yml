@@ -54,7 +54,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/heads/split-app-role-assignments
+    ref: refs/tags/0.3.10
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
@@ -69,7 +69,7 @@ resources:
   - pipeline: das-infrastructure-config
     project: Apprenticeships Service Cloud Platform
     source: das-infrastructure-config
-    branch: split-app-role-assignments
+    branch: master
 
 stages:
 - stage: Build

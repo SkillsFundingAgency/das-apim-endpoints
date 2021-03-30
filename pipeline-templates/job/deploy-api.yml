@@ -14,8 +14,6 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   AppRoleAssignmentsServiceConnection:
-  AppRoleAssignmentsScriptPath:
-  ResourceEnvironmentName:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
@@ -31,9 +29,7 @@ jobs:
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            ResourceEnvironmentName: ${{ parameters.ResourceEnvironmentName }}
             AppServiceName: ${{ parameters.AppServiceName }}
-            ScriptPath: ${{ parameters.AppRoleAssignmentsScriptPath }}
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
