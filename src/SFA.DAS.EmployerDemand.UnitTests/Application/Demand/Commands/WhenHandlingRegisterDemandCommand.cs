@@ -44,6 +44,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     && ((CreateCourseDemandData)c.Data).Course.Title.Equals(command.CourseTitle)
                     && ((CreateCourseDemandData)c.Data).Course.Level.Equals(command.CourseLevel)
                     && ((CreateCourseDemandData)c.Data).Course.Id.Equals(command.CourseId)
+                    && ((CreateCourseDemandData)c.Data).Course.Route.Equals(command.CourseSector)
                 )))
                 .ReturnsAsync(apiResponse);
 

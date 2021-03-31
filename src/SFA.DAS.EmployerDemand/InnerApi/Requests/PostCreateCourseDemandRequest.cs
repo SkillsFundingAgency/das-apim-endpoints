@@ -47,6 +47,8 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 
         [JsonProperty("level")]
         public int Level { get; set; }
+        [JsonProperty("route")]
+        public string Route { get ; set ; }
     }
 
     public class Location
