@@ -15,17 +15,17 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 {
-    public class WhenGettingTrainingCourses
+    public class WhenGettingTrainingCoursesExport
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Courses_From_Mediator(
-            GetTrainingCoursesResult mediatorResult,
+            GetTrainingCoursesExportResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingCoursesQuery>(),
+                    It.IsAny<GetTrainingCoursesExportQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseListResponse;
             Assert.IsNotNull(model);
-            model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.Select(item => (GetCourseListItem)item));
+            model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.ToList());
         }
     }
 }
