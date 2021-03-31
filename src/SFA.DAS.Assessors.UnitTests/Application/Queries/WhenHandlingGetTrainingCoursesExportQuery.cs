@@ -13,17 +13,17 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 {
-    public class WhenHandlingGetTrainingCoursesQuery
+    public class WhenHandlingGetTrainingCoursesExportQuery
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Courses_Api(
-            GetTrainingCoursesQuery query,
-            GetStandardsListResponse apiResponse,
+            GetTrainingCoursesExportQuery query,
+            GetStandardsExportListResponse apiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
-            GetTrainingCoursesQueryHandler handler)
+            GetTrainingCoursesExportQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAllStandardsRequest>()))
+                .Setup(client => client.Get<GetStandardsExportListResponse>(It.IsAny<GetStandardsExportRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
