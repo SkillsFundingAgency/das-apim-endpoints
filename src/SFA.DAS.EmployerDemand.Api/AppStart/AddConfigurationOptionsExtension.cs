@@ -17,6 +17,8 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
             services.Configure<EmployerDemandApiConfiguration>(configuration.GetSection(nameof(EmployerDemandApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerDemandApiConfiguration>>().Value);
+            services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
 
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);

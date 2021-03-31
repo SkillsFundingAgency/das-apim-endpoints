@@ -63,6 +63,34 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 );
         }
 
+
+        [Given(@"the Commitments V2 Api is ready and (.*)")]
+        public void GivenTheCommitmentsVApiIsReadyAndHealthy(string status)
+        {
+            _context.CommitmentsV2InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/api/ping")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
+        [Given(@"the Training Provider Api is ready and (.*)")]
+        public void GivenTheTrainingProviderApiIsReadyAndHealthy(string status)
+        {
+            _context.TrainingProviderInnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/ping")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
+
         [Then(@"the result should show (.*)")]
         public async Task ThenTheResultShouldShow(string status)
         {

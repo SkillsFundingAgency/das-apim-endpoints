@@ -2,6 +2,7 @@
 using System.Linq;
 using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerDemand.Api.Models
 {
@@ -28,6 +29,23 @@ namespace SFA.DAS.EmployerDemand.Api.Models
             {
                 Name = source.DisplayName,
                 Location = source.Location,
+            };
+        }
+
+        public static implicit operator GetLocationSearchResponseItem(LocationItem source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            
+            return new GetLocationSearchResponseItem
+            {
+                Name = source.Name,
+                Location = new LocationResponse
+                {
+                    GeoPoint = source.GeoPoint
+                }
             };
         }
 
