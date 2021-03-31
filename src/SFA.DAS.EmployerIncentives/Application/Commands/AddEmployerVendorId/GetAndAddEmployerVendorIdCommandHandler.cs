@@ -12,18 +12,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
-        private readonly string CompanyName;
 
         public GetAndAddEmployerVendorIdCommandHandler(
             ICustomerEngagementFinanceService financeService,
             IEmployerIncentivesService incentivesService, 
-            ILogger<GetAndAddEmployerVendorIdCommandHandler> logger,
-            IDateTimeService dateTimeService)
+            ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
             _logger = logger;
-            CompanyName = dateTimeService.Today >= new DateTime(2021, 4, 6) ? "104 - ESFA" : "ESFA";
         }
 
         public async Task<Unit> Handle(GetAndAddEmployerVendorIdCommand request, CancellationToken cancellationToken)
@@ -47,7 +44,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             {
                 _logger.LogInformation("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}]", hashedLegalEntityId);
 
-                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(CompanyName, hashedLegalEntityId);
+                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(hashedLegalEntityId);
 
                 if (response == null)
                 {

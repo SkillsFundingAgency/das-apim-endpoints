@@ -8,6 +8,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
         private bool _isDisposed;
 
         public string BaseAddress { get; private set; }
+        public string CompanyName { get; private set; }
+        public string ApiVersion { get; private set; }
 
         public WireMockServer MockServer { get; private set; }
 
@@ -15,6 +17,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
         {
             MockServer = WireMockServer.Start();
             BaseAddress = MockServer.Urls[0];
+            CompanyName = "104 - ESFA";
+            ApiVersion = "2021-04-06";
         }
 
         public void Dispose()

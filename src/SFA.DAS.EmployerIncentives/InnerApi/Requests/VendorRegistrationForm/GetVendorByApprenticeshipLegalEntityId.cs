@@ -1,6 +1,4 @@
-using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
 {
@@ -10,11 +8,14 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm
         private readonly string _hashedLegalEntityId;
         private readonly string _apiVersion;
 
-        public GetVendorByApprenticeshipLegalEntityId(string companyName, string hashedLegalEntityId, IDateTimeService dateTimeService)
+        public GetVendorByApprenticeshipLegalEntityId(
+            string companyName, 
+            string hashedLegalEntityId, 
+            string apiVersion)
         {
             _companyName = companyName;
             _hashedLegalEntityId = hashedLegalEntityId;
-            _apiVersion = dateTimeService.Today >= new DateTime(2021, 4, 6) ? "2021-04-06" : "2019-06-01";
+            _apiVersion = apiVersion;
         }
 
         public string BaseUrl { get; set; }
