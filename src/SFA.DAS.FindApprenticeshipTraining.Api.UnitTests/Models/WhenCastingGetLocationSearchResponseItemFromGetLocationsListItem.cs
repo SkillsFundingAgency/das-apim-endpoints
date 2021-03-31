@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using static SFA.DAS.FindApprenticeshipTraining.Api.Models.GetLocationSearchResponse;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {

@@ -32,7 +32,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Standards
             }
             
             var standardsResponse =
-                await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest {RouteIds = new List<Guid> {sector.Value}});
+                await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest {RouteIds = new List<int> {sector.Value}});
             
             return new GetStandardsQueryResult
             {
@@ -40,18 +40,18 @@ namespace SFA.DAS.Campaign.Application.Queries.Standards
             };
         }
 
-        private async Task<Guid?> GetSectorId(string sector)
+        private async Task<int?> GetSectorId(string sector)
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetSectorsListResponse>(nameof(GetSectorsListResponse));
+            var response = await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
 
             if (response == null)
             {
-                response = await _coursesApiClient.Get<GetSectorsListResponse>(new GetSectorsListRequest());
+                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
 
-                await _cacheStorageService.SaveToCache(nameof(GetSectorsListResponse), response, 23);
+                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
             }
 
-            return response.Sectors.FirstOrDefault(c => c.Route.Equals(sector, StringComparison.CurrentCultureIgnoreCase))?.Id;
+            return response.Routes.FirstOrDefault(c => c.Name.Equals(sector, StringComparison.CurrentCultureIgnoreCase))?.Id;
         }
     }
 }

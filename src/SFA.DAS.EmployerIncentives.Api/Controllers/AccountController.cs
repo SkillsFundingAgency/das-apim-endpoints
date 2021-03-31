@@ -1,3 +1,4 @@
+using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
@@ -8,6 +9,7 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 
@@ -108,6 +110,14 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             }
 
             return Ok(queryResult);
+        }
+        
+        [HttpPut("/accounts/{accountId}/legalentity/{accountLegalEntityId}/vrfcasestatus")]
+        public async Task<IActionResult> UpdateVrfCaseStatus(long accountId, long accountLegalEntityId, string vrfCaseStatus)
+        {
+            await _mediator.Send(new UpdateVendorRegistrationCaseStatusCommand(accountId, accountLegalEntityId, vrfCaseStatus));
+
+            return NoContent();
         }
     }
 }

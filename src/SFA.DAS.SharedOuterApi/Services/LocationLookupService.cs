@@ -1,22 +1,22 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SFA.DAS.FindApprenticeshipTraining.Domain.Models;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
+namespace SFA.DAS.SharedOuterApi.Services
 {
-    internal class LocationHelper
+    public class LocationLookupService : ILocationLookupService
     {
         private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
         private const string PostcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$";
         private const string OutcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?";
         private const string OutcodeDistrictRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s[A-Za-z]*";
 
-        public LocationHelper (ILocationApiClient<LocationApiConfiguration> locationApiClient)
+        public LocationLookupService(ILocationApiClient<LocationApiConfiguration> locationApiClient)
         {
             _locationApiClient = locationApiClient;
         }
