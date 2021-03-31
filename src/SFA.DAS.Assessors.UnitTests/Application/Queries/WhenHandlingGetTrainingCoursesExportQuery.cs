@@ -23,7 +23,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
             GetTrainingCoursesExportQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsExportListResponse>(It.IsAny<GetAllStandardsRequest>()))
+                .Setup(client => client.Get<GetStandardsExportListResponse>(It.IsAny<GetStandardsExportRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

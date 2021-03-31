@@ -33,7 +33,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetCourseListResponse;
+            var model = controllerResult.Value as GetCourseExportListResponse;
             Assert.IsNotNull(model);
             model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.ToList());
         }

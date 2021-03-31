@@ -29,10 +29,10 @@ namespace SFA.DAS.Assessors.Api.Controllers
         public async Task<IActionResult> GetList()
         {
             var queryResult = await _mediator.Send(new GetTrainingCoursesExportQuery());
-                
-            var model = new GetStandardsExportListResponse
+
+            var model = new GetCourseExportListResponse
             {
-                Courses = queryResult.TrainingCourses.ToList()
+                Courses = queryResult.TrainingCourses.Select(s => (GetStandardDetailsResponse)s)
             };
 
             return Ok(model);
