@@ -32,7 +32,7 @@ namespace SFA.DAS.Assessors.Api.Controllers
                 
             var model = new GetStandardsExportListResponse
             {
-                Standards = queryResult.TrainingCourses.ToList()
+                Courses = queryResult.TrainingCourses.ToList()
             };
 
             return Ok(model);
