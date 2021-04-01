@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Courses.Should().BeEquivalentTo(coursesApiResponse.Courses);
+            result.Courses.Should().BeEquivalentTo(coursesApiResponse.Standards);
             result.AggregatedCourseDemands.Should().BeEquivalentTo(demandApiResponse.AggregatedCourseDemandList);
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
@@ -82,7 +82,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Courses.Should().BeEquivalentTo(coursesApiResponse.Courses);
+            result.Courses.Should().BeEquivalentTo(coursesApiResponse.Standards);
             result.AggregatedCourseDemands.Should().BeEquivalentTo(demandApiResponse.AggregatedCourseDemandList);
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);

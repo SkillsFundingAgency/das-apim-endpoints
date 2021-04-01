@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
 
             return new GetAggregatedCourseDemandListResult
             {
-                Courses = coursesTask.Result.Courses,
+                Courses = coursesTask.Result.Standards,
                 AggregatedCourseDemands = aggregatedDemands.AggregatedCourseDemandList,
                 Total = aggregatedDemands.Total,
                 TotalFiltered = aggregatedDemands.TotalFiltered,
