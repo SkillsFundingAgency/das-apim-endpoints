@@ -45,6 +45,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             model!.AggregatedCourseDemands.Should().BeEquivalentTo(mediatorResult.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response));
             model!.Total.Should().Be(mediatorResult.Total);
             model!.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
+            model!.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.LocationItem);
         }
 
         [Test, MoqAutoData]

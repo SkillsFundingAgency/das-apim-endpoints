@@ -108,7 +108,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Courses = result.Courses.Select(item => (GetCourseListItem)item),
                     AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
                     Total = result.Total,
-                    TotalFiltered = result.TotalFiltered
+                    TotalFiltered = result.TotalFiltered,
+                    Location = result.LocationItem
                 };
 
                 return Ok(apiResponse);
