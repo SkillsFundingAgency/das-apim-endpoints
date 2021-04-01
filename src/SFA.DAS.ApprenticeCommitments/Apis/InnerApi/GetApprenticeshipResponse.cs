@@ -15,5 +15,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public int DurationInMonths { get; set; }
         public bool? TrainingProviderCorrect { get; set; }
         public bool? EmployerCorrect { get; set; }
+        public bool? ApprenticeshipDetailsCorrect { get; set; }
     }
 }
