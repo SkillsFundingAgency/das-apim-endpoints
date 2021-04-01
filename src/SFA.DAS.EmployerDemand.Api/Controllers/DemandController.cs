@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
         [HttpGet]
         [Route("aggregated/providers/{ukprn}")]
-        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location)
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius)
         {
             try
             {
@@ -100,7 +100,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 {
                     Ukprn = ukprn,
                     CourseId = courseId,
-                    LocationName = location
+                    LocationName = location,
+                    LocationRadius = locationRadius
                 });
 
                 var apiResponse = new GetAggregatedCourseDemandListResponse

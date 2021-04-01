@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetAggregatedCourseDemandListQueryHandler handler)
         {
             query.LocationName = null;
+            query.LocationRadius = null;
             mockLocationLookup
                 .Setup(service => service.GetLocationInformation(null, default, default))
                 .ReturnsAsync((LocationItem)null);
@@ -40,7 +41,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                     request.Ukprn == query.Ukprn &&
                     request.CourseId == query.CourseId &&
                     !request.Lat.HasValue &&
-                    !request.Lon.HasValue)))
+                    !request.Lon.HasValue &&
+                    !request.Radius.HasValue)))
                 .ReturnsAsync(demandApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -74,7 +76,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                     request.Ukprn == query.Ukprn &&
                     request.CourseId == query.CourseId &&
                     request.Lat == locationFromService.GeoPoint.First() &&
-                    request.Lon == locationFromService.GeoPoint.Last())))
+                    request.Lon == locationFromService.GeoPoint.Last() &&
+                    request.Radius == query.LocationRadius)))
                 .ReturnsAsync(demandApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

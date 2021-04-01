@@ -38,7 +38,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                     request.Ukprn, 
                     request.CourseId,
                     locationTask.Result?.GeoPoint?.FirstOrDefault(),
-                    locationTask.Result?.GeoPoint?.LastOrDefault()));
+                    locationTask.Result?.GeoPoint?.LastOrDefault(),
+                    locationTask.Result == null ? null : request.LocationRadius));
 
             return new GetAggregatedCourseDemandListResult
             {

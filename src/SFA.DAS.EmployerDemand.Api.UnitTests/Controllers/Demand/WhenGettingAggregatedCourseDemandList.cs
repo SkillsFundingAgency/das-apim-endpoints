@@ -24,6 +24,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int ukprn,
             int courseId,
             string location,
+            int locationRadius,
             GetAggregatedCourseDemandListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
@@ -33,11 +34,12 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.Is<GetAggregatedCourseDemandListQuery>(query => 
                         query.Ukprn == ukprn &&
                         query.CourseId == courseId &&
-                        query.LocationName == location),
+                        query.LocationName == location &&
+                        query.LocationRadius == locationRadius),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location) as ObjectResult;
+            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAggregatedCourseDemandListResponse;
@@ -53,6 +55,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int ukprn,
             int courseId,
             string location,
+            int locationRadius,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
@@ -62,7 +65,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location) as BadRequestResult;
+            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
