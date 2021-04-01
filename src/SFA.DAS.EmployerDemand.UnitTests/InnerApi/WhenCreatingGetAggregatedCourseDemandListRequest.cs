@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
         [Test, AutoData]
         public void Then_Sets_Url_Correctly(GetAggregatedCourseDemandListRequest request)
         {
-            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}");
+            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}");
         }
     }
 }
