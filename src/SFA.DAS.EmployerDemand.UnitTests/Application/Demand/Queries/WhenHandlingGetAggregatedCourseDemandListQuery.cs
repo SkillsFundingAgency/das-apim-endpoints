@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegisterDemand
+namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 {
     public class WhenHandlingGetAggregatedCourseDemandListQuery
     {
