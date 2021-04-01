@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
     {
         public int Ukprn { get; set; }
         public int? CourseId { get; set; }
+        public string LocationName { get; set; }
     }
 }

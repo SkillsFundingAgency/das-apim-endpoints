@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -87,7 +88,36 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+        }
+
+        [HttpGet]
+        [Route("aggregated/providers/{ukprn}")]
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAggregatedCourseDemandListQuery
+                {
+                    Ukprn = ukprn,
+                    CourseId = courseId,
+                    LocationName = location
+                });
+
+                var apiResponse = new GetAggregatedCourseDemandListResponse
+                {
+                    Courses = result.Courses.Select(item => (GetCourseListItem)item),
+                    AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
+                    Total = result.Total,
+                    TotalFiltered = result.TotalFiltered
+                };
+
+                return Ok(apiResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting aggregated demand list for ukprn:[{ukprn}], courseId:[{courseId}], location:[{location}]");
+                return BadRequest();
+            }
         }
     }
 }
