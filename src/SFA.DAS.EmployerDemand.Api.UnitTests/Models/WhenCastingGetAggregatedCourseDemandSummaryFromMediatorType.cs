@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             var result = (GetAggregatedCourseDemandSummary)source;
 
             result.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
-            result.Course.Should().BeEquivalentTo(new GetCourseListItem
+            result.TrainingCourse.Should().BeEquivalentTo(new GetCourseListItem
             {
                 Id = source.CourseId,
                 Level = source.CourseLevel,

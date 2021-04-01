@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAggregatedCourseDemandListResponse;
-            model!.Courses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetCourseListItem)item));
+            model!.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetCourseListItem)item));
             model!.AggregatedCourseDemands.Should().BeEquivalentTo(mediatorResult.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response));
             model!.Total.Should().Be(mediatorResult.Total);
             model!.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);

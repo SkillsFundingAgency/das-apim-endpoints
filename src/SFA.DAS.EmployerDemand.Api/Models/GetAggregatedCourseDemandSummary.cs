@@ -2,7 +2,7 @@
 {
     public class GetAggregatedCourseDemandSummary
     {
-        public GetCourseListItem Course { get; set; }
+        public GetCourseListItem TrainingCourse { get; set; }
         public int EmployersCount { get; set; }
         public int ApprenticesCount { get; set; }
 
@@ -13,7 +13,7 @@
             {
                 EmployersCount = source.EmployersCount,
                 ApprenticesCount = source.ApprenticesCount,
-                Course = new GetCourseListItem
+                TrainingCourse = new GetCourseListItem
                 {
                     Id = source.CourseId,
                     Level = source.CourseLevel,

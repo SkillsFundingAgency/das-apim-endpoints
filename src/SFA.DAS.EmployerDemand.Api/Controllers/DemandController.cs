@@ -105,7 +105,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
                 var apiResponse = new GetAggregatedCourseDemandListResponse
                 {
-                    Courses = result.Courses.Select(item => (GetCourseListItem)item),
+                    TrainingCourses = result.Courses.Select(item => (GetCourseListItem)item),
                     AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
