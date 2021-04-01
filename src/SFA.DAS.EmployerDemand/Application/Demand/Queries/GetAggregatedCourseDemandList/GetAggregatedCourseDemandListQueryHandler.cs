@@ -45,7 +45,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 Courses = coursesTask.Result.Courses,
                 AggregatedCourseDemands = aggregatedDemands.AggregatedCourseDemandList,
                 Total = aggregatedDemands.Total,
-                TotalFiltered = aggregatedDemands.TotalFiltered
+                TotalFiltered = aggregatedDemands.TotalFiltered,
+                LocationItem = locationTask.Result
             };
         }
     }

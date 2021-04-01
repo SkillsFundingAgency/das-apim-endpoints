@@ -49,6 +49,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.AggregatedCourseDemands.Should().BeEquivalentTo(demandApiResponse.AggregatedCourseDemandList);
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
+            result.LocationItem.Should().BeNull();
         }
 
         [Test, MoqAutoData]
@@ -82,6 +83,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.AggregatedCourseDemands.Should().BeEquivalentTo(demandApiResponse.AggregatedCourseDemandList);
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
+            result.LocationItem.Should().BeEquivalentTo(locationFromService);
         }
     }
 }

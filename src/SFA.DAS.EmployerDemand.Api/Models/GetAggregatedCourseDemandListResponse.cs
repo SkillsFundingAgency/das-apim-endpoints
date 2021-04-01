@@ -8,5 +8,6 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public IEnumerable<GetAggregatedCourseDemandSummary> AggregatedCourseDemands { get; set; }
         public int TotalFiltered { get ; set ; }
         public int Total { get ; set ; }
+        public GetLocationSearchResponseItem Location { get; set; }
     }
 }
