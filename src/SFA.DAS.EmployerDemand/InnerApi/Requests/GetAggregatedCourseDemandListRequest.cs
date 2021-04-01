@@ -14,6 +14,8 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
         {
             Ukprn = ukprn;
             CourseId = courseId;
+            Lat = lat;
+            Lon = lon;
         }
     }
 }
