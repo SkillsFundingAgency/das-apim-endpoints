@@ -15,21 +15,24 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _demandApiClient;
         private readonly ILocationLookupService _locationLookupService;
+        private readonly ICacheStorageService _cacheStorageService;
 
         public GetAggregatedCourseDemandListQueryHandler(
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> demandApiClient,
-            ILocationLookupService locationLookupService)
+            ILocationLookupService locationLookupService,
+            ICacheStorageService cacheStorageService)
         {
             _coursesApiClient = coursesApiClient;
             _demandApiClient = demandApiClient;
             _locationLookupService = locationLookupService;
+            _cacheStorageService = cacheStorageService;
         }
 
         public async Task<GetAggregatedCourseDemandListResult> Handle(GetAggregatedCourseDemandListQuery request, CancellationToken cancellationToken)
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.LocationName, default, default);
-            var coursesTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+            var coursesTask = GetCourses();
 
             await Task.WhenAll(locationTask, coursesTask);
 
@@ -49,6 +52,20 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 TotalFiltered = aggregatedDemands.TotalFiltered,
                 LocationItem = locationTask.Result
             };
+        }
+        
+        private async Task<GetStandardsListResponse> GetCourses()
+        {
+            var response = await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+
+            if (response == null)
+            {
+                response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+
+                await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), response, 1);
+            }
+
+            return response;
         }
     }
 }

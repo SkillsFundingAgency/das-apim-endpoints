@@ -19,17 +19,21 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
     public class WhenHandlingGetAggregatedCourseDemandListQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Demands_And_Courses_From_Apis(
+        public async Task Then_Gets_Demands_And_Courses_From_Apis_And_Adds_Courses_To_Cache(
             GetAggregatedCourseDemandListQuery query,
             GetStandardsListResponse coursesApiResponse,
             GetAggregatedCourseDemandListResponse demandApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApi,
             [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockDemandApi,
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetAggregatedCourseDemandListQueryHandler handler)
         {
             query.LocationName = null;
             query.LocationRadius = null;
+            cacheStorageService
+                .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync((GetStandardsListResponse)null);
             mockLocationLookup
                 .Setup(service => service.GetLocationInformation(null, default, default))
                 .ReturnsAsync((LocationItem)null);
@@ -52,6 +56,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeNull();
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse),coursesApiResponse, 1));
         }
 
         [Test, MoqAutoData]
@@ -87,6 +92,39 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeEquivalentTo(locationFromService);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Standards_From_Cache(
+            GetAggregatedCourseDemandListQuery query,
+            GetStandardsListResponse cachedCourses,
+            GetAggregatedCourseDemandListResponse demandApiResponse,
+            LocationItem locationFromService,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApi,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockDemandApi,
+            [Frozen] Mock<ILocationLookupService> mockLocationLookup,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            GetAggregatedCourseDemandListQueryHandler handler)
+        {
+            mockLocationLookup
+                .Setup(service => service.GetLocationInformation(query.LocationName, default, default))
+                .ReturnsAsync(locationFromService);
+            cacheStorageService
+                .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(cachedCourses);
+            mockDemandApi
+                .Setup(client => client.Get<GetAggregatedCourseDemandListResponse>(It.Is<GetAggregatedCourseDemandListRequest>(request => 
+                    request.Ukprn == query.Ukprn &&
+                    request.CourseId == query.CourseId &&
+                    request.Lat == locationFromService.GeoPoint.First() &&
+                    request.Lon == locationFromService.GeoPoint.Last() &&
+                    request.Radius == query.LocationRadius)))
+                .ReturnsAsync(demandApiResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+            
+            result.Courses.Should().BeEquivalentTo(cachedCourses.Standards);
+            mockCoursesApi.Verify(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAllStandardsListRequest>()), Times.Never);
         }
     }
 }
