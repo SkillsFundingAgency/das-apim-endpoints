@@ -13,7 +13,6 @@ parameters:
   ApiBaseUrl:
   ProductId:
   ApplicationIdentifierUri:
-  AppRoleAssignmentsServiceConnection:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
@@ -26,10 +25,6 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            AppServiceName: ${{ parameters.AppServiceName }}
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
