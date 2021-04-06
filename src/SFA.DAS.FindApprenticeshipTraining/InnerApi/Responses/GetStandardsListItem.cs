@@ -25,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Route { get; set; }
 
         public string TypicalJobTitles { get; set; }
-        public string CoreSkillsCount => GetCoreSkillsCount();
+        public List<string> CoreSkills => GetCoreSkillsCount();
 
         public string StandardPageUrl { get; set; }
 
@@ -36,17 +36,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string ApprovalBody { get; set; }
         public List<string> Skills { get; set; }
         public bool CoreAndOptions { get; set; }
-        public string CoreDuties { get; set; }
+        public List<string> CoreDuties { get; set; }
 
         
 
-        private string GetCoreSkillsCount()
+        private List<string> GetCoreSkillsCount()
         {
             if (CoreAndOptions)
             {
                 return CoreDuties;
             }
-            return Join("|", Skills.Select(s => s));
+            return  Skills;
         }
     }
 
