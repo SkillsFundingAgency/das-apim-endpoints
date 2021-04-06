@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -84,7 +85,7 @@ namespace SFA.DAS.Assessors.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get list of training courses");
-                return BadRequest();
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 

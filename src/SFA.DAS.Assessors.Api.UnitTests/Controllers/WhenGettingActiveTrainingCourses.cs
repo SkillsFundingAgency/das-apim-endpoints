@@ -40,7 +40,7 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task And_Exception_Then_Returns_Internal_Server_Error(
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
         {
@@ -50,9 +50,9 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetActiveList() as BadRequestResult;
+            var controllerResult = await controller.GetActiveList() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }
