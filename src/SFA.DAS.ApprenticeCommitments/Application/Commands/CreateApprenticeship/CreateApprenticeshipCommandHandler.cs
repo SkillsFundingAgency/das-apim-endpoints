@@ -53,6 +53,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 TrainingProviderName = string.IsNullOrWhiteSpace(trainingProvider.TradingName) ? trainingProvider.LegalName : trainingProvider.TradingName,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
+                PlannedStartDate = apprentice.StartDate,
+                PlannedEndDate = apprentice.EndDate,
             });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel

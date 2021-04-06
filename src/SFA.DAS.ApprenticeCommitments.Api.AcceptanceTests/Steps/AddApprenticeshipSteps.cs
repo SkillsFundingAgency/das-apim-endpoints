@@ -145,6 +145,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then("the inner API has received the posted values")]
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
+            var expectedCommitment = _approvedApprenticeships.First(
+                x => x.Id == _request.ApprenticeshipId);
+
             _context.OuterApiClient.Response.StatusCode
                 .Should().Be(HttpStatusCode.Accepted);
 
@@ -161,6 +164,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
             innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
             innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
+            innerApiRequest.PlannedStartDate.Should().Be(expectedCommitment.StartDate);
         }
 
         [Then("the Training Provider Name should be '(.*)'")]
