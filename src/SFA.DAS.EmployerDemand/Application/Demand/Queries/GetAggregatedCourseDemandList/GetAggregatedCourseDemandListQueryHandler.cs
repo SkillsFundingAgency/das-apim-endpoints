@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
 
             if (response == null)
             {
-                response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsListRequest());
+                response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
 
                 await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), response, 1);
             }
