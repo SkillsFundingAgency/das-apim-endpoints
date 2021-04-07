@@ -1,7 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Services;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
@@ -21,9 +21,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
             if (course == null)
             {
-                throw new HttpRequestContentException(
-                    $"Course `{courseCode}` not found",
-                    System.Net.HttpStatusCode.NotFound);
+                throw new HttpRequestException($"Course `{courseCode}` not found");
             }
 
             return course;
