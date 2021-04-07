@@ -2,10 +2,7 @@
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
 {
@@ -15,18 +12,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public CommitmentsV2Service(IInternalApiClient<CommitmentsV2Configuration> client) => _client = client;
 
-        public async Task<bool> IsHealthy()
-        {
-            try
-            {
-                var status = await _client.GetResponseCode(new GetCommitmentsPingRequest());
-                return status == HttpStatusCode.OK;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client, new GetCommitmentsPingRequest());
+
         public async Task<ApprenticeshipResponse> GetApprenticeshipDetails(long accountId, long apprenticeshipId)
         {
             var apprenticeship = await _client.Get<ApprenticeshipResponse>(
