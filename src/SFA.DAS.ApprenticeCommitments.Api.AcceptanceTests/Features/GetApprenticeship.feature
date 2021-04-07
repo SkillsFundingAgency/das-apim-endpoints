@@ -1,5 +1,4 @@
-﻿@innerApi
-Feature: GetApprenticeship
+﻿Feature: GetApprenticeship
 	As an apprentice
 	I need to retrieve an individual apprenticeship
 	So I can review the details and confirm it
