@@ -1,5 +1,4 @@
-﻿@innerApi
-Feature: GetRegistration
+﻿Feature: GetRegistration
 	When an Apprentice requests their registration details
 	As an outer API
 	I want to retrieve the details from the inner api
