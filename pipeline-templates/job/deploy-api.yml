@@ -14,7 +14,6 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   AppRoleAssignmentsServiceConnection:
-  AppRegistrationConfigurationFilePath:
   Tenant:
 
 jobs:
@@ -31,7 +30,6 @@ jobs:
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            AppRegistrationConfigurationFilePath: ${{ parameters.AppRegistrationConfigurationFilePath }}
             AppServiceName: ${{ parameters.AppServiceName }}
             Tenant: ${{ parameters.Tenant }}
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
