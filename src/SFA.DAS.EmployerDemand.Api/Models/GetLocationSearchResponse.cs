@@ -49,6 +49,18 @@ namespace SFA.DAS.EmployerDemand.Api.Models
             };
         }
 
+        public static implicit operator GetLocationSearchResponseItem(Location source)
+        {
+            return new GetLocationSearchResponseItem
+            {
+                Name = source.Name,
+                Location = new LocationResponse
+                {
+                    GeoPoint = source.LocationPoint.GeoPoint.ToArray()
+                }
+            };
+        }
+
         public class LocationResponse
         {
             public double[] GeoPoint { get; set; }
