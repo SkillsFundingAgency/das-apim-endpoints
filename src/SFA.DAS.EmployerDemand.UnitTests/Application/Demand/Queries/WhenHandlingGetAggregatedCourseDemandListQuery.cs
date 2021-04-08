@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(service => service.GetLocationInformation(null, default, default))
                 .ReturnsAsync((LocationItem)null);
             mockCoursesApi
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(coursesApiResponse);
             mockDemandApi
                 .Setup(client => client.Get<GetAggregatedCourseDemandListResponse>(It.Is<GetAggregatedCourseDemandListRequest>(request => 
@@ -74,7 +74,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(service => service.GetLocationInformation(query.LocationName, default, default))
                 .ReturnsAsync(locationFromService);
             mockCoursesApi
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(coursesApiResponse);
             mockDemandApi
                 .Setup(client => client.Get<GetAggregatedCourseDemandListResponse>(It.Is<GetAggregatedCourseDemandListRequest>(request => 
@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             var result = await handler.Handle(query, CancellationToken.None);
             
             result.Courses.Should().BeEquivalentTo(cachedCourses.Standards);
-            mockCoursesApi.Verify(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()), Times.Never);
+            mockCoursesApi.Verify(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Never);
         }
     }
 }
