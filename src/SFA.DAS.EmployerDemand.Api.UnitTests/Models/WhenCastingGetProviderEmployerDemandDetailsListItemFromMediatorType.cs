@@ -19,5 +19,18 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.Location.LocationPoint));
             actual.Location.Location.GeoPoint.ToList().Should().BeEquivalentTo(source.Location.LocationPoint.GeoPoint);
         }
+        
+        [Test, AutoData]
+        public void Then_Null_Returned_If_No_Location(GetEmployerCourseProviderDemandResponse source)
+        {
+            //Arrange
+            source.Location = null;
+            //Act
+            var actual = (GetProviderEmployerDemandDetailsListItem) source;
+
+            //Assert
+            actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.Location));
+            actual.Location.Should().BeNull();
+        }
     }
 }

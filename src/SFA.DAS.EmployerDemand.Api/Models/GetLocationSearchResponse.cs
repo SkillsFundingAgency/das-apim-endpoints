@@ -51,6 +51,11 @@ namespace SFA.DAS.EmployerDemand.Api.Models
 
         public static implicit operator GetLocationSearchResponseItem(Location source)
         {
+            if (source == null)
+            {
+                return null;
+            }
+            
             return new GetLocationSearchResponseItem
             {
                 Name = source.Name,
