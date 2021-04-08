@@ -11,8 +11,6 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
     {
         private readonly WireMockServer _server;
         private readonly Fixture _fixture;
-
-        public const int CourseStandardId = 2222;
         
         public CoursesApiBuilder(int port)
         {
@@ -47,16 +45,16 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
-        public CoursesApiBuilder WithCourses()
+        public CoursesApiBuilder WithCourses(int courseId)
         {
             var course = _fixture.Build<Apis.Courses.StandardResponse>()
-                .With(a => a.Id, 2222)
+                .With(a => a.Id, courseId)
                 .Create();
 
             _server
                 .Given(
                         Request.Create()
-                            .WithPath($"/api/courses/standards/{course.Id}")
+                            .WithPath($"/api/courses/standards/{courseId}")
                             .UsingGet())
                 .RespondWith(
                     Response.Create()

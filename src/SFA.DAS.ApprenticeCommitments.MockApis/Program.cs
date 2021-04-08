@@ -11,10 +11,12 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private const int PortLoginApi = 5001;
         private const int PortRoatpApi = 37951;
         private const int PortCoursesApi = 5022;
+        private const int CourseStandardId = 2222;
 
         private const long EmployerAccountId = 1000;
         private const long ApprenticeshipId = 20000;
         private const long TrainingProviderId = 1007777;
+
 
         private static WireMockServer _fakeInnerApi;
         private static WireMockServer _fakeCommitmentsV2Api;
@@ -60,7 +62,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
                         .WithPing()
-                        .WithAnyApprenticeship(EmployerAccountId)
+                        .WithAValidApprentice(EmployerAccountId, ApprenticeshipId, CourseStandardId)
+                        .WithAnyApprenticeship()
                         .Build();
                 }
 
@@ -84,7 +87,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeCoursesApi = CoursesApiBuilder.Create(PortCoursesApi)
                         .WithPing()
-                        .WithCourses()
+                        .WithCourses(CourseStandardId)
                         .Build();
                 }
 
