@@ -7,6 +7,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
         public string LocationName { get ; set ; }
         public int CourseId { get ; set ; }
         public int Ukprn { get ; set ; }
-        public int? Radius { get ; set ; }
+        public int? LocationRadius { get ; set ; }
     }
 }

@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                     c.StandardId.Equals(query.CourseId)))).ReturnsAsync(standardResult);
             employerDemandApiClient
                 .Setup(x => x.Get<GetEmployerCourseProviderListResponse>(
-                    It.Is<GetCourseProviderDemandsRequest>(c => c.GetUrl.Contains($"providers/{query.Ukprn}/courses/{query.CourseId}?lat={locationResult.GeoPoint.First()}&lon={locationResult.GeoPoint.Last()}&radius={query.Radius}"))))
+                    It.Is<GetCourseProviderDemandsRequest>(c => c.GetUrl.Contains($"providers/{query.Ukprn}/courses/{query.CourseId}?lat={locationResult.GeoPoint.First()}&lon={locationResult.GeoPoint.Last()}&radius={query.LocationRadius}"))))
                 .ReturnsAsync(demandResponse);
             
             //Act
@@ -46,7 +46,41 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             //Assert
             actual.Course.Should().BeEquivalentTo(standardResult);
             actual.Location.Should().BeEquivalentTo(locationResult);
-            actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse);
+            actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse.EmployerCourseDemands);
+            actual.Total.Should().Be(demandResponse.Total);
+            actual.TotalFiltered.Should().Be(demandResponse.TotalFiltered);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Location_Found_Then_Returns_Data(
+            GetEmployerCourseProviderDemandQuery query,
+            GetStandardsListItem standardResult,
+            GetEmployerCourseProviderListResponse demandResponse,
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> employerDemandApiClient,
+            GetEmployerCourseProviderDemandQueryHandler handler)
+        {
+            //Arrange
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0))
+                .ReturnsAsync((LocationItem)null);
+            coursesApiClient
+                .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c =>
+                    c.StandardId.Equals(query.CourseId)))).ReturnsAsync(standardResult);
+            employerDemandApiClient
+                .Setup(x => x.Get<GetEmployerCourseProviderListResponse>(
+                    It.Is<GetCourseProviderDemandsRequest>(c => c.GetUrl.Contains($"providers/{query.Ukprn}/courses/{query.CourseId}?lat=&lon=&radius="))))
+                .ReturnsAsync(demandResponse);
+            
+            //Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+            
+            //Assert
+            actual.Course.Should().BeEquivalentTo(standardResult);
+            actual.Location.Should().BeNull();
+            actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse.EmployerCourseDemands);
+            actual.Total.Should().Be(demandResponse.Total);
+            actual.TotalFiltered.Should().Be(demandResponse.TotalFiltered);
         }
     }
 }
