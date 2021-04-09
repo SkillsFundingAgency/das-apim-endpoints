@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 {
@@ -36,6 +37,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
                 s.Configure<TrainingProviderConfiguration>(c =>
                 {
                     c.Url = _testContext.TrainingProviderInnerApi.BaseAddress;
+                });
+                s.Configure<CoursesApiConfiguration>(c =>
+                {
+                    c.Url = _testContext.CoursesInnerApi.BaseAddress;
                 });
             });
 

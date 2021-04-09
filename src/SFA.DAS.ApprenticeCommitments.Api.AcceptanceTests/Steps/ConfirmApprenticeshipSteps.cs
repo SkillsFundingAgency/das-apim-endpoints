@@ -32,12 +32,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             };
         }
 
-        [Given(@"an Employer confirmation is requested")]
+        [Given("an Employer confirmation is requested")]
         public void GivenAEmployerConfirmationIsRequested()
         {
             _command = new EmployerConfirmationRequestData()
             {
                 EmployerCorrect = true
+            };
+        }
+
+        [Given("an Apprenticeship Details confirmation is requested")]
+        public void GivenAnApprenticeshipDetailsConfirmationIsRequested()
+        {
+            _command = new ApprenticeshipDetailsConfirmationRequestData()
+            {
+                ApprenticeshipDetailsCorrect = true
             };
         }
 
@@ -61,6 +70,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK));
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/*/apprenticeships/*/apprenticeshipdetailsconfirmation")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK));
         }
 
         [When("we confirm the training provider")]
@@ -71,11 +89,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 _command);
         }
 
-        [When(@"we confirm the employer")]
+        [When("we confirm the employer")]
         public async Task WhenWeConfirmTheEmployer()
         {
             await _context.OuterApiClient.Post(
                 $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/employerconfirmation",
+                _command);
+        }
+
+        [When("we confirm the apprenticeship")]
+        public async Task WhenWeConfirmTheApprenticeship()
+        {
+            await _context.OuterApiClient.Post(
+                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/apprenticeshipdetailsconfirmation",
                 _command);
         }
 
