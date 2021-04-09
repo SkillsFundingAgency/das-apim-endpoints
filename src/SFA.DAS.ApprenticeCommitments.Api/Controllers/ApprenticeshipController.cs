@@ -67,6 +67,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/rolesandresponsibilitiesconfirmation")]
+        public async Task<IActionResult> RolesAndResponsibilitiesConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] RolesAndResponsibilitiesConfirmationRequestData request)
+        {
+            await _client.Post(
+                new RolesAndResponsibilitiesConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.RolesAndResponsibilitiesCorrect));
+
+            return Ok();
+        }
+
         [HttpPost("/apprentices/{apprenticeId}/email")]
         public async Task<IActionResult> ChangeApprenticeEmailAddress(
             Guid apprenticeId,
