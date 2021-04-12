@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using System;
 using System.Net;
@@ -13,88 +14,39 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     [Binding]
     public class ConfirmApprenticeshipSteps
     {
+        private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
+        private string _apiPath;
         private object _command;
-        private Fixture _fixture;
+
+        public object ApprenticeshipApiPath =>
+            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}";
 
         public ConfirmApprenticeshipSteps(TestContext context)
         {
             _context = context;
-            _fixture = new Fixture();
         }
 
-        [Given("a Training Provider confirmation")]
-        public void GivenATrainingProviderConfirmation()
+        [Given("(.*) containing `(.*)` for (.*)")]
+        public void GivenDataForConfirmation(string typename, string json, string path)
         {
-            _command = new TrainingProviderConfirmationRequestData
-            {
-                TrainingProviderCorrect = true
-            };
-        }
-
-        [Given(@"an Employer confirmation is requested")]
-        public void GivenAEmployerConfirmationIsRequested()
-        {
-            _command = new EmployerConfirmationRequestData()
-            {
-                EmployerCorrect = true
-            };
-        }
-
-        [Given(@"a Roles and Responsibilities confirmation is requested")]
-        public void GivenARolesAndResponsibilitiesConfirmationIsRequested()
-        {
-            _command = new RolesAndResponsibilitiesConfirmationRequestData()
-            {
-                RolesAndResponsibilitiesCorrect = true
-            };
+            var t = Type.GetType(typename);
+            _command = JsonConvert.DeserializeObject(json, t);
+            _apiPath = $"{ApprenticeshipApiPath}/{path.ToLower()}";
         }
 
         [Given("the inner API will accept the confirmation")]
         public void GivenTheInnerAPIWillAcceptTheConfirmation()
         {
             _context.InnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath("/apprentices/*/apprenticeships/*/trainingproviderconfirmation")
-                        .UsingPost())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK));
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath("/apprentices/*/apprenticeships/*/employerconfirmation")
-                        .UsingPost())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK));
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath("/apprentices/*/apprenticeships/*/rolesandresponsibilitiesconfirmation")
-                        .UsingPost())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK));
+                .Given(Request.Create().UsingPost())
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
         }
 
-        [When("we confirm the training provider")]
+        [When("we confirm the aspect")]
         public async Task WhenWeConfirmTheTrainingProvider()
         {
-            await _context.OuterApiClient.Post(
-                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/trainingproviderconfirmation",
-                _command);
-        }
-
-        [When(@"we confirm the employer")]
-        public async Task WhenWeConfirmTheEmployer()
-        {
-            await _context.OuterApiClient.Post(
-                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/employerconfirmation",
-                _command);
+            await _context.OuterApiClient.Post(_apiPath, _command);
         }
 
         [When(@"we confirm the roles and responsibilities")]
@@ -109,6 +61,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenReturnAnOkResponse()
         {
             _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Then("confirm the details with the inner API")]
+        public void ThenConfirmTheApprenticeshipDetailsWithTheInnerAPI()
+        {
+            var request = _context.InnerApi.MockServer.LogEntries
+                .Should().Contain(x => x.RequestMessage.Path == _apiPath).Which;
+
+            var innerApiRequest = JsonConvert.DeserializeObject(
+                request.RequestMessage.Body, _command.GetType());
+
+            innerApiRequest.Should().BeEquivalentTo(_command);
         }
     }
 }

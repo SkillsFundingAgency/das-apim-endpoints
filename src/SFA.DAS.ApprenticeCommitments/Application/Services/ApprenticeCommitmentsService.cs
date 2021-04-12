@@ -2,10 +2,8 @@ using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
@@ -17,20 +15,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         public ApprenticeCommitmentsService(IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
             => _client = client;
 
-        public async Task<bool> IsHealthy()
-        {
-            try
-            {
-                var status = await _client.GetResponseCode(new GetPingRequest());
-                return status == HttpStatusCode.OK;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
 
-        public Task CreateApprenticeship(CreateApprenticeshipRequestData data) 
+        public Task CreateApprenticeship(CreateApprenticeshipRequestData data)
         {
             return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
             {
