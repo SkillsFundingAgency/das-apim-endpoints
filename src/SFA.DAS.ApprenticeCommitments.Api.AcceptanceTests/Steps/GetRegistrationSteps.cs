@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class GetRegistrationSteps
     {
         private readonly TestContext _context;
-        private Guid _registrationId;
+        private Guid _apprenticeId;
         private RegistrationResponse _registrationResponse;
         private Fixture _f;
 
@@ -25,10 +25,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context = context;
             _f = new Fixture();
 
-            _registrationId = _f.Create<Guid>();
+            _apprenticeId = _f.Create<Guid>();
             _registrationResponse =
                 _f.Build<RegistrationResponse>()
-                    .With(m => m.RegistrationId, _registrationId)
+                    .With(m => m.ApprenticeId, _apprenticeId)
                     .Create();
         }
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/registrations/{_registrationId}")
+                        .WithPath($"/registrations/{_apprenticeId}")
                         .UsingGet()
                 )
                 .RespondWith(
@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/registrations/{_registrationId}")
+                        .WithPath($"/registrations/{_apprenticeId}")
                         .UsingGet()
                 )
                 .RespondWith(
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When(@"retrieving registration details")]
         public Task WhenRetrievingRegistrationDetails()
         {
-            return _context.OuterApiClient.Get($"registrations/{_registrationId}");
+            return _context.OuterApiClient.Get($"registrations/{_apprenticeId}");
         }
 
         [Then(@"not found is returned")]
@@ -89,7 +89,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var response = JsonConvert.DeserializeObject<RegistrationResponse>(content);
             response.Should().NotBeNull();
             response.Email.Should().Be(_registrationResponse.Email);
-            response.RegistrationId.Should().Be(_registrationId);
+            response.ApprenticeId.Should().Be(_apprenticeId);
         }
     }
 }

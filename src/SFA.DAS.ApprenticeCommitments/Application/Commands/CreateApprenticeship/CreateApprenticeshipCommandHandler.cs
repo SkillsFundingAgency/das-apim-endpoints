@@ -44,7 +44,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
             {
-                RegistrationId = id,
+                ApprenticeId = id,
                 ApprenticeshipId = command.ApprenticeshipId,
                 Email = command.Email,
                 EmployerName = command.EmployerName,

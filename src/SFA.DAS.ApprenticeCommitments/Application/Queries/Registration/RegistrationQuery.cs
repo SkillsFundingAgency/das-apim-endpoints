@@ -5,6 +5,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Queries.Registration
 {
     public class RegistrationQuery : IRequest<RegistrationResponse>
     {
-        public Guid RegistrationId { get; set; }
+        public Guid ApprenticeshipId { get; set; }
     }
 }
