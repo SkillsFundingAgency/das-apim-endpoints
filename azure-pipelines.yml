@@ -96,7 +96,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: DEV
@@ -375,7 +375,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: DEV
@@ -654,7 +654,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: DEV
@@ -933,7 +933,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: DEV
@@ -1212,7 +1212,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: PROD
@@ -1472,7 +1472,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: MO
@@ -1732,7 +1732,7 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-  - template: pipeline-templates/job/app-role-assginments.yml
+  - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
       DeploymentName: ApplyAppRoleAssignments
       DeploymentApprovals: DEV
