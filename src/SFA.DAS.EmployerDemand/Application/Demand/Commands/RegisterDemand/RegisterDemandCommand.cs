@@ -15,5 +15,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         public string CourseTitle { get ; set ; }
         public int CourseLevel { get ; set ; }
         public int CourseId { get ; set ; }
+        public string CourseSector { get ; set ; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NServiceBus;
 
 namespace SFA.DAS.SharedOuterApi.Models.Messages
 {

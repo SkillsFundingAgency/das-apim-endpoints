@@ -1,5 +1,4 @@
-﻿@innerApi
-Feature: VerifyIdentityAndRegistration
+﻿Feature: VerifyIdentityAndRegistration
 	When a Apprentice first logs in, we want to verify their identity and registration
 	As an outer API
 	I want to receive the identity details, validate their identity and verify the registration
