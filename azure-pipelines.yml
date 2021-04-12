@@ -96,6 +96,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -366,6 +374,14 @@ stages:
       TemplateSecrets:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -638,6 +654,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -908,6 +932,14 @@ stages:
       TemplateSecrets:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1180,6 +1212,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: PROD
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -1432,6 +1472,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: MO
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -1683,6 +1731,14 @@ stages:
       TemplateSecrets:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+  - template: pipeline-templates/job/app-role-assginments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:

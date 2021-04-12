@@ -18,7 +18,7 @@ parameters:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
-  dependsOn: DeployInfrastructure
+  dependsOn: ApplyAppRoleAssignments
   condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
@@ -27,11 +27,6 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            ResourceName: ${{ parameters.ApimInstanceName }}
-            Tenant: ${{ parameters.Tenant }}
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
