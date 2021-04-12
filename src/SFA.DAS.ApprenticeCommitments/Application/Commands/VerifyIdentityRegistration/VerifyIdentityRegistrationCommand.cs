@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegis
 {
     public class VerifyIdentityRegistrationCommand : IRequest
     {
-        public Guid RegistrationId { get; set; }
+        public Guid ApprenticeId { get; set; }
         public Guid UserIdentityId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
