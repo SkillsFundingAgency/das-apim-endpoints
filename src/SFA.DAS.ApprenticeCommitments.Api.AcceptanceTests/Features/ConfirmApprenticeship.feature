@@ -1,4 +1,4 @@
-﻿Feature: ConfirmApprenticeshipFeature
+Feature: ConfirmApprenticeshipFeature
 
 Scenario Outline: Confirm an aspect of the apprenticeship
 	Given <command> containing `<data>` for <confirmation>
