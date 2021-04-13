@@ -70,11 +70,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPost("/apprentices/{apprenticeid}/apprenticeships/{apprenticeshipid}/apprenticeshipdetailsconfirmation")]
         public async Task<IActionResult> ApprenticeshipConfirmation(
             Guid apprenticeId, long apprenticeshipId,
-            [FromBody] EmployerConfirmationRequestData request)
+            [FromBody] ApprenticeshipDetailsConfirmationRequestData request)
         {
             await _client.Post(
                 new ApprenticeshipDetailsConfirmationRequest(
-                    apprenticeId, apprenticeshipId, request.EmployerCorrect));
+                    apprenticeId, apprenticeshipId, request.ApprenticeshipDetailsCorrect));
 
             return Ok();
         }

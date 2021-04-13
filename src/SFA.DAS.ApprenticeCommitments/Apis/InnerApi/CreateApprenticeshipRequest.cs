@@ -3,16 +3,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class CreateApprenticeshipRequest : IPostApiRequest
+    public class CreateApprenticeshipRequest : IPostApiRequest<CreateApprenticeshipRequestData>
     {
         public string PostUrl => "/apprenticeships";
 
-        public object Data { get; set; }
+        public CreateApprenticeshipRequestData Data { get; set; }
     }
 
     public class CreateApprenticeshipRequestData
     {
-        public Guid RegistrationId  { get; set; }
+        public Guid ApprenticeId  { get; set; }
         public long ApprenticeshipId { get; set; }
         public string Email { get; set; }
         public string EmployerName { get; set; }
@@ -23,9 +23,5 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public int CourseLevel { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
-    }
-
-    public class CreateApprenticeshipResponse
-    {
     }
 }
