@@ -1,13 +1,14 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Services
 {
-    public class LevyTransferMatchingApiClient : ILevyTransferMatchingApiClient
+    public class LevyTransferMatchingApiClient : ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>
     {
         private readonly IInternalApiClient<LevyTransferMatchingApiConfiguration> _client;
 
@@ -16,10 +17,58 @@ namespace SFA.DAS.LevyTransferMatching.Services
             _client = client;
         }
 
-        public async Task<bool> IsHealthy()
+        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            var status = await _client.GetResponseCode(new GetPingRequest());
-            return status == HttpStatusCode.OK;
+            return _client.Get<TResponse>(request);
+        }
+
+        public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+        {
+            return _client.GetAll<TResponse>(request);
+        }
+
+        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+        {
+            return _client.GetResponseCode(request);
+        }
+        public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            return _client.Post<TResponse>(request);
+        }
+
+        public Task Post<TData>(IPostApiRequest<TData> request)
+        {
+            return _client.Post(request);
+        }
+
+        public Task Delete(IDeleteApiRequest request)
+        {
+            return _client.Delete(request);
+        }
+
+        public Task Patch<TData>(IPatchApiRequest<TData> request)
+        {
+            return _client.Patch(request);
+        }
+
+        public Task Put(IPutApiRequest request)
+        {
+            return _client.Put(request);
+        }
+
+        public Task Put<TData>(IPutApiRequest<TData> request)
+        {
+            return _client.Put(request);
+        }
+
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        {
+            return _client.PostWithResponseCode<TResponse>(request);
+        }
+
+        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+        {
+            return _client.GetPaged<TResponse>(request);
         }
     }
 }

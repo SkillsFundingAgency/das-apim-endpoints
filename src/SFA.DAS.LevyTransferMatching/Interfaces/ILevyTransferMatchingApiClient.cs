@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Interfaces
 {
-    public interface ILevyTransferMatchingApiClient
+    public interface ILevyTransferMatchingApiClient<T> : IInternalApiClient<T>
     {
-        Task<bool> IsHealthy();
     }
 }

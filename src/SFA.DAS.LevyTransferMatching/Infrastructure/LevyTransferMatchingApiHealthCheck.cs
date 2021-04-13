@@ -1,42 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.Infrastructure
 {
     public class LevyTransferMatchingApiHealthCheck : IHealthCheck
     {
         private const string HealthCheckResultDescription = "Levy Transfer Matching Inner Api Health Check";
-        private readonly ILevyTransferMatchingApiClient service;
+        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _client;
 
-        public LevyTransferMatchingApiHealthCheck(ILevyTransferMatchingApiClient service)
+        public LevyTransferMatchingApiHealthCheck(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> client)
         {
-            this.service = service;
+            _client = client;
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var timer = Stopwatch.StartNew();
-
-            try
-            {
-                await service.IsHealthy();
-            }
-            catch (Exception ex)
-            {
-                return HealthCheckResult.Unhealthy(HealthCheckResultDescription, ex, null);
-            }
-            
+            var result = await _client.GetResponseCode(new GetPingRequest());
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
-            var data = new Dictionary<string, object> { { "Duration", durationString } };
+            if (result != HttpStatusCode.OK)
+            {
+                return HealthCheckResult.Unhealthy(HealthCheckResultDescription, null,
+                    new Dictionary<string, object> { { "Duration", durationString } });
+            }
 
-            return HealthCheckResult.Healthy(HealthCheckResultDescription, data);
+            return HealthCheckResult.Healthy(HealthCheckResultDescription,
+                new Dictionary<string, object> { { "Duration", durationString } });
         }
     }
 }
