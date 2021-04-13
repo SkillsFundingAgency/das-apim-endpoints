@@ -18,7 +18,9 @@ parameters:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
-  dependsOn: ApplyAppRoleAssignments
+  dependsOn: 
+  - ApplyAppRoleAssignments
+  - DeployInfrastructure
   condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
