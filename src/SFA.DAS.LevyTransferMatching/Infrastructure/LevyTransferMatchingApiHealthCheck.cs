@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,13 +22,21 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var timer = Stopwatch.StartNew();
-            var isHealthy = await service.IsHealthy();
+
+            try
+            {
+                await service.IsHealthy();
+            }
+            catch (Exception ex)
+            {
+                return HealthCheckResult.Unhealthy(HealthCheckResultDescription, ex, null);
+            }
+            
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
             var data = new Dictionary<string, object> { { "Duration", durationString } };
 
-            return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, data)
-                : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, data));
+            return HealthCheckResult.Healthy(HealthCheckResultDescription, data);
         }
     }
 }

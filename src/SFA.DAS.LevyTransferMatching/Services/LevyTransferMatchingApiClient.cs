@@ -18,15 +18,8 @@ namespace SFA.DAS.LevyTransferMatching.Services
 
         public async Task<bool> IsHealthy()
         {
-            try
-            {
-                var status = await _client.GetResponseCode(new GetPingRequest());
-                return status == HttpStatusCode.OK;
-            }
-            catch
-            {
-                return false;
-            }
+            var status = await _client.GetResponseCode(new GetPingRequest());
+            return status == HttpStatusCode.OK;
         }
     }
 }
