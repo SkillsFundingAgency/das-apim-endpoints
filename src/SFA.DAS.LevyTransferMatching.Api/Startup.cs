@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.LevyTransferMatching.Api
@@ -59,7 +60,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             if (_configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks();
+                services.AddHealthChecks()
+                        .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
