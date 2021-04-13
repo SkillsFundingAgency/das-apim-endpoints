@@ -88,5 +88,17 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
                 new ChangeEmailAddressCommand(apprenticeId, request.Email));
             return Ok();
         }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/howapprenticeshipwillbedeliveredconfirmation")]
+        public async Task<IActionResult> HowApprenticeshipWillBeDeliveredConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] HowApprenticeshipWillBeDeliveredRequestData request)
+        {
+            await _client.Post(
+                new HowApprenticeshipWillBeDeliveredRequest(
+                    apprenticeId, apprenticeshipId, request.HowApprenticeshipDeliveredCorrect));
+
+            return Ok();
+        }
     }
 }

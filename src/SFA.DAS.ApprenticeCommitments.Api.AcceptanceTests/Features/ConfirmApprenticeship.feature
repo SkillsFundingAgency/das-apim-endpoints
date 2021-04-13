@@ -8,7 +8,8 @@ Scenario Outline: Confirm an aspect of the apprenticeship
 	And confirm the details with the inner API
 
 	Examples: 
-	| confirmation                      | data                                   | command                                      |
-	| ApprenticeshipDetailsConfirmation | {"ApprenticeshipDetailsCorrect": true} | ApprenticeshipDetailsConfirmationRequestData |
-	| EmployerConfirmation              | {"EmployerCorrect": true}              | EmployerConfirmationRequestData              |
-	| TrainingProviderConfirmation      | {"TrainingProviderCorrect": true}      | TrainingProviderConfirmationRequestData      |
+	| confirmation                                 | data                                        | command                                      |
+	| ApprenticeshipDetailsConfirmation            | {"ApprenticeshipDetailsCorrect": true}      | ApprenticeshipDetailsConfirmationRequestData |
+	| EmployerConfirmation                         | {"EmployerCorrect": true}                   | EmployerConfirmationRequestData              |
+	| TrainingProviderConfirmation                 | {"TrainingProviderCorrect": true}           | TrainingProviderConfirmationRequestData      |
+	| HowApprenticeshipWillBeDeliveredConfirmation | {"HowApprenticeshipDeliveredCorrect": true} | HowApprenticeshipWillBeDeliveredRequestData  |
