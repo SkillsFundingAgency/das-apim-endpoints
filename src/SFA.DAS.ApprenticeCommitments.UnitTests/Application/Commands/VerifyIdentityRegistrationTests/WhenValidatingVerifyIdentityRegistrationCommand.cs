@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Commands.VerifyIde
         [Test]
         public void When_empty_RegistrationId_it_fails()
         {
-            AssertValidationResult(request => request.RegistrationId, Guid.Empty, false);
+            AssertValidationResult(request => request.ApprenticeId, Guid.Empty, false);
         }
 
         [Test]

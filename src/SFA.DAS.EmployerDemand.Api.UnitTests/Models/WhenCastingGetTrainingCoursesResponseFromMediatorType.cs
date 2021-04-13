@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
 
             response.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
             response.Id.Should().Be(source.LarsCode);
+            response.Sector.Should().Be(source.Route);
         }
     }
 }

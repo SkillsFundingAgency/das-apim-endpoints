@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -72,7 +73,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     LocationName = request.LocationItem.Name,
                     CourseId = request.TrainingCourse.Id,
                     CourseTitle = request.TrainingCourse.Title,
-                    CourseLevel = request.TrainingCourse.Level
+                    CourseLevel = request.TrainingCourse.Level,
+                    CourseSector = request.TrainingCourse.Sector
                 });
 
                 return Created("", commandResult);
@@ -86,7 +88,38 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+        }
+
+        [HttpGet]
+        [Route("aggregated/providers/{ukprn}")]
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAggregatedCourseDemandListQuery
+                {
+                    Ukprn = ukprn,
+                    CourseId = courseId,
+                    LocationName = location,
+                    LocationRadius = locationRadius
+                });
+
+                var apiResponse = new GetAggregatedCourseDemandListResponse
+                {
+                    TrainingCourses = result.Courses.Select(item => (GetCourseListItem)item),
+                    AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
+                    Total = result.Total,
+                    TotalFiltered = result.TotalFiltered,
+                    Location = result.LocationItem
+                };
+
+                return Ok(apiResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting aggregated demand list for ukprn:[{ukprn}], courseId:[{courseId}], location:[{location}]");
+                return BadRequest();
+            }
         }
     }
 }

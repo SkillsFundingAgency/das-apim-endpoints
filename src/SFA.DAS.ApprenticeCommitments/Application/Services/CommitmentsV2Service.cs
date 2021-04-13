@@ -2,6 +2,7 @@
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
@@ -16,8 +17,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public async Task<ApprenticeshipResponse> GetApprenticeshipDetails(long accountId, long apprenticeshipId)
         {
-            var apprenticeship = await _client.Get<ApprenticeshipResponse>(
-                new GetApprenticeshipDetailsRequest(apprenticeshipId));
+            var apprenticeship = await GetApprenticeshipDetails(apprenticeshipId);
 
             if (apprenticeship?.EmployerAccountId != accountId)
             {
@@ -28,6 +28,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             }
 
             return apprenticeship;
+        }
+
+        public Task<ApprenticeshipResponse> GetApprenticeshipDetails(long apprenticeshipId)
+        {
+            return _client.Get<ApprenticeshipResponse>(new GetApprenticeshipDetailsRequest(apprenticeshipId));
         }
     }
 }

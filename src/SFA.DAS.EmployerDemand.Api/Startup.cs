@@ -15,6 +15,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerDemand.Api.AppStart;
 using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
+using SFA.DAS.EmployerDemand.Domain.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -53,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.Api
             }
 
             services.AddMediatR(typeof(GetLocationsQuery).Assembly);
-            //services.AddMediatRValidation();
+            
             services.AddServiceRegistration();
             
 
@@ -76,6 +77,22 @@ namespace SFA.DAS.EmployerDemand.Api
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
                     .AddCheck<EmployerDemandApiHealthCheck>("Employer Demand API health check")
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
+            }
+            
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection("EmployerDemandConfiguration")
+                    .Get<EmployerDemandConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
