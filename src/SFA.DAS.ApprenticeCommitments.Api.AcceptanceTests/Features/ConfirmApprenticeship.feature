@@ -1,4 +1,4 @@
-﻿Feature: ConfirmApprenticeshipFeature
+Feature: ConfirmApprenticeshipFeature
 
 Scenario Outline: Confirm an aspect of the apprenticeship
 	Given <command> containing `<data>` for <confirmation>
@@ -8,8 +8,9 @@ Scenario Outline: Confirm an aspect of the apprenticeship
 	And confirm the details with the inner API
 
 	Examples: 
-	| confirmation                                 | data                                        | command                                      |
-	| ApprenticeshipDetailsConfirmation            | {"ApprenticeshipDetailsCorrect": true}      | ApprenticeshipDetailsConfirmationRequestData |
-	| EmployerConfirmation                         | {"EmployerCorrect": true}                   | EmployerConfirmationRequestData              |
-	| TrainingProviderConfirmation                 | {"TrainingProviderCorrect": true}           | TrainingProviderConfirmationRequestData      |
-	| HowApprenticeshipWillBeDeliveredConfirmation | {"HowApprenticeshipDeliveredCorrect": true} | HowApprenticeshipWillBeDeliveredRequestData  |
+	| confirmation                                 | data                                        | command                                         |
+	| ApprenticeshipDetailsConfirmation            | {"ApprenticeshipDetailsCorrect": true}      | ApprenticeshipDetailsConfirmationRequestData    |
+	| EmployerConfirmation                         | {"EmployerCorrect": true}                   | EmployerConfirmationRequestData                 |
+	| TrainingProviderConfirmation                 | {"TrainingProviderCorrect": true}           | TrainingProviderConfirmationRequestData         |
+	| RolesAndResponsibilitiesConfirmation         | {"RolesAndResponsibilitiesCorrect": true}   | RolesAndResponsibilitiesConfirmationRequestData |
+	| HowApprenticeshipWillBeDeliveredConfirmation | {"HowApprenticeshipDeliveredCorrect": true} | HowApprenticeshipWillBeDeliveredRequestData     |

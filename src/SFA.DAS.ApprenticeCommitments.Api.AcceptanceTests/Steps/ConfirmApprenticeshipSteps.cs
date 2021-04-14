@@ -49,6 +49,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             await _context.OuterApiClient.Post(_apiPath, _command);
         }
 
+        [When(@"we confirm the roles and responsibilities")]
+        public async Task WhenWeConfirmTheRolesAndResponsibilities()
+        {
+            await _context.OuterApiClient.Post(
+                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/rolesandresponsibilitiesconfirmation",
+                _command);
+        }
+
         [Then("return an ok response")]
         public void ThenReturnAnOkResponse()
         {
