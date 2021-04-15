@@ -5,8 +5,12 @@ namespace SFA.DAS.Assessors.Api.Models
 {
     public class GetCourseListItem
     {
-        public int Id { get; set; }
+        public string StandardUId { get; set; }
+        public string IfateReferenceNumber { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
+        public decimal? Version { get; set; }
+        public string Status { get; set; }
         public int Level { get; set; }
         public int MaxFunding { get; set; }
         public int TypicalDuration { get; set; }
@@ -17,8 +21,12 @@ namespace SFA.DAS.Assessors.Api.Models
         {
             return new GetCourseListItem
             {
-                Id = source.LarsCode,
+                StandardUId = source.StandardUId,
+                IfateReferenceNumber = source.IfateReferenceNumber,
+                LarsCode = source.LarsCode,
                 Title = source.Title,
+                Version = source.Version,
+                Status = source.Status,
                 Level = source.Level,
                 MaxFunding = source.MaxFunding,
                 TypicalDuration = source.TypicalDuration,
@@ -37,6 +45,7 @@ namespace SFA.DAS.Assessors.Api.Models
 
             public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.StandardDate source)
             {
+                if (source == null) return null;
                 return new StandardDate
                 {
                     EffectiveFrom = source.EffectiveFrom,

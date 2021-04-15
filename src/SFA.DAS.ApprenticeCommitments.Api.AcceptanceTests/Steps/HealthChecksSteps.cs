@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -91,7 +91,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         }
 
 
-        [Then(@"the result should show (.*)")]
+        [Given("the Courses Api is ready and (.*)")]
+        public void GivenTheCoursesApiIsReadyAndHealthy(string status)
+        {
+            _context.CoursesInnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath("/ping")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                );
+        }
+
+        [Then("the result should show (.*)")]
         public async Task ThenTheResultShouldShow(string status)
         {
             var json = await _context.OuterApiClient.Response.Content.ReadAsStringAsync();

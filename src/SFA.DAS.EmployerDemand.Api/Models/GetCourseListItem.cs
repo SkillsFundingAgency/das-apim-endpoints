@@ -7,6 +7,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public string Title { get ; set ; }
         public int Level { get ; set ; }
         public int Id { get ; set ; }
+        public string Sector { get; set; }
 
         public static implicit operator GetCourseListItem(GetStandardsListItem standard)
         {
@@ -14,7 +15,8 @@ namespace SFA.DAS.EmployerDemand.Api.Models
             {
                 Id = standard.LarsCode,
                 Level = standard.Level,
-                Title = standard.Title
+                Title = standard.Title,
+                Sector = standard.Route
             };
         }
     }

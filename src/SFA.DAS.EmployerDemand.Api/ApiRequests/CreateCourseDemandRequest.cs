@@ -41,13 +41,16 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
 
     public class TrainingCourse
     {
-        [JsonProperty("Id")]
+        [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("Title")]
+        [JsonProperty("title")]
         public string Title { get; set; }
 
-        [JsonProperty("Level")]
+        [JsonProperty("level")]
         public int Level { get; set; }
+
+        [JsonProperty("sector")]
+        public string Sector { get ; set ; }
     }
 }

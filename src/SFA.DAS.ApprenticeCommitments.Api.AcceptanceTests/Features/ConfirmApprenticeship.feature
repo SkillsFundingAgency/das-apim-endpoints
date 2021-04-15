@@ -1,14 +1,15 @@
-﻿@innerApi
 Feature: ConfirmApprenticeshipFeature
 
-Scenario: Confirm the training provider
-	Given a Training Provider confirmation
+Scenario Outline: Confirm an aspect of the apprenticeship
+	Given <command> containing `<data>` for <confirmation>
 	And the inner API will accept the confirmation
-	When we confirm the training provider
+	When we confirm the aspect
 	Then return an ok response
+	And confirm the details with the inner API
 
-Scenario: Confirm the employer
-	Given an Employer confirmation is requested
-	And the inner API will accept the confirmation
-	When we confirm the employer
-	Then return an ok response
+	Examples: 
+	| confirmation							| data										| command											|
+	| ApprenticeshipDetailsConfirmation		| {"ApprenticeshipDetailsCorrect": true}	| ApprenticeshipDetailsConfirmationRequestData		|
+	| EmployerConfirmation					| {"EmployerCorrect": true}					| EmployerConfirmationRequestData					|	
+	| TrainingProviderConfirmation			| {"TrainingProviderCorrect": true}			| TrainingProviderConfirmationRequestData			|
+	| RolesAndResponsibilitiesConfirmation  | {"RolesAndResponsibilitiesCorrect": true} | RolesAndResponsibilitiesConfirmationRequestData   |

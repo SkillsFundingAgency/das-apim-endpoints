@@ -3,7 +3,7 @@ using WireMock.Server;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 {
-    public class MockApi : IDisposable
+    public class MockApi : IDisposable, IResettable
     {
         private bool _isDisposed;
 
@@ -17,31 +17,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
             BaseAddress = MockServer.Urls[0];
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public void Reset()
         {
             MockServer.Reset();
         }
 
-        protected virtual void Dispose(bool disposing)
+        public void Dispose()
         {
-            if (_isDisposed) return;
-
-            if (disposing)
-            {
-                if (MockServer.IsStarted)
-                {
-                    MockServer.Stop();
-                }
-                MockServer.Dispose();
-            }
-
-            _isDisposed = true;
+            MockServer.Stop();
+            MockServer.Dispose();
         }
     }
 }

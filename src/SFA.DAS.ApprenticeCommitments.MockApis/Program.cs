@@ -10,21 +10,25 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private const int PortCommitmentsApi = 5011;
         private const int PortLoginApi = 5001;
         private const int PortRoatpApi = 37951;
+        private const int PortCoursesApi = 5022;
+        private const int CourseStandardId = 2222;
 
         private const long EmployerAccountId = 1000;
         private const long ApprenticeshipId = 20000;
         private const long TrainingProviderId = 1007777;
 
+
         private static WireMockServer _fakeInnerApi;
         private static WireMockServer _fakeCommitmentsV2Api;
         private static WireMockServer _fakeApprenticeLoginApi;
         private static WireMockServer _fakeTrainingProviderApi;
+        private static WireMockServer _fakeCoursesApi;
 
         static void Main(string[] args)
         {
             if (args.Contains("--h"))
             {
-                Console.WriteLine("Optional parameters (!inner, !commitment, !login, !roatp) will exclude that fake API");
+                Console.WriteLine("Optional parameters (!inner, !commitment, !login, !roatp, !courses) will exclude that fake API");
                 Console.WriteLine("examples:");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis --h                 <-- shows this page");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !inner              <-- excludes fake inner api");
@@ -48,6 +52,9 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                     _fakeInnerApi = ApprenticeCommitmentsInnerApiBuilder.Create(PortInnerApi)
                         .WithPing()
                         .WithAnyNewApprenticeship()
+                        .WithRegistrationReminders()
+                        .WithReminderSent()
+                        .WithRegistrationSeen()
                         .Build();
                 }
 
@@ -55,7 +62,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
                         .WithPing()
-                        .WithAValidApprentice(EmployerAccountId, ApprenticeshipId)
+                        .WithAValidApprentice(EmployerAccountId, ApprenticeshipId, CourseStandardId)
+                        .WithAnyApprenticeship()
                         .Build();
                 }
 
@@ -72,6 +80,14 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                     _fakeTrainingProviderApi = TrainingProviderApiBuilder.Create(PortRoatpApi)
                         .WithPing()
                         .WithValidSearch(TrainingProviderId)
+                        .Build();
+                }
+
+                if (!args.Contains("!courses", StringComparer.CurrentCultureIgnoreCase))
+                {
+                    _fakeCoursesApi = CoursesApiBuilder.Create(PortCoursesApi)
+                        .WithPing()
+                        .WithCourses(CourseStandardId)
                         .Build();
                 }
 

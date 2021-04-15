@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Queries.Registration
             RegistrationQuery command,
             CancellationToken cancellationToken)
         {
-            return _apprenticeCommitmentsService.GetRegistration(command.RegistrationId);
+            return _apprenticeCommitmentsService.GetRegistration(command.ApprenticeshipId);
         }
     }
 }
