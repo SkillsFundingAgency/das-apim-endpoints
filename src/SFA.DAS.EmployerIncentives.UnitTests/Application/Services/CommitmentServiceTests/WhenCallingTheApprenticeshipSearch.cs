@@ -24,16 +24,18 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.CommitmentSe
             long accountLegalEntityId,
             DateTime startDateFrom,
             DateTime startDateTo,
+            int pageNumber,
+            int pageSize,
             GetApprenticeshipListResponse response, 
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> client,
             [Greedy] CommitmentsService sut)
         {
             client.Setup(x => x.Get< GetApprenticeshipListResponse>(It.Is<IGetApiRequest>(p => 
-                    p.GetUrl == $"api/apprenticeships?accountId={accountId}&accountLegalEntityId={accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}")))
+                    p.GetUrl == $"api/apprenticeships?accountId={accountId}&accountLegalEntityId={accountLegalEntityId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}&pageNumber={pageNumber}&pageItemCount={pageSize}&sortField=ApprenticeName")))
                 .ReturnsAsync(response);
 
-            var result = await sut.Apprenticeships(accountId, accountLegalEntityId, startDateFrom, startDateTo);
-            result.Should().BeEquivalentTo(response.Apprenticeships);
+            var result = await sut.Apprenticeships(accountId, accountLegalEntityId, startDateFrom, startDateTo, pageNumber, pageSize);
+            result.Should().BeEquivalentTo(response);
         }
     }
 }

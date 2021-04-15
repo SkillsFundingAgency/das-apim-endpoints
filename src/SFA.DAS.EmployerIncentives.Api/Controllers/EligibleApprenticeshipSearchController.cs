@@ -23,23 +23,31 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
         [HttpGet]
         [Route("/apprenticeships")]
-        public async Task<IActionResult> GetEligibleApprentices(long accountId, long accountLegalEntityId)
+        public async Task<IActionResult> GetEligibleApprentices(long accountId, long accountLegalEntityId, int pageNumber, int pageSize)
         {
             try
             {
-                var result = await _mediator.Send(new GetEligibleApprenticeshipsSearchQuery
+                 var result = await _mediator.Send(new GetEligibleApprenticeshipsSearchQuery
                 {
                     AccountId = accountId,
-                    AccountLegalEntityId = accountLegalEntityId
+                    AccountLegalEntityId = accountLegalEntityId,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
                 });
 
-                var apprentices = result.Apprentices.Select(x=> (EligibleApprenticeshipDto) x);
+                var response = new EligibleApprenticesResponse
+                {
+                    PageNumber = result.PageNumber,
+                    PageSize = pageSize,
+                    TotalApprenticeships = result.TotalApprenticeships,
+                    Apprenticeships = result.Apprentices.Select(x => (EligibleApprenticeshipDto)x)
+                };
 
-                return new OkObjectResult(apprentices.ToArray());
+                return new OkObjectResult(response);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get a GetEligibleApprentices for accountId:{accountId} accountLegalEntityId:{accountLegalEntityId}");
+                _logger.LogError(e, $"Error attempting to get a GetEligibleApprentices for accountId:{accountId} accountLegalEntityId:{accountLegalEntityId} pageNumber: {pageNumber} pageSize: {pageSize}");
                 return BadRequest();
             }
         }

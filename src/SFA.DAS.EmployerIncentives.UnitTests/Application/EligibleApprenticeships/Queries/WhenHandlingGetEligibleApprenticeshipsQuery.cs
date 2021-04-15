@@ -30,8 +30,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             employerIncentivesService.Setup(x => x.GetIncentiveDetails()).ReturnsAsync(incentiveDetails);
 
             commitmentsService.Setup(x =>
-                x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate))
-                .ReturnsAsync(items);
+                x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate, query.PageNumber, query.PageSize))
+                .ReturnsAsync(response);
 
             employerIncentivesService.Setup(x =>
                 x.GetEligibleApprenticeships(It.Is<IEnumerable<ApprenticeshipItem>>(c => c.Count().Equals(response.Apprenticeships.Count())))).ReturnsAsync(items);

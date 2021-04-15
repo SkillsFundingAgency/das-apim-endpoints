@@ -23,6 +23,8 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
         public async Task Then_Gets_Eligible_Apprentices_From_Mediator(
             long accountId,
             long accountLegalEntityId,
+            int pageNumber,
+            int pageSize,
             GetEligibleApprenticeshipsSearchResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]EligibleApprenticeshipSearchController controller)
@@ -35,19 +37,21 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId) as ObjectResult;
+            var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId, pageNumber, pageSize) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as IEnumerable<EligibleApprenticeshipDto>;
+            var model = controllerResult.Value as EligibleApprenticesResponse;
             Assert.IsNotNull(model);
-            model.Count().Should().Be(mediatorResult.Apprentices.Length);
+            model.Apprenticeships.Count().Should().Be(mediatorResult.Apprentices.Length);
         }
         
         [Test, MoqAutoData]
         public async Task And_Throws_Exception_Then_Returns_Bad_Request(
             long accountId,
             long accountLegalEntityId,
+            int pageNumber,
+            int pageSize,
             GetEligibleApprenticeshipsSearchResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]EligibleApprenticeshipSearchController controller)
@@ -58,7 +62,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
             
-            var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId) as StatusCodeResult;
+            var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId, pageNumber, pageSize) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

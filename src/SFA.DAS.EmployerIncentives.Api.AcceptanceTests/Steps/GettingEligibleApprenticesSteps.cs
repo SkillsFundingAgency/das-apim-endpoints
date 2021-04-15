@@ -32,11 +32,15 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private ApprenticeshipItem _nonEligibleApprenticeship5;
         private DateTime _eligibilityStartDate;
         private DateTime _eligibilityEndDate;
+        private int _pageNumber;
+        private int _pageSize;
 
         public GettingEligibleApprenticesSteps(TestContext testContext)
         {
             _fixture = new Fixture();
             _context = testContext;
+            _pageNumber = 1;
+            _pageSize = 50;
         }
 
         [Given(@"the caller wants to search for eligible apprentices by Account Id and AccountLegalEntity Id")]
@@ -92,7 +96,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the request to list all eligible apprentices")]
         public async Task WhenTheOuterApiReceivesTheRequestToListAllEligibleApprentices()
         {
-            _response = await _context.OuterApiClient.GetAsync($"/apprenticeships?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}");
+            _response = await _context.OuterApiClient.GetAsync($"/apprenticeships?accountId={_accountId}&accountLegalEntityId={_accountLegalEntityId}&pageNumber={_pageNumber}&pageSize={_pageSize}");
         }
         
         [Then(@"the result should return Ok, but with no apprentices")]
@@ -101,8 +105,12 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await _response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<IEnumerable<EligibleApprenticeshipDto>>(content);
+            var result = JsonSerializer.Deserialize<EligibleApprenticesResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             result.Should().NotBeNull();
+            result.PageSize.Should().Be(_pageSize);
+            result.PageNumber.Should().Be(_pageNumber);
+            result.TotalApprenticeships.Should().Be(0);
+            result.Apprenticeships.Should().BeEmpty();
         }
 
         [Then(@"the result should return Ok and have two apprentices")]
@@ -111,11 +119,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await _response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<IEnumerable<EligibleApprenticeshipDto>>(content, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<EligibleApprenticesResponse>(content, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true });
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
-            result.Count(a => a.Uln == _eligibleApprenticeship1.Uln).Should().Be(1);
-            result.Count(a => a.Uln == _eligibleApprenticeship2.Uln).Should().Be(1);
+            result.Apprenticeships.Count().Should().Be(2);
+            result.Apprenticeships.Count(a => a.Uln == _eligibleApprenticeship1.Uln).Should().Be(1);
+            result.Apprenticeships.Count(a => a.Uln == _eligibleApprenticeship2.Uln).Should().Be(1);
         }
 
         private void SetupIncentiveDetailsResponse()

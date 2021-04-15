@@ -21,10 +21,19 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
         public async Task<GetEligibleApprenticeshipsSearchResult> Handle(GetEligibleApprenticeshipsSearchQuery request, CancellationToken cancellationToken)
         {
             var incentiveDetails = await _employerIncentivesService.GetIncentiveDetails();
-            var apprentices = await _commitmentsV2Service.Apprenticeships(request.AccountId, request.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate);
+
+            var apprenticesResponse = await _commitmentsV2Service.Apprenticeships(
+                    request.AccountId, request.AccountLegalEntityId,
+                    incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate,
+                    request.PageNumber, request.PageSize);
+
+            var filteredApprenticeships = await _employerIncentivesService.GetEligibleApprenticeships(apprenticesResponse.Apprenticeships);
+
             var result = new GetEligibleApprenticeshipsSearchResult
             {
-                Apprentices = await _employerIncentivesService.GetEligibleApprenticeships(apprentices)
+                Apprentices = filteredApprenticeships,
+                PageNumber = request.PageNumber,
+                TotalApprenticeships = apprenticesResponse.TotalApprenticeships
             };
 
             return result;
