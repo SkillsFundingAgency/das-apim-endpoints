@@ -3,7 +3,6 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-
     public class HowApprenticeshipWillBeDeliveredRequest : IPostApiRequest<HowApprenticeshipWillBeDeliveredRequestData>
     {
         private readonly Guid _apprenticeId;
