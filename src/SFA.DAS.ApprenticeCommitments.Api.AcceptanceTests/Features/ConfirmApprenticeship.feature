@@ -14,3 +14,4 @@ Scenario Outline: Confirm an aspect of the apprenticeship
 	| TrainingProviderConfirmation                 | {"TrainingProviderCorrect": true}           | TrainingProviderConfirmationRequestData         |
 	| RolesAndResponsibilitiesConfirmation         | {"RolesAndResponsibilitiesCorrect": true}   | RolesAndResponsibilitiesConfirmationRequestData |
 	| HowApprenticeshipWillBeDeliveredConfirmation | {"HowApprenticeshipDeliveredCorrect": true} | HowApprenticeshipWillBeDeliveredRequestData     |
+	| ApprenticeshipConfirmation                   | {"ApprenticeshipCorrect": true}             | ApprenticeshipConfirmationRequestData           |
