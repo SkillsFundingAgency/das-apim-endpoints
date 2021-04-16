@@ -67,8 +67,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeid}/apprenticeships/{apprenticeshipid}/apprenticeshipdetailsconfirmation")]
-        public async Task<IActionResult> ApprenticeshipConfirmation(
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipdetailsconfirmation")]
+        public async Task<IActionResult> ApprenticeshipDetailsConfirmation(
             Guid apprenticeId, long apprenticeshipId,
             [FromBody] ApprenticeshipDetailsConfirmationRequestData request)
         {
@@ -109,6 +109,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             await _client.Post(
                 new HowApprenticeshipWillBeDeliveredRequest(
                     apprenticeId, apprenticeshipId, request.HowApprenticeshipDeliveredCorrect));
+
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipconfirmation")]
+        public async Task<IActionResult> ApprenticeshipConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] ApprenticeshipConfirmationRequestData request)
+        {
+            await _client.Post(
+                new ApprenticeshipConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.ApprenticeshipCorrect));
 
             return Ok();
         }
