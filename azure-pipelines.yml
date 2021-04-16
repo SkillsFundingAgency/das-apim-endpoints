@@ -35,7 +35,10 @@ parameters:
 - name: ApprenticeCommitments
   type: boolean
   default: false
-  
+- name: EmployerDemand
+  type: boolean
+  default: false
+
 trigger:
   branches:
     include:
@@ -51,12 +54,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.3.3
+    ref: refs/tags/0.3.12
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.2.2
+    ref: refs/tags/4.3.3
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-employer-config
@@ -93,6 +96,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -109,6 +120,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -126,6 +139,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -143,6 +158,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -160,6 +177,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -177,6 +196,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -194,6 +215,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -211,6 +234,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -228,6 +253,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -245,6 +272,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -262,6 +291,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -279,7 +310,9 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
-      
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_ApprenticeCommitments
@@ -296,6 +329,27 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -321,6 +375,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -337,6 +399,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -354,6 +418,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -371,6 +437,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -388,6 +456,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -405,6 +475,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -422,6 +494,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -439,6 +513,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -456,6 +532,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -473,6 +551,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -490,6 +570,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -507,6 +589,8 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -524,6 +608,27 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -549,6 +654,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -565,6 +678,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -582,6 +697,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -599,6 +716,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -616,6 +735,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -633,6 +754,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -650,6 +773,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -667,6 +792,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -684,6 +811,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -701,7 +830,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
-      
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -719,6 +849,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -735,8 +867,10 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
-    
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_ApprenticeCommitments
@@ -753,7 +887,28 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
-      
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
 - stage: Deploy_PP
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
@@ -778,6 +933,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -794,6 +957,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -811,6 +976,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -828,6 +995,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -845,6 +1014,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -862,6 +1033,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -879,6 +1052,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -896,6 +1071,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -913,6 +1090,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -930,6 +1109,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -947,6 +1128,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -964,6 +1147,8 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -980,7 +1165,28 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)      
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -1006,6 +1212,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: PROD
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -1022,6 +1236,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1039,6 +1255,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1056,6 +1274,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1073,6 +1293,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1090,6 +1312,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1107,6 +1331,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1124,6 +1350,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1140,7 +1368,9 @@ stages:
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
-      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)   
+      ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1158,6 +1388,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1175,6 +1407,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1191,7 +1425,28 @@ stages:
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
-      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)  
+      ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -1217,6 +1472,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: MO
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -1233,8 +1496,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
-
-  
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1252,6 +1515,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1269,6 +1534,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1286,6 +1553,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1303,7 +1572,9 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
-  
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
@@ -1320,6 +1591,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1337,6 +1610,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1354,6 +1629,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1371,6 +1648,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1388,6 +1667,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1405,6 +1686,27 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Tenant: $(Tenant)
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -1430,6 +1732,14 @@ stages:
         LoggingRedisConnectionString: $(LoggingRedisConnectionString)
         ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+  - template: pipeline-templates/job/app-role-assignments.yml
+    parameters:
+      DeploymentName: ApplyAppRoleAssignments
+      DeploymentApprovals: DEV
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      ResourceName: $(InstanceName)
+      Tenant: $(Tenant)
+
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
@@ -1446,6 +1756,8 @@ stages:
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1463,6 +1775,8 @@ stages:
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1480,6 +1794,8 @@ stages:
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1497,6 +1813,8 @@ stages:
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1514,6 +1832,8 @@ stages:
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1531,6 +1851,8 @@ stages:
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1548,6 +1870,8 @@ stages:
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1565,6 +1889,8 @@ stages:
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1582,6 +1908,8 @@ stages:
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1599,6 +1927,8 @@ stages:
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1616,6 +1946,8 @@ stages:
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1633,3 +1965,24 @@ stages:
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerDemand
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.EmployerDemand }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerDemandOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
+      ApimResourceGroup: $(ApimResourceGroup)
+      ApimInstanceName: $(InstanceName)
+      AppServiceResourceGroup: $(ResourceGroupName)
+      ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
+      ApiPath: $(EmployerDemandOuterApiPath)
+      ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
+      ProductId: $(EmployerDemandProductId)
+      ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Tenant: $(Tenant)

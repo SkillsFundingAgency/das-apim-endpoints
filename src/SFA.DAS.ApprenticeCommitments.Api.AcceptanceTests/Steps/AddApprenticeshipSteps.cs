@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.Matchers;
@@ -24,6 +26,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private readonly TestContext _context;
         private CreateApprenticeshipCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
+        private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
+        private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
 
         public AddApprenticeshipSteps(TestContext context)
         {
@@ -88,6 +92,49 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             }
         }
 
+        [Given("the following training providers exist")]
+        public void GivenTheFollowingTrainingProvidersExist(Table table)
+        {
+            _trainingProviderResponses = table.CreateSet<Apis.TrainingProviderApi.TrainingProviderResponse>();
+
+            foreach (var trainingProvider in _trainingProviderResponses)
+            {
+                _context.TrainingProviderInnerApi.MockServer
+                    .Given(
+                        Request.Create()
+                            .WithPath($"/api/v1/search")
+                            .WithParam("searchterm", true,$"{trainingProvider.Ukprn}")
+                            .UsingGet()
+                    )
+                    .RespondWith(
+                        Response.Create()
+                            .WithStatusCode((int)HttpStatusCode.OK)
+                            .WithHeader("Content-Type", "application/json")
+                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new [] { trainingProvider }}))
+                    );
+            }
+        }
+
+        [Given("the following courses exist")]
+        public void GivenTheFollowingCoursesExist(Table table)
+        {
+            _courseResponses = table.CreateSet<Apis.Courses.StandardResponse>();
+
+            foreach (var course in _courseResponses)
+            {
+                _context.CoursesInnerApi.MockServer
+                    .Given(
+                        Request.Create()
+                            .WithPath($"/api/courses/standards/{course.Id}")
+                            .UsingGet())
+                    .RespondWith(
+                        Response.Create()
+                            .WithStatusCode((int)HttpStatusCode.OK)
+                            .WithHeader("Content-Type", "application/json")
+                            .WithBody(JsonConvert.SerializeObject(course)));
+            }
+        }
+
         [When("the following apprenticeship is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
@@ -95,9 +142,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             await _context.OuterApiClient.Post("apprenticeships", _request);
         }
 
-        [Then("the inner API was called successfully")]
+        [Then("the inner API has received the posted values")]
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
+            var expectedCommitment = _approvedApprenticeships.First(
+                x => x.Id == _request.ApprenticeshipId);
+
             _context.OuterApiClient.Response.StatusCode
                 .Should().Be(HttpStatusCode.Accepted);
 
@@ -108,11 +158,38 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.Should().NotBeNull();
-            innerApiRequest.RegistrationId.Should().NotBe(Guid.Empty);
+            innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
             innerApiRequest.Email.Should().Be(_request.Email);
             innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
             innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
+            innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
+            innerApiRequest.PlannedStartDate.Should().Be(expectedCommitment.StartDate);
+        }
+
+        [Then("the Training Provider Name should be '(.*)'")]
+        public void ThenTheTrainingProviderNameShouldBe(string trainingProviderName)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
+        }
+
+        [Then("the course should be `(.*)` level (.*)")]
+        public void ThenTheCourseLevelShouldBe(string name, int level)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.CourseName.Should().Be(name);
+            innerApiRequest.CourseLevel.Should().Be(level);
         }
 
         [Then("the inner API should return these errors")]

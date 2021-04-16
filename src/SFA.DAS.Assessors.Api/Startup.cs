@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -19,6 +16,7 @@ using SFA.DAS.Assessors.Api.AppStart;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Assessors.Api
 {
@@ -52,7 +50,7 @@ namespace SFA.DAS.Assessors.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
+            services.AddMediatR(typeof(GetTrainingCoursesExportQuery).Assembly);
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>
@@ -80,15 +78,19 @@ namespace SFA.DAS.Assessors.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AssessorsOuterApi", Version = "v1" });
             });
+
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.ConfigureExceptionHandler(logger);
 
             app.UseAuthentication();
 

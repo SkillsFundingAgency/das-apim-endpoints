@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
     {
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed(
-            List<Guid> routeIds,
+            List<int> routeIds,
             List<int> levels,
             string keyword)
         {
@@ -62,7 +62,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Constructed_Without_Levels(
-            List<Guid> routeIds,
+            List<int> routeIds,
             string keyword)
         {
             var orderBy = CoursesOrderBy.Score;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using SFA.DAS.FindApprenticeshipTraining.Domain.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {
@@ -11,5 +11,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public int Total { get ; set ; }
         public LocationItem Location { get; set; }
         public int ShortlistItemCount { get ; set ; }
+        public bool ShowEmployerDemand { get; set; }
     }
 }
