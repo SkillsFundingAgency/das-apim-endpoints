@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
         public async Task<GetEmployerCourseProviderDemandQueryResult> Handle(GetEmployerCourseProviderDemandQuery request, CancellationToken cancellationToken)
         {
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
-            var locationTask = _locationLookupService.GetLocationInformation(request.LocationName,0, 0);
+            var locationTask = _locationLookupService.GetLocationInformation(request.LocationName,0, 0, true);
 
             await Task.WhenAll(courseTask, locationTask);
 

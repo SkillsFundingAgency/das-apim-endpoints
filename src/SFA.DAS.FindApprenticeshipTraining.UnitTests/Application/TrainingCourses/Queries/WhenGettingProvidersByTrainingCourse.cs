@@ -57,7 +57,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             mockLocationLookup
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem) null);
             
             var result = await handler.Handle(query, CancellationToken.None);
@@ -90,7 +90,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Lon = 0;
 
             mockLocationLookupService
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationServiceResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>

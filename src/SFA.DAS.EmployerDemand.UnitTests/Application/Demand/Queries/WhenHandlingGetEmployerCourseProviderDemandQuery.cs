@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetEmployerCourseProviderDemandQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0))
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0, true))
                 .ReturnsAsync(locationResult);
             coursesApiClient
                 .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c =>
@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetEmployerCourseProviderDemandQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0))
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0, true))
                 .ReturnsAsync((LocationItem)null);
             coursesApiClient
                 .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c =>
