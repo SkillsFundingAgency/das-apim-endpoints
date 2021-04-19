@@ -12,8 +12,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegis
             RuleFor(model => model.LastName).NotEmpty().WithMessage("The Last name is required");
             RuleFor(model => model.DateOfBirth).Must(dob => dob != default).WithMessage("Date of birth is required");
             RuleFor(model => model.Email).NotEmpty().EmailAddress().WithMessage("A valid email address is required");
-            RuleFor(model => model.NationalInsuranceNumber).NotEmpty().WithMessage("National insurance number is required");
-            RuleFor(model => model.NationalInsuranceNumber).Matches(@"^(?!BG|GB|NK|KN|TN|NT|ZZ)[ABCEGHJ-PRSTW-Z][ABCEGHJ-NPRSTW-Z]\s*\d{2}\s*\d{2}\s*\d{2}\s*[A-D]$").WithMessage("National insurance number format is wrong");
         }
     }
 }
