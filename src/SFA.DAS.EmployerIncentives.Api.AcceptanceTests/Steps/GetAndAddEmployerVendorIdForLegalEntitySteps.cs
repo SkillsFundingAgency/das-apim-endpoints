@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     {
         private readonly TestContext _context;
         private const string HashedLegalEntityId = "DW5T8V";
-        private const string CompanyName = "ESFA";
         private const string ExpectedEmployerVendorId = "P0004320";
 
         public GetAndAddEmployerVendorIdForLegalEntitySteps(TestContext context) { _context = context; }
@@ -34,8 +33,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             await GetResponseFromFinanceApi();
 
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
-                .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithPath($"/Finance/{_context.FinanceApi.CompanyName}/vendor/aleid={HashedLegalEntityId}")
+                .WithParam("api-version", _context.FinanceApi.ApiVersion)
                 .UsingGet()).Should().HaveCount(1);
         }
 
@@ -54,8 +53,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             await GetErrorResponseFromFinanceApi();
 
             _context.FinanceApi.MockServer.FindLogEntries(Request.Create()
-                .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithPath($"/Finance/{_context.FinanceApi.CompanyName}/vendor/aleid={HashedLegalEntityId}")
+                .WithParam("api-version", _context.FinanceApi.ApiVersion)
                 .UsingGet()).Should().HaveCount(1);
         }
 
@@ -107,8 +106,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         public IRequestMatcher ExpectedGetVendorDataApiRequest =>
 
             Request.Create()
-                .WithPath($"/Finance/{CompanyName}/vendor/aleid={HashedLegalEntityId}")
-                .WithParam("api-version", "2019-06-01")
+                .WithPath($"/Finance/{_context.FinanceApi.CompanyName}/vendor/aleid={HashedLegalEntityId}")
+                .WithParam("api-version", _context.FinanceApi.ApiVersion)
                 .UsingGet();
     }
 }
