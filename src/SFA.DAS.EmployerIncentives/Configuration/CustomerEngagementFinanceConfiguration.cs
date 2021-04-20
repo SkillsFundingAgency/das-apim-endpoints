@@ -6,5 +6,7 @@ namespace SFA.DAS.EmployerIncentives.Configuration
     {
         public string Url { get; set; }
         public string SubscriptionKey { get; set; }
+        public string CompanyName { get; set; }
+        public string ApiVersion { get; set; }
     }
 }
