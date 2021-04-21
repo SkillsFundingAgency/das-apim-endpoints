@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
-        Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
+        Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
         Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);

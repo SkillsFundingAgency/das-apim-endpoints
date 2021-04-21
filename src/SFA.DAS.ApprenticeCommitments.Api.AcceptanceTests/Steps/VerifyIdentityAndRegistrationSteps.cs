@@ -24,7 +24,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private VerifyIdentityRegistrationCommand _command;
         private Fixture _f;
         private string _validEmail;
-        private string _validNI;
         private Guid _apprenticeId;
         private Guid _userIdentityId;
         private ErrorItem _errorItem;
@@ -34,7 +33,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context = context;
             _f = new Fixture();
             _validEmail = _f.Create<MailAddress>().Address;
-            _validNI = "NE 01 01 01 C";
             _apprenticeId = Guid.NewGuid();
             _userIdentityId = Guid.NewGuid();
             _errorItem = new ErrorItem {PropertyName = "", ErrorMessage = "Invalid"};
@@ -45,7 +43,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         {
             _command = _f.Build<VerifyIdentityRegistrationCommand>()
                 .With(p => p.Email, _validEmail)
-                .With(p => p.NationalInsuranceNumber, _validNI)
                 .With(p => p.ApprenticeId, _apprenticeId)
                 .With(p => p.UserIdentityId, _userIdentityId)
                 .Create();

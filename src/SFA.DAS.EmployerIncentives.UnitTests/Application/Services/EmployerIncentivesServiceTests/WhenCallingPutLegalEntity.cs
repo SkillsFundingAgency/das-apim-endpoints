@@ -13,27 +13,22 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
-    public class WhenCallingPostLegalEntity
+    public class WhenCallingPutLegalEntity
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_To_Create_And_The_New_LegalEntity_Is_Returned(
+        public async Task Then_The_Api_Is_Called_To_Create_The_New_LegalEntity(
             long accountId,
             AccountLegalEntityCreateRequest createObject,
-            AccountLegalEntity clientResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             EmployerIncentivesService service)
         {
-            client.Setup(x => 
-                x.Post<AccountLegalEntity>(It.Is<PostAccountLegalEntityRequest>(
-                    c=>
-                        c.PostUrl.Contains(accountId.ToString())
-                        && c.Data.IsSameOrEqualTo(createObject)
-                        ))
-                ).ReturnsAsync(clientResponse);
+            client.Setup(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
+                y.PutUrl == $"accounts/{accountId}/legalentities" && y.Data.IsSameOrEqualTo(createObject)))).Returns(Task.CompletedTask);
             
-            var actual = await service.CreateLegalEntity(accountId, createObject);
-
-            actual.Should().BeEquivalentTo(clientResponse);
+            await service.CreateLegalEntity(accountId, createObject);
+        
+            client.Verify(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
+                y.PutUrl == $"accounts/{accountId}/legalentities")), Times.Once);
         }
     }
 }
