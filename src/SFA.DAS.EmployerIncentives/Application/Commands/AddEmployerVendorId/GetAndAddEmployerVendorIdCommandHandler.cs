@@ -12,10 +12,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IEmployerIncentivesService _incentivesService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
-        private const string CompanyName = "ESFA";
 
-        public GetAndAddEmployerVendorIdCommandHandler(ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
+        public GetAndAddEmployerVendorIdCommandHandler(
+            ICustomerEngagementFinanceService financeService,
+            IEmployerIncentivesService incentivesService, 
+            ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
         {
             _financeService = financeService;
             _incentivesService = incentivesService;
@@ -43,7 +44,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             {
                 _logger.LogInformation("Calling GetVendorByApprenticeshipLegalEntityId for LegalEntityId [{LegalEntityId}]", hashedLegalEntityId);
 
-                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(CompanyName, hashedLegalEntityId);
+                var response = await _financeService.GetVendorByApprenticeshipLegalEntityId(hashedLegalEntityId);
 
                 if (response == null)
                 {
