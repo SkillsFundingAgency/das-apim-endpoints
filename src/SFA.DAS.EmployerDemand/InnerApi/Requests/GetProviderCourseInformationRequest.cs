@@ -13,6 +13,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
             _courseId = courseId;
         }
 
-        public string GetUrl => $"api/Courses/{_courseId}/providers/{_ukprn}";
+        public string GetUrl => $"api/courses/{_courseId}/providers/{_ukprn}";
     }
 }

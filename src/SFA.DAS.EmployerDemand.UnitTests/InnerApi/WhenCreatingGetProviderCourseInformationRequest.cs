@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new GetProviderCourseInformationRequest(ukprn, courseId);
             
             //Assert
-            actual.GetUrl.Should().Be($"api/Courses/{courseId}/providers/{ukprn}");
+            actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{ukprn}");
         }
     }
 }

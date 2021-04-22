@@ -24,9 +24,11 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             LocationItem locationResult,
             GetStandardsListItem standardResult,
             GetEmployerCourseProviderListResponse demandResponse,
+            GetProviderCourseInformation courseProviderResponse,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> employerDemandApiClient,
+            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> courseDeliveryApiClient,
             GetEmployerCourseProviderDemandQueryHandler handler)
         {
             //Arrange
@@ -39,6 +41,10 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(x => x.Get<GetEmployerCourseProviderListResponse>(
                     It.Is<GetCourseProviderDemandsRequest>(c => c.GetUrl.Contains($"providers/{query.Ukprn}/courses/{query.CourseId}?lat={locationResult.GeoPoint.First()}&lon={locationResult.GeoPoint.Last()}&radius={query.LocationRadius}"))))
                 .ReturnsAsync(demandResponse);
+            courseDeliveryApiClient.Setup(x =>
+                x.Get<GetProviderCourseInformation>(
+                    It.Is<GetProviderCourseInformationRequest>(c => c.GetUrl.Contains($"courses/{query.CourseId}/providers/{query.Ukprn}"))))
+                .ReturnsAsync(courseProviderResponse);
             
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -47,6 +53,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             actual.Course.Should().BeEquivalentTo(standardResult);
             actual.Location.Should().BeEquivalentTo(locationResult);
             actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse.EmployerCourseDemands);
+            actual.ProviderDetail.Should().BeEquivalentTo(courseProviderResponse);
             actual.Total.Should().Be(demandResponse.Total);
             actual.TotalFiltered.Should().Be(demandResponse.TotalFiltered);
         }
