@@ -67,15 +67,27 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeid}/apprenticeships/{apprenticeshipid}/apprenticeshipdetailsconfirmation")]
-        public async Task<IActionResult> ApprenticeshipConfirmation(
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipdetailsconfirmation")]
+        public async Task<IActionResult> ApprenticeshipDetailsConfirmation(
             Guid apprenticeId, long apprenticeshipId,
-            [FromBody] EmployerConfirmationRequestData request)
+            [FromBody] ApprenticeshipDetailsConfirmationRequestData request)
         {
             await _client.Post(
                 new ApprenticeshipDetailsConfirmationRequest(
-                    apprenticeId, apprenticeshipId, request.EmployerCorrect));
+                    apprenticeId, apprenticeshipId, request.ApprenticeshipDetailsCorrect));
 
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/rolesandresponsibilitiesconfirmation")]
+        public async Task<IActionResult> RolesAndResponsibilitiesConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] RolesAndResponsibilitiesConfirmationRequestData request)
+        {
+            await _client.Post(
+                new RolesAndResponsibilitiesConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.RolesAndResponsibilitiesCorrect));
+            
             return Ok();
         }
 
@@ -86,6 +98,30 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         {
             await _mediator.Send(
                 new ChangeEmailAddressCommand(apprenticeId, request.Email));
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/howapprenticeshipwillbedeliveredconfirmation")]
+        public async Task<IActionResult> HowApprenticeshipWillBeDeliveredConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] HowApprenticeshipWillBeDeliveredRequestData request)
+        {
+            await _client.Post(
+                new HowApprenticeshipWillBeDeliveredRequest(
+                    apprenticeId, apprenticeshipId, request.HowApprenticeshipDeliveredCorrect));
+
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipconfirmation")]
+        public async Task<IActionResult> ApprenticeshipConfirmation(
+            Guid apprenticeId, long apprenticeshipId,
+            [FromBody] ApprenticeshipConfirmationRequestData request)
+        {
+            await _client.Post(
+                new ApprenticeshipConfirmationRequest(
+                    apprenticeId, apprenticeshipId, request.ApprenticeshipCorrect));
+
             return Ok();
         }
     }
