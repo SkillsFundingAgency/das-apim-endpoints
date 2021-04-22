@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public bool PausePayments { get; set; }
         public bool PaymentSent { get; set; }
         public bool PaymentSentIsEstimated { get; set; }
+        public bool RequiresNewEmployerAgreement { get; set; }
     }
 }
