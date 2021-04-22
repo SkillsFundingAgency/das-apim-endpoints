@@ -11,6 +11,11 @@ namespace SFA.DAS.EmployerDemand.Api.Models
 
         public static implicit operator GetProviderContactDetails(GetProviderCourseInformation source)
         {
+            if (source == null)
+            {
+                return null;
+            }
+            
             return new GetProviderContactDetails
             {
                 Ukprn = source.Ukprn,

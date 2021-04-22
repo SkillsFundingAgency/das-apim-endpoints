@@ -20,5 +20,15 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             actual.PhoneNumber.Should().Be(source.Phone);
             actual.EmailAddress.Should().Be(source.Email);
         }
+
+        [Test]
+        public void Then_If_Null_Then_Null_Returned()
+        {
+            //Act
+            var actual = (GetProviderContactDetails)(GetProviderCourseInformation)null;
+            
+            //Assert
+            actual.Should().BeNull();
+        }
     }
 }
