@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using Microsoft.Azure.Amqp.Serialization;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -23,6 +25,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
             _radius = radius;
         }
 
-        public string GetUrl => $"/api/Demand/providers/{_ukprn}/courses/{_courseId}?lat={_lat}&lon={_lon}&radius={_radius}";
+        public string GetUrl => $"/api/Demand/providers/{_ukprn}/courses/{_courseId}?lat={_lat}&lon={_lon}&radius={_radius}&sectors=" + string.Join("&sectors=", _sectors.Select(HttpUtility.UrlEncode));
     }
 }
