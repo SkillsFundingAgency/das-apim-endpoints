@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -49,6 +50,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse.EmployerCourseDemands);
             actual.Total.Should().Be(demandResponse.Total);
             actual.TotalFiltered.Should().Be(demandResponse.TotalFiltered);
+            actual.Sectors.Should().BeEquivalentTo(demandResponse.Sectors);
         }
 
         [Test, MoqAutoData]
@@ -81,6 +83,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             actual.EmployerCourseDemands.Should().BeEquivalentTo(demandResponse.EmployerCourseDemands);
             actual.Total.Should().Be(demandResponse.Total);
             actual.TotalFiltered.Should().Be(demandResponse.TotalFiltered);
+            actual.Sectors.Should().BeEquivalentTo(demandResponse.Sectors);
         }
     }
 }

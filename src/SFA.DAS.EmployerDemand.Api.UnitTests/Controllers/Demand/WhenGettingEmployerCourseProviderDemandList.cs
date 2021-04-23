@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
+            List<string> sectors,
             GetEmployerCourseProviderDemandQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
@@ -35,11 +37,12 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                         query.Ukprn == ukprn &&
                         query.CourseId == courseId &&
                         query.LocationName == location &&
-                        query.LocationRadius == locationRadius),
+                        query.LocationRadius == locationRadius &&
+                        query.Sectors == sectors),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as ObjectResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius, sectors) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderEmployerCourseDemandListResponse;
@@ -56,6 +59,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
+            List<string> sectors,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
@@ -65,7 +69,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as StatusCodeResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius, sectors) as StatusCodeResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

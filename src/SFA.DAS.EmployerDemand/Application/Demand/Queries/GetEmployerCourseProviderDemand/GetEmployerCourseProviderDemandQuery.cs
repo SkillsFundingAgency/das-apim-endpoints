@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand
 {
@@ -8,5 +9,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
         public int CourseId { get ; set ; }
         public int Ukprn { get ; set ; }
         public int? LocationRadius { get ; set ; }
+        public List<string> Sectors { get; set; }
     }
 }

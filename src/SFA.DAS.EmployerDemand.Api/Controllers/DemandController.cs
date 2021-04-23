@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -126,7 +127,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         [HttpGet]
         [Route("providers/{ukprn}/courses/{courseId}")]
         public async Task<IActionResult> GetEmployerCourseProviderDemand([FromRoute] int ukprn, [FromRoute]int courseId,
-            string location, int? locationRadius)
+            string location, int? locationRadius, List<string> sectors)
         {
             try
             {
@@ -135,7 +136,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Ukprn = ukprn,
                     CourseId = courseId,
                     LocationName = location,
-                    LocationRadius = locationRadius
+                    LocationRadius = locationRadius,
+                    Sectors = sectors
                 });
 
                 var apiResponse = new GetProviderEmployerCourseDemandListResponse
@@ -144,7 +146,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     TrainingCourse = result.Course,
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
-                    Location = result.Location
+                    Location = result.Location,
+                    Sectors = result.Sectors
                 };
                 
                 return Ok(apiResponse);

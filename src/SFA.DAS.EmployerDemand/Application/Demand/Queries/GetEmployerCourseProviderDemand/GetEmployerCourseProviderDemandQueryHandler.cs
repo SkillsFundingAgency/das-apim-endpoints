@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -37,15 +38,16 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
             var demand = await _employerDemandApiClient.Get<GetEmployerCourseProviderListResponse>(
                 new GetCourseProviderDemandsRequest(request.Ukprn, request.CourseId,
                     locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(),
-                    radius));
-
+                    radius, request.Sectors));
+            
             return new GetEmployerCourseProviderDemandQueryResult
             {
                 Course = courseTask.Result,
                 Location = locationTask.Result,
                 EmployerCourseDemands = demand.EmployerCourseDemands,
                 Total = demand.Total,
-                TotalFiltered = demand.TotalFiltered
+                TotalFiltered = demand.TotalFiltered,
+                Sectors = demand.Sectors
             };
         }
     }
