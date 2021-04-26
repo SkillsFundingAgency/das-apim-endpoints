@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             List<string> sectors)
         {
             var request = new GetAggregatedCourseDemandListRequest(ukprn, courseId, lat, lon, radius, sectors);
-            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}&radius={request.Radius}&sectors=" + string.Join("&sectors=", sectors.Select(HttpUtility.UrlEncode)));
+            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}&radius={request.Radius}&routes=" + string.Join("&routes=", sectors.Select(HttpUtility.UrlEncode)));
             request.CourseId.Should().Be(courseId);
             request.Lat.Should().Be(lat);
             request.Lon.Should().Be(lon);
