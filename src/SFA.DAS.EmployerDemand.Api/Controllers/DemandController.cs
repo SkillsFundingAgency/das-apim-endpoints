@@ -114,7 +114,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
                     Location = result.LocationItem,
-                    Sectors = result.Sectors
+                    Sectors = result.Sectors.Select(c => (GetRoutesListItem)c).ToList()
                 };
 
                 return Ok(apiResponse);
