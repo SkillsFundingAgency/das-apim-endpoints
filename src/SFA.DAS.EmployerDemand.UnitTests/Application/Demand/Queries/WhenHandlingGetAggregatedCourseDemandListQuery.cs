@@ -54,7 +54,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                     request.CourseId == query.CourseId &&
                     !request.Lat.HasValue &&
                     !request.Lon.HasValue &&
-                    !request.Radius.HasValue)))
+                    !request.Radius.HasValue &&
+                    request.Sectors == query.Sectors)))
                 .ReturnsAsync(demandApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -64,7 +65,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeNull();
-            result.Sectors.Should().BeEquivalentTo(demandApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Sectors.ToList());
             cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse),coursesApiStandardsResponse, 1));
             cacheStorageService.Verify(x => x.SaveToCache(nameof(GetRoutesListResponse), coursesApiSectorsResponse, 1));
         }
@@ -106,7 +107,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeEquivalentTo(locationFromService);
-            result.Sectors.Should().BeEquivalentTo(demandApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Sectors.ToList());
         }
 
         [Test, MoqAutoData]
@@ -179,59 +180,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Sectors.Should().BeEquivalentTo(demandApiResponse.Sectors);
+            result.Sectors.Should().BeEquivalentTo(cachedSectors.Sectors.ToList());
             mockCoursesApi.Verify(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()), Times.Never);
-        }
-
-        [Test, MoqAutoData, Ignore("WIP")]
-        public async Task Then_Filters_Sectors_To_Be_Passed_To_Demand_Api(
-            GetAggregatedCourseDemandListQuery query,
-            GetStandardsListResponse coursesApiStandardsResponse,
-            GetAggregatedCourseDemandListResponse demandApiResponse,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApi,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockDemandApi,
-            [Frozen] Mock<ILocationLookupService> mockLocationLookup,
-            [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            GetAggregatedCourseDemandListQueryHandler handler)
-        {
-            query.LocationName = null;
-            query.LocationRadius = null;
-            query.Sectors = new List<string>{"route1", "route2", "route3", "route4", "route5"};
-            var coursesApiSectorsResponse = new GetRoutesListResponse
-            {
-                Sectors = new List<GetRoutesListItem>
-                    {new GetRoutesListItem {Id = 1, Name = "route1"}, new GetRoutesListItem {Id = 2, Name = "route3"}}
-            };
-            var filteredSectors = new List<string> {"route1", "route3"};
-            cacheStorageService
-                .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
-                .ReturnsAsync((GetStandardsListResponse)null);
-            cacheStorageService
-                .Setup(client => client.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
-                .ReturnsAsync((GetRoutesListResponse)null);
-            mockLocationLookup
-                .Setup(service => service.GetLocationInformation(null, default, default))
-                .ReturnsAsync((LocationItem)null);
-            mockCoursesApi
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
-                .ReturnsAsync(coursesApiStandardsResponse);
-            mockCoursesApi
-                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
-                .ReturnsAsync(coursesApiSectorsResponse);
-            mockDemandApi
-                .Setup(client => client.Get<GetAggregatedCourseDemandListResponse>(It.Is<GetAggregatedCourseDemandListRequest>(request =>
-                    request.Ukprn == query.Ukprn &&
-                    request.CourseId == query.CourseId &&
-                    !request.Lat.HasValue &&
-                    !request.Lon.HasValue &&
-                    !request.Radius.HasValue &&
-                    request.Sectors == filteredSectors)))
-                .ReturnsAsync(demandApiResponse);
-
-            await handler.Handle(query, CancellationToken.None);
-
-            mockDemandApi.Verify(x => x.Get<GetAggregatedCourseDemandListResponse>(new GetAggregatedCourseDemandListRequest(
-                query.Ukprn, query.CourseId, null, null, null, filteredSectors)), Times.Once);
         }
     }
 }

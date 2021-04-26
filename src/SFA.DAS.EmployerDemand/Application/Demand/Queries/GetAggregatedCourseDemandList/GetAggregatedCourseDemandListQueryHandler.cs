@@ -37,13 +37,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
             var sectorsTask = GetSectors();
 
             await Task.WhenAll(locationTask, coursesTask, sectorsTask);
-
-            var routeFilters = sectorsTask
-                .Result
-                .Sectors
-                .Where(c => request.Sectors.Contains(c.Name)).Select(x => x.Name)
-                .ToList();
-
+            
             var aggregatedDemands = await _demandApiClient.Get<GetAggregatedCourseDemandListResponse>(
                 new GetAggregatedCourseDemandListRequest(
                     request.Ukprn, 
@@ -51,7 +45,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                     locationTask.Result?.GeoPoint?.FirstOrDefault(),
                     locationTask.Result?.GeoPoint?.LastOrDefault(),
                     locationTask.Result == null ? null : request.LocationRadius,
-                    routeFilters));
+                    request.Sectors));
 
             return new GetAggregatedCourseDemandListResult
             {
@@ -60,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 Total = aggregatedDemands.Total,
                 TotalFiltered = aggregatedDemands.TotalFiltered,
                 LocationItem = locationTask.Result,
-                Sectors = aggregatedDemands.Sectors
+                Sectors = sectorsTask.Result.Sectors.ToList()
             };
         }
         
