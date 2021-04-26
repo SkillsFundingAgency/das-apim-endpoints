@@ -9,5 +9,6 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public int TotalFiltered { get ; set ; }
         public int Total { get ; set ; }
         public GetLocationSearchResponseItem Location { get; set; }
+        public List<string> Sectors { get; set; }
     }
 }

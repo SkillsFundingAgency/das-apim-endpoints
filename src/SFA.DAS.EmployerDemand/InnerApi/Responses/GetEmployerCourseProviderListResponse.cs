@@ -8,7 +8,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public IEnumerable<GetEmployerCourseProviderDemandResponse> EmployerCourseDemands { get; set; }
         public int TotalFiltered { get ; set ; }
         public int Total { get ; set ; }
-        public List<GetRoutesListItem> Sectors { get; set; }
     }
 
     public class GetEmployerCourseProviderDemandResponse

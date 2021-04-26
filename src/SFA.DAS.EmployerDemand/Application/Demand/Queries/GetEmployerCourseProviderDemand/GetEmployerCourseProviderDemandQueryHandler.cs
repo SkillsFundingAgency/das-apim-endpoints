@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
             var demand = await _employerDemandApiClient.Get<GetEmployerCourseProviderListResponse>(
                 new GetCourseProviderDemandsRequest(request.Ukprn, request.CourseId,
                     locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(),
-                    radius, request.Sectors));
+                    radius));
             
             return new GetEmployerCourseProviderDemandQueryResult
             {
@@ -46,8 +46,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
                 Location = locationTask.Result,
                 EmployerCourseDemands = demand.EmployerCourseDemands,
                 Total = demand.Total,
-                TotalFiltered = demand.TotalFiltered,
-                Sectors = demand.Sectors
+                TotalFiltered = demand.TotalFiltered
             };
         }
     }
