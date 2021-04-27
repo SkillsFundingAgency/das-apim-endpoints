@@ -26,11 +26,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                         c.LegalEntityId.Equals(command.LegalEntityId)
                         && c.OrganisationName.Equals(command.OrganisationName)
                         && c.AccountLegalEntityId.Equals(command.AccountLegalEntityId))))
-                .ReturnsAsync(response);
+                .Returns(Task.CompletedTask);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            actual.AccountLegalEntity.Should().BeEquivalentTo(response);
+            actual.Should().NotBeNull();
         }
     }
 }

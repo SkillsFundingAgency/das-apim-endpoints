@@ -2,17 +2,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
-    public class PostAccountLegalEntityRequest : IPostApiRequest
+    public class PutAccountLegalEntityRequest : IPutApiRequest<AccountLegalEntityCreateRequest>
     {
         private readonly long _accountId;
 
-        public PostAccountLegalEntityRequest(long accountId)
+        public PutAccountLegalEntityRequest(long accountId)
         {
             _accountId = accountId;
         }
+        
+        public string PutUrl => $"accounts/{_accountId}/legalentities";
 
-        public string PostUrl => $"accounts/{_accountId}/legalentities";
-        public object Data { get; set; }
+        public AccountLegalEntityCreateRequest Data { get; set; }
     }
 
     public class AccountLegalEntityCreateRequest

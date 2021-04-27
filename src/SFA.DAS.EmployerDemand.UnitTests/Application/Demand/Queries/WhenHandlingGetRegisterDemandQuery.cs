@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetRegisterDemandQueryHandler handler)
         {
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0)).ReturnsAsync(location);
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0, true)).ReturnsAsync(location);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.IsAny<GetStandardRequest>()))
                 .ReturnsAsync(apiResponse);
