@@ -6,6 +6,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     public interface ILocationLookupService
     {
         Task<LocationItem> GetLocationInformation(string location, double lat,
-            double lon);
+            double lon, bool includeDistrictNameInPostcodeDisplayName = false);
     }
 }

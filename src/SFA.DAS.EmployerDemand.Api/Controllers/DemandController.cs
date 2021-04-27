@@ -144,7 +144,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     TrainingCourse = result.Course,
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
-                    Location = result.Location
+                    Location = result.Location,
+                    ProviderContactDetails = result.ProviderDetail
                 };
                 
                 return Ok(apiResponse);
