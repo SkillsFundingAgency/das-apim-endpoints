@@ -279,7 +279,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProviderQueryHandler handler)
         {
             mockLocationLookupService
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationLookupResponse);
             mockApiClient
                 .Setup(client => client.Get<GetProviderStandardItem>(It.Is<GetProviderByCourseAndUkPrnRequest>(c =>
@@ -343,7 +343,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Lat = 0;
             query.Lon = 0;
             mockLocationLookupService
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationLookupResponse);
 
             mockApiClient
@@ -406,7 +406,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             query.Location = $"{locationName}, {authorityName} ";
             mockLocationLookupService
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationLookupResponse);
 
             mockApiClient
@@ -477,7 +477,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             query.Location = $"{locationName}, {authorityName} ";
             mockLocationLookupService
-                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon))
+                .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationLookupResponse);
 
             mockApiClient

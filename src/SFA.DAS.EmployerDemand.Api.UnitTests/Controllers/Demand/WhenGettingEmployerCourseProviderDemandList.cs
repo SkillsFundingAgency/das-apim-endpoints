@@ -51,6 +51,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             model!.Total.Should().Be(mediatorResult.Total);
             model!.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
             model!.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.Location);
+            model!.ProviderContactDetails.Should().BeEquivalentTo((GetProviderContactDetails)mediatorResult.ProviderDetail);
         }
 
         [Test, MoqAutoData]

@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(client => client.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
                 .ReturnsAsync((GetRoutesListResponse) null);
             mockLocationLookup
-                .Setup(service => service.GetLocationInformation(null, default, default))
+                .Setup(service => service.GetLocationInformation(null, default, default, false))
                 .ReturnsAsync((LocationItem)null);
             mockCoursesApi
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetAggregatedCourseDemandListQueryHandler handler)
         {
             mockLocationLookup
-                .Setup(service => service.GetLocationInformation(query.LocationName, default, default))
+                .Setup(service => service.GetLocationInformation(query.LocationName, default, default, false))
                 .ReturnsAsync(locationFromService);
             mockCoursesApi
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetAggregatedCourseDemandListQueryHandler handler)
         {
             mockLocationLookup
-                .Setup(service => service.GetLocationInformation(query.LocationName, default, default))
+                .Setup(service => service.GetLocationInformation(query.LocationName, default, default, false))
                 .ReturnsAsync(locationFromService);
             cacheStorageService
                 .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))

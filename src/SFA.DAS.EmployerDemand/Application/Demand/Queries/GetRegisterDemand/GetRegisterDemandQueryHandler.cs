@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand
         public async Task<GetRegisterDemandResult> Handle(GetRegisterDemandQuery request, CancellationToken cancellationToken)
         {
             var course = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
-            var location = _locationLookupService.GetLocationInformation(request.LocationName,0,0); 
+            var location = _locationLookupService.GetLocationInformation(request.LocationName,0,0, true); 
             
             await Task.WhenAll(course, location);
             
