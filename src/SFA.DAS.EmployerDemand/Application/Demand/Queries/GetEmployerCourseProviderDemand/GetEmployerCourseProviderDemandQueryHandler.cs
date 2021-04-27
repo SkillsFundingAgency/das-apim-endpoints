@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
                 new GetCourseProviderDemandsRequest(request.Ukprn, request.CourseId,
                     locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(),
                     radius));
-            
+
             return new GetEmployerCourseProviderDemandQueryResult
             {
                 Course = courseTask.Result,
