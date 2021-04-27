@@ -7,7 +7,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
     public class GetAggregatedCourseDemandListRequest : IGetApiRequest
     {
-        public string GetUrl => $"api/demand/aggregated/providers/{Ukprn}?courseId={CourseId}&lat={Lat}&lon={Lon}&radius={Radius}&routes=" + string.Join("&routes=", Routes.Select(HttpUtility.UrlEncode));
+        public string GetUrl => $"api/demand/aggregated/providers/{Ukprn}?courseId={CourseId}&lat={Lat}&lon={Lon}&radius={Radius}&routes=" + string.Join("&routes=", Routes != null ? Routes.Select(HttpUtility.UrlEncode): new List<string>());
         public int Ukprn { get; }
         public int? CourseId { get; }
         public double? Lat { get; }

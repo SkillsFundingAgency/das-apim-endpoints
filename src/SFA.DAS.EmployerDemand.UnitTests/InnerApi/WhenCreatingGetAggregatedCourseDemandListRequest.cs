@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
         }
 
         [Test, AutoData]
-        public void Then_Sets_Url_If_Sectors_Is_Empty(
+        public void Then_Sets_Url_If_Routes_Is_Empty(
             int ukprn,
             int courseId,
             double lat,
@@ -43,6 +43,23 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             request.Lon.Should().Be(lon);
             request.Radius.Should().Be(radius);
             request.Routes.Should().BeEquivalentTo(new List<string>());
+        }
+
+        [Test, AutoData]
+        public void Then_Sets_Url_If_Routes_Is_Null(
+            int ukprn,
+            int courseId,
+            double lat,
+            double lon,
+            int radius)
+        {
+            var request = new GetAggregatedCourseDemandListRequest(ukprn, courseId, lat, lon, radius);
+            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}&radius={request.Radius}&routes=");
+            request.CourseId.Should().Be(courseId);
+            request.Lat.Should().Be(lat);
+            request.Lon.Should().Be(lon);
+            request.Radius.Should().Be(radius);
+            request.Routes.Should().BeNull();
         }
     }
 }
