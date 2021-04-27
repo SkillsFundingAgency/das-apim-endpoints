@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeNull();
-            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Sectors.ToList());
+            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Routes.ToList());
             cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse),coursesApiStandardsResponse, 1));
             cacheStorageService.Verify(x => x.SaveToCache(nameof(GetRoutesListResponse), coursesApiSectorsResponse, 1));
         }
@@ -107,7 +107,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.Total.Should().Be(demandApiResponse.Total);
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeEquivalentTo(locationFromService);
-            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Sectors.ToList());
+            result.Sectors.Should().BeEquivalentTo(coursesApiSectorsResponse.Routes.ToList());
         }
 
         [Test, MoqAutoData]
@@ -180,7 +180,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Sectors.Should().BeEquivalentTo(cachedSectors.Sectors.ToList());
+            result.Sectors.Should().BeEquivalentTo(cachedSectors.Routes.ToList());
             mockCoursesApi.Verify(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()), Times.Never);
         }
     }
