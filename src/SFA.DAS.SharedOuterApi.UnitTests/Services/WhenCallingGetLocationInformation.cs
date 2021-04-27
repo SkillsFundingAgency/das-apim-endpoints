@@ -153,6 +153,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var location = $"{postcode}";
             var lat = 0;
             var lon = 0;
+            apiLocationResponse.Outcode = "";
+            apiLocationResponse.Postcode = postcode;
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -161,6 +163,31 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
+            
+            result.Name.Should().Be(location);
+            result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_A_Postcode_And_Include_District_Name_Is_Included_Option_Then_It_Is_Returned_As_Display_Name(
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            LocationLookupService service)
+        {
+            var postcode = "CV1 1AA";
+            var location = $"{postcode}, {apiLocationResponse.DistrictName}";
+            var lat = 0;
+            var lon = 0;
+            apiLocationResponse.Postcode = postcode;
+            apiLocationResponse.Outcode = "";
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
+                                                                     && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
+                .ReturnsAsync(apiLocationResponse);
+
+            var result = await service.GetLocationInformation(postcode, lat, lon, true);
             
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);

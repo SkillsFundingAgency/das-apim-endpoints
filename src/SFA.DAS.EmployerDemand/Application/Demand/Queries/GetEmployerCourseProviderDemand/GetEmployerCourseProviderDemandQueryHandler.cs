@@ -14,23 +14,29 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
+        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ILocationLookupService _locationLookupService;
 
         public GetEmployerCourseProviderDemandQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, 
-            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient, 
+            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
+            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ILocationLookupService locationLookupService)
         {
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
+            _courseDeliveryApiClient = courseDeliveryApiClient;
             _locationLookupService = locationLookupService;
         }
         public async Task<GetEmployerCourseProviderDemandQueryResult> Handle(GetEmployerCourseProviderDemandQuery request, CancellationToken cancellationToken)
         {
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
-            var locationTask = _locationLookupService.GetLocationInformation(request.LocationName,0, 0);
+            var locationTask = _locationLookupService.GetLocationInformation(request.LocationName,0, 0, true);
+            var providerCourseInfoTask =
+                _courseDeliveryApiClient.Get<GetProviderCourseInformation>(
+                    new GetProviderCourseInformationRequest(request.Ukprn, request.CourseId));
 
-            await Task.WhenAll(courseTask, locationTask);
+            await Task.WhenAll(courseTask, locationTask, providerCourseInfoTask);
 
             var radius = locationTask.Result != null ? request.LocationRadius : null;
             
@@ -45,7 +51,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
                 Location = locationTask.Result,
                 EmployerCourseDemands = demand.EmployerCourseDemands,
                 Total = demand.Total,
-                TotalFiltered = demand.TotalFiltered
+                TotalFiltered = demand.TotalFiltered,
+                ProviderDetail = providerCourseInfoTask.Result
             };
         }
     }
