@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
@@ -32,6 +33,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task<PagedResponse<AccountLegalEntity>> GetLegalEntitiesByPage(int pageNumber, int pageSize = 1000)
         {
             var response = await _client.GetPaged<AccountLegalEntity>(new GetPagedLegalEntitiesRequest(pageNumber, pageSize));
+
+            return response;
+        }
+
+        public async Task<IEnumerable<UserDetails>> GetAccountUsers(string hashedAccountId)
+        {
+            var response = await _client.GetAll<UserDetails>(new GetAccountUsersRequest(hashedAccountId));
 
             return response;
         }
