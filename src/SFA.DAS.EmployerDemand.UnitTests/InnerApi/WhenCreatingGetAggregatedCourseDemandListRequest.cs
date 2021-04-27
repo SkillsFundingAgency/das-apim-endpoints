@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             request.Lat.Should().Be(lat);
             request.Lon.Should().Be(lon);
             request.Radius.Should().Be(radius);
-            request.Sectors.Should().BeEquivalentTo(sectors);
+            request.Routes.Should().BeEquivalentTo(sectors);
         }
 
         [Test, AutoData]
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             request.Lat.Should().Be(lat);
             request.Lon.Should().Be(lon);
             request.Radius.Should().Be(radius);
-            request.Sectors.Should().BeEquivalentTo(new List<string>());
+            request.Routes.Should().BeEquivalentTo(new List<string>());
         }
     }
 }

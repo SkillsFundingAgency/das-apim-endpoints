@@ -94,7 +94,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
         [HttpGet]
         [Route("aggregated/providers/{ukprn}")]
-        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius, List<string> sectors)
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius, [FromQuery]List<string> sectors)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseId = courseId,
                     LocationName = location,
                     LocationRadius = locationRadius,
-                    Sectors = sectors
+                    Routes = sectors
                 });
 
                 var apiResponse = new GetAggregatedCourseDemandListResponse
@@ -114,7 +114,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
                     Location = result.LocationItem,
-                    Sectors = result.Sectors.Select(c => (GetRoutesListItem)c).ToList()
+                    Routes = result.Routes.Select(c => (GetRoutesListItem)c).ToList()
                 };
 
                 return Ok(apiResponse);
@@ -129,7 +129,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         [HttpGet]
         [Route("providers/{ukprn}/courses/{courseId}")]
         public async Task<IActionResult> GetEmployerCourseProviderDemand([FromRoute] int ukprn, [FromRoute]int courseId,
-            string location, int? locationRadius, List<string> sectors)
+            string location, int? locationRadius)
         {
             try
             {
@@ -138,8 +138,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Ukprn = ukprn,
                     CourseId = courseId,
                     LocationName = location,
-                    LocationRadius = locationRadius,
-                    Sectors = sectors
+                    LocationRadius = locationRadius
                 });
 
                 var apiResponse = new GetProviderEmployerCourseDemandListResponse

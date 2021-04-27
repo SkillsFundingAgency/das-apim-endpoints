@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.Azure.Amqp.Serialization;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
@@ -14,7 +10,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
         private readonly double? _lon;
         private readonly int? _radius;
 
-        public GetCourseProviderDemandsRequest(int ukprn, int courseId,  double? lat = null, double? lon = null, int? radius = null)
+        public GetCourseProviderDemandsRequest(int ukprn, int courseId, double? lat = null, double? lon = null, int? radius = null)
         {
             _ukprn = ukprn;
             _courseId = courseId;

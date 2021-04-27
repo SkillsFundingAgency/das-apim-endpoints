@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                     locationTask.Result?.GeoPoint?.FirstOrDefault(),
                     locationTask.Result?.GeoPoint?.LastOrDefault(),
                     locationTask.Result == null ? null : request.LocationRadius,
-                    request.Sectors));
+                    request.Routes));
 
             return new GetAggregatedCourseDemandListResult
             {
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 Total = aggregatedDemands.Total,
                 TotalFiltered = aggregatedDemands.TotalFiltered,
                 LocationItem = locationTask.Result,
-                Sectors = sectorsTask.Result.Routes.ToList()
+                Routes = sectorsTask.Result.Routes.ToList()
             };
         }
         
