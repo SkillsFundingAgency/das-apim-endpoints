@@ -12,7 +12,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -26,7 +25,6 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
-            List<string> sectors,
             GetEmployerCourseProviderDemandQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
@@ -37,12 +35,11 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                         query.Ukprn == ukprn &&
                         query.CourseId == courseId &&
                         query.LocationName == location &&
-                        query.LocationRadius == locationRadius &&
-                        query.Sectors == sectors),
+                        query.LocationRadius == locationRadius),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius, sectors) as ObjectResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderEmployerCourseDemandListResponse;
@@ -60,7 +57,6 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
-            List<string> sectors,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
@@ -70,7 +66,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius, sectors) as StatusCodeResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as StatusCodeResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

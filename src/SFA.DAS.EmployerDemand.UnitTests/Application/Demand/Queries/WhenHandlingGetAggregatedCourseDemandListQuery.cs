@@ -161,7 +161,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetAggregatedCourseDemandListQueryHandler handler)
         {
             mockLocationLookup
-                .Setup(service => service.GetLocationInformation(query.LocationName, default, default))
+                .Setup(service => service.GetLocationInformation(query.LocationName, default, default, false))
                 .ReturnsAsync(locationFromService);
             mockCoursesApi
                 .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
