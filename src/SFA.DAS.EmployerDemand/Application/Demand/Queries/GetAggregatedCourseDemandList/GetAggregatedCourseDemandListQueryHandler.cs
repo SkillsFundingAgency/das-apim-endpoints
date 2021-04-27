@@ -34,9 +34,9 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.LocationName, default, default);
             var coursesTask = GetCourses();
-            var sectorsTask = GetSectors();
+            var routesTask = GetRoutes();
 
-            await Task.WhenAll(locationTask, coursesTask, sectorsTask);
+            await Task.WhenAll(locationTask, coursesTask, routesTask);
             
             var aggregatedDemands = await _demandApiClient.Get<GetAggregatedCourseDemandListResponse>(
                 new GetAggregatedCourseDemandListRequest(
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 Total = aggregatedDemands.Total,
                 TotalFiltered = aggregatedDemands.TotalFiltered,
                 LocationItem = locationTask.Result,
-                Routes = sectorsTask.Result.Routes.ToList()
+                Routes = routesTask.Result.Routes.ToList()
             };
         }
         
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
             return response;
         }
 
-        private async Task<GetRoutesListResponse> GetSectors()
+        private async Task<GetRoutesListResponse> GetRoutes()
         {
             var response =
                 await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));

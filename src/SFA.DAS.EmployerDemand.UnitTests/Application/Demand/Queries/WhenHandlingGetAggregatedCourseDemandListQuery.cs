@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
     public class WhenHandlingGetAggregatedCourseDemandListQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Demands_And_Courses_From_Apis_And_Adds_Courses_And_Sectors_To_Cache(
+        public async Task Then_Gets_Demands_And_Courses_From_Apis_And_Adds_Courses_And_Routes_To_Cache(
             GetAggregatedCourseDemandListQuery query,
             GetStandardsListResponse coursesApiStandardsResponse,
             GetRoutesListResponse coursesApiRoutesResponse,

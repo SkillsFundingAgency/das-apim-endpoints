@@ -17,15 +17,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             double lat,
             double lon,
             int radius,
-            List<string> sectors)
+            List<string> routes)
         {
-            var request = new GetAggregatedCourseDemandListRequest(ukprn, courseId, lat, lon, radius, sectors);
-            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}&radius={request.Radius}&routes=" + string.Join("&routes=", sectors.Select(HttpUtility.UrlEncode)));
+            var request = new GetAggregatedCourseDemandListRequest(ukprn, courseId, lat, lon, radius, routes);
+            request.GetUrl.Should().Be($"api/demand/aggregated/providers/{request.Ukprn}?courseId={request.CourseId}&lat={request.Lat}&lon={request.Lon}&radius={request.Radius}&routes=" + string.Join("&routes=", routes.Select(HttpUtility.UrlEncode)));
             request.CourseId.Should().Be(courseId);
             request.Lat.Should().Be(lat);
             request.Lon.Should().Be(lon);
             request.Radius.Should().Be(radius);
-            request.Routes.Should().BeEquivalentTo(sectors);
+            request.Routes.Should().BeEquivalentTo(routes);
         }
 
         [Test, AutoData]
