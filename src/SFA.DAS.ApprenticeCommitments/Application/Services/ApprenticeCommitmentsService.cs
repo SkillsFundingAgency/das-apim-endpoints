@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task CreateApprenticeship(CreateApprenticeshipRequestData data)
         {
-            return _client.Post<CreateApprenticeshipResponse>(new CreateApprenticeshipRequest
+            return _client.Post(new CreateApprenticeshipRequest
             {
                 Data = data
             });
@@ -43,11 +43,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task VerifyRegistration(VerifyIdentityRegistrationCommand command)
         {
-            return _client.Post<VerifyRegistrationResponse>(new VerifyRegistrationRequest
+            return _client.Post(new VerifyRegistrationRequest
             {
                 Data = new VerifyRegistrationRequestData
                 {
-                    RegistrationId = command.RegistrationId,
+                    ApprenticeId = command.ApprenticeId,
                     UserIdentityId = command.UserIdentityId,
                     FirstName = command.FirstName,
                     LastName = command.LastName,
@@ -55,6 +55,21 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     DateOfBirth = command.DateOfBirth
                 }
             });
+        }
+
+        public Task<RegistrationsRemindersInvitationsResponse> GetReminderRegistrations(DateTime invitationCutOffTime) => 
+            _client.Get<RegistrationsRemindersInvitationsResponse>(new GetRegistrationsNeedingRemindersRequest(invitationCutOffTime));
+
+        public Task InvitationReminderSent(Guid apprenticeId, DateTime sentOn)
+        {
+            return _client.Post(
+                new InvitationReminderSentRequest(apprenticeId)
+                {
+                    Data = new InvitationReminderSentData
+                    {
+                        SentOn = sentOn
+                    }
+                });
         }
     }
 }

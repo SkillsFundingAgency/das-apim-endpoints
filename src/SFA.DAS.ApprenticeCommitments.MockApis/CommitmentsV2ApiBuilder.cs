@@ -45,11 +45,11 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
-        public CommitmentsV2ApiBuilder WithAValidApprentice(long accountId, long apprenticeshipId)
+        public CommitmentsV2ApiBuilder WithAValidApprentice(long accountId, long apprenticeshipId, int courseId)
         {
             var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, accountId)
-                .With(x => x.CourseCode, CoursesApiBuilder.CourseStandardId.ToString())
+                .With(x => x.CourseCode, courseId.ToString())
                 .Create();
 
             _server
@@ -66,5 +66,27 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             return this;
         }
+
+        public CommitmentsV2ApiBuilder WithAnyApprenticeship()
+        {
+            var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
+                .Create();
+
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath($"/api/apprenticeships/*")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(response)
+                );
+
+            return this;
+        }
+
+
     }
 }

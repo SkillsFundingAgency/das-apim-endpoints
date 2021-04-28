@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Commands.VerifyIde
         [Test]
         public void When_empty_RegistrationId_it_fails()
         {
-            AssertValidationResult(request => request.RegistrationId, Guid.Empty, false);
+            AssertValidationResult(request => request.ApprenticeId, Guid.Empty, false);
         }
 
         [Test]
@@ -54,29 +54,6 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Commands.VerifyIde
         public void When_DateOfBirth_not_set_it_fails()
         {
             AssertValidationResult(request => request.DateOfBirth, default, false);
-        }
-
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase("  ", false)]
-        [TestCase("NE 01 01 01 C", true)]
-        [TestCase("NE010101C", true)]
-        [TestCase("NE   010101C", true)]
-        [TestCase("NE 01  0101C", true)]
-        [TestCase("NE0101  01 C", true)]
-        [TestCase("BG 01 01 01 C", false)]
-        [TestCase("GB 01 01 01 C", false)]
-        [TestCase("NK 01 01 01 C", false)]
-        [TestCase("KN 01 01 01 C", false)]
-        [TestCase("TN 01 01 01 C", false)]
-        [TestCase("NT 01 01 01 C", false)]
-        [TestCase("ZZ 01 01 01 C", false)]
-        [TestCase("AA 01 01 01 E", false)]
-        [TestCase("AA 01 01 01 F", false)]
-        [TestCase("AA 01 01 01 G", false)]
-        public void When_validating_NationalInsuranceNumber(string nationalInsuranceNumber, bool expectValid)
-        {
-            AssertValidationResult(request => request.NationalInsuranceNumber, nationalInsuranceNumber, expectValid);
         }
 
         private void AssertValidationResult<T>(Expression<Func<VerifyIdentityRegistrationCommand, T>> property, T value, bool expectedValid)

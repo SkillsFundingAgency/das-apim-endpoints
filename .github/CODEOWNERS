@@ -1,0 +1,6 @@
+#Requires review from DevOps when making changes to the following files/folders
+.github/CODEOWNERS      @SkillsFundingAgency/das-platform-engineering
+/azure/                 @SkillsFundingAgency/das-platform-engineering
+azure-pipelines.yml     @SkillsFundingAgency/das-platform-engineering
+/pipeline-templates/    @SkillsFundingAgency/das-platform-engineering
+GitVersion.yml          @SkillsFundingAgency/das-platform-engineering

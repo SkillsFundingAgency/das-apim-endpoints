@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -21,7 +21,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             _locationApiClient = locationApiClient;
         }
 
-        public async Task<LocationItem> GetLocationInformation(string location, double lat, double lon)
+        public async Task<LocationItem> GetLocationInformation(string location, double lat, double lon, bool includeDistrictNameInPostcodeDisplayName = false)
         {
             if (string.IsNullOrEmpty(location))
             {
@@ -38,6 +38,8 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (Regex.IsMatch(location, PostcodeRegex))
             {
                 getLocationsListItem =  await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
+                getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
+                location = getLocationsListItem.DisplayName;
             }
             else if (Regex.IsMatch(location, OutcodeDistrictRegex))
             {

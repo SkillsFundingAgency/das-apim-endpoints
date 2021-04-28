@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegisterDemand
+namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 {
     public class WhenHandlingGetRegisterDemandQuery
     {
@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries.GetRegiste
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetRegisterDemandQueryHandler handler)
         {
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0)).ReturnsAsync(location);
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0, true)).ReturnsAsync(location);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.IsAny<GetStandardRequest>()))
                 .ReturnsAsync(apiResponse);

@@ -43,6 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             //Act
             source.DistrictName = null;
+            source.IncludeDistrictNameInPostcodeDisplayName = false;
             var actual = (GetLocationSearchResponseItem)source;
 
             //Assert
