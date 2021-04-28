@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
-using SFA.DAS.Assessors.InnerApi.Responses;
 
 namespace SFA.DAS.Assessors.Api.Controllers
 {
