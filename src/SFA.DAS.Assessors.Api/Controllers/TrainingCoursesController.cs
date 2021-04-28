@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
-using SFA.DAS.Assessors.Application.Queries.GetStandardOptions;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
 using SFA.DAS.Assessors.InnerApi.Responses;
 
@@ -50,20 +49,6 @@ namespace SFA.DAS.Assessors.Api.Controllers
             if (queryResponse.StandardDetails == null) return NotFound();
 
             return Ok((GetStandardDetailsResponse)queryResponse.StandardDetails);
-        }
-        
-        [HttpGet]
-        [Route("options")]
-        public async Task<IActionResult> GetStandardOptionsList()
-        {
-            var queryResult = await _mediator.Send(new GetStandardOptionsQuery());
-
-            var model = new GetStandardOptionsResponse
-            {
-                StandardOptions = queryResult.StandardOptions.Select(standard => (GetStandardOptionsItem)standard).ToList()
-            };
-
-            return Ok(model);
         }
     }
 }
