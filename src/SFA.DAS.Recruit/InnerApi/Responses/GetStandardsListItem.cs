@@ -8,5 +8,6 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public int SectorCode { get;set; }
     }
 }

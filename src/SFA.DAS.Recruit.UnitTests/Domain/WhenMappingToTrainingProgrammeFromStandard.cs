@@ -27,6 +27,9 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             actual.Duration.Should().Be(source.TypicalDuration);
             actual.IsActive.Should().Be(source.IsActive);
             actual.EducationLevelNumber.Should().Be(source.Level);
+            actual.FrameworkCode.Should().Be(0);
+            actual.SectorCode.Should().Be(source.SectorCode);
+            actual.Ssa1.Should().Be(0);
         }
     }
 }

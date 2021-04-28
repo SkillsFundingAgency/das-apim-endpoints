@@ -14,8 +14,9 @@ namespace SFA.DAS.Recruit.Api.Models
         public int Duration { get; set; }
         public bool IsActive { get; set; }
         public int? EducationLevelNumber { get; set; }
-        
-        
+        public int Ssa1 { get ; set ; }
+        public int FrameworkCode { get ; set ; }
+        public int SectorCode { get ; set ; }
 
         public static implicit operator GetTrainingProgrammeResponse(TrainingProgramme source)
         {
@@ -30,7 +31,9 @@ namespace SFA.DAS.Recruit.Api.Models
                 Duration = source.Duration,
                 IsActive = source.IsActive,
                 EducationLevelNumber = source.EducationLevelNumber,
-                
+                SectorCode = source.SectorCode,
+                FrameworkCode = source.FrameworkCode,
+                Ssa1 = source.Ssa1
             };
         }
     }
