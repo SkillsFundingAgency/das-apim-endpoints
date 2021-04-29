@@ -31,10 +31,22 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         [JsonIgnore] 
         public string DisplayName => GetDisplayName();
 
+        [JsonIgnore]
+        public bool IncludeDistrictNameInPostcodeDisplayName { get ; set ; }
+
         private string GetDisplayName()
         {
-            return !string.IsNullOrEmpty(DistrictName) ? $"{Outcode} {DistrictName}" :
-                string.IsNullOrEmpty(Postcode) ? $"{LocationName}, {LocalAuthorityName}" : $"{Postcode}";
+            return (!string.IsNullOrEmpty(Outcode) && !string.IsNullOrEmpty(DistrictName)) ? $"{Outcode} {DistrictName}" :
+                string.IsNullOrEmpty(Postcode) ? $"{LocationName}, {LocalAuthorityName}" : GetPostcodeDisplayName();
+        }
+
+        private string GetPostcodeDisplayName()
+        {
+            if (IncludeDistrictNameInPostcodeDisplayName)
+            {
+                return $"{Postcode}, {DistrictName}";
+            }
+            return $"{Postcode}";
         }
     }
 }

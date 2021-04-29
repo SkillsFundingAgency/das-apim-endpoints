@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,11 @@ namespace SFA.DAS.Assessors.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
-            var queryResult = await _mediator.Send(new GetTrainingCoursesQuery());
-                
-            var model = new GetCourseListResponse
+            var queryResult = await _mediator.Send(new GetTrainingCoursesExportQuery());
+
+            var model = new GetCourseExportListResponse
             {
-                Courses = queryResult.TrainingCourses.Select(c=>(GetCourseListItem)c).ToList()
+                Courses = queryResult.TrainingCourses.Select(s => (GetStandardDetailsResponse)s)
             };
 
             return Ok(model);
@@ -47,6 +48,51 @@ namespace SFA.DAS.Assessors.Api.Controllers
             if (queryResponse.StandardDetails == null) return NotFound();
 
             return Ok((GetStandardDetailsResponse)queryResponse.StandardDetails);
+        }
+        
+
+        [HttpGet]
+        [Route("active")]
+        public async Task<IActionResult> GetActiveList()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetActiveTrainingCoursesQuery());
+
+                var model = new GetCourseListResponse
+                {
+                    Courses = queryResult.TrainingCourses.Select(c => (GetCourseListItem)c).ToList()
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get list of training courses");
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("draft")]
+        public async Task<IActionResult> GetDraftList()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetDraftTrainingCoursesQuery());
+
+                var model = new GetCourseListResponse
+                {
+                    Courses = queryResult.TrainingCourses.Select(c => (GetCourseListItem)c).ToList()
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get list of draft training courses");
+                return BadRequest();
+            }
         }
     }
 }

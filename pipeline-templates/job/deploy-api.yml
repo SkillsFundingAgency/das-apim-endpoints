@@ -13,10 +13,14 @@ parameters:
   ApiBaseUrl:
   ProductId:
   ApplicationIdentifierUri:
+  AppRoleAssignmentsServiceConnection:
+  Tenant:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
-  dependsOn: DeployInfrastructure
+  dependsOn: 
+  - ApplyAppRoleAssignments
+  - DeployInfrastructure
   condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
@@ -25,6 +29,11 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
+            ResourceName: ${{ parameters.AppServiceName }}
+            Tenant: ${{ parameters.Tenant }}
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}

@@ -75,12 +75,10 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Patch(request);
         }
 
-        public async Task<AccountLegalEntity> CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
+        public async Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
         {
-            var result = await _client.Post<AccountLegalEntity>(new PostAccountLegalEntityRequest(accountId)
-            { Data = accountLegalEntity });
-
-            return result;
+            var request = new PutAccountLegalEntityRequest(accountId) {Data = accountLegalEntity};
+            await _client.Put(request);
         }
 
         public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
