@@ -6,7 +6,7 @@ parameters:
 jobs:
 - deployment: DeployInfrastructure
   pool:
-    name: DAS - Continuous Deployment Agents
+    name: DAS - Continuous Deployment
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all
