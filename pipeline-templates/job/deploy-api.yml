@@ -16,8 +16,7 @@ jobs:
 - deployment: ${{ parameters.DeploymentName }}
   pool:
     name: DAS - Continuous Deployment Agents
-  dependsOn: 
-  - ApplyAppRoleAssignments
+  dependsOn:
   - DeployInfrastructure
   condition: ${{ parameters.DeploymentCondition }}
   variables:
