@@ -72,8 +72,6 @@ stages:
 - stage: Deploy_AT
   dependsOn: []  
   displayName: Deploy to AT
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
@@ -289,8 +287,6 @@ stages:
 - stage: Deploy_TEST
   dependsOn: []  
   displayName: Deploy to TEST
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
@@ -506,8 +502,6 @@ stages:
 - stage: Deploy_TEST2
   dependsOn: []
   displayName: Deploy to TEST2
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
@@ -723,8 +717,6 @@ stages:
 - stage: Deploy_PP
   dependsOn: []
   displayName: Deploy to PP
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
@@ -940,8 +932,6 @@ stages:
 - stage: Deploy_PROD
   dependsOn: []
   displayName: Deploy to PROD
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: PROD Management Resources
   - group: PROD Shared Resources
@@ -1142,8 +1132,6 @@ stages:
 - stage: Deploy_MO
   dependsOn: []
   displayName: Deploy to MO
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
@@ -1344,8 +1332,6 @@ stages:
 - stage: Deploy_DEMO
   dependsOn: []
   displayName: Deploy to DEMO
-  pool:
-    name: DAS - Continuous Deployment Agents
   variables:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources

@@ -6,6 +6,8 @@ parameters:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
+  pool:
+    name: DAS - Continuous Deployment Agents
   dependsOn: DeployInfrastructure
   environment: ${{ parameters.DeploymentApprovals }}
   strategy:
