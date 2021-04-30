@@ -38,3 +38,4 @@ jobs:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
             ResourceName: $(InstanceName)
             Tenant: $(Tenant)
+            IsMultiRepoCheckout: true
