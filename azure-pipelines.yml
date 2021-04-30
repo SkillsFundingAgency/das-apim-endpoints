@@ -79,18 +79,10 @@ stages:
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -357,18 +349,10 @@ stages:
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -635,18 +619,10 @@ stages:
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -913,18 +889,10 @@ stages:
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -1191,18 +1159,10 @@ stages:
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: PROD
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -1450,18 +1410,10 @@ stages:
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: MO
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
@@ -1709,18 +1661,10 @@ stages:
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
   jobs:
-  - template: azure-pipelines-templates/deploy/job/arm-deploy.yml@das-platform-building-blocks
+  - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      SubscriptionId: $(SubscriptionId)
-      Location: $(ResourceGroupLocation)
       Environment: DEV
-      TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-      ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
-      ConfigSchemaPath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-      TemplateSecrets:
-        LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-        ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
   - template: pipeline-templates/job/app-role-assignments.yml
     parameters:
