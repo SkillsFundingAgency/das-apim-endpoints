@@ -80,14 +80,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      Environment: DEV
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ResourceName: $(InstanceName)
+      Environment: DEV
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -295,14 +289,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      Environment: DEV
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ResourceName: $(InstanceName)
+      Environment: DEV
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -510,14 +498,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      Environment: DEV
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ResourceName: $(InstanceName)
+      Environment: DEV
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -725,14 +707,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
-      Environment: DEV
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      ResourceName: $(InstanceName)
+      Environment: DEV
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -940,14 +916,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
-      Environment: PROD
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: PROD
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      ResourceName: $(InstanceName)
+      Environment: PROD
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1140,14 +1110,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      Environment: MO
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: MO
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      ResourceName: $(InstanceName)
+      Environment: MO
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1340,14 +1304,8 @@ stages:
   - template: pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
-      Environment: DEV
-
-  - template: pipeline-templates/job/app-role-assignments.yml
-    parameters:
-      DeploymentName: ApplyAppRoleAssignments
-      DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ResourceName: $(InstanceName)
+      Environment: DEV
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
