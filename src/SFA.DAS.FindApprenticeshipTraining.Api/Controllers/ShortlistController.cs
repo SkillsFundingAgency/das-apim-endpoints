@@ -9,6 +9,7 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItemForUser;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -44,6 +45,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get shortlist for user:{userId}");
+                return BadRequest();
+            }
+        }
+        
+        [HttpGet]
+        [Route("expired")]
+        public async Task<IActionResult> GetExpiredShortlistUserIds([FromQuery]uint expiryInDays)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetExpiredShortlistsQuery {ExpiryInDays = expiryInDays});
+
+                return Ok(new {result.UserIds});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting list of expired shortlists");
                 return BadRequest();
             }
         }
@@ -115,5 +133,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 return BadRequest();
             }
         }
+
     }
 }
