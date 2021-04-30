@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -78,7 +79,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpDelete]
         [Route("users/{userId}/items/{id}")]
-        public async Task<IActionResult> DeleteShortlistForUser(Guid id, Guid userId)
+        public async Task<IActionResult> DeleteShortlistItemForUser(Guid id, Guid userId)
         {
             try
             {
@@ -92,6 +93,25 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error deleting shortlist item");
+                return BadRequest();
+            }
+        }
+        
+        [HttpDelete]
+        [Route("users/{userId}")]
+        public async Task<IActionResult> DeleteShortlistForUser(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteShortlistForUserCommand
+                {
+                    UserId = id
+                });
+                return Accepted();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error deleting shortlist");
                 return BadRequest();
             }
         }
