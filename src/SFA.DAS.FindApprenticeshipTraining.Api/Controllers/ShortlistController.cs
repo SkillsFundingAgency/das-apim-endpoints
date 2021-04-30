@@ -117,13 +117,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         
         [HttpDelete]
         [Route("users/{userId}")]
-        public async Task<IActionResult> DeleteShortlistForUser(Guid id)
+        public async Task<IActionResult> DeleteShortlistForUser(Guid userId)
         {
             try
             {
                 await _mediator.Send(new DeleteShortlistForUserCommand
                 {
-                    UserId = id
+                    UserId = userId
                 });
                 return Accepted();
             }
