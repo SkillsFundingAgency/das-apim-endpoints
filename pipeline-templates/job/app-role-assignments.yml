@@ -3,7 +3,6 @@ parameters:
   DeploymentApprovals:  
   AppRoleAssignmentsServiceConnection:
   ResourceName:
-  Tenant:
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
@@ -17,4 +16,4 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
             ResourceName: ${{ parameters.ResourceName }}
-            Tenant: ${{ parameters.Tenant }}
+            Tenant: $(Tenant)

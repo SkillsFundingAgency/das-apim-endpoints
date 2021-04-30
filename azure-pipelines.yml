@@ -90,7 +90,6 @@ stages:
       DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -100,16 +99,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -119,16 +114,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -138,16 +129,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -157,16 +144,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -176,16 +159,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -195,16 +174,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -214,16 +189,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -233,16 +204,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -252,16 +219,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -271,16 +234,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -290,16 +249,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -309,16 +264,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
       ApiPath: $(ApprenticeCommitmentsOuterApiPath)
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -328,16 +279,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
 - stage: Deploy_TEST
   dependsOn: []  
@@ -360,7 +307,6 @@ stages:
       DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -370,16 +316,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -389,16 +331,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -408,16 +346,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -427,16 +361,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -446,16 +376,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -465,16 +391,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -484,16 +406,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -503,16 +421,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -522,16 +436,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -541,16 +451,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -560,16 +466,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -579,16 +481,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
       ApiPath: $(ApprenticeCommitmentsOuterApiPath)
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -598,16 +496,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
 - stage: Deploy_TEST2
   dependsOn: []
@@ -630,7 +524,6 @@ stages:
       DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -640,16 +533,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -659,16 +548,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -678,16 +563,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -697,16 +578,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -716,16 +593,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -735,16 +608,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -754,16 +623,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -773,16 +638,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -792,16 +653,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -811,16 +668,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -830,16 +683,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -849,16 +698,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
       ApiPath: $(ApprenticeCommitmentsOuterApiPath)
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -868,16 +713,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
 - stage: Deploy_PP
   dependsOn: []
@@ -900,7 +741,6 @@ stages:
       DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -910,16 +750,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -929,16 +765,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -948,16 +780,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -967,16 +795,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -986,16 +810,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1005,16 +825,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1024,16 +840,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1043,16 +855,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1062,16 +870,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1081,16 +885,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1100,16 +900,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
       ApiPath: $(ApprenticeCommitmentsOuterApiPath)
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1119,16 +915,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1138,16 +930,12 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
 - stage: Deploy_PROD
   dependsOn: []
@@ -1170,7 +958,6 @@ stages:
       DeploymentApprovals: PROD
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1180,16 +967,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1199,16 +982,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1218,16 +997,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1237,16 +1012,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1256,16 +1027,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1275,16 +1042,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1294,16 +1057,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1313,16 +1072,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1332,16 +1087,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1351,16 +1102,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1370,16 +1117,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1389,16 +1132,12 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
 - stage: Deploy_MO
   dependsOn: []
@@ -1421,7 +1160,6 @@ stages:
       DeploymentApprovals: MO
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1431,16 +1169,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1450,16 +1184,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1469,16 +1199,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1488,16 +1214,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1507,16 +1229,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1526,16 +1244,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1545,16 +1259,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1564,16 +1274,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1583,16 +1289,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1602,16 +1304,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1621,16 +1319,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1640,16 +1334,12 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      Tenant: $(Tenant)
 
 - stage: Deploy_DEMO
   dependsOn: []
@@ -1672,7 +1362,6 @@ stages:
       DeploymentApprovals: DEV
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ResourceName: $(InstanceName)
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1682,16 +1371,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindApprenticeshipProductId)
       ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1701,16 +1386,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ReservationsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Reservations.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ReservationsOuterApiVersionSetName)
       ApiPath: $(ReservationsOuterApiPath)
       ApiBaseUrl: $(ReservationsOuterApiBaseUrl)
       ProductId: $(ReservationsProductId)
       ApplicationIdentifierUri: $(ReservationsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1720,16 +1401,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
       ApiPath: $(EmployerIncentivesOuterApiPath)
       ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
       ProductId: $(EmployerIncentivesProductId)
       ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1739,16 +1416,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindEpaoOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindEpao.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(FindEpaoOuterApiVersionSetName)
       ApiPath: $(FindEpaoOuterApiPath)
       ApiBaseUrl: $(FindEpaoOuterApiBaseUrl)
       ProductId: $(FindEpaoProductId)
       ApplicationIdentifierUri: $(FindEpaoOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1758,16 +1431,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ForecastingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Forecasting.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ForecastingOuterApiVersionSetName)
       ApiPath: $(ForecastingOuterApiPath)
       ApiBaseUrl: $(ForecastingOuterApiBaseUrl)
       ProductId: $(ForecastingProductId)
       ApplicationIdentifierUri: $(ForecastingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1777,16 +1446,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EpaoRegisterOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EpaoRegister.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EpaoRegisterOuterApiVersionSetName)
       ApiPath: $(EpaoRegisterOuterApiPath)
       ApiBaseUrl: $(EpaoRegisterOuterApiBaseUrl)
       ProductId: $(EpaoRegisterProductId)
       ApplicationIdentifierUri: $(EpaoRegisterOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1796,16 +1461,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprovalsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Approvals.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprovalsOuterApiVersionSetName)
       ApiPath: $(ApprovalsOuterApiPath)
       ApiBaseUrl: $(ApprovalsOuterApiBaseUrl)
       ProductId: $(ApprovalsProductId)
       ApplicationIdentifierUri: $(ApprovalsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1815,16 +1476,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ManageApprenticeshipsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ManageApprenticeships.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ManageApprenticeshipsOuterApiVersionSetName)
       ApiPath: $(ManageApprenticeshipsOuterApiPath)
       ApiBaseUrl: $(ManageApprenticeshipsOuterApiBaseUrl)
       ProductId: $(ManageApprenticeshipsProductId)
       ApplicationIdentifierUri: $(ManageApprenticeshipsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1834,16 +1491,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(RecruitOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Recruit.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(RecruitOuterApiVersionSetName)
       ApiPath: $(RecruitOuterApiPath)
       ApiBaseUrl: $(RecruitOuterApiBaseUrl)
       ProductId: $(RecruitProductId)
       ApplicationIdentifierUri: $(RecruitOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1853,16 +1506,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(CampaignOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Campaign.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(CampaignOuterApiVersionSetName)
       ApiPath: $(CampaignOuterApiPath)
       ApiBaseUrl: $(CampaignOuterApiBaseUrl)
       ProductId: $(CampaignProductId)
       ApplicationIdentifierUri: $(CampaignOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1872,16 +1521,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(AssessorsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Assessors.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(AssessorsOuterApiVersionSetName)
       ApiPath: $(AssessorsOuterApiPath)
       ApiBaseUrl: $(AssessorsOuterApiBaseUrl)
       ProductId: $(AssessorsProductId)
       ApplicationIdentifierUri: $(AssessorsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1891,16 +1536,12 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeCommitmentsOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(ApprenticeCommitmentsOuterApiVersionSetName)
       ApiPath: $(ApprenticeCommitmentsOuterApiPath)
       ApiBaseUrl: $(ApprenticeCommitmentsOuterApiBaseUrl)
       ProductId: $(ApprenticeCommitmentsProductId)
       ApplicationIdentifierUri: $(ApprenticeCommitmentsOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
 
   - template: pipeline-templates/job/deploy-api.yml
     parameters:
@@ -1910,13 +1551,9 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(EmployerDemandOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmployerDemand.Api.zip
-      ApimResourceGroup: $(ApimResourceGroup)
-      ApimInstanceName: $(InstanceName)
-      AppServiceResourceGroup: $(ResourceGroupName)
       ApiVersionSetName: $(EmployerDemandOuterApiVersionSetName)
       ApiPath: $(EmployerDemandOuterApiPath)
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      Tenant: $(Tenant)
