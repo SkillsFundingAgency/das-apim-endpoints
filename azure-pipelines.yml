@@ -56,7 +56,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.3.4
+    ref: refs/tags/4.3.5
     endpoint: GitHub (SFA)
   pipelines:
   - pipeline: das-apim-endpoints-build
