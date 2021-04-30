@@ -82,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new DeleteShortlistForUserCommand
+                await _mediator.Send(new DeleteShortlistItemForUserCommand
                 {
                     Id = id,
                     UserId = userId

@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
             mockMediator
                 .Verify(mediator => mediator.Send(
-                    It.Is<DeleteShortlistForUserCommand>(command =>
+                    It.Is<DeleteShortlistItemForUserCommand>(command =>
                         command.UserId == shortlistUserId 
                         && command.Id == id),
                     It.IsAny<CancellationToken>()), Times.Once);
@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<DeleteShortlistForUserCommand>(),
+                    It.IsAny<DeleteShortlistItemForUserCommand>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 

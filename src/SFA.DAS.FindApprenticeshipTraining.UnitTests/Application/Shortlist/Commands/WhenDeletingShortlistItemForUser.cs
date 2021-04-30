@@ -15,9 +15,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Com
     {
         [Test, MoqAutoData]
         public async Task Then_Deletes_The_Shortlist_Item_From_The_Request_Calling_CourseDelivery_Api(
-            DeleteShortlistForUserCommand command,
+            DeleteShortlistItemForUserCommand command,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> courseDeliveryApiClient,
-            DeleteShortlistForUserCommandHandler handler)
+            DeleteShortlistItemForUserCommandHandler handler)
         {
             //Act
             await handler.Handle(command, CancellationToken.None);

@@ -7,15 +7,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser
 {
-    public class DeleteShortlistForUserCommandHandler : IRequestHandler<DeleteShortlistForUserCommand, Unit>
+    public class DeleteShortlistItemForUserCommandHandler : IRequestHandler<DeleteShortlistItemForUserCommand, Unit>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
 
-        public DeleteShortlistForUserCommandHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public DeleteShortlistItemForUserCommandHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
         }
-        public async Task<Unit> Handle(DeleteShortlistForUserCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteShortlistItemForUserCommand request, CancellationToken cancellationToken)
         {
             await _courseDeliveryApiClient.Delete(new DeleteShortlistItemForUserRequest(request.Id, request.UserId));
             
