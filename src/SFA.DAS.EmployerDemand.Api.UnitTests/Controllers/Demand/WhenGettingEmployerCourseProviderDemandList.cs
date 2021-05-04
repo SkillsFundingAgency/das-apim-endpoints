@@ -11,7 +11,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.Testing.AutoFixture;
 
