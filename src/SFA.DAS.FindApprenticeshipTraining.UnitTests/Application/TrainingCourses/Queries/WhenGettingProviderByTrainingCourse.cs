@@ -232,7 +232,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Additional_Courses_for_Provider_Should_Not_Contain_Course_Passed_To_Handler(
+        public async Task Then_Additional_Courses_for_Provider_Should_Contain_Course_Passed_To_Handler(
             GetTrainingCourseProviderQuery query,
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
@@ -254,11 +254,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             });
             allCoursesApiResponse.Standards = allStandards;
             ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, mockCoursesApiClient, mockApiClient);
-
-
+            
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.AdditionalCourses.Count().Should().Be(allCoursesApiResponse.Standards.Count() - 1);
+            result.AdditionalCourses.Should().BeEquivalentTo(allCoursesApiResponse.Standards.Select(c=>new {Id=c.LarsCode, c.Title, c.Level}).ToList());
         }
 
         [Test, MoqAutoData]

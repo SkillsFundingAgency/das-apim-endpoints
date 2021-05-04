@@ -108,7 +108,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     Level = course.Level,
                     Title = course.Title
                 })
-                .Where(x => x.Id != request.CourseId)
                 .OrderBy(c => c.Title)
                 .ToList();
         }
