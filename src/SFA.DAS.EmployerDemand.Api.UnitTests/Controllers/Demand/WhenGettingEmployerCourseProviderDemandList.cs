@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -12,28 +11,26 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
-using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 {
-    public class WhenGettingAggregatedCourseDemandList
+    public class WhenGettingEmployerCourseProviderDemandList
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Courses_And_Demands_From_Mediator(
+        public async Task Then_Gets_Employer_Course_Demands_From_Mediator(
             int ukprn,
             int courseId,
             string location,
             int locationRadius,
-            List<string> routes,
-            GetAggregatedCourseDemandListResult mediatorResult,
+            GetEmployerCourseProviderDemandQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAggregatedCourseDemandListQuery>(query => 
+                    It.Is<GetEmployerCourseProviderDemandQuery>(query => 
                         query.Ukprn == ukprn &&
                         query.CourseId == courseId &&
                         query.LocationName == location &&
@@ -41,37 +38,36 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius, routes) as ObjectResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetAggregatedCourseDemandListResponse;
-            model!.TrainingCourses.Should().BeEquivalentTo(mediatorResult.Courses.Select(item => (GetCourseListItem)item));
-            model!.AggregatedCourseDemands.Should().BeEquivalentTo(mediatorResult.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response));
+            var model = controllerResult.Value as GetProviderEmployerCourseDemandListResponse;
+            model!.TrainingCourse.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
+            model!.ProviderEmployerDemandDetailsList.Should().BeEquivalentTo(mediatorResult.EmployerCourseDemands.Select(response => (GetProviderEmployerDemandDetailsListItem)response));
             model!.Total.Should().Be(mediatorResult.Total);
             model!.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
-            model!.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.LocationItem);
-            model!.Routes.Should().BeEquivalentTo(mediatorResult.Routes);
+            model!.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.Location);
+            model!.ProviderContactDetails.Should().BeEquivalentTo((GetProviderContactDetails)mediatorResult.ProviderDetail);
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task And_Exception_Then_Returns_Internal_Server_Error(
             int ukprn,
             int courseId,
             string location,
             int locationRadius,
-            List<string> routes,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetAggregatedCourseDemandListQuery>(),
+                    It.IsAny<GetEmployerCourseProviderDemandQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius, routes) as BadRequestResult;
+            var controllerResult = await controller.GetEmployerCourseProviderDemand(ukprn, courseId, location, locationRadius) as StatusCodeResult;
 
-            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }
