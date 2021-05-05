@@ -26,6 +26,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\ConfirmApprenticeEmploymentDetails.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\UpdateCollectionCalendarPeriod.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -63,6 +66,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\ConfirmApprenticeEmploymentDetails.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ConfirmApprenticeEmploymentDetails.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\UpdateCollectionCalendarPeriod.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UpdateCollectionCalendarPeriod.feature.cs</LastGenOutput>
