@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
+            List<string> routes,
             GetAggregatedCourseDemandListResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
@@ -39,7 +41,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius) as ObjectResult;
+            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius, routes) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAggregatedCourseDemandListResponse;
@@ -48,6 +50,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             model!.Total.Should().Be(mediatorResult.Total);
             model!.TotalFiltered.Should().Be(mediatorResult.TotalFiltered);
             model!.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.LocationItem);
+            model!.Routes.Should().BeEquivalentTo(mediatorResult.Routes);
         }
 
         [Test, MoqAutoData]
@@ -56,6 +59,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             int courseId,
             string location,
             int locationRadius,
+            List<string> routes,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
@@ -65,7 +69,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius) as BadRequestResult;
+            var controllerResult = await controller.GetAggregatedCourseDemandList(ukprn, courseId, location, locationRadius, routes) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

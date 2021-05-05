@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList
 {
@@ -8,5 +9,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
         public int? CourseId { get; set; }
         public string LocationName { get; set; }
         public int? LocationRadius { get; set; }
+        public List<string> Routes { get; set; }
     }
 }

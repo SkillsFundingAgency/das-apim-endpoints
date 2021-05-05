@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -93,7 +94,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
         [HttpGet]
         [Route("aggregated/providers/{ukprn}")]
-        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius)
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius, [FromQuery]List<string> routes)
         {
             try
             {
@@ -102,7 +103,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Ukprn = ukprn,
                     CourseId = courseId,
                     LocationName = location,
-                    LocationRadius = locationRadius
+                    LocationRadius = locationRadius,
+                    Routes = routes
                 });
 
                 var apiResponse = new GetAggregatedCourseDemandListResponse
@@ -111,7 +113,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
-                    Location = result.LocationItem
+                    Location = result.LocationItem,
+                    Routes = result.Routes.Select(c => (GetRoutesListItem)c).ToList()
                 };
 
                 return Ok(apiResponse);
