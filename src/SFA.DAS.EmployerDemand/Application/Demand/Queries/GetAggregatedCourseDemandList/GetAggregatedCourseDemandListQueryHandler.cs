@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -33,16 +34,18 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.LocationName, default, default);
             var coursesTask = GetCourses();
+            var routesTask = GetRoutes();
 
-            await Task.WhenAll(locationTask, coursesTask);
-
+            await Task.WhenAll(locationTask, coursesTask, routesTask);
+            
             var aggregatedDemands = await _demandApiClient.Get<GetAggregatedCourseDemandListResponse>(
                 new GetAggregatedCourseDemandListRequest(
                     request.Ukprn, 
                     request.CourseId,
                     locationTask.Result?.GeoPoint?.FirstOrDefault(),
                     locationTask.Result?.GeoPoint?.LastOrDefault(),
-                    locationTask.Result == null ? null : request.LocationRadius));
+                    locationTask.Result == null ? null : request.LocationRadius,
+                    request.Routes));
 
             return new GetAggregatedCourseDemandListResult
             {
@@ -50,7 +53,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 AggregatedCourseDemands = aggregatedDemands.AggregatedCourseDemandList,
                 Total = aggregatedDemands.Total,
                 TotalFiltered = aggregatedDemands.TotalFiltered,
-                LocationItem = locationTask.Result
+                LocationItem = locationTask.Result,
+                Routes = routesTask.Result.Routes.ToList()
             };
         }
         
@@ -63,6 +67,21 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseD
                 response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
 
                 await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), response, 1);
+            }
+
+            return response;
+        }
+
+        private async Task<GetRoutesListResponse> GetRoutes()
+        {
+            var response =
+                await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
+
+            if (response == null)
+            {
+                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
+
+                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 1);
             }
 
             return response;

@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public IEnumerable<GetAggreatedCourseDemandSummaryResponse> AggregatedCourseDemandList { get; set; }
         public int TotalFiltered { get ; set ; }
         public int Total { get ; set ; }
+        public List<string> Sectors { get; set; }
     }
 }
