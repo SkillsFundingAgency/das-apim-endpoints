@@ -10,6 +10,8 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetails;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentDetails;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -95,6 +97,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpPatch]
+        [Route("/accounts/{accountId}/applications/{applicationId}/employmentDetails")]
+        public async Task<IActionResult> ConfirmEmploymentDetails(long accountId, Guid applicationId, [FromBody] ConfirmEmploymentDetailsRequest request)
+        {
+            await _mediator.Send(new ConfirmEmploymentDetailsCommand(request));
+
+            return new OkResult();
         }
     }
 }
