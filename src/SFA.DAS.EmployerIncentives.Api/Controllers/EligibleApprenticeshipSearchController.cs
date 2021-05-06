@@ -35,12 +35,13 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                     PageSize = pageSize
                 });
 
+                var apprentices = result.Apprentices.Where(x => x.ApprenticeshipStatus != InnerApi.Responses.Commitments.ApprenticeshipStatus.Stopped).Select(x=> (EligibleApprenticeshipDto) x);
                 var response = new EligibleApprenticesResponse
                 {
                     PageNumber = result.PageNumber,
                     PageSize = pageSize,
                     TotalApprenticeships = result.TotalApprenticeships,
-                    Apprenticeships = result.Apprentices.Select(x => (EligibleApprenticeshipDto)x)
+                    Apprenticeships = apprentices
                 };
 
                 return new OkObjectResult(response);
