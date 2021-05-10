@@ -30,6 +30,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Accepted();
         }
 
+        [HttpPost]
+        [Route("/apprenticeships/change")]
+        public async Task<IActionResult> ChangeApprenticeship(UpdateApprenticeshipCommand request)
+        {
+            await _mediator.Send(request);
+            return Accepted();
+        }
+
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
         public async Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {

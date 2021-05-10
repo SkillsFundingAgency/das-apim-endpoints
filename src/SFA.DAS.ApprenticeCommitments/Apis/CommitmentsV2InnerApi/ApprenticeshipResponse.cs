@@ -7,6 +7,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public long Id { get; set; }
         public long EmployerAccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
+        public string EmployerName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public long Uln { get; set; }

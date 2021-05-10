@@ -25,6 +25,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
+        public Task ChangeApprenticeship(ChangeApprenticeshipRequestData data)
+            => _client.Post(new ChangeApprenticeshipRequest { Data = data });
+
         internal Task ChangeEmailAddress(Guid apprenticeshipId, string email)
         {
             return _client.Post<ChangeEmailAddressResponse>(
