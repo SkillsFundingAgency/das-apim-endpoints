@@ -42,7 +42,7 @@ jobs:
           displayName: Import-ApimSwaggerApiDefinition - ${{ parameters.AppServiceName }}
           inputs:
             azureSubscription: ${{ parameters.ServiceConnection }}
-            ScriptPath: Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+            ScriptPath: das-platform-automation/Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
             ScriptArguments:
               -ApimResourceGroup $(ApimResourceGroup) `
               -InstanceName $(InstanceName) `
