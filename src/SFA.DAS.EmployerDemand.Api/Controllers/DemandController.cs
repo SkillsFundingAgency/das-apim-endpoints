@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -92,7 +94,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
         [HttpGet]
         [Route("aggregated/providers/{ukprn}")]
-        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius)
+        public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius, [FromQuery]List<string> routes)
         {
             try
             {
@@ -101,7 +103,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     Ukprn = ukprn,
                     CourseId = courseId,
                     LocationName = location,
-                    LocationRadius = locationRadius
+                    LocationRadius = locationRadius,
+                    Routes = routes
                 });
 
                 var apiResponse = new GetAggregatedCourseDemandListResponse
@@ -110,7 +113,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     AggregatedCourseDemands = result.AggregatedCourseDemands.Select(response => (GetAggregatedCourseDemandSummary)response),
                     Total = result.Total,
                     TotalFiltered = result.TotalFiltered,
-                    Location = result.LocationItem
+                    Location = result.LocationItem,
+                    Routes = result.Routes.Select(c => (GetRoutesListItem)c).ToList()
                 };
 
                 return Ok(apiResponse);
@@ -120,6 +124,41 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, $"Error getting aggregated demand list for ukprn:[{ukprn}], courseId:[{courseId}], location:[{location}]");
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("providers/{ukprn}/courses/{courseId}")]
+        public async Task<IActionResult> GetEmployerCourseProviderDemand([FromRoute] int ukprn, [FromRoute]int courseId,
+            string location, int? locationRadius)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEmployerCourseProviderDemandQuery
+                {
+                    Ukprn = ukprn,
+                    CourseId = courseId,
+                    LocationName = location,
+                    LocationRadius = locationRadius
+                });
+
+                var apiResponse = new GetProviderEmployerCourseDemandListResponse
+                {
+                    ProviderEmployerDemandDetailsList = result.EmployerCourseDemands.Select(c=>(GetProviderEmployerDemandDetailsListItem)c),
+                    TrainingCourse = result.Course,
+                    Total = result.Total,
+                    TotalFiltered = result.TotalFiltered,
+                    Location = result.Location,
+                    ProviderContactDetails = result.ProviderDetail
+                };
+                
+                return Ok(apiResponse);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+            
         }
     }
 }
