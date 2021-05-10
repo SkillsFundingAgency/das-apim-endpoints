@@ -31,6 +31,7 @@ jobs:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
             ResourceName: ${{ parameters.AppServiceName }}
             Tenant: $(Tenant)
+            IsMultiRepoCheckout: true
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
