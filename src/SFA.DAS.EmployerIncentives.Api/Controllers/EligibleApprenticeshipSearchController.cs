@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                     PageNumber = result.PageNumber,
                     PageSize = pageSize,
                     TotalApprenticeships = result.TotalApprenticeships,
-                    Apprenticeships = result.Apprentices.Select(x => (EligibleApprenticeshipDto)x)
+                    Apprenticeships = result.Apprentices
                 };
 
                 return new OkObjectResult(response);
