@@ -7,6 +7,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ApprenticeshipCreated;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         [HttpPost]
         [Route("/apprenticeships")]
-        public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
+        public async Task<IActionResult> AddApprenticeship(ApprenticeshipCreatedCommand request)
         {
             await _mediator.Send(request);
             return Accepted();

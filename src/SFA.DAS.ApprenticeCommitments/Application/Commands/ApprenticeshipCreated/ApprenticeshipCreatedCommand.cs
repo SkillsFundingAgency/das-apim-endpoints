@@ -1,9 +1,9 @@
-using MediatR;
 using System;
+using MediatR;
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ApprenticeshipCreated
 {
-    public class CreateApprenticeshipCommand : IRequest
+    public class ApprenticeshipCreatedCommand : IRequest
     {
         public long EmployerAccountId { get; set; }
         public long ApprenticeshipId { get; set; }

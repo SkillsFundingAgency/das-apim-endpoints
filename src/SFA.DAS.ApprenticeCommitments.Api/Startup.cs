@@ -18,6 +18,7 @@ using SFA.DAS.ApprenticeCommitments.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using MediatR.Extensions.FluentValidation.AspNetCore;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ApprenticeshipCreated;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -69,8 +70,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                 .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck))
                 .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck));
 
-            services.AddMediatR(GetType().Assembly, typeof(CreateApprenticeshipCommandHandler).Assembly);
-            services.AddFluentValidation(new[] { typeof(CreateApprenticeshipCommandHandler).Assembly });
+            services.AddMediatR(GetType().Assembly, typeof(ApprenticeshipCreatedCommandHandler).Assembly);
+            services.AddFluentValidation(new[] { typeof(ApprenticeshipCreatedCommandHandler).Assembly });
             services.AddServiceRegistration();
 
             services
