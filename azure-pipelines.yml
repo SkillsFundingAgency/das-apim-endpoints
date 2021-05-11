@@ -51,7 +51,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.3.12
+    ref: refs/tags/0.3.14
     endpoint: GitHub (SFA)
   - repository: das-platform-automation
     type: github
