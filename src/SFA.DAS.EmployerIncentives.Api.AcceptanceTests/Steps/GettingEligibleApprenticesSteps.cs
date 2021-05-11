@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -85,30 +84,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 
             SetApprenticeshipSearchToReturn(response);
         }
-
-        [Given(@"this search request finds several approved apprenticeships which are stopped")]
-        public void GivenThisSearchRequestFindsSeveralApprovedApprenticeshipsWhichAreStopped()
-        {
-            SetupIncentiveDetailsResponse();
-
-            _eligibleApprenticeship1 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Stopped).Create();
-            _eligibleApprenticeship2 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Stopped).Create();
-            _nonEligibleApprenticeship3 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Stopped).Create();
-            _nonEligibleApprenticeship4 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Stopped).Create();
-            _nonEligibleApprenticeship5 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Stopped).Create();
-
-            var response = new ApprenticeshipSearchResponse
-            {
-                Apprenticeships = new ApprenticeshipItem[]
-                {
-                    _eligibleApprenticeship1, _eligibleApprenticeship2, _nonEligibleApprenticeship3,
-                    _nonEligibleApprenticeship4, _nonEligibleApprenticeship5
-                }
-            };
-
-            SetApprenticeshipSearchToReturn(response);
-        }
-
+        
         [Given(@"two of these are eligible")]
         public void GivenTwoOfTheseAreEligible()
         {
