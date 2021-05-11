@@ -6,6 +6,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Dele
     public class DeleteShortlistForUserCommand : IRequest<Unit>
     {
         public Guid UserId { get ; set ; }
-        public Guid Id { get ; set ; }
     }
 }

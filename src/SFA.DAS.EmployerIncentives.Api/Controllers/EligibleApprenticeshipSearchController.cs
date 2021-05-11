@@ -27,14 +27,14 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         {
             try
             {
-                 var result = await _mediator.Send(new GetEligibleApprenticeshipsSearchQuery
+                var result = await _mediator.Send(new GetEligibleApprenticeshipsSearchQuery
                 {
                     AccountId = accountId,
                     AccountLegalEntityId = accountLegalEntityId,
                     PageNumber = pageNumber,
                     PageSize = pageSize
                 });
-
+                
                 var response = new EligibleApprenticesResponse
                 {
                     PageNumber = result.PageNumber,
