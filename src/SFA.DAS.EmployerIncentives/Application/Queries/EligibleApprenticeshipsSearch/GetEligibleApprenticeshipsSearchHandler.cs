@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch
@@ -27,7 +29,19 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
                     incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate,
                     request.PageNumber, request.PageSize);
 
-            var filteredApprenticeships = await _employerIncentivesService.GetEligibleApprenticeships(apprenticesResponse.Apprenticeships);
+            var validApprenticeships = apprenticesResponse.Apprenticeships.Where(x => x.ApprenticeshipStatus != ApprenticeshipStatus.Stopped).ToList();
+
+            if (!validApprenticeships.Any())
+            {
+                return new GetEligibleApprenticeshipsSearchResult
+                {
+                    Apprentices = new ApprenticeshipItem[0],
+                    PageNumber = request.PageNumber,
+                    TotalApprenticeships = apprenticesResponse.TotalApprenticeships
+                };
+            }
+
+            var filteredApprenticeships = await _employerIncentivesService.GetEligibleApprenticeships(validApprenticeships);
 
             var result = new GetEligibleApprenticeshipsSearchResult
             {
