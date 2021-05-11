@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
                     AccountLegalEntityId = accountLegalEntityId
                 });
 
-                var apprentices = result.Apprentices.Select(x=> (EligibleApprenticeshipDto) x);
+                var apprentices = result.Apprentices.Where(x => x.ApprenticeshipStatus != InnerApi.Responses.Commitments.ApprenticeshipStatus.Stopped).Select(x=> (EligibleApprenticeshipDto) x);
 
                 return new OkObjectResult(apprentices.ToArray());
             }

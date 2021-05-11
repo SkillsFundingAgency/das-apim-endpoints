@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
     }
 }
