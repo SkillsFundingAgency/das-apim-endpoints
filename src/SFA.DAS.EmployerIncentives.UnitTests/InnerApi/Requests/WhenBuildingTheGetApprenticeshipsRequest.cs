@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
             var actual = new GetApprenticeshipsRequest(accountId, employerAccountId, startDateFrom, startDateTo, pageNumber, pageSize);
 
             actual.GetUrl.Should()
-                .Be($"api/apprenticeships?accountId={accountId}&accountLegalEntityId={employerAccountId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}&pageNumber={pageNumber}&pageItemCount={pageSize}&sortField=ApprenticeName&status=1");
+                .Be($"api/apprenticeships?accountId={accountId}&accountLegalEntityId={employerAccountId}&startDateRangeFrom={WebUtility.UrlEncode(startDateFrom.ToString("u"))}&startDateRangeTo={WebUtility.UrlEncode(startDateTo.ToString("u"))}&pageNumber={pageNumber}&pageItemCount={pageSize}&sortField=ApprenticeName");
         }
     }
 }
