@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
     {
         public long ApprenticeshipId { get; set; }
         public string Email { get; set; } = "";
-        public DateTime AgreedOn { get; set; }
+        public DateTime ApprovedOn { get; set; }
     }
 
     public class UpdateApprenticeshipCommandHandler : IRequestHandler<UpdateApprenticeshipCommand>
@@ -60,7 +60,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                ApprovedOn = command.AgreedOn,
+                ApprovedOn = command.ApprovedOn,
             });
 
             return Unit.Value;
