@@ -17,9 +17,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Dele
         }
         public async Task<Unit> Handle(DeleteShortlistForUserCommand request, CancellationToken cancellationToken)
         {
-            await _courseDeliveryApiClient.Delete(new DeleteShortlistItemForUserRequest(request.Id, request.UserId));
-            
-            return Unit.Value;
+            await _courseDeliveryApiClient.Delete(new DeleteShortlistForUserRequest(request.UserId));
+
+            return new Unit();
         }
     }
 }
