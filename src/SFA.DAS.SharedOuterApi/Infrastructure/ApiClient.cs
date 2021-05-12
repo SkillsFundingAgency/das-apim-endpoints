@@ -92,8 +92,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
                 .ConfigureAwait(false);
 
-            await response.EnsureSuccessStatusCodeIncludeContentInException();
-
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return new ApiResponse<string>(responseContent, response.StatusCode);
