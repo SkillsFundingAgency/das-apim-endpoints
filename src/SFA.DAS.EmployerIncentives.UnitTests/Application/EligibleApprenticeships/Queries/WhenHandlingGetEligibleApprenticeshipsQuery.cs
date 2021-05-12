@@ -28,6 +28,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetEligibleApprenticeshipsSearchHandler handler
             )
         {
+            query.PageNumber = 1;
+            response.PageNumber = 1;
+
             employerIncentivesService.Setup(x => x.GetIncentiveDetails()).ReturnsAsync(incentiveDetails);
 
             commitmentsService.Setup(x =>
