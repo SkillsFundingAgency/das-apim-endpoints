@@ -137,7 +137,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<UpdateApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships/change", _request);
+            await _context.OuterApiClient.Post("apprenticeships/update", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -155,7 +155,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 {
                     _request.ApprenticeshipId,
                     _request.Email,
-                    ApprovedOn = _request.AgreedOn,
+                    ApprovedOn = _request.ApprovedOn,
                     expectedCommitment.CourseName,
                     PlannedStartDate = expectedCommitment.StartDate,
                 });
