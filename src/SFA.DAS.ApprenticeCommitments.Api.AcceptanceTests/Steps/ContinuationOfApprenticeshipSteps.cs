@@ -116,7 +116,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             await _context.OuterApiClient.Post("apprenticeships", _request);
         }
 
-        [Then("the inner API has received the posted values")]
+        [Then("the inner API update endpoint has received the posted values")]
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
             var expectedCommitment = _approvedApprenticeships.First(

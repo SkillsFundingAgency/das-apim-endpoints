@@ -24,7 +24,7 @@ Scenario: A continuation apprenticeship is recieved and is valid
 	When the following apprenticeship is posted
 	| ApprenticeshipId | Email         | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Approved On |
 	| 1                | Test@Test.com | Apple         | 123                              | 1002                 | 2015-04-20  |
-	Then the inner API has received the posted values
+	Then the inner API update endpoint has received the posted values
 	And the Training Provider Name should be 'My Only Name'
 	And the course should be `Artificial Intelligence` level 1
 	And the invitation was not sent
@@ -33,7 +33,7 @@ Scenario: A continuation apprenticeship is recieved and is valid
 	When the following apprenticeship is posted
 	| ApprenticeshipId | Email          | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Approved On |
 	| 2                | Test2@Test.com | Apple         | 123                              | 1001                 | 2015-04-20  |
-	Then the inner API has received the posted values
+	Then the inner API update endpoint has received the posted values
 	And the Training Provider Name should be 'My Trading Name'
 	And the course should be `Zoology` level 3
 	And the invitation was not sent
