@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             var response = new GetApprenticeshipListResponse 
             {
                 Apprenticeships = apprenticeItems, 
-                PageNumber = fixture.Create<int>(), 
+                PageNumber = query.PageNumber, 
                 TotalApprenticeshipsFound = fixture.Create<int>()
             };
             commitmentsService.Setup(x =>
@@ -111,6 +111,47 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                     x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate, query.PageNumber, query.PageSize))
                 .ReturnsAsync(response);
             
+            // Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            employerIncentivesService.Verify(x =>
+                x.GetEligibleApprenticeships(It.IsAny<IEnumerable<ApprenticeshipItem>>()), Times.Never());
+            actual.PageNumber.Should().Be(query.PageNumber);
+            actual.TotalApprenticeships.Should().Be(response.TotalApprenticeshipsFound);
+            actual.Apprentices.Should().BeEmpty();
+        }
+
+        [Test]
+        public async Task Then_no_apprentices_are_returned_if_the_response_contains_the_previous_page()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var commitmentsService = new Mock<ICommitmentsService>();
+            var employerIncentivesService = new Mock<IEmployerIncentivesService>();
+            var handler = new GetEligibleApprenticeshipsSearchHandler(commitmentsService.Object, employerIncentivesService.Object);
+            var incentiveDetails = fixture.Create<GetIncentiveDetailsResponse>();
+
+            employerIncentivesService.Setup(x => x.GetIncentiveDetails()).ReturnsAsync(incentiveDetails);
+            var query = fixture.Create<GetEligibleApprenticeshipsSearchQuery>();
+            query.PageNumber = 3;
+            var apprenticeItems = fixture.CreateMany<ApprenticeshipItem>(5).ToList();
+            apprenticeItems[0].ApprenticeshipStatus = ApprenticeshipStatus.Stopped;
+            apprenticeItems[1].ApprenticeshipStatus = ApprenticeshipStatus.Stopped;
+            apprenticeItems[2].ApprenticeshipStatus = ApprenticeshipStatus.Stopped;
+            apprenticeItems[3].ApprenticeshipStatus = ApprenticeshipStatus.Stopped;
+            apprenticeItems[4].ApprenticeshipStatus = ApprenticeshipStatus.Stopped;
+
+            var response = new GetApprenticeshipListResponse
+            {
+                Apprenticeships = apprenticeItems,
+                PageNumber = query.PageNumber - 1,
+                TotalApprenticeshipsFound = fixture.Create<int>()
+            };
+            commitmentsService.Setup(x =>
+                    x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate, query.PageNumber, query.PageSize))
+                .ReturnsAsync(response);
+
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 

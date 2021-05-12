@@ -29,6 +29,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
                     incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate,
                     request.PageNumber, request.PageSize);
 
+            if (apprenticesResponse.PageNumber < request.PageNumber)
+            {
+                // indication from Commitments API that no more pages available
+                return new GetEligibleApprenticeshipsSearchResult
+                {
+                    Apprentices = new ApprenticeshipItem[0],
+                    PageNumber = request.PageNumber,
+                    TotalApprenticeships = apprenticesResponse.TotalApprenticeshipsFound
+                };
+            }
+
             var validApprenticeships = apprenticesResponse.Apprenticeships.Where(x => x.ApprenticeshipStatus != ApprenticeshipStatus.Stopped).ToList();
 
             if (!validApprenticeships.Any())

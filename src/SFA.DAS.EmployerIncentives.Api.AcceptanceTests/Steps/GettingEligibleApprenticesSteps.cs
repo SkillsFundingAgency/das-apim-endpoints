@@ -54,9 +54,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             SetupIncentiveDetailsResponse();
 
-            var response = new ApprenticeshipSearchResponse
+            var response = new EligibleApprenticesResponse()
             {
-                Apprenticeships = new ApprenticeshipItem[0]
+                Apprenticeships = new EligibleApprenticeshipDto[0]
             };
 
             SetApprenticeshipSearchToReturn(response);
@@ -73,13 +73,15 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _nonEligibleApprenticeship4 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Live).Create();
             _nonEligibleApprenticeship5 = _fixture.Build<ApprenticeshipItem>().With(a => a.ApprenticeshipStatus, ApprenticeshipStatus.Live).Create();
 
-            var response = new ApprenticeshipSearchResponse
+            var response = new EligibleApprenticesResponse
             {
-                Apprenticeships = new ApprenticeshipItem[]
+                Apprenticeships = new EligibleApprenticeshipDto[]
                 {
                     _eligibleApprenticeship1, _eligibleApprenticeship2, _nonEligibleApprenticeship3,
                     _nonEligibleApprenticeship4, _nonEligibleApprenticeship5
-                }
+                },
+                PageNumber = _pageNumber,
+                PageSize = _pageSize
             };
 
             SetApprenticeshipSearchToReturn(response);
@@ -141,7 +143,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                         .WithBody(JsonSerializer.Serialize(response)));
         }
 
-        private void SetApprenticeshipSearchToReturn(ApprenticeshipSearchResponse response)
+        private void SetApprenticeshipSearchToReturn(EligibleApprenticesResponse response)
         {
             _context.CommitmentsV2InnerApi.MockServer
                 .Given(
