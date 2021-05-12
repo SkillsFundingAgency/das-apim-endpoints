@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
                 {
                     Apprentices = new ApprenticeshipItem[0],
                     PageNumber = request.PageNumber,
-                    TotalApprenticeships = apprenticesResponse.TotalApprenticeships
+                    TotalApprenticeships = apprenticesResponse.TotalApprenticeshipsFound
                 };
             }
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
             {
                 Apprentices = filteredApprenticeships,
                 PageNumber = request.PageNumber,
-                TotalApprenticeships = apprenticesResponse.TotalApprenticeships
+                TotalApprenticeships = apprenticesResponse.TotalApprenticeshipsFound
             };
 
             return result;

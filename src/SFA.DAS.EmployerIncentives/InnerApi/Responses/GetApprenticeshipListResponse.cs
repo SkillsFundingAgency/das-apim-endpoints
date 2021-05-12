@@ -7,6 +7,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
     {
         public IEnumerable<ApprenticeshipItem> Apprenticeships { get; set; }
         public int PageNumber { get; set; }
-        public int TotalApprenticeships { get; set; }
+        public int TotalApprenticeshipsFound { get; set; }
     }
 }

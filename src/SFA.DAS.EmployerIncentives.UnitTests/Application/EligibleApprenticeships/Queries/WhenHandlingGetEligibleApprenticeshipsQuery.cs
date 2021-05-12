@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             {
                 Apprenticeships = apprenticeItems, 
                 PageNumber = fixture.Create<int>(), 
-                TotalApprenticeships = fixture.Create<int>()
+                TotalApprenticeshipsFound = fixture.Create<int>()
             };
             commitmentsService.Setup(x =>
                     x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate, query.PageNumber, query.PageSize))
@@ -105,7 +105,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             {
                 Apprenticeships = apprenticeItems,
                 PageNumber = fixture.Create<int>(),
-                TotalApprenticeships = fixture.Create<int>()
+                TotalApprenticeshipsFound = fixture.Create<int>()
             };
             commitmentsService.Setup(x =>
                     x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate, query.PageNumber, query.PageSize))
@@ -118,7 +118,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             employerIncentivesService.Verify(x =>
                 x.GetEligibleApprenticeships(It.IsAny<IEnumerable<ApprenticeshipItem>>()), Times.Never());
             actual.PageNumber.Should().Be(query.PageNumber);
-            actual.TotalApprenticeships.Should().Be(response.TotalApprenticeships);
+            actual.TotalApprenticeships.Should().Be(response.TotalApprenticeshipsFound);
             actual.Apprentices.Should().BeEmpty();
         }
     }
