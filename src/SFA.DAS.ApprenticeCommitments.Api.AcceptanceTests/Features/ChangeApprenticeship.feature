@@ -37,11 +37,3 @@ Scenario: Apprenticeship update is recieved and is valid and there is a trading 
 	And the Employer should be Legal Entity 8002 named 'Google'
 	And the Training Provider should be 'My Trading Name'
 	And the course should be `Zoology` level 3
-
-Scenario: Apprenticeship update is recieved and is not valid
-	When the following apprenticeship update is posted
-	| ApprenticeshipId | Email        | Approved On |
-	| 1                | invalidemail | 2015-04-20  |
-	Then the inner API should return these errors
-	| field | error     |
-	| email | Not valid |

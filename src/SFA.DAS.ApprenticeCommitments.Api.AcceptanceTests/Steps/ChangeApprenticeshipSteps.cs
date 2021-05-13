@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json;
@@ -36,26 +36,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     Request.Create()
                         .WithPath("/apprenticeships/change")
                         .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "ApprenticeshipId != `0` && contains(Email, '@')"))
                       )
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
-                            );
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create().WithPath("/apprenticeships/change")
-                        .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "!contains(Email, '@')"))
-                      )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.BadRequest)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody("{'email':'Not valid'}")
                             );
 
             _context.LoginApi.MockServer
@@ -154,7 +138,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .Which.Should().BeEquivalentTo(new
                 {
                     _request.ApprenticeshipId,
-                    _request.Email,
+                    expectedCommitment.Email,
                     ApprovedOn = _request.ApprovedOn,
                     expectedCommitment.CourseName,
                     PlannedStartDate = expectedCommitment.StartDate,

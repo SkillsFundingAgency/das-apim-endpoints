@@ -15,7 +15,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
     public class ChangeApprenticeshipCommand : IRequest
     {
         public long ApprenticeshipId { get; set; }
-        public string Email { get; set; } = "";
         public DateTime ApprovedOn { get; set; }
     }
 
@@ -46,12 +45,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
             CancellationToken cancellationToken)
         {
             var (provider, apprenticeship, course) = await GetExternalData(command);
-            var id = Guid.NewGuid();
 
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
                 ApprenticeshipId = command.ApprenticeshipId,
-                Email = command.Email,
+                Email = apprenticeship.Email,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
