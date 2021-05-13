@@ -33,10 +33,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetai
             foreach (var apprenticeship in apprenticeshipDetails.Apprenticeships)
             {
                 var employmentDetails = command.ConfirmEmploymentDetailsRequest.EmploymentDetails.FirstOrDefault(x => x.ApprenticeId == apprenticeship.ApprenticeshipId);
-                if (employmentDetails != null)
-                {
-                    apprenticeship.EmploymentStartDate = employmentDetails.EmploymentStartDate;
-                }
+                apprenticeship.EmploymentStartDate = employmentDetails.EmploymentStartDate;
             }
 
             await _employerIncentivesService.UpdateIncentiveApplication(apprenticeshipDetails);
