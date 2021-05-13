@@ -14,6 +14,9 @@ namespace SFA.DAS.Recruit.Domain
         public int Duration { get; set; }
         public bool IsActive { get; set; }
         public int? EducationLevelNumber { get; set; }
+        public int SectorCode { get ; set ; }
+        public int FrameworkCode { get ; set ; }
+        public int Ssa1 { get ; set ; }
 
         public static implicit operator TrainingProgramme(GetFrameworksListItem source)
         {
@@ -27,7 +30,10 @@ namespace SFA.DAS.Recruit.Domain
                 ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.Duration,
                 IsActive = false,
-                EducationLevelNumber = source.Level
+                EducationLevelNumber = source.Level,
+                SectorCode = 0,
+                FrameworkCode = source.FrameworkCode,
+                Ssa1 = source.Ssa1,
             };
         }
 
@@ -43,7 +49,10 @@ namespace SFA.DAS.Recruit.Domain
                 ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
                 IsActive = source.IsActive,
-                EducationLevelNumber = source.Level
+                EducationLevelNumber = source.Level,
+                SectorCode = source.SectorCode,
+                FrameworkCode = 0,
+                Ssa1 = 0
             };
         }
     }

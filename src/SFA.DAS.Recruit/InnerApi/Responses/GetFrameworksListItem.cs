@@ -19,6 +19,7 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public int ProgType { get ; set ; }
         public DateTime EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
+        public int Ssa1 { get; set; }
 
         public class FundingPeriod
         {
