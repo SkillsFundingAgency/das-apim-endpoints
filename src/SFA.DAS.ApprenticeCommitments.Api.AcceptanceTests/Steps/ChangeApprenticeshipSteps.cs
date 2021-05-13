@@ -4,14 +4,13 @@ using FluentAssertions.Primitives;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -36,35 +35,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     Request.Create()
                         .WithPath("/apprenticeships/change")
                         .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "ApprenticeshipId != `0` && contains(Email, '@')"))
                       )
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
-                            );
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create().WithPath("/apprenticeships/change")
-                        .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "!contains(Email, '@')"))
-                      )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.BadRequest)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody("{'email':'Not valid'}")
-                            );
-
-            _context.LoginApi.MockServer
-                .Given(
-                    Request.Create().WithPath($"/invitations/{_context.LoginConfig.IdentityServerClientId}")
-                        .UsingPost())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
                             );
         }
 
@@ -144,7 +118,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
             var expectedCommitment = _approvedApprenticeships.First(
-                x => x.Id == _request.ApprenticeshipId);
+                x => x.Id == _request.CommitmentsApprenticeshipId);
 
             _context.OuterApiClient.Response.StatusCode
                 .Should().Be(HttpStatusCode.Accepted);
@@ -153,9 +127,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
-                    _request.ApprenticeshipId,
-                    _request.Email,
-                    ApprovedOn = _request.ApprovedOn,
+                    _request.ContinuationOfCommitmentsApprenticeshipId,
+                    _request.CommitmentsApprenticeshipId,
+                    _request.CommitmentsApprovedOn,
                     expectedCommitment.CourseName,
                     PlannedStartDate = expectedCommitment.StartDate,
                 });
@@ -165,7 +139,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenTheEmployerNameShouldBe(long legalEntityId, string employerName)
         {
             var expectedCommitment = _approvedApprenticeships.First(
-                x => x.Id == _request.ApprenticeshipId);
+                x => x.Id == _request.CommitmentsApprenticeshipId);
 
             _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
                 .And.ShouldBeJson<ChangeApprenticeshipRequestData>()

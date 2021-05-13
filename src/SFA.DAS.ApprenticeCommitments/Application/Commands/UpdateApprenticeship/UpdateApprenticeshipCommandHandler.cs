@@ -1,30 +1,21 @@
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CommitmentsApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
+using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship
 {
-    public class UpdateApprenticeshipCommand : IRequest
-    {
-        public long ApprenticeshipId { get; set; }
-        public string Email { get; set; } = "";
-        public DateTime ApprovedOn { get; set; }
-    }
-
     public class UpdateApprenticeshipCommandHandler : IRequestHandler<UpdateApprenticeshipCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
-        private readonly ApprenticeLoginService _apprenticeLoginService;
         private readonly CoursesService _coursesService;
 
         public UpdateApprenticeshipCommandHandler(
@@ -35,7 +26,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             CoursesService coursesService)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
-            _apprenticeLoginService = apprenticeLoginService;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
             _coursesService = coursesService;
@@ -46,12 +36,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             CancellationToken cancellationToken)
         {
             var (provider, apprenticeship, course) = await GetExternalData(command);
-            var id = Guid.NewGuid();
 
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
-                ApprenticeshipId = command.ApprenticeshipId,
-                Email = command.Email,
+                ContinuationOfCommitmentsApprenticeshipId = command.ContinuationOfCommitmentsApprenticeshipId,
+                CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
@@ -60,17 +49,17 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                ApprovedOn = command.ApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
             return Unit.Value;
         }
 
-        private async Task<(TrainingProviderResponse, CommitmentsApprenticeshipResponse apprenticeship, StandardApiResponse)>
+        private async Task<(TrainingProviderResponse, ApprenticeshipResponse apprenticeship, StandardApiResponse)>
             GetExternalData(UpdateApprenticeshipCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
-                command.ApprenticeshipId);
+                command.CommitmentsApprenticeshipId);
 
             var course = _coursesService.GetCourse(apprenticeship.CourseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
