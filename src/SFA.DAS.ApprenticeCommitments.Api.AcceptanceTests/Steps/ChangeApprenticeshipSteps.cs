@@ -4,7 +4,7 @@ using FluentAssertions.Primitives;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class ChangeApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private UpdateApprenticeshipCommand _request;
+        private ChangeApprenticeshipCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -136,7 +136,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship update is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<UpdateApprenticeshipCommand>();
+            _request = table.CreateInstance<ChangeApprenticeshipCommand>();
             await _context.OuterApiClient.Post("apprenticeships/update", _request);
         }
 

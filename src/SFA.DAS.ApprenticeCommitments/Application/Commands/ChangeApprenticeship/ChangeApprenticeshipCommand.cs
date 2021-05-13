@@ -10,16 +10,16 @@ using CommitmentsApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.Com
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship
 {
-    public class UpdateApprenticeshipCommand : IRequest
+    public class ChangeApprenticeshipCommand : IRequest
     {
         public long ApprenticeshipId { get; set; }
         public string Email { get; set; } = "";
         public DateTime ApprovedOn { get; set; }
     }
 
-    public class UpdateApprenticeshipCommandHandler : IRequestHandler<UpdateApprenticeshipCommand>
+    public class UpdateApprenticeshipCommandHandler : IRequestHandler<ChangeApprenticeshipCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
@@ -42,7 +42,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         }
 
         public async Task<Unit> Handle(
-            UpdateApprenticeshipCommand command,
+            ChangeApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
             var (provider, apprenticeship, course) = await GetExternalData(command);
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         }
 
         private async Task<(TrainingProviderResponse, CommitmentsApprenticeshipResponse apprenticeship, StandardApiResponse)>
-            GetExternalData(UpdateApprenticeshipCommand command)
+            GetExternalData(ChangeApprenticeshipCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.ApprenticeshipId);
