@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/apprenticeships/update")]
+        [Route("/apprenticeships/change")]
         public async Task<IActionResult> UpdateApprenticeship(ChangeApprenticeshipCommand request)
         {
             await _mediator.Send(request);

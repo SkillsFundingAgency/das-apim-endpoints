@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using Newtonsoft.Json;
@@ -121,7 +121,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<ChangeApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships/update", _request);
+            await _context.OuterApiClient.Post("apprenticeships/change", _request);
         }
 
         [Then("the inner API has received the posted values")]
