@@ -15,4 +15,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\ProviderInterest\Commands\CreateProviderInterests\" />
+  </ItemGroup>
+
 </Project>
