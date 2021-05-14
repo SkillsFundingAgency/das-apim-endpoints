@@ -5,14 +5,14 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
 {
     public class CreateVerifyEmployerDemandEmail : EmailTemplateArguments
     {
-        public CreateVerifyEmployerDemandEmail(string employerName, string trainingCourse, string confirmationLink)
+        public CreateVerifyEmployerDemandEmail(string employerName, string standardName, int standardLevel, string confirmationLink)
         {
             TemplateId = EmailConstants.VerifyContactEmailEmployerDemandTemplateId;
             Subject  = "Confirm your contact email address";
             Tokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", employerName },
-                {"AEDApprenticeshipTrainingCourse", trainingCourse },
+                {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDConfirmEmailURL", confirmationLink }
             };
         }
