@@ -54,6 +54,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Returns(Task.CompletedTask);
             var expectedEmail = new CreateVerifyEmployerDemandEmail(
                 command.ContactEmailAddress,
+                command.OrganisationName,
                 command.CourseTitle, 
                 command.CourseLevel,
                 command.ConfirmationLink);

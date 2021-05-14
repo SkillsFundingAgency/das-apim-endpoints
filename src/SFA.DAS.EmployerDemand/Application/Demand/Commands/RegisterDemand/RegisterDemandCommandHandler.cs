@@ -54,6 +54,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
             {
                 var emailModel = new CreateVerifyEmployerDemandEmail(
                     request.ContactEmailAddress,
+                    request.OrganisationName,
                     request.CourseTitle,
                     request.CourseLevel,
                     request.ConfirmationLink);
@@ -62,7 +63,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
             }
 
-            if (result.StatusCode != HttpStatusCode.Accepted || result.StatusCode != HttpStatusCode.Created)
+            if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
             }

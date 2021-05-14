@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
     public class WhenConstructingVerifyContactEmailEmployerDemandEmail
     {
         [Test, AutoData]
-        public void Then_The_Values_Are_Set_Correctly(string employerName, string standardName, int standardLevel, string confirmationLink)
+        public void Then_The_Values_Are_Set_Correctly(string recipientEmail, string employerName, string standardName, int standardLevel, string confirmationLink)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -18,11 +18,12 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDConfirmEmailURL", confirmationLink}
             };
 
-            var actual = new CreateVerifyEmployerDemandEmail(employerName, standardName, standardLevel, confirmationLink);
+            var actual = new CreateVerifyEmployerDemandEmail(recipientEmail, employerName, standardName, standardLevel, confirmationLink);
 
             actual.TemplateId.Should().Be(EmailConstants.VerifyContactEmailEmployerDemandTemplateId);
             actual.Subject.Should().Be("Confirm your contact email address");
             actual.Tokens.Should().BeEquivalentTo(expectedTokens);
+            actual.RecipientAddress.Should().Be(recipientEmail);
         }
     }
 }
