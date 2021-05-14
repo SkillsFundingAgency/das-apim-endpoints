@@ -52,13 +52,11 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
             
             if (result.StatusCode == HttpStatusCode.Created)
             {
-                var emailModel = new CreateDemandConfirmationEmail(
+                var emailModel = new CreateVerifyEmployerDemandEmail(
                     request.ContactEmailAddress,
-                    request.OrganisationName,
                     request.CourseTitle,
                     request.CourseLevel,
-                    request.LocationName,
-                    request.NumberOfApprentices);
+                    request.ConfirmationLink);
             
             
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                

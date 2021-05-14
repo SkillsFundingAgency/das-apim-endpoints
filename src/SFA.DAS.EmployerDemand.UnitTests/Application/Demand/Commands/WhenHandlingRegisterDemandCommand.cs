@@ -52,13 +52,11 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
                 .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
-            var expectedEmail = new CreateDemandConfirmationEmail(
+            var expectedEmail = new CreateVerifyEmployerDemandEmail(
                 command.ContactEmailAddress,
-                command.OrganisationName, 
                 command.CourseTitle, 
                 command.CourseLevel,
-                command.LocationName, 
-                command.NumberOfApprentices);
+                command.ConfirmationLink);
 
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
