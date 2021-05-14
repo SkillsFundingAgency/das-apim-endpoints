@@ -29,6 +29,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeships
                     incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate,
                     request.PageNumber, request.PageSize);
 
+            if (apprenticesResponse == null) // Commitments API error response if no pages to return
+            {
+                return new GetEligibleApprenticeshipsSearchResult
+                {
+                    Apprentices = new ApprenticeshipItem[0],
+                    PageNumber = request.PageNumber,
+                    TotalApprenticeships = 0
+                };
+            }
+
             if (apprenticesResponse.PageNumber < request.PageNumber)
             {
                 // indication from Commitments API that no more pages available
