@@ -40,6 +40,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                         && command.CourseTitle.Equals(request.TrainingCourse.Title)
                         && command.CourseLevel.Equals(request.TrainingCourse.Level)
                         && command.CourseSector.Equals(request.TrainingCourse.Sector)
+                        && command.ConfirmationLink.Equals(request.ResponseUrl)
                     ),
                     It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
             

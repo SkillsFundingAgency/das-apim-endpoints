@@ -76,7 +76,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseId = request.TrainingCourse.Id,
                     CourseTitle = request.TrainingCourse.Title,
                     CourseLevel = request.TrainingCourse.Level,
-                    CourseSector = request.TrainingCourse.Sector
+                    CourseSector = request.TrainingCourse.Sector,
+                    ConfirmationLink = request.ResponseUrl
                 });
 
                 return Created("", commandResult);
