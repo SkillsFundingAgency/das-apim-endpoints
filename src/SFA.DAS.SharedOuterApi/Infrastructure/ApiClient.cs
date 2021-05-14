@@ -20,9 +20,15 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
         }
 
+        [Obsolete("Use PostWithResponseCode")]
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             var result = await PostWithResponseCode<TResponse>(request);
+            
+            if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
+            {
+                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
+            }
             
             return result.Body;
         }
@@ -38,13 +44,26 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
                 .ConfigureAwait(false);
 
-            await response.EnsureSuccessStatusCodeIncludeContentInException();
-
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            
+            var errorContent = "";
+            var responseBody = (TResponse)default;
+            
+            if (!((int) response.StatusCode >= 200 && (int) response.StatusCode <= 299))
+            {
+                errorContent = json;
+            }
+            else
+            {
+                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+            }
 
-            return new ApiResponse<TResponse>(JsonConvert.DeserializeObject<TResponse>(json), response.StatusCode);
+            var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
+            
+            return postWithResponseCode;
         }
 
+        [Obsolete("Use PostWithResponseCode")]
         public async Task Post<TData>(IPostApiRequest<TData> request)
         {
             await AddAuthenticationHeader();
