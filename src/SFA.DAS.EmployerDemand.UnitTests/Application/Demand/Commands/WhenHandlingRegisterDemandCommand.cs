@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Created);
+            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Created, "");
             apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
                     
                     ((CreateCourseDemandData)c.Data).Id.Equals(command.Id)
@@ -79,7 +79,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Accepted);
+            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Accepted, "");
             apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
                 )))
                 .ReturnsAsync(apiResponse);
@@ -94,6 +94,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
 
         [Test, MoqAutoData]
         public void And_Demand_Not_Saved_Then_No_Confirmation_Email(
+            string errorContent,
             RegisterDemandCommand command,
             HttpRequestContentException apiException,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
@@ -101,15 +102,17 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             RegisterDemandCommandHandler handler)
         {
             //Arrange
+            var apiResponse = new ApiResponse<PostCreateCourseDemand>(null, HttpStatusCode.BadRequest, errorContent);
             apiClient
                 .Setup(client => client.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
-                .ThrowsAsync(apiException);
+                .ReturnsAsync(apiResponse);
 
             //Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>();
+            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Which.ErrorContent.Should().Be(errorContent);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
         }

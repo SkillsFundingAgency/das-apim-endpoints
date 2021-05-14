@@ -8,6 +8,7 @@ using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
@@ -63,6 +64,11 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
             }
 
+            if (result.StatusCode != HttpStatusCode.Accepted || result.StatusCode != HttpStatusCode.Created)
+            {
+                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
+            }
+            
             return result.Body.Id;
         }
     }
