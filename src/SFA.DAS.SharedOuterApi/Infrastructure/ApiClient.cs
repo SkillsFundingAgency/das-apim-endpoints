@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var result = await PostWithResponseCode<TResponse>(request);
             
-            if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
+            if(IsNot200RangeResponseCode(result.StatusCode))
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
             }
@@ -33,6 +33,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return result.Body;
         }
 
+      
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
         {
             await AddAuthenticationHeader();
@@ -49,7 +50,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var errorContent = "";
             var responseBody = (TResponse)default;
             
-            if (!((int) response.StatusCode >= 200 && (int) response.StatusCode <= 299))
+            if(IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
             }
@@ -165,6 +166,10 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<PagedResponse<TResponse>>(json);
+        }
+        private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
+        {
+            return !((int)statusCode >= 200 && (int)statusCode <= 299);
         }
     }
 }
