@@ -6,10 +6,11 @@ Feature: ChangeApprenticeship
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name |
-	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         |
-	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        |
-	| 3  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        |
+	| Id | First Name | Last Name | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email |
+	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   |
+	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   |
+	| 3  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        | c@c   |
+	| 4  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        |       |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -44,3 +45,9 @@ Scenario: Apprenticeship update is recieved and is a continuation apprenticeship
 	| Commitments Continuation Of ApprenticeshipId | Commitments ApprenticeshipId | Commitments Approved On |
 	| 1                                            | 3                            | 2015-04-20              |
 	Then the inner API has received the posted values
+
+Scenario: Apprenticeship update is recieved but without an email
+	When the following apprenticeship update is posted
+	| Commitments ApprenticeshipId | Commitments Approved On |
+	| 4                            | 2015-04-20              |
+	Then the inner API will not receive any values

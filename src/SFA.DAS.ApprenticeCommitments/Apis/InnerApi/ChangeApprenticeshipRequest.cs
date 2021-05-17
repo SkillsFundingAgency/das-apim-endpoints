@@ -12,7 +12,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 
     public class ChangeApprenticeshipRequestData
     {
-        public long? ContinuationOfCommitmentsApprenticeshipId { get; set; }
+        public long? CommitmentsContinuedApprenticeshipId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }
         public DateTime CommitmentsApprovedOn { get; set; }
         public string EmployerName { get; set; }

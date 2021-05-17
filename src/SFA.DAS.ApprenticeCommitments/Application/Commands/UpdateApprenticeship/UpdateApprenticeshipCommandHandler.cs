@@ -1,10 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
+using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
 #nullable enable
@@ -17,18 +19,21 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly CoursesService _coursesService;
+        private readonly ILogger<UpdateApprenticeshipCommandHandler> _logger;
 
         public UpdateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginService apprenticeLoginService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
-            CoursesService coursesService)
+            CoursesService coursesService,
+            ILogger<UpdateApprenticeshipCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
             _coursesService = coursesService;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(
@@ -37,14 +42,20 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
         {
             var (provider, apprenticeship, course) = await GetExternalData(command);
 
+            if (IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation($"Apprenticeship {apprenticeship.Id} does not have an email, no point in calling Apprentice Commitments");
+                return Unit.Value;
+            }
+
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
-                ContinuationOfCommitmentsApprenticeshipId = command.ContinuationOfCommitmentsApprenticeshipId,
+                CommitmentsContinuedApprenticeshipId = command.CommitmentsContinuedApprenticeshipId,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
-                TrainingProviderName = string.IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
+                TrainingProviderName = IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,

@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentAssertions.Primitives;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
@@ -127,12 +125,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
-                    _request.ContinuationOfCommitmentsApprenticeshipId,
+                    _request.CommitmentsContinuedApprenticeshipId,
                     _request.CommitmentsApprenticeshipId,
                     _request.CommitmentsApprovedOn,
                     expectedCommitment.CourseName,
                     PlannedStartDate = expectedCommitment.StartDate,
                 });
+        }
+
+        [Then("the inner API will not receive any values")]
+        public void ThenTheInnerApiWillNotBeCalled()
+        {
+            _context.InnerApi.SingleLogBody.Should().BeNull();
         }
 
         [Then("the Employer should be Legal Entity (.*) named '(.*)'")]
@@ -189,44 +193,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var content = await _context.OuterApiClient.Response.Content.ReadAsStringAsync();
             var errors = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
             errors.Should().BeEquivalentTo(expectedErrors);
-        }
-    }
-
-    public static class JsonConvertExtensions
-    {
-        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this string instance)
-        {
-            return new JsonConvertAssertions(instance).DeserialiseTo<T>();
-        }
-
-        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this StringAssertions instance)
-        {
-            return new JsonConvertAssertions(instance.Subject).DeserialiseTo<T>();
-        }
-
-        public class JsonConvertAssertions :
-            ReferenceTypeAssertions<string, JsonConvertAssertions>
-        {
-            public JsonConvertAssertions(string instance)
-            {
-                Subject = instance;
-            }
-
-            protected override string Identifier => "string";
-
-            public AndWhichConstraint<JsonConvertAssertions, T> DeserialiseTo<T>(
-                string because = "", params object[] becauseArgs)
-            {
-                var deserialised = JsonConvert.DeserializeObject<T>(Subject);
-
-                Execute.Assertion
-                    .ForCondition(deserialised != null)
-                    .BecauseOf(because, becauseArgs)
-                    .FailWith("Expected {context:string} to contain deserilise to {0}{reason}, but found.",
-                        typeof(T).Name);
-
-                return new AndWhichConstraint<JsonConvertAssertions, T>(this, deserialised);
-            }
         }
     }
 }
