@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Id = request.CourseId,
                     Title = request.CourseTitle,
                     Level = request.CourseLevel,
-                    Route = request.CourseSector,
+                    Route = request.CourseRoute,
                 }
             }));
             

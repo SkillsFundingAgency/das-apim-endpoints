@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         [JsonProperty("level")]
         public int Level { get; set; }
 
-        [JsonProperty("sector")]
-        public string Sector { get ; set ; }
+        [JsonProperty("route")]
+        public string Route { get ; set ; }
     }
 }
