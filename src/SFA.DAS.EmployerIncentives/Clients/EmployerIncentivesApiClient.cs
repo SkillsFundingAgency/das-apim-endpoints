@@ -65,6 +65,11 @@ namespace SFA.DAS.EmployerIncentives.Clients
             throw new System.NotImplementedException();
         }
 
+        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+        {
+            return _client.PatchWithResponseCode(request);
+        }
+
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
             return _client.GetPaged<TResponse>(request);
