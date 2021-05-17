@@ -1,3 +1,4 @@
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerDemand.Api.Models
@@ -17,6 +18,17 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 Level = standard.Level,
                 Title = standard.Title,
                 Sector = standard.Route
+            };
+        }
+
+        public static implicit operator GetCourseListItem(VerifyEmployerDemandCommandResult source)
+        {
+            return new GetCourseListItem
+            {
+                Id = source.EmployerDemand.CourseId,
+                Title = source.EmployerDemand.CourseTitle,
+                Level = source.EmployerDemand.CourseLevel,
+                Sector = source.EmployerDemand.CourseRoute,
             };
         }
     }
