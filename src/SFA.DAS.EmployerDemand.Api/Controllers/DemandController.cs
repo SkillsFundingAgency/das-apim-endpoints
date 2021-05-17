@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
@@ -91,6 +92,32 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPost]
+        [Route("verify/{id}")]
+        public async Task<IActionResult> VerifyCourseDemand(Guid id)
+        {
+            try
+            {
+                var commandResult = await _mediator.Send(new VerifyEmployerDemandCommand
+                {
+                    Id = id
+                });
+                var model =  (VerifyCourseDemandResponse) commandResult;
+
+                return Created("", model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error creating course demand item");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+            
         }
 
         [HttpGet]
