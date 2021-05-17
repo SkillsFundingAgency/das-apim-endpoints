@@ -22,10 +22,10 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             actual.NumberOfApprentices.Should().Be(source.EmployerDemand.NumberOfApprentices);
             actual.Location.Name.Should().Be(source.EmployerDemand.Location.Name);
             actual.Location.Location.GeoPoint.Should().BeEquivalentTo(source.EmployerDemand.Location.LocationPoint.GeoPoint);
-            actual.TrainingCourse.Id.Should().Be(source.EmployerDemand.CourseId);
-            actual.TrainingCourse.Title.Should().Be(source.EmployerDemand.CourseTitle);
-            actual.TrainingCourse.Level.Should().Be(source.EmployerDemand.CourseLevel);
-            actual.TrainingCourse.Sector.Should().Be(source.EmployerDemand.CourseRoute);
+            actual.TrainingCourse.Id.Should().Be(source.EmployerDemand.Course.Id);
+            actual.TrainingCourse.Title.Should().Be(source.EmployerDemand.Course.Title);
+            actual.TrainingCourse.Level.Should().Be(source.EmployerDemand.Course.Level);
+            actual.TrainingCourse.Route.Should().Be(source.EmployerDemand.Course.Route);
         }
 
         [Test]

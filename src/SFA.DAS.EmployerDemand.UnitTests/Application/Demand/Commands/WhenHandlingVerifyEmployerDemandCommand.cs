@@ -49,8 +49,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var expectedEmail = new CreateDemandConfirmationEmail(
                 getDemandResponse.ContactEmailAddress,
                 getDemandResponse.OrganisationName,
-                getDemandResponse.CourseTitle, 
-                getDemandResponse.CourseLevel,
+                getDemandResponse.Course.Title, 
+                getDemandResponse.Course.Level,
                 getDemandResponse.Location.Name,
                 getDemandResponse.NumberOfApprentices);
             

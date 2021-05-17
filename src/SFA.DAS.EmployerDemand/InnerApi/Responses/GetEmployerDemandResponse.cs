@@ -8,10 +8,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public bool EmailVerified { get ; set ; }
         public string ContactEmailAddress { get ; set ; }
         public string OrganisationName { get ; set ; }
-        public string CourseTitle { get ; set ; }
-        public int CourseLevel { get ; set ; }
-        public int CourseId { get ; set ; }
-        public string CourseRoute { get ; set ; }
+        public EmployerDemandCourse Course { get ; set ; }
         
         public Location Location { get ; set ; }
         public int NumberOfApprentices { get ; set ; }

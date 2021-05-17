@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 NumberOfApprentices = source.EmployerDemand.NumberOfApprentices,
                 EmailVerified = source.EmployerDemand.EmailVerified,
                 Location = source.EmployerDemand.Location,
-                TrainingCourse = source
+                TrainingCourse = source.EmployerDemand.Course
             };
         }
     }

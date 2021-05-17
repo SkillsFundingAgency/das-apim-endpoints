@@ -51,8 +51,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
                     var emailModel = new CreateDemandConfirmationEmail(
                         getEmployerDemandResponse.ContactEmailAddress,
                         getEmployerDemandResponse.OrganisationName,
-                        getEmployerDemandResponse.CourseTitle,
-                        getEmployerDemandResponse.CourseLevel,
+                        getEmployerDemandResponse.Course.Title,
+                        getEmployerDemandResponse.Course.Level,
                         getEmployerDemandResponse.Location.Name,
                         getEmployerDemandResponse.NumberOfApprentices
                     );

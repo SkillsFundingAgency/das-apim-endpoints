@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public string Title { get ; set ; }
         public int Level { get ; set ; }
         public int Id { get ; set ; }
-        public string Sector { get; set; }
+        public string Route { get; set; }
 
         public static implicit operator GetCourseListItem(GetStandardsListItem standard)
         {
@@ -17,18 +17,18 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
-                Sector = standard.Route
+                Route = standard.Route
             };
         }
 
-        public static implicit operator GetCourseListItem(VerifyEmployerDemandCommandResult source)
+        public static implicit operator GetCourseListItem(EmployerDemandCourse source)
         {
             return new GetCourseListItem
             {
-                Id = source.EmployerDemand.CourseId,
-                Title = source.EmployerDemand.CourseTitle,
-                Level = source.EmployerDemand.CourseLevel,
-                Sector = source.EmployerDemand.CourseRoute,
+                Id = source.Id,
+                Title = source.Title,
+                Level = source.Level,
+                Route = source.Route,
             };
         }
     }
