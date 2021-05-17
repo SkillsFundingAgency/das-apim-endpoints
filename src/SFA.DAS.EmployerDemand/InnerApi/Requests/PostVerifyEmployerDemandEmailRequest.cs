@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
             _id = id;
         }
 
-        public string PostUrl => $"demand/{_id}/verify-email";
+        public string PostUrl => $"api/demand/{_id}/verify-email";
         public object Data { get; set; }
     }
 }

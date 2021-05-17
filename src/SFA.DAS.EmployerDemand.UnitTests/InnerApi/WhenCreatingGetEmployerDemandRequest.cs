@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new GetEmployerDemandRequest(id);
 
             //Assert
-            actual.GetUrl.Should().Be($"demand/{id}");
+            actual.GetUrl.Should().Be($"api/demand/{id}");
         }
     }
 }

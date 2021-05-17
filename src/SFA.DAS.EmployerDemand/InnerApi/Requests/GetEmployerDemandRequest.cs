@@ -12,6 +12,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
             _id = id;
         }
 
-        public string GetUrl => $"demand/{_id}";
+        public string GetUrl => $"api/demand/{_id}";
     }
 }

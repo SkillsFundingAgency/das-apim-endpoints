@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new PostVerifyEmployerDemandEmailRequest(id);
             
             //Assert
-            actual.PostUrl.Should().Be($"demand/{id}/verify-email");
+            actual.PostUrl.Should().Be($"api/demand/{id}/verify-email");
         }
     }
 }
