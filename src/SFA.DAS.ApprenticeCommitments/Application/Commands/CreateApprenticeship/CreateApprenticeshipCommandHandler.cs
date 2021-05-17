@@ -45,7 +45,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
             {
                 ApprenticeId = id,
-                ApprenticeshipId = command.CommitmentsApprenticeshipId,
+                CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
                 Email = command.Email,
                 EmployerName = command.EmployerName,
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
-                ApprovedOn = command.CommitmentsApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
