@@ -24,14 +24,14 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Created(
             RegisterDemandCommand command,
-            PostCreateCourseDemand responseBody,
+            PostEmployerCourseDemand responseBody,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Created, "");
-            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Created, "");
+            apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
                     
                     ((CreateCourseDemandData)c.Data).Id.Equals(command.Id)
                     && ((CreateCourseDemandData)c.Data).ContactEmailAddress.Equals(command.ContactEmailAddress)
@@ -72,14 +72,14 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
          [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Email_Not_Sent_If_ResponseCode_Is_Not_Created(
             RegisterDemandCommand command,
-            PostCreateCourseDemand responseBody,
+            PostEmployerCourseDemand responseBody,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Accepted, "");
-            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Accepted, "");
+            apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
                 )))
                 .ReturnsAsync(apiResponse);
 
@@ -101,9 +101,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(null, HttpStatusCode.BadRequest, errorContent);
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(null, HttpStatusCode.BadRequest, errorContent);
             apiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
                 .ReturnsAsync(apiResponse);
 
             //Act

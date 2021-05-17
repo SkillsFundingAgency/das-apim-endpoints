@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         }
         public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.PostWithResponseCode<PostCreateCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
+            var result = await _apiClient.PostWithResponseCode<PostEmployerCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
             {
                 Id = request.Id,
                 ContactEmailAddress = request.ContactEmailAddress,

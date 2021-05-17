@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
                     c =>
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
-                ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.OK));
+                ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.OK, ""));
 
             await service.ConfirmIncentiveApplication(request);
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
                     c =>
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
-                ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.Conflict));
+                ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.Conflict, ""));
 
             Func<Task> action = async () => await service.ConfirmIncentiveApplication(request);
 
