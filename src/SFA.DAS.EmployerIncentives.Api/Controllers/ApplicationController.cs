@@ -10,8 +10,9 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetails;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentDetails;
+using SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.ApprenticeshipDetails;
+using SFA.DAS.EmployerIncentives.Exceptions;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -106,10 +107,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("/accounts/{accountId}/applications/{applicationId}/employmentDetails")]
-        public async Task<IActionResult> ConfirmEmploymentDetails(long accountId, Guid applicationId, [FromBody] ConfirmEmploymentDetailsRequest request)
+        [Route("/accounts/{accountId}/applications/{applicationId}/apprenticeships")]
+        public async Task<IActionResult> SaveApprenticeshipDetailsDetails(long accountId, Guid applicationId, [FromBody] ApprenticeshipDetailsRequest request)
         {
-            await _mediator.Send(new ConfirmEmploymentDetailsCommand(request));
+            await _mediator.Send(new SaveApprenticeshipDetailsCommand(request));
 
             return new OkResult();
         }

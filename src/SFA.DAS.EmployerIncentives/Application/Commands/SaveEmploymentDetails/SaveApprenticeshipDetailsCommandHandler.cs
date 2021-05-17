@@ -6,33 +6,33 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetails
+namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails
 {
-    public class ConfirmEmploymentDetailsCommandHandler : IRequestHandler<ConfirmEmploymentDetailsCommand>
+    public class SaveApprenticeshipDetailsCommandHandler : IRequestHandler<SaveApprenticeshipDetailsCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IEmployerIncentivesService _employerIncentivesService;
 
-        public ConfirmEmploymentDetailsCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
+        public SaveApprenticeshipDetailsCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
         {
             _commitmentsService = commitmentsService;
             _employerIncentivesService = employerIncentivesService;
         }
 
-        public async Task<Unit> Handle(ConfirmEmploymentDetailsCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SaveApprenticeshipDetailsCommand request, CancellationToken cancellationToken)
         {
-            var apprenticeshipIds = command.ConfirmEmploymentDetailsRequest.EmploymentDetails.Select(x => x.ApprenticeId);
-            var apprenticeships = await _commitmentsService.GetApprenticeshipDetails(command.ConfirmEmploymentDetailsRequest.AccountId, apprenticeshipIds);
+            var apprenticeshipIds = request.ApprenticeshipDetailsRequest.ApprenticeshipDetails.Select(x => x.ApprenticeId);
+            var apprenticeships = await _commitmentsService.GetApprenticeshipDetails(request.ApprenticeshipDetailsRequest.AccountId, apprenticeshipIds);
 
             var apprenticeshipDetails = new UpdateIncentiveApplicationRequestData
             {
-                IncentiveApplicationId = command.ConfirmEmploymentDetailsRequest.ApplicationId,
-                AccountId = command.ConfirmEmploymentDetailsRequest.AccountId,
+                IncentiveApplicationId = request.ApprenticeshipDetailsRequest.ApplicationId,
+                AccountId = request.ApprenticeshipDetailsRequest.AccountId,
                 Apprenticeships = apprenticeships.Select(x => (IncentiveClaimApprenticeshipDto)x).ToArray()
             };
             foreach (var apprenticeship in apprenticeshipDetails.Apprenticeships)
             {
-                var employmentDetails = command.ConfirmEmploymentDetailsRequest.EmploymentDetails.FirstOrDefault(x => x.ApprenticeId == apprenticeship.ApprenticeshipId);
+                var employmentDetails = request.ApprenticeshipDetailsRequest.ApprenticeshipDetails.FirstOrDefault(x => x.ApprenticeId == apprenticeship.ApprenticeshipId);
                 apprenticeship.EmploymentStartDate = employmentDetails.EmploymentStartDate;
             }
 

@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using SFA.DAS.EmployerIncentives.Api.Models;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentDetails;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.ApprenticeshipDetails;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -17,8 +17,8 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {
     [Binding]
-    [Scope(Feature = "ConfirmApprenticeEmploymentDetails")]
-    public class ConfirmApprenticeEmploymentDetailsSteps
+    [Scope(Feature = "ApprenticeshipDetails")]
+    public class ApprenticeshipDetailsSteps
     {
         private readonly TestContext _context;
         private readonly Fixture _fixture;
@@ -28,9 +28,9 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         private ApprenticeshipResponse[] _apprenticeshipResponses;
         private Guid _applicationId;
         private HttpResponseMessage _response;
-        private ConfirmEmploymentDetailsRequest _confirmEmploymentDetailsRequest;
+        private ApprenticeshipDetailsRequest _confirmEmploymentDetailsRequest;
 
-        public ConfirmApprenticeEmploymentDetailsSteps(TestContext context)
+        public ApprenticeshipDetailsSteps(TestContext context)
         {
             _fixture = new Fixture();
             _context = context;
@@ -79,18 +79,18 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the employer confirms the employment start dates for their apprentices")]
         public async Task WhenTheEmployerConfirmsTheEmploymentStartDatesForTheirApprentices()
         {
-            _confirmEmploymentDetailsRequest = new ConfirmEmploymentDetailsRequest
+            _confirmEmploymentDetailsRequest = new ApprenticeshipDetailsRequest
             {
                 AccountId = _accountId,
                 ApplicationId = _applicationId,
-                EmploymentDetails = new List<ApprenticeEmploymentDetailsDto>()
+                ApprenticeshipDetails = new List<ApprenticeDetailsDto>()
             };
             foreach(var apprenticeId in _apprenticeshipIds)
             {
-                _confirmEmploymentDetailsRequest.EmploymentDetails.Add(new ApprenticeEmploymentDetailsDto { ApprenticeId = apprenticeId, EmploymentStartDate = _fixture.Create<DateTime>()});
+                _confirmEmploymentDetailsRequest.ApprenticeshipDetails.Add(new ApprenticeDetailsDto { ApprenticeId = apprenticeId, EmploymentStartDate = _fixture.Create<DateTime>()});
             }
 
-            var url = $"accounts/{_accountId}/applications/{_applicationId}/employmentDetails";
+            var url = $"accounts/{_accountId}/applications/{_applicationId}/apprenticeships";
 
             _response = await _context.OuterApiClient.PatchAsync(url, new StringContent(JsonSerializer.Serialize(_confirmEmploymentDetailsRequest), Encoding.UTF8, "application/json"));
         }

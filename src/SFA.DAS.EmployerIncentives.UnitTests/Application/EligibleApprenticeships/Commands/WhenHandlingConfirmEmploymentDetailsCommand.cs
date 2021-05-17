@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetails;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentDetails;
+using SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.ApprenticeshipDetails;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
@@ -22,18 +22,18 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             var fixture = new Fixture();
 
-            var request = new ConfirmEmploymentDetailsRequest
+            var request = new ApprenticeshipDetailsRequest
             {
                 AccountId = fixture.Create<long>(), 
                 ApplicationId = Guid.NewGuid(),
-                EmploymentDetails = new List<ApprenticeEmploymentDetailsDto>()
+                ApprenticeshipDetails = new List<ApprenticeDetailsDto>()
             };
-            request.EmploymentDetails.Add(new ApprenticeEmploymentDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>()} );
-            request.EmploymentDetails.Add(new ApprenticeEmploymentDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>() });
-            request.EmploymentDetails.Add(new ApprenticeEmploymentDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>() });
-            var apprenticeIds = request.EmploymentDetails.Select(x => x.ApprenticeId).ToList();
+            request.ApprenticeshipDetails.Add(new ApprenticeDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>()} );
+            request.ApprenticeshipDetails.Add(new ApprenticeDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>() });
+            request.ApprenticeshipDetails.Add(new ApprenticeDetailsDto { ApprenticeId = fixture.Create<long>(), EmploymentStartDate = fixture.Create<DateTime>() });
+            var apprenticeIds = request.ApprenticeshipDetails.Select(x => x.ApprenticeId).ToList();
 
-            var command = new ConfirmEmploymentDetailsCommand(request);
+            var command = new SaveApprenticeshipDetailsCommand(request);
 
             var commitmentsService = new Mock<ICommitmentsService>();
             var commitmentApprenticeships = new List<ApprenticeshipResponse>();
@@ -45,19 +45,19 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             commitmentsService.Setup(x => x.GetApprenticeshipDetails(request.AccountId, apprenticeIds)).ReturnsAsync(commitmentApprenticeships.ToArray());
 
             var employerIncentivesService = new Mock<IEmployerIncentivesService>();
-            var handler = new ConfirmEmploymentDetailsCommandHandler(commitmentsService.Object, employerIncentivesService.Object);
+            var handler = new SaveApprenticeshipDetailsCommandHandler(commitmentsService.Object, employerIncentivesService.Object);
 
             await handler.Handle(command, CancellationToken.None);
 
             commitmentsService.Verify(x => x.GetApprenticeshipDetails(
-                    It.Is<long>(r => r == command.ConfirmEmploymentDetailsRequest.AccountId),
+                    It.Is<long>(r => r == command.ApprenticeshipDetailsRequest.AccountId),
                     It.IsAny<IEnumerable<long>>()), Times.Once);
 
             employerIncentivesService.Verify(x => x.UpdateIncentiveApplication(
                     It.Is<UpdateIncentiveApplicationRequestData>(
                         r =>
-                            r.AccountId == command.ConfirmEmploymentDetailsRequest.AccountId &&
-                            r.IncentiveApplicationId == command.ConfirmEmploymentDetailsRequest.ApplicationId)),
+                            r.AccountId == command.ApprenticeshipDetailsRequest.AccountId &&
+                            r.IncentiveApplicationId == command.ApprenticeshipDetailsRequest.ApplicationId)),
                         Times.Once);
         }
     }
