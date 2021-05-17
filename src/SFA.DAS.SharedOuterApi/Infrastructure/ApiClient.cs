@@ -114,7 +114,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return new ApiResponse<string>(responseContent, response.StatusCode);
+            return new ApiResponse<string>(responseContent, response.StatusCode, ""); //TODO - Error content should be correctly set
         }
 
         public async Task Put(IPutApiRequest request)
