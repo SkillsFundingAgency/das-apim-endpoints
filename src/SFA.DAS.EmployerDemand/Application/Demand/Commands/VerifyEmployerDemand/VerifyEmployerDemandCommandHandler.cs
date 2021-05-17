@@ -60,6 +60,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
                 }    
             }
 
+            getEmployerDemandResponse.EmailVerified = true;
+            
             return new VerifyEmployerDemandCommandResult
             {
                 EmployerDemand = getEmployerDemandResponse

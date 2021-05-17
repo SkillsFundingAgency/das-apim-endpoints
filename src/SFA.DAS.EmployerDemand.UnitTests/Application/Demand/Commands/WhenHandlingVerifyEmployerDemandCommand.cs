@@ -58,7 +58,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse);
+            actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse, options=>options.Excluding(c=>c.EmailVerified));
+            actual.EmployerDemand.EmailVerified.Should().BeTrue();
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
