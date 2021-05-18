@@ -67,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string locationName = "", Guid? shortlistUserId = null)
+        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string location = "", Guid? shortlistUserId = null)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Id = id,
                     Lat = lat,
                     Lon = lon,
-                    LocationName = locationName,
+                    LocationName = location,
                     ShortlistUserId = shortlistUserId
                 });
 
