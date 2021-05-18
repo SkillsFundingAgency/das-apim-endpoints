@@ -11,6 +11,7 @@ using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -30,6 +31,24 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         {
             _logger = logger;
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var queryResult = await _mediator.Send(new GetCourseDemandQuery
+            {
+                Id = id
+            });
+
+            if (queryResult.EmployerDemand == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetCourseDemandResponse) queryResult.EmployerDemand;
+            return Ok(model);
         }
 
         [HttpGet]
