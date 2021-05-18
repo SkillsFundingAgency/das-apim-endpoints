@@ -1,4 +1,5 @@
 using System;
+using SFA.DAS.EmployerDemand.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerDemand.Api.Models
 {
@@ -10,7 +11,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public int NumberOfApprentices { get; set; }
         public bool EmailVerified { get ; set ; }
 
-        public static implicit operator GetCourseDemandResponse(Domain.Models.EmployerDemand source)
+        public static implicit operator GetCourseDemandResponse(GetEmployerDemandResponse source)
         {
             if (source == null)
             {
@@ -19,7 +20,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
             return new GetCourseDemandResponse
             {
                 Id = source.Id,
-                ContactEmail = source.ContactEmail,
+                ContactEmail = source.ContactEmailAddress,
                 EmailVerified = source.EmailVerified,
                 OrganisationName = source.OrganisationName,
                 NumberOfApprentices = source.NumberOfApprentices

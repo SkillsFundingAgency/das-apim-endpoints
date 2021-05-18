@@ -114,7 +114,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         }
 
         [HttpPost]
-        [Route("verify/{id}")]
+        [Route("{id}/verify")]
         public async Task<IActionResult> VerifyCourseDemand(Guid id)
         {
             try
