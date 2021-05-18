@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private object _command;
 
         public object ApprenticeshipApiPath =>
-            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}";
+            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}/{_fixture.Create<long>()}";
 
         public ConfirmApprenticeshipSteps(TestContext context)
         {
