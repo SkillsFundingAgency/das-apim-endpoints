@@ -81,6 +81,22 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
+        public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+        {
+            await AddAuthenticationHeader();
+
+            AddVersionHeader(request.Version);
+
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+
+            var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
+                .ConfigureAwait(false);
+
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return new ApiResponse<string>(responseContent, response.StatusCode);
+        }
+
         public async Task Put(IPutApiRequest request)
 
         {
