@@ -22,6 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             int standardCode,
             double lat,
             double lon,
+            string locationName,
             Guid? shortlistUserId,
             GetTrainingCourseResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -33,12 +34,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         c.Id.Equals(standardCode)
                         && c.Lat.Equals(lat)
                         && c.Lon.Equals(lon)
+                        && c.LocationName.Equals(locationName)
                         && c.ShortlistUserId.Equals(shortlistUserId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Get(standardCode, lat, lon, shortlistUserId) as ObjectResult;
+            var controllerResult = await controller.Get(standardCode, lat, lon, locationName, shortlistUserId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
