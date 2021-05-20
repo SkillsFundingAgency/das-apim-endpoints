@@ -69,5 +69,10 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.PostWithResponseCode<TResponse>(request);
         }
+
+        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
