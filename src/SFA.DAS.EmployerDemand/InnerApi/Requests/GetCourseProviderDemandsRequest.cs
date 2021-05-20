@@ -19,6 +19,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
             _radius = radius;
         }
 
-        public string GetUrl => $"/api/Demand/providers/{_ukprn}/courses/{_courseId}?lat={_lat}&lon={_lon}&radius={_radius}";
+        public string GetUrl => $"api/Demand/providers/{_ukprn}/courses/{_courseId}?lat={_lat}&lon={_lon}&radius={_radius}";
     }
 }
