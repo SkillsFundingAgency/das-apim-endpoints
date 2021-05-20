@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
+using FluentAssertions.Primitives;
 using Newtonsoft.Json;
-using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
-using System;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,44 +18,28 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
     [Binding]
-    [Scope(Feature = "AddApprenticeship")]
-    public class AddApprenticeshipSteps
+    [Scope(Feature = "ChangeApprenticeship")]
+    public class ChangeApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private CreateApprenticeshipCommand _request;
+        private ChangeApprenticeshipCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
 
-        public AddApprenticeshipSteps(TestContext context)
+        public ChangeApprenticeshipSteps(TestContext context)
         {
             _context = context;
 
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/apprenticeships")
+                        .WithPath("/apprenticeships/change")
                         .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "ApprenticeshipId != `0` && contains(Email, '@')"))
                       )
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
-                            );
-
-            _context.InnerApi.MockServer
-                .Given(
-                    Request.Create().WithPath("/apprenticeships")
-                        .UsingPost()
-                        .WithBody(new JmesPathMatcher(
-                            "!contains(Email, '@')"))
-                      )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.BadRequest)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody("{'email':'Not valid'}")
                             );
 
             _context.LoginApi.MockServer
@@ -101,15 +85,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     .Given(
                         Request.Create()
                             .WithPath($"/api/v1/search")
-                            .WithParam("searchterm", true,$"{trainingProvider.Ukprn}")
+                            .WithParam("searchterm", true, $"{trainingProvider.Ukprn}")
                             .UsingGet()
-                    )
+                          )
                     .RespondWith(
                         Response.Create()
                             .WithStatusCode((int)HttpStatusCode.OK)
                             .WithHeader("Content-Type", "application/json")
-                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new [] { trainingProvider }}))
-                    );
+                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new[] { trainingProvider } }))
+                                );
             }
         }
 
@@ -133,11 +117,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             }
         }
 
-        [When("the following apprenticeship is posted")]
+        [When("the following apprenticeship update is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<CreateApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships", _request);
+            _request = table.CreateInstance<ChangeApprenticeshipCommand>();
+            await _context.OuterApiClient.Post("apprenticeships/change", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -149,33 +133,46 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.OuterApiClient.Response.StatusCode
                 .Should().Be(HttpStatusCode.Accepted);
 
-            var logs = _context.InnerApi.MockServer.LogEntries;
-            logs.Should().HaveCount(1);
-
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
-                logs.First().RequestMessage.Body);
-
-            innerApiRequest.Should().NotBeNull();
-            innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
-            innerApiRequest.Email.Should().Be(_request.Email);
-            innerApiRequest.ApprenticeshipId.Should().Be(_request.ApprenticeshipId);
-            innerApiRequest.ApprovedOn.Should().Be(_request.CommitmentsApprovedOn);
-            innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
-            innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
-            innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
-            innerApiRequest.PlannedStartDate.Should().Be(expectedCommitment.StartDate);
+            _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
+                .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .Which.Should().BeEquivalentTo(new
+                {
+                    _request.ApprenticeshipId,
+                    expectedCommitment.Email,
+                    ApprovedOn = _request.ApprovedOn,
+                    expectedCommitment.CourseName,
+                    PlannedStartDate = expectedCommitment.StartDate,
+                });
         }
 
-        [Then("the Training Provider Name should be '(.*)'")]
+        [Then("the Employer should be Legal Entity (.*) named '(.*)'")]
+        public void ThenTheEmployerNameShouldBe(long legalEntityId, string employerName)
+        {
+            var expectedCommitment = _approvedApprenticeships.First(
+                x => x.Id == _request.ApprenticeshipId);
+
+            _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
+                .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .Which.Should().BeEquivalentTo(new
+                {
+                    EmployerAccountLegalEntityId = expectedCommitment.AccountLegalEntityId,
+                    expectedCommitment.EmployerName,
+                });
+        }
+
+        [Then("the Training Provider should be '(.*)'")]
         public void ThenTheTrainingProviderNameShouldBe(string trainingProviderName)
         {
-            var logs = _context.InnerApi.MockServer.LogEntries;
-            logs.Should().HaveCount(1);
+            var provider = _trainingProviderResponses.First(x =>
+                x.LegalName == trainingProviderName || x.TradingName == trainingProviderName);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
-                logs.First().RequestMessage.Body);
-
-            innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
+            _context.InnerApi.MockServer.LogEntries.Should().NotBeEmpty()
+                .And.Subject.First().RequestMessage.Body.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .Which.Should().BeEquivalentTo(new
+                {
+                    TrainingProviderId = provider.Ukprn,
+                    TrainingProviderName = trainingProviderName,
+                });
         }
 
         [Then("the course should be `(.*)` level (.*)")]
@@ -203,33 +200,43 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var errors = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
             errors.Should().BeEquivalentTo(expectedErrors);
         }
+    }
 
-        [Then("the invitation was sent successfully")]
-        public void ThenTheInvitationWasSentSuccessfully()
+    public static class JsonConvertExtensions
+    {
+        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this string instance)
         {
-            var expectedCommitment = _approvedApprenticeships.First(
-                x => x.Id == _request.ApprenticeshipId);
-
-            var logs = _context.LoginApi.MockServer.LogEntries;
-            logs.Should().HaveCount(1);
-
-            var loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(
-                logs.First().RequestMessage.Body);
-            loginApiRequest.Should().NotBeNull();
-            loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
-            loginApiRequest.Email.Should().Be(_request.Email);
-            loginApiRequest.GivenName.Should().Be(expectedCommitment.FirstName);
-            loginApiRequest.FamilyName.Should().Be(expectedCommitment.LastName);
-            loginApiRequest.OrganisationName.Should().Be(_request.EmployerName);
-            loginApiRequest.ApprenticeshipName.Should().Be(expectedCommitment.CourseName);
-            loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
-            loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
+            return new JsonConvertAssertions(instance).DeserialiseTo<T>();
         }
 
-        [Then("the invitation was not sent")]
-        public void ThenTheInvitationWasNotSent()
+        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this StringAssertions instance)
         {
-            _context.LoginApi.MockServer.LogEntries.Should().BeEmpty();
+            return new JsonConvertAssertions(instance.Subject).DeserialiseTo<T>();
+        }
+
+        public class JsonConvertAssertions :
+            ReferenceTypeAssertions<string, JsonConvertAssertions>
+        {
+            public JsonConvertAssertions(string instance)
+            {
+                Subject = instance;
+            }
+
+            protected override string Identifier => "string";
+
+            public AndWhichConstraint<JsonConvertAssertions, T> DeserialiseTo<T>(
+                string because = "", params object[] becauseArgs)
+            {
+                var deserialised = JsonConvert.DeserializeObject<T>(Subject);
+
+                Execute.Assertion
+                    .ForCondition(deserialised != null)
+                    .BecauseOf(because, becauseArgs)
+                    .FailWith("Expected {context:string} to contain deserilise to {0}{reason}, but found.",
+                        typeof(T).Name);
+
+                return new AndWhichConstraint<JsonConvertAssertions, T>(this, deserialised);
+            }
         }
     }
 }
