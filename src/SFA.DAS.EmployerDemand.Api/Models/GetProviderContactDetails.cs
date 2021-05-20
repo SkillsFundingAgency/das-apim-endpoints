@@ -5,6 +5,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
     public class GetProviderContactDetails
     {
         public int Ukprn { get; set; }
+        public string Name { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
         public string Website { get; set; }
@@ -21,7 +22,8 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 Ukprn = source.Ukprn,
                 Website = source.ContactUrl,
                 EmailAddress = source.Email,
-                PhoneNumber = source.Phone
+                PhoneNumber = source.Phone,
+                Name = string.IsNullOrWhiteSpace(source.TradingName) ? source.Name : source.TradingName
             };
         }
     }
