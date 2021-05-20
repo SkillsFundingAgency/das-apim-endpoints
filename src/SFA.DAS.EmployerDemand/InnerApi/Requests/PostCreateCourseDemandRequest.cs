@@ -65,9 +65,4 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
         [JsonProperty("geoPoint")]
         public List<double> GeoPoint { get; set; }
     }
-    
-    public class PostCreateCourseDemand
-    {
-        public Guid Id { get ; set ; }
-    }
 }

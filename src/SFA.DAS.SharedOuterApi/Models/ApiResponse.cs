@@ -6,11 +6,13 @@ namespace SFA.DAS.SharedOuterApi.Models
     {
         public TResponse Body { get;  }
         public HttpStatusCode StatusCode { get; }
+        public string ErrorContent { get ; }
 
-        public ApiResponse (TResponse body, HttpStatusCode statusCode)
+        public ApiResponse (TResponse body, HttpStatusCode statusCode, string errorContent)
         {
             Body = body;
             StatusCode = statusCode;
+            ErrorContent = errorContent;
         }
     }
 }

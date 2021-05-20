@@ -16,15 +16,4 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public int ApprenticesCount { get; set; }
         public Location Location { get; set; }
     }
-
-    public class Location
-    {
-        public string Name { get; set; }
-        public LocationPoint LocationPoint { get; set; }
-    }
-
-    public class LocationPoint
-    {
-        public List<double> GeoPoint { get; set; }
-    }
 }

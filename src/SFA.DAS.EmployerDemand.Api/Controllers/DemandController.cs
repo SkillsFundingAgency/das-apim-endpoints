@@ -9,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -29,6 +31,24 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         {
             _logger = logger;
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var queryResult = await _mediator.Send(new GetCourseDemandQuery
+            {
+                Id = id
+            });
+
+            if (queryResult.EmployerDemand == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetCourseDemandResponse) queryResult.EmployerDemand;
+            return Ok(model);
         }
 
         [HttpGet]
@@ -76,7 +96,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseId = request.TrainingCourse.Id,
                     CourseTitle = request.TrainingCourse.Title,
                     CourseLevel = request.TrainingCourse.Level,
-                    CourseSector = request.TrainingCourse.Sector
+                    CourseRoute = request.TrainingCourse.Route,
+                    ConfirmationLink = request.ResponseUrl
                 });
 
                 return Created("", commandResult);
@@ -90,6 +111,32 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPost]
+        [Route("{id}/verify")]
+        public async Task<IActionResult> VerifyCourseDemand(Guid id)
+        {
+            try
+            {
+                var commandResult = await _mediator.Send(new VerifyEmployerDemandCommand
+                {
+                    Id = id
+                });
+                var model =  (VerifyCourseDemandResponse) commandResult;
+
+                return Created("", model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error creating course demand item");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+            
         }
 
         [HttpGet]
