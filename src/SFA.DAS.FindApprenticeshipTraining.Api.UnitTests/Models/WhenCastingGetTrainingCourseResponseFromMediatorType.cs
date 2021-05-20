@@ -22,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.TypicalJobTitles)
                 .Excluding(tc => tc.CoreAndOptions)
                 .Excluding(tc => tc.CoreDuties)
-                .Excluding(tc => tc.CoreSkillsCount)
+                .Excluding(tc => tc.CoreSkills)
                 .Excluding(tc => tc.IsActive)
                 .Excluding(tc => tc.LarsCode)
                 .Excluding(tc => tc.StandardUId)
@@ -52,18 +52,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var response = (GetTrainingCourseListItem) source;
 
-            response.CoreSkillsCount.Should().BeEquivalentTo(source.CoreDuties);
+            response.CoreSkills.Should().BeEquivalentTo(source.CoreDuties);
         }
         [Test, AutoData]
         public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_False(
             GetStandardsListItem source)
         {
             source.CoreAndOptions = false;
-            var expectedSkills = string.Join("|", source.Skills.Select(s => s));
+            var expectedSkills = source.Skills;
 
             var response = (GetTrainingCourseListItem)source;
 
-            response.CoreSkillsCount.Should().BeEquivalentTo(expectedSkills);
+            response.CoreSkills.Should().BeEquivalentTo(expectedSkills);
         }
     }
 }
