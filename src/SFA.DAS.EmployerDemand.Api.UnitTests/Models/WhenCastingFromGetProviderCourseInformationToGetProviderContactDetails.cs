@@ -11,9 +11,6 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Correctly_Mapped(GetProviderCourseInformation source)
         {
-            //Arrange
-            source.TradingName = null;
-
             //Act
             var actual = (GetProviderContactDetails)source;
             
@@ -22,17 +19,6 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             actual.Website.Should().Be(source.ContactUrl);
             actual.PhoneNumber.Should().Be(source.Phone);
             actual.EmailAddress.Should().Be(source.Email);
-            actual.Name.Should().Be(source.Name);
-        }
-
-        [Test, AutoData]
-        public void And_Has_TradingName_Then_Used_For_Name(GetProviderCourseInformation source)
-        {
-            //Act
-            var actual = (GetProviderContactDetails)source;
-            
-            //Assert
-            actual.Name.Should().Be(source.TradingName);
         }
 
         [Test]
