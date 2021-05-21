@@ -63,6 +63,14 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                         .WithStatusCode((int) HttpStatusCode.Accepted)
                 );
 
+            _server
+                .Given(
+                    Request.Create().WithPath("/apprenticeships/change").UsingPost()
+                )
+                .RespondWith(
+                    Response.Create().WithStatusCode((int) HttpStatusCode.Accepted)
+                );
+
             return this;
         }
 
