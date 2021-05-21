@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
-                ApprovedOn = command.AgreedOn,
+                ApprovedOn = command.CommitmentsApprovedOn,
             });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel

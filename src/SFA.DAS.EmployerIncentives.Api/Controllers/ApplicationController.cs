@@ -10,6 +10,7 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Exceptions;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -47,9 +48,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
-            await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId, request.DateSubmitted, request.SubmittedByEmail, request.SubmittedByName));
-
-            return new OkResult();
+            try
+            {
+                await _mediator.Send(new ConfirmApplicationCommand(request.ApplicationId, request.AccountId,  request.DateSubmitted, request.SubmittedByEmail, request.SubmittedByName));
+                return new OkResult();
+            }
+            catch (UlnAlreadySubmittedException)
+            {
+                return Conflict("Application contains a ULN which has already been submitted");
+            }
         }
 
         [HttpGet]

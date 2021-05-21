@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new GetCourseProviderDemandsRequest(ukprn, courseId);
             
             //Assert
-            actual.GetUrl.Should().Be($"/api/Demand/providers/{ukprn}/courses/{courseId}?lat=&lon=&radius=");
+            actual.GetUrl.Should().Be($"api/Demand/providers/{ukprn}/courses/{courseId}?lat=&lon=&radius=");
         }
 
         [Test, AutoData]
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new GetCourseProviderDemandsRequest(ukprn, courseId, lat, lon, radius);
             
             //Assert
-            actual.GetUrl.Should().Be($"/api/Demand/providers/{ukprn}/courses/{courseId}?lat={lat}&lon={lon}&radius={radius}");
+            actual.GetUrl.Should().Be($"api/Demand/providers/{ukprn}/courses/{courseId}?lat={lat}&lon={lon}&radius={radius}");
         }
     }
 }
