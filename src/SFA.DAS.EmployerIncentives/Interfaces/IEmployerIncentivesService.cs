@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using System.Collections.Generic;
@@ -12,10 +11,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<bool> IsHealthy();
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship);
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
-        Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request);
-        Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         Task EarningsResilienceCheck();
-        Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime();
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

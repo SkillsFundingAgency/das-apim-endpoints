@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_legal_entity_is_updated_with_the_supplied_case_status(
             [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
             UpdateVendorRegistrationCaseStatusCommandHandler handler,
             UpdateVendorRegistrationCaseStatusCommand command)
         {
@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             await handler.Handle(command, CancellationToken.None);
 
             legalEntitiesService.Verify(x => x.GetLegalEntity(command.AccountId, command.AccountLegalEntityId), Times.Once);
-            employerIncentivesService.Verify(x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>
+            vendorRegistrationService.Verify(x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>
                 (y => y.HashedLegalEntityId == legalEntity.HashedLegalEntityId && y.Status == command.VrfCaseStatus)), Times.Once);
         }
 

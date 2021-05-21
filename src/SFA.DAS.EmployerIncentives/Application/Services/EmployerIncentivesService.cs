@@ -46,20 +46,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request)
-        {
-            await _client.Patch(new PatchVendorRegistrationCaseStatusRequest(request));
-        }
-
         public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
         {
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
-        }
-        
-        public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
-        {
-            return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
-            { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId } });
         }
 
         public async Task EarningsResilienceCheck()
@@ -70,11 +59,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
         {
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
-        }
-
-        public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
-        {
-            return await _client.Get<GetLatestVendorRegistrationCaseUpdateDateTimeResponse>(new GetLatestVendorRegistrationCaseUpdateDateTimeRequest());
         }
 
         private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)

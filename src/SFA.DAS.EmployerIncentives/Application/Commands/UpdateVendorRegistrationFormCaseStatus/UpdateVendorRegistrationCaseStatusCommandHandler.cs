@@ -10,11 +10,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
     public class UpdateVendorRegistrationCaseStatusCommandHandler : IRequestHandler<UpdateVendorRegistrationCaseStatusCommand>
     {
         private readonly ILegalEntitiesService _legalEntitiesService;
-        private readonly IEmployerIncentivesService _employerIncentivesService;
-        public UpdateVendorRegistrationCaseStatusCommandHandler(ILegalEntitiesService legalEntitiesService, IEmployerIncentivesService employerIncentivesService)
+        private readonly IVendorRegistrationService _vendorRegistrationService;
+        public UpdateVendorRegistrationCaseStatusCommandHandler(ILegalEntitiesService legalEntitiesService, IVendorRegistrationService vendorRegistrationService)
         {
             _legalEntitiesService = legalEntitiesService;
-            _employerIncentivesService = employerIncentivesService;
+            _vendorRegistrationService = vendorRegistrationService;
         }
 
         public async Task<Unit> Handle(UpdateVendorRegistrationCaseStatusCommand request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                 Status = request.VrfCaseStatus,
                 CaseStatusLastUpdatedDate = DateTime.Now
             };
-            await _employerIncentivesService.UpdateVendorRegistrationCaseStatus(updateRequest);
+            await _vendorRegistrationService.UpdateVendorRegistrationCaseStatus(updateRequest);
             return await Task.FromResult(Unit.Value);
         }
     }
