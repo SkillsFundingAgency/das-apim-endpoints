@@ -2,7 +2,7 @@
 @commitmentsV2InnerApi
 @outerApi
 
-Feature: ConfirmApprenticeEmploymentDetails
+Feature: ApprenticeshipDetails
 	In order to process my apprenticeships application
 	As an employer
 	I want to be confirm the employment start dates of the apprentices that I have applied for

@@ -10,6 +10,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
         public decimal TotalIncentiveAmount { get; set; }
         public long Uln { get; set; }
         public DateTime PlannedStartDate { get; set; }
-        public DateTime? EmploymentStartDate { get; set; }
+        public DateTime? EmploymentStartDate { get; set; }        
+        public bool HasEligibleEmploymentStartDate { get; set; }
     }
 }

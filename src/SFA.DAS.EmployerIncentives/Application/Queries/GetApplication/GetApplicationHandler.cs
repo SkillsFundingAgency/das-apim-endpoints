@@ -50,7 +50,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 LegalEntityId = applicationDto.LegalEntityId,
                 SubmittedByEmail = applicationDto.SubmittedByEmail,
                 SubmittedByName = applicationDto.SubmittedByName,
-                NewAgreementRequired = applicationDto.NewAgreementRequired
             };
         }
 
@@ -67,7 +66,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 CourseName = commitmentApprenticeships.SingleOrDefault(y => y.Id == x.ApprenticeshipId)?.CourseName,
                 Uln = x.Uln,
                 PlannedStartDate = x.PlannedStartDate,
-                EmploymentStartDate = x.EmploymentStartDate
+                EmploymentStartDate = x.EmploymentStartDate,
+                HasEligibleEmploymentStartDate = x.HasEligibleEmploymentStartDate
             });
         }
 

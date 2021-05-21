@@ -4,15 +4,15 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication;
 using SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication;
+using SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplication;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData;
+using SFA.DAS.EmployerIncentives.Exceptions;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.ApprenticeshipDetails;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.ConfirmEmploymentDetails;
-using SFA.DAS.EmployerIncentives.Exceptions;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentDetails;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -20,12 +20,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
     public class ApplicationController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ApplicationController> _logger;
 
-        public ApplicationController(IMediator mediator, ILogger<ApplicationController> logger)
+        public ApplicationController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpPost]
@@ -107,10 +105,10 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("/accounts/{accountId}/applications/{applicationId}/employmentDetails")]
-        public async Task<IActionResult> ConfirmEmploymentDetails(long accountId, Guid applicationId, [FromBody] ConfirmEmploymentDetailsRequest request)
+        [Route("/accounts/{accountId}/applications/{applicationId}/apprenticeships")]
+        public async Task<IActionResult> SaveApprenticeshipDetailsDetails(long accountId, Guid applicationId, [FromBody] ApprenticeshipDetailsRequest request)
         {
-            await _mediator.Send(new ConfirmEmploymentDetailsCommand(request));
+            await _mediator.Send(new SaveApprenticeshipDetailsCommand(request));
 
             return new OkResult();
         }
