@@ -2,14 +2,8 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
-using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -37,15 +31,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship)
-        {
-            var bag = new ConcurrentBag<ApprenticeshipItem>();
-            var tasks = allApprenticeship.Select(x => VerifyApprenticeshipIsEligible(x, bag));
-            await Task.WhenAll(tasks);
-
-            return bag.ToArray();
-        }
-
         public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
         {
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
@@ -60,22 +45,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
-
-        private async Task VerifyApprenticeshipIsEligible(ApprenticeshipItem apprenticeship, ConcurrentBag<ApprenticeshipItem> bag)
-        {
-            var statusCode = await _client.GetResponseCode(new GetEligibleApprenticeshipsRequest(apprenticeship.Uln, apprenticeship.StartDate));
-            switch (statusCode)
-            {
-                case HttpStatusCode.OK:
-                    bag.Add(apprenticeship);
-                    break;
-                case HttpStatusCode.NotFound:
-                    break;
-                default:
-                    throw new ApplicationException($"Unable to get status for apprentice Uln {apprenticeship.Uln}");
-            }
-        }
-
 
     }
 }
