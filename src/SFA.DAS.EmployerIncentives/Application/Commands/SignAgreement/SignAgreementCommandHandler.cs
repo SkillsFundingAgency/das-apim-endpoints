@@ -8,15 +8,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement
 {
     public class SignAgreementCommandHandler : IRequestHandler<SignAgreementCommand, Unit>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly ILegalEntitiesService _legalEntitiesService;
 
-        public SignAgreementCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public SignAgreementCommandHandler(ILegalEntitiesService legalEntitiesService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _legalEntitiesService = legalEntitiesService;
         }
         public async Task<Unit> Handle(SignAgreementCommand request, CancellationToken cancellationToken)
         {
-            await _employerIncentivesService.SignAgreement(request.AccountId, request.AccountLegalEntityId, new SignAgreementRequest { AgreementVersion = request.AgreementVersion });
+            await _legalEntitiesService.SignAgreement(request.AccountId, request.AccountLegalEntityId, new SignAgreementRequest { AgreementVersion = request.AgreementVersion });
             
             return Unit.Value;
         }

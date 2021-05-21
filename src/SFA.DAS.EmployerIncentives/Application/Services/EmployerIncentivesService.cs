@@ -46,11 +46,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
-        {
-            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
-        }
-
         public async Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request)
         {
             await _client.Patch(new PatchVendorRegistrationCaseStatusRequest(request));

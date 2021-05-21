@@ -15,12 +15,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_With_The_Request_Sign_The_Agreement(
             SignAgreementCommand command,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             SignAgreementCommandHandler handler)
         {
             await handler.Handle(command, CancellationToken.None);
             
-            employerIncentivesService.Verify(x => x.SignAgreement(command.AccountId, command.AccountLegalEntityId, It.Is<SignAgreementRequest>(y => y.AgreementVersion == command.AgreementVersion)), Times.Once);
+            legalEntitiesService.Verify(x => x.SignAgreement(command.AccountId, command.AccountLegalEntityId, It.Is<SignAgreementRequest>(y => y.AgreementVersion == command.AgreementVersion)), Times.Once);
         }
     }
 }

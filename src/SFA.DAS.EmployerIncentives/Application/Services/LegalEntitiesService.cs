@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
@@ -58,5 +57,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
         }
 
+        public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        {
+            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
+        }
     }
 }

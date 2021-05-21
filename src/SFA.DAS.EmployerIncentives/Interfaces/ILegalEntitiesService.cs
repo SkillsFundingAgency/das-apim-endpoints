@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Models;
@@ -13,5 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task RefreshLegalEntities(IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages);
+        Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request);
     }
 }

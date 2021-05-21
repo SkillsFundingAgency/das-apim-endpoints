@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             long accountLegalEntityId,
             SignAgreementRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            LegalEntitiesService service)
         {
             await service.SignAgreement(accountId, accountLegalEntityId, request);
 
