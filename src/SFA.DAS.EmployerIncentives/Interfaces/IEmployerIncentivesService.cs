@@ -8,7 +8,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     {
         Task<bool> IsHealthy();
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
-        Task EarningsResilienceCheck();
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

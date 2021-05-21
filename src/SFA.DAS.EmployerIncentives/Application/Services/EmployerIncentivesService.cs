@@ -36,11 +36,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
-        public async Task EarningsResilienceCheck()
-        {
-            await _client.Post<string>(new EarningsResilenceCheckRequest());
-        }
-
         public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
         {
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
