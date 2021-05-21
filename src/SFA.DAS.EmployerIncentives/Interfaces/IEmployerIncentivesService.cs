@@ -17,11 +17,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     {
         Task<bool> IsHealthy();
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship);
-        Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId);
-        Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId);
-        Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default);
-        Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity);
         Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
         Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
         Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId);
@@ -36,7 +32,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task EarningsResilienceCheck();
         Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime();
         Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
-
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
         Task RefreshLegalEntities(IEnumerable<Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages);
     }

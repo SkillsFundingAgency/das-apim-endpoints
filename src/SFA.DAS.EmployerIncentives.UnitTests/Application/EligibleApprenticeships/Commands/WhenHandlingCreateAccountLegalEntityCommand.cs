@@ -18,10 +18,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         public async Task Then_The_Service_Is_Called_With_The_Request(
             CreateAccountLegalEntityCommand command,
             AccountLegalEntity response,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             CreateAccountLegalEntityCommandHandler handler)
         {
-            employerIncentivesService.Setup(x => x.CreateLegalEntity(command.AccountId,
+            legalEntitiesService.Setup(x => x.CreateLegalEntity(command.AccountId,
                     It.Is<AccountLegalEntityCreateRequest>(c =>
                         c.LegalEntityId.Equals(command.LegalEntityId)
                         && c.OrganisationName.Equals(command.OrganisationName)

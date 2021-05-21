@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             long accountId,
             AccountLegalEntityCreateRequest createObject,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            LegalEntitiesService service)
         {
             client.Setup(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
                 y.PutUrl == $"accounts/{accountId}/legalentities" && y.Data.IsSameOrEqualTo(createObject)))).Returns(Task.CompletedTask);

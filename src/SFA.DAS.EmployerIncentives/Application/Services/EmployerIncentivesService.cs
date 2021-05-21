@@ -53,25 +53,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task<AccountLegalEntity[]> GetAccountLegalEntities(long accountId)
-        {
-            var response = await _client.GetAll<AccountLegalEntity>(new GetAccountLegalEntitiesRequest(accountId));
-
-            return response.ToArray();
-        }
-
-        public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
-        {
-            var response = await _client.Get<AccountLegalEntity>(new InnerApi.Requests.GetLegalEntityRequest(accountId, accountLegalEntityId));
-
-            return response;
-        }
-
-        public async Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId)
-        {
-            await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
-        }
-
         public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
         {
             var response = await _client.PatchWithResponseCode(request);
@@ -84,12 +65,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.Body);
             }
-        }
-
-        public async Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
-        {
-            var request = new PutAccountLegalEntityRequest(accountId) {Data = accountLegalEntity};
-            await _client.Put(request);
         }
 
         public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)

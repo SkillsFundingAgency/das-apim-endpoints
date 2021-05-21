@@ -8,9 +8,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity
 {
     public class CreateAccountLegalEntityCommandHandler : IRequestHandler<CreateAccountLegalEntityCommand, CreateAccountLegalEntityCommandResult>
     {
-        private readonly IEmployerIncentivesService _service;
+        private readonly ILegalEntitiesService _service;
 
-        public CreateAccountLegalEntityCommandHandler (IEmployerIncentivesService service)
+        public CreateAccountLegalEntityCommandHandler (ILegalEntitiesService service)
         {
             _service = service;
         }
