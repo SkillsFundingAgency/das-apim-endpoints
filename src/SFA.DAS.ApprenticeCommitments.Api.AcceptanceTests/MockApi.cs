@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using WireMock.Server;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
@@ -16,6 +17,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
             MockServer = WireMockServer.Start();
             BaseAddress = MockServer.Urls[0];
         }
+
+        public string SingleLogBody => MockServer.LogEntries?.SingleOrDefault()?.RequestMessage?.Body;
 
         public void Reset()
         {

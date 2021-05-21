@@ -14,8 +14,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public DateTime PlannedStartDate { get; set; }
         public DateTime? EmploymentStartDate { get; set; }
 
-        public DateTime? EmploymentStartDate { get; set; }
-
         public static implicit operator IncentiveApplicationApprenticeshipDto(IncentiveApplicationApprenticeship source)
         {
             return new IncentiveApplicationApprenticeshipDto

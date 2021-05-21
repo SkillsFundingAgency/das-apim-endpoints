@@ -14,9 +14,11 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
         {
             var response = (GetCourseListItem)source;
 
-            response.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
+            response.Should().BeEquivalentTo(source, options => options
+                .Excluding(c=>c.LarsCode)
+                .Excluding(c=>c.StandardUId)
+            );
             response.Id.Should().Be(source.LarsCode);
-            response.Sector.Should().Be(source.Route);
         }
     }
 }
