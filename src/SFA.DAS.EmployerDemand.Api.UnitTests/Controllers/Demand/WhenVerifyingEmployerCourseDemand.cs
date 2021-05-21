@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,48 +10,41 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Controllers;
-using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Api.Models;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 {
-    public class WhenCreatingCourseDemand
+    public class WhenVerifyingEmployerCourseDemand
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Is_Processed_By_Mediator_And_Id_Returned(
-            Guid returnId,
-            CreateCourseDemandRequest request,
+            Guid id,
+            VerifyEmployerDemandCommandResult response,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<RegisterDemandCommand>(command => 
-                        command.Id == request.Id
-                        && command.OrganisationName.Equals(request.OrganisationName)
-                        && command.ContactEmailAddress.Equals(request.ContactEmailAddress)
-                        && command.NumberOfApprentices.Equals(request.NumberOfApprentices)
-                        && command.Lat.Equals(request.LocationItem.Location.GeoPoint.First())
-                        && command.Lon.Equals(request.LocationItem.Location.GeoPoint.Last())
-                        && command.LocationName.Equals(request.LocationItem.Name)
-                        && command.CourseId.Equals(request.TrainingCourse.Id)
-                        && command.CourseTitle.Equals(request.TrainingCourse.Title)
-                        && command.CourseLevel.Equals(request.TrainingCourse.Level)
-                        && command.CourseRoute.Equals(request.TrainingCourse.Route)
-                        && command.ConfirmationLink.Equals(request.ResponseUrl)
+                    It.Is<VerifyEmployerDemandCommand>(command => 
+                        command.Id == id
                     ),
-                    It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
+                    It.IsAny<CancellationToken>())).ReturnsAsync(response);
             
-            var controllerResult = await controller.CreateCourseDemand(request) as CreatedResult;
+            var controllerResult = await controller.VerifyCourseDemand(id) as CreatedResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
-            controllerResult.Value.Should().Be(returnId);
+            var actualModel = controllerResult.Value as VerifyCourseDemandResponse;
+            Assert.IsNotNull(actualModel);
+            actualModel.Id.Should().Be(response.EmployerDemand.Id);
         }
 
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_HttpException_It_Is_Returned(
+            Guid id,
             string errorContent,
             CreateCourseDemandRequest request,
             [Frozen] Mock<IMediator> mockMediator,
@@ -60,11 +52,11 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<RegisterDemandCommand>(),
+                    It.IsAny<VerifyEmployerDemandCommand>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,errorContent));
             
-            var controllerResult = await controller.CreateCourseDemand(request) as ObjectResult;
+            var controllerResult = await controller.VerifyCourseDemand(id) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
@@ -72,16 +64,16 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_An_Error_A_Bad_Request_Is_Returned(
-            CreateCourseDemandRequest request,
+            Guid id,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<RegisterDemandCommand>(),
+                    It.IsAny<VerifyEmployerDemandCommand>(),
                     It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             
-            var controllerResult = await controller.CreateCourseDemand(request) as StatusCodeResult;
+            var controllerResult = await controller.VerifyCourseDemand(id) as StatusCodeResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }

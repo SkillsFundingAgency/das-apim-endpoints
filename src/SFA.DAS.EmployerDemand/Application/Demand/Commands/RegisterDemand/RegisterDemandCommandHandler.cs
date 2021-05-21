@@ -8,6 +8,7 @@ using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
@@ -26,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         }
         public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.PostWithResponseCode<PostCreateCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
+            var result = await _apiClient.PostWithResponseCode<PostEmployerCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
             {
                 Id = request.Id,
                 ContactEmailAddress = request.ContactEmailAddress,
@@ -45,24 +46,28 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Id = request.CourseId,
                     Title = request.CourseTitle,
                     Level = request.CourseLevel,
-                    Route = request.CourseSector,
+                    Route = request.CourseRoute,
                 }
             }));
             
             if (result.StatusCode == HttpStatusCode.Created)
             {
-                var emailModel = new CreateDemandConfirmationEmail(
+                var emailModel = new CreateVerifyEmployerDemandEmail(
                     request.ContactEmailAddress,
                     request.OrganisationName,
                     request.CourseTitle,
                     request.CourseLevel,
-                    request.LocationName,
-                    request.NumberOfApprentices);
+                    request.ConfirmationLink);
             
             
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
             }
 
+            if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
+            {
+                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
+            }
+            
             return result.Body.Id;
         }
     }
