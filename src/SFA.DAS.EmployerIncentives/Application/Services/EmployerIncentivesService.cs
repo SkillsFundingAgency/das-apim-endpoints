@@ -2,23 +2,16 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
-using Accounts = SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Exceptions;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -53,20 +46,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
-        {
-            var response = await _client.PatchWithResponseCode(request);
-            if (response.StatusCode == HttpStatusCode.Conflict)
-            {
-                throw new UlnAlreadySubmittedException();
-            }
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.Body);
-            }
-        }
-
         public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
         {
             var request = new PostBankDetailsRequiredEmailRequest(accountId)
@@ -90,30 +69,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
         }
 
-        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
-        {
-            return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
-        }
-
-        public Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequestData requestData)
-        {
-            return _client.Put(new UpdateIncentiveApplicationRequest { Data = requestData });
-        }
-
-        public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
-        {
-            var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
-
-            return response;
-        }
-
-        public async Task<long> GetApplicationLegalEntity(long accountId, Guid applicationId)
-        {
-            var response = await _client.Get<long>(new GetApplicationLegalEntityRequest(accountId, applicationId));
-
-            return response;
-        }
-
         public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
         {
             await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
@@ -128,12 +83,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
-
-        public async Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId)
-        {
-            return await _client.Get<GetApplicationsResponse>(new GetApplicationsRequest(accountId, accountLegalEntityId));
-        }
-
+        
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
         {
             return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
@@ -150,19 +100,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
-        public async Task RefreshLegalEntities(IEnumerable<Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages)
-        {
-            var accountLegalEntitiesData = new Dictionary<string, object>
-            {
-                { "AccountLegalEntities", accountLegalEntities },
-                { "PageNumber", pageNumber },
-                { "PageSize", pageSize },
-                { "TotalPages", totalPages }
-            };
-            var request = new RefreshLegalEntitiesRequestData { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
-            await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
-        }
-        
         public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
         {
             return await _client.Get<GetLatestVendorRegistrationCaseUpdateDateTimeResponse>(new GetLatestVendorRegistrationCaseUpdateDateTimeRequest());

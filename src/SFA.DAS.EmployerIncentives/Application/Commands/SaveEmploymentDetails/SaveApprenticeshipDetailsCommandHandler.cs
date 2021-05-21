@@ -11,12 +11,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDeta
     public class SaveApprenticeshipDetailsCommandHandler : IRequestHandler<SaveApprenticeshipDetailsCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
 
-        public SaveApprenticeshipDetailsCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
+        public SaveApprenticeshipDetailsCommandHandler(ICommitmentsService commitmentsService, IApplicationService applicationService)
         {
             _commitmentsService = commitmentsService;
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
         }
 
         public async Task<Unit> Handle(SaveApprenticeshipDetailsCommand request, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDeta
                 apprenticeship.EmploymentStartDate = employmentDetails.EmploymentStartDate;
             }
 
-            await _employerIncentivesService.UpdateIncentiveApplication(apprenticeshipDetails);
+            await _applicationService.UpdateIncentiveApplication(apprenticeshipDetails);
 
             return Unit.Value;
         }

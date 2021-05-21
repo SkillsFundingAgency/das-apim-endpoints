@@ -7,16 +7,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplications
 {
     public class GetApplicationsHandler : IRequestHandler<GetApplicationsQuery, GetApplicationsResult>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
 
-        public GetApplicationsHandler(IEmployerIncentivesService employerIncentivesService)
+        public GetApplicationsHandler(IApplicationService applicationService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
         }
 
         public async Task<GetApplicationsResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
         {
-            var response = await _employerIncentivesService.GetApprenticeApplications(request.AccountId, request.AccountLegalEntityId);
+            var response = await _applicationService.GetApprenticeApplications(request.AccountId, request.AccountLegalEntityId);
 
             return new GetApplicationsResult
             {

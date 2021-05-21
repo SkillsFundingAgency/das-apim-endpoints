@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_InnerApi_Is_Called(
             ConfirmIncentiveApplicationRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApplicationService service)
         {
             client.Setup(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_An_Exception_Is_Thrown_When_The_InnerApi_Returns_A_Conflict(
             ConfirmIncentiveApplicationRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApplicationService service)
         {
             client.Setup(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(

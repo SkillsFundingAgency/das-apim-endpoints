@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             Guid applicationId,
             IncentiveApplicationDto apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service
+            ApplicationService service
         )
         {
             client.Setup(x =>

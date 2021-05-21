@@ -14,18 +14,18 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
 {
     public class GetApplicationHandler : IRequestHandler<GetApplicationQuery, GetApplicationResult>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
         private readonly ICommitmentsApiClient<CommitmentsConfiguration> _commitmentsV2Service;
 
-        public GetApplicationHandler(IEmployerIncentivesService employerIncentivesService, ICommitmentsApiClient<CommitmentsConfiguration> commitmentsV2Service)
+        public GetApplicationHandler(IApplicationService applicationService, ICommitmentsApiClient<CommitmentsConfiguration> commitmentsV2Service)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
             _commitmentsV2Service = commitmentsV2Service;
         }
 
         public async Task<GetApplicationResult> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
         {
-            var application = await _employerIncentivesService.GetApplication(request.AccountId, request.ApplicationId);
+            var application = await _applicationService.GetApplication(request.AccountId, request.ApplicationId);
 
             var applicationToReturn = MapApplication(application);
 

@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             long accountLegalEntityId,
             GetApplicationsResponse apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service
+            ApplicationService service
         )
         {
             client.Setup(x =>
