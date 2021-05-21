@@ -12,15 +12,12 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     {
         Task<bool> IsHealthy();
         Task<ApprenticeshipItem[]> GetEligibleApprenticeships(IEnumerable<ApprenticeshipItem> allApprenticeship);
-        Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
-        Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
         Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request);
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
         Task UpdateVendorRegistrationCaseStatus(UpdateVendorRegistrationCaseStatusRequest request);
         Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId);
         Task EarningsResilienceCheck();
         Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime();
-        Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
         Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData);
     }
 }

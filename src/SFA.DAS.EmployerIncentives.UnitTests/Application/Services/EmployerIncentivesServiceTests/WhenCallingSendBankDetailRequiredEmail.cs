@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
            SendBankDetailsEmailRequest requestData,
            long accountId,
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-           EmployerIncentivesService sut)
+           EmailService sut)
         {
             await sut.SendBankDetailRequiredEmail(accountId, requestData);
 

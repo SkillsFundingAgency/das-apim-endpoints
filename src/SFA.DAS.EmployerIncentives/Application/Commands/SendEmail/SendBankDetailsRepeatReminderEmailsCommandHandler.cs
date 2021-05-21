@@ -8,17 +8,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
 {
     public class SendBankDetailsRepeatReminderEmailsCommandHandler : IRequestHandler<SendBankDetailsRepeatReminderEmailsCommand>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IEmailService _emailService;
 
-        public SendBankDetailsRepeatReminderEmailsCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public SendBankDetailsRepeatReminderEmailsCommandHandler(IEmailService employerIncentivesService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _emailService = employerIncentivesService;
         }
     
         public async Task<Unit> Handle(SendBankDetailsRepeatReminderEmailsCommand command, CancellationToken cancellationToken)
         {
             var request = new SendBankDetailsRepeatReminderEmailsRequest(command.ApplicationCutOffDate);
-            await _employerIncentivesService.SendBankDetailsRepeatReminderEmails(request);
+            await _emailService.SendBankDetailsRepeatReminderEmails(request);
 
             return Unit.Value;
         }

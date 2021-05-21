@@ -46,29 +46,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return bag.ToArray();
         }
 
-        public async Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
-        {
-            var request = new PostBankDetailsRequiredEmailRequest(accountId)
-            { Data = sendBankDetailsEmailRequest };
-
-            await _client.Post<SendBankDetailsEmailRequest>(request);
-        }
-
-        public async Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest)
-        {
-            var request = new PostBankDetailsReminderEmailRequest(accountId)
-            { Data = sendBankDetailsEmailRequest };
-
-            await _client.Post<SendBankDetailsEmailRequest>(request);
-        }
-
-        public async Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest)
-        {
-            var request = new PostBankDetailsRepeatReminderEmailsRequest { Data = sendBankDetailsRepeatReminderEmailsRequest };
-
-            await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
-        }
-
         public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
         {
             await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });

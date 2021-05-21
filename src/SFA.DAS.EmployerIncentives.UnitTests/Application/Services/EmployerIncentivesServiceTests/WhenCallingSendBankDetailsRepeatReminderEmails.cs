@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
            SendBankDetailsRepeatReminderEmailsRequest requestData,
            long accountId,
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-           EmployerIncentivesService sut)
+           EmailService sut)
         {
             await sut.SendBankDetailsRepeatReminderEmails(requestData);
 
