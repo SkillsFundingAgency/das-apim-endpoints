@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             CreateProviderInterestsCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateProviderInterestsResponse>(responseBody, HttpStatusCode.Created);
+            var apiResponse = new ApiResponse<PostCreateProviderInterestsResponse>(responseBody, HttpStatusCode.Created, null);
             mockApiClient
                 .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(
                     It.IsAny<PostCreateProviderInterestsRequest>()))
