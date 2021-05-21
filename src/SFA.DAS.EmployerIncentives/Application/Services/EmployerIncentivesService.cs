@@ -1,7 +1,5 @@
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.EarningsResilienceCheck;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Net;
@@ -34,11 +32,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task<GetIncentiveDetailsResponse> GetIncentiveDetails()
         {
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
-        }
-
-        public async Task UpdateCollectionCalendarPeriod(UpdateCollectionCalendarPeriodRequestData requestData)
-        {
-            await _client.Patch<UpdateCollectionCalendarPeriodRequestData>(new UpdateCollectionCalendarPeriodRequest { Data = requestData });
         }
 
     }
