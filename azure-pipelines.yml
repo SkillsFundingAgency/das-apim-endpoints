@@ -1604,7 +1604,7 @@ stages:
       AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
-      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
       ProductId: $(LevyTransferMatchingProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
