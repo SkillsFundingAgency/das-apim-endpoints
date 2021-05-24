@@ -292,7 +292,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
@@ -516,7 +516,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
@@ -740,7 +740,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
@@ -964,7 +964,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
@@ -1173,7 +1173,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
@@ -1382,7 +1382,7 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
@@ -1606,6 +1606,6 @@ stages:
       ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
       ApiPath: $(LevyTransferMatchingOuterApiPath)
       ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
-      ProductId: $(LevyTransferMatchingProductId)
+      ProductId: $(LevyTransferMatchingOuterApiProductId)
       ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
