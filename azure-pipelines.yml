@@ -38,6 +38,9 @@ parameters:
 - name: EmployerDemand
   type: boolean
   default: false
+- name: LevyTransferMatching
+  type: boolean
+  default: false
 
 trigger: none
 
@@ -277,6 +280,21 @@ stages:
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+  
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
   dependsOn: []  
@@ -485,6 +503,21 @@ stages:
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST2
@@ -696,6 +729,21 @@ stages:
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
 - stage: Deploy_PP
   dependsOn: []
   displayName: Deploy to PP
@@ -905,6 +953,21 @@ stages:
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
 - stage: Deploy_PROD
   dependsOn: []
   displayName: Deploy to PROD
@@ -1097,6 +1160,21 @@ stages:
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+    
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
@@ -1291,6 +1369,21 @@ stages:
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_DEMO
@@ -1500,4 +1593,19 @@ stages:
       ApiBaseUrl: $(EmployerDemandOuterApiBaseUrl)
       ProductId: $(EmployerDemandProductId)
       ApplicationIdentifierUri: $(EmployerDemandOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+  - template: pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_LevyTransferMatching
+      DeploymentCondition: and(succeeded(), eq(${{ parameters.LevyTransferMatching }}, true))
+      DeploymentApprovals: DEV
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(LevyTransferMatchingOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.LevyTransferMatching.Api.zip
+      ApiVersionSetName: $(LevyTransferMatchingOuterApiVersionSetName)
+      ApiPath: $(LevyTransferMatchingApiPath)
+      ApiBaseUrl: $(LevyTransferMatchingOuterApiBaseUrl)
+      ProductId: $(LevyTransferMatchingProductId)
+      ApplicationIdentifierUri: $(LevyTransferMatchingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
