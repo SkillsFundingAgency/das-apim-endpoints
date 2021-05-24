@@ -12,11 +12,14 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
     public class CreateProviderInterestsCommandHandler: IRequestHandler<CreateProviderInterestsCommand, Guid>
     {
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _apiClient;
+        private readonly INotificationService _notificationService;
 
         public CreateProviderInterestsCommandHandler(
-            IEmployerDemandApiClient<EmployerDemandApiConfiguration> apiClient)
+            IEmployerDemandApiClient<EmployerDemandApiConfiguration> apiClient,
+            INotificationService notificationService)
         {
             _apiClient = apiClient;
+            _notificationService = notificationService;
         }
 
         public async Task<Guid> Handle(CreateProviderInterestsCommand request, CancellationToken cancellationToken)

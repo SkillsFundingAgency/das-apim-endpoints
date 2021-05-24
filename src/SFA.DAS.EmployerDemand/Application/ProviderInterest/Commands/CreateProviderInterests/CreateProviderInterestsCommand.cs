@@ -10,9 +10,12 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
         public Guid Id { get; set; }
         public IEnumerable<Guid> EmployerDemandIds { get; set; }
         public int Ukprn { get; set; }
+        public string ProviderName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
+        public string CourseTitle { get; set; }
+        public string CourseLevel { get; set; }
 
         public static implicit operator CreateProviderInterestsData(CreateProviderInterestsCommand source)
         {
