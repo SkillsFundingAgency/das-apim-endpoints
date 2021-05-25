@@ -4,7 +4,7 @@
     {
         public const string CreateDemandConfirmationTemplateId = "f09e3c6e-a0c1-4d29-ab15-c9b67e76f331";
         public const string VerifyContactEmailEmployerDemandTemplateId = "c22bd0d7-9879-42af-882d-50ce43b8c88f";
-        public const string ProviderInterestedTemplateId = "todo";
+        public const string ProviderInterestedTemplateId = "75e18773-7715-4b59-97ce-9b078d20434f";
         
         public const string ReplyToAddress = "The Apprenticeship Service <the.apprenticeship.service@notifications.service.gov.uk>";
     }

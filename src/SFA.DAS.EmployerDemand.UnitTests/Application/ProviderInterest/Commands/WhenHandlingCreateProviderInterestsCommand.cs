@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreateProviderInterests;
@@ -24,6 +27,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
         public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Created(
             CreateProviderInterestsCommand command,
             PostCreateProviderInterestsResponse responseBody,
+            List<GetEmployerDemandResponse> employerDemandsFromApi,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockApiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             CreateProviderInterestsCommandHandler handler)
@@ -31,20 +35,16 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostCreateProviderInterestsResponse>(responseBody, HttpStatusCode.Created, null);
             mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(
-                    It.IsAny<PostCreateProviderInterestsRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(It.IsAny<PostCreateProviderInterestsRequest>()))
                 .ReturnsAsync(apiResponse);
-            SendEmailCommand actualEmail = null;
             mockNotificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
-                .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
-            /*var expectedEmail = new ProviderIsInterestedEmail(
-                command.,
-                command.OrganisationName,
-                command.CourseTitle, 
-                command.CourseLevel,
-                command.ConfirmationLink);*/
+            mockApiClient
+                .SetupSequence(client => client.Get<GetEmployerDemandResponse>(It.IsAny<GetEmployerDemandRequest>()))
+                .ReturnsAsync(employerDemandsFromApi[0])
+                .ReturnsAsync(employerDemandsFromApi[1])
+                .ReturnsAsync(employerDemandsFromApi[2]);
 
             //Act
             var response = await handler.Handle(command, CancellationToken.None);
@@ -52,10 +52,29 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             //Assert
             response.Should().Be(responseBody.Id);
 
-            foreach (var employerDemandId in command.EmployerDemandIds)
+            var employerDemandIds = command.EmployerDemandIds.ToList();
+            for (var i = 0; i < employerDemandIds.Count; i++)
             {
-                mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains(employerDemandId.ToString()))));
-                mockNotificationService.Verify(service => service.Send(It.Is<SendEmailCommand>(emailCommand => emailCommand.TemplateId == EmailConstants.ProviderInterestedTemplateId)));
+                var providerInterestedEmail = new ProviderIsInterestedEmail(
+                    employerDemandsFromApi[i].ContactEmailAddress, 
+                    employerDemandsFromApi[i].OrganisationName, 
+                    employerDemandsFromApi[i].Course.Id,
+                    employerDemandsFromApi[i].Course.Title, 
+                    employerDemandsFromApi[i].Course.Level, 
+                    employerDemandsFromApi[i].Location.Name, 
+                    employerDemandsFromApi[i].NumberOfApprentices, 
+                    command.Ukprn, 
+                    command.ProviderName, 
+                    command.Email, 
+                    command.Phone, 
+                    command.Website, 
+                    true);
+                mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains(employerDemandIds[i].ToString()))));
+                mockNotificationService.Verify(service => service.Send(It.Is<SendEmailCommand>(emailCommand => 
+                    emailCommand.TemplateId == EmailConstants.ProviderInterestedTemplateId &&
+                    emailCommand.RecipientsAddress == employerDemandsFromApi[i].ContactEmailAddress &&
+                    emailCommand.Tokens.Count == providerInterestedEmail.Tokens.Count &&
+                    !emailCommand.Tokens.Except(providerInterestedEmail.Tokens).Any())));
             }
         }
     }
