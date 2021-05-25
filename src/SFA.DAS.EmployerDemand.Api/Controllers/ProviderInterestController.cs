@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("")]
         public async Task<IActionResult> CreateProviderInterests(CreateProviderInterestsRequest request)
         {
             try

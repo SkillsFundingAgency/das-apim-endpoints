@@ -5,7 +5,7 @@ using SFA.DAS.EmployerDemand.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreateProviderInterests
 {
-    public class CreateProviderInterestsCommand: IRequest<int>
+    public class CreateProviderInterestsCommand: IRequest<Guid>
     {
         public Guid Id { get; set; }
         public IEnumerable<Guid> EmployerDemandIds { get; set; }

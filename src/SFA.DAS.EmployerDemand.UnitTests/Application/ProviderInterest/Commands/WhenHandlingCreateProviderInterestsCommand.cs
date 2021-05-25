@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             var response = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            response.Should().Be(responseBody.Ukprn);
+            response.Should().Be(responseBody.Id);
         }
     }
 }

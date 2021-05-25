@@ -6,6 +6,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
 {
     public class CreateProviderInterestsRequest
     {
+        public Guid Id { get ; set ; }
         public IEnumerable<Guid> EmployerDemandIds { get; set; }
         public int Ukprn { get; set; }
         public string Email { get; set; }

@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.ProviderInterest
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Is_Processed_By_Mediator(
-            int returnId,
+            Guid returnId,
             CreateProviderInterestsRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProviderInterestController controller)
