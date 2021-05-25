@@ -17,6 +17,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         {
             return new CreateProviderInterestsCommand
             {
+                Id = source.Id,
                 EmployerDemandIds = source.EmployerDemandIds,
                 Ukprn = source.Ukprn,
                 Email = source.Email,
