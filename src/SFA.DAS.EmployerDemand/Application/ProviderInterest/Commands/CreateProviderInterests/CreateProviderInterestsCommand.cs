@@ -7,6 +7,7 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
 {
     public class CreateProviderInterestsCommand: IRequest<int>
     {
+        public Guid Id { get; set; }
         public IEnumerable<Guid> EmployerDemandIds { get; set; }
         public int Ukprn { get; set; }
         public string Email { get; set; }
@@ -17,6 +18,7 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
         {
             return new CreateProviderInterestsData
             {
+                Id = source.Id,
                 EmployerDemandIds = source.EmployerDemandIds,
                 Ukprn = source.Ukprn,
                 Email = source.Email,
