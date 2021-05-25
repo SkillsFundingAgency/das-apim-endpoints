@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new PostCreateProviderInterestsRequest(data);
             
             actual.Data.Should().BeEquivalentTo(data);
-            actual.PostUrl.Should().Be("api/providerinterest/create");
+            actual.PostUrl.Should().Be($"api/providerinterest/{data.Id}");
         }
     }
 }
