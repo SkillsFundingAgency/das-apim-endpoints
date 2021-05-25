@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
@@ -20,7 +21,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            var sut = new CommitmentsV2Service(client.Object);
+            var sut = new CommitmentsV2Service(client.Object, Mock.Of<ILogger<CommitmentsV2Service>>());
             sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
         }
 
@@ -32,7 +33,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
         {
             ClientReturnsApprenticeshipWith(client, accountId-1, apprenticeshipId);
 
-            var sut = new CommitmentsV2Service(client.Object);
+            var sut = new CommitmentsV2Service(client.Object, Mock.Of<ILogger<CommitmentsV2Service>>());
             sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
         }
 
@@ -44,7 +45,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
         {
             ClientReturnsApprenticeshipWith(client, accountId, apprenticeshipId);
 
-            var sut = new CommitmentsV2Service(client.Object);
+            var sut = new CommitmentsV2Service(client.Object, Mock.Of<ILogger<CommitmentsV2Service>>());
             var response = await sut.GetApprenticeshipDetails(accountId, apprenticeshipId);
             response.EmployerAccountId.Should().Be(accountId);
             response.Id.Should().Be(apprenticeshipId);

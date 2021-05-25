@@ -7,6 +7,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
@@ -16,17 +17,22 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
+        private readonly ILogger<ApprenticeshipController> _logger;
 
-        public ApprenticeshipController(IMediator mediator, IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
+        public ApprenticeshipController(IMediator mediator, IInternalApiClient<ApprenticeCommitmentsConfiguration> client, ILogger<ApprenticeshipController> logger)
         {
             _mediator = mediator;
             _client = client;
+            _logger = logger;
         }
 
         [HttpPost]
         [Route("/apprenticeships")]
         public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
         {
+            _logger.LogInformation("AddApprenticeship received Employer Account Id {EmployerAccountId}, Apprenticeship Id {CommitmentsApprenticeshipId}, Provider Id {TrainingProviderId}", 
+                request.EmployerAccountId, request.CommitmentsApprenticeshipId, request.TrainingProviderId);
+
             await _mediator.Send(request);
             return Accepted();
         }

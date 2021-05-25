@@ -3,6 +3,7 @@ using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
@@ -20,19 +21,22 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         private readonly TrainingProviderService _trainingProviderService;
         private readonly ApprenticeLoginService _apprenticeLoginService;
         private readonly CoursesService _coursesService;
+        private readonly ILogger<CreateApprenticeshipCommandHandler> _logger;
 
         public CreateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginService apprenticeLoginService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
-            CoursesService coursesService)
+            CoursesService coursesService,
+            ILogger<CreateApprenticeshipCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _apprenticeLoginService = apprenticeLoginService;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
             _coursesService = coursesService;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(
@@ -73,8 +77,10 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
         private async Task<(TrainingProviderResponse, Apis.CommitmentsV2InnerApi.ApprenticeshipResponse, StandardApiResponse course)> GetExternalData(CreateApprenticeshipCommand command)
         {
+            _logger.LogInformation("Getting Training Provider Details for {TrainingProviderId}", command.TrainingProviderId);
             var trainingProviderTask = _trainingProviderService.GetTrainingProviderDetails(command.TrainingProviderId);
 
+            _logger.LogInformation("Getting Apprenticeship details for {CommitmentsApprenticeshipId}", command.CommitmentsApprenticeshipId);
             var apprenticeTask = _commitmentsService.GetApprenticeshipDetails(
                 command.EmployerAccountId,
                 command.CommitmentsApprenticeshipId);
