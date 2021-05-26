@@ -20,6 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
+        private readonly ILocationLookupService _locationLookupService;
         private readonly FindApprenticeshipTrainingConfiguration _config;
         private readonly CacheHelper _cacheHelper;
 
@@ -29,21 +30,25 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             ICacheStorageService cacheStorageService,
             IShortlistService shortlistService,
+            ILocationLookupService locationLookupService,
             IOptions<FindApprenticeshipTrainingConfiguration> config)
         {
             _apiClient = apiClient;
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
+            _locationLookupService = locationLookupService;
             _config = config.Value;
             _cacheHelper = new CacheHelper(cacheStorageService);
 
         }
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
+            var location = await _locationLookupService.GetLocationInformation(request.LocationName, request.Lat, request.Lon);
+            
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
-            var providersTask = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(new GetUkprnsForStandardAndLocationRequest(request.Id, request.Lat, request.Lon));
+            var providersTask = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(new GetUkprnsForStandardAndLocationRequest(request.Id, location?.GeoPoint?.First() ?? 0, location?.GeoPoint?.Last() ?? 0));
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);

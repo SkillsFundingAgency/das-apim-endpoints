@@ -23,6 +23,8 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
 
         [JsonProperty("TrainingCourse")]
         public TrainingCourse TrainingCourse { get; set; }
+        [JsonProperty("ResponseUrl")]
+        public string ResponseUrl { get; set; }
     }
     public class LocationItem
     {
@@ -50,7 +52,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         [JsonProperty("level")]
         public int Level { get; set; }
 
-        [JsonProperty("sector")]
-        public string Sector { get ; set ; }
+        [JsonProperty("route")]
+        public string Route { get ; set ; }
     }
 }

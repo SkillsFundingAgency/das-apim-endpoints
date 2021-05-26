@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Crea
         {
             var course = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.StandardId));
             
-            var result = await _courseDeliveryApiClient.Post<PostShortListResponse>(new PostShortlistForUserRequest
+            var result = await _courseDeliveryApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Crea
                 } 
             });
             
-            return result.Id;
+            return result.Body.Id;
         }
     }
 }

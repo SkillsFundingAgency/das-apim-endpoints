@@ -16,7 +16,9 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Exceptions;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -72,7 +74,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
         {
-            await _client.Patch(request);
+            var response = await _client.PatchWithResponseCode(request);
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new UlnAlreadySubmittedException();
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.Body);
+            }
         }
 
         public async Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
