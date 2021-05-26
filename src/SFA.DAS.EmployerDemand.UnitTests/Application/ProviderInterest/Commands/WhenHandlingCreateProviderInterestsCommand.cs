@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreateProviderInterests;
@@ -16,7 +15,6 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Models.Messages;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
@@ -105,7 +103,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             var response = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            response.Should().Be(responseBody.Ukprn);
+            response.Should().Be(responseBody.Id);
             mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.IsAny<GetEmployerDemandRequest>()), Times.Never);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), Times.Never);
         }

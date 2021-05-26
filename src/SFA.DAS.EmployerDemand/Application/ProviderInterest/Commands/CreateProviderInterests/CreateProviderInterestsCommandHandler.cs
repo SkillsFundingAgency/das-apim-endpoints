@@ -30,26 +30,29 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
             var result = await _apiClient.PostWithResponseCode<PostCreateProviderInterestsResponse>(
                 new PostCreateProviderInterestsRequest(request));
 
-            foreach (var employerDemandId in request.EmployerDemandIds)
+            if (result.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                var employerDemand = await _apiClient.Get<GetEmployerDemandResponse>(
-                    new GetEmployerDemandRequest(employerDemandId));
-                var email = new ProviderIsInterestedEmail(
-                    employerDemand.ContactEmailAddress, 
-                    employerDemand.OrganisationName, 
-                    employerDemand.Course.Id,
-                    employerDemand.Course.Title, 
-                    employerDemand.Course.Level, 
-                    employerDemand.Location.Name, 
-                    employerDemand.NumberOfApprentices, 
-                    request.Ukprn, 
-                    request.ProviderName, 
-                    request.Email, 
-                    request.Phone, 
-                    request.Website, 
-                    true);
-                await _notificationService.Send(new SendEmailCommand(email.TemplateId,
-                    email.RecipientAddress, email.Tokens));
+                foreach (var employerDemandId in request.EmployerDemandIds)
+                {
+                    var employerDemand = await _apiClient.Get<GetEmployerDemandResponse>(
+                        new GetEmployerDemandRequest(employerDemandId));
+                    var email = new ProviderIsInterestedEmail(
+                        employerDemand.ContactEmailAddress, 
+                        employerDemand.OrganisationName, 
+                        employerDemand.Course.Id,
+                        employerDemand.Course.Title, 
+                        employerDemand.Course.Level, 
+                        employerDemand.Location.Name, 
+                        employerDemand.NumberOfApprentices, 
+                        request.Ukprn, 
+                        request.ProviderName, 
+                        request.Email, 
+                        request.Phone, 
+                        request.Website, 
+                        true);
+                    await _notificationService.Send(new SendEmailCommand(email.TemplateId,
+                        email.RecipientAddress, email.Tokens));
+                }
             }
 
             return result.Body.Id;
