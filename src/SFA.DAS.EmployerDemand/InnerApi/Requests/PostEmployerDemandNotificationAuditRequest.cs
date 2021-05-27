@@ -3,7 +3,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
-    public class PostEmployerDemandNotificationAuditRequest : IPostApiRequest<object>
+    public class PostEmployerDemandNotificationAuditRequest : IPostApiRequest
     {
         private readonly Guid _id;
         private readonly Guid _courseDemandId;
