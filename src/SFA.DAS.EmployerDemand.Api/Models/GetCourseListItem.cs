@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
         public string Title { get ; set ; }
         public int Level { get ; set ; }
         public int Id { get ; set ; }
-        public string Sector { get; set; }
+        public string Route { get; set; }
         public DateTime? LastStartDate { get; set; }
 
         public static implicit operator GetCourseListItem(GetStandardsListItem standard)
@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
-                Sector = standard.Route,
+                Route = standard.Route,
                 LastStartDate = standard.StandardDates.LastDateStarts
             };
         }
@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 Id = source.Id,
                 Title = source.Title,
                 Level = source.Level,
-                Sector = source.Route,
+                Route = source.Route,
             };
         }
     }
