@@ -17,11 +17,9 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             response.Should().BeEquivalentTo(source, options => options
                 .Excluding(c=>c.LarsCode)
                 .Excluding(c=>c.StandardUId)
-                .Excluding(c => c.Route)
                 .Excluding(c => c.StandardDates)
             );
             response.Id.Should().Be(source.LarsCode);
-            response.Sector.Should().Be(source.Route);
             response.LastStartDate.Should().Be(source.StandardDates.LastDateStarts);
         }
     }
