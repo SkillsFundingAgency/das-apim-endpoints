@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             actual.TrainingCourse.Id.Should().Be(source.EmployerDemand.Course.Id);
             actual.TrainingCourse.Title.Should().Be(source.EmployerDemand.Course.Title);
             actual.TrainingCourse.Level.Should().Be(source.EmployerDemand.Course.Level);
-            actual.TrainingCourse.Route.Should().Be(source.EmployerDemand.Course.Route);
+            actual.TrainingCourse.Sector.Should().Be(source.EmployerDemand.Course.Route);
         }
 
         [Test]

@@ -17,7 +17,7 @@
                 {
                     Id = source.CourseId,
                     Level = source.CourseLevel,
-                    Route = source.CourseRoute,
+                    Sector = source.CourseRoute,
                     Title = source.CourseTitle
                 }
             };
