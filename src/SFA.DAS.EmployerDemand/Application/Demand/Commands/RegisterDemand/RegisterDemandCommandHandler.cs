@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
+using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Location = SFA.DAS.EmployerDemand.InnerApi.Requests.Location;
+using LocationPoint = SFA.DAS.EmployerDemand.InnerApi.Requests.LocationPoint;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
 {
@@ -25,6 +28,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
             _apiClient = apiClient;
             _notificationService = notificationService;
         }
+
         public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
             var result = await _apiClient.PostWithResponseCode<PostEmployerCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
