@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             {
                 Id = source.CourseId,
                 Level = source.CourseLevel,
-                Route = source.CourseRoute,
+                Sector = source.CourseRoute,
                 Title = source.CourseTitle
             });
         }

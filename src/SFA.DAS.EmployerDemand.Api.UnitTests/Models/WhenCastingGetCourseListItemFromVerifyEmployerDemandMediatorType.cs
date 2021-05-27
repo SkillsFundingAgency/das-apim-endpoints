@@ -15,7 +15,9 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
             var actual = (GetCourseListItem) source;
             
             //Assert
-            actual.Should().BeEquivalentTo(source);
+            actual.Should().BeEquivalentTo(source, options =>
+                options.Excluding(c => c.Route));
+            actual.Sector.Should().Be(source.Route);
         }
     }
 }
