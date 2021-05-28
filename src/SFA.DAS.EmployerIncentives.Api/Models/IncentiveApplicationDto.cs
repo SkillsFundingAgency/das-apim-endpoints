@@ -11,7 +11,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public string SubmittedByEmail { get; set; }
         public string SubmittedByName { get; set; }
         public bool BankDetailsRequired { get; set; }
-        public bool NewAgreementRequired { get; set; }
         public IEnumerable<IncentiveApplicationApprenticeshipDto> Apprenticeships { get; set; }
 
         public static implicit operator IncentiveApplicationDto(IncentiveApplication source)
@@ -23,7 +22,6 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 SubmittedByEmail = source.SubmittedByEmail,
                 SubmittedByName = source.SubmittedByName,
                 BankDetailsRequired = source.BankDetailsRequired,
-                NewAgreementRequired = source.NewAgreementRequired,
                 Apprenticeships = source.Apprenticeships.Select(x => (IncentiveApplicationApprenticeshipDto)x)
             };
         }
