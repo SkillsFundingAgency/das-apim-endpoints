@@ -11,5 +11,8 @@ namespace SFA.DAS.EmployerIncentives.Models
         public decimal TotalIncentiveAmount { get; set; }
         public long Uln { get; set; }
         public DateTime PlannedStartDate { get; set; }
+        public DateTime? EmploymentStartDate { get; set; }
+        public bool HasEligibleEmploymentStartDate { get; set; }
+        
     }
 }
