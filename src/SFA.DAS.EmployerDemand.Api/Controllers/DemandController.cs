@@ -136,7 +136,26 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+        }
+
+        [HttpGet]
+        [Route("unmet")]
+        public async Task<IActionResult> UnmetCourseDemands([FromQuery] uint demandAgeInDays)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUnmetCourseDemandsQuery
+                {
+                    AgeOfDemandInDays = demandAgeInDays
+                }) ;
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting unmet course demands");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
