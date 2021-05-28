@@ -7,12 +7,15 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
     public class PostCreateCourseDemandRequest : IPostApiRequest
     {
+        private readonly Guid _id;
+
         public PostCreateCourseDemandRequest (CreateCourseDemandData data)
         {
             Data = data;
+            _id = data.Id;
         }
 
-        public string PostUrl => "api/demand/create";
+        public string PostUrl => $"api/demand/{_id}";
         public object Data { get; set; }
     }
 
