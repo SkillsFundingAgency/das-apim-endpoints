@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
+using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.LevyTransferMatching.Api
@@ -63,6 +65,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 services.AddHealthChecks()
                         .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
+
+            services.AddMediatR(typeof(IAccountsService));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
