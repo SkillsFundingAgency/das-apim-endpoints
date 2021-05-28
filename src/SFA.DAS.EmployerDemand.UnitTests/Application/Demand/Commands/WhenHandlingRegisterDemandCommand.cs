@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
+using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
