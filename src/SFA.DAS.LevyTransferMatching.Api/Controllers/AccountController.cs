@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
-    [Route("api/accounts/")]
+    [Route("accounts")]
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
