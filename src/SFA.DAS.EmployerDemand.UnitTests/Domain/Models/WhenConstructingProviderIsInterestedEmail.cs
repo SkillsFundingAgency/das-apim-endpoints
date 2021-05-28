@@ -12,16 +12,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
         public void Then_Values_Are_Set_Correctly(
             string recipientEmail, 
             string recipientName,
-            int standardId,
             string standardName, 
             int standardLevel, 
             string location, 
             int numberOfApprentices,
-            int ukprn,
             string providerName,
             string providerEmail,
             string providerPhone,
-            string providerWebsite)
+            string providerWebsite,
+            string fatUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -33,24 +32,22 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", providerWebsite },
-                {"FatURL", $"https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/{standardId}/providers/{ukprn}" },
+                {"FatURL", fatUrl },
                 {"AEDStopSharingURL", "" }
             };
 
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
                 recipientName,
-                standardId,
                 standardName, 
                 standardLevel, 
                 location, 
                 numberOfApprentices,
-                ukprn,
                 providerName,
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                true);
+                fatUrl);
 
             email.TemplateId.Should().Be(EmailConstants.ProviderInterestedTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
@@ -71,22 +68,21 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string providerName,
             string providerEmail,
             string providerPhone,
-            string providerWebsite)
+            string providerWebsite,
+            string fatUrl)
         {
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
                 recipientName,
-                standardId,
                 standardName, 
                 standardLevel, 
                 location, 
                 0,
-                ukprn,
                 providerName,
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                true);
+                fatUrl);
 
             email.Tokens["AEDNumberOfApprentices"].Should().Be("Not sure");
         }
@@ -95,44 +91,39 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
         public void And_No_ProviderWebsite_Then_Alternative_Text(
             string recipientEmail, 
             string recipientName,
-            int standardId,
             string standardName, 
             int standardLevel, 
             string location,
             int numberOfApprentices,
-            int ukprn,
             string providerName,
             string providerEmail,
-            string providerPhone)
+            string providerPhone,
+            string fatUrl)
         {
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
                 recipientName,
-                standardId,
                 standardName, 
                 standardLevel, 
                 location, 
                 numberOfApprentices,
-                ukprn,
                 providerName,
                 providerEmail,
                 providerPhone,
                 null,
-                true);
+                fatUrl);
 
             email.Tokens["AEDProviderWebsite"].Should().Be("-");
         }
 
         [Test, AutoData]
-        public void And_Provider_Not_Offer_This_Course_Then_Alternative_Text(
+        public void And_Provider_No_FatUrl_Then_Alternative_Text(
             string recipientEmail, 
             string recipientName,
-            int standardId,
             string standardName, 
             int standardLevel, 
             string location,
             int numberOfApprentices,
-            int ukprn,
             string providerName,
             string providerEmail,
             string providerPhone,
@@ -141,17 +132,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
                 recipientName,
-                standardId,
                 standardName, 
                 standardLevel, 
                 location, 
                 numberOfApprentices,
-                ukprn,
                 providerName,
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                false);
+                null);
 
             email.Tokens["FatURL"].Should().Be("---");
         }

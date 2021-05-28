@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         public Guid Id { get ; set ; }
         public IEnumerable<Guid> EmployerDemandIds { get; set; }
         public int Ukprn { get; set; }
+        public string ProviderName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
@@ -20,6 +21,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
                 Id = source.Id,
                 EmployerDemandIds = source.EmployerDemandIds,
                 Ukprn = source.Ukprn,
+                ProviderName = source.ProviderName,
                 Email = source.Email,
                 Phone = source.Phone,
                 Website = source.Website

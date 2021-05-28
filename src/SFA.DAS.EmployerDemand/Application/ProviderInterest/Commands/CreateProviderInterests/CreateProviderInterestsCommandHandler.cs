@@ -38,18 +38,16 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
                         new GetEmployerDemandRequest(employerDemandId));
                     var email = new ProviderIsInterestedEmail(
                         employerDemand.ContactEmailAddress, 
-                        employerDemand.OrganisationName, 
-                        employerDemand.Course.Id,
+                        employerDemand.OrganisationName,
                         employerDemand.Course.Title, 
                         employerDemand.Course.Level, 
                         employerDemand.Location.Name, 
-                        employerDemand.NumberOfApprentices, 
-                        request.Ukprn, 
+                        employerDemand.NumberOfApprentices,
                         request.ProviderName, 
                         request.Email, 
                         request.Phone, 
                         request.Website, 
-                        true);
+                        "todo request.FatUrl");
                     await _notificationService.Send(new SendEmailCommand(email.TemplateId,
                         email.RecipientAddress, email.Tokens));
                 }

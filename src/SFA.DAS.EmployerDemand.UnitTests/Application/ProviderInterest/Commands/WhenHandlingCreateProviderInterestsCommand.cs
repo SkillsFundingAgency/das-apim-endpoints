@@ -55,18 +55,16 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             {
                 var providerInterestedEmail = new ProviderIsInterestedEmail(
                     employerDemandsFromApi[i].ContactEmailAddress, 
-                    employerDemandsFromApi[i].OrganisationName, 
-                    employerDemandsFromApi[i].Course.Id,
+                    employerDemandsFromApi[i].OrganisationName,
                     employerDemandsFromApi[i].Course.Title, 
                     employerDemandsFromApi[i].Course.Level, 
                     employerDemandsFromApi[i].Location.Name, 
-                    employerDemandsFromApi[i].NumberOfApprentices, 
-                    command.Ukprn, 
+                    employerDemandsFromApi[i].NumberOfApprentices,
                     command.ProviderName, 
                     command.Email, 
                     command.Phone, 
                     command.Website, 
-                    true);
+                    "todo request.FatUrl");
                 mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains(employerDemandIds[i].ToString()))));
                 mockNotificationService.Verify(service => service.Send(It.Is<SendEmailCommand>(emailCommand => 
                     emailCommand.TemplateId == EmailConstants.ProviderInterestedTemplateId &&

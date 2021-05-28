@@ -7,18 +7,16 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
     {
         public ProviderIsInterestedEmail(
             string recipientEmail, 
-            string recipientName, 
-            int standardId,
+            string recipientName,
             string standardName, 
             int standardLevel, 
             string location, 
             int numberOfApprentices,
-            int ukprn,
             string providerName,
             string providerEmail,
             string providerPhone,
             string providerWebsite,
-            bool providerOffersThisCourse)
+            string fatUrl)
         {
             TemplateId = EmailConstants.ProviderInterestedTemplateId;
             RecipientAddress = recipientEmail;
@@ -34,7 +32,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", !string.IsNullOrEmpty(providerWebsite) ? providerWebsite : "-" },
-                {"FatURL", providerOffersThisCourse ? $"https://findapprenticeshiptraining.apprenticeships.education.gov.uk/courses/{standardId}/providers/{ukprn}" : "---" },
+                {"FatURL", !string.IsNullOrEmpty(fatUrl) ? fatUrl : "---" },
                 {"AEDStopSharingURL", "" }
             };
         }
