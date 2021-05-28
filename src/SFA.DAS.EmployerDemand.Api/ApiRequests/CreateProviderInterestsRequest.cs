@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
+        public string FatUrl { get; set; }
 
         public static implicit operator CreateProviderInterestsCommand(CreateProviderInterestsRequest source)
         {
@@ -24,7 +25,8 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
                 ProviderName = source.ProviderName,
                 Email = source.Email,
                 Phone = source.Phone,
-                Website = source.Website
+                Website = source.Website,
+                FatUrl = source.FatUrl
             };
         }
     }

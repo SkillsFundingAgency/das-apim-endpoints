@@ -14,6 +14,7 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
+        public string FatUrl { get; set; }
 
         public static implicit operator CreateProviderInterestsData(CreateProviderInterestsCommand source)
         {

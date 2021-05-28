@@ -64,7 +64,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
                     command.Email, 
                     command.Phone, 
                     command.Website, 
-                    "todo request.FatUrl");
+                    command.FatUrl);
                 mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains(employerDemandIds[i].ToString()))));
                 mockNotificationService.Verify(service => service.Send(It.Is<SendEmailCommand>(emailCommand => 
                     emailCommand.TemplateId == EmailConstants.ProviderInterestedTemplateId &&
