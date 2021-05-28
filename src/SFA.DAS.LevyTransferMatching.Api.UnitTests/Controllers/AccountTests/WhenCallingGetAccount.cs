@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.Account
 {
-    public class WhenGettingAccount
+    public class WhenCallingGetAccount
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
