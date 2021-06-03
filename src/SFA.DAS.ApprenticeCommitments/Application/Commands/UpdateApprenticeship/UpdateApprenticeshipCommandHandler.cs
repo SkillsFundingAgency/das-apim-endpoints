@@ -1,58 +1,61 @@
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CommitmentsApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
+using static System.String;
+using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship
 {
-    public class ChangeApprenticeshipCommand : IRequest
-    {
-        public long CommitmentsApprenticeshipId { get; set; }
-        public DateTime CommitmentsApprovedOn { get; set; }
-    }
-
-    public class UpdateApprenticeshipCommandHandler : IRequestHandler<ChangeApprenticeshipCommand>
+    public class UpdateApprenticeshipCommandHandler : IRequestHandler<UpdateApprenticeshipCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
-        private readonly ApprenticeLoginService _apprenticeLoginService;
         private readonly CoursesService _coursesService;
+        private readonly ILogger<UpdateApprenticeshipCommandHandler> _logger;
 
         public UpdateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginService apprenticeLoginService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
-            CoursesService coursesService)
+            CoursesService coursesService,
+            ILogger<UpdateApprenticeshipCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
-            _apprenticeLoginService = apprenticeLoginService;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
             _coursesService = coursesService;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(
-            ChangeApprenticeshipCommand command,
+            UpdateApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
             var (provider, apprenticeship, course) = await GetExternalData(command);
 
+            if (IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation($"Apprenticeship {apprenticeship.Id} does not have an email, no point in calling Apprentice Commitments");
+                return Unit.Value;
+            }
+
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
+                CommitmentsContinuedApprenticeshipId = command.CommitmentsContinuedApprenticeshipId,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
-                TrainingProviderName = string.IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
+                TrainingProviderName = IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,
@@ -63,8 +66,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
             return Unit.Value;
         }
 
-        private async Task<(TrainingProviderResponse, CommitmentsApprenticeshipResponse apprenticeship, StandardApiResponse)>
-            GetExternalData(ChangeApprenticeshipCommand command)
+        private async Task<(TrainingProviderResponse, ApprenticeshipResponse apprenticeship, StandardApiResponse)>
+            GetExternalData(UpdateApprenticeshipCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
