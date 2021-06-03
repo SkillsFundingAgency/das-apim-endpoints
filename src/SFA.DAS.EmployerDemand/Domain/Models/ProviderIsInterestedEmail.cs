@@ -32,8 +32,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", !string.IsNullOrEmpty(providerWebsite) ? providerWebsite : "-" },
-                {"AEDFatUrlText", !string.IsNullOrEmpty(fatUrl) ? "You can find out more about this training provider at " : "" },
-                {"FatURL", !string.IsNullOrEmpty(fatUrl) ? fatUrl : "---" },
+                {"FatURL", !string.IsNullOrEmpty(fatUrl) ? $"You can find out more about this training provider at {fatUrl}" : "---" },
                 {"AEDStopSharingURL", "" }
             };
         }
