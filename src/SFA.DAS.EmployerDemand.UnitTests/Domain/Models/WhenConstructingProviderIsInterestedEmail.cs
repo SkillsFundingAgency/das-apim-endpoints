@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             int numberOfApprentices,
             string providerName,
             string providerEmail,
-            string providerEmail2,
             string providerPhone,
             string providerWebsite,
             string fatUrl)
@@ -30,7 +29,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
                 {"AEDProviderName", providerName },
-                {"AEDProviderEmail", $"mailto:{providerEmail}, mailto:{providerEmail2}" },
+                {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", providerWebsite },
                 {"FatURL", fatUrl },
@@ -45,7 +44,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 location, 
                 numberOfApprentices,
                 providerName,
-                $"{providerEmail}, {providerEmail2}",
+                providerEmail,
                 providerPhone,
                 providerWebsite,
                 fatUrl);
@@ -61,9 +60,11 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
         public void And_No_NumberOfApprentices_Then_NotSure_Text(
             string recipientEmail, 
             string recipientName,
+            int standardId,
             string standardName, 
             int standardLevel, 
             string location,
+            int ukprn,
             string providerName,
             string providerEmail,
             string providerPhone,

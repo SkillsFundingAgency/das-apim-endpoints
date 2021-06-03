@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
@@ -23,8 +22,6 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             RecipientAddress = recipientEmail;
             ReplyToAddress = EmailConstants.ReplyToAddress;
             Subject = "A training provider is interested in offering your apprenticeship training";
-            var formattedProviderEmails = 
-                $"mailto:{string.Join(", mailto:", providerEmail.Split(',').Select(s => s.Trim()))}";
             Tokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", recipientName },
@@ -32,7 +29,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" },
                 {"AEDProviderName", providerName },
-                {"AEDProviderEmail", formattedProviderEmails },
+                {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", !string.IsNullOrEmpty(providerWebsite) ? providerWebsite : "-" },
                 {"FatURL", !string.IsNullOrEmpty(fatUrl) ? fatUrl : "---" },
