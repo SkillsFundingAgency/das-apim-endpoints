@@ -99,7 +99,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseTitle = request.TrainingCourse.Title,
                     CourseLevel = request.TrainingCourse.Level,
                     CourseRoute = request.TrainingCourse.Route,
-                    ConfirmationLink = request.ResponseUrl
+                    ConfirmationLink = request.ResponseUrl,
+                    StopSharingUrl = request.StopSharingUrl
                 });
 
                 return Created("", commandResult);
