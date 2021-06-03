@@ -32,6 +32,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDProviderEmail", providerEmail },
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", providerWebsite },
+                {"AEDFatUrlText", "You can find out more about this training provider at " },
                 {"FatURL", fatUrl },
                 {"AEDStopSharingURL", "" }
             };
@@ -142,6 +143,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 providerWebsite,
                 null);
 
+            email.Tokens["AEDFatUrlText"].Should().Be("");
             email.Tokens["FatURL"].Should().Be("---");
         }
     }
