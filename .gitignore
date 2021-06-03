@@ -276,3 +276,5 @@ App.Debug.config
 src/**/appsettings.Development.json
 
 src/.learningtransport/
+#nservicebus
+*.learningtransport*

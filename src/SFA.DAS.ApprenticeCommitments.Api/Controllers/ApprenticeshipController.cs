@@ -1,13 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -32,8 +32,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/apprenticeships/change")]
-        public async Task<IActionResult> UpdateApprenticeship(ChangeApprenticeshipCommand request)
+        [Route("/apprenticeships/update")]
+        public async Task<IActionResult> UpdateApprenticeship(UpdateApprenticeshipCommand request)
         {
             await _mediator.Send(request);
             return Accepted();
@@ -96,7 +96,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             await _client.Post(
                 new RolesAndResponsibilitiesConfirmationRequest(
                     apprenticeId, apprenticeshipId, request.RolesAndResponsibilitiesCorrect));
-
+            
             return Ok();
         }
 
