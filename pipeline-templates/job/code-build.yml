@@ -2,7 +2,7 @@ jobs:
 - job: CodeBuild
   pool:
     name: Azure Pipelines
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-18.04
   variables:
   - group: Prod Management Resources
   - name: buildConfiguration
