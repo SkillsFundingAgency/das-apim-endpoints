@@ -41,7 +41,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 response.Course.Title, 
                 response.Course.Level,
                 response.Location.Name,
-                response.NumberOfApprentices);
+                response.NumberOfApprentices,
+                response.StopSharingUrl);
             
             
             //Act

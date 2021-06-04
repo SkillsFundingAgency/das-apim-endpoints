@@ -5,7 +5,14 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
 {
     public class CreateEmployerDemandReminderEmail : EmailTemplateArguments
     {
-        public CreateEmployerDemandReminderEmail (string recipientEmail, string employerName, string standardName, int standardLevel, string location, int numberOfApprentices)
+        public CreateEmployerDemandReminderEmail (
+            string recipientEmail, 
+            string employerName, 
+            string standardName, 
+            int standardLevel, 
+            string location, 
+            int numberOfApprentices,
+            string stopSharingUrl)
         {
             TemplateId = EmailConstants.EmployerDemandReminderTemplateId;
             Subject = "We’re still sharing your interest in apprenticeship training with training providers";
@@ -16,7 +23,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" },
-                {"AEDStopSharingURL",""}
+                {"AEDStopSharingURL", stopSharingUrl }
             };
         }
     }
