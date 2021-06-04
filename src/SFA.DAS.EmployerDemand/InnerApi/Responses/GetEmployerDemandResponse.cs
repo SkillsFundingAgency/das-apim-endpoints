@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         
         public Location Location { get ; set ; }
         public int NumberOfApprentices { get ; set ; }
+        public string StopSharingUrl { get; set; }
     }
 }

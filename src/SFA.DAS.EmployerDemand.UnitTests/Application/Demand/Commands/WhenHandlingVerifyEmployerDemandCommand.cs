@@ -52,7 +52,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 getDemandResponse.Course.Title, 
                 getDemandResponse.Course.Level,
                 getDemandResponse.Location.Name,
-                getDemandResponse.NumberOfApprentices);
+                getDemandResponse.NumberOfApprentices,
+                getDemandResponse.StopSharingUrl);
             
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
