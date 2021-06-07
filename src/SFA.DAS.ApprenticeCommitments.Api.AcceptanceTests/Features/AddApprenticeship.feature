@@ -6,9 +6,9 @@ Feature: AddApprenticeship
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Course Name             | Course Code |
-	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        |
-	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        |
+	| Id | First Name | Last Name | Course Name             | Course Code | Email             |
+	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | alexa@example.org |
+	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | zach@example.org  |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -22,8 +22,8 @@ Background:
 
 Scenario: New apprenticeship is recieved and is valid 
 	When the following apprenticeship is posted
-	| Commitments ApprenticeshipId | Email         | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
-	| 1                            | Test@Test.com | Apple         | 123                              | 1002                 | 2015-04-20  |
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
+	| 1                            | Apple         | 123                              | 1002                 | 2015-04-20  |
 	Then the inner API has received the posted values
 	And the Training Provider Name should be 'My Only Name'
 	And the course should be `Artificial Intelligence` level 1
@@ -31,17 +31,8 @@ Scenario: New apprenticeship is recieved and is valid
 
 Scenario: New apprenticeship is recieved and is valid and there is a trading name for provider
 	When the following apprenticeship is posted
-	| Commitments ApprenticeshipId | Email              | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
-	| 2                            | SomeOther@Test.com | Apple         | 123                              | 1001                 | 2019-03-31  |
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
+	| 2                            | Apple         | 123                              | 1001                 | 2019-03-31  |
 	Then the inner API has received the posted values
 	And the Training Provider Name should be 'My Trading Name'
 	And the invitation was sent successfully
-
-Scenario: New apprenticeship is recieved and is Not valid 
-	When the following apprenticeship is posted
-	| Commitments ApprenticeshipId | Email        | Employer Name | Employer Account Legal Entity Id | Training Provider Id |
-	| 1                            | invalidemail | Apple         | 123                              | 1002                 |
-	Then the inner API should return these errors
-	| field | error     |
-	| email | Not valid |
-	And the invitation was not sent

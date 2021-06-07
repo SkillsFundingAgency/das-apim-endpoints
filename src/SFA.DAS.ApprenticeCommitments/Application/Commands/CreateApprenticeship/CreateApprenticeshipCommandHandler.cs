@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             {
                 ApprenticeId = id,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
-                Email = command.Email,
+                Email = apprentice.Email,
                 EmployerName = command.EmployerName,
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
                 TrainingProviderId = command.TrainingProviderId,
@@ -61,7 +61,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
             {
                 SourceId = id,
-                Email = command.Email,
+                Email = apprentice.Email,
                 GivenName = apprentice.FirstName,
                 FamilyName = apprentice.LastName,
                 OrganisationName = command.EmployerName,
