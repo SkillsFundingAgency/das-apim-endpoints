@@ -204,6 +204,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             errors.Should().BeEquivalentTo(expectedErrors);
         }
 
+        [Then("the request should be ignored")]
+        public void ThenTheRequestShouldBeIgnored()
+        {
+            _context.InnerApi.MockServer.LogEntries.Should().BeEmpty();
+        }
+
         [Then("the invitation was sent successfully")]
         public void ThenTheInvitationWasSentSuccessfully()
         {

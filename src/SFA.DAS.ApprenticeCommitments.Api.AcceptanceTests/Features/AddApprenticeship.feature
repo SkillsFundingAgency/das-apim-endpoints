@@ -8,6 +8,7 @@ Background:
 	Given the following apprenticeships have been approved
 	| Id | First Name | Last Name | Course Name             | Course Code | Email             |
 	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | alexa@example.org |
+	| 3  | Iris       | Ignored   | Not Whitelisted         | 9003        |                   |
 	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | zach@example.org  |
 
 	Given the following training providers exist
@@ -19,6 +20,7 @@ Background:
 	| Id   | Title                   | Level |
 	| 9001 | Artificial Intelligence | 1     |
 	| 9002 | Zoology                 | 3     |
+	| 9003 | Not Whitelisted         | 2     |
 
 Scenario: New apprenticeship is recieved and is valid 
 	When the following apprenticeship is posted
@@ -36,3 +38,10 @@ Scenario: New apprenticeship is recieved and is valid and there is a trading nam
 	Then the inner API has received the posted values
 	And the Training Provider Name should be 'My Trading Name'
 	And the invitation was sent successfully
+
+Scenario: New apprenticeship is recieved for non-whitelisted approval
+	When the following apprenticeship is posted
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id |
+	| 3                            | SmallCo       | 124                              | 1002                 |
+	Then the request should be ignored
+	And the invitation was not sent
