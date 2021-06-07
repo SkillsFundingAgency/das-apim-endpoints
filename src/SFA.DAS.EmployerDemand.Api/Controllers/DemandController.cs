@@ -10,6 +10,7 @@ using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandReminder;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
@@ -247,7 +248,31 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 Console.WriteLine(e);
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
-            
+        }
+
+        [HttpPost]
+        [Route("{id}/stop")]
+        public async Task<IActionResult> StopEmployerDemand(Guid id)
+        {
+            try
+            {
+                var commandResult = await _mediator.Send(new StopEmployerDemandCommand
+                {
+                    EmployerDemandId = id
+                });
+                var model =  (GetCourseDemandResponse) commandResult.EmployerDemand;
+
+                return Ok(model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error stopping employer demand item");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }   
         }
     }
 }
