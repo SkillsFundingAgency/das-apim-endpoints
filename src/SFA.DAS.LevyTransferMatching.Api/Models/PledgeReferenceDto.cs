@@ -4,7 +4,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
     public class PledgeReferenceDto
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
 
         public static implicit operator PledgeReferenceDto(PledgeReference pledgeReference)
