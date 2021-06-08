@@ -100,16 +100,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/email")]
-        public async Task<IActionResult> ChangeApprenticeEmailAddress(
-            Guid apprenticeId,
-            ApprenticeEmailAddressRequest request)
-        {
-            await _mediator.Send(
-                new ChangeEmailAddressCommand(apprenticeId, request.Email));
-            return Ok();
-        }
-
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/howapprenticeshipwillbedeliveredconfirmation")]
         public async Task<IActionResult> HowApprenticeshipWillBeDeliveredConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
