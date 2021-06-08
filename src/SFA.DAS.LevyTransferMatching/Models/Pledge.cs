@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Models
 {
-    public class Pledge
+    public class Pledge : PledgeReference
     {
         public string EncodedAccountId { get; set; }
         public int Amount { get; set; }

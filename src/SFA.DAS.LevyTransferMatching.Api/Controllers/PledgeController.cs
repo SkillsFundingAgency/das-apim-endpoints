@@ -19,7 +19,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public async Task<IActionResult> CreatePledge(string encodedAccountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand()
@@ -35,7 +34,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 }
             });
 
-            return new AcceptedResult($"/accounts/{encodedAccountId}/pledges/{commandResult.Id}", null);
+            return new AcceptedResult(
+                $"/accounts/{encodedAccountId}/pledges/{commandResult.PledgeReference.Id}",
+                (PledgeReferenceDto)commandResult.PledgeReference);
         }
     }
 }
