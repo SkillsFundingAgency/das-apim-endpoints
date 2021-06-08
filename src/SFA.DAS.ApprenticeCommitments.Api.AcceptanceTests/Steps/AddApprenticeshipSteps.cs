@@ -157,7 +157,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             innerApiRequest.Should().NotBeNull();
             innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
-            innerApiRequest.Email.Should().Be(_request.Email);
+            innerApiRequest.Email.Should().Be(expectedCommitment.Email);
             innerApiRequest.CommitmentsApprenticeshipId.Should().Be(_request.CommitmentsApprenticeshipId);
             innerApiRequest.CommitmentsApprovedOn.Should().Be(_request.CommitmentsApprovedOn);
             innerApiRequest.EmployerName.Should().Be(_request.EmployerName);
@@ -204,6 +204,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             errors.Should().BeEquivalentTo(expectedErrors);
         }
 
+        [Then("the request should be ignored")]
+        public void ThenTheRequestShouldBeIgnored()
+        {
+            _context.InnerApi.MockServer.LogEntries.Should().BeEmpty();
+        }
+
         [Then("the invitation was sent successfully")]
         public void ThenTheInvitationWasSentSuccessfully()
         {
@@ -217,7 +223,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
             loginApiRequest.Should().NotBeNull();
             loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
-            loginApiRequest.Email.Should().Be(_request.Email);
+            loginApiRequest.Email.Should().Be(expectedCommitment.Email);
             loginApiRequest.GivenName.Should().Be(expectedCommitment.FirstName);
             loginApiRequest.FamilyName.Should().Be(expectedCommitment.LastName);
             loginApiRequest.OrganisationName.Should().Be(_request.EmployerName);
