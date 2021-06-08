@@ -17,13 +17,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task<PledgeReference> CreatePledge(Pledge pledge)
         {
-            var pledgeReference = await _levyTransferMatchingApiClient.PostWithResponseCode<PledgeReference>(
+            var apiResponse = await _levyTransferMatchingApiClient.PostWithResponseCode<PledgeReference>(
                 new CreatePledgeRequest(pledge.EncodedAccountId)
                 {
                     Data = pledge,
                 });
 
-            return pledgeReference.Body;
+            return apiResponse.Body;
         }
     }
 }
