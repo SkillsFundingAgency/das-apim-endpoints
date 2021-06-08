@@ -9,11 +9,13 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandReminder;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerDemand.Api.Controllers
@@ -135,8 +137,47 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             {
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }   
+        }
+
+        [HttpPost]
+        [Route("{demandId}/send-reminder-email/{id}")]
+        public async Task<IActionResult> SendReminderEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new SendEmployerDemandEmailReminderCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
             }
-            
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating reminder email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("unmet")]
+        public async Task<IActionResult> UnmetCourseDemands([FromQuery] uint demandAgeInDays)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUnmetCourseDemandsQuery
+                {
+                    AgeOfDemandInDays = demandAgeInDays
+                }) ;
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting unmet course demands");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
