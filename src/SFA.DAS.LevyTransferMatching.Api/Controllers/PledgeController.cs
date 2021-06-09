@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 }
             });
 
-            return new AcceptedResult(
+            return new CreatedResult(
                 $"/accounts/{encodedAccountId}/pledges/{commandResult.PledgeReference.Id}",
                 (PledgeReferenceDto)commandResult.PledgeReference);
         }
