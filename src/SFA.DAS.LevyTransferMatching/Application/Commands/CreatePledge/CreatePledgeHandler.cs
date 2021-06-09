@@ -14,9 +14,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<CreatePledgeResult> Handle(CreatePledgeCommand request, CancellationToken cancellationToken)
+        public async Task<CreatePledgeResult> Handle(CreatePledgeCommand command, CancellationToken cancellationToken)
         {
-            var pledgeReference = await _levyTransferMatchingService.CreatePledge(request.Pledge);
+            var pledgeReference = await _levyTransferMatchingService.CreatePledge(command);
 
             return new CreatePledgeResult()
             {

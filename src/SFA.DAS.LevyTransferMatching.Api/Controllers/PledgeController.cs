@@ -23,15 +23,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand()
             {
-                Pledge = new Pledge()
-                {
-                    Amount = createPledgeRequest.Amount,
-                    EncodedAccountId = encodedAccountId,
-                    IsNamePublic = createPledgeRequest.IsNamePublic,
-                    JobRoles = createPledgeRequest.JobRoles,
-                    Levels = createPledgeRequest.Levels,
-                    Sectors = createPledgeRequest.Sectors,
-                }
+                Amount = createPledgeRequest.Amount,
+                EncodedAccountId = encodedAccountId,
+                IsNamePublic = createPledgeRequest.IsNamePublic,
+                JobRoles = createPledgeRequest.JobRoles,
+                Levels = createPledgeRequest.Levels,
+                Sectors = createPledgeRequest.Sectors,
             });
 
             return new CreatedResult(

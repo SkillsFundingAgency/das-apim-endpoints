@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<CreatePledgeCommand>((x) => x.Pledge.EncodedAccountId == encodedAccountId),
+                    It.Is<CreatePledgeCommand>((x) => x.EncodedAccountId == encodedAccountId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(createPledgeResult);
 
