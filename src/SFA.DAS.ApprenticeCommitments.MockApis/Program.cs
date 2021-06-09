@@ -26,6 +26,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
         static void Main(string[] args)
         {
+            //args = new string[] { "!inner", "!login" };
+
             if (args.Contains("--h"))
             {
                 Console.WriteLine("Optional parameters (!inner, !commitments, !login, !roatp, !courses) will exclude that fake API");
