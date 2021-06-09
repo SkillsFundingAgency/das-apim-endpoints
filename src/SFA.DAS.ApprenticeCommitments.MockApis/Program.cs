@@ -13,8 +13,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private const int PortCoursesApi = 5022;
         private const int CourseStandardId = 2222;
 
-        private const long EmployerAccountId = 1000;
-        private const long ApprenticeshipId = 20000;
+        private const long EmployerAccountId = 1001;
+        private const long ApprenticeshipId = 20001;
         private const long TrainingProviderId = 1007777;
 
 
@@ -26,9 +26,11 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
         static void Main(string[] args)
         {
+            //args = new string[] { "!inner", "!login" };
+
             if (args.Contains("--h"))
             {
-                Console.WriteLine("Optional parameters (!inner, !commitment, !login, !roatp, !courses) will exclude that fake API");
+                Console.WriteLine("Optional parameters (!inner, !commitments, !login, !roatp, !courses) will exclude that fake API");
                 Console.WriteLine("examples:");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis --h                 <-- shows this page");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !inner              <-- excludes fake inner api");
