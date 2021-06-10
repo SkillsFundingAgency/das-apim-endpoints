@@ -36,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<PledgeReference> CreatePledge(Pledge pledge)
         {
             var apiResponse = await _levyTransferMatchingApiClient.PostWithResponseCode<PledgeReference>(
-                new CreatePledgeRequest(pledge.EncodedAccountId)
+                new CreatePledgeRequest(pledge.AccountId)
                 {
                     Data = pledge,
                 });

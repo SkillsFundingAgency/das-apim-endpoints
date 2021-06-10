@@ -7,12 +7,12 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
     public class WhenBuildingTheCreatePledgeRequest
     {
         [Test, AutoData]
-        public void Then_The_PostUrl_Is_Correctly_Built(string encodedAccountId)
+        public void Then_The_PostUrl_Is_Correctly_Built(long accountId)
         {
-            var actual = new CreatePledgeRequest(encodedAccountId);
+            var actual = new CreatePledgeRequest(accountId);
 
             Assert.AreEqual(
-                $"accounts/{encodedAccountId}/pledges",
+                $"accounts/{accountId}/pledges",
                 actual.PostUrl);
         }
     }

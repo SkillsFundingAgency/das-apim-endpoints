@@ -5,14 +5,14 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges
 {
     public class CreatePledgeRequest : IPostApiRequest
     {
-        private readonly string _encodedAccountId;
+        private readonly long _accountId;
 
-        public CreatePledgeRequest(string encodedAccountId)
+        public CreatePledgeRequest(long accountId)
         {
-            _encodedAccountId = encodedAccountId;
+            _accountId = accountId;
         }
 
-        public string PostUrl => $"accounts/{_encodedAccountId}/pledges";
+        public string PostUrl => $"accounts/{_accountId}/pledges";
 
         public object Data { get; set; }
     }
