@@ -15,6 +15,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDeman
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetStartCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -51,6 +52,31 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
             var model = (GetCourseDemandResponse) queryResult.EmployerDemand;
             return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("start/{courseId}")]
+        public async Task<IActionResult> StartDemand(int courseId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetStartCourseDemandQuery
+                {
+                    CourseId = courseId
+                });
+                
+                var model = new GetStartCourseDemandResponse
+                {
+                    TrainingCourse = queryResult.Course
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get start course demand for course id [{courseId}]");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
