@@ -22,8 +22,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public Task AddEmployerVendorIdToLegalEntity(string hashedLegalEntityId, string employerVendorId)
         {
-            return _client.Put(new PutEmployerVendorIdForLegalEntityRequest(hashedLegalEntityId)
-                { Data = new PutEmployerVendorIdForLegalEntityRequestData { EmployerVendorId = employerVendorId } });
+            var request = new PutEmployerVendorIdForLegalEntityRequestData
+            {
+               HashedLegalEntityId = hashedLegalEntityId, 
+               EmployerVendorId = employerVendorId
+            };
+
+            return _client.Put(new PutEmployerVendorIdForLegalEntityRequest()
+                { Data = request });
         }
         
         public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
