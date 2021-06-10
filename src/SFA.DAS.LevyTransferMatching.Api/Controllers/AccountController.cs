@@ -25,6 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("{encodedAccountId}")]
         public async Task<IActionResult> GetAccount(string encodedAccountId)
         {
+            _logger.LogInformation($"Getting account {encodedAccountId}");
+
             try
             {
                 var queryResult = await _mediator.Send(new GetAccountQuery()
