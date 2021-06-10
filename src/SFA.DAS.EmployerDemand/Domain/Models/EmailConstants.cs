@@ -7,7 +7,7 @@
         public const string EmployerDemandReminderTemplateId = "2d08026e-2d8e-42ca-ad04-01f28d4003e4";
         public const string ProviderInterestedTemplateId = "75e18773-7715-4b59-97ce-9b078d20434f";
         public const string StopSharingEmployerDemandTemplateId = "925155fe-dc75-4208-8863-039e956dbc1e";
+        public const string StopSharingAutomaticTwelveWeekCutOffTemplateId = "925155fe-dc75-4208-8863-039e956dbc1e";
         
-        public const string ReplyToAddress = "The Apprenticeship Service <the.apprenticeship.service@notifications.service.gov.uk>";
     }
 }
