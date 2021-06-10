@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
                 ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.OK, ""));
 
-            await service.ConfirmIncentiveApplication(request);
+            await service.Confirm(request);
 
             client.Verify(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
                 ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.Conflict, ""));
 
-            Func<Task> action = async () => await service.ConfirmIncentiveApplication(request);
+            Func<Task> action = async () => await service.Confirm(request);
 
             action.Should().Throw<UlnAlreadySubmittedException>();
         }

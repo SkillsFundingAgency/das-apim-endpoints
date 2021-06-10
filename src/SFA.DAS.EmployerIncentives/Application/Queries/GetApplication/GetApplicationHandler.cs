@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
 
         public async Task<GetApplicationResult> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
         {
-            var application = await _applicationService.GetApplication(request.AccountId, request.ApplicationId);
+            var application = await _applicationService.Get(request.AccountId, request.ApplicationId);
 
             var applicationToReturn = MapApplication(application);
 

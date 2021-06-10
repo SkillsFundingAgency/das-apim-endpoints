@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                     It.Is<long>(r => r == command.ApprenticeshipDetailsRequest.AccountId),
                     It.IsAny<IEnumerable<long>>()), Times.Once);
 
-            applicationService.Verify(x => x.UpdateIncentiveApplication(
+            applicationService.Verify(x => x.Update(
                     It.Is<UpdateIncentiveApplicationRequestData>(
                         r =>
                             r.AccountId == command.ApprenticeshipDetailsRequest.AccountId &&

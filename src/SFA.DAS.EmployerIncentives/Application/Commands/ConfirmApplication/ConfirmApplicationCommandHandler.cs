@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
                 Data = new ConfirmIncentiveApplicationRequestData(command.ApplicationId, command.AccountId, command.DateSubmitted, command.SubmittedByEmail, command.SubmittedByName)
             };
 
-            await _applicationService.ConfirmIncentiveApplication(request, cancellationToken);
+            await _applicationService.Confirm(request, cancellationToken);
 
             return Unit.Value;
         }

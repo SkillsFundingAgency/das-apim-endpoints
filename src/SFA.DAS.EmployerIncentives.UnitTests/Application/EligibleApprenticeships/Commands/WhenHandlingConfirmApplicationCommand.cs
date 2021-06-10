@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             await handler.Handle(command, CancellationToken.None);
 
-            applicationService.Verify(x => x.ConfirmIncentiveApplication(
+            applicationService.Verify(x => x.Confirm(
                     It.Is<ConfirmIncentiveApplicationRequest>(
                         r =>
                             r.Data.DateSubmitted == command.DateSubmitted &&

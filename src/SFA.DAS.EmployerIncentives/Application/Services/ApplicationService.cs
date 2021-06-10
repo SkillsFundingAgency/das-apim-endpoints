@@ -23,12 +23,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             _client = client;
         }
 
-        public Task CreateIncentiveApplication(CreateIncentiveApplicationRequestData requestData)
+        public Task Create(CreateIncentiveApplicationRequestData requestData)
         {
             return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
         }
 
-        public Task UpdateIncentiveApplication(UpdateIncentiveApplicationRequestData requestData)
+        public Task Update(UpdateIncentiveApplicationRequestData requestData)
         {
             return _client.Put(new UpdateIncentiveApplicationRequest { Data = requestData });
         }
@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return response;
         }
 
-        public async Task ConfirmIncentiveApplication(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
+        public async Task Confirm(ConfirmIncentiveApplicationRequest request, CancellationToken cancellationToken = default)
         {
             var response = await _client.PatchWithResponseCode(request);
             if (response.StatusCode == HttpStatusCode.Conflict)
@@ -53,16 +53,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<IncentiveApplicationDto> GetApplication(long accountId, Guid applicationId)
+        public async Task<IncentiveApplicationDto> Get(long accountId, Guid applicationId)
         {
             var response = await _client.Get<IncentiveApplicationDto>(new GetApplicationRequest(accountId, applicationId));
 
             return response;
         }
 
-        public async Task<GetApplicationsResponse> GetApprenticeApplications(long accountId, long accountLegalEntityId)
+        public async Task<PaymentApplicationsDto> GetPaymentApplications(long accountId, long accountLegalEntityId)
         {
-            return await _client.Get<GetApplicationsResponse>(new GetApplicationsRequest(accountId, accountLegalEntityId));
+            return await _client.Get<PaymentApplicationsDto>(new GetApplicationsRequest(accountId, accountLegalEntityId));
         }
     }
 }

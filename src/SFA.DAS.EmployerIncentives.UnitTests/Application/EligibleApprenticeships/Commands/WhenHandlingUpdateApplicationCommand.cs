@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             await handler.Handle(command, CancellationToken.None);
 
             applicationService.Verify(
-                x => x.UpdateIncentiveApplication(
+                x => x.Update(
                     It.Is<UpdateIncentiveApplicationRequestData>(p => p.IncentiveApplicationId == command.ApplicationId &&
                                                            p.AccountId == command.AccountId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),

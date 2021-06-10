@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 
             var request = CreateIncentiveApplicationRequest(command, apprenticeships);
 
-            await _applicationService.UpdateIncentiveApplication(request);
+            await _applicationService.Update(request);
 
             return Unit.Value;
         }

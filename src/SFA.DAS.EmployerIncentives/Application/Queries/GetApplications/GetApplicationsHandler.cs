@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplications
 
         public async Task<GetApplicationsResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
         {
-            var response = await _applicationService.GetApprenticeApplications(request.AccountId, request.AccountLegalEntityId);
+            var response = await _applicationService.GetPaymentApplications(request.AccountId, request.AccountLegalEntityId);
 
             return new GetApplicationsResult
             {

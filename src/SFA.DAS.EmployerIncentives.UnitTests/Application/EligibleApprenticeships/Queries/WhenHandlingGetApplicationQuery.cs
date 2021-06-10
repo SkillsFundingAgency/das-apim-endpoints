@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
                 .ReturnsAsync(new GetApprenticeshipResponse());
 
-            applicationService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                 .ReturnsAsync(apprenticeshipResponse);
 
             applicationService
-                .Setup(x => x.GetApplication(query.AccountId, query.ApplicationId))
+                .Setup(x => x.Get(query.AccountId, query.ApplicationId))
                 .ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -77,7 +77,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             query.IncludeApprenticeships = false;
 
-            applicationService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 

@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             await handler.Handle(command, CancellationToken.None);
 
             applicationService.Verify(
-                x => x.CreateIncentiveApplication(
+                x => x.Create(
                     It.Is<CreateIncentiveApplicationRequestData>(p => p.IncentiveApplicationId == command.ApplicationId &&
                                                            p.AccountId == command.AccountId && p.AccountLegalEntityId == command.AccountLegalEntityId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),

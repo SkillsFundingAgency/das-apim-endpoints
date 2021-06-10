@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetBankingDataHandler handler
             )
         {
-            applicationService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetBankingDataHandler handler
         )
         {
-            applicationService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
             accountsService.Setup(x => x.GetLegalEntity(query.HashedAccountId, applicationResponse.LegalEntityId)).ReturnsAsync(legalEntityResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             var agreementWithoutDate = legalEntityResponse.Agreements.First(x => x.Status == EmployerAgreementStatus.Signed || x.Status == EmployerAgreementStatus.Expired || x.Status == EmployerAgreementStatus.Superseded);
             agreementWithoutDate.SignedDate = null;
-            applicationService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
             accountsService.Setup(x => x.GetLegalEntity(query.HashedAccountId, applicationResponse.LegalEntityId)).ReturnsAsync(legalEntityResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

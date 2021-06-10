@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             ApplicationService sut)
         {
-            await sut.UpdateIncentiveApplication(requestData);
+            await sut.Update(requestData);
 
             client.Verify(x =>
                 x.Put(It.Is<UpdateIncentiveApplicationRequest>(

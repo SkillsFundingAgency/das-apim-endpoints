@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDeta
                 apprenticeship.EmploymentStartDate = employmentDetails.EmploymentStartDate;
             }
 
-            await _applicationService.UpdateIncentiveApplication(apprenticeshipDetails);
+            await _applicationService.Update(apprenticeshipDetails);
 
             return Unit.Value;
         }

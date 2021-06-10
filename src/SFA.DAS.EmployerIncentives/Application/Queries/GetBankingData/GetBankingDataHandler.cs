@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
         }
         public async Task<GetBankingDataResult> Handle(GetBankingDataQuery request, CancellationToken cancellationToken)
         {
-            var application = await _applicationService.GetApplication(request.AccountId, request.ApplicationId);
+            var application = await _applicationService.Get(request.AccountId, request.ApplicationId);
             if (application == null) throw new ArgumentException("Requested application details cannot be found in SFA.DAS.EmployerIncentives Application Service");
 
             var legalEntity = await _accountsService.GetLegalEntity(request.HashedAccountId, application.LegalEntityId);
