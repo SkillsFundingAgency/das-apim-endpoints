@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
                 .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
-            var expectedEmail = new StopSharingAutomaticTwelveWeekCutOffEmail(
+            var expectedEmail = new StopSharingEmployerDemandEmail(
                 response.ContactEmailAddress,
                 response.OrganisationName,
                 response.Course.Title, 

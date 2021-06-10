@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
-                {"AEDStartSharingURL", "" }
+                {"AEDStartSharingURL", startSharingUrl }
             };
 
             var email = new StopSharingEmployerDemandEmail(
@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", "Not sure" },
-                {"AEDStartSharingURL", "" }
+                {"AEDStartSharingURL", startSharingUrl }
             };
 
             var email = new StopSharingEmployerDemandEmail(
