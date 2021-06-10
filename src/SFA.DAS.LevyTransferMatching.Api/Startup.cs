@@ -86,7 +86,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 .AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
-                    c.SchemaFilter<LevelsSchemaFilter>();
                 })
                 .AddSwaggerGenNewtonsoftSupport();
 
