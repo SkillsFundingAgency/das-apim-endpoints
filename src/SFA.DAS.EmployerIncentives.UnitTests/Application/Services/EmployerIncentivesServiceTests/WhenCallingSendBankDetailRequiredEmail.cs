@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Threading.Tasks;
 using SFA.DAS.Testing.AutoFixture;
 using AutoFixture.NUnit3;
@@ -15,16 +14,15 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
     {
         [Test, MoqAutoData]
         public async Task Then_The_InnerApi_Is_Called(
-           SendBankDetailsEmailRequest requestData,
-           long accountId,
+           PostBankDetailsRequiredEmailRequest requestData,
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
            EmailService sut)
         {
-            await sut.SendBankDetailRequiredEmail(accountId, requestData);
+            await sut.SendEmail<PostBankDetailsRequiredEmailRequest>(requestData);
 
             client.Verify(x =>
-                x.Post<SendBankDetailsEmailRequest>(It.Is<PostBankDetailsRequiredEmailRequest>(
-                    c => c.Data == requestData &&
+                x.Post<PostBankDetailsRequiredEmailRequest>(It.Is<PostBankDetailsRequiredEmailRequest>(
+                    c => c.Data == requestData.Data &&
                          c.PostUrl.Contains("bank-details-required")
                 )), Times.Once);
         }

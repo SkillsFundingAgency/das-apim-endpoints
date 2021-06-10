@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
         public async Task<Unit> Handle(SendBankDetailsRepeatReminderEmailsCommand command, CancellationToken cancellationToken)
         {
             var request = new SendBankDetailsRepeatReminderEmailsRequest(command.ApplicationCutOffDate);
-            await _emailService.SendBankDetailsRepeatReminderEmails(request);
+            await _emailService.TriggerBankRepeatReminderEmails(request);
 
             return Unit.Value;
         }

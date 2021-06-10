@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
 {
     public interface IEmailService
     {
-        Task SendBankDetailRequiredEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
-        Task SendBankDetailReminderEmail(long accountId, SendBankDetailsEmailRequest sendBankDetailsEmailRequest);
-        Task SendBankDetailsRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
+        Task SendEmail<T>(T emailRequest) where T: IPostApiRequest;
+        Task TriggerBankRepeatReminderEmails(SendBankDetailsRepeatReminderEmailsRequest sendBankDetailsRepeatReminderEmailsRequest);
     }
 }

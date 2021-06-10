@@ -17,9 +17,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
 
         public async Task<Unit> Handle(SendBankDetailsRequiredEmailCommand command, CancellationToken cancellationToken)
         {
-            var request = new SendBankDetailsEmailRequest(command.AccountId, command.AccountLegalEntityId, command.EmailAddress, command.AddBankDetailsUrl);
+            var request = new PostBankDetailsRequiredEmailRequest
+            {
+                Data = new SendBankDetailsEmailRequest(command.AccountId, command.AccountLegalEntityId, command.EmailAddress, command.AddBankDetailsUrl)
+            };
 
-            await _emailService.SendBankDetailRequiredEmail(command.AccountId, request);
+            await _emailService.SendEmail(request);
 
             return Unit.Value;
         }

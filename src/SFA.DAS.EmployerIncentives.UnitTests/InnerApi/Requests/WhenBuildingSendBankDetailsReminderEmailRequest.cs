@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
         public void Then_The_PostUrl_Is_Correctly_Build(long accountId, long accountLegalEntityId, string emailAddress, string addBankDetailsUrl, string baseUrl)
         {
             var request = new SendBankDetailsEmailRequest(accountId, accountLegalEntityId, emailAddress, addBankDetailsUrl);
-            var actual = new PostBankDetailsReminderEmailRequest(accountId) { Data = request };
+            var actual = new PostBankDetailsReminderEmailRequest { Data = request };
 
             request.AccountId.Should().Be(accountId);
             request.AccountLegalEntityId.Should().Be(accountLegalEntityId);
