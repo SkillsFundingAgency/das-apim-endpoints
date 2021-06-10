@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendAutomaticEmployerDemandDemandCutOff;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandReminder;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
@@ -184,6 +185,26 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error creating reminder email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        [Route("{demandId}/send-automatic-stop-sharing-email/{id}")]
+        public async Task<IActionResult> SendAutomaticCutOffEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new SendAutomaticEmployerDemandDemandCutOffCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating automatic cut off email for course demand item {demandId}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
