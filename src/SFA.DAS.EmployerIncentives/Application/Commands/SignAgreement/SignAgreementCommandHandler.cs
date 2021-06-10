@@ -16,7 +16,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement
         }
         public async Task<Unit> Handle(SignAgreementCommand request, CancellationToken cancellationToken)
         {
-            await _legalEntitiesService.SignAgreement(request.AccountId, request.AccountLegalEntityId, new SignAgreementRequest { AgreementVersion = request.AgreementVersion });
+            var signAgreementRequest = new SignAgreementRequest
+            {
+                AccountId = request.AccountId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                AgreementVersion = request.AgreementVersion
+            };
+            await _legalEntitiesService.SignAgreement(signAgreementRequest);
             
             return Unit.Value;
         }

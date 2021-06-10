@@ -16,8 +16,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity
         }
         public async Task<CreateAccountLegalEntityCommandResult> Handle(CreateAccountLegalEntityCommand request, CancellationToken cancellationToken)
         {
-            await _service.CreateLegalEntity(request.AccountId, new AccountLegalEntityCreateRequest
+            await _service.CreateLegalEntity(new AccountLegalEntityCreateRequest
             {
+                AccountId = request.AccountId,
                 OrganisationName = request.OrganisationName,
                 LegalEntityId = request.LegalEntityId,
                 AccountLegalEntityId = request.AccountLegalEntityId

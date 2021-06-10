@@ -21,11 +21,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             CreateAccountLegalEntityCommandHandler handler)
         {
-            legalEntitiesService.Setup(x => x.CreateLegalEntity(command.AccountId,
+            legalEntitiesService.Setup(x => x.CreateLegalEntity(
                     It.Is<AccountLegalEntityCreateRequest>(c =>
                         c.LegalEntityId.Equals(command.LegalEntityId)
                         && c.OrganisationName.Equals(command.OrganisationName)
-                        && c.AccountLegalEntityId.Equals(command.AccountLegalEntityId))))
+                        && c.AccountLegalEntityId.Equals(command.AccountLegalEntityId)
+                        && c.AccountId.Equals(command.AccountId))))
                 .Returns(Task.CompletedTask);
 
             var actual = await handler.Handle(command, CancellationToken.None);

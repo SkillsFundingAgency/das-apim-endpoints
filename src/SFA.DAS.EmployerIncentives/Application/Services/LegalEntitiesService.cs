@@ -38,9 +38,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
         }
         
-        public async Task CreateLegalEntity(long accountId, AccountLegalEntityCreateRequest accountLegalEntity)
+        public async Task CreateLegalEntity(AccountLegalEntityCreateRequest accountLegalEntity)
         {
-            var request = new PutAccountLegalEntityRequest(accountId) { Data = accountLegalEntity };
+            var request = new PutAccountLegalEntityRequest { Data = accountLegalEntity };
             await _client.Put(request);
         }
         
@@ -57,9 +57,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
         }
 
-        public async Task SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        public async Task SignAgreement(SignAgreementRequest request)
         {
-            await _client.Patch(new PatchSignAgreementRequest(accountId, accountLegalEntityId) { Data = request });
+            await _client.Patch(new PatchSignAgreementRequest { Data = request });
         }
     }
 }

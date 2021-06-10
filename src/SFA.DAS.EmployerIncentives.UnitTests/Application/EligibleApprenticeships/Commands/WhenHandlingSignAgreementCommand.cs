@@ -20,7 +20,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         {
             await handler.Handle(command, CancellationToken.None);
             
-            legalEntitiesService.Verify(x => x.SignAgreement(command.AccountId, command.AccountLegalEntityId, It.Is<SignAgreementRequest>(y => y.AgreementVersion == command.AgreementVersion)), Times.Once);
+            legalEntitiesService.Verify(x => x.SignAgreement(It.Is<SignAgreementRequest>(
+                y => y.AgreementVersion == command.AgreementVersion 
+                && y.AccountId == command.AccountId 
+                && y.AccountLegalEntityId == command.AccountLegalEntityId)), Times.Once);
         }
     }
 }
