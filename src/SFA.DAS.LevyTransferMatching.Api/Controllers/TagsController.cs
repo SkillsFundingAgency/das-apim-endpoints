@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles;
@@ -8,6 +9,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.GetSectors;
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
+    [Route("tags")]
     public class TagsController : ControllerBase
     {
         private readonly IMediator _mediator;

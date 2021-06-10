@@ -14,6 +14,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Api.Swagger;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -85,6 +86,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 .AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
+                    c.SchemaFilter<LevelsSchemaFilter>();
                 })
                 .AddSwaggerGenNewtonsoftSupport();
 

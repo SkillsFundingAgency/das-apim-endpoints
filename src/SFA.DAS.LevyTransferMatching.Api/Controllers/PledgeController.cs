@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Models;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
