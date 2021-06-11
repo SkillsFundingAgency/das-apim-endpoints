@@ -54,7 +54,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
                         getEmployerDemandResponse.Course.Title,
                         getEmployerDemandResponse.Course.Level,
                         getEmployerDemandResponse.Location.Name,
-                        getEmployerDemandResponse.NumberOfApprentices
+                        getEmployerDemandResponse.NumberOfApprentices,
+                        getEmployerDemandResponse.StopSharingUrl
                     );
                     await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
                 }    
