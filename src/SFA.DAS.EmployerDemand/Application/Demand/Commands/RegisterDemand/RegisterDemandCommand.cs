@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
 {
-    public class RegisterDemandCommand : IRequest<Guid>
+    public class RegisterDemandCommand : IRequest<Guid?>
     {
         public Guid Id { get ; set ; }
         public string ContactEmailAddress { get ; set ; }
@@ -18,5 +18,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         public string CourseRoute { get ; set ; }
         public string ConfirmationLink { get ; set ; }
         public string StopSharingUrl { get ; set ; }
+        public string StartSharingUrl { get ; set ; }
+        public Guid? ExpiredCourseDemandId { get ; set ; }
     }
 }
