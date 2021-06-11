@@ -128,9 +128,16 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseLevel = request.TrainingCourse.Level,
                     CourseRoute = request.TrainingCourse.Route,
                     ConfirmationLink = request.ResponseUrl,
-                    StopSharingUrl = request.StopSharingUrl
+                    StopSharingUrl = request.StopSharingUrl,
+                    StartSharingUrl = request.StartSharingUrl,
+                    ExpiredCourseDemandId = request.ExpiredCourseDemandId
                 });
 
+                if (!commandResult.HasValue)
+                {
+                    return Conflict();
+                }
+                
                 return Created("", commandResult);
             }
             catch (HttpRequestContentException e)
