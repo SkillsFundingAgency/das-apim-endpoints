@@ -52,7 +52,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/trainingproviderconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/trainingproviderconfirmation")]
         public async Task<IActionResult> TrainingProviderConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
@@ -65,7 +64,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/employerconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/employerconfirmation")]
         public async Task<IActionResult> EmployerConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
@@ -78,7 +76,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipdetailsconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/apprenticeshipdetailsconfirmation")]
         public async Task<IActionResult> ApprenticeshipDetailsConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
@@ -91,7 +88,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/rolesandresponsibilitiesconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/rolesandresponsibilitiesconfirmation")]
         public async Task<IActionResult> RolesAndResponsibilitiesConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
@@ -114,7 +110,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/howapprenticeshipwillbedeliveredconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/howapprenticeshipwillbedeliveredconfirmation")]
         public async Task<IActionResult> HowApprenticeshipWillBeDeliveredConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
@@ -127,7 +122,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/apprenticeshipconfirmation")]
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/apprenticeshipconfirmation")]
         public async Task<IActionResult> ApprenticeshipConfirmation(
             Guid apprenticeId, long apprenticeshipId, long commitmentStatementId,
