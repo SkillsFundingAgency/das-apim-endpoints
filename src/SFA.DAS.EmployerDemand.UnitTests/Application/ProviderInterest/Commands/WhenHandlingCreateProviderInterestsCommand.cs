@@ -64,7 +64,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
                     command.Email, 
                     command.Phone, 
                     command.Website, 
-                    command.FatUrl);
+                    command.FatUrl,
+                    employerDemandsFromApi[i].StopSharingUrl);
                 mockApiClient.Verify(client => client.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains(employerDemandIds[i].ToString()))));
                 mockNotificationService.Verify(service => service.Send(It.Is<SendEmailCommand>(emailCommand => 
                     emailCommand.TemplateId == EmailConstants.ProviderInterestedTemplateId &&

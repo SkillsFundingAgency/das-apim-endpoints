@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             string providerEmail,
             string providerPhone,
             string providerWebsite,
-            string fatUrl)
+            string fatUrl,
+            string stopSharingUrl)
         {
             TemplateId = EmailConstants.ProviderInterestedTemplateId;
             RecipientAddress = recipientEmail;
@@ -33,7 +34,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", !string.IsNullOrEmpty(providerWebsite) ? providerWebsite : "-" },
                 {"FatURL", !string.IsNullOrEmpty(fatUrl) ? $"You can find out more about this training provider at {fatUrl}" : "---" },
-                {"AEDStopSharingURL", "" }
+                {"AEDStopSharingURL", stopSharingUrl }
             };
         }
     }

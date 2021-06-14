@@ -3,9 +3,14 @@ using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
 {
-    public class CreateVerifyEmployerDemandEmail : EmailTemplateArguments
+    public class VerifyEmployerDemandEmail : EmailTemplateArguments
     {
-        public CreateVerifyEmployerDemandEmail(string recipientEmail, string employerName, string standardName, int standardLevel, string confirmationLink)
+        public VerifyEmployerDemandEmail(
+            string recipientEmail, 
+            string employerName, 
+            string standardName, 
+            int standardLevel, 
+            string confirmationLink)
         {
             TemplateId = EmailConstants.VerifyContactEmailEmployerDemandTemplateId;
             Subject  = "Confirm your contact email address";
