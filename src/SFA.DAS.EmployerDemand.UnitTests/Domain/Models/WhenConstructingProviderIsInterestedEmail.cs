@@ -20,7 +20,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string providerEmail,
             string providerPhone,
             string providerWebsite,
-            string fatUrl)
+            string fatUrl,
+            string stopSharingUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -33,7 +34,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDProviderTelephone", providerPhone },
                 {"AEDProviderWebsite", providerWebsite },
                 {"FatURL", $"You can find out more about this training provider at {fatUrl}" },
-                {"AEDStopSharingURL", "" }
+                {"AEDStopSharingURL", stopSharingUrl }
             };
 
             var email = new ProviderIsInterestedEmail(
@@ -47,7 +48,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                fatUrl);
+                fatUrl,
+                stopSharingUrl);
 
             email.TemplateId.Should().Be(EmailConstants.ProviderInterestedTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
@@ -69,7 +71,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string providerEmail,
             string providerPhone,
             string providerWebsite,
-            string fatUrl)
+            string fatUrl,
+            string stopSharingUrl)
         {
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
@@ -82,7 +85,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                fatUrl);
+                fatUrl,
+                stopSharingUrl);
 
             email.Tokens["AEDNumberOfApprentices"].Should().Be("Not sure");
         }
@@ -98,7 +102,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string providerName,
             string providerEmail,
             string providerPhone,
-            string fatUrl)
+            string fatUrl,
+            string stopSharingUrl)
         {
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
@@ -111,7 +116,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 providerEmail,
                 providerPhone,
                 null,
-                fatUrl);
+                fatUrl,
+                stopSharingUrl);
 
             email.Tokens["AEDProviderWebsite"].Should().Be("-");
         }
@@ -127,7 +133,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string providerName,
             string providerEmail,
             string providerPhone,
-            string providerWebsite)
+            string providerWebsite,
+            string stopSharingUrl)
         {
             var email = new ProviderIsInterestedEmail(
                 recipientEmail, 
@@ -140,7 +147,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 providerEmail,
                 providerPhone,
                 providerWebsite,
-                null);
+                null,
+                stopSharingUrl);
 
             email.Tokens["FatURL"].Should().Be("---");
         }

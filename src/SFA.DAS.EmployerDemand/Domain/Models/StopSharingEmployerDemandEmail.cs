@@ -3,27 +3,28 @@ using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
 {
-    public class CreateEmployerDemandReminderEmail : EmailTemplateArguments
+    public class StopSharingEmployerDemandEmail : EmailTemplateArguments
     {
-        public CreateEmployerDemandReminderEmail (
+        public StopSharingEmployerDemandEmail(
             string recipientEmail, 
             string employerName, 
             string standardName, 
             int standardLevel, 
-            string location, 
+            string location,
             int numberOfApprentices,
-            string stopSharingUrl)
+            string startSharingUrl)
         {
-            TemplateId = EmailConstants.EmployerDemandReminderTemplateId;
-            Subject = "We’re still sharing your interest in apprenticeship training with training providers";
+            TemplateId = EmailConstants.StopSharingEmployerDemandTemplateId;
             RecipientAddress = recipientEmail;
+            ReplyToAddress = EmailConstants.ReplyToAddress;
+            Subject = "We’ve stopped sharing your interest in apprenticeship training with training providers";
             Tokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", employerName },
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" },
-                {"AEDStopSharingURL", stopSharingUrl }
+                {"AEDStartSharingURL", "" }
             };
         }
     }

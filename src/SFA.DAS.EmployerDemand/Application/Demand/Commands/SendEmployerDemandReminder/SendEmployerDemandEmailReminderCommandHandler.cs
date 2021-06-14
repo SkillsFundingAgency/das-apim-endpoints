@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandR
 
             var emailModel = new CreateEmployerDemandReminderEmail(courseDemand.ContactEmailAddress,
                 courseDemand.OrganisationName, courseDemand.Course.Title, courseDemand.Course.Level,
-                courseDemand.Location.Name, courseDemand.NumberOfApprentices);
+                courseDemand.Location.Name, courseDemand.NumberOfApprentices, courseDemand.StopSharingUrl);
             
             await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
             

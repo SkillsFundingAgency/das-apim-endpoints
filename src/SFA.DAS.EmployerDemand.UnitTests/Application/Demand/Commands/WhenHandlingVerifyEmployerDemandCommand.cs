@@ -52,7 +52,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 getDemandResponse.Course.Title, 
                 getDemandResponse.Course.Level,
                 getDemandResponse.Location.Name,
-                getDemandResponse.NumberOfApprentices);
+                getDemandResponse.NumberOfApprentices,
+                getDemandResponse.StopSharingUrl);
             
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
@@ -93,29 +94,6 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_The_Api_Returns_Not_Found_Null_Is_Returned(
-            string errorContent,
-            VerifyEmployerDemandCommand command,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
-            [Frozen] Mock<INotificationService> notificationService,
-            VerifyEmployerDemandCommandHandler handler)
-        {
-            //Arrange
-            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(null, HttpStatusCode.NotFound, errorContent);
-            apiClient
-                .Setup(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostVerifyEmployerDemandEmailRequest>()))
-                .ReturnsAsync(apiResponse);
-            
-            //Act
-            var actual = await handler.Handle(command, CancellationToken.None);
-            
-            //Assert
-            actual.EmployerDemand.Should().BeNull();
-            notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
-                Times.Never);
-        }
-
-        [Test, MoqAutoData]
         public void Then_If_Error_For_Verify_An_Exception_Is_Thrown(
             string errorContent,
             GetEmployerDemandResponse getDemandResponse,
@@ -144,6 +122,5 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
         }
-        
     }
 }

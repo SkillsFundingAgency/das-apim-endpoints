@@ -6,7 +6,7 @@ using SFA.DAS.EmployerDemand.Domain.Models;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
 {
-    public class WhenConstructingCreateDemandConfirmationEmail
+    public class WhenConstructingStopSharingEmployerDemandEmail
     {
         [Test, AutoData]
         public void Then_Values_Are_Set_Correctly(
@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             int standardLevel, 
             string location, 
             int numberOfApprentices,
-            string stopSharingUrl)
+            string startSharingUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -24,22 +24,22 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
-                {"AEDStopSharingURL", stopSharingUrl }
+                {"AEDStartSharingURL", "" }
             };
 
-            var email = new CreateDemandConfirmationEmail(
+            var email = new StopSharingEmployerDemandEmail(
                 recipientEmail, 
                 recipientName,
                 standardName, 
                 standardLevel, 
                 location, 
                 numberOfApprentices,
-                stopSharingUrl);
+                startSharingUrl);
 
-            email.TemplateId.Should().Be(EmailConstants.CreateDemandConfirmationTemplateId);
+            email.TemplateId.Should().Be(EmailConstants.StopSharingEmployerDemandTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
             email.ReplyToAddress.Should().Be(EmailConstants.ReplyToAddress);
-            email.Subject.Should().Be("We’ve shared your interest in apprenticeship training with training providers");
+            email.Subject.Should().Be("We’ve stopped sharing your interest in apprenticeship training with training providers");
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
 
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string standardName, 
             int standardLevel, 
             string location,
-            string stopSharingUrl)
+            string startSharingUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -58,17 +58,17 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", "Not sure" },
-                {"AEDStopSharingURL", stopSharingUrl }
+                {"AEDStartSharingURL", "" }
             };
 
-            var email = new CreateDemandConfirmationEmail(
+            var email = new StopSharingEmployerDemandEmail(
                 recipientEmail, 
                 recipientName,
                 standardName, 
                 standardLevel, 
                 location, 
                 0,
-                stopSharingUrl);
+                startSharingUrl);
 
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
