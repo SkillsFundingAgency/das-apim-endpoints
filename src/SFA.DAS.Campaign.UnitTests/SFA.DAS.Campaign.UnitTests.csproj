@@ -23,4 +23,9 @@
       <ProjectReference Include="..\SFA.DAS.Campaign\SFA.DAS.Campaign.csproj" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Folder Include="Application\Queries\Articles\" />
+    </ItemGroup>
+
 </Project>

@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
+using SFA.DAS.Campaign.Models;
 
-namespace SFA.DAS.Campaign.Contentful
+namespace SFA.DAS.Campaign.Interfaces
 {
     public interface IContentfulService
     {

@@ -1,6 +1,6 @@
 using Contentful.Core.Models;
 
-namespace SFA.DAS.Campaign.Contentful
+namespace SFA.DAS.Campaign.Interfaces
 {
     public interface IContentType
     {

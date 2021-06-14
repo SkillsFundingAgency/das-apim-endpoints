@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core;
@@ -9,9 +8,10 @@ using Contentful.Core.Search;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Contentful;
+using SFA.DAS.Campaign.Application.Services;
+using SFA.DAS.Campaign.Models;
 
-namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
+namespace SFA.DAS.Campaign.UnitTests.Application.Services
 {
     public class ContentfulServiceTests
     {
@@ -31,7 +31,6 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
         }
 
         [Test]
-        //public void Constructor_WhenGivenNullContentfulClient_ThrowsArgumentNullException()
         public void WhenGivenNullContentfulClientInConstructorThenThrowsArgumentNullException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>

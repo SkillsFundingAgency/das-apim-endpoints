@@ -4,8 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Contentful.Core;
 using Contentful.Core.Search;
+using SFA.DAS.Campaign.Interfaces;
+using SFA.DAS.Campaign.Models;
 
-namespace SFA.DAS.Campaign.Contentful
+namespace SFA.DAS.Campaign.Application.Services
 {
     public class ContentfulService : IContentfulService
     {

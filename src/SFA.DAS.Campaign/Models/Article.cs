@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Contentful.Core.Models;
+using SFA.DAS.Campaign.Interfaces;
 
-namespace SFA.DAS.Campaign.Contentful
+namespace SFA.DAS.Campaign.Models
 {
     public class Article : IContentType
     {

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Campaign.Contentful
+﻿namespace SFA.DAS.Campaign
 {
     public static class ContentfulConstants
     {
