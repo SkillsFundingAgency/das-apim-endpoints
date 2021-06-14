@@ -6,10 +6,11 @@ Feature: AddApprenticeship
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Course Name             | Course Code | Email             |
-	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | alexa@example.org |
-	| 3  | Iris       | Ignored   | Not Whitelisted         | 9003        |                   |
-	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | zach@example.org  |
+	| Id | First Name | Last Name | Course Name             | Course Code | StandardUId | Email             |
+	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        |             | alexa@example.org |
+	| 3  | Iris       | Ignored   | Not Whitelisted         | 9003        |             |                   |
+	| 4  | Simon      | Standard  | Sociology               |             | SOC191_1.0  | simon@example.org |
+	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        |             | zach@example.org  |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -17,10 +18,11 @@ Background:
 	| 1002  | My Only Name |                 |
 
 	Given the following courses exist
-	| Id   | Title                   | Level |
-	| 9001 | Artificial Intelligence | 1     |
-	| 9002 | Zoology                 | 3     |
-	| 9003 | Not Whitelisted         | 2     |
+	| Id   | Title                   | Level | StandardUId |
+	| 9001 | Artificial Intelligence | 1     |             |
+	| 9002 | Zoology                 | 3     |             |
+	| 9003 | Not Whitelisted         | 2     |             |
+	| 9004 | Sociology               | 2     | SOC191_1.0  |
 
 Scenario: New apprenticeship is recieved and is valid 
 	When the following apprenticeship is posted
@@ -45,3 +47,10 @@ Scenario: New apprenticeship is recieved for non-whitelisted approval
 	| 3                            | SmallCo       | 124                              | 1002                 |
 	Then the request should be ignored
 	And the invitation was not sent
+
+Scenario: New apprenticeship is recieved with Standards Versioning
+	When the following apprenticeship is posted
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
+	| 4                            | Irrelevant    | 123                              | 1002                 | 2015-04-20              |
+	Then the course should be `Sociology` level 2
+
