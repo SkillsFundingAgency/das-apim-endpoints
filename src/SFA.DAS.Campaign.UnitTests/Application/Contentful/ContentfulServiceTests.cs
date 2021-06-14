@@ -31,7 +31,8 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
         }
 
         [Test]
-        public void Constructor_WhenGivenNullContentfulClient_ThrowsArgumentNullException()
+        //public void Constructor_WhenGivenNullContentfulClient_ThrowsArgumentNullException()
+        public void WhenGivenNullContentfulClientInConstructorThenThrowsArgumentNullException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() =>
             {
@@ -42,7 +43,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
         }
 
         [Test]
-        public async Task GetEntryForAsync_GivenAValidEntry_ReturnsTheContentType()
+        public async Task WhenGetEntryForAsyncIsGivenAValidEntryThenReturnsTheContentType()
         {
             _contentfulClient.Setup(o => o.GetEntry<Article>(It.IsAny<string>(), It.IsAny<QueryBuilder<Article>>(),
                     It.IsAny<CancellationToken>()))
@@ -57,7 +58,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
         }
 
         [Test]
-        public async Task GetArticleForAsync_GivenAValidId_ReturnsTheArticle()
+        public async Task WhenGetArticleForAsyncIsGivenAValidIdThenReturnsTheArticle()
         {
             _contentfulClient.Setup(o => o.GetEntries<Article>(It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ContentfulCollection<Article>()
@@ -81,7 +82,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Contentful
         }
 
         [Test]
-        public async Task GetArticleForAsync_GivenAValidHubTypeAndSlug_ReturnsArticle()
+        public async Task WhenGetArticleForAsyncIsGivenAValidHubTypeAndSlugThenReturnsArticle()
         {
             _contentfulClient.Setup(o => o.GetEntries<Article>(It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ContentfulCollection<Article>()
