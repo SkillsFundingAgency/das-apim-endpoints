@@ -17,6 +17,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDeman
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetStartCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -53,6 +54,24 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             }
 
             var model = (GetCourseDemandResponse) queryResult.EmployerDemand;
+            return Ok(model);
+        }
+        
+        [HttpGet]
+        [Route("{id}/restart")]
+        public async Task<IActionResult> Restart(Guid id)
+        {
+            var queryResult = await _mediator.Send(new GetRestartEmployerDemandQuery
+            {
+                Id = id
+            });
+
+            if (queryResult.EmployerDemand == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetRestartCourseDemandResponse) queryResult;
             return Ok(model);
         }
 
