@@ -47,7 +47,8 @@ namespace SFA.DAS.EmployerDemand.Application.ProviderInterest.Commands.CreatePro
                         request.Email, 
                         request.Phone, 
                         request.Website, 
-                        request.FatUrl);
+                        request.FatUrl,
+                        employerDemand.StopSharingUrl);
                     await _notificationService.Send(new SendEmailCommand(email.TemplateId,
                         email.RecipientAddress, email.Tokens));
                 }
