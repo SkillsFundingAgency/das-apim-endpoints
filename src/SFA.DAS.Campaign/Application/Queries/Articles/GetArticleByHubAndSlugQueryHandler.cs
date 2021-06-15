@@ -34,8 +34,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Articles
 
             return new GetArticleByHubAndSlugQueryResult
             {
-                Article = new Article() 
-                    
+                Article = article
             };
         }
     }

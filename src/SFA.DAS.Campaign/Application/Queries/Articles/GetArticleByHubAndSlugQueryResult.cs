@@ -7,6 +7,6 @@ namespace SFA.DAS.Campaign.Application.Queries.Articles
 {
     public class GetArticleByHubAndSlugQueryResult
     {
-        public Article Article { get; set; }
+        public CmsContent Article { get; set; }
     }
 }

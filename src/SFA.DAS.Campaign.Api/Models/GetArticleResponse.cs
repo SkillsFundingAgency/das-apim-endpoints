@@ -8,6 +8,6 @@ namespace SFA.DAS.Campaign.Api.Models
 {
     public class GetArticleResponse
     {
-        public Article Article { get; set; }
+        public CmsContent Article { get; set; }
     }
 }

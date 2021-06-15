@@ -33,7 +33,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                 Slug = slug
             }, cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(result.Article?.Sys.Id))
+            if (string.IsNullOrWhiteSpace(result.Article?.Sys.Type))
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
