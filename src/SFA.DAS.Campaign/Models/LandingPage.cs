@@ -3,7 +3,7 @@ using SFA.DAS.Campaign.Interfaces;
 
 namespace SFA.DAS.Campaign.Models
 {
-    public class LandingPage : IContentType
+    public class ALandingPage : IContentType
     {
         public string Description { get; set; }
         public string Title { get; set; }
