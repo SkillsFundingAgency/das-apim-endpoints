@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
-    [Route("accounts/{encodedAccountId}/pledges")]
-    public class PledgeController
+    public class PledgeController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -17,7 +17,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet]
+        [Route("pledges")]
+        public async Task<IActionResult> GetAllPledges()
+        {
+            var result = await _mediator.Send(new GetAllPledgesQuery());
+            return Ok(result);
+        }
+
         [HttpPost]
+        [Route("accounts/{encodedAccountId}/pledges")]
         public async Task<IActionResult> CreatePledge(string encodedAccountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand()
