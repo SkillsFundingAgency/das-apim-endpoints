@@ -28,19 +28,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
-            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
-
-            if (!response.IsSuccessStatusCode)
+            var result = await GetWithResponseCode<TResponse>(request);
+            
+            if (IsNot200RangeResponseCode(result.StatusCode))
             {
                 return default;
             }
 
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResponse>(json);
+            return result.Body;
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
