@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -51,6 +52,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
             return response.StatusCode;
+        }
+
+        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         protected abstract Task AddAuthenticationHeader();
