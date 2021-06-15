@@ -38,6 +38,8 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 
         [JsonProperty("location")]
         public Location Location { get; set; }
+        [JsonProperty("stopSharingUrl")]
+        public string StopSharingUrl { get; set; }
     }
     
     public class Course

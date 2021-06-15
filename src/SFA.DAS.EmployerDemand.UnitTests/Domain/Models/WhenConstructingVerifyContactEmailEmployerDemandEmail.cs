@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDConfirmEmailURL", confirmationLink}
             };
 
-            var actual = new CreateVerifyEmployerDemandEmail(recipientEmail, employerName, standardName, standardLevel, confirmationLink);
+            var actual = new VerifyEmployerDemandEmail(recipientEmail, employerName, standardName, standardLevel, confirmationLink);
 
             actual.TemplateId.Should().Be(EmailConstants.VerifyContactEmailEmployerDemandTemplateId);
             actual.Subject.Should().Be("Confirm your contact email address");
