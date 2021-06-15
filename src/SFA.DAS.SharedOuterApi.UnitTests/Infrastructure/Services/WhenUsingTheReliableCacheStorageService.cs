@@ -59,6 +59,30 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
         }
 
         [Test, MoqAutoData]
+        public async Task Then_If_The_Request_Is_Not_Found_Then_Null_Returned(
+            string cacheKey,
+            string errorContent,
+            TestRequest request,
+            TestData requestData,
+            [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            ReliableCacheStorageService reliableCacheStorageService)
+        {
+            var response = new ApiResponse<TestData>(requestData, HttpStatusCode.NotFound, errorContent);
+            getApiClient
+                .Setup(
+                    x => x.GetWithResponseCode<TestData>(It.Is<IGetApiRequest>(c => c.GetUrl.Equals(request.GetUrl))))
+                .ReturnsAsync(response);
+            
+            //Act
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey);
+            
+            //Assert
+            actual.Should().BeNull();
+            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_If_The_Request_Is_Not_Successful_Then_The_Short_Cache_Is_Updated_From_Long_Cache(
             string cacheKey,
             string errorContent,

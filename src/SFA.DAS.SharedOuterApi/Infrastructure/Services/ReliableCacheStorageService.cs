@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -25,6 +26,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             
             var requestData = await _client.GetWithResponseCode<T>(request);
 
+            if (requestData.StatusCode == HttpStatusCode.NotFound)
+            {
+                return default;
+            }
+            
             if ((int)requestData.StatusCode < 200 || (int)requestData.StatusCode >= 300)
             {
                 var longCachedItem = await _cacheStorageService.RetrieveFromCache<T>($"{cacheKey}_extended");
