@@ -80,9 +80,19 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             await Task.WhenAll(trainingProviderTask, apprenticeTask);
 
-            var course = await _coursesService.GetCourse(apprenticeTask.Result.CourseCode);
+            var courseCode = ApprenticeCourseCode(apprenticeTask.Result);
+
+            var course = await _coursesService.GetCourse(courseCode);
 
             return (trainingProviderTask.Result, apprenticeTask.Result, course);
+        }
+
+        private static string ApprenticeCourseCode(Apis.CommitmentsV2InnerApi.ApprenticeshipResponse apprenticeTask)
+        {
+            // Remove after Standards Versioning goes live
+            // Revert to just StandardUId
+            return string.IsNullOrWhiteSpace(apprenticeTask.StandardUId)
+                ? apprenticeTask.CourseCode : apprenticeTask.StandardUId;
         }
     }
 }

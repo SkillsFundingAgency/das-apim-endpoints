@@ -120,10 +120,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             foreach (var course in _courseResponses)
             {
+                var id = string.IsNullOrWhiteSpace(course.StandardUId)
+                    ? course.Id.ToString()
+                    : course.StandardUId;
+
                 _context.CoursesInnerApi.MockServer
                     .Given(
                         Request.Create()
-                            .WithPath($"/api/courses/standards/{course.Id}")
+                            .WithPath($"/api/courses/standards/{id}")
                             .UsingGet())
                     .RespondWith(
                         Response.Create()
