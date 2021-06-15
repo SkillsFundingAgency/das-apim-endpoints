@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Contentful.Core;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
@@ -10,25 +11,17 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Application.Services;
 using SFA.DAS.Campaign.Models;
+using SFA.DAS.Campaign.UnitTests.Builders;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Services
 {
     public class ContentfulServiceTests
     {
-        private Mock<IContentfulClient> _contentfulClient;
-        private ContentfulService _service;
         const string ARTICLE_TITLE = "A Title";
         private const string ENTRY_ID = "entryid";
         private const string HUB_TYPE = "home";
         private const string SLUG = "slug-name";
-
-
-        [SetUp]
-        public void Setup()
-        {
-            _contentfulClient = new Mock<IContentfulClient>();
-            _service = new ContentfulService(_contentfulClient.Object);
-        }
 
         [Test]
         public void WhenGivenNullContentfulClientInConstructorThenThrowsArgumentNullException()
@@ -41,69 +34,58 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Services
             exception.ParamName.Should().Be("client");
         }
 
-        [Test]
-        public async Task WhenGetEntryForAsyncIsGivenAValidEntryThenReturnsTheContentType()
+        [Test, RecursiveMoqAutoData]
+        public async Task WhenGetEntryForAsyncIsGivenAValidEntryThenReturnsTheContentType([Frozen] Mock<IContentfulClient> client, [Greedy] ContentfulService service)
         {
-            _contentfulClient.Setup(o => o.GetEntry<Article>(It.IsAny<string>(), It.IsAny<QueryBuilder<Article>>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Article
-                {
-                    Title = ARTICLE_TITLE
-                });
+            client.Setup(o => o.GetEntry(It.IsAny<string>(), It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(ArticleBuilder.New().SetTitle(ARTICLE_TITLE).Build());
 
-            var actual = await _service.GetEntryForAsync<Article>(ENTRY_ID, new QueryBuilder<Article>());
+            var actual = await service.GetEntryForAsync<Article>(ENTRY_ID, new QueryBuilder<Article>());
 
             actual.Title.Should().Be(ARTICLE_TITLE);
         }
 
-        [Test]
-        public async Task WhenGetArticleForAsyncIsGivenAValidIdThenReturnsTheArticle()
+        [Test, RecursiveMoqAutoData]
+        public async Task WhenGetArticleForAsyncIsGivenAValidIdThenReturnsTheArticle([Frozen] Mock<IContentfulClient> client, [Greedy] ContentfulService service)
         {
-            _contentfulClient.Setup(o => o.GetEntries<Article>(It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ContentfulCollection<Article>()
-                {
-                    Items = new List<Article>
-                    {
-                        new Article
-                        {
-                            Title = ARTICLE_TITLE,
-                            Sys = new SystemProperties
-                            {
-                                Id = ENTRY_ID
-                            }
-                        }
-                    }
-                });
+            SetupClientMockForEntriesMethodCall(client, 
+                ArticleBuilder.New()
+                    .SetTitle(ARTICLE_TITLE)
+                    .SetId(ENTRY_ID)
+                    .Build());
 
-            var actual = await _service.GetArticleForAsync(ENTRY_ID);
+            var actual = await service.GetArticleForAsync(ENTRY_ID);
 
             actual.Title.Should().Be(ARTICLE_TITLE);
         }
 
-        [Test]
-        public async Task WhenGetArticleForAsyncIsGivenAValidHubTypeAndSlugThenReturnsArticle()
+        [Test, RecursiveMoqAutoData]
+        public async Task WhenGetArticleForAsyncIsGivenAValidHubTypeAndSlugThenReturnsArticle([Frozen] Mock<IContentfulClient> client, [Greedy] ContentfulService service)
         {
-            _contentfulClient.Setup(o => o.GetEntries<Article>(It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
+
+            SetupClientMockForEntriesMethodCall(client,
+                ArticleBuilder.New()
+                    .SetTitle(ARTICLE_TITLE)
+                    .SetId(ENTRY_ID)
+                    .SetSlug(SLUG)
+                    .SetHubType(HUB_TYPE)
+                    .Build());
+
+            var actual = await service.GetArticleForAsync(HUB_TYPE, SLUG);
+
+            actual.Title.Should().Be(ARTICLE_TITLE);
+        }
+
+        private static void SetupClientMockForEntriesMethodCall(Mock<IContentfulClient> client, Article articleToReturn)
+        {
+            client.Setup(o => o.GetEntries(It.IsAny<QueryBuilder<Article>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ContentfulCollection<Article>()
                 {
                     Items = new List<Article>
                     {
-                        new Article
-                        {
-                            Title = ARTICLE_TITLE,
-                            Sys = new SystemProperties
-                            {
-                                Id = ENTRY_ID
-                            },
-                            HubType = HUB_TYPE,
-                            Slug = SLUG
-                        }
+                        articleToReturn
                     }
                 });
-
-            var actual = await _service.GetArticleForAsync(HUB_TYPE, SLUG);
-
-            actual.Title.Should().Be(ARTICLE_TITLE);
         }
     }
 }
