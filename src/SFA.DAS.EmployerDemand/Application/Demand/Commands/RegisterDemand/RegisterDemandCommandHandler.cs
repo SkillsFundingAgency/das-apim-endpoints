@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
-using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -51,12 +50,13 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Title = request.CourseTitle,
                     Level = request.CourseLevel,
                     Route = request.CourseRoute,
-                }
+                },
+                StopSharingUrl = request.StopSharingUrl
             }));
             
             if (result.StatusCode == HttpStatusCode.Created)
             {
-                var emailModel = new CreateVerifyEmployerDemandEmail(
+                var emailModel = new VerifyEmployerDemandEmail(
                     request.ContactEmailAddress,
                     request.OrganisationName,
                     request.CourseTitle,

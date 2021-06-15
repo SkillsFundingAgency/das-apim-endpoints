@@ -17,5 +17,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         public int CourseId { get ; set ; }
         public string CourseRoute { get ; set ; }
         public string ConfirmationLink { get ; set ; }
+        public string StopSharingUrl { get ; set ; }
     }
 }

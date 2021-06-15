@@ -10,7 +10,6 @@ using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
-using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -45,6 +44,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     && ((CreateCourseDemandData)c.Data).Course.Level.Equals(command.CourseLevel)
                     && ((CreateCourseDemandData)c.Data).Course.Id.Equals(command.CourseId)
                     && ((CreateCourseDemandData)c.Data).Course.Route.Equals(command.CourseRoute)
+                    && ((CreateCourseDemandData)c.Data).StopSharingUrl.Equals(command.StopSharingUrl)
                 )))
                 .ReturnsAsync(apiResponse);
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
                 .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
-            var expectedEmail = new CreateVerifyEmployerDemandEmail(
+            var expectedEmail = new VerifyEmployerDemandEmail(
                 command.ContactEmailAddress,
                 command.OrganisationName,
                 command.CourseTitle, 
