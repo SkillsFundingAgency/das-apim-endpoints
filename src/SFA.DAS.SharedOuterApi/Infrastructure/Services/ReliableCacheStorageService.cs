@@ -5,12 +5,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 {
-    public class ReliableCacheStorageService : IReliableCacheStorageService
+    public class ReliableCacheStorageService<TConfiguration> : IReliableCacheStorageService where TConfiguration : IApiConfiguration
     {
-        private readonly IGetApiClient<IApiConfiguration> _client;
+        private readonly IGetApiClient<TConfiguration> _client;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public ReliableCacheStorageService (IGetApiClient<IApiConfiguration> client, ICacheStorageService cacheStorageService)
+        public ReliableCacheStorageService (IGetApiClient<TConfiguration> client, ICacheStorageService cacheStorageService)
         {
             _client = client;
             _cacheStorageService = cacheStorageService;

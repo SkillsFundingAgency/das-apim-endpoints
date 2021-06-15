@@ -22,7 +22,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             TestData requestData,
             [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            ReliableCacheStorageService reliableCacheStorageService)
+            ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
             //Arrange
             var response = new ApiResponse<TestData>(requestData, HttpStatusCode.OK, "");
@@ -45,7 +45,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             TestData requestData,
             [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            ReliableCacheStorageService reliableCacheStorageService)
+            ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
             //Arrange
             cacheStorageService.Setup(x => x.RetrieveFromCache<TestData>(cacheKey)).ReturnsAsync(requestData);
@@ -66,7 +66,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             TestData requestData,
             [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            ReliableCacheStorageService reliableCacheStorageService)
+            ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
             var response = new ApiResponse<TestData>(requestData, HttpStatusCode.NotFound, errorContent);
             getApiClient
@@ -91,7 +91,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             TestData cacheData,
             [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            ReliableCacheStorageService reliableCacheStorageService)
+            ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
             //Arrange
             var response = new ApiResponse<TestData>(requestData, HttpStatusCode.TooManyRequests, errorContent);
