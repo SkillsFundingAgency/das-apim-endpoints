@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace SFA.DAS.Campaign.Models
 {
@@ -47,10 +45,10 @@ namespace SFA.DAS.Campaign.Models
 
     public partial class EntryFields
     {
-        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("description")]
         public string Description { get; set; }
 
-        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("slug")]
@@ -102,7 +100,7 @@ namespace SFA.DAS.Campaign.Models
         public string Value { get; set; }
 
         [JsonProperty("nodeType")]
-        public NodeType NodeType { get; set; }
+        public string NodeType { get; set; }
 
         [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
         public List<FluffyContent> Content { get; set; }
@@ -120,7 +118,7 @@ namespace SFA.DAS.Campaign.Models
         public string Value { get; set; }
 
         [JsonProperty("nodeType")]
-        public NodeType NodeType { get; set; }
+        public string NodeType { get; set; }
     }
 
     public partial class BodyData
@@ -154,7 +152,7 @@ namespace SFA.DAS.Campaign.Models
         public string Id { get; set; }
 
         [JsonProperty("type")]
-        public LinkTypeEnum Type { get; set; }
+        public string Type { get; set; }
 
         [JsonProperty("createdAt")]
         public DateTimeOffset CreatedAt { get; set; }
@@ -184,10 +182,10 @@ namespace SFA.DAS.Campaign.Models
     public partial class LandingPageSys
     {
         [JsonProperty("type")]
-        public PurpleType Type { get; set; }
+        public string Type { get; set; }
 
         [JsonProperty("linkType")]
-        public LinkTypeEnum LinkType { get; set; }
+        public string LinkType { get; set; }
 
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -231,154 +229,5 @@ namespace SFA.DAS.Campaign.Models
         [JsonProperty("sections")]
         public List<LandingPage> Sections { get; set; }
     }
-
-    public enum NodeType { Hyperlink, Text };
-
-    public enum LinkTypeEnum { ContentType, Entry, Environment, Space };
-
-    public enum PurpleType { Link };
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                NodeTypeConverter.Singleton,
-                LinkTypeEnumConverter.Singleton,
-                PurpleTypeConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
-
-    internal class NodeTypeConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(NodeType) || t == typeof(NodeType?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "hyperlink":
-                    return NodeType.Hyperlink;
-                case "text":
-                    return NodeType.Text;
-            }
-            throw new Exception("Cannot unmarshal type NodeType");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (NodeType)untypedValue;
-            switch (value)
-            {
-                case NodeType.Hyperlink:
-                    serializer.Serialize(writer, "hyperlink");
-                    return;
-                case NodeType.Text:
-                    serializer.Serialize(writer, "text");
-                    return;
-            }
-            throw new Exception("Cannot marshal type NodeType");
-        }
-
-        public static readonly NodeTypeConverter Singleton = new NodeTypeConverter();
-    }
-
-    internal class LinkTypeEnumConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(LinkTypeEnum) || t == typeof(LinkTypeEnum?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "ContentType":
-                    return LinkTypeEnum.ContentType;
-                case "Entry":
-                    return LinkTypeEnum.Entry;
-                case "Environment":
-                    return LinkTypeEnum.Environment;
-                case "Space":
-                    return LinkTypeEnum.Space;
-            }
-            throw new Exception("Cannot unmarshal type LinkTypeEnum");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (LinkTypeEnum)untypedValue;
-            switch (value)
-            {
-                case LinkTypeEnum.ContentType:
-                    serializer.Serialize(writer, "ContentType");
-                    return;
-                case LinkTypeEnum.Entry:
-                    serializer.Serialize(writer, "Entry");
-                    return;
-                case LinkTypeEnum.Environment:
-                    serializer.Serialize(writer, "Environment");
-                    return;
-                case LinkTypeEnum.Space:
-                    serializer.Serialize(writer, "Space");
-                    return;
-            }
-            throw new Exception("Cannot marshal type LinkTypeEnum");
-        }
-
-        public static readonly LinkTypeEnumConverter Singleton = new LinkTypeEnumConverter();
-    }
-
-    internal class PurpleTypeConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(PurpleType) || t == typeof(PurpleType?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            if (value == "Link")
-            {
-                return PurpleType.Link;
-            }
-            throw new Exception("Cannot unmarshal type PurpleType");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (PurpleType)untypedValue;
-            if (value == PurpleType.Link)
-            {
-                serializer.Serialize(writer, "Link");
-                return;
-            }
-            throw new Exception("Cannot marshal type PurpleType");
-        }
-
-        public static readonly PurpleTypeConverter Singleton = new PurpleTypeConverter();
-    }
-
 
 }
