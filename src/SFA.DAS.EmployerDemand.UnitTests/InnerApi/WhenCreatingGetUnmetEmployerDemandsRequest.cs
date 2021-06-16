@@ -8,13 +8,13 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
     public class WhenCreatingGetUnmetEmployerDemandsRequest
     {
         [Test, AutoData]
-        public void Then_Creates_Url_Correctly(uint ageOfDemandInDays)
+        public void Then_Creates_Url_Correctly(uint ageOfDemandInDays, int courseId)
         {
             //Arrange
-            var actual = new GetUnmetEmployerDemandsRequest(ageOfDemandInDays);
+            var actual = new GetUnmetEmployerDemandsRequest(ageOfDemandInDays, courseId);
             
             //Assert
-            actual.GetUrl.Should().Be($"api/Demand/unmet?ageOfDemandInDays={ageOfDemandInDays}");
+            actual.GetUrl.Should().Be($"api/Demand/unmet?ageOfDemandInDays={ageOfDemandInDays}&courseId={courseId}");
         }
     }
 }
