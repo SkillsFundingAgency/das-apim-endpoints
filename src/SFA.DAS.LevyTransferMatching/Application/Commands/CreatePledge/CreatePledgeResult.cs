@@ -2,8 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 {
-    public class CreatePledgeResult
+    public class CreatePledgeResult : PledgeReference
     {
-        public PledgeReference PledgeReference { get; set; }
     }
 }

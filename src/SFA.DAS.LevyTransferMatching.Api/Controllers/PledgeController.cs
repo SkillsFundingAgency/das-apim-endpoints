@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -22,7 +23,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> GetAllPledges()
         {
             var result = await _mediator.Send(new GetAllPledgesQuery());
-            return Ok(result);
+
+            return Ok(result.Select(x => (PledgeDto)x));
         }
 
         [HttpPost]
@@ -40,8 +42,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return new CreatedResult(
-                $"/accounts/{encodedAccountId}/pledges/{commandResult.PledgeReference.Id}",
-                (PledgeReferenceDto)commandResult.PledgeReference);
+                $"/accounts/{encodedAccountId}/pledges/{commandResult.EncodedPledgeId}",
+                (PledgeReferenceDto)commandResult);
         }
     }
 }

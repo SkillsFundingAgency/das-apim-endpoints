@@ -17,7 +17,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
         public async Task Then_(
             CreatePledgeCommand createPledgeCommand,
             long accountId,
-            PledgeReference pledgeReference,
+            CreatePledgeResult expectedCreatePledgeResult,
             [Frozen] Mock<IEncodingService> mockEncodingService,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
@@ -28,11 +28,12 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
 
             mockLevyTransferMatchingService
                 .Setup(x => x.CreatePledge(It.Is<Pledge>(y => y.AccountId == accountId)))
-                .ReturnsAsync(pledgeReference);
+                .ReturnsAsync(expectedCreatePledgeResult);
 
-            var createPledgeResult = await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
+            var actualCreatePledgeResult = await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
 
-            Assert.AreEqual(pledgeReference, createPledgeResult.PledgeReference);
+            // TODO: Needs fixing
+            Assert.AreEqual(expectedCreatePledgeResult, actualCreatePledgeResult);
         }
     }
 }

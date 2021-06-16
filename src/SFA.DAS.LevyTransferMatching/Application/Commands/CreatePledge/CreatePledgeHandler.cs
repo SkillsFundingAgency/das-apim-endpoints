@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 
             return new CreatePledgeResult()
             {
-                PledgeReference = pledgeReference,
+                EncodedPledgeId = _encodingService.Encode(pledgeReference.Id.Value, EncodingType.PledgeId),
             };
         }
     }

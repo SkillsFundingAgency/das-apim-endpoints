@@ -45,11 +45,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return apiResponse.Body;
         }
 
-        public async Task<List<Pledge>> GetAllPledges()
+        public async Task<IEnumerable<Pledge>> GetAllPledges()
         {
             var response = await _levyTransferMatchingApiClient.GetAll<Pledge>(new GetAllPledgesRequest());
 
-            return response.ToList();
+            return response;
         }
     }
 }
