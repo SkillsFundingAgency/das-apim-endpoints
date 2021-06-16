@@ -20,6 +20,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetStartCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetDemandsWithStoppedCourse;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerDemand.Api.Controllers
@@ -251,6 +252,23 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting unmet course demands");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("unmet/expired-course")]
+        public async Task<IActionResult> UnmetCourseDemandsWithStoppedCourse()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUnmetDemandsWithStoppedCourseQuery());
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting unmet course demands with a stopped course");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
