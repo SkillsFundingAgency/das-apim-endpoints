@@ -31,7 +31,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
                 return default;
             }
             
-            if ((int)requestData.StatusCode < 200 || (int)requestData.StatusCode >= 300)
+            if ((int)requestData.StatusCode < 200 || (int)requestData.StatusCode > 300)
             {
                 var longCachedItem = await _cacheStorageService.RetrieveFromCache<T>($"{cacheKey}_extended");
                 await _cacheStorageService.SaveToCache(cacheKey, longCachedItem, TimeSpan.FromMinutes(5));
