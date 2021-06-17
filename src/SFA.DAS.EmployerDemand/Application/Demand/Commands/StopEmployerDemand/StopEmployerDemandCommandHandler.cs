@@ -50,6 +50,9 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)stopDemandResponse.StatusCode} ({stopDemandResponse.StatusCode})", stopDemandResponse.StatusCode, stopDemandResponse.ErrorContent);
             }
+            
+            await _demandApiClient.PostWithResponseCode<object>(
+                new PostEmployerDemandNotificationAuditRequest(request.Id, request.EmployerDemandId, NotificationType.StoppedByUser));
 
             var emailArgs = new StopSharingEmployerDemandEmail(
                 stopDemandResponse.Body.ContactEmailAddress,

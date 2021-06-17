@@ -349,6 +349,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             {
                 var commandResult = await _mediator.Send(new StopEmployerDemandCommand
                 {
+                    Id = Guid.NewGuid(),
                     EmployerDemandId = id
                 });
                 var model =  (GetCourseDemandResponse) commandResult.EmployerDemand;
