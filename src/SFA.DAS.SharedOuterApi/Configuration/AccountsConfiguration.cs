@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerIncentives.Configuration
+namespace SFA.DAS.SharedOuterApi.Configuration
 {
     public class AccountsConfiguration : IInternalApiConfiguration
     {
