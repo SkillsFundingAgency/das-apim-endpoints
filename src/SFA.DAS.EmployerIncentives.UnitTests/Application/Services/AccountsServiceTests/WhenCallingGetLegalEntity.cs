@@ -4,10 +4,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
-using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
-using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.AccountsServiceTests
