@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand
                 stopDemandResponse.Body.Course.Level,
                 stopDemandResponse.Body.Location.Name,
                 stopDemandResponse.Body.NumberOfApprentices,
-                null);
+                stopDemandResponse.Body.StartSharingUrl);
             await _notificationService.Send(new SendEmailCommand(
                 EmailConstants.StopSharingEmployerDemandTemplateId,
                 stopDemandResponse.Body.ContactEmailAddress,
