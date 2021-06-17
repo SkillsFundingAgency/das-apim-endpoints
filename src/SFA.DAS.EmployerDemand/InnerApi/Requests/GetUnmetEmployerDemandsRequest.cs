@@ -5,14 +5,12 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
     public class GetUnmetEmployerDemandsRequest : IGetApiRequest
     {
         private readonly uint _ageOfDemandInDays;
-        private readonly int? _courseId;
 
-        public GetUnmetEmployerDemandsRequest (uint ageOfDemandInDays, int? courseId = null)
+        public GetUnmetEmployerDemandsRequest (uint ageOfDemandInDays)
         {
             _ageOfDemandInDays = ageOfDemandInDays;
-            _courseId = courseId;
         }
 
-        public string GetUrl => $"api/Demand/unmet?ageOfDemandInDays={_ageOfDemandInDays}&courseId={_courseId}";
+        public string GetUrl => $"api/Demand/unmet?ageOfDemandInDays={_ageOfDemandInDays}";
     }
 }

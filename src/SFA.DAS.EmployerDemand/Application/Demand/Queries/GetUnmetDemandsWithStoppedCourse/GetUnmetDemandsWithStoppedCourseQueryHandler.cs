@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetDemandsWithS
             foreach (var standard in stoppedCourses.Standards)
             {
                 var unmetDemandsResponse = await _employerDemandApiClient.Get<GetUnmetCourseDemandsResponse>(
-                        new GetUnmetEmployerDemandsRequest(0, standard.LarsCode));
+                        new GetUnmetEmployerDemandsRequest(0));
                 unmetDemandIdsForAllCourses.AddRange(unmetDemandsResponse.EmployerDemandIds);
             }
 
