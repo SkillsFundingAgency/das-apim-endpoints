@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.CourseStopped;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendAutomaticEmployerDemandDemandCutOff;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandReminder;
@@ -232,6 +233,26 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error creating automatic cut off email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{demandId}/send-course-stopped-email/{id}")]
+        public async Task<IActionResult> SendCourseStoppedEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new CourseStoppedCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating course stopped email for course demand item {demandId}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
