@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,19 +27,19 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetDemandsWithS
 
         public async Task<GetUnmetDemandsWithStoppedCourseResult> Handle(GetUnmetDemandsWithStoppedCourseQuery request, CancellationToken cancellationToken)
         {
-            var stoppedCourses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsClosedToNewStartsRequest());
+            var stoppedCoursesTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsClosedToNewStartsRequest());
+            var unmetDemandsResponseTask = _employerDemandApiClient.Get<GetUnmetCourseDemandsResponse>(new GetUnmetEmployerDemandsRequest(0));
+            await Task.WhenAll(stoppedCoursesTask, unmetDemandsResponseTask);
 
-            var unmetDemandIdsForAllCourses = new List<Guid>();
-            foreach (var standard in stoppedCourses.Standards)
-            {
-                var unmetDemandsResponse = await _employerDemandApiClient.Get<GetUnmetCourseDemandsResponse>(
-                        new GetUnmetEmployerDemandsRequest(0));
-                unmetDemandIdsForAllCourses.AddRange(unmetDemandsResponse.EmployerDemandIds);
-            }
+            var stoppedCourseIds = stoppedCoursesTask.Result.Standards
+                .Select(item => item.LarsCode);
+            var unmetEmployerDemandIds = unmetDemandsResponseTask.Result.UnmetCourseDemands
+                .Where(demand => stoppedCourseIds.Contains(demand.CourseId))
+                .Select(demand => demand.Id);
 
             return new GetUnmetDemandsWithStoppedCourseResult
             {
-                EmployerDemandIds = unmetDemandIdsForAllCourses
+                EmployerDemandIds = unmetEmployerDemandIds
             };
         }
     }

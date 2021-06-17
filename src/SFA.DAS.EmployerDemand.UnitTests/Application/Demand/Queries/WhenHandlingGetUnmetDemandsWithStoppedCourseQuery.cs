@@ -19,10 +19,10 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
 {
     public class WhenHandlingGetUnmetDemandsWithStoppedCourseQuery
     {
-        [Test, MoqAutoData, Ignore("about to change in next commit")]
+        [Test, MoqAutoData]
         public async Task Then_Gets_The_CourseDemand_Ids_From_The_Api(
             GetStandardsListResponse closedStandardsApiResponse,
-            List<GetUnmetCourseDemandsResponse> unmetDemandResponses,
+            GetUnmetCourseDemandsResponse unmetDemandResponse,
             GetUnmetDemandsWithStoppedCourseQuery query,
             [Frozen]Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
@@ -33,22 +33,14 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.IsAny<GetStandardsClosedToNewStartsRequest>()))
                 .ReturnsAsync(closedStandardsApiResponse);
-            var standards = closedStandardsApiResponse.Standards.ToList();
-            for (var x = 0; x < standards.Count; x++)
-            {
-                var i = x;//needed to extend lifetime of value of x
-                var expectedApiRequest = new GetUnmetEmployerDemandsRequest(0);
-                mockEmployerDemandApiClient
-                    .Setup(client => client.Get<GetUnmetCourseDemandsResponse>(
-                        It.Is<GetUnmetEmployerDemandsRequest>(c => c.GetUrl == expectedApiRequest.GetUrl)))
-                    .ReturnsAsync(unmetDemandResponses[i]);
-            }
-            var expectedDemandIds = new List<Guid>();
-            foreach (var demandsResponse in unmetDemandResponses)
-            {
-                expectedDemandIds.AddRange(demandsResponse.EmployerDemandIds);
-            }
-
+            var expectedApiRequest = new GetUnmetEmployerDemandsRequest(0);
+            mockEmployerDemandApiClient
+                .Setup(client => client.Get<GetUnmetCourseDemandsResponse>(
+                    It.Is<GetUnmetEmployerDemandsRequest>(c => c.GetUrl == expectedApiRequest.GetUrl)))
+                .ReturnsAsync(unmetDemandResponse);
+            unmetDemandResponse.UnmetCourseDemands[0].CourseId = closedStandardsApiResponse.Standards[0].LarsCode;
+            var expectedDemandIds = new List<Guid> {unmetDemandResponse.UnmetCourseDemands[0].Id};
+            
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
             
