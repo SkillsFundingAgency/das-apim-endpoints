@@ -9,6 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public string EncodedAccountId { get; set; }
         public int Amount { get; set; }
         public bool IsNamePublic { get; set; }
+        public string DasAccountName { get; set; }
         public DateTime CreatedOn { get; set; }
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> JobRoles { get; set; }

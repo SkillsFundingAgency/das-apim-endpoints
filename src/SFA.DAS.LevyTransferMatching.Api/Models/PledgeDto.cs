@@ -12,6 +12,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
         public bool IsNamePublic { get; set; }
 
+        public string DasAccountName { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public IEnumerable<string> JobRoles { get; set; }
@@ -29,6 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                 EncodedAccountId = pledge.EncodedAccountId,
                 EncodedPledgeId = pledge.EncodedPledgeId,
                 IsNamePublic = pledge.IsNamePublic,
+                DasAccountName = pledge.IsNamePublic ? pledge.DasAccountName : "Opportunity",
                 JobRoles = pledge.JobRoles,
                 Levels = pledge.Levels,
                 Sectors = pledge.Sectors,

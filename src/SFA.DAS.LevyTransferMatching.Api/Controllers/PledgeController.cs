@@ -36,6 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 Amount = createPledgeRequest.Amount,
                 EncodedAccountId = encodedAccountId,
                 IsNamePublic = createPledgeRequest.IsNamePublic,
+                DasAccountName = createPledgeRequest.DasAccountName,
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
