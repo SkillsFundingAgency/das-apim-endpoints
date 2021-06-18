@@ -51,5 +51,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
             return response;
         }
+
+        public async Task<Pledge> GetPledge(int id)
+        {
+            var response = await _levyTransferMatchingApiClient.Get<Pledge>(new GetPledgeRequest(id));
+
+            return response;
+        }
     }
 }

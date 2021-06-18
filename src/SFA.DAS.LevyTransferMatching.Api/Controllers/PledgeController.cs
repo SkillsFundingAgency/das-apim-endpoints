@@ -27,6 +27,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok(result.Select(x => (PledgeDto)x));
         }
 
+        [HttpGet]
+        [Route("pledges/{encodedId}")]
+        public async Task<IActionResult> GetPledge(string encodedId)
+        {
+            var result = await _mediator.Send(new GetPledgesQuery()
+            {
+                EncodedId = encodedId,
+            });
+
+            var pledge = result.SingleOrDefault();
+
+            if (pledge != null)
+            {
+                return Ok((PledgeDto)pledge);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         [Route("accounts/{encodedAccountId}/pledges")]
         public async Task<IActionResult> CreatePledge(string encodedAccountId, [FromBody]CreatePledgeRequest createPledgeRequest)
