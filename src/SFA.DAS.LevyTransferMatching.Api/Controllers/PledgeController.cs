@@ -20,9 +20,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("pledges")]
-        public async Task<IActionResult> GetAllPledges()
+        public async Task<IActionResult> GetPledges()
         {
-            var result = await _mediator.Send(new GetAllPledgesQuery());
+            var result = await _mediator.Send(new GetPledgesQuery());
 
             return Ok(result.Select(x => (PledgeDto)x));
         }

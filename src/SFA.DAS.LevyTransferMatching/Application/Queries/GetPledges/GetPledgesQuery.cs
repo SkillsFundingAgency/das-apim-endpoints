@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges
 {
-    public class GetAllPledgesQuery : IRequest<GetAllPledgesResult>
+    public class GetPledgesQuery : IRequest<GetPledgesResult>
     {
     }
 }

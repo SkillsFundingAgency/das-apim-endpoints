@@ -14,10 +14,11 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
     public class WhenCallingHandle
     {
         [Test, MoqAutoData]
-        public async Task Then_(
+        public async Task Then_The_AccountId_Is_Decoded_Correctly_And_The_Pledge_Id_Is_Encoded_Correctly(
             CreatePledgeCommand createPledgeCommand,
             long accountId,
-            CreatePledgeResult expectedCreatePledgeResult,
+            CreatePledgeResult createPledgeResult,
+            string expectedEncodedPledgeId,
             [Frozen] Mock<IEncodingService> mockEncodingService,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
@@ -28,12 +29,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
 
             mockLevyTransferMatchingService
                 .Setup(x => x.CreatePledge(It.Is<Pledge>(y => y.AccountId == accountId)))
-                .ReturnsAsync(expectedCreatePledgeResult);
+                .ReturnsAsync(createPledgeResult);
+
+            mockEncodingService
+                .Setup(x => x.Encode(It.Is<long>(y => y == createPledgeResult.Id.Value), It.Is<EncodingType>(y => y == EncodingType.PledgeId)))
+                .Returns(expectedEncodedPledgeId);
 
             var actualCreatePledgeResult = await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
 
-            // TODO: Needs fixing
-            Assert.AreEqual(expectedCreatePledgeResult, actualCreatePledgeResult);
+            Assert.AreEqual(expectedEncodedPledgeId, actualCreatePledgeResult.EncodedPledgeId);
         }
     }
 }
