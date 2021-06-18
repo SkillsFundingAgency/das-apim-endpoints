@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges
 {
-    public class GetAllPledgesRequest : IGetAllApiRequest
+    public class GetPledgesRequest : IGetAllApiRequest
     {
         public string GetAllUrl => $"pledges";
     }
