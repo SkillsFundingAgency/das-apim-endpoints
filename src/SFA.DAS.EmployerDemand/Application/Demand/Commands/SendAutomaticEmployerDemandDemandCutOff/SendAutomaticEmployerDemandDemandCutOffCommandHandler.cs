@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.SendAutomaticEmploy
                 await _employerDemandApiClient.Get<GetEmployerDemandResponse>(
                     new GetEmployerDemandRequest(request.EmployerDemandId));
 
-            var emailModel = new StopSharingEmployerDemandEmail(courseDemand.ContactEmailAddress,
+            var emailModel = new StopSharingExpiredEmployerDemandEmail(courseDemand.ContactEmailAddress,
                 courseDemand.OrganisationName, courseDemand.Course.Title, courseDemand.Course.Level,
                 courseDemand.Location.Name, courseDemand.NumberOfApprentices, courseDemand.StartSharingUrl);
             
