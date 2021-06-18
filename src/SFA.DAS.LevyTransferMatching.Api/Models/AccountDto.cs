@@ -5,7 +5,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
     public class AccountDto
     {
         public string DasAccountName { get; set; }
-        public double RemainingTransferAllowance { get; set; }
+        public decimal RemainingTransferAllowance { get; set; }
 
         public static implicit operator AccountDto(Account account)
         {
