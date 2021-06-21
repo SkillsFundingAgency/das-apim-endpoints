@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -16,47 +15,51 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
 {
     public class WhenGettingArticles
     {
-        private const string HubName = "hub";
-        private const string SlugName = "slug";
 
         [Test, RecursiveMoqAutoData]
-        public async Task AndGivenAValidHubAndASlugThenTheArticleIsReturned(
+        public async Task And_Given_A_Valid_Hub_And_A_Slug_Then_The_Article_Is_Returned(
+            string hubName,
+            string slugName,
             GetArticleByHubAndSlugQueryResult mediatorResult, 
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ArticleController controller)
         {
-            SetupMediator(mediatorResult, mockMediator);
+            SetupMediator(mediatorResult, mockMediator, hubName, slugName);
 
-            var controllerResult = await InstantiateController<ObjectResult>(controller);
+            var controllerResult = await InstantiateController<OkObjectResult>(controller, hubName, slugName);
          
-            controllerResult.AssertThatTheObjectResultIsValid();
-            controllerResult.AssertThatTheObjectValueIsValid<GetArticleResponse>();
+            var actualResult = controllerResult.Value as GetArticleResponse;
+            Assert.IsNotNull(actualResult);
+            actualResult.Article.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
 
         [Test, RecursiveMoqAutoData]
-        public async Task AndGivenInvalidHubAndASlugThenTheArticleIsNotReturned(
+        public async Task And_Given_Invalid_Hub_And_A_Slug_Then_The_Article_Is_Not_Returned(
+            string hubName,
+            string slugName,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ArticleController controller)
         {
-            SetupMediator(new GetArticleByHubAndSlugQueryResult(), mockMediator);
+            SetupMediator(new GetArticleByHubAndSlugQueryResult(), mockMediator, hubName, slugName);
 
-            var controllerResult = await InstantiateController<NotFoundObjectResult>(controller);
+            var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName, slugName);
 
-            controllerResult.AssertThatTheNotFoundObjectResultIsValid();
-            controllerResult.AssertThatTheNotFoundObjectResultValueIsValid<NotFoundResponse>();
+            var actualResult = controllerResult.Value as NotFoundResponse;
+            Assert.IsNotNull(actualResult);
+            actualResult.Message.Should().Be($"Article not found for {hubName}/{slugName}");
         }
 
-        private static async Task<T> InstantiateController<T>(ArticleController controller)
+        private static async Task<T> InstantiateController<T>(ArticleController controller, string hubName, string slugName)
         {
-            var controllerResult = (T) await controller.GetArticleAsync(HubName, SlugName, CancellationToken.None);
+            var controllerResult = (T) await controller.GetArticleAsync(hubName, slugName, CancellationToken.None);
 
             return controllerResult;
         }
 
-        private static void SetupMediator(GetArticleByHubAndSlugQueryResult mediatorResult, Mock<IMediator> mockMediator)
+        private static void SetupMediator(GetArticleByHubAndSlugQueryResult mediatorResult, Mock<IMediator> mockMediator, string hubName, string slugName)
         {
             mockMediator
-                .Setup(mediator => mediator.Send(It.IsAny<GetArticleByHubAndSlugQuery>(), It.IsAny<CancellationToken>()))
+                .Setup(mediator => mediator.Send(It.Is<GetArticleByHubAndSlugQuery>(c=>c.Hub.Equals(hubName) && c.Slug.Equals(slugName)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
         }
     }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SFA.DAS.Campaign.Models;
+﻿using SFA.DAS.Campaign.Models;
 
 namespace SFA.DAS.Campaign.Api.Models
 {
     public class GetArticleResponse
     {
-        public CmsContent Article { get; set; }
+        public CmsPageModel Article { get; set; }
     }
 }

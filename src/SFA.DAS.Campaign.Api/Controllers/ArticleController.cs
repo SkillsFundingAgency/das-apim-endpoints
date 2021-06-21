@@ -5,11 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
-using SFA.DAS.Campaign.Extensions;
-using SFA.DAS.Campaign.Interfaces;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
@@ -29,21 +26,21 @@ namespace SFA.DAS.Campaign.Api.Controllers
         {
             var result = await _mediator.Send(new GetArticleByHubAndSlugQuery
             {
-                Hub = hub.ToTitleCase(),
+                Hub = hub,
                 Slug = slug
             }, cancellationToken);
 
-            if (!result.Article.Items.Any())
+            if (result.PageModel == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
-                    Message = $"couldn't find an article for {hub}/{slug}"
+                    Message = $"Article not found for {hub}/{slug}"
                 });
-            }
+            }    
 
             return Ok(new GetArticleResponse
             {
-                Article = result.Article
+                Article = result.PageModel
             });
 
         }
