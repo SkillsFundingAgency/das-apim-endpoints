@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -11,6 +8,8 @@ using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
+    [ApiController]
+    [Route("[controller]/")]
     public class ArticleController : Controller
     {
         private readonly IMediator _mediator;
