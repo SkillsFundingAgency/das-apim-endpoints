@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -6,7 +6,7 @@ using SFA.DAS.EmployerDemand.Domain.Models;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
 {
-    public class WhenConstructingStopSharingEmployerDemandEmail
+    public class WhenConstructingExpiredStopSharingEmployerDemandEmail
     {
         [Test, AutoData]
         public void Then_Values_Are_Set_Correctly(
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDStartSharingURL", startSharingUrl }
             };
 
-            var email = new StopSharingEmployerDemandEmail(
+            var email = new StopSharingExpiredEmployerDemandEmail(
                 recipientEmail, 
                 recipientName,
                 standardName, 
@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 numberOfApprentices,
                 startSharingUrl);
 
-            email.TemplateId.Should().Be(EmailConstants.StopSharingEmployerDemandTemplateId);
+            email.TemplateId.Should().Be(EmailConstants.StopSharingExpiredEmployerDemandTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
             email.ReplyToAddress.Should().Be(EmailConstants.ReplyToAddress);
             email.Subject.Should().Be("We’ve stopped sharing your interest in apprenticeship training with training providers");
@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDStartSharingURL", startSharingUrl }
             };
 
-            var email = new StopSharingEmployerDemandEmail(
+            var email = new StopSharingExpiredEmployerDemandEmail(
                 recipientEmail, 
                 recipientName,
                 standardName, 

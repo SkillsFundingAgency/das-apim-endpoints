@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 
 namespace SFA.DAS.EmployerDemand.Domain.Models
 {
-    public class StopSharingEmployerDemandEmail : EmailTemplateArguments
+    public class StopSharingExpiredEmployerDemandEmail : EmailTemplateArguments
     {
-        public StopSharingEmployerDemandEmail(
+        public StopSharingExpiredEmployerDemandEmail (
             string recipientEmail, 
             string employerName, 
             string standardName, 
@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             int numberOfApprentices,
             string startSharingUrl)
         {
-            TemplateId = EmailConstants.StopSharingEmployerDemandTemplateId;
+            TemplateId = EmailConstants.StopSharingExpiredEmployerDemandTemplateId;
             RecipientAddress = recipientEmail;
             ReplyToAddress = EmailConstants.ReplyToAddress;
             Subject = "We’ve stopped sharing your interest in apprenticeship training with training providers";
@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices > 0 ? numberOfApprentices.ToString() : "Not sure" },
                 {"AEDStartSharingURL", startSharingUrl }
-            };
+            };   
         }
     }
 }
