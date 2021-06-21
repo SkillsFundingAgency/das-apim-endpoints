@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 stopResponseBody.Course.Level,
                 stopResponseBody.Location.Name,
                 stopResponseBody.NumberOfApprentices, 
-                null);
+                stopResponseBody.StartSharingUrl);
 
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);

@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class LevyTransferMatchingApiClient : ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>
+    public class AccountsApiClient : IAccountsApiClient<AccountsConfiguration>
     {
-        private readonly IInternalApiClient<LevyTransferMatchingApiConfiguration> _client;
+        private readonly IInternalApiClient<AccountsConfiguration> _client;
 
-        public LevyTransferMatchingApiClient(IInternalApiClient<LevyTransferMatchingApiConfiguration> client)
+        public AccountsApiClient(IInternalApiClient<AccountsConfiguration> client)
         {
             _client = client;
         }
-
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _client.Get<TResponse>(request);
@@ -25,6 +23,11 @@ namespace SFA.DAS.LevyTransferMatching.Services
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             return _client.GetAll<TResponse>(request);
+        }
+
+        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+        {
+            return _client.GetPaged<TResponse>(request);
         }
 
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
@@ -69,17 +72,12 @@ namespace SFA.DAS.LevyTransferMatching.Services
 
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
         {
-            return _client.PostWithResponseCode<TResponse>(request);
+            throw new System.NotImplementedException();
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            return _client.PatchWithResponseCode(request);
-        }
-
-        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
-        {
-            return _client.GetPaged<TResponse>(request);
+            throw new System.NotImplementedException();
         }
     }
 }
