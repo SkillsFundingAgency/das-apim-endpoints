@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
+using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
@@ -43,6 +44,27 @@ namespace SFA.DAS.Campaign.Api.Controllers
                 Article = result.PageModel
             });
 
+        }
+
+        [HttpGet("preview/{hub}/{slug}")]
+        public async Task<IActionResult> GetPreviewArticle(string hub, string slug)
+        {
+            var result = await _mediator.Send(new GetPreviewArticleByHubAndSlugQuery
+            {
+                Hub = hub,
+                Slug = slug
+            });
+            if (result.PageModel == null)
+            {
+                return new NotFoundObjectResult(new NotFoundResponse
+                {
+                    Message = $"Preview article not found for {hub}/{slug}"
+                });
+            }
+            return Ok(new GetArticleResponse
+            {
+                Article = result.PageModel
+            });
         }
     }
 }
