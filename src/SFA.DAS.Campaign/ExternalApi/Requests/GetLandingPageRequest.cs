@@ -23,7 +23,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Requests
         
         private string BuildUrl()
         {
-            var getUrl = $"entries?content_type=landingpage";
+            var getUrl = $"entries?content_type=landingPage";
             if (!string.IsNullOrEmpty(_hubType))
             {
                 getUrl += $"&fields.hubType={_hubType}";

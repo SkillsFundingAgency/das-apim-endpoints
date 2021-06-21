@@ -35,6 +35,19 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             //Assert
             actual.Should().BeNull();
         }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_No_Content_Items_Returns_Empty_List(CmsContent source)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.Content = null;
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.MainContent.Items.Should().BeEmpty();
+        }
         
         [Test]
         [RecursiveMoqInlineAutoData("article",PageType.Article )]
@@ -59,7 +72,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             var actual = new CmsPageModel().Build(source);
 
             //Assert
-            actual.PageAttributes.Title.Should().Be(source.Items.FirstOrDefault()?.Fields.PageTitle);
+            actual.PageAttributes.Title.Should().Be(source.Items.FirstOrDefault()?.Fields.Title);
             actual.PageAttributes.MetaDescription.Should().Be(source.Items.FirstOrDefault()?.Fields.MetaDescription);
             actual.PageAttributes.Slug.Should().Be(source.Items.FirstOrDefault()?.Fields.Slug);
             actual.PageAttributes.HubType.Should().Be(source.Items.FirstOrDefault()?.Fields.HubType);

@@ -35,35 +35,39 @@ namespace SFA.DAS.Campaign.Models
 
 
             var contentItems = new List<ContentItem>();
-            
-            foreach (var contentItem in item.Fields.Content.Content)
-            {
-                if (contentItem.NodeType.Equals("paragraph", StringComparison.CurrentCultureIgnoreCase) ||
-                    contentItem.NodeType.StartsWith("heading", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    contentItems.Add(new ContentItem
-                    {
-                        Type = contentItem.NodeType,
-                        Values = BuildParagraph(contentItem),
-                        TableValue = BuildTable(contentItem, article)
-                    });
-                }
 
-                if (contentItem.NodeType.Equals("unordered-list", StringComparison.CurrentCultureIgnoreCase))
+            if (item.Fields.Content?.Content != null)
+            {
+                foreach (var contentItem in item.Fields.Content.Content)
                 {
-                    contentItems.Add(new ContentItem
+                    if (contentItem.NodeType.Equals("paragraph", StringComparison.CurrentCultureIgnoreCase) ||
+                        contentItem.NodeType.StartsWith("heading", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        Type = contentItem.NodeType,
-                        Values = GetListItems(contentItem.Content)
-                    });
+                        contentItems.Add(new ContentItem
+                        {
+                            Type = contentItem.NodeType,
+                            Values = BuildParagraph(contentItem),
+                            TableValue = BuildTable(contentItem, article)
+                        });
+                    }
+
+                    if (contentItem.NodeType.Equals("unordered-list", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        contentItems.Add(new ContentItem
+                        {
+                            Type = contentItem.NodeType,
+                            Values = GetListItems(contentItem.Content)
+                        });
+                    }
                 }
             }
+            
 
             return new CmsPageModel
             {
                 PageAttributes = new PageModel
                 {
-                    Title = item.Fields.PageTitle,
+                    Title = item.Fields.Title,
                     Summary = item.Fields.Summary,
                     Slug = item.Fields.Slug,
                     HubType = item.Fields.HubType,

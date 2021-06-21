@@ -21,8 +21,13 @@ namespace SFA.DAS.Campaign.Application.Queries.Articles
 
         public async Task<GetArticleByHubAndSlugQueryResult> Handle(GetArticleByHubAndSlugQuery request, CancellationToken cancellationToken)
         {
-            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}");
+            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_article");
 
+            if (article.Total == 0)
+            {
+                article = await _reliableCacheStorageService.GetData<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_landing");
+            }
+            
             var pageModel = new CmsPageModel().Build(article);
             
             return new GetArticleByHubAndSlugQueryResult
