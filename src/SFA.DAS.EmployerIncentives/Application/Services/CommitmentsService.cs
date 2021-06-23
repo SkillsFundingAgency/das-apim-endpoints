@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
@@ -36,10 +34,9 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             }
         }
 
-        public async Task<ApprenticeshipItem[]> Apprenticeships(long accountId, long accountLegalEntityId, DateTime startDateFrom, DateTime startDateTo)
+        public async Task<GetApprenticeshipListResponse> Apprenticeships(long accountId, long accountLegalEntityId, DateTime startDateFrom, DateTime startDateTo, int pageNumber, int pageSize)
         {
-            var response = await _client.Get<GetApprenticeshipListResponse>(new GetApprenticeshipsRequest(accountId, accountLegalEntityId, startDateFrom, startDateTo));
-            return response.Apprenticeships.ToArray();
+            return await _client.Get<GetApprenticeshipListResponse>(new GetApprenticeshipsRequest(accountId, accountLegalEntityId, startDateFrom, startDateTo, pageNumber, pageSize));
         }
 
         public async Task<ApprenticeshipResponse[]> GetApprenticeshipDetails(long accountId, IEnumerable<long> apprenticeshipIds)
