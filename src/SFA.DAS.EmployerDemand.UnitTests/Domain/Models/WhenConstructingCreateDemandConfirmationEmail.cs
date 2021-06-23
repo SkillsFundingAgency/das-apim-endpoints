@@ -39,7 +39,6 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             email.TemplateId.Should().Be(EmailConstants.CreateDemandConfirmationTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
             email.ReplyToAddress.Should().Be(EmailConstants.ReplyToAddress);
-            email.Subject.Should().Be("We’ve shared your interest in apprenticeship training with training providers");
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
 
