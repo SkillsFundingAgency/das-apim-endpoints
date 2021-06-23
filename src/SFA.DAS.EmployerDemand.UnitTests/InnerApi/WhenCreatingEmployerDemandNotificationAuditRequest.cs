@@ -9,13 +9,16 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
     public class WhenCreatingEmployerDemandNotificationAuditRequest
     {
         [Test, AutoData]
-        public void Then_Creates_Url_Correctly(Guid id, Guid courseDemandId)
+        public void Then_Creates_Url_Correctly(Guid id, Guid courseDemandId, NotificationType notificationType)
         {
             //Arrange
-            var actual = new PostEmployerDemandNotificationAuditRequest(id, courseDemandId);
+            notificationType = NotificationType.StoppedCourseClosed;
+            
+            //Act
+            var actual = new PostEmployerDemandNotificationAuditRequest(id, courseDemandId, notificationType);
             
             //Assert
-            actual.PostUrl.Should().Be($"api/Demand/{courseDemandId}/notification-audit/{id}");
+            actual.PostUrl.Should().Be($"api/Demand/{courseDemandId}/notification-audit/{id}?notificationType={(short)notificationType}");
         }
     }
 }
