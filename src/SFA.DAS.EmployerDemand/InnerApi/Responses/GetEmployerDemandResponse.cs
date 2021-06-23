@@ -12,5 +12,9 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         
         public Location Location { get ; set ; }
         public int NumberOfApprentices { get ; set ; }
+        public string StopSharingUrl { get; set; }
+        public bool Stopped { get; set; }
+        public string StartSharingUrl { get ; set ; }
+        public Guid? ExpiredCourseDemandId { get; set; }
     }
 }

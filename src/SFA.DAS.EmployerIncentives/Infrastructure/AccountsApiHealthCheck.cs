@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
-using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;

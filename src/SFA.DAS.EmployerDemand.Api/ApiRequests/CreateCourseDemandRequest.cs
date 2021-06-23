@@ -25,7 +25,14 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         public TrainingCourse TrainingCourse { get; set; }
         [JsonProperty("ResponseUrl")]
         public string ResponseUrl { get; set; }
+        [JsonProperty("StopSharingUrl")]
+        public string StopSharingUrl { get; set; }
+        [JsonProperty("StartSharingUrl")]
+        public string StartSharingUrl { get ; set ; }
+        [JsonProperty("ExpiredCourseDemandId")]
+        public Guid? ExpiredCourseDemandId { get ; set ; }
     }
+
     public class LocationItem
     {
         [JsonProperty("location")]

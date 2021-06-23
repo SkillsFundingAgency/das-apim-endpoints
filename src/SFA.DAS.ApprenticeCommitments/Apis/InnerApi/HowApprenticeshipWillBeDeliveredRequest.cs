@@ -1,27 +1,18 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class HowApprenticeshipWillBeDeliveredRequest : IPostApiRequest<HowApprenticeshipWillBeDeliveredRequestData>
+    public class HowApprenticeshipWillBeDeliveredRequest : CommitmentStatementConfirmationRequest<HowApprenticeshipWillBeDeliveredRequestData>
     {
-        private readonly Guid _apprenticeId;
-        private readonly long _apprenticeshipId;
-
         public HowApprenticeshipWillBeDeliveredRequest(
-            Guid apprentice, long apprenticeship, bool howApprenticeshipDeliveredCorrect)
+            Guid apprentice, long apprenticeship, long commitmentStatementId, bool howApprenticeshipDeliveredCorrect)
+            : base(apprentice, apprenticeship, commitmentStatementId, "howapprenticeshipwillbedeliveredconfirmation")
         {
-            _apprenticeId = apprentice;
-            _apprenticeshipId = apprenticeship;
             Data = new HowApprenticeshipWillBeDeliveredRequestData
             {
                 HowApprenticeshipDeliveredCorrect = howApprenticeshipDeliveredCorrect
             };
         }
-
-        public string PostUrl => $"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/howapprenticeshipwillbedeliveredconfirmation";
-
-        public HowApprenticeshipWillBeDeliveredRequestData Data { get; set; }
     }
 
     public class HowApprenticeshipWillBeDeliveredRequestData

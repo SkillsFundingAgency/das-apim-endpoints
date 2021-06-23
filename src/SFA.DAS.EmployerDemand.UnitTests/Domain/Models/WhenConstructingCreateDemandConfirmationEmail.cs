@@ -15,7 +15,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string standardName, 
             int standardLevel, 
             string location, 
-            int numberOfApprentices)
+            int numberOfApprentices,
+            string stopSharingUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -23,7 +24,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", numberOfApprentices.ToString() },
-                {"AEDStopSharingURL", "" }
+                {"AEDStopSharingURL", stopSharingUrl }
             };
 
             var email = new CreateDemandConfirmationEmail(
@@ -32,7 +33,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 standardName, 
                 standardLevel, 
                 location, 
-                numberOfApprentices);
+                numberOfApprentices,
+                stopSharingUrl);
 
             email.TemplateId.Should().Be(EmailConstants.CreateDemandConfirmationTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
@@ -47,7 +49,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             string recipientName,
             string standardName, 
             int standardLevel, 
-            string location)
+            string location,
+            string stopSharingUrl)
         {
             var expectedTokens = new Dictionary<string, string>
             {
@@ -55,7 +58,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 {"AEDApprenticeshipTrainingCourse", $"{standardName} (level {standardLevel})" },
                 {"AEDApprenticeshipLocation", location },
                 {"AEDNumberOfApprentices", "Not sure" },
-                {"AEDStopSharingURL", "" }
+                {"AEDStopSharingURL", stopSharingUrl }
             };
 
             var email = new CreateDemandConfirmationEmail(
@@ -64,7 +67,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
                 standardName, 
                 standardLevel, 
                 location, 
-                0);
+                0,
+                stopSharingUrl);
 
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
