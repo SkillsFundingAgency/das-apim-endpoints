@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                 .Setup(mediator => mediator.Send(
                     It.Is<StopEmployerDemandCommand>(command => 
                         command.EmployerDemandId == employerDemandId
+                        && command.Id != Guid.Empty
                     ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
