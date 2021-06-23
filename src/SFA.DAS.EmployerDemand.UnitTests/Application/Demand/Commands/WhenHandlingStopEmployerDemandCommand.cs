@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
     public class WhenHandlingStopEmployerDemandCommand
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Ok(
+        public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Ok_And_Audit_Created(
             StopEmployerDemandCommand command,
             GetEmployerDemandResponse getDemandResponse,
             GetEmployerDemandResponse stopResponseBody,
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 stopResponseBody.Course.Level,
                 stopResponseBody.Location.Name,
                 stopResponseBody.NumberOfApprentices, 
-                null);
+                stopResponseBody.StartSharingUrl);
 
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
@@ -64,6 +64,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
+            mockApiClient.Verify(
+                x => x.PostWithResponseCode<object>(It.Is<PostEmployerDemandNotificationAuditRequest>(c =>
+                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedByUser}"))), Times.Once);
         }
 
         [Test, MoqAutoData]
