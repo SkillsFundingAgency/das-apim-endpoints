@@ -8,6 +8,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -20,18 +21,24 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             GetRestartEmployerDemandQuery query,
             GetEmployerDemandResponse getDemandResponse,
             GetEmployerDemandResponse getExpiredDemandResponse,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            GetStandardsListItem getStandardResponse,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> demandApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             GetRestartEmployerDemandQueryHandler handler)
         {
             //Arrange
-            apiClient.Setup(x =>
+            demandApiClient.Setup(x =>
                     x.Get<GetEmployerDemandResponse>(
                         It.Is<GetEmployerDemandByExpiredDemandRequest>(c => c.GetUrl.Contains($"demand?expiredCourseDemandId={query.Id}"))))
                 .ReturnsAsync(getExpiredDemandResponse);
-            apiClient.Setup(x =>
+            demandApiClient.Setup(x =>
                     x.Get<GetEmployerDemandResponse>(
                         It.Is<GetEmployerDemandRequest>(c => c.GetUrl.Contains($"demand/{query.Id}"))))
-                .ReturnsAsync(getDemandResponse);   
+                .ReturnsAsync(getDemandResponse);
+            coursesApiClient.Setup(x =>
+                    x.Get<GetStandardsListItem>(
+                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{getDemandResponse.Course.Id}"))))
+                .ReturnsAsync(getStandardResponse);
             
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -39,31 +46,39 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             //Assert
             actual.EmployerDemand.Should().BeEquivalentTo(getExpiredDemandResponse);
             actual.RestartDemandExists.Should().BeTrue();
+            actual.LastStartDate.Should().Be(getStandardResponse.StandardDates.LastDateStarts);
         }
 
         [Test, MoqAutoData]
         public async Task Then_The_Demand_Data_Is_Returned_From_The_Api(
             GetRestartEmployerDemandQuery query,
             GetEmployerDemandResponse getDemandResponse,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            GetStandardsListItem getStandardResponse,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> demandApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             GetRestartEmployerDemandQueryHandler handler)
         {
             //Arrange
-            apiClient.Setup(x =>
+            demandApiClient.Setup(x =>
                     x.Get<GetEmployerDemandResponse>(
                         It.Is<GetEmployerDemandByExpiredDemandRequest>(c => c.GetUrl.Contains($"demand?expiredCourseDemandId={query.Id}"))))
                 .ReturnsAsync((GetEmployerDemandResponse)null);
-            apiClient.Setup(x =>
+            demandApiClient.Setup(x =>
                     x.Get<GetEmployerDemandResponse>(
                         It.Is<GetEmployerDemandRequest>(c => c.GetUrl.Contains($"demand/{query.Id}"))))
-                .ReturnsAsync(getDemandResponse);   
-            
+                .ReturnsAsync(getDemandResponse);
+            coursesApiClient.Setup(x =>
+                    x.Get<GetStandardsListItem>(
+                        It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{getDemandResponse.Course.Id}"))))
+                .ReturnsAsync(getStandardResponse);
+
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
             actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse);
             actual.RestartDemandExists.Should().BeFalse();
+            actual.LastStartDate.Should().Be(getStandardResponse.StandardDates.LastDateStarts);
         }
     }
 }
