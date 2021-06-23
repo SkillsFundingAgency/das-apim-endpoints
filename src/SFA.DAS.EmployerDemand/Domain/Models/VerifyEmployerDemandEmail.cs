@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             string confirmationLink)
         {
             TemplateId = EmailConstants.VerifyContactEmailEmployerDemandTemplateId;
+            Subject  = "Confirm your contact email address";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {

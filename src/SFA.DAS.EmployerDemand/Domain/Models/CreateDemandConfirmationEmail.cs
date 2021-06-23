@@ -17,6 +17,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             TemplateId = EmailConstants.CreateDemandConfirmationTemplateId;
             RecipientAddress = recipientEmail;
             ReplyToAddress = EmailConstants.ReplyToAddress;
+            Subject = "We’ve shared your interest in apprenticeship training with training providers";
             Tokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", recipientName },

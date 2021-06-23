@@ -39,6 +39,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             email.TemplateId.Should().Be(EmailConstants.StopSharingEmployerDemandTemplateId);
             email.RecipientAddress.Should().Be(recipientEmail);
             email.ReplyToAddress.Should().Be(EmailConstants.ReplyToAddress);
+            email.Subject.Should().Be("We’ve stopped sharing your interest in apprenticeship training with training providers");
             email.Tokens.Should().BeEquivalentTo(expectedTokens);
         }
 

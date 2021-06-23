@@ -21,6 +21,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             var actual = new VerifyEmployerDemandEmail(recipientEmail, employerName, standardName, standardLevel, confirmationLink);
 
             actual.TemplateId.Should().Be(EmailConstants.VerifyContactEmailEmployerDemandTemplateId);
+            actual.Subject.Should().Be("Confirm your contact email address");
             actual.Tokens.Should().BeEquivalentTo(expectedTokens);
             actual.RecipientAddress.Should().Be(recipientEmail);
         }

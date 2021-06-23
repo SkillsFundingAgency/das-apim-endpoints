@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             string stopSharingUrl)
         {
             TemplateId = EmailConstants.EmployerDemandReminderTemplateId;
+            Subject = "We’re still sharing your interest in apprenticeship training with training providers";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {
