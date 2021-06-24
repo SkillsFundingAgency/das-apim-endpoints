@@ -54,6 +54,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("file")]
         public File File { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get ; set ; }
     }
 
     public class File

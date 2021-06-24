@@ -126,6 +126,7 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Id = id,
                     Title = embeddedResource.Fields.Title,
+                    Description = embeddedResource.Fields.Description,
                     FileName = embeddedResource.Fields.File.FileName,
                     Url =  $"https:{embeddedResource.Fields.File.Url}",
                     ContentType = embeddedResource.Fields.File.ContentType,
@@ -165,6 +166,14 @@ namespace SFA.DAS.Campaign.Models
                     var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
 
                     returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
+                }
+                if (contentDefinition.NodeType.Equals("paragraph"))
+                {
+                    foreach (var content in contentDefinition.Content)
+                    {
+                        var fontEffect = content.Marks?.FirstOrDefault()?.Type;
+                        returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{content.Value}");
+                    }
                 }
                 if (contentDefinition.NodeType.Equals("hyperlink"))
                 {
@@ -243,6 +252,7 @@ namespace SFA.DAS.Campaign.Models
         public string ContentType { get; set; }
         public string Url { get; set; }
         public long Size { get; set; }
+        public string Description { get ; set ; }
     }
 
 

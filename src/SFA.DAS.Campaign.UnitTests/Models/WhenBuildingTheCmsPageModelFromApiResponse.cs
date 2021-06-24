@@ -140,8 +140,15 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                 {
                     new ContentDefinition
                     {
-                        NodeType = "text",
-                        Value = contentValue
+                        NodeType = "paragraph",
+                        Content = new List<RelatedContent>
+                        {
+                            new RelatedContent
+                            {
+                                NodeType = "text",
+                                Value = contentValue
+                            }
+                        }
                     }
                 };
             }
@@ -277,6 +284,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items[0].EmbeddedResource.Url.Should().Be($"https:{fields.File.Url}");
             actual.MainContent.Items[0].EmbeddedResource.ContentType.Should().Be(fields.File.ContentType);
             actual.MainContent.Items[0].EmbeddedResource.Size.Should().Be(fields.File.Details.Size);
+            actual.MainContent.Items[0].EmbeddedResource.Description.Should().Be(fields.Description);
             
         }
         
@@ -497,6 +505,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.Attachments[0].ContentType.Should().Be(fields.File.ContentType);
             actual.Attachments[0].FileName.Should().Be(fields.File.FileName);
             actual.Attachments[0].Size.Should().Be(fields.File.Details.Size);
+            actual.Attachments[0].Description.Should().Be(fields.Description);
         }
 
         [Test, RecursiveMoqAutoData]
