@@ -22,6 +22,7 @@ namespace SFA.DAS.Campaign.Models
         public PageContent MainContent { get; set; }
 
         public List<PageModel> RelatedArticles { get; set; }
+        public List<ResourceItem> Attachments { get ; set ; }
 
         public CmsPageModel Build(CmsContent article)
         {
@@ -43,6 +44,7 @@ namespace SFA.DAS.Campaign.Models
                 {
                     if (contentItem.NodeType.Equals("paragraph", StringComparison.CurrentCultureIgnoreCase) ||
                         contentItem.NodeType.Equals("blockquote", StringComparison.CurrentCultureIgnoreCase) ||
+                        contentItem.NodeType.Equals("hr", StringComparison.CurrentCultureIgnoreCase) ||
                         contentItem.NodeType.StartsWith("heading", StringComparison.CurrentCultureIgnoreCase))
                     {
                         contentItems.Add(new ContentItem
@@ -67,7 +69,7 @@ namespace SFA.DAS.Campaign.Models
                         contentItems.Add(new ContentItem
                         {
                             Type = contentItem.NodeType,
-                            EmbeddedResource = GetEmbeddedResource(contentItem, article)
+                            EmbeddedResource = GetEmbeddedResource(contentItem.Data.Target.Sys.Id, article)
                         });
                     }
                 }
@@ -89,6 +91,7 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Items = contentItems
                 },
+                Attachments = item.Fields.Attachments.Select(attachment => GetEmbeddedResource(attachment.Sys.Id, article)).ToList(),
                 RelatedArticles = article.Includes?.Entry != null ? article
                     .Includes
                     .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
@@ -108,19 +111,25 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private ResourceItem GetEmbeddedResource(SubContentItems contentItem, CmsContent article)
+        private List<ResourceItem> BuildAttachments(CmsContent content)
         {
-            var embeddedResource = article.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(contentItem.Data.Target.Sys.Id));
+            return content.Items.FirstOrDefault().Fields.Attachments.Select(attachment => GetEmbeddedResource(attachment.Sys.Id, content)).ToList();
+        }
+
+        private ResourceItem GetEmbeddedResource(string id, CmsContent article)
+        {
+            var embeddedResource = article.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(id));
 
             if (embeddedResource != null)
             {
                 return new ResourceItem
                 {
-                    Id = contentItem.Data.Target.Sys.Id,
+                    Id = id,
                     Title = embeddedResource.Fields.Title,
                     FileName = embeddedResource.Fields.File.FileName,
-                    Url =  $"https://{embeddedResource.Fields.File.Url}",
-                    ContentType = embeddedResource.Fields.File.ContentType
+                    Url =  $"https:{embeddedResource.Fields.File.Url}",
+                    ContentType = embeddedResource.Fields.File.ContentType,
+                    Size = embeddedResource.Fields.File.Details.Size
                 };
             }
             
@@ -233,6 +242,7 @@ namespace SFA.DAS.Campaign.Models
         public string FileName { get; set; }
         public string ContentType { get; set; }
         public string Url { get; set; }
+        public long Size { get; set; }
     }
 
 

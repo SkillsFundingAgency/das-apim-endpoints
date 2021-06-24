@@ -156,6 +156,25 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
+        public void Then_The_Content_Items_Are_Added_For_Hr_Content_Type(CmsContent source, string contentValue)
+        {
+            //Arrange
+            foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
+            {
+                subContentItems.NodeType = "hr";
+                subContentItems.Content = new List<ContentDefinition>();
+            }
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.MainContent.Items.Should().NotBeEmpty();
+            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("hr")).Should().BeTrue();
+            actual.MainContent.Items.TrueForAll(c => c.Values.Count.Equals(0)).Should().BeTrue();
+        }
+        
+        [Test, RecursiveMoqAutoData]
         public void Then_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue)
         {
             //Arrange
@@ -255,8 +274,9 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items[0].EmbeddedResource.Id.Should().Be(linkedContentId);
             actual.MainContent.Items[0].EmbeddedResource.Title.Should().Be(fields.Title);
             actual.MainContent.Items[0].EmbeddedResource.FileName.Should().Be(fields.File.FileName);
-            actual.MainContent.Items[0].EmbeddedResource.Url.Should().Be($"https://{fields.File.Url}");
+            actual.MainContent.Items[0].EmbeddedResource.Url.Should().Be($"https:{fields.File.Url}");
             actual.MainContent.Items[0].EmbeddedResource.ContentType.Should().Be(fields.File.ContentType);
+            actual.MainContent.Items[0].EmbeddedResource.Size.Should().Be(fields.File.Details.Size);
             
         }
         
@@ -436,6 +456,48 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.RelatedArticles.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();;
         }
 
+        
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Attachments_Are_Built(CmsContent source, EntryFields linkedPage, AssetFields fields, string linkedContentId)
+        {
+            //Arrange
+            fields.File.Url = $"//{fields.File.Url}";
+            source.Items.FirstOrDefault().Fields.Attachments = new List<LandingPage>
+            {
+                new LandingPage
+                {
+                    Sys = new LandingPageSys
+                    {
+                        Id = linkedContentId,
+                        Type = "Link",
+                        LinkType = "Asset"
+                    }
+                }
+            };
+            source.Includes.Asset = new List<Asset>()
+            {
+                new Asset
+                {
+                    Sys = new AssetSys
+                    {
+                        Id = linkedContentId,
+                    },
+                    Fields = fields
+                }
+            };
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.Attachments.Count.Should().Be(1);
+            actual.Attachments[0].Id.Should().Be(linkedContentId);
+            actual.Attachments[0].Title.Should().Be(fields.Title);
+            actual.Attachments[0].Url.Should().Be($"https:{fields.File.Url}");
+            actual.Attachments[0].ContentType.Should().Be(fields.File.ContentType);
+            actual.Attachments[0].FileName.Should().Be(fields.File.FileName);
+            actual.Attachments[0].Size.Should().Be(fields.File.Details.Size);
+        }
 
         [Test, RecursiveMoqAutoData]
         public void Then_Any_Linked_Types_Are_Added_To_The_Content_Items(CmsContent source,string contentValue, string linkedContentId, List<List<string>> tableData)
