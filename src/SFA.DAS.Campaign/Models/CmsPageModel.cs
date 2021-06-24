@@ -124,7 +124,7 @@ namespace SFA.DAS.Campaign.Models
             {
                 if (contentDefinition.NodeType.Equals("text"))
                 {
-                    var fontEffect = contentDefinition.Marks.FirstOrDefault()?.Type;
+                    var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
 
                     returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
                 }
