@@ -235,6 +235,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
     public partial class PurpleData
     {
+        [JsonProperty("target")]
+        public LandingPage Target { get; set; }
     }
 
     public partial class SysElement

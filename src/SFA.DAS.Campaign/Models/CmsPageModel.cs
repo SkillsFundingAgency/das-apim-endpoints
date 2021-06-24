@@ -61,6 +61,15 @@ namespace SFA.DAS.Campaign.Models
                             Values = GetListItems(contentItem),
                         });
                     }
+
+                    if (contentItem.NodeType.Equals("embedded-asset-block"))
+                    {
+                        contentItems.Add(new ContentItem
+                        {
+                            Type = contentItem.NodeType,
+                            EmbeddedResource = GetEmbeddedResource(contentItem, article)
+                        });
+                    }
                 }
             }
 
@@ -97,6 +106,25 @@ namespace SFA.DAS.Campaign.Models
                     })
                     .ToList() : new List<PageModel>()
             };
+        }
+
+        private ResourceItem GetEmbeddedResource(SubContentItems contentItem, CmsContent article)
+        {
+            var embeddedResource = article.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(contentItem.Data.Target.Sys.Id));
+
+            if (embeddedResource != null)
+            {
+                return new ResourceItem
+                {
+                    Id = contentItem.Data.Target.Sys.Id,
+                    Title = embeddedResource.Fields.Title,
+                    FileName = embeddedResource.Fields.File.FileName,
+                    Url =  $"https://{embeddedResource.Fields.File.Url}",
+                    ContentType = embeddedResource.Fields.File.ContentType
+                };
+            }
+            
+            return new ResourceItem();
         }
 
         private List<List<string>> BuildTable(SubContentItems contentItem, CmsContent article)
@@ -195,6 +223,16 @@ namespace SFA.DAS.Campaign.Models
         public List<string> Values { get; set; }
         public string Type { get; set; }
         public List<List<string>> TableValue { get; set; }
+        public ResourceItem EmbeddedResource { get; set; }
+    }
+
+    public class ResourceItem
+    {
+        public string Title { get; set; }
+        public string Id { get; set; }
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public string Url { get; set; }
     }
 
 

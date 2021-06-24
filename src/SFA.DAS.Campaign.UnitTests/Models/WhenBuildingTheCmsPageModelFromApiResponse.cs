@@ -100,8 +100,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             var actual = new CmsPageModel().Build(source);
             
             //Assert
-            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();;
-            actual.MainContent.Items.TrueForAll(c => c.Values.FirstOrDefault().Equals(contentValue)).Should().BeTrue();;
+            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
+            actual.MainContent.Items.TrueForAll(c => c.Values.FirstOrDefault().Equals(contentValue)).Should().BeTrue();
         }
         
         [Test, RecursiveMoqAutoData]
@@ -205,10 +205,61 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             var actual = new CmsPageModel().Build(source);
             
             //Assert
-            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list")).Should().BeTrue();;
-            actual.MainContent.Items.TrueForAll(c => c.Values.TrueForAll(x=>x.Equals(contentValue))).Should().BeTrue();;
+            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list")).Should().BeTrue();
+            actual.MainContent.Items.TrueForAll(c => c.Values.TrueForAll(x=>x.Equals(contentValue))).Should().BeTrue();
         }
 
+        
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Embedded_Items_Are_Added(CmsContent source, string contentValue, string linkedContentId, AssetFields fields)
+        {
+            //Arrange
+            fields.File.Url = $"//{fields.File.Url}"; 
+            source.Items.FirstOrDefault().Fields.Content.Content = new List<SubContentItems>
+            {
+                new SubContentItems
+                {
+                    NodeType = "embedded-asset-block",
+                    Content = new List<ContentDefinition>(),
+                    Data = new PurpleData
+                    {
+                        Target = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = linkedContentId,
+                                LinkType = "Asset"
+                            } 
+                                
+                        }
+                    }
+                }
+            };
+            source.Includes.Asset = new List<Asset>()
+            {
+                new Asset
+                {
+                    Sys = new AssetSys
+                    {
+                        Id = linkedContentId,
+                    },
+                    Fields = fields
+                }
+            };
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.MainContent.Items[0].Type.Should().Be("embedded-asset-block");
+            actual.MainContent.Items[0].EmbeddedResource.Id.Should().Be(linkedContentId);
+            actual.MainContent.Items[0].EmbeddedResource.Title.Should().Be(fields.Title);
+            actual.MainContent.Items[0].EmbeddedResource.FileName.Should().Be(fields.File.FileName);
+            actual.MainContent.Items[0].EmbeddedResource.Url.Should().Be($"https://{fields.File.Url}");
+            actual.MainContent.Items[0].EmbeddedResource.ContentType.Should().Be(fields.File.ContentType);
+            
+        }
+        
         [Test, RecursiveMoqAutoData]
         public void Then_If_Content_Contains_HyperLink_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue)
         {
@@ -438,7 +489,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             var actual = new CmsPageModel().Build(source);
             
             //Assert
-            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();;
+            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
             actual.MainContent.Items.FirstOrDefault().TableValue.Should().BeEquivalentTo(tableData);
         }
     }
