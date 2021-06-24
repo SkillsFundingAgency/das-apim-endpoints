@@ -226,7 +226,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public List<SysElement> Marks { get; set; }
 
         [JsonProperty("data")]
-        public PurpleData Data { get; set; }
+        public RelatedData Data { get; set; }
 
         [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
         public List<RelatedContent> Content { get; set; }

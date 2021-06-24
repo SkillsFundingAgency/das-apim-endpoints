@@ -140,6 +140,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                 {
                     new ContentDefinition
                     {
+                        NodeType = "list-item",
                         Content = new List<RelatedContent>
                         {
                             new RelatedContent
@@ -156,6 +157,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                     },
                     new ContentDefinition
                     {
+                        NodeType = "list-item",
                         Content = new List<RelatedContent>
                         {
                             new RelatedContent
@@ -181,7 +183,78 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items.TrueForAll(c => c.Values.Count.Equals(2));
             actual.MainContent.Items.TrueForAll(c => c.Values.TrueForAll(x=>x.Equals(contentValue)));
         }
-        
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_If_Content_Contains_HyperLink_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue)
+        {
+            //Arrange
+            foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
+            {
+                subContentItems.NodeType = "unordered-list";
+                subContentItems.Content = new List<ContentDefinition>
+                {
+                    new ContentDefinition
+                    {
+                        NodeType = "list-item",
+                        Content = new List<RelatedContent>
+                        {
+                            new RelatedContent
+                            {
+                                NodeType = "paragraph",
+                                Content = new List<RelatedContent>
+                                {
+                                    new RelatedContent
+                                    {
+                                        NodeType = "hyperlink",
+                                        Content = new List<RelatedContent>
+                                        {
+                                            new RelatedContent
+                                            {
+                                                NodeType = "text",
+                                                Value = "find"
+                                            }
+                                        },
+                                        Data = new RelatedData{ Uri = new Uri("http://www.google.com")}
+                                    },
+                                    new RelatedContent
+                                    {
+                                        NodeType = "text",
+                                        Value = " a website"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new ContentDefinition
+                    {
+                        NodeType = "list-item",
+                        Content = new List<RelatedContent>
+                        {
+                            new RelatedContent
+                            {
+                                Content = new List<RelatedContent>
+                                {
+                                    new RelatedContent
+                                    {
+                                        Value = contentValue
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+
+            //Act
+            var actual = new CmsPageModel().Build(source);
+
+            //Assert
+            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list"));
+            actual.MainContent.Items.TrueForAll(c => c.Values.Count.Equals(2));
+            actual.MainContent.Items.TrueForAll(c => c.Values.TrueForAll(x => x.Equals(contentValue)));
+            actual.MainContent.Items[2].Values[0].Should().Be("[find](http://www.google.com/) a website");
+        }
+
         [Test, RecursiveMoqAutoData]
         public void Then_The_Content_Items_Are_Added_For_Links(CmsContent source, string contentValue, string uri)
         {

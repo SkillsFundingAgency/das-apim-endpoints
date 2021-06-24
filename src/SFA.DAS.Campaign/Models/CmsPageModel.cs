@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 
 namespace SFA.DAS.Campaign.Models
@@ -8,17 +9,17 @@ namespace SFA.DAS.Campaign.Models
     public class PageModel
     {
         public PageType PageType { get; set; }
-        public string Title { get ; set ; }
-        public string MetaDescription { get ; set ; }
-        public string Slug { get ; set ; }
-        public string HubType { get ; set ; }
-        public string Summary { get ; set ; }
+        public string Title { get; set; }
+        public string MetaDescription { get; set; }
+        public string Slug { get; set; }
+        public string HubType { get; set; }
+        public string Summary { get; set; }
     }
 
     public class CmsPageModel
     {
         public PageModel PageAttributes { get; set; }
-        public PageContent MainContent { get ; set ; }
+        public PageContent MainContent { get; set; }
 
         public List<PageModel> RelatedArticles { get; set; }
 
@@ -30,7 +31,7 @@ namespace SFA.DAS.Campaign.Models
             {
                 return null;
             }
-            
+
             Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
 
 
@@ -56,12 +57,12 @@ namespace SFA.DAS.Campaign.Models
                         contentItems.Add(new ContentItem
                         {
                             Type = contentItem.NodeType,
-                            Values = GetListItems(contentItem.Content)
+                            Values = GetListItems(contentItem),
                         });
                     }
                 }
             }
-            
+
 
             return new CmsPageModel
             {
@@ -80,7 +81,7 @@ namespace SFA.DAS.Campaign.Models
                 },
                 RelatedArticles = article.Includes?.Entry != null ? article
                     .Includes
-                    .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null 
+                    .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
                                       && c.Sys.ContentType.Sys.Type.Equals("link", StringComparison.CurrentCultureIgnoreCase)
                                       && c.Sys.ContentType.Sys.LinkType.Equals("ContentType", StringComparison.CurrentCultureIgnoreCase)
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) && type == PageType.Article
@@ -93,7 +94,7 @@ namespace SFA.DAS.Campaign.Models
                         HubType = entry.Fields.HubType,
                         MetaDescription = entry.Fields.MetaDescription
                     })
-                    .ToList(): new List<PageModel>()
+                    .ToList() : new List<PageModel>()
             };
         }
 
@@ -108,7 +109,7 @@ namespace SFA.DAS.Campaign.Models
                     var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
                     if (item != null)
                     {
-                        data.AddRange(item.Fields.Table.TableData);    
+                        data.AddRange(item.Fields.Table.TableData);
                     }
                 }
             }
@@ -134,12 +135,46 @@ namespace SFA.DAS.Campaign.Models
             return returnList;
         }
 
-        private List<string> GetListItems(List<ContentDefinition> contentItemContent)
+        private List<string> GetListItems(SubContentItems contentItems)
         {
             var returnList = new List<string>();
-            foreach (var relatedContent in contentItemContent.SelectMany(contentDefinition => contentDefinition.Content))
+            foreach (var relatedContent in contentItems.Content)
             {
-                returnList.AddRange(relatedContent.Content.Select(content => content.Value));
+                if (relatedContent.NodeType != "list-item")
+                {
+                    continue;
+                }
+                foreach (var content in relatedContent.Content)
+                {
+                    switch (content.NodeType)
+                    {
+                        case "paragraph":
+                        {
+                            var sb = new StringBuilder();
+
+                            foreach (var innerContent in content.Content)
+                            {
+                                if (innerContent.NodeType.Equals("text"))
+                                {
+                                    sb.Append(innerContent.Value);
+                                }
+                                if (innerContent.NodeType.Equals("hyperlink"))
+                                {
+                                    sb.Append($"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
+                                }
+                            }
+                            returnList.Add(sb.ToString());
+
+                            break;
+                        }
+                        case "text":
+                            returnList.Add(content.Value);
+                            break;
+                        case "hyperlink":
+                            returnList.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
+                            break;
+                    }
+                }
             }
 
             return returnList;
@@ -151,15 +186,15 @@ namespace SFA.DAS.Campaign.Models
         public List<ContentItem> Items { get; set; }
     }
 
-    
-    public class ContentItem 
+
+    public class ContentItem
     {
         public List<string> Values { get; set; }
         public string Type { get; set; }
         public List<List<string>> TableValue { get; set; }
     }
 
-    
+
     public enum PageType
     {
         Unknown = 0,
