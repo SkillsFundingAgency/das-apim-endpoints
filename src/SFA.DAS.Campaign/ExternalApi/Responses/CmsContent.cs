@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Contentful.Core.Models;
 using Newtonsoft.Json;
 
 namespace SFA.DAS.Campaign.ExternalApi.Responses
@@ -329,7 +330,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public RelatedData Data { get; set; }
 
         [JsonProperty("marks", NullValueHandling = NullValueHandling.Ignore)]
-        public List<object> Marks { get; set; }
+        public List<Marks> Marks { get; set; }
 
         [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
         public string Value { get; set; }
@@ -350,4 +351,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public LandingPage Target { get; set; }
     }
 
+    public class Marks
+    {
+        public string Type { get; set; }
+    }
 }
