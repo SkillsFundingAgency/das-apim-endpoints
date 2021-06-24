@@ -44,6 +44,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                         && command.StopSharingUrl.Equals(request.StopSharingUrl)
                         && command.StartSharingUrl.Equals(request.StartSharingUrl)
                         && command.ExpiredCourseDemandId.Equals(request.ExpiredCourseDemandId)
+                        && command.EntryPoint.Equals(request.EntryPoint)
                     ),
                     It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
             
