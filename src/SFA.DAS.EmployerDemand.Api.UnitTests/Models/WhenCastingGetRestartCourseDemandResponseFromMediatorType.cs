@@ -24,11 +24,13 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
                 .Excluding(c => c.Location)
                 .Excluding(c => c.ContactEmailAddress)
                 .Excluding(c => c.ExpiredCourseDemandId)
+                .Excluding(c => c.LastStartDate)
             );
             actual.ContactEmail.Should().Be(source.EmployerDemand.ContactEmailAddress);
             actual.TrainingCourse.Should().BeEquivalentTo(source.EmployerDemand.Course);
             actual.Location.Location.GeoPoint.Should().BeEquivalentTo(source.EmployerDemand.Location.LocationPoint.GeoPoint);
             actual.Location.Name.Should().BeEquivalentTo(source.EmployerDemand.Location.Name);
+            actual.TrainingCourse.LastStartDate.Should().Be(source.LastStartDate);
         }
     }
 }

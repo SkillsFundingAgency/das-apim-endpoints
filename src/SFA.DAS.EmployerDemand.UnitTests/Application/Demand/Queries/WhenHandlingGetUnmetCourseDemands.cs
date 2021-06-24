@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -33,7 +34,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             var actual = await handler.Handle(query, CancellationToken.None);
             
             //Assert
-            actual.EmployerDemandIds.Should().BeEquivalentTo(response.EmployerDemandIds);
+            actual.EmployerDemandIds.Should().BeEquivalentTo(response.UnmetCourseDemands.Select(demand => demand.Id));
         }
     }
 }

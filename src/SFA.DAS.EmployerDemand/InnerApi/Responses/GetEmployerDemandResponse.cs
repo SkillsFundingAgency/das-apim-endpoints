@@ -16,5 +16,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public bool Stopped { get; set; }
         public string StartSharingUrl { get ; set ; }
         public Guid? ExpiredCourseDemandId { get; set; }
+        public DateTime? LastStartDate { get; set; }
     }
 }
