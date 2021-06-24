@@ -42,6 +42,7 @@ namespace SFA.DAS.Campaign.Models
                 foreach (var contentItem in item.Fields.Content.Content)
                 {
                     if (contentItem.NodeType.Equals("paragraph", StringComparison.CurrentCultureIgnoreCase) ||
+                        contentItem.NodeType.Equals("blockquote", StringComparison.CurrentCultureIgnoreCase) ||
                         contentItem.NodeType.StartsWith("heading", StringComparison.CurrentCultureIgnoreCase))
                     {
                         contentItems.Add(new ContentItem
