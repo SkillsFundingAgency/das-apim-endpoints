@@ -20,5 +20,7 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
     public class PatchCourseDemandData
     {
         public bool Stopped { get; set; }
+        public string EmailAddress { get; set; }
+        //more stuff here for verify
     }
 }
