@@ -1,17 +1,14 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentAssertions.Primitives;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeship;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -22,7 +19,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class ChangeApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private ChangeApprenticeshipCommand _request;
+        private UpdateApprenticeshipCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -40,15 +37,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
-                            );
-
-            _context.LoginApi.MockServer
-                .Given(
-                    Request.Create().WithPath($"/invitations/{_context.LoginConfig.IdentityServerClientId}")
-                        .UsingPost())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
                             );
         }
 
@@ -120,15 +108,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship update is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<ChangeApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships/change", _request);
+            _request = table.CreateInstance<UpdateApprenticeshipCommand>();
+            await _context.OuterApiClient.Post("apprenticeships/update", _request);
         }
 
         [Then("the inner API has received the posted values")]
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
             var expectedCommitment = _approvedApprenticeships.First(
-                x => x.Id == _request.ApprenticeshipId);
+                x => x.Id == _request.CommitmentsApprenticeshipId);
 
             _context.OuterApiClient.Response.StatusCode
                 .Should().Be(HttpStatusCode.Accepted);
@@ -137,19 +125,25 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
-                    _request.ApprenticeshipId,
-                    expectedCommitment.Email,
-                    ApprovedOn = _request.ApprovedOn,
+                    _request.CommitmentsContinuedApprenticeshipId,
+                    _request.CommitmentsApprenticeshipId,
+                    _request.CommitmentsApprovedOn,
                     expectedCommitment.CourseName,
                     PlannedStartDate = expectedCommitment.StartDate,
                 });
+        }
+
+        [Then("the inner API will not receive any values")]
+        public void ThenTheInnerApiWillNotBeCalled()
+        {
+            _context.InnerApi.SingleLogBody.Should().BeNull();
         }
 
         [Then("the Employer should be Legal Entity (.*) named '(.*)'")]
         public void ThenTheEmployerNameShouldBe(long legalEntityId, string employerName)
         {
             var expectedCommitment = _approvedApprenticeships.First(
-                x => x.Id == _request.ApprenticeshipId);
+                x => x.Id == _request.CommitmentsApprenticeshipId);
 
             _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
                 .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
@@ -199,44 +193,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var content = await _context.OuterApiClient.Response.Content.ReadAsStringAsync();
             var errors = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
             errors.Should().BeEquivalentTo(expectedErrors);
-        }
-    }
-
-    public static class JsonConvertExtensions
-    {
-        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this string instance)
-        {
-            return new JsonConvertAssertions(instance).DeserialiseTo<T>();
-        }
-
-        public static AndWhichConstraint<JsonConvertAssertions, T> ShouldBeJson<T>(this StringAssertions instance)
-        {
-            return new JsonConvertAssertions(instance.Subject).DeserialiseTo<T>();
-        }
-
-        public class JsonConvertAssertions :
-            ReferenceTypeAssertions<string, JsonConvertAssertions>
-        {
-            public JsonConvertAssertions(string instance)
-            {
-                Subject = instance;
-            }
-
-            protected override string Identifier => "string";
-
-            public AndWhichConstraint<JsonConvertAssertions, T> DeserialiseTo<T>(
-                string because = "", params object[] becauseArgs)
-            {
-                var deserialised = JsonConvert.DeserializeObject<T>(Subject);
-
-                Execute.Assertion
-                    .ForCondition(deserialised != null)
-                    .BecauseOf(because, becauseArgs)
-                    .FailWith("Expected {context:string} to contain deserilise to {0}{reason}, but found.",
-                        typeof(T).Name);
-
-                return new AndWhichConstraint<JsonConvertAssertions, T>(this, deserialised);
-            }
         }
     }
 }

@@ -41,6 +41,9 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
                         && command.CourseLevel.Equals(request.TrainingCourse.Level)
                         && command.CourseRoute.Equals(request.TrainingCourse.Route)
                         && command.ConfirmationLink.Equals(request.ResponseUrl)
+                        && command.StopSharingUrl.Equals(request.StopSharingUrl)
+                        && command.StartSharingUrl.Equals(request.StartSharingUrl)
+                        && command.ExpiredCourseDemandId.Equals(request.ExpiredCourseDemandId)
                     ),
                     It.IsAny<CancellationToken>())).ReturnsAsync((returnId));
             
@@ -50,6 +53,23 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             controllerResult.Value.Should().Be(returnId);
         }
 
+        [Test, MoqAutoData]
+        public async Task Then_If_Null_Is_Returned_Then_Conflict_returned(
+            Guid returnId,
+            CreateCourseDemandRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] DemandController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<RegisterDemandCommand>(command => 
+                        command.Id == request.Id),
+                    It.IsAny<CancellationToken>())).ReturnsAsync((Guid?)null);
+            
+            var controllerResult = await controller.CreateCourseDemand(request) as StatusCodeResult;
+
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Conflict);
+        }
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_HttpException_It_Is_Returned(

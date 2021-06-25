@@ -8,12 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.CourseStopped;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendAutomaticEmployerDemandDemandCutOff;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandReminder;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetStartCourseDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetDemandsWithStoppedCourse;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerDemand.Api.Controllers
@@ -49,6 +57,49 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
 
             var model = (GetCourseDemandResponse) queryResult.EmployerDemand;
             return Ok(model);
+        }
+        
+        [HttpGet]
+        [Route("{id}/restart")]
+        public async Task<IActionResult> Restart(Guid id)
+        {
+            var queryResult = await _mediator.Send(new GetRestartEmployerDemandQuery
+            {
+                Id = id
+            });
+
+            if (queryResult.EmployerDemand == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetRestartCourseDemandResponse) queryResult;
+            return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("start/{courseId}")]
+        public async Task<IActionResult> StartDemand(int courseId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetStartCourseDemandQuery
+                {
+                    CourseId = courseId
+                });
+                
+                var model = new GetStartCourseDemandResponse
+                {
+                    TrainingCourse = queryResult.Course
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get start course demand for course id [{courseId}]");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
@@ -97,9 +148,17 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     CourseTitle = request.TrainingCourse.Title,
                     CourseLevel = request.TrainingCourse.Level,
                     CourseRoute = request.TrainingCourse.Route,
-                    ConfirmationLink = request.ResponseUrl
+                    ConfirmationLink = request.ResponseUrl,
+                    StopSharingUrl = request.StopSharingUrl,
+                    StartSharingUrl = request.StartSharingUrl,
+                    ExpiredCourseDemandId = request.ExpiredCourseDemandId
                 });
 
+                if (!commandResult.HasValue)
+                {
+                    return Conflict();
+                }
+                
                 return Created("", commandResult);
             }
             catch (HttpRequestContentException e)
@@ -135,8 +194,104 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
             {
                 _logger.LogError(e, "Error creating course demand item");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }   
+        }
+
+        [HttpPost]
+        [Route("{demandId}/send-reminder-email/{id}")]
+        public async Task<IActionResult> SendReminderEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new SendEmployerDemandEmailReminderCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
             }
-            
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating reminder email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        [Route("{demandId}/send-automatic-stop-sharing-email/{id}")]
+        public async Task<IActionResult> SendAutomaticCutOffEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new SendAutomaticEmployerDemandDemandCutOffCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating automatic cut off email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{demandId}/send-course-stopped-email/{id}")]
+        public async Task<IActionResult> SendCourseStoppedEmail(Guid demandId, Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new CourseStoppedCommand
+                {
+                    Id = id,
+                    EmployerDemandId = demandId
+                });
+                return Created("", new {id});
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error creating course stopped email for course demand item {demandId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("unmet")]
+        public async Task<IActionResult> UnmetCourseDemands([FromQuery] uint demandAgeInDays)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUnmetCourseDemandsQuery
+                {
+                    AgeOfDemandInDays = demandAgeInDays
+                }) ;
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting unmet course demands");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("unmet/expired-course")]
+        public async Task<IActionResult> UnmetCourseDemandsWithStoppedCourse()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUnmetDemandsWithStoppedCourseQuery());
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting unmet course demands with a stopped course");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
@@ -205,7 +360,32 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 Console.WriteLine(e);
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
-            
+        }
+
+        [HttpPost]
+        [Route("{id}/stop")]
+        public async Task<IActionResult> StopEmployerDemand(Guid id)
+        {
+            try
+            {
+                var commandResult = await _mediator.Send(new StopEmployerDemandCommand
+                {
+                    Id = Guid.NewGuid(),
+                    EmployerDemandId = id
+                });
+                var model =  (GetCourseDemandResponse) commandResult.EmployerDemand;
+
+                return Ok(model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error stopping employer demand item");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }   
         }
     }
 }
