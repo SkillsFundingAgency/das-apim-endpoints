@@ -91,7 +91,7 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Items = contentItems
                 },
-                Attachments = item.Fields.Attachments.Select(attachment => GetEmbeddedResource(attachment.Sys.Id, article)).ToList(),
+                Attachments = item.Fields.Attachments?.Select(attachment => GetEmbeddedResource(attachment.Sys.Id, article)).ToList(),
                 RelatedArticles = article.Includes?.Entry != null ? article
                     .Includes
                     .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
