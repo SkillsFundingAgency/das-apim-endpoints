@@ -181,13 +181,15 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items.TrueForAll(c => c.Values.Count.Equals(0)).Should().BeTrue();
         }
         
-        [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue)
+        [Test]
+        [RecursiveMoqInlineAutoData("unordered-list")]
+        [RecursiveMoqInlineAutoData("ordered-list")]
+        public void Then_The_Content_Items_Are_Added_For_ListItems(string listType, CmsContent source, string contentValue)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
             {
-                subContentItems.NodeType = "unordered-list";
+                subContentItems.NodeType = listType;
                 subContentItems.Content = new List<ContentDefinition>
                 {
                     new ContentDefinition
@@ -197,13 +199,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                         {
                             new RelatedContent
                             {
-                                Content = new List<RelatedContent>
-                                {
-                                    new RelatedContent
-                                    {
-                                        Value = contentValue 
-                                    }
-                                }
+                                NodeType = "text",
+                                Value = contentValue
                             }
                         }
                     },
@@ -214,13 +211,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                         {
                             new RelatedContent
                             {
-                                Content = new List<RelatedContent>
-                                {
-                                    new RelatedContent
-                                    {
-                                        Value = contentValue 
-                                    }
-                                }
+                                NodeType = "text",
+                                Value = contentValue
                             }
                         }
                     }
@@ -231,8 +223,9 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             var actual = new CmsPageModel().Build(source);
             
             //Assert
-            actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list")).Should().BeTrue();
-            actual.MainContent.Items.TrueForAll(c => c.Values.TrueForAll(x=>x.Equals(contentValue))).Should().BeTrue();
+            actual.MainContent.Items[0].Type.Should().Be(listType);
+            actual.MainContent.Items[0].Values[0].Should().Be(contentValue);
+            actual.MainContent.Items[0].Values.Count.Should().Be(2);
         }
 
         

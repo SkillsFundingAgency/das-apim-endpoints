@@ -55,7 +55,8 @@ namespace SFA.DAS.Campaign.Models
                         });
                     }
 
-                    if (contentItem.NodeType.Equals("unordered-list", StringComparison.CurrentCultureIgnoreCase))
+                    if (contentItem.NodeType.Equals("unordered-list", StringComparison.CurrentCultureIgnoreCase) ||
+                        contentItem.NodeType.Equals("ordered-list", StringComparison.CurrentCultureIgnoreCase))
                     {
                         contentItems.Add(new ContentItem
                         {
