@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations
+﻿namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations
 {
     public class GetLocationResult
     {
