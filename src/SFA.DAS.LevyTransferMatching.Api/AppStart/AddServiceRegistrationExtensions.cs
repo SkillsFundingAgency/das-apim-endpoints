@@ -20,8 +20,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
 
             services.AddTransient<IAccountsService, AccountsService>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }
 }
