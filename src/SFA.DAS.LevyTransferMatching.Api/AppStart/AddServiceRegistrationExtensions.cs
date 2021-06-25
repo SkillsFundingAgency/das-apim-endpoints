@@ -7,6 +7,8 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.LevyTransferMatching.Configuration;
+using SFA.DAS.LevyTransferMatching.Clients;
 
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {
@@ -21,8 +23,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
             services.AddTransient<ILevyTransferMatchingService, LevyTransferMatchingService>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
 
             services.AddTransient<IAccountsService, AccountsService>();
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }
