@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.GetAll<Tag>(new GetJobRolesRequest());
         }
 
-        public async Task<PledgeReference> CreatePledge(Pledge pledge)
+        public async Task<int> CreatePledge(Pledge pledge)
         {
             var apiResponse = await _levyTransferMatchingApiClient.PostWithResponseCode<PledgeReference>(
                 new CreatePledgeRequest(pledge.AccountId)
@@ -42,7 +42,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
                     Data = pledge,
                 });
 
-            return apiResponse.Body;
+            return apiResponse.Body.Id.Value;
         }
 
         public async Task<IEnumerable<Pledge>> GetPledges()

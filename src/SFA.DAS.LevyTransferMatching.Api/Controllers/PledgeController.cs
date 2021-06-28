@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
-    public class PledgeController : ControllerBase
+    public class PledgeController
     {
         private readonly IMediator _mediator;
 
@@ -24,27 +24,26 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var result = await _mediator.Send(new GetPledgesQuery());
 
-            return Ok(result.Select(x => (PledgeDto)x));
+            return new OkObjectResult(result.Select(x => (PledgeDto)x));
         }
-
+		
         [HttpPost]
-        [Route("accounts/{encodedAccountId}/pledges")]
-        public async Task<IActionResult> CreatePledge(string encodedAccountId, [FromBody]CreatePledgeRequest createPledgeRequest)
+        [Route("accounts/{accountId}/pledges")]
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
-            var commandResult = await _mediator.Send(new CreatePledgeCommand()
+            var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
+                AccountId = accountId,
                 Amount = createPledgeRequest.Amount,
-                EncodedAccountId = encodedAccountId,
                 IsNamePublic = createPledgeRequest.IsNamePublic,
-                DasAccountName = createPledgeRequest.DasAccountName,
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
             });
 
             return new CreatedResult(
-                $"/accounts/{encodedAccountId}/pledges/{commandResult.EncodedPledgeId}",
-                (PledgeReferenceDto)commandResult);
+                $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
+                (PledgeIdDto)commandResult.PledgeId);
         }
     }
 }

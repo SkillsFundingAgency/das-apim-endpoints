@@ -1,8 +1,7 @@
-﻿using SFA.DAS.LevyTransferMatching.Models;
-
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
+﻿namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 {
-    public class CreatePledgeResult : PledgeReference
+    public class CreatePledgeResult
     {
+        public int PledgeId { get; set; }
     }
 }
