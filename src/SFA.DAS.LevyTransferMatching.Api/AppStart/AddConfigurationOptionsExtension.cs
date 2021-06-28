@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
@@ -18,9 +17,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-
-            services.Configure<EncodingConfig>(configuration.GetSection("EncodingService"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
         }
     }
 }

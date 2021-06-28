@@ -5,7 +5,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
     public class Pledge
     {
         public long AccountId { get; set; }
-        public string EncodedAccountId { get; set; }
         public int Amount { get; set; }
         public bool IsNamePublic { get; set; }
         public IEnumerable<string> Sectors { get; set; }

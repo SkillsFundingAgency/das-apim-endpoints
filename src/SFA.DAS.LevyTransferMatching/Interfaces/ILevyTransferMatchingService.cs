@@ -10,6 +10,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<IEnumerable<Tag>> GetLevels();
         Task<IEnumerable<Tag>> GetSectors();
         Task<IEnumerable<Tag>> GetJobRoles();
-        Task<PledgeReference> CreatePledge(Pledge pledge);
+        Task<int> CreatePledge(Pledge pledge);
     }
 }
