@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.SendEmployerDemandR
             await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
             
             await _employerDemandApiClient.PostWithResponseCode<object>(
-                new PostEmployerDemandNotificationAuditRequest(request.Id, request.EmployerDemandId));
+                new PostEmployerDemandNotificationAuditRequest(request.Id, request.EmployerDemandId, NotificationType.Reminder));
             
             return Unit.Value;
         }

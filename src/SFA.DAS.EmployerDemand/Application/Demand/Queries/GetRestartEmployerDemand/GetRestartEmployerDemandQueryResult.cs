@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDe
     {
         public GetEmployerDemandResponse EmployerDemand { get ; set ; }
         public bool RestartDemandExists { get ; set ; }
+        public DateTime? LastStartDate { get; set; }
     }
 }
