@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand
                     request.EmployerDemandId,
                     new PatchCourseDemandData
                     {
-                        EmailAddress = null
+                        ContactEmailAddress = null
                     }));
             //todo: verify what happens if other values are not set; may need to patch all settable values
 

@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedAutomaticCutOff}"))), Times.Once);
             employerDemandApiClient.Verify(
                 x => x.PatchWithResponseCode(It.Is<PatchCourseDemandRequest>(c =>
-                    c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") && c.Data.Stopped)), Times.Once);
+                    c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") && c.Data.Stopped.HasValue && c.Data.Stopped.Value)), Times.Once);
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
