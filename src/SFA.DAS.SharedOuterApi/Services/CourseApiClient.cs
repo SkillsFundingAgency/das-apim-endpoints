@@ -30,6 +30,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.GetResponseCode(request);
         }
 
+        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+        {
+            return _apiClient.GetWithResponseCode<TResponse>(request);
+        }
+
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             return _apiClient.Post<TResponse>(request);

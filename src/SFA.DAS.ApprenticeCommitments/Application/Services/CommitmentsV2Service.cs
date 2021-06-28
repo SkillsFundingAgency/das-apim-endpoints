@@ -30,9 +30,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             return apprenticeship;
         }
 
-        public Task<ApprenticeshipResponse> GetApprenticeshipDetails(long apprenticeshipId)
+        public async Task<ApprenticeshipResponse> GetApprenticeshipDetails(long apprenticeshipId)
         {
-            return _client.Get<ApprenticeshipResponse>(new GetApprenticeshipDetailsRequest(apprenticeshipId));
+            var response = await _client.GetWithResponseCode<ApprenticeshipResponse>(new GetApprenticeshipDetailsRequest(apprenticeshipId));
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new HttpRequestContentException(response.ErrorContent, response.StatusCode);
+
+            return response.Body;
         }
     }
 }

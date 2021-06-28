@@ -3,6 +3,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerIncentives.Clients
 {
@@ -23,6 +24,11 @@ namespace SFA.DAS.EmployerIncentives.Clients
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
             return _client.GetResponseCode(request);
+        }
+
+        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+        {
+            return _client.GetWithResponseCode<TResponse>(request);
         }
     }
 }

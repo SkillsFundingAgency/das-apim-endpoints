@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -8,6 +6,9 @@ using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
 {
@@ -20,6 +21,12 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
+            client
+                .Setup(x =>
+                   x.GetWithResponseCode<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
+                       It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
+                    null, HttpStatusCode.NotFound, ""));
             var sut = new CommitmentsV2Service(client.Object);
             sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
         }
@@ -30,7 +37,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long apprenticeshipId,
             [Frozen] Mock<IInternalApiClient<CommitmentsV2Configuration>> client)
         {
-            ClientReturnsApprenticeshipWith(client, accountId-1, apprenticeshipId);
+            ClientReturnsApprenticeshipWith(client, accountId - 1, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
             sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
@@ -52,11 +59,19 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
 
         private void ClientReturnsApprenticeshipWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
         {
-            client.Setup(x =>
-                    x.Get<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
-                        It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
-                .ReturnsAsync(new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
-                    { EmployerAccountId = accountId, Id = apprenticeshipId });
+            client
+                .Setup(x =>
+                   x.GetWithResponseCode<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
+                       It.IsAny<Apis.CommitmentsV2InnerApi.GetApprenticeshipDetailsRequest>()))
+
+                .ReturnsAsync(new ApiResponse<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
+                    new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
+                    {
+                        EmployerAccountId = accountId,
+                        Id = apprenticeshipId,
+                    },
+                    HttpStatusCode.OK,
+                    null));
         }
     }
 }

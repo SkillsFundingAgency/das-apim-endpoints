@@ -17,9 +17,12 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
         {
-            var searchResponse = await _client.Get<SearchResponse>(new GetTrainingProviderDetailsRequest(trainingProviderId));
+            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest(trainingProviderId));
 
-            if (searchResponse?.SearchResults == null || searchResponse.SearchResults.Length == 0)
+            if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);
+
+            if (searchResponse.Body.SearchResults.Length == 0)
             {
                 throw new HttpRequestContentException(
                     $"Training Provider Id {trainingProviderId} not found",
@@ -27,7 +30,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     "");
             }
 
-            if (searchResponse.SearchResults.Length > 1)
+            if (searchResponse.Body.SearchResults.Length > 1)
             {
                 throw new HttpRequestContentException(
                     $"Training Provider Id {trainingProviderId} finds multiple matches",
@@ -35,7 +38,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                     "");
             }
 
-            return searchResponse.SearchResults.First();
+            return searchResponse.Body.SearchResults.First();
         }
     }
 }
