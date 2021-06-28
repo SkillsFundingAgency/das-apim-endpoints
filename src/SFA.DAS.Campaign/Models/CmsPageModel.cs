@@ -76,6 +76,7 @@ namespace SFA.DAS.Campaign.Models
                 }
             }
 
+            var parentPage =  article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage.Sys.Id));
 
             return new CmsPageModel
             {
@@ -108,14 +109,19 @@ namespace SFA.DAS.Campaign.Models
                         HubType = entry.Fields.HubType,
                         MetaDescription = entry.Fields.MetaDescription
                     })
-                    .ToList() : new List<PageModel>()
+                    .ToList() : new List<PageModel>(),
+                ParentPage = parentPage != null ? new PageModel
+                {
+                    Slug = parentPage.Fields.Slug,
+                    Title = parentPage.Fields.Title,
+                    Summary = parentPage.Fields.Summary,
+                    HubType = parentPage.Fields.HubType,
+                    MetaDescription = parentPage.Fields.MetaDescription
+                } : null
             };
         }
 
-        private List<ResourceItem> BuildAttachments(CmsContent content)
-        {
-            return content.Items.FirstOrDefault().Fields.Attachments.Select(attachment => GetEmbeddedResource(attachment.Sys.Id, content)).ToList();
-        }
+        public PageModel ParentPage { get ; set ; }
 
         private ResourceItem GetEmbeddedResource(string id, CmsContent article)
         {

@@ -236,31 +236,31 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public List<RelatedContent> Content { get; set; }
     }
 
-    public partial class PurpleData
+    public class PurpleData
     {
         [JsonProperty("target")]
         public LandingPage Target { get; set; }
     }
 
-    public partial class SysElement
+    public class SysElement
     {
         [JsonProperty("type")]
         public string Type { get; set; }
     }
 
-    public partial class FluffyData
+    public class FluffyData
     {
         [JsonProperty("uri", NullValueHandling = NullValueHandling.Ignore)]
         public Uri Uri { get; set; }
     }
 
-    public partial class Table
+    public class Table
     {
         [JsonProperty("tableData")]
         public List<List<string>> TableData { get; set; }
     }
 
-    public partial class Item
+    public class Item
     {
         [JsonProperty("metadata")]
         public Metadata Metadata { get; set; }
@@ -272,7 +272,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public ItemFields Fields { get; set; }
     }
 
-    public partial class ItemFields
+    public class ItemFields
     {
         [JsonProperty("title")]
         public string Title { get; set; }
@@ -305,7 +305,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public List<LandingPage> RelatedArticles { get; set; }
     }
 
-    public partial class MainContent
+    public class MainContent
     {
         [JsonProperty("data")]
         public PurpleData Data { get; set; }
@@ -317,7 +317,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public string NodeType { get; set; }
     }
 
-    public partial class SubContentItems
+    public class SubContentItems
     {
         [JsonProperty("data")]
         public PurpleData Data { get; set; }

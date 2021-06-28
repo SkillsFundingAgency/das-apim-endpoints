@@ -78,6 +78,25 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.PageAttributes.HubType.Should().Be(source.Items.FirstOrDefault()?.Fields.HubType);
             actual.PageAttributes.Summary.Should().Be(source.Items.FirstOrDefault()?.Fields.Summary);
         }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Parent_Page_Is_Set(CmsContent source, string parentId)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.LandingPage.Sys.Id = parentId;
+            source.Includes.Entry.FirstOrDefault().Sys.Id = parentId;
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.ParentPage.Title.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Title);
+            actual.ParentPage.MetaDescription.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.MetaDescription);
+            actual.ParentPage.Slug.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Slug);
+            actual.ParentPage.HubType.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.HubType);
+            actual.ParentPage.Summary.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Summary);
+            
+        }
         
         [Test, RecursiveMoqAutoData]
         public void Then_The_Content_Items_Are_Added_For_Paragraphs(CmsContent source, string contentValue)
@@ -397,6 +416,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                 {
                     Sys = new AssetSys
                     {
+                        Id="321EDF",
                         Space = new LandingPage
                         {
                             Sys = new LandingPageSys
@@ -422,13 +442,14 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                 {
                     Sys = new AssetSys
                     {
+                        Id="321EDC",
                         Space = new LandingPage
                         {
                             Sys = new LandingPageSys
                             {
                                 Id = "123abc",
                                 Type = "Link",
-                                LinkType = "Space"
+                                LinkType = "Space",
                             }
                         },
                         ContentType = new LandingPage
@@ -450,11 +471,11 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             
             //Assert
             actual.RelatedArticles.Count.Should().Be(1);
-            actual.RelatedArticles.TrueForAll(c => c.Title.Equals(linkedPage.Title)).Should().BeTrue();;
-            actual.RelatedArticles.TrueForAll(c => c.Summary.Equals(linkedPage.Summary)).Should().BeTrue();;
-            actual.RelatedArticles.TrueForAll(c => c.Slug.Equals(linkedPage.Slug)).Should().BeTrue();;
-            actual.RelatedArticles.TrueForAll(c => c.HubType.Equals(linkedPage.HubType)).Should().BeTrue();;
-            actual.RelatedArticles.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();;
+            actual.RelatedArticles.TrueForAll(c => c.Title.Equals(linkedPage.Title)).Should().BeTrue();
+            actual.RelatedArticles.TrueForAll(c => c.Summary.Equals(linkedPage.Summary)).Should().BeTrue();
+            actual.RelatedArticles.TrueForAll(c => c.Slug.Equals(linkedPage.Slug)).Should().BeTrue();
+            actual.RelatedArticles.TrueForAll(c => c.HubType.Equals(linkedPage.HubType)).Should().BeTrue();
+            actual.RelatedArticles.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();
         }
 
         
