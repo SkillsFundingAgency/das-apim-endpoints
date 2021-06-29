@@ -15,7 +15,7 @@ using LocationPoint = SFA.DAS.EmployerDemand.InnerApi.Requests.LocationPoint;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
 {
-    public class RegisterDemandCommandHandler : IRequestHandler<RegisterDemandCommand, Guid>
+    public class RegisterDemandCommandHandler : IRequestHandler<RegisterDemandCommand, Guid?>
     {
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _apiClient;
         private readonly INotificationService _notificationService;
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
             _notificationService = notificationService;
         }
 
-        public async Task<Guid> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
+        public async Task<Guid?> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
         {
             var result = await _apiClient.PostWithResponseCode<PostEmployerCourseDemand>(new PostCreateCourseDemandRequest(new CreateCourseDemandData
             {
@@ -51,7 +51,9 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     Level = request.CourseLevel,
                     Route = request.CourseRoute,
                 },
-                StopSharingUrl = request.StopSharingUrl
+                StopSharingUrl = request.StopSharingUrl,
+                StartSharingUrl = request.StartSharingUrl,
+                ExpiredCourseDemandId = request.ExpiredCourseDemandId
             }));
             
             if (result.StatusCode == HttpStatusCode.Created)
@@ -65,6 +67,11 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
             
             
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
+            }
+
+            if (result.StatusCode == HttpStatusCode.Conflict)
+            {
+                return null;
             }
 
             if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
@@ -23,7 +24,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemand
 
             return new GetUnmetCourseDemandsQueryResult
             {
-                EmployerDemandIds = result.EmployerDemandIds
+                EmployerDemandIds = result.UnmetCourseDemands.Select(demand => demand.Id).ToList()
             };
         }
     }

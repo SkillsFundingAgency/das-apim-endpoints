@@ -1,58 +1,45 @@
-﻿using MediatR;
-using SFA.DAS.Encoding;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges
 {
     public class GetPledgesHandler : IRequestHandler<GetPledgesQuery, GetPledgesResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly IEncodingService _encodingService;
 
-        public GetPledgesHandler(IEncodingService encodingService, ILevyTransferMatchingService levyTransferMatchingService)
+        public GetPledgesHandler(ILevyTransferMatchingService levyTransferMatchingService)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
-            _encodingService = encodingService;
         }
 
         public async Task<GetPledgesResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
         {
             IEnumerable<Pledge> pledges = null;
 
-            var encodedId = request.EncodedId;
-            if (!string.IsNullOrEmpty(encodedId))
+            if (request.PledgeId.HasValue)
             {
-                try
-                {
-                    int id = (int)_encodingService.Decode(encodedId, EncodingType.PledgeId);
+                Pledge pledge = await _levyTransferMatchingService.GetPledge(request.PledgeId.Value);
 
+                if (pledge != null)
+                {
                     pledges = new Pledge[]
                     {
-                        await _levyTransferMatchingService.GetPledge(id),
+                        pledge,
                     };
                 }
-                catch (IndexOutOfRangeException)
+                else
                 {
-                    // Appears to be thrown when an invalid encoded value is
-                    // provided.
                     pledges = Array.Empty<Pledge>();
                 }
             }
             else
             {
                 pledges = await _levyTransferMatchingService.GetPledges();
-            }
-
-            foreach (var pledge in pledges)
-            {
-                pledge.EncodedPledgeId = _encodingService.Encode(pledge.Id.Value, EncodingType.PledgeId);
-                pledge.EncodedAccountId = _encodingService.Encode(pledge.AccountId, EncodingType.AccountId);
             }
 
             return new GetPledgesResult(pledges);

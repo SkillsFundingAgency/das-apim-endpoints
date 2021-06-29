@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
-    public class PledgeDto : PledgeReferenceDto
+    public class PledgeDto
     {
-        public string EncodedAccountId { get; set; }
+        public int Id { get; set; }
+        public long AccountId { get; set; }
 
         public int Amount { get; set; }
 
@@ -26,10 +27,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
         {
             return new PledgeDto()
             {
+                Id = pledge.Id.Value,
+                AccountId = pledge.AccountId,
                 Amount = pledge.Amount,
                 CreatedOn = pledge.CreatedOn,
-                EncodedAccountId = pledge.EncodedAccountId,
-                EncodedPledgeId = pledge.EncodedPledgeId,
                 IsNamePublic = pledge.IsNamePublic,
                 DasAccountName = pledge.IsNamePublic ? pledge.DasAccountName : "Opportunity",
                 JobRoles = pledge.JobRoles,

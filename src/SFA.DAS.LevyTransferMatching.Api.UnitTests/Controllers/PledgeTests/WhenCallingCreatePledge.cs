@@ -17,7 +17,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_PledgeReference_From_Mediator(
-            string encodedAccountId,
+            long accountId,
             CreatePledgeRequest createPledgeRequest,
             CreatePledgeResult createPledgeResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -25,20 +25,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<CreatePledgeCommand>((x) => x.EncodedAccountId == encodedAccountId),
+                    It.Is<CreatePledgeCommand>((x) => x.AccountId == accountId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(createPledgeResult);
 
-            var controllerResult = await pledgeController.CreatePledge(encodedAccountId, createPledgeRequest);
+            var controllerResult = await pledgeController.CreatePledge(accountId, createPledgeRequest);
             var createdResult = controllerResult as CreatedResult;
-            var pledgeReference = createdResult.Value as PledgeReferenceDto;
+            var pledgeReference = createdResult.Value as PledgeIdDto;
 
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(createdResult);
             Assert.IsNotNull(pledgeReference);
             Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.Created);
-            Assert.AreEqual(createdResult.Location, $"/accounts/{encodedAccountId}/pledges/{createPledgeResult.EncodedPledgeId}");
-            Assert.AreEqual(pledgeReference.EncodedPledgeId, createPledgeResult.EncodedPledgeId);
+            Assert.AreEqual(createdResult.Location, $"/accounts/{accountId}/pledges/{createPledgeResult.PledgeId}");
+            Assert.AreEqual(pledgeReference.Id, createPledgeResult.PledgeId);
         }
     }
 }

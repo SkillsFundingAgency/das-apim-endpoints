@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             GetCourseDemandQueryHandler handler)
         {
-            //Assert
+            //Arrange
             apiClient.Setup(x =>
                     x.Get<GetEmployerDemandResponse>(
                         It.Is<GetEmployerDemandRequest>(c => c.GetUrl.Contains($"demand/{query.Id}"))))

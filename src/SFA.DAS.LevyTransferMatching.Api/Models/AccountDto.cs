@@ -10,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
         public static implicit operator AccountDto(Account account)
         {
-            return new AccountDto()
+            return new AccountDto
             {
                 EncodedAccountId = account.EncodedAccountId,
                 DasAccountName = account.DasAccountName,

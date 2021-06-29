@@ -20,7 +20,10 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
                 .Excluding(c=>c.Course)
                 .Excluding(c=>c.ContactEmailAddress)
                 .Excluding(c=>c.StopSharingUrl)
+                .Excluding(c=>c.StartSharingUrl)
                 .Excluding(c=>c.Stopped)
+                .Excluding(c=>c.ExpiredCourseDemandId)
+                .Excluding(c => c.LastStartDate)
             );
             actual.ContactEmail.Should().Be(source.ContactEmailAddress);
         }

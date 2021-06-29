@@ -81,7 +81,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
 
-            services.AddEncodingService(_configuration);
             services.AddMediatR(typeof(IAccountsService));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

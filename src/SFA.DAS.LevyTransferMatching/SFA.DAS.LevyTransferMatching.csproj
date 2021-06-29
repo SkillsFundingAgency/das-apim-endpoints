@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="SFA.DAS.Encoding" Version="1.1.72" />
   </ItemGroup>
 
   <ItemGroup>

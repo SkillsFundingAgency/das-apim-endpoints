@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -20,20 +21,23 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("pledges")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPledges()
         {
             var result = await _mediator.Send(new GetPledgesQuery());
 
-            return Ok(result.Select(x => (PledgeDto)x));
+            return new OkObjectResult(result.Select(x => (PledgeDto)x));
         }
 
         [HttpGet]
-        [Route("pledges/{encodedId}")]
-        public async Task<IActionResult> GetPledge(string encodedId)
+        [Route("pledges/{pledgeId}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetPledge(int pledgeId)
         {
             var result = await _mediator.Send(new GetPledgesQuery()
             {
-                EncodedId = encodedId,
+                PledgeId = pledgeId,
             });
 
             var pledge = result.SingleOrDefault();
@@ -49,13 +53,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("accounts/{encodedAccountId}/pledges")]
-        public async Task<IActionResult> CreatePledge(string encodedAccountId, [FromBody]CreatePledgeRequest createPledgeRequest)
+        [Route("accounts/{accountId}/pledges")]
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
-            var commandResult = await _mediator.Send(new CreatePledgeCommand()
+            var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
+                AccountId = accountId,
                 Amount = createPledgeRequest.Amount,
-                EncodedAccountId = encodedAccountId,
                 IsNamePublic = createPledgeRequest.IsNamePublic,
                 DasAccountName = createPledgeRequest.DasAccountName,
                 JobRoles = createPledgeRequest.JobRoles,
@@ -64,8 +68,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return new CreatedResult(
-                $"/accounts/{encodedAccountId}/pledges/{commandResult.EncodedPledgeId}",
-                (PledgeReferenceDto)commandResult);
+                $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
+                (PledgeIdDto)commandResult.PledgeId);
         }
     }
 }
