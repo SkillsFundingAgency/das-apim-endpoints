@@ -39,7 +39,9 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             actualModel.TrainingCourse.Should().BeEquivalentTo(queryResult.Course, options=>options
                 .Excluding(c=>c.LarsCode)
                 .Excluding(c=>c.StandardUId)
+                .Excluding(c => c.StandardDates)
             );
+            actualModel.TrainingCourse.LastStartDate.Should().Be(queryResult.Course.StandardDates.LastDateStarts);
         }
         [Test, MoqAutoData]
         public async Task Then_If_Exception_Returned_Then_Internal_Error_Response_Returned(

@@ -1,4 +1,6 @@
+using System;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand;
+using SFA.DAS.EmployerDemand.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerDemand.Api.Models
 {
@@ -18,9 +20,21 @@ namespace SFA.DAS.EmployerDemand.Api.Models
                 EmailVerified = source.EmployerDemand.EmailVerified,
                 NumberOfApprentices = source.EmployerDemand.NumberOfApprentices,
                 RestartDemandExists = source.RestartDemandExists,
-                TrainingCourse = source.EmployerDemand.Course,
+                TrainingCourse = BuildCourse(source.EmployerDemand.Course, source.LastStartDate),
                 Location = source.EmployerDemand.Location
                     
+            };
+        }
+
+        private static GetCourseListItem BuildCourse(EmployerDemandCourse course, DateTime? lastStartDate)
+        {
+            return new GetCourseListItem
+            {
+                Id = course.Id,
+                Level = course.Level,
+                Route = course.Route,
+                Title = course.Title,
+                LastStartDate = lastStartDate
             };
         }
     }
