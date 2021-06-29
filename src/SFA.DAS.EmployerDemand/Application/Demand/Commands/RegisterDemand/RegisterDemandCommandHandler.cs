@@ -53,7 +53,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                 },
                 StopSharingUrl = request.StopSharingUrl,
                 StartSharingUrl = request.StartSharingUrl,
-                ExpiredCourseDemandId = request.ExpiredCourseDemandId
+                ExpiredCourseDemandId = request.ExpiredCourseDemandId,
+                EntryPoint = request.EntryPoint
             }));
             
             if (result.StatusCode == HttpStatusCode.Created)
