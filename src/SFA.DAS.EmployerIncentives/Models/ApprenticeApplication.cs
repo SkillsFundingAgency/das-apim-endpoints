@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerIncentives.Models
         public decimal TotalIncentiveAmount { get; set; }
         public string CourseName { get; set; }
         public string SubmittedByEmail { get; set; }
+        public bool IsWithdrawn { get; set; }
         public PaymentStatus FirstPaymentStatus { get; set; }
         public PaymentStatus SecondPaymentStatus { get; set; }
     }
