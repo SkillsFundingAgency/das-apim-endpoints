@@ -257,9 +257,9 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             
             //Assert
             actual.MainContent.Items[0].Type.Should().Be(listType);
-            actual.MainContent.Items[0].Values[0].Should().Be($"[Bold]{contentValue}");
-            actual.MainContent.Items[0].Values[1].Should().Be($"[Italic]{contentValue}");
-            actual.MainContent.Items[0].Values.Count.Should().Be(2);
+            actual.MainContent.Items[0].TableValue[0].FirstOrDefault().Should().Be($"[Bold]{contentValue}");
+            actual.MainContent.Items[0].TableValue[1].FirstOrDefault().Should().Be($"[Italic]{contentValue}");
+            actual.MainContent.Items[0].TableValue.Count.Should().Be(2);
         }
 
         
@@ -381,8 +381,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list")).Should().BeTrue();
-            actual.MainContent.Items.TrueForAll(c => c.Values.Count.Equals(1)).Should().BeTrue();
-            actual.MainContent.Items[2].Values[0].Should().Be("[find](http://www.google.com/) a website");
+            actual.MainContent.Items[2].TableValue[0].Count.Should().Be(2);
+            actual.MainContent.Items[2].TableValue[0].FirstOrDefault().Should().Be("[find](http://www.google.com/)");
         }
 
         [Test, RecursiveMoqAutoData]

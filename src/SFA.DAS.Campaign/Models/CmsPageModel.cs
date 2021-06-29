@@ -61,7 +61,7 @@ namespace SFA.DAS.Campaign.Models
                         contentItems.Add(new ContentItem
                         {
                             Type = contentItem.NodeType,
-                            Values = GetListItems(contentItem),
+                            TableValue = GetListItems(contentItem),
                         });
                     }
 
@@ -191,9 +191,9 @@ namespace SFA.DAS.Campaign.Models
             return returnList;
         }
 
-        private List<string> GetListItems(SubContentItems contentItems)
+        private List<List<string>> GetListItems(SubContentItems contentItems)
         {
-            var returnList = new List<string>();
+            var returnList = new List<List<string>>();
             foreach (var relatedContent in contentItems.Content)
             {
                 if (relatedContent.NodeType != "list-item")
@@ -202,36 +202,34 @@ namespace SFA.DAS.Campaign.Models
                 }
                 foreach (var content in relatedContent.Content)
                 {
+                    var list = new List<string>();
                     switch (content.NodeType)
                     {
                         case "paragraph":
                         {
-                            var sb = new StringBuilder();
-
                             foreach (var innerContent in content.Content)
                             {
                                 if (innerContent.NodeType.Equals("text"))
                                 {
                                     var fontEffect = innerContent.Marks?.FirstOrDefault()?.Type;
-                                    sb.Append($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
+                                    list.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
                                 }
                                 if (innerContent.NodeType.Equals("hyperlink"))
                                 {
-                                    sb.Append($"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
+                                    list.Add($"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
                                 }
                             }
-                            returnList.Add(sb.ToString());
-
                             break;
                         }
                         case "text":
                             var font = content.Marks?.FirstOrDefault()?.Type;
-                            returnList.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
+                            list.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
                             break;
                         case "hyperlink":
-                            returnList.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
+                            list.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
                             break;
                     }
+                    returnList.Add(list);
                 }
             }
 
