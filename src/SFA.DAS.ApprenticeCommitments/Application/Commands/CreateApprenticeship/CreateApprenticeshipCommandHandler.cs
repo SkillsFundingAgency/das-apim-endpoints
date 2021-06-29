@@ -76,6 +76,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 RedirectUrl = _loginConfiguration.RedirectUrl
             };
 
+            _logger.LogInformation($"Create Apprenticeship response: {JsonConvert.SerializeObject(res)}");
+
             return res;
         }
 
