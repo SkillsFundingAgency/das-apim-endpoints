@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
@@ -16,19 +18,22 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         private readonly TrainingProviderService _trainingProviderService;
         private readonly ApprenticeLoginConfiguration _loginConfiguration;
         private readonly CoursesService _coursesService;
+        private readonly ILogger<CreateApprenticeshipCommandHandler> _logger;
 
         public CreateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginConfiguration loginConfiguration,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
-            CoursesService coursesService)
+            CoursesService coursesService,
+            ILogger<CreateApprenticeshipCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _loginConfiguration = loginConfiguration;
             _commitmentsService = commitmentsV2Service;
             _trainingProviderService = trainingProviderService;
             _coursesService = coursesService;
+            _logger = logger;
         }
 
         public async Task<CreateApprenticeshipResponse> Handle(
@@ -70,6 +75,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CallbackUrl = _loginConfiguration.CallbackUrl,
                 RedirectUrl = _loginConfiguration.RedirectUrl
             };
+
+            _logger.LogInformation($"Create Apprenticeship response: {JsonConvert.SerializeObject(res)}");
 
             return res;
         }
