@@ -203,7 +203,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         [Test]
         [RecursiveMoqInlineAutoData("unordered-list")]
         [RecursiveMoqInlineAutoData("ordered-list")]
-        public void Then_The_Content_Items_Are_Added_For_ListItems(string listType, CmsContent source, string contentValue)
+        public void Then_The_Content_Items_Are_Added_For_ListItems_with_Styling(string listType, CmsContent source, string contentValue)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -218,20 +218,34 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                         {
                             new RelatedContent
                             {
-                                NodeType = "text",
-                                Value = contentValue
-                            }
-                        }
-                    },
-                    new ContentDefinition
-                    {
-                        NodeType = "list-item",
-                        Content = new List<RelatedContent>
-                        {
+                                NodeType = "paragraph",
+                                Content = new List<RelatedContent>
+                                {
+                                    new RelatedContent
+                                    {
+                                        NodeType = "text",
+                                        Value = contentValue,
+                                        Marks = new List<SysElement>
+                                        {
+                                            new SysElement
+                                            {
+                                                Type = "Bold"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                             new RelatedContent
                             {
                                 NodeType = "text",
-                                Value = contentValue
+                                Value = contentValue,
+                                Marks = new List<SysElement>
+                                {
+                                    new SysElement
+                                    {
+                                        Type = "Italic"
+                                    }
+                                }
                             }
                         }
                     }
@@ -243,7 +257,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             
             //Assert
             actual.MainContent.Items[0].Type.Should().Be(listType);
-            actual.MainContent.Items[0].Values[0].Should().Be(contentValue);
+            actual.MainContent.Items[0].Values[0].Should().Be($"[Bold]{contentValue}");
+            actual.MainContent.Items[0].Values[1].Should().Be($"[Italic]{contentValue}");
             actual.MainContent.Items[0].Values.Count.Should().Be(2);
         }
 

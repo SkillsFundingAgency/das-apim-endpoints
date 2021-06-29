@@ -212,7 +212,8 @@ namespace SFA.DAS.Campaign.Models
                             {
                                 if (innerContent.NodeType.Equals("text"))
                                 {
-                                    sb.Append(innerContent.Value);
+                                    var fontEffect = innerContent.Marks?.FirstOrDefault()?.Type;
+                                    sb.Append($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
                                 }
                                 if (innerContent.NodeType.Equals("hyperlink"))
                                 {
@@ -224,7 +225,8 @@ namespace SFA.DAS.Campaign.Models
                             break;
                         }
                         case "text":
-                            returnList.Add(content.Value);
+                            var font = content.Marks?.FirstOrDefault()?.Type;
+                            returnList.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
                             break;
                         case "hyperlink":
                             returnList.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
