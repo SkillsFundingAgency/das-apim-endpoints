@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetSectors
             var result = await _levyTransferMatchingService.GetSectors();
             return new GetSectorsQueryResult
             {
-                Tags = result
+                ReferenceDataItems = result
             };
         }
     }
