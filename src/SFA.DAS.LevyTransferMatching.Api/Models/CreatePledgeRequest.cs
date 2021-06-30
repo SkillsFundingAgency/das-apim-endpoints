@@ -12,6 +12,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
         public bool IsNamePublic { get; set; }
 
         [JsonProperty(Required = Required.Always)]
+        public string DasAccountName { get; set; }
+
+        [JsonProperty(Required = Required.Always)]
         public IEnumerable<string> Sectors { get; set; }
 
         [JsonProperty(Required = Required.Always)]

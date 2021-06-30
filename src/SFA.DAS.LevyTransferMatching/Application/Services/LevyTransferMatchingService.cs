@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Tags;
 using SFA.DAS.LevyTransferMatching.Models.Tags;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Services
 {
@@ -41,7 +42,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
                     Data = pledge,
                 });
 
-            return apiResponse.Body.Id;
+            return apiResponse.Body.Id.Value;
+        }
+
+        public async Task<IEnumerable<Pledge>> GetPledges()
+        {
+            var response = await _levyTransferMatchingApiClient.GetAll<Pledge>(new GetPledgesRequest());
+
+            return response;
         }
     }
 }
