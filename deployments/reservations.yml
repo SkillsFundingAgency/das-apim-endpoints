@@ -43,7 +43,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: AT
@@ -71,7 +71,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: TEST
@@ -99,7 +99,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: TEST2
@@ -127,7 +127,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: PP
@@ -155,7 +155,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: PROD
@@ -183,7 +183,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: MO
@@ -211,7 +211,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
 
-  - template: pipeline-templates/job/deploy-api.yml
+  - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_Reservations
       Environment: DEMO
