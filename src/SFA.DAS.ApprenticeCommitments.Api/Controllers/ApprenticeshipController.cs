@@ -1,13 +1,14 @@
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -50,6 +51,26 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
+        public async Task<IActionResult> PostApprenticeship(
+                     Guid apprenticeId,
+                     long apprenticeshipId,
+                     [FromBody] JsonPatchDocument<ApprenticeshipResponse> changes)
+        {
+            var data = new JsonPatchDocumentRequest<ApprenticeshipResponse>
+            {
+                PatchUrl = $"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}",
+                Data = changes
+            };
+
+            var response = await _client.PatchWithResponseCode(data);
+
+            return new ObjectResult(response.Body)
+            {
+                StatusCode = (int)response.StatusCode
+            };
         }
 
         [HttpPost("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/statements/{commitmentStatementId}/trainingproviderconfirmation")]
@@ -96,7 +117,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             await _client.Post(
                 new RolesAndResponsibilitiesConfirmationRequest(
                     apprenticeId, apprenticeshipId, commitmentStatementId, request.RolesAndResponsibilitiesCorrect));
-            
+
             return Ok();
         }
 
