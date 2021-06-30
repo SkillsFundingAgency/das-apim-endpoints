@@ -94,8 +94,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                         TotalProviders  = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
                     },
-                    ShortlistItemCount = result.ShortlistItemCount,
-                    ShowEmployerDemand = result.ShowEmployerDemand
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
@@ -140,8 +139,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                             GeoPoint = result.Location?.GeoPoint
                         }
                     },
-                    ShortlistItemCount = result.ShortlistItemCount,
-                    ShowEmployerDemand = result.ShowEmployerDemand
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
