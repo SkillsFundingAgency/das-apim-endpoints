@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Models.Tags;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels
 {

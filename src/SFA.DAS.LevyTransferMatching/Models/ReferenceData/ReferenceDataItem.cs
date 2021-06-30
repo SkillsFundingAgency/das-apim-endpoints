@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SFA.DAS.LevyTransferMatching.Models.Tags
+namespace SFA.DAS.LevyTransferMatching.Models.ReferenceData
 {
     public class ReferenceDataItem
     {

@@ -8,13 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
-using SFA.DAS.LevyTransferMatching.Api.Models;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetAccount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels;
-using SFA.DAS.LevyTransferMatching.Models.Tags;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.TagTests
+namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ReferenceTests
 {
     [TestFixture]
     public class WhenCallingGetLevels
