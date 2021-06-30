@@ -32,6 +32,7 @@ resources:
 
 stages:
 - stage: Deploy_AT
+  dependsOn: []
   displayName: Deploy to AT
   variables:
   - group: DevTest Management Resources
@@ -59,6 +60,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
+  dependsOn: []
   displayName: Deploy to TEST
   variables:
   - group: DevTest Management Resources
@@ -86,6 +88,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST2
+  dependsOn: []
   displayName: Deploy to TEST2
   variables:
   - group: DevTest Management Resources
@@ -113,6 +116,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_PP
+  dependsOn: []
   displayName: Deploy to PP
   variables:
   - group: PREPROD Management Resources
@@ -140,6 +144,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_PROD
+  dependsOn: []
   displayName: Deploy to PROD
   variables:
   - group: PROD Management Resources
@@ -167,6 +172,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
+  dependsOn: []
   displayName: Deploy to MO
   variables:
   - group: MO Management Resources
@@ -194,6 +200,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_DEMO
+  dependsOn: []
   displayName: Deploy to DEMO
   variables:
   - group: DevTest Management Resources
