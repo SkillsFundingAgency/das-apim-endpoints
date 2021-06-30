@@ -9,12 +9,12 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.GetSectors;
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
-    [Route("tags")]
-    public class TagsController : ControllerBase
+    [Route("reference")]
+    public class ReferenceController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public TagsController(IMediator mediator)
+        public ReferenceController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> Levels()
         {
             var result = await _mediator.Send(new GetLevelsQuery());
-            return Ok(result.Tags);
+            return Ok(result.ReferenceDataItems);
         }
 
         [Route("sectors")]
@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> Sectors()
         {
             var result = await _mediator.Send(new GetSectorsQuery());
-            return Ok(result.Tags);
+            return Ok(result.ReferenceDataItems);
         }
 
         [Route("jobRoles")]
@@ -40,7 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> JobRoles()
         {
             var result = await _mediator.Send(new GetJobRolesQuery());
-            return Ok(result.Tags);
+            return Ok(result.ReferenceDataItems);
         }
     }
 }

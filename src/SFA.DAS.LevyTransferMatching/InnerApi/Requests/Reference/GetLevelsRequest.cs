@@ -1,10 +1,10 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Tags
+namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference
 {
     public class GetLevelsRequest : IGetAllApiRequest
     {
-        public string GetAllUrl => "tags/levels";
+        public string GetAllUrl => "reference/levels";
         public string Version { get; }
     }
 }
