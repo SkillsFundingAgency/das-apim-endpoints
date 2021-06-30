@@ -1,21 +1,20 @@
-using SFA.DAS.EmployerIncentives.Configuration;
-using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.Campaign.Configuration;
+using SFA.DAS.Campaign.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.EmployerIncentives.Clients
+namespace SFA.DAS.Campaign.ExternalApi
 {
-    public class CustomerEngagementFinanceApiClient : ICustomerEngagementFinanceApiClient<CustomerEngagementFinanceConfiguration>
+    public class ContentfulMasterApiClient : IContentfulMasterApiClient<ContentfulApiConfiguration>
     {
-        private readonly ICustomerEngagementApiClient<CustomerEngagementFinanceConfiguration> _client;
+        private readonly IContentfulApiClient<ContentfulApiConfiguration> _client;
 
-        public CustomerEngagementFinanceApiClient(ICustomerEngagementApiClient<CustomerEngagementFinanceConfiguration> client)
+        public ContentfulMasterApiClient (IContentfulApiClient<ContentfulApiConfiguration> client)
         {
             _client = client;
         }
-
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _client.Get<TResponse>(request);
