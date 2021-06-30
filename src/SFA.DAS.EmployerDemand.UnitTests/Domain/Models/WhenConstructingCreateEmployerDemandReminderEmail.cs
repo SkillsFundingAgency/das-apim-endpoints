@@ -40,7 +40,6 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Domain.Models
             
             //Assert
             actual.TemplateId.Should().Be(EmailConstants.EmployerDemandReminderTemplateId);
-            actual.Subject.Should().Be("We’re still sharing your interest in apprenticeship training with training providers");
             actual.Tokens.Should().BeEquivalentTo(expectedTokens);
             actual.RecipientAddress.Should().Be(recipientEmail);
         }
