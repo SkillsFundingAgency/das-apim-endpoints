@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -11,19 +12,38 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
     public class LocationsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<LocationsController> _logger;
 
-        public LocationsController(IMediator mediator, ILogger<LocationsController> logger)
+        public LocationsController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Search(string searchTerm)
+        public async Task<IActionResult> Search([FromQuery] string searchTerm)
         {
-            var response = await _mediator.Send(new GetLocationQuery(searchTerm));
+            var queryResult = await _mediator.Send(new GetLocationsQuery { SearchTerm = searchTerm });
+
+            var response = new LocationsDto
+            {
+                Names = queryResult.Locations?.Select(x => x.DisplayName)
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("information")]
+        public async Task<IActionResult> Information([FromQuery] string location)
+        {
+            var queryResult = await _mediator.Send(new GetLocationInformationQuery() { Location = location });
+
+            var response = new LocationInformationDto
+            {
+                Name = queryResult.Name,
+                GeoPoint = queryResult.GeoPoint
+            };
+
             return Ok(response);
         }
     }
