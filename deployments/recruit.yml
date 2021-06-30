@@ -4,6 +4,8 @@ pr: none
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: OuterApiObject
+  value: $(RecruitOuterApiObject)
 
 resources:
   repositories:
@@ -12,12 +14,12 @@ resources:
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.3.14
-    endpoint: GitHub (SFA)
+    endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
     ref: refs/tags/4.4.1
-    endpoint: GitHub (SFA)
+    endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
     project: Digital Apprenticeship Service
