@@ -15,13 +15,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetSectors
     {
         private GetSectorsQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private IEnumerable<Tag> _sectors;
+        private IEnumerable<ReferenceDataItem> _sectors;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
-            _sectors = _autoFixture.Create<List<Tag>>();
+            _sectors = _autoFixture.Create<List<ReferenceDataItem>>();
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetSectors
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(new GetSectorsQuery(), CancellationToken.None);
-            Assert.AreEqual(_sectors, result.Tags);
+            Assert.AreEqual(_sectors, result.ReferenceDataItems);
         }
     }
 }

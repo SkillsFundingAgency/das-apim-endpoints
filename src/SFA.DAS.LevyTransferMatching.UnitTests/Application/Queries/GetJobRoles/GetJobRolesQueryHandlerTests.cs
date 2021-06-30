@@ -15,13 +15,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetJobRoles
     {
         private GetJobRolesQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private IEnumerable<Tag> _jobRoles;
+        private IEnumerable<ReferenceDataItem> _jobRoles;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
-            _jobRoles = _autoFixture.Create<List<Tag>>();
+            _jobRoles = _autoFixture.Create<List<ReferenceDataItem>>();
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.GetJobRoles()).ReturnsAsync(_jobRoles);
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetJobRoles
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(new GetJobRolesQuery(), CancellationToken.None);
-            Assert.AreEqual(_jobRoles, result.Tags);
+            Assert.AreEqual(_jobRoles, result.ReferenceDataItems);
         }
     }
 }

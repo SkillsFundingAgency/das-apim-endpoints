@@ -7,9 +7,9 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
 {
     public interface ILevyTransferMatchingService
     {
-        Task<IEnumerable<Tag>> GetLevels();
-        Task<IEnumerable<Tag>> GetSectors();
-        Task<IEnumerable<Tag>> GetJobRoles();
+        Task<IEnumerable<ReferenceDataItem>> GetLevels();
+        Task<IEnumerable<ReferenceDataItem>> GetSectors();
+        Task<IEnumerable<ReferenceDataItem>> GetJobRoles();
         Task<int> CreatePledge(Pledge pledge);
 		Task<IEnumerable<Pledge>> GetPledges();
     }

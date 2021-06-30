@@ -6,6 +6,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels
 {
     public class GetLevelsQuery : IRequest<GetLevelsQueryResult>
     {
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<ReferenceDataItem> Tags { get; set; }
     }
 }

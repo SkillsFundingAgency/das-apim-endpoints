@@ -5,6 +5,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetSectors
 {
     public class GetSectorsQueryResult
     {
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<ReferenceDataItem> ReferenceDataItems { get; set; }
     }
 }

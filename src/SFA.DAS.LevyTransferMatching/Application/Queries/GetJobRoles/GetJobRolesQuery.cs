@@ -6,6 +6,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles
 {
     public class GetJobRolesQuery : IRequest<GetJobRolesQueryResult>
     {
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<ReferenceDataItem> Tags { get; set; }
     }
 }

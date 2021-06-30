@@ -23,18 +23,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.TagTests
         public async Task Then_Returns_JobRoles(
             GetJobRolesQueryResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] TagsController tagsController)
+            [Greedy] ReferenceController referenceController)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetJobRolesQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var controllerResult = await tagsController.JobRoles() as ObjectResult;
+            var controllerResult = await referenceController.JobRoles() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             Assert.AreEqual(controllerResult.StatusCode, (int) HttpStatusCode.OK);
 
-            var model = controllerResult.Value as IEnumerable<Tag>;
+            var model = controllerResult.Value as IEnumerable<ReferenceDataItem>;
             Assert.IsNotNull(model);
         }
     }
