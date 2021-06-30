@@ -1,15 +1,11 @@
 using MediatR;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {
@@ -40,13 +36,16 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             CancellationToken cancellationToken)
         {
             var (trainingProvider, apprentice, course) = await GetExternalData(command);
+
+            if (string.IsNullOrEmpty(apprentice.Email)) return Unit.Value;
+
             var id = Guid.NewGuid();
 
             await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
             {
                 ApprenticeId = id,
-                ApprenticeshipId = command.ApprenticeshipId,
-                Email = command.Email,
+                CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
+                Email = apprentice.Email,
                 EmployerName = command.EmployerName,
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
                 TrainingProviderId = command.TrainingProviderId,
@@ -55,13 +54,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
-                ApprovedOn = command.CommitmentsApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
             await _apprenticeLoginService.SendInvitation(new SendInvitationModel
             {
                 SourceId = id,
-                Email = command.Email,
+                Email = apprentice.Email,
                 GivenName = apprentice.FirstName,
                 FamilyName = apprentice.LastName,
                 OrganisationName = command.EmployerName,
@@ -77,13 +76,23 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             var apprenticeTask = _commitmentsService.GetApprenticeshipDetails(
                 command.EmployerAccountId,
-                command.ApprenticeshipId);
+                command.CommitmentsApprenticeshipId);
 
             await Task.WhenAll(trainingProviderTask, apprenticeTask);
 
-            var course = await _coursesService.GetCourse(apprenticeTask.Result.CourseCode);
+            var courseCode = ApprenticeCourseCode(apprenticeTask.Result);
+
+            var course = await _coursesService.GetCourse(courseCode);
 
             return (trainingProviderTask.Result, apprenticeTask.Result, course);
+        }
+
+        private static string ApprenticeCourseCode(Apis.CommitmentsV2InnerApi.ApprenticeshipResponse apprenticeTask)
+        {
+            // Remove after Standards Versioning goes live
+            // Revert to just StandardUId
+            return string.IsNullOrWhiteSpace(apprenticeTask.StandardUId)
+                ? apprenticeTask.CourseCode : apprenticeTask.StandardUId;
         }
     }
 }

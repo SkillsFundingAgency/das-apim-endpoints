@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -28,6 +29,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
             return _apiClient.GetResponseCode(request);
+        }
+
+        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+        {
+            return _apiClient.GetWithResponseCode<TResponse>(request);
         }
     }
 }
