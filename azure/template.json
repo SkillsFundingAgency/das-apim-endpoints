@@ -27,7 +27,7 @@
             "type": "string"
         },
         "outerApiObject": {
-            "type": "array"
+            "type": "object"
         },
         "sharedKeyVaultName": {
             "type": "string"
