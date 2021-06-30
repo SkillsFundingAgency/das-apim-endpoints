@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.LevyTransferMatching.Models.Tags;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetSectors
 {
     public class GetSectorsQuery : IRequest<GetSectorsQueryResult>
     {
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<ReferenceDataItem> ReferenceDataItems { get; set; }
     }
 }
