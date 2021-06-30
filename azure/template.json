@@ -26,7 +26,7 @@
         "apimEndpointsSubnetResourceId": {
             "type": "string"
         },
-        "outerApiArray": {
+        "outerApiObject": {
             "type": "array"
         },
         "sharedKeyVaultName": {
@@ -102,7 +102,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())]",
+            "name": "[concat('cert-', parameters('outerApiObject').keyVaultCertificateName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -113,7 +113,7 @@
                 },
                 "parameters": {
                     "keyVaultCertificateName": {
-                        "value": "[parameters('outerApiArray')[copyIndex()].keyVaultCertificateName]"
+                        "value": "[parameters('outerApiObject').keyVaultCertificateName]"
                     },
                     "keyVaultName": {
                         "value": "[parameters('sharedKeyVaultName')]"
@@ -122,16 +122,11 @@
                         "value": "[parameters('sharedManagementResourceGroup')]"
                     }
                 }
-            },
-            "copy": {
-                "name": "certificateLoop",
-                "count": "[length(parameters('outerApiArray'))]",
-                "mode": "Serial"
             }
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "name": "[concat('api-application-insights-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -142,21 +137,17 @@
                 },
                 "parameters": {
                     "appInsightsName": {
-                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                        "value": "[parameters('outerApiObject').appServiceName]"
                     },
                     "attachedService": {
-                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                        "value": "[parameters('outerApiObject').appServiceName]"
                     }
                 }
-            },
-            "copy": {
-                "name": "appInsightsLoop",
-                "count": "[length(parameters('outerApiArray'))]"
             }
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "name": "[concat('api-app-service-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "dependsOn": [
@@ -170,7 +161,7 @@
                 },
                 "parameters": {
                     "appServiceName": {
-                        "value": "[parameters('outerApiArray')[copyIndex()].appServiceName]"
+                        "value": "[parameters('outerApiObject').appServiceName]"
                     },
                     "appServicePlanName": {
                         "value": "[variables('appServicePlanName')]"
@@ -187,7 +178,7 @@
                                 },
                                 {
                                     "name": "ConfigNames",
-                                    "value": "[parameters('outerApiArray')[copyIndex()].configNames]"
+                                    "value": "[parameters('outerApiObject').configNames]"
                                 },
                                 {
                                     "name": "LoggingRedisConnectionString",
@@ -207,16 +198,16 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('api-application-insights-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat('api-application-insights-', parameters('outerApiObject').appServiceName)).outputs.InstrumentationKey.value]"
                                 }
                             ]
                         }
                     },
                     "customHostName": {
-                        "value": "[parameters('outerApiArray')[copyIndex()].customHostName]"
+                        "value": "[parameters('outerApiObject').customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('cert-', parameters('outerApiArray')[copyIndex()].keyVaultCertificateName, copyIndex())).outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('cert-', parameters('outerApiObject').keyVaultCertificateName)).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
@@ -225,15 +216,11 @@
                         "value": "[parameters('apimEndpointsSubnetResourceId')]"
                     }
                 }
-            },
-            "copy": {
-                "name": "appServiceLoop",
-                "count": "[length(parameters('outerApiArray'))]"
             }
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('role-assignment-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "name": "[concat('role-assignment-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -244,7 +231,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.managedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -253,15 +240,11 @@
                         "value": "[parameters('sharedServiceBusName')]"
                     }
                 }
-            },
-            "copy": {
-                "name": "roleAssignmentLoop",
-                "count": "[length(parameters('outerApiArray'))]"
             }
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('role-assignment-staging-', parameters('outerApiArray')[copyIndex()].appServiceName)]",
+            "name": "[concat('role-assignment-staging-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -272,7 +255,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('outerApiArray')[copyIndex()].appServiceName)).outputs.stagingManagedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -281,10 +264,6 @@
                         "value": "[parameters('sharedServiceBusName')]"
                     }
                 }
-            },
-            "copy": {
-                "name": "stagingRoleAssignmentLoop",
-                "count": "[length(parameters('outerApiArray'))]"
             }
         }
     ],
