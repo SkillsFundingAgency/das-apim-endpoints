@@ -2,6 +2,7 @@
 {
     public class Account
     {
-        public double RemainingTransferAllowance { get; set; }
+        public string DasAccountName { get; set; }
+        public decimal RemainingTransferAllowance { get; set; }
     }
 }

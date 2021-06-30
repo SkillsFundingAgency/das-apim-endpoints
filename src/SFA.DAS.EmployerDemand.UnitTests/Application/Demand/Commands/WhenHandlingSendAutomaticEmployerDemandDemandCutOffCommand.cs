@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             //Assert
             employerDemandApiClient.Verify(
                 x => x.PostWithResponseCode<object>(It.Is<PostEmployerDemandNotificationAuditRequest>(c =>
-                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}"))), Times.Once);
+                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedAutomaticCutOff}"))), Times.Once);
             employerDemandApiClient.Verify(
                 x => x.PatchWithResponseCode(It.Is<PatchCourseDemandRequest>(c =>
                     c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") && c.Data.Stopped)), Times.Once);
