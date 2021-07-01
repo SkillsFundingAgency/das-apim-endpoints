@@ -11,14 +11,6 @@
         "serviceName": {
             "type": "string"
         },
-        "appServicePlanSku": {
-            "type": "object",
-            "defaultValue": {
-                "tier": "Standard",
-                "size": "2",
-                "instances": 2
-            }
-        },
         "appServiceAllowedIPs": {
             "type": "array",
             "defaultValue": []
@@ -75,33 +67,6 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "apim-endpoint-app-service-plan",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[variables('appServicePlanName')]"
-                    },
-                    "aspSize": {
-                        "value": "[parameters('appServicePlanSku').size]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('appServicePlanSku').instances]"
-                    },
-                    "nonASETier": {
-                        "value": "[parameters('appServicePlanSku').tier]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
             "name": "[concat('cert-', parameters('outerApiObject').keyVaultCertificateName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
@@ -150,9 +115,7 @@
             "name": "[concat('api-app-service-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
-            "dependsOn": [
-                "apim-endpoint-app-service-plan"
-            ],
+            "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
