@@ -17,61 +17,17 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetPledges
         public async Task And_No_Id_Specified_Then_All_Pledges_Returned(
             IEnumerable<Pledge> pledges,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            GetPledgesHandler getPledgesHandler)
+            GetPledgesQueryHandler getPledgesQueryHandler)
         {
-            GetPledgesQuery getPledgesQuery = new GetPledgesQuery()
-            {
-                PledgeId = null, // No pledge ID specified
-            };
+            GetPledgesQuery getPledgesQuery = new GetPledgesQuery();
 
             mockLevyTransferMatchingService
                 .Setup(x => x.GetPledges())
                 .ReturnsAsync(pledges);
 
-            var results = await getPledgesHandler.Handle(getPledgesQuery, CancellationToken.None);
+            var results = await getPledgesQueryHandler.Handle(getPledgesQuery, CancellationToken.None);
 
             CollectionAssert.AreEqual(pledges, results);
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_Valid_Id_Specified_Then_One_Pledge_Returned(
-            int pledgeId,
-            Pledge pledge,
-            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            GetPledgesHandler getPledgesHandler)
-        {
-            GetPledgesQuery getPledgesQuery = new GetPledgesQuery()
-            {
-                PledgeId = pledgeId,
-            };
-
-            mockLevyTransferMatchingService
-                .Setup(x => x.GetPledge(It.Is<int>(y => y == pledgeId)))
-                .ReturnsAsync(pledge);
-
-            var results = await getPledgesHandler.Handle(getPledgesQuery, CancellationToken.None);
-
-            CollectionAssert.AreEqual(new Pledge[] { pledge }, results);
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_Invalid_Id_Specified_Then_No_Pledges_Returned(
-            int pledgeId,
-            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            GetPledgesHandler getPledgesHandler)
-        {
-            GetPledgesQuery getPledgesQuery = new GetPledgesQuery()
-            {
-                PledgeId = pledgeId,
-            };
-
-            mockLevyTransferMatchingService
-                .Setup(x => x.GetPledge(It.Is<int>(y => y == pledgeId)))
-                .ReturnsAsync((Pledge)null);
-
-            var results = await getPledgesHandler.Handle(getPledgesQuery, CancellationToken.None);
-
-            CollectionAssert.AreEqual(new Pledge[] { }, results);
         }
     }
 }

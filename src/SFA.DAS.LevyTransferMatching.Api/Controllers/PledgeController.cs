@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledge;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using System.Linq;
 using System.Net;
@@ -35,16 +36,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetPledge(int pledgeId)
         {
-            var result = await _mediator.Send(new GetPledgesQuery()
+            var result = await _mediator.Send(new GetPledgeQuery()
             {
                 PledgeId = pledgeId,
             });
 
-            var pledge = result.SingleOrDefault();
-
-            if (pledge != null)
+            if (result != null)
             {
-                return Ok((PledgeDto)pledge);
+                return Ok((PledgeDto)result);
             }
             else
             {

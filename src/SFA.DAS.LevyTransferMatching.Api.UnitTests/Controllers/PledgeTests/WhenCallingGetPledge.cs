@@ -5,8 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
-using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledge;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
@@ -19,15 +18,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test, MoqAutoData]
         public async Task And_Pledge_Exists_Then_Returns_Ok_And_Pledge(
             int pledgeId,
-            Pledge pledge,
+            GetPledgeResult getPledgeResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] PledgeController pledgeController)
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetPledgesQuery>(y => y.PledgeId == pledgeId),
+                    It.Is<GetPledgeQuery>(y => y.PledgeId == pledgeId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetPledgesResult(new Pledge[] { pledge }));
+                .ReturnsAsync(getPledgeResult);
 
             var controllerResult = await pledgeController.GetPledge(pledgeId);
             var okObjectResult = controllerResult as OkObjectResult;
@@ -47,9 +46,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetPledgesQuery>(y => y.PledgeId == pledgeId),
+                    It.Is<GetPledgeQuery>(y => y.PledgeId == pledgeId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetPledgesResult(new Pledge[] { }));
+                .ReturnsAsync((GetPledgeResult)null);
 
             var controllerResult = await pledgeController.GetPledge(pledgeId);
             var notFoundResult = controllerResult as NotFoundResult;
