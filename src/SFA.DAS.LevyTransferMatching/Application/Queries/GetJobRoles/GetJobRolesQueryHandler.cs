@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles
             var result = await _levyTransferMatchingService.GetJobRoles();
             return new GetJobRolesQueryResult
             {
-                Tags = result
+                ReferenceDataItems = result
             };
         }
     }

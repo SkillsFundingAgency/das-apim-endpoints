@@ -4,9 +4,9 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Tags;
-using SFA.DAS.LevyTransferMatching.Models.Tags;
 using System.Linq;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Services
 {
@@ -19,19 +19,19 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
         }
 
-        public async Task<IEnumerable<Tag>> GetLevels()
+        public async Task<IEnumerable<ReferenceDataItem>> GetLevels()
         {
-            return await _levyTransferMatchingApiClient.GetAll<Tag>(new GetLevelsRequest());
+            return await _levyTransferMatchingApiClient.GetAll<ReferenceDataItem>(new GetLevelsRequest());
         }
 
-        public async Task<IEnumerable<Tag>> GetSectors()
+        public async Task<IEnumerable<ReferenceDataItem>> GetSectors()
         {
-            return await _levyTransferMatchingApiClient.GetAll<Tag>(new GetSectorsRequest());
+            return await _levyTransferMatchingApiClient.GetAll<ReferenceDataItem>(new GetSectorsRequest());
         }
 
-        public async Task<IEnumerable<Tag>> GetJobRoles()
+        public async Task<IEnumerable<ReferenceDataItem>> GetJobRoles()
         {
-            return await _levyTransferMatchingApiClient.GetAll<Tag>(new GetJobRolesRequest());
+            return await _levyTransferMatchingApiClient.GetAll<ReferenceDataItem>(new GetJobRolesRequest());
         }
 
         public async Task<PledgeReference> CreatePledge(Pledge pledge)

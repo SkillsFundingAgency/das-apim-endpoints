@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels
             var result = await _levyTransferMatchingService.GetLevels();
             return new GetLevelsQueryResult
             {
-                Tags = result
+                ReferenceDataItems = result
             };
         }
     }
