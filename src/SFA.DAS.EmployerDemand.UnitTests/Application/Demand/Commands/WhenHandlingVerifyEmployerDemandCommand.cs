@@ -91,8 +91,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            apiClient.Verify(client => client.PostWithResponseCode<PostEmployerCourseDemand>(
-                    It.IsAny<PostVerifyEmployerDemandEmailRequest>()), Times.Never);
+            apiClient.Verify(client => client.PatchWithResponseCode(
+                    It.IsAny<PatchCourseDemandRequest>()), Times.Never);
             notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
             actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse);
