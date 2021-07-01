@@ -4,6 +4,6 @@ namespace SFA.DAS.Campaign.Api.Models
 {
     public class GetHubResponse
     {
-        public CmsPageModel Hub { get; set; }
+        public HubPageModel Hub { get; set; }
     }
 }

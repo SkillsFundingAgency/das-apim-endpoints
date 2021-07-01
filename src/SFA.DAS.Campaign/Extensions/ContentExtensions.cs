@@ -121,27 +121,27 @@ namespace SFA.DAS.Campaign.Extensions
                     var list = new List<string>();
                     switch (content.NodeType)
                     {
-                        case "paragraph":
+                        case ParagraphNodeTypeKey:
                             {
                                 foreach (var innerContent in content.Content)
                                 {
-                                    if (innerContent.NodeType.Equals("text"))
+                                    if (innerContent.NodeType.Equals(TextNodeTypeKey))
                                     {
                                         var fontEffect = innerContent.Marks?.FirstOrDefault()?.Type;
                                         list.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
                                     }
-                                    if (innerContent.NodeType.Equals("hyperlink"))
+                                    if (innerContent.NodeType.Equals(HyperLinkNodeTypeKey))
                                     {
                                         list.Add($"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
                                     }
                                 }
                                 break;
                             }
-                        case "text":
+                        case TextNodeTypeKey:
                             var font = content.Marks?.FirstOrDefault()?.Type;
                             list.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
                             break;
-                        case "hyperlink":
+                        case HyperLinkNodeTypeKey:
                             list.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
                             break;
                     }
@@ -162,24 +162,28 @@ namespace SFA.DAS.Campaign.Extensions
 
         private static void ProcessParagraphNodeType(ContentDefinition contentDefinition, List<string> returnList)
         {
-            if (contentDefinition.NodeType.Equals(ParagraphNodeTypeKey))
+            if (!contentDefinition.NodeType.Equals(ParagraphNodeTypeKey))
             {
-                foreach (var content in contentDefinition.Content)
-                {
-                    var fontEffect = content.Marks?.FirstOrDefault()?.Type;
-                    returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{content.Value}");
-                }
+                return;
+            }
+
+            foreach (var content in contentDefinition.Content)
+            {
+                var fontEffect = content.Marks?.FirstOrDefault()?.Type;
+                returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{content.Value}");
             }
         }
 
         private static void ProcessTextNodeType(ContentDefinition contentDefinition, List<string> returnList)
         {
-            if (contentDefinition.NodeType.Equals(TextNodeTypeKey))
+            if (!contentDefinition.NodeType.Equals(TextNodeTypeKey))
             {
-                var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
-
-                returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
+                return;
             }
+
+            var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
+
+            returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
         }
     }
 }

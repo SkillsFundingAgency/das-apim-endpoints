@@ -27,7 +27,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
         {
             var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub");
 
-            var pageModel = new CmsPageModel().Build(article);
+            var pageModel = new HubPageModel().Build(article);
 
             return new GetHubQueryResult
             {

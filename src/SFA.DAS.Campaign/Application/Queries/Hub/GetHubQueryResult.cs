@@ -7,6 +7,6 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
 {
     public class GetHubQueryResult
     {
-        public CmsPageModel PageModel { get; set; }
+        public HubPageModel PageModel { get; set; }
     }
 }
