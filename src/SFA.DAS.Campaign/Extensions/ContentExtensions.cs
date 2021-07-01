@@ -86,13 +86,13 @@ namespace SFA.DAS.Campaign.Extensions
             return nodeType.Equals(EmbeddedAssetBlockNodeTypeKey, StringComparison.CurrentCultureIgnoreCase) ;
         }
 
-        public static CmsPageModel.ResourceItem GetEmbeddedResource(this CmsContent article, string id)
+        public static ResourceItem GetEmbeddedResource(this CmsContent article, string id)
         {
             var embeddedResource = article.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(id));
 
             if (embeddedResource != null)
             {
-                return new CmsPageModel.ResourceItem
+                return new ResourceItem
                 {
                     Id = id,
                     Title = embeddedResource.Fields.Title,
@@ -104,7 +104,7 @@ namespace SFA.DAS.Campaign.Extensions
                 };
             }
 
-            return new CmsPageModel.ResourceItem();
+            return new ResourceItem();
         }
 
         public static List<List<string>> GetListItems(this SubContentItems contentItems)

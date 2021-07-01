@@ -33,36 +33,49 @@ namespace SFA.DAS.Campaign.Models
 
             foreach (var contentItem in item.Fields.Content.Content)
             {
-                if (contentItem.NodeType.NodeTypeIsContent())
-                {
-                    contentItems.Add(new ContentItem
-                    {
-                        Type = contentItem.NodeType,
-                        Values = contentItem.BuildParagraph(),
-                        TableValue = contentItem.BuildTable(hub)
-                    });
-                }
-
-                if (contentItem.NodeType.NodeTypeIsList())
-                {
-                    contentItems.Add(new ContentItem
-                    {
-                        Type = contentItem.NodeType,
-                        //TableValue = GetListItems(contentItem),
-                    });
-                }
-
-                if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
-                {
-                    contentItems.Add(new ContentItem
-                    {
-                        Type = contentItem.NodeType,
-                        // EmbeddedResource = GetEmbeddedResource(contentItem.Data.Target.Sys.Id, article)
-                    });
-                }
+                ProcessContentNodeTypes(hub, contentItem, contentItems);
+                ProcessListNodeTypes(contentItem, contentItems);
+                ProcessEmbeddedAssetBlockNodeTypes(hub, contentItem, contentItems);
             }
 
             return GenerateHubPageModel(item, pageTypeResult, contentItems);
+        }
+
+        private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent hub, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    EmbeddedResource = hub.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
+                });
+            }
+        }
+
+        private static void ProcessListNodeTypes(SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsList())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.GetListItems(),
+                });
+            }
+        }
+
+        private static void ProcessContentNodeTypes(CmsContent hub, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsContent())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    Values = contentItem.BuildParagraph(),
+                    TableValue = contentItem.BuildTable(hub)
+                });
+            }
         }
 
         private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<ContentItem> contentItems)
@@ -83,6 +96,11 @@ namespace SFA.DAS.Campaign.Models
                     Items = contentItems
                 }
             };
+        }
+
+        public class HubContent
+        {
+            public List<ContentItem> Items { get; set; }
         }
     }
 }
