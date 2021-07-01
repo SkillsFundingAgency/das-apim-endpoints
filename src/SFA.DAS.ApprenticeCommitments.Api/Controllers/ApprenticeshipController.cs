@@ -40,6 +40,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Accepted();
         }
 
+        [HttpGet("/apprentices/{apprenticeId}")]
+        public async Task<IActionResult> GetApprentice(Guid apprenticeId)
+        {
+            return await new GetRequest<Apprentice>($"/apprentices/{apprenticeId}").Get(_client);
+        }
+
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
         public async Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {
