@@ -170,7 +170,7 @@
                         "value": "[parameters('outerApiObject').customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('cert-', parameters('outerApiObject').keyVaultCertificateName)).outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
