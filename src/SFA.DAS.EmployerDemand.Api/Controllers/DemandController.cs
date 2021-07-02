@@ -153,7 +153,8 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                     ConfirmationLink = request.ResponseUrl,
                     StopSharingUrl = request.StopSharingUrl,
                     StartSharingUrl = request.StartSharingUrl,
-                    ExpiredCourseDemandId = request.ExpiredCourseDemandId
+                    ExpiredCourseDemandId = request.ExpiredCourseDemandId,
+                    EntryPoint = request.EntryPoint
                 });
 
                 if (!commandResult.HasValue)

@@ -47,6 +47,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     && ((CreateCourseDemandData)c.Data).StopSharingUrl.Equals(command.StopSharingUrl)
                     && ((CreateCourseDemandData)c.Data).StartSharingUrl.Equals(command.StartSharingUrl)
                     && ((CreateCourseDemandData)c.Data).ExpiredCourseDemandId.Equals(command.ExpiredCourseDemandId)
+                    && ((CreateCourseDemandData)c.Data).EntryPoint.Equals(command.EntryPoint)
                 )))
                 .ReturnsAsync(apiResponse);
 
