@@ -44,6 +44,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -72,6 +73,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -100,6 +102,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -128,6 +131,7 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -156,6 +160,7 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -184,6 +189,7 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
@@ -212,6 +218,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
+      SchemaFilePath: SFA.DAS.Assessors.OuterApi.schema.json
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:

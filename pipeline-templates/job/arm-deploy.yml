@@ -2,6 +2,7 @@ parameters:
   ServiceConnection: ''
   AppRoleAssignmentsServiceConnection: ''
   Environment: ''
+  SchemaFilePath: '*.schema.json'
 
 jobs:
 - deployment: DeployInfrastructure
@@ -30,7 +31,7 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-            TargetFileName: '*.schema.json'
+            TargetFileName: ${{ parameters.SchemaFilePath }}
             TableName: Configuration
 
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
