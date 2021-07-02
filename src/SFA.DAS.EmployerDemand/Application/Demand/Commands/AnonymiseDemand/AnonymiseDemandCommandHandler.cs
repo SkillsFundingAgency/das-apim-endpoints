@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
-using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -19,9 +18,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand
 
         public async Task<Unit> Handle(AnonymiseDemandCommand request, CancellationToken cancellationToken)
         {
-            var employerDemand = await _employerDemandApiClient.Get<GetEmployerDemandResponse>(
-                new GetEmployerDemandRequest(request.EmployerDemandId));
-
             await _employerDemandApiClient.PatchWithResponseCode(
                 new PatchCourseDemandRequest(
                     request.EmployerDemandId,
