@@ -8,6 +8,7 @@ using MediatR;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Hub;
+using SFA.DAS.Campaign.Application.Queries.PreviewHub;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
@@ -44,6 +45,28 @@ namespace SFA.DAS.Campaign.Api.Controllers
                 Hub = result.PageModel
             });
 
+        }
+
+        [HttpGet("preview/{hub}")]
+        public async Task<IActionResult> GetPreviewHub(string hub)
+        {
+            var result = await _mediator.Send(new GetPreviewHubQuery
+            {
+                Hub = hub
+            });
+
+            if (result.PageModel == null)
+            {
+                return new NotFoundObjectResult(new NotFoundResponse
+                {
+                    Message = $"Preview hub not found for {hub}"
+                });
+            }
+
+            return Ok(new GetHubResponse
+            {
+                Hub = result.PageModel
+            });
         }
     }
 }
