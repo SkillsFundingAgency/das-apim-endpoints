@@ -143,12 +143,5 @@ namespace SFA.DAS.Campaign.Models
         {
             public List<ContentItem> Items { get; set; }
         }
-
-        public enum PageType
-        {
-            Unknown = 0,
-            LandingPage = 1,
-            Article = 2
-        }
     }
 }

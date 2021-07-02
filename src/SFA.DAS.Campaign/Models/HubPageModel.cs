@@ -11,7 +11,7 @@ namespace SFA.DAS.Campaign.Models
     public class HubPageModel
     {
         public PageModel PageAttributes { get; set; }
-        public PageContent MainContent { get; set; }
+        public HubContent MainContent { get; set; }
 
         public HubPageModel Build(CmsContent hub)
         {
@@ -24,61 +24,49 @@ namespace SFA.DAS.Campaign.Models
 
             Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
 
-            var contentItems = new List<ContentItem>();
-
-            if (item.Fields.Content?.Content == null)
-            {
-                return GenerateHubPageModel(item, pageTypeResult, contentItems);
-            }
-
-            foreach (var contentItem in item.Fields.Content.Content)
-            {
-                ProcessContentNodeTypes(hub, contentItem, contentItems);
-                ProcessListNodeTypes(contentItem, contentItems);
-                ProcessEmbeddedAssetBlockNodeTypes(hub, contentItem, contentItems);
-            }
-
-            return GenerateHubPageModel(item, pageTypeResult, contentItems);
+            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item));
         }
 
-        private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent hub, SubContentItems contentItem, List<ContentItem> contentItems)
+        private static List<PageModel> ProcessCards(CmsContent hub)
         {
-            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
-            {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    EmbeddedResource = hub.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
-                });
-            }
+            return hub.Includes?.Entry != null
+                ? hub
+                    .Includes
+                    .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
+                                      && c.Sys.ContentType.Sys.Type.Equals("link",
+                                          StringComparison.CurrentCultureIgnoreCase)
+                                      && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
+                                          StringComparison.CurrentCultureIgnoreCase)
+                                      && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
+                                      type == PageType.Article
+                    )
+                    .Select(entry => new PageModel
+                    {
+                        Slug = entry.Fields.Slug,
+                        Summary = entry.Fields.Summary,
+                        Title = entry.Fields.Title,
+                        HubType = entry.Fields.HubType,
+                        MetaDescription = entry.Fields.MetaDescription
+                    })
+                    .ToList()
+                : new List<PageModel>();
         }
 
-        private static void ProcessListNodeTypes(SubContentItems contentItem, List<ContentItem> contentItems)
+        private static ContentItem ProcessHeaderImage(CmsContent hub, Item item)
         {
-            if (contentItem.NodeType.NodeTypeIsList())
+            if (item.Fields.HeaderImage == null)
             {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    TableValue = contentItem.GetListItems(),
-                });
+                return null;
             }
+
+            return new ContentItem
+            {
+                Type = item.Fields.HeaderImage.Sys.LinkType,
+                EmbeddedResource = hub.GetEmbeddedResource(item.Fields.HeaderImage.Sys.Id)
+            };
         }
 
-        private static void ProcessContentNodeTypes(CmsContent hub, SubContentItems contentItem, List<ContentItem> contentItems)
-        {
-            if (contentItem.NodeType.NodeTypeIsContent())
-            {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    Values = contentItem.BuildParagraph(),
-                    TableValue = contentItem.BuildTable(hub)
-                });
-            }
-        }
-
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<ContentItem> contentItems)
+        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<PageModel> cards, ContentItem headerImage)
         {
             return new HubPageModel()
             {
@@ -91,16 +79,19 @@ namespace SFA.DAS.Campaign.Models
                     MetaDescription = item.Fields.MetaDescription,
                     PageType = pageTypeResult,
                 },
-                MainContent = new PageContent
+                MainContent = new HubContent()
                 {
-                    Items = contentItems
+                    Cards = cards,
+                    HeaderImage = headerImage
                 }
             };
         }
 
         public class HubContent
         {
-            public List<ContentItem> Items { get; set; }
+            public ContentItem HeaderImage { get; set; }
+            public List<PageModel> Cards { get; set; }
+            
         }
     }
 }

@@ -34,6 +34,24 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
             Assert.IsNotNull(actualResult);
             actualResult.Hub.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
+        
+        [Test, RecursiveMoqAutoData]
+        public async Task And_Given_Invalid_Hub_And_A_Slug_Then_The_Article_Is_Not_Returned(
+            string hubName,
+            GetHubQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] HubController controller)
+        {
+            mediatorResult.PageModel = null;
+
+            SetupMediator(new GetHubQueryResult(), mockMediator, hubName);
+
+            var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName);
+
+            var actualResult = controllerResult.Value as NotFoundResponse;
+            Assert.IsNotNull(actualResult);
+            actualResult.Message.Should().Be($"Hub not found for {hubName}");
+        }
 
         private static async Task<T> InstantiateController<T>(HubController controller, string hubName)
         {

@@ -50,10 +50,10 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test]
-        [RecursiveMoqInlineAutoData("article",CmsPageModel.PageType.Article )]
-        [RecursiveMoqInlineAutoData("landingpage", CmsPageModel.PageType.LandingPage)]
-        [RecursiveMoqInlineAutoData("test", CmsPageModel.PageType.Unknown)]
-        public void Then_The_PageType_Is_Correctly_Set(string pageType, CmsPageModel.PageType type, CmsContent source)
+        [RecursiveMoqInlineAutoData("article", PageType.Article )]
+        [RecursiveMoqInlineAutoData("landingpage", PageType.LandingPage)]
+        [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
+        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source)
         {
             //Arrange
             source.Items.FirstOrDefault().Sys.ContentType.Sys.Id = pageType;
