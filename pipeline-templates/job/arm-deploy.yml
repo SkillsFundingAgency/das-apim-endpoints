@@ -2,7 +2,7 @@ parameters:
   ServiceConnection: ''
   AppRoleAssignmentsServiceConnection: ''
   Environment: ''
-  SchemaFilePath: '*.schema.json'
+  SchemaFilePath:
 
 jobs:
 - deployment: DeployInfrastructure
