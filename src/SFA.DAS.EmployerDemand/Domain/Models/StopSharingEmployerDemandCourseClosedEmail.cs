@@ -16,7 +16,6 @@ namespace SFA.DAS.EmployerDemand.Domain.Models
             TemplateId = EmailConstants.StopSharingEmployerDemandCourseClosedTemplateId;
             RecipientAddress = recipientEmail;
             ReplyToAddress = EmailConstants.ReplyToAddress;
-            Subject = "We’ve stopped sharing your interest in apprenticeship training with training providers";
             Tokens = new Dictionary<string, string>
             {
                 {"AEDEmployerName", employerName },
