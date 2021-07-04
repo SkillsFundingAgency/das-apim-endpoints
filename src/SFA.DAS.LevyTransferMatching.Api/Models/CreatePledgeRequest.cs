@@ -22,5 +22,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
         [JsonProperty(Required = Required.Always)]
         public IEnumerable<string> Levels { get; set; }
+
+        [JsonProperty(Required = Required.Always)]
+        public IEnumerable<string> Locations { get; set; }
     }
 }
