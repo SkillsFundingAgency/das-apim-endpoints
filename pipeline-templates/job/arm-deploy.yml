@@ -1,7 +1,7 @@
 parameters:
-  ServiceConnection: ''
-  AppRoleAssignmentsServiceConnection: ''
-  Environment: ''
+  ServiceConnection:
+  AppRoleAssignmentsServiceConnection:
+  Environment:
   SchemaFilePath:
 
 jobs:
