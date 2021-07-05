@@ -187,7 +187,7 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 });
                 var model =  (VerifyCourseDemandResponse) commandResult;
 
-                return Created("", model);
+                return Created("", model);//todo: needs to cater for null response if demand not found or anonymised
             }
             catch (HttpRequestContentException e)
             {

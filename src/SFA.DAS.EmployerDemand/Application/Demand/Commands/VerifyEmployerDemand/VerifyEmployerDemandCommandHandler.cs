@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
             var getEmployerDemandResponse =
                 await _apiClient.Get<GetEmployerDemandResponse>(new GetEmployerDemandRequest(request.Id));
 
-            if (getEmployerDemandResponse == null)
+            if (getEmployerDemandResponse == null)//todo: or anon
             {
                 return new VerifyEmployerDemandCommandResult
                 {
