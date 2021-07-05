@@ -5,30 +5,30 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledge;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
+namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTests
 {
-    public class WhenCallingGetPledge
+    public class WhenCallingGetOpportunity
     {
         [Test, MoqAutoData]
-        public async Task And_Pledge_Exists_Then_Returns_Ok_And_Pledge(
-            int pledgeId,
-            GetPledgeResult getPledgeResult,
+        public async Task And_Opportunity_Exists_Then_Returns_Ok_And_Pledge(
+            int opportunityId,
+            GetOpportunityResult getOpportunityResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] PledgeController pledgeController)
+            [Greedy] OpportunityController opportunityController)
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetPledgeQuery>(y => y.PledgeId == pledgeId),
+                    It.Is<GetOpportunityQuery>(y => y.OpportunityId == opportunityId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getPledgeResult);
+                .ReturnsAsync(getOpportunityResult);
 
-            var controllerResult = await pledgeController.GetPledge(pledgeId);
+            var controllerResult = await opportunityController.GetOpportunity(opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
             var pledgeDto = okObjectResult.Value as PledgeDto;
 
@@ -39,18 +39,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         }
 
         [Test, MoqAutoData]
-        public async Task And_Pledge_Doesnt_Exist_Then_Returns_NotFound(
-            int pledgeId,
+        public async Task And_Opportunity_Doesnt_Exist_Then_Returns_NotFound(
+            int opportunityId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] PledgeController pledgeController)
+            [Greedy] OpportunityController opportunityController)
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetPledgeQuery>(y => y.PledgeId == pledgeId),
+                    It.Is<GetOpportunityQuery>(y => y.OpportunityId == opportunityId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetPledgeResult)null);
+                .ReturnsAsync((GetOpportunityResult)null);
 
-            var controllerResult = await pledgeController.GetPledge(pledgeId);
+            var controllerResult = await opportunityController.GetOpportunity(opportunityId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);
