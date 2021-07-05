@@ -1,27 +1,31 @@
 using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
-    public class PatchCourseDemandRequest : IPatchApiRequest<PatchCourseDemandData>
+    public class PatchCourseDemandRequest : IPatchApiRequest<List<PatchOperation>>
     {
         private readonly Guid _id;
 
-        public PatchCourseDemandRequest(Guid id, PatchCourseDemandData data)
+        public PatchCourseDemandRequest(Guid id, PatchOperation data)
         {
             _id = id;
-            Data = data;
+            Data = new List<PatchOperation> {data};
         }
 
         public string PatchUrl => $"api/demand/{_id}";
-        public PatchCourseDemandData Data { get; set; }
+        public List<PatchOperation> Data { get; set; }
     }
-
-    public class PatchCourseDemandData
+    
+    public class PatchOperation
     {
-        public bool? Stopped { get; set; }
-        public string ContactEmailAddress { get; set; }
-        public string OrganisationName { get; set; }
-        //more stuff here for verify
+        [JsonProperty("value")]
+        public object Value { get; set; }
+        [JsonProperty("path")]
+        public string Path { get; set; }
+        [JsonProperty("op")]
+        public string Op => "replace";
     }
 }
