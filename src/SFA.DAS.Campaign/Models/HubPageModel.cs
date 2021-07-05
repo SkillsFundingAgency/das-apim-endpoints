@@ -27,7 +27,7 @@ namespace SFA.DAS.Campaign.Models
             return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item));
         }
 
-        private static List<PageModel> ProcessCards(CmsContent hub)
+        private static List<CardPageModel> ProcessCards(CmsContent hub)
         {
             var cards = hub.Includes?.Entry != null
                 ? hub
@@ -40,17 +40,18 @@ namespace SFA.DAS.Campaign.Models
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
                                       type == PageType.Article
                     )
-                    .Select(entry => new PageModel
+                    .Select(entry => new CardPageModel
                     {
                         Id = entry.Sys.Id,
                         Slug = entry.Fields.Slug,
                         Summary = entry.Fields.Summary,
                         Title = entry.Fields.Title,
                         HubType = entry.Fields.HubType,
-                        MetaDescription = entry.Fields.MetaDescription
+                        MetaDescription = entry.Fields.MetaDescription,
+                        LandingPage = SetLandingPageDetails(hub, entry)
                     })
                     .ToList()
-                : new List<PageModel>();
+                : new List<CardPageModel>();
 
             if (!cards.Any())
             {
@@ -63,6 +64,18 @@ namespace SFA.DAS.Campaign.Models
             }
 
             return cards;
+        }
+
+        private static LandingPage SetLandingPageDetails(CmsContent hub, Entry entry)
+        {
+            var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
+
+            return new LandingPage
+            {
+                Hub = parentPage?.Fields.HubType.ToString(),
+                Title = parentPage?.Fields.Title,
+                Slug = parentPage?.Fields.Slug
+            };
         }
 
         private static ContentItem ProcessHeaderImage(CmsContent hub, Item item)
@@ -79,7 +92,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<PageModel> cards, ContentItem headerImage)
+        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage)
         {
             return new HubPageModel()
             {
@@ -103,7 +116,7 @@ namespace SFA.DAS.Campaign.Models
         public class HubContent
         {
             public ContentItem HeaderImage { get; set; }
-            public List<PageModel> Cards { get; set; }
+            public List<CardPageModel> Cards { get; set; }
             
         }
     }
