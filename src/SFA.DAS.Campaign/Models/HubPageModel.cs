@@ -29,7 +29,7 @@ namespace SFA.DAS.Campaign.Models
 
         private static List<PageModel> ProcessCards(CmsContent hub)
         {
-            return hub.Includes?.Entry != null
+            var cards = hub.Includes?.Entry != null
                 ? hub
                     .Includes
                     .Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
@@ -42,6 +42,7 @@ namespace SFA.DAS.Campaign.Models
                     )
                     .Select(entry => new PageModel
                     {
+                        Id = entry.Sys.Id,
                         Slug = entry.Fields.Slug,
                         Summary = entry.Fields.Summary,
                         Title = entry.Fields.Title,
@@ -50,6 +51,18 @@ namespace SFA.DAS.Campaign.Models
                     })
                     .ToList()
                 : new List<PageModel>();
+
+            if (!cards.Any())
+            {
+                return cards;
+            }
+
+            for (var i = 0; i < hub.Items[0].Fields.Cards.Count; i++)
+            {
+                cards = cards.OrderBy(o => o.Id == hub.Items[0].Fields.Cards[i].Sys.Id).ToList();
+            }
+
+            return cards;
         }
 
         private static ContentItem ProcessHeaderImage(CmsContent hub, Item item)
