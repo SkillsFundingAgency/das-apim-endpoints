@@ -27,14 +27,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetUserAcco
         }
 
         [Test]
-        public async Task Handle_Returns_Accounts()
+        public async Task Handle_Returns_UserAccounts()
         {
             string userId = _fixture.Create<string>();
-            IEnumerable<Account> accounts = _fixture.CreateMany<Account>();
+            IEnumerable<UserAccount> userAccounts = _fixture.CreateMany<UserAccount>();
 
             _userService
                 .Setup(x => x.GetUserAccounts(It.Is<string>(y => y == userId)))
-                .ReturnsAsync(accounts);
+                .ReturnsAsync(userAccounts);
 
             GetUserAccountsQuery getUserAccountsQuery = new GetUserAccountsQuery()
             {
@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetUserAcco
 
             var result = await _getUserAccountsHandler.Handle(getUserAccountsQuery, CancellationToken.None);
 
-            CollectionAssert.AreEqual(accounts, result.Accounts);
+            CollectionAssert.AreEqual(userAccounts, result.UserAccounts);
         }
     }
 }

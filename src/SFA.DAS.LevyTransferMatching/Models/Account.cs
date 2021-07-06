@@ -7,6 +7,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         [JsonProperty("HashedAccountId")]
         public string EncodedAccountId { get; set; }
         public string DasAccountName { get; set; }
-        public decimal? RemainingTransferAllowance { get; set; }
+        public decimal RemainingTransferAllowance { get; set; }
     }
 }

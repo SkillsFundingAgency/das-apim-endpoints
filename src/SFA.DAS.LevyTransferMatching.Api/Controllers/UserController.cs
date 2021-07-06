@@ -27,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 UserId = userId,
             });
 
-            return Ok(queryResult.Accounts.Select(x => (AccountDto)x));
+            return Ok(queryResult.UserAccounts.Select(x => (UserAccountDto)x));
         }
     }
 }

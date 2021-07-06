@@ -5,6 +5,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetUserAccounts
 {
     public class GetUserAccountsResult
     {
-        public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<UserAccount> UserAccounts { get; set; }
     }
 }

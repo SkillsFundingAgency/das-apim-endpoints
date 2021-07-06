@@ -36,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.UserTests
 
             var model = controllerResult.Value as IEnumerable<AccountDto>;
 
-            Assert.AreEqual(getUserAccountsResult.Accounts.Count(), model.Count());
+            Assert.AreEqual(getUserAccountsResult.UserAccounts.Count(), model.Count());
         }
     }
 }

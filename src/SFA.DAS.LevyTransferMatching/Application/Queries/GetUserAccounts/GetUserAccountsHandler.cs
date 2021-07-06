@@ -16,11 +16,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetUserAccounts
 
         public async Task<GetUserAccountsResult> Handle(GetUserAccountsQuery request, CancellationToken cancellationToken)
         {
-            var accounts = await _userService.GetUserAccounts(request.UserId);
+            var userAccounts = await _userService.GetUserAccounts(request.UserId);
 
             return new GetUserAccountsResult()
             {
-                Accounts = accounts,
+                UserAccounts = userAccounts,
             };
         }
     }

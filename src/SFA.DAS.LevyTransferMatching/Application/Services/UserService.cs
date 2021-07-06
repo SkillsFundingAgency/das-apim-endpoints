@@ -16,9 +16,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             _employerAccountsApiClient = employerAccountsApiClient;
         }
 
-        public async Task<IEnumerable<Account>> GetUserAccounts(string userId)
+        public async Task<IEnumerable<UserAccount>> GetUserAccounts(string userId)
         {
-            var response = await _employerAccountsApiClient.GetAll<Account>(new GetUserAccountsRequest(userId));
+            var response = await _employerAccountsApiClient.GetAll<UserAccount>(new GetUserAccountsRequest(userId));
 
             return response;
         }
