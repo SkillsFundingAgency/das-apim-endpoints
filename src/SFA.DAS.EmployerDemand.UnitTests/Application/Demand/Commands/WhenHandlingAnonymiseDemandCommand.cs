@@ -27,7 +27,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             mockEmployerDemandApiClient.Verify(x => x.PatchWithResponseCode(
                     It.Is<PatchCourseDemandRequest>(c =>
                         c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}")
-                        && c.Data.ContactEmailAddress == string.Empty)),
+                        && c.Data[0].Path == "ContactEmailAddress"
+                        && (string) c.Data[0].Value == string.Empty)),
                 Times.Once);
         }
     }

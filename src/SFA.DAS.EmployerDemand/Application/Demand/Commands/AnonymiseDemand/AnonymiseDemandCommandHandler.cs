@@ -21,9 +21,10 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand
             await _employerDemandApiClient.PatchWithResponseCode(
                 new PatchCourseDemandRequest(
                     request.EmployerDemandId,
-                    new PatchCourseDemandData
+                    new PatchOperation
                     {
-                        ContactEmailAddress = string.Empty
+                        Path = "ContactEmailAddress",
+                        Value = string.Empty
                     }));
 
             return Unit.Value;
