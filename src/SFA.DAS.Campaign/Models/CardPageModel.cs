@@ -7,10 +7,10 @@ namespace SFA.DAS.Campaign.Models
 {
     public class CardPageModel : PageModel
     {
-       public LandingPageModel LandingPage { get; set; }
+       public CardLandingPageModel LandingPage { get; set; }
     }
 
-    public class LandingPageModel
+    public class CardLandingPageModel
     {
         public string Slug { get; set; }
         public string Title { get; set; }

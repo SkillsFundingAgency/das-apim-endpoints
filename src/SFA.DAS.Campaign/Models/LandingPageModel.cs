@@ -8,12 +8,12 @@ using static SFA.DAS.Campaign.Models.CmsPageModel;
 
 namespace SFA.DAS.Campaign.Models
 {
-    public class HubPageModel
+    public class LandingPageModel
     {
         public PageModel PageAttributes { get; set; }
         public HubContent MainContent { get; set; }
 
-        public HubPageModel Build(CmsContent hub)
+        public LandingPageModel Build(CmsContent hub)
         {
             if (hub.ContentItemsAreNullOrEmpty())
             {
@@ -69,12 +69,23 @@ namespace SFA.DAS.Campaign.Models
         private static CardLandingPageModel SetLandingPageDetails(CmsContent hub, Entry entry)
         {
             var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
+            Item parentPageFromItem = null;
+            
+            if (parentPage == null)
+            {
+                parentPageFromItem = hub.Items.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
+            }
+
+            if (parentPageFromItem == null && parentPage == null)
+            {
+                return new CardLandingPageModel();
+            }
 
             return new CardLandingPageModel
             {
-                Hub = parentPage?.Fields.HubType.ToString(),
-                Title = parentPage?.Fields.Title,
-                Slug = parentPage?.Fields.Slug
+                Hub = parentPage != null ? parentPage.Fields.HubType : parentPageFromItem.Fields.HubType,
+                Title = parentPage != null ? parentPage.Fields.Title : parentPageFromItem.Fields.Title,
+                Slug = parentPage != null ? parentPage.Fields.Slug : parentPageFromItem.Fields.Slug
             };
         }
 
@@ -92,9 +103,9 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage)
+        private static LandingPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage)
         {
-            return new HubPageModel()
+            return new LandingPageModel()
             {
                 PageAttributes = new PageModel
                 {
