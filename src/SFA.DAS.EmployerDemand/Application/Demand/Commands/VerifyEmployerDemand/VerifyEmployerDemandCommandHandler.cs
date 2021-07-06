@@ -45,12 +45,12 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
                         Value = true
                     }));
                 
-                if (verifyEmailResponse.StatusCode != HttpStatusCode.Accepted)
+                if (verifyEmailResponse.StatusCode != HttpStatusCode.OK)
                 {
                     throw new HttpRequestContentException($"Response status code does not indicate success: {(int)verifyEmailResponse.StatusCode} ({verifyEmailResponse.StatusCode})", verifyEmailResponse.StatusCode, verifyEmailResponse.ErrorContent);
                 }
                 
-                if (verifyEmailResponse.StatusCode == HttpStatusCode.Accepted)
+                if (verifyEmailResponse.StatusCode == HttpStatusCode.OK)
                 {
                     var emailModel = new CreateDemandConfirmationEmail(
                         getEmployerDemandResponse.ContactEmailAddress,
