@@ -66,11 +66,11 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
-        private static LandingPage SetLandingPageDetails(CmsContent hub, Entry entry)
+        private static LandingPageModel SetLandingPageDetails(CmsContent hub, Entry entry)
         {
             var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
 
-            return new LandingPage
+            return new LandingPageModel
             {
                 Hub = parentPage?.Fields.HubType.ToString(),
                 Title = parentPage?.Fields.Title,
