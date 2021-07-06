@@ -40,7 +40,7 @@ namespace SFA.DAS.Campaign.Models
                 ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
             }
 
-            var parentPage = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage.Sys.Id));
+            var parentPage = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
 
             return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage);
         }
