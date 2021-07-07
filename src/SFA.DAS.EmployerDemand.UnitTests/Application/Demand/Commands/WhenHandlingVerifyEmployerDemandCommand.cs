@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         {
             //Arrange
             getDemandResponse.EmailVerified = false;
-            var apiResponse = new ApiResponse<string>(patchResponse, HttpStatusCode.Accepted, null);
+            var apiResponse = new ApiResponse<string>(patchResponse, HttpStatusCode.OK, null);
             
             apiClient.Setup(
                 x => x.PatchWithResponseCode(It.Is<PatchCourseDemandRequest>(c =>
