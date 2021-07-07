@@ -2,7 +2,7 @@
 {
     public class GetAccountResponse
     {
-        public long Id { get; set; }
+        public long AccountId { get; set; }
         public string AccountName { get; set; }
     }
 }
