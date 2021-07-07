@@ -97,6 +97,60 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 Times.Never);
             actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse);
         }
+        
+        [Test, MoqAutoData]
+        public async Task And_Demand_Not_Found_At_Api_Then_Return_Null_EmployerDemand(
+            VerifyEmployerDemandCommand command,
+            PostEmployerCourseDemand verifyEmailResponse,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            [Frozen] Mock<INotificationService> notificationService,
+            VerifyEmployerDemandCommandHandler handler)
+        {
+            //Arrange
+            apiClient
+                .Setup(x => x.Get<GetEmployerDemandResponse>(
+                        It.Is<GetEmployerDemandRequest>(c => 
+                            c.GetUrl.Contains($"demand/{command.Id}"))))
+                .ReturnsAsync((GetEmployerDemandResponse)null);
+            
+            //Act
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            //Assert
+            apiClient.Verify(client => client.PatchWithResponseCode(
+                It.IsAny<PatchCourseDemandRequest>()), Times.Never);
+            notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
+                Times.Never);
+            actual.EmployerDemand.Should().BeNull();
+        }
+        
+        [Test, MoqAutoData]
+        public async Task And_Demand_Anonymised_Then_Return_Null_EmployerDemand(
+            VerifyEmployerDemandCommand command,
+            PostEmployerCourseDemand verifyEmailResponse,
+            GetEmployerDemandResponse getDemandResponse,
+            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            [Frozen] Mock<INotificationService> notificationService,
+            VerifyEmployerDemandCommandHandler handler)
+        {
+            //Arrange
+            getDemandResponse.ContactEmailAddress = string.Empty;
+            apiClient
+                .Setup(x => x.Get<GetEmployerDemandResponse>(
+                    It.Is<GetEmployerDemandRequest>(c => 
+                        c.GetUrl.Contains($"demand/{command.Id}"))))
+                .ReturnsAsync(getDemandResponse);
+            
+            //Act
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            //Assert
+            apiClient.Verify(client => client.PatchWithResponseCode(
+                It.IsAny<PatchCourseDemandRequest>()), Times.Never);
+            notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
+                Times.Never);
+            actual.EmployerDemand.Should().BeNull();
+        }
 
         [Test, MoqAutoData]
         public void Then_If_Error_For_Verify_An_Exception_Is_Thrown(
