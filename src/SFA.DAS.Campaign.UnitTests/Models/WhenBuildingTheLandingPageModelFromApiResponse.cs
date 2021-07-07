@@ -138,7 +138,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                         {
                             Sys = new LandingPageSys
                             {
-                                Id = "landingPage",
+                                Id = "article",
                                 LinkType = "ContentType",
                                 Type = "Link",
                             }
