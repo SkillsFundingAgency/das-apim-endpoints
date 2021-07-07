@@ -5,6 +5,8 @@ using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Net;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
@@ -50,6 +52,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             var response = await _levyTransferMatchingApiClient.GetAll<Pledge>(new GetPledgesRequest());
 
             return response;
+        }
+
+        public async Task CreateAccount(CreateAccountRequest request)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<CreateAccountRequest>(request);
         }
     }
 }
