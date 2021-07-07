@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransferMatchingServiceTests
 {
+    [TestFixture]
     public class WhenCallingCreateAccount
     {
         public Fixture Fixture = new Fixture();
