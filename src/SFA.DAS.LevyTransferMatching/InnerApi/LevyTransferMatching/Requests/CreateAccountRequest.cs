@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts
+namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
 {
     public class CreateAccountRequest : IPostApiRequest
     {

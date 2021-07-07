@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Models;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 

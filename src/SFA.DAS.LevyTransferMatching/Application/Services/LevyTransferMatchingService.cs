@@ -4,9 +4,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Net;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
