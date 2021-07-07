@@ -38,7 +38,7 @@ namespace SFA.DAS.Campaign.Models
                                       && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
                                           StringComparison.CurrentCultureIgnoreCase)
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
-                                      type == PageType.Article &&
+                                      type == PageType.LandingPage &&
                                       hub.Items[0].Fields.Cards.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
                     )
                     .Select(entry => new CardPageModel

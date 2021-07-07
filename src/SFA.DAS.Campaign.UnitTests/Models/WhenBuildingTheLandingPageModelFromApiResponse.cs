@@ -9,17 +9,17 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Models
 {
-    public class WhenBuildingTheHubPageModelFromApiResponse
+    public class WhenBuildingTheLandingPageModelFromApiResponse
     {
         [Test]
         public void Then_If_No_Items_Returned_Then_Null_Returned()
         {
             //Arrange
-            var source = new CmsContent { Items = new List<Item>(), Total = 1 };
-
+            var source = new CmsContent {Items = new List<Item>(), Total = 1};
+            
             //Act
-            var actual = new HubPageModel().Build(source);
-
+            var actual = new LandingPageModel().Build(source);
+            
             //Assert
             actual.Should().BeNull();
         }
@@ -28,10 +28,10 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         {
             //Arrange
             source.Total = 0;
-
+            
             //Act
-            var actual = new HubPageModel().Build(source);
-
+            var actual = new LandingPageModel().Build(source);
+            
             //Assert
             actual.Should().BeNull();
         }
@@ -41,35 +41,35 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.HeaderImage = null;
-
+            
             //Act
-            var actual = new HubPageModel().Build(source);
-
+            var actual = new LandingPageModel().Build(source);
+            
             //Assert
             actual.MainContent.HeaderImage.Should().BeNull();
             actual.MainContent.Cards.Should().BeEmpty();
         }
-
+        
         [Test]
-        [RecursiveMoqInlineAutoData("hub", PageType.Hub)]
+        [RecursiveMoqInlineAutoData("landingPage", PageType.LandingPage )]
         [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
         public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source)
         {
             //Arrange
             source.Items.FirstOrDefault().Sys.ContentType.Sys.Id = pageType;
-
+            
             //Act
-            var actual = new HubPageModel().Build(source);
-
+            var actual = new LandingPageModel().Build(source);
+            
             //Assert
             actual.PageAttributes.PageType.Should().Be(type);
         }
-
+        
         [Test, RecursiveMoqAutoData]
         public void Then_The_Page_Level_Fields_Are_Set(CmsContent source)
         {
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new LandingPageModel().Build(source);
 
             //Assert
             actual.PageAttributes.Title.Should().Be(source.Items.FirstOrDefault()?.Fields.Title);
@@ -98,7 +98,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
 
             ////Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new LandingPageModel().Build(source);
 
             //Assert
             actual.MainContent.HeaderImage.Should().NotBeNull();
@@ -111,19 +111,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.HeaderImage.EmbeddedResource.Description.Should().Be(fields.Description);
 
         }
-
+        
 
         [Test, RecursiveMoqAutoData]
         public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage)
         {
             //Arrange
+            source.Items[0].Fields.Cards[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
             source.Includes.Entry = new List<Entry>
             {
                 new Entry
                 {
                     Sys = new AssetSys
                     {
-                        Id="321EDF",
+                        Id = "2K5MZPYdhDNyPEsDk4EgZh",
                         Space = new LandingPage
                         {
                             Sys = new LandingPageSys
@@ -143,38 +144,12 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                             }
                         }
                     },
-                    Fields = linkedPage
-                },
-                new Entry
-                {
-                    Sys = new AssetSys
-                    {
-                        Id="321EDC",
-                        Space = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space",
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "article",
-                                LinkType = "ContentType",
-                                Type = "Link",
-                            }
-                        }
-                    },
-                    Fields = linkedPage
+                  Fields = linkedPage
                 }
             };
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new LandingPageModel().Build(source);
 
             //Assert
             actual.MainContent.Cards.Count.Should().Be(1);
