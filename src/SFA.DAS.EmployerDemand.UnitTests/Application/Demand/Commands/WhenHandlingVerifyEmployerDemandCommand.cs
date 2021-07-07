@@ -125,7 +125,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         }
         
         [Test, MoqAutoData]
-        public async Task And_Demand_Anonymised_Then_Return_Null_EmployerDemand(
+        public async Task And_Demand_Anonymised_Then_EmployerDemand_Returned(
             VerifyEmployerDemandCommand command,
             PostEmployerCourseDemand verifyEmailResponse,
             GetEmployerDemandResponse getDemandResponse,
@@ -149,7 +149,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 It.IsAny<PatchCourseDemandRequest>()), Times.Never);
             notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
-            actual.EmployerDemand.Should().BeNull();
+            actual.EmployerDemand.Should().BeEquivalentTo(getDemandResponse);
         }
 
         [Test, MoqAutoData]
