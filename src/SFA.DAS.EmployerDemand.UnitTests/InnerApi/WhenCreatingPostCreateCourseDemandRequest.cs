@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.InnerApi
             var actual = new PostCreateCourseDemandRequest(data);
             
             actual.Data.Should().BeEquivalentTo(data);
-            actual.PostUrl.Should().Be("api/demand/create");
+            actual.PostUrl.Should().Be($"api/demand/{data.Id}");
         }
     }
 }

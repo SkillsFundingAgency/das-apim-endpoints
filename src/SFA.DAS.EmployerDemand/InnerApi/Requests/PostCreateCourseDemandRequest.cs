@@ -7,12 +7,15 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 {
     public class PostCreateCourseDemandRequest : IPostApiRequest
     {
+        private readonly Guid _id;
+
         public PostCreateCourseDemandRequest (CreateCourseDemandData data)
         {
             Data = data;
+            _id = data.Id;
         }
 
-        public string PostUrl => "api/demand/create";
+        public string PostUrl => $"api/demand/{_id}";
         public object Data { get; set; }
     }
 
@@ -35,6 +38,14 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
 
         [JsonProperty("location")]
         public Location Location { get; set; }
+        [JsonProperty("stopSharingUrl")]
+        public string StopSharingUrl { get; set; }
+        [JsonProperty("startSharingUrl")]
+        public string StartSharingUrl { get; set; }
+        [JsonProperty("expiredCourseDemandId")]
+        public Guid? ExpiredCourseDemandId { get; set; }
+        [JsonProperty("entryPoint")]
+        public short? EntryPoint { get; set; }
     }
     
     public class Course

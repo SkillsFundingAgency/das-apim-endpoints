@@ -1,13 +1,13 @@
 parameters:
-  ServiceConnection: ''
-  AppRoleAssignmentsServiceConnection: ''
-  Environment: ''
+  ServiceConnection:
+  AppRoleAssignmentsServiceConnection:
+  Environment:
+  SchemaFilePath:
 
 jobs:
 - deployment: DeployInfrastructure
   pool:
-    # name: DAS - Continuous Deployment Agents
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all
@@ -31,7 +31,7 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
-            TargetFileName: '*.schema.json'
+            TargetFileName: ${{ parameters.SchemaFilePath }}
             TableName: Configuration
 
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
