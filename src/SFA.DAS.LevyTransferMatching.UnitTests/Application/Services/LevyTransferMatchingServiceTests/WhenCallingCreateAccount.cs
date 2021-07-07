@@ -32,8 +32,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
 
             apiClient.Verify(x => x.PostWithResponseCode<CreateAccountRequest>(It.Is<CreateAccountRequest>(r =>
                 r.PostUrl.StartsWith("/accounts")
-                && r.AccountId == createAccountRequest.AccountId
-                && r.AccountName == createAccountRequest.AccountName)));
+                && r.Data == createAccountRequest.Data
+                )));
         }
     }
 }
