@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
@@ -43,8 +44,12 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand
                 };
             }
 
-            var stopDemandResponse = await _demandApiClient.PostWithResponseCode<GetEmployerDemandResponse>(
-                new PostStopEmployerDemandRequest(request.EmployerDemandId));
+            var stopDemandResponse = await _demandApiClient.PatchWithResponseCode(
+                new PatchCourseDemandRequest(request.EmployerDemandId, new PatchOperation
+                {
+                    Path = "Stopped",
+                    Value = true
+                }));
 
             if (stopDemandResponse.StatusCode != HttpStatusCode.OK)
             {
@@ -54,22 +59,25 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand
             await _demandApiClient.PostWithResponseCode<object>(
                 new PostEmployerDemandNotificationAuditRequest(request.Id, request.EmployerDemandId, NotificationType.StoppedByUser));
 
+            var stopDemandResponseBody =
+                JsonConvert.DeserializeObject<GetEmployerDemandResponse>(stopDemandResponse.Body);
+            
             var emailArgs = new StopSharingEmployerDemandEmail(
-                stopDemandResponse.Body.ContactEmailAddress,
-                stopDemandResponse.Body.OrganisationName,
-                stopDemandResponse.Body.Course.Title,
-                stopDemandResponse.Body.Course.Level,
-                stopDemandResponse.Body.Location.Name,
-                stopDemandResponse.Body.NumberOfApprentices,
-                stopDemandResponse.Body.StartSharingUrl);
+                stopDemandResponseBody.ContactEmailAddress,
+                stopDemandResponseBody.OrganisationName,
+                stopDemandResponseBody.Course.Title,
+                stopDemandResponseBody.Course.Level,
+                stopDemandResponseBody.Location.Name,
+                stopDemandResponseBody.NumberOfApprentices,
+                stopDemandResponseBody.StartSharingUrl);
             await _notificationService.Send(new SendEmailCommand(
                 EmailConstants.StopSharingEmployerDemandTemplateId,
-                stopDemandResponse.Body.ContactEmailAddress,
+                stopDemandResponseBody.ContactEmailAddress,
                 emailArgs.Tokens));
 
             return new StopEmployerDemandCommandResult
             {
-                EmployerDemand = stopDemandResponse.Body
+                EmployerDemand = stopDemandResponseBody
             };
         }
     }
