@@ -111,61 +111,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.HeaderImage.EmbeddedResource.Description.Should().Be(fields.Description);
 
         }
-
-        [Test, RecursiveMoqAutoData]
-        public void Then_If_Entry_Field_Landing_Id_Is_Null_Then_Empty_Model_Returned_And_No_Landing_Page_Set(CmsContent source, EntryFields linkedPage)
-        {
-            //Arrange
-            linkedPage.LandingPage = null;
-            source.Includes.Entry = new List<Entry>
-            {
-                new Entry
-                {
-                    Sys = new AssetSys
-                    {
-                        Id="321EDF",
-                        Space = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space"
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "article",
-                                LinkType = "ContentType",
-                                Type = "Link",
-                            }
-                        }
-                    },
-                    Fields = linkedPage
-                }
-            };
-            
-            //Act
-            var actual = new HubPageModel().Build(source);
-
-            //Assert
-            actual.MainContent.Cards.Count.Should().Be(1);
-            actual.MainContent.Cards.FirstOrDefault().LandingPage.Should().BeEquivalentTo(new CardLandingPageModel());
-        }
+        
 
         [Test, RecursiveMoqAutoData]
         public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage)
         {
             //Arrange
+            source.Items[0].Fields.Cards[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
             source.Includes.Entry = new List<Entry>
             {
                 new Entry
                 {
                     Sys = new AssetSys
                     {
-                        Id="321EDF",
+                        Id = "2K5MZPYdhDNyPEsDk4EgZh",
                         Space = new LandingPage
                         {
                             Sys = new LandingPageSys
@@ -185,33 +144,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                             }
                         }
                     },
-                    Fields = linkedPage
-                },
-                new Entry
-                {
-                    Sys = new AssetSys
-                    {
-                        Id="321EDC",
-                        Space = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space",
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "article",
-                                LinkType = "ContentType",
-                                Type = "Link",
-                            }
-                        }
-                    },
-                    Fields = linkedPage
+                  Fields = linkedPage
                 }
             };
 
