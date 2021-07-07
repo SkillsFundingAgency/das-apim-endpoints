@@ -1,12 +1,9 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation
 {
     public class GetLocationInformationQueryHandler : IRequestHandler<GetLocationInformationQuery, GetLocationInformationResult>
     {
@@ -21,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations
         {
             var result = await _locationLookupService.GetLocationInformation(request.Location, request.Latitude, request.Longitude);
 
-            return result == null ? new GetLocationInformationResult() : 
+            return result == null ? new GetLocationInformationResult() :
                 new GetLocationInformationResult { Name = result.Name, GeoPoint = result.GeoPoint };
         }
     }

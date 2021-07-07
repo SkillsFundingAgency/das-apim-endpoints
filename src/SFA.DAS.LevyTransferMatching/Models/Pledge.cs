@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations;
+﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
 using System;
 using System.Collections.Generic;
 

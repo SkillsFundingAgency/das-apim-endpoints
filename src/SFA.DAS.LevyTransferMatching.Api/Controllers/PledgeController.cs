@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
