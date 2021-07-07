@@ -5,8 +5,10 @@ using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Clients;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.EmployerIncentives.Api.AppStart
 {

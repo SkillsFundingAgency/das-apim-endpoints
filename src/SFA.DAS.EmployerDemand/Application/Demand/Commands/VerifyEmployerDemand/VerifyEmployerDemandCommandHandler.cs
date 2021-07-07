@@ -38,15 +38,19 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
             
             if (!getEmployerDemandResponse.EmailVerified)
             {
-                var verifyEmailResponse =
-                    await _apiClient.PostWithResponseCode<PostEmployerCourseDemand>(new PostVerifyEmployerDemandEmailRequest(request.Id));
-
-                if (verifyEmailResponse.StatusCode != HttpStatusCode.Accepted)
+                var verifyEmailResponse = await _apiClient.PatchWithResponseCode(new PatchCourseDemandRequest(
+                    request.Id, new PatchOperation
+                    {
+                        Path = "EmailVerified",
+                        Value = true
+                    }));
+                
+                if (verifyEmailResponse.StatusCode != HttpStatusCode.OK)
                 {
                     throw new HttpRequestContentException($"Response status code does not indicate success: {(int)verifyEmailResponse.StatusCode} ({verifyEmailResponse.StatusCode})", verifyEmailResponse.StatusCode, verifyEmailResponse.ErrorContent);
                 }
                 
-                if (verifyEmailResponse.StatusCode == HttpStatusCode.Accepted)
+                if (verifyEmailResponse.StatusCode == HttpStatusCode.OK)
                 {
                     var emailModel = new CreateDemandConfirmationEmail(
                         getEmployerDemandResponse.ContactEmailAddress,
@@ -54,7 +58,8 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDeman
                         getEmployerDemandResponse.Course.Title,
                         getEmployerDemandResponse.Course.Level,
                         getEmployerDemandResponse.Location.Name,
-                        getEmployerDemandResponse.NumberOfApprentices
+                        getEmployerDemandResponse.NumberOfApprentices,
+                        getEmployerDemandResponse.StopSharingUrl
                     );
                     await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));
                 }    

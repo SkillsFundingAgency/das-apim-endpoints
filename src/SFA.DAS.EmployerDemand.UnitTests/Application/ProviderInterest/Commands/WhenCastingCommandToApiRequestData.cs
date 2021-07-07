@@ -13,7 +13,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
         {
             var result = (CreateProviderInterestsData) source;
 
-            result.Should().BeEquivalentTo(source);
+            result.Should().BeEquivalentTo(source, options => options
+                .ExcludingMissingMembers());
         }
     }
 }

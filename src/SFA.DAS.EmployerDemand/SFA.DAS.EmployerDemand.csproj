@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Demand\Commands\CourseStopped\" />
     <Folder Include="Application\ProviderInterest\Commands\CreateProviderInterests\" />
   </ItemGroup>
 

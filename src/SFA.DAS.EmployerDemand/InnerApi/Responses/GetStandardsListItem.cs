@@ -1,3 +1,5 @@
+using SFA.DAS.EmployerDemand.Domain.Models;
+
 namespace SFA.DAS.EmployerDemand.InnerApi.Responses
 {
     public class GetStandardsListItem
@@ -7,5 +9,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public string Route { get; set; }
+        public StandardDates StandardDates { get; set; }
     }
 }

@@ -14,8 +14,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
 {
     public class ChangeApprenticeshipCommand : IRequest
     {
-        public long ApprenticeshipId { get; set; }
-        public DateTime ApprovedOn { get; set; }
+        public long CommitmentsApprenticeshipId { get; set; }
+        public DateTime CommitmentsApprovedOn { get; set; }
     }
 
     public class UpdateApprenticeshipCommandHandler : IRequestHandler<ChangeApprenticeshipCommand>
@@ -48,8 +48,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
 
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
-                ApprenticeshipId = command.ApprenticeshipId,
-                Email = apprenticeship.Email,
+                CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
@@ -58,7 +57,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                ApprovedOn = command.ApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
             return Unit.Value;
@@ -68,7 +67,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
             GetExternalData(ChangeApprenticeshipCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
-                command.ApprenticeshipId);
+                command.CommitmentsApprenticeshipId);
 
             var course = _coursesService.GetCourse(apprenticeship.CourseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);

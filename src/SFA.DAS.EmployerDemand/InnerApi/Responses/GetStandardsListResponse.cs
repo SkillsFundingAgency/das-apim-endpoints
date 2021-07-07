@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Responses
 {
     public class GetStandardsListResponse
     {
-        public IEnumerable<GetStandardsListItem> Standards { get; set; }
+        public IReadOnlyList<GetStandardsListItem> Standards { get; set; }
     }
 }

@@ -20,6 +20,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.Campaign.Api\SFA.DAS.Campaign.Api.csproj" />
       <ProjectReference Include="..\SFA.DAS.Campaign\SFA.DAS.Campaign.csproj" />
     </ItemGroup>
 

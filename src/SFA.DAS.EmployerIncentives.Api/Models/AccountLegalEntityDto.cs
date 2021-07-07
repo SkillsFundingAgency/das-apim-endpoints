@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
         public string HashedLegalEntityId { get; set; }
 
         public bool IsAgreementSigned { get; set; }
+        public bool BankDetailsRequired { get; set; }
 
         public static implicit operator AccountLegalEntityDto(AccountLegalEntity source)
         {
@@ -31,7 +32,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 IsAgreementSigned = source.IsAgreementSigned,
                 VrfVendorId = source.VrfVendorId,
                 VrfCaseStatus = source.VrfCaseStatus,
-                HashedLegalEntityId = source.HashedLegalEntityId
+                HashedLegalEntityId = source.HashedLegalEntityId,
+                BankDetailsRequired = source.BankDetailsRequired
             };
         }
     }

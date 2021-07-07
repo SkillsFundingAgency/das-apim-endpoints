@@ -1,7 +1,6 @@
 parameters:
   DeploymentName:
-  DeploymentCondition: false
-  DeploymentApprovals:
+  Environment:
   ServiceConnection:
   AppServiceName:
   DeploymentPackagePath:
@@ -15,14 +14,12 @@ parameters:
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
   pool:
-    # name: DAS - Continuous Deployment Agents
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   dependsOn:
   - DeployInfrastructure
-  condition: ${{ parameters.DeploymentCondition }}
   variables:
     ResourceGroupName: $[dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.ResourceGroupName']]
-  environment: ${{ parameters.DeploymentApprovals }}
+  environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
       deploy:

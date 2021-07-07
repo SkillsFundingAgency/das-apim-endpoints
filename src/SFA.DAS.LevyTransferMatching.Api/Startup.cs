@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,16 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
+using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.LevyTransferMatching.Api
 {
@@ -33,6 +38,9 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
+
+            services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -56,7 +64,12 @@ namespace SFA.DAS.LevyTransferMatching.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(x =>
+                {
+                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -64,12 +77,16 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
 
+            services.AddMediatR(typeof(IAccountsService));
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
-            });
+            services
+                .AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
+                })
+                .AddSwaggerGenNewtonsoftSupport();
 
         }
 

@@ -49,8 +49,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask, shortlistTask);
             
-            var showEmployerDemand = _config.EmployerDemandFeatureToggle && await _employerDemandApiClient.GetResponseCode(new GetShowEmployerDemandRequest()) == HttpStatusCode.OK;
-            
             var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
                 request.Id, 
                 courseTask.Result.SectorSubjectAreaTier2Description, 
@@ -66,8 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Providers = providers.Providers,
                 Total = providers.TotalResults,
                 Location = locationTask.Result,
-                ShortlistItemCount = shortlistTask.Result,
-                ShowEmployerDemand = showEmployerDemand
+                ShortlistItemCount = shortlistTask.Result
             }; 
         }
     }

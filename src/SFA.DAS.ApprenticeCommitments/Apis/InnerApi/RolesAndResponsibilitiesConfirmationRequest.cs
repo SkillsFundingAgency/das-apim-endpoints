@@ -1,27 +1,18 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class RolesAndResponsibilitiesConfirmationRequest : IPostApiRequest<RolesAndResponsibilitiesConfirmationRequestData>
+    public class RolesAndResponsibilitiesConfirmationRequest : CommitmentStatementConfirmationRequest<RolesAndResponsibilitiesConfirmationRequestData>
     {
-        private readonly Guid _apprenticeId;
-        private readonly long _apprenticeshipId;
-
         public RolesAndResponsibilitiesConfirmationRequest(
-            Guid apprentice, long apprenticeship, bool rolesAndResponsibilitiesCorrect)
+            Guid apprentice, long apprenticeship, long commitmentStatementId, bool rolesAndResponsibilitiesCorrect)
+            : base(apprentice, apprenticeship, commitmentStatementId, "rolesandresponsibilitiesconfirmation")
         {
-            _apprenticeId = apprentice;
-            _apprenticeshipId = apprenticeship;
             Data = new RolesAndResponsibilitiesConfirmationRequestData
             {
                 RolesAndResponsibilitiesCorrect = rolesAndResponsibilitiesCorrect
             };
         }
-
-        public string PostUrl => $"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/rolesandresponsibilitiesconfirmation";
-
-        public RolesAndResponsibilitiesConfirmationRequestData Data { get; set; }
     }
 
     public class RolesAndResponsibilitiesConfirmationRequestData

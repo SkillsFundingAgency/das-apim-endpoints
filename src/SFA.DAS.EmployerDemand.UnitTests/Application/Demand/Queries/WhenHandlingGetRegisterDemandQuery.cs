@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
         {
             locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, 0, 0, true)).ReturnsAsync(location);
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.IsAny<GetStandardRequest>()))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.StandardId.Equals(query.CourseId))))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -23,8 +23,4 @@
     <ProjectReference Include="..\SFA.DAS.EmployerDemand\SFA.DAS.EmployerDemand.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Models\" />
-  </ItemGroup>
-
 </Project>
