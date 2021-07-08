@@ -6,7 +6,11 @@ variables:
 - group: RELEASE das-apim-endpoints
 - name: OuterApiObject
   value: $(LevyTransferMatchingOuterApiObject)
-
+- name: LocationInnerApiBaseUrl
+  value: $(LocationInnerApiBaseUrl)
+- name: LocationInnerApiIdentifierUri
+  value: $(LocationInnerApiIdentifierUri)
+  
 resources:
   repositories:
   - repository: self
