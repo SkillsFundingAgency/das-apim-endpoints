@@ -18,24 +18,23 @@ namespace SFA.DAS.Campaign.Models
                 return null;
             }
 
-            var item = hub.Items.FirstOrDefault();
-
-            Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
-
-            return GenerateHubPageModel(new List<UrlDetails>());
+            return GenerateHubPageModel(SetLandingPageDetails(hub));
         }
 
-       
-        private static UrlDetails SetLandingPageDetails(CmsContent hub, Entry entry)
+        private static List<UrlDetails> SetLandingPageDetails(CmsContent hub)
         {
-            var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage?.Sys.Id));
-            
-            return new UrlDetails
+            return hub.Items.Select(item => new UrlDetails
             {
-                Hub = parentPage?.Fields.HubType,
-                Title = parentPage?.Fields.Title,
-                Slug = parentPage?.Fields.Slug
-            };
+                Hub = item?.Fields.HubType, Title = item?.Fields.Title, Slug = item?.Fields.Slug,
+                PageType = GetPageType(item.Sys.ContentType.Sys.Id).ToString()
+            }).ToList();
+        }
+
+        private static string GetPageType(string sysId)
+        {
+            Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
+
+            return pageTypeResult.ToString();
         }
 
         private static SiteMapPageModel GenerateHubPageModel(List<UrlDetails> pages)
@@ -51,6 +50,10 @@ namespace SFA.DAS.Campaign.Models
 
         public class SiteMapContent
         {
+            public SiteMapContent()
+            {
+                Pages = new List<UrlDetails>();
+            }
             public List<UrlDetails> Pages { get; set; }
         }
     }

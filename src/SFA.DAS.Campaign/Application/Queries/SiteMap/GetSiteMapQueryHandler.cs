@@ -21,7 +21,7 @@ namespace SFA.DAS.Campaign.Application.Queries.SiteMap
 
         public async Task<GetSiteMapQueryResult> Handle(GetSiteMapQuery request, CancellationToken cancellationToken)
         {
-            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetSiteMapRequest(), "SiteMap_Full");
+            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetSiteMapRequest(request.ContentType), $"SiteMap_{request.ContentType}");
 
             var pageModel = new SiteMapPageModel().Build(article);
 

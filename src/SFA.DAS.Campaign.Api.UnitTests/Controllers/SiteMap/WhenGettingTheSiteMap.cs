@@ -32,7 +32,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.SiteMap
 
             var actualResult = controllerResult.Value as GetSiteMapResponse;
             Assert.IsNotNull(actualResult);
-            actualResult.Map.Should().BeEquivalentTo(mediatorResult.MapModel);
+            actualResult.Map.MainContent.Pages.Should().NotBeNull();
         }
     }
 }

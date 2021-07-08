@@ -4,15 +4,18 @@ namespace SFA.DAS.Campaign.ExternalApi.Requests
 {
     public class GetSiteMapRequest : IGetApiRequest
     {
-        public GetSiteMapRequest()
+        private readonly string _contentType;
+
+        public GetSiteMapRequest(string contentType)
         {
+            _contentType = contentType;
         }
 
         public string GetUrl => BuildUrl();
 
         private string BuildUrl()
         {
-            var getUrl = $"entries?content_type=hub&include=2";
+            var getUrl = $"entries?select=sys.id,sys.contentType,fields.slug,fields.title,fields.hubType&content_type={_contentType}";
 
             return getUrl;
         }
