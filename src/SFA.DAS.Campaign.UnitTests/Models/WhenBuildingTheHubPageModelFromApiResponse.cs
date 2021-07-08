@@ -117,13 +117,14 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage)
         {
             //Arrange
+            source.Items[0].Fields.Cards[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
             source.Includes.Entry = new List<Entry>
             {
                 new Entry
                 {
                     Sys = new AssetSys
                     {
-                        Id="321EDF",
+                        Id = "2K5MZPYdhDNyPEsDk4EgZh",
                         Space = new LandingPage
                         {
                             Sys = new LandingPageSys
@@ -131,32 +132,6 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                                 Id = "123abc",
                                 Type = "Link",
                                 LinkType = "Space"
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "landingPage",
-                                LinkType = "ContentType",
-                                Type = "Link",
-                            }
-                        }
-                    },
-                    Fields = linkedPage
-                },
-                new Entry
-                {
-                    Sys = new AssetSys
-                    {
-                        Id="321EDC",
-                        Space = new LandingPage
-                        {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space",
                             }
                         },
                         ContentType = new LandingPage

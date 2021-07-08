@@ -67,7 +67,7 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
-        private static CardLandingPageModel SetLandingPageDetails(CmsContent hub, Entry entry)
+        private static UrlDetails SetLandingPageDetails(CmsContent hub, Entry entry)
         {
             var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
             Item parentPageFromItem = null;
@@ -79,10 +79,10 @@ namespace SFA.DAS.Campaign.Models
 
             if (parentPageFromItem == null && parentPage == null)
             {
-                return new CardLandingPageModel();
+                return new UrlDetails();
             }
 
-            return new CardLandingPageModel
+            return new UrlDetails
             {
                 Hub = parentPage != null ? parentPage.Fields.HubType : parentPageFromItem.Fields.HubType,
                 Title = parentPage != null ? parentPage.Fields.Title : parentPageFromItem.Fields.Title,

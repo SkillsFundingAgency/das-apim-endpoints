@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using static SFA.DAS.Campaign.Models.CmsPageModel;
@@ -38,7 +39,8 @@ namespace SFA.DAS.Campaign.Models
                                       && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
                                           StringComparison.CurrentCultureIgnoreCase)
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
-                                      type == PageType.Article 
+                                      type == PageType.Article &&
+                                      hub.Items[0].Fields.Cards.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
                     )
                     .Select(entry => new CardPageModel
                     {
@@ -66,11 +68,11 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
-        private static CardLandingPageModel SetLandingPageDetails(CmsContent hub, Entry entry)
+        private static UrlDetails SetLandingPageDetails(CmsContent hub, Entry entry)
         {
             var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage?.Sys.Id));
             
-            return new CardLandingPageModel
+            return new UrlDetails
             {
                 Hub = parentPage?.Fields.HubType,
                 Title = parentPage?.Fields.Title,
