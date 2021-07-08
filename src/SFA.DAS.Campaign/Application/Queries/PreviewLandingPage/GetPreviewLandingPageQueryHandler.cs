@@ -23,6 +23,7 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewLandingPage
         public async Task<GetPreviewLandingPageQueryResult> Handle(GetPreviewLandingPageQuery request, CancellationToken cancellationToken)
         {
             var landingPage = await _client.Get<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug));
+            
             var pageModel = new LandingPageModel().Build(landingPage);
 
             return new GetPreviewLandingPageQueryResult()
