@@ -33,13 +33,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges")]
         public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
-            var locationInformation = new List<GetLocationInformationResult>(); 
-            foreach(string location in createPledgeRequest.Locations)
-            {
-                var queryResult = await _mediator.Send(new GetLocationInformationQuery() { Location = location });
-                locationInformation.Add(queryResult);
-            }
-
             var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
                 AccountId = accountId,
@@ -49,7 +42,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
-                Locations = locationInformation
+                Locations = createPledgeRequest.Locations.Select(x => new GetLocationInformationResult { Name = x, GeoPoint = new double[2] }).ToList()
             });
 
             return new CreatedResult(
