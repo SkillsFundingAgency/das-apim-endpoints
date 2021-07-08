@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Services;
@@ -8,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.AccountsServiceTests
 {
@@ -20,13 +22,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.AccountsSe
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockAccountsApiClient,
             AccountsService accountsService)
         {
+            var apiResponseWrapper = new ApiResponse<Account>(body:apiResponse, HttpStatusCode.OK, "");
+
             mockAccountsApiClient
-                .Setup(x => x.Get<Account>(It.Is<GetAccountRequest>(y => y.GetUrl.Contains(encodedAccountId))))
-                .ReturnsAsync(apiResponse);
+                .Setup(x => x.GetWithResponseCode<Account>(It.Is<GetAccountRequest>(y => y.GetUrl.Contains(encodedAccountId))))
+                .ReturnsAsync(apiResponseWrapper);
 
             var actual = await accountsService.GetAccount(encodedAccountId);
 
-            Assert.AreEqual(actual, apiResponse);
+            Assert.AreEqual(apiResponse, actual);
         }
     }
 }
