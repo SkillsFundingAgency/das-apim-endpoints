@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             long accountId,
             long accountLegalEntityId,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            LegalEntitiesService service)
         {
 
             await service.DeleteAccountLegalEntity(accountId, accountLegalEntityId);

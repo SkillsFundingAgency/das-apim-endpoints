@@ -21,19 +21,19 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_Api_Is_Called_Returning_Applications_For_The_Account(
             long accountId,
             long accountLegalEntityId,
-            GetApplicationsResponse apiResponse,
+            PaymentApplicationsDto api,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service
+            ApplicationService service
         )
         {
             client.Setup(x =>
-                    x.Get<GetApplicationsResponse>(
+                    x.Get<PaymentApplicationsDto>(
                         It.Is<GetApplicationsRequest>(c => c.GetUrl.Contains(accountId.ToString()))))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(api);
 
-            var actual = await service.GetApprenticeApplications(accountId, accountLegalEntityId);
+            var actual = await service.GetPaymentApplications(accountId, accountLegalEntityId);
 
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(api);
         }
     }
 }

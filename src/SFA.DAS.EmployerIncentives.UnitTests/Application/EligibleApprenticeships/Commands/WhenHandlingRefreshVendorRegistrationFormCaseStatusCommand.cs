@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_legal_entities_are_updated_with_the_vendor_registration_form_Details(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
-            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler,
             GetVendorRegistrationCaseStatusUpdateResponse vendorResponse)
         {
@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             foreach (var @case in vendorResponse.RegistrationCases.Where(x => x.CaseStatus == "NEW"))
             {
-                incentivesService.Verify(
+                vendorRegistrationService.Verify(
                     x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r =>
                             r.CaseId == @case.CaseId &&
                             r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId &&
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task And_no_cases_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_current_UTC_DateTime_is_returned__when_to_date_is_in_future(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
-            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
         {
             var fromDateTime = DateTime.UtcNow.AddHours(-1);
@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-            incentivesService.Verify(
+            vendorRegistrationService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
 
             result.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task And_no_cases_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_from_date_plus_1_day_is_returned__when_ToDate_is_in_past(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
-            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
         {
             var fromDateTime = DateTime.UtcNow.AddHours(-25);
@@ -79,7 +79,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-            incentivesService.Verify(
+            vendorRegistrationService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
 
             result.Should().Be(fromDateTime.AddDays(1));
@@ -88,7 +88,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public void And_null_response_returned_from_FinanceAPI_Then_The_legal_entities_are_not_updated_and_exception_is_thrown(
             [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
-            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
             DateTime fromDateTime,
             RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
         {
@@ -101,7 +101,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             f.Should().Throw<ArgumentNullException>();
 
-            incentivesService.Verify(
+            vendorRegistrationService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());
         }
 

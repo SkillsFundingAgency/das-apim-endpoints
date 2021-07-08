@@ -13,12 +13,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
     public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand>
     {
         private readonly ICommitmentsService _commitmentsService;
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
 
-        public CreateApplicationCommandHandler(ICommitmentsService commitmentsService, IEmployerIncentivesService employerIncentivesService)
+        public CreateApplicationCommandHandler(ICommitmentsService commitmentsService, IApplicationService applicationService)
         {
             _commitmentsService = commitmentsService;
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
         }
 
         public async Task<Unit> Handle(CreateApplicationCommand command, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 
             var request = CreateIncentiveApplicationRequest(command, apprenticeships);
 
-            await _employerIncentivesService.CreateIncentiveApplication(request);
+            await _applicationService.Create(request);
 
             return Unit.Value;
         }

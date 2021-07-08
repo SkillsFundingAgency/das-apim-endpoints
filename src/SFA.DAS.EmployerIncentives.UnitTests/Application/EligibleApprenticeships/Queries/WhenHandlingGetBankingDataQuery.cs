@@ -19,11 +19,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         public async Task Then_The_Application_Data_Is_Returned(
             GetBankingDataQuery query,
             IncentiveApplicationDto applicationResponse,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             GetBankingDataHandler handler
             )
         {
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -40,12 +40,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetBankingDataQuery query,
             IncentiveApplicationDto applicationResponse,
             LegalEntity legalEntityResponse,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             [Frozen] Mock<IAccountsService> accountsService,
             GetBankingDataHandler handler
         )
         {
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
             accountsService.Setup(x => x.GetLegalEntity(query.HashedAccountId, applicationResponse.LegalEntityId)).ReturnsAsync(legalEntityResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -58,14 +58,14 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetBankingDataQuery query,
             IncentiveApplicationDto applicationResponse,
             LegalEntity legalEntityResponse,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             [Frozen] Mock<IAccountsService> accountsService,
             GetBankingDataHandler handler
         )
         {
             var agreementWithoutDate = legalEntityResponse.Agreements.First(x => x.Status == EmployerAgreementStatus.Signed || x.Status == EmployerAgreementStatus.Expired || x.Status == EmployerAgreementStatus.Superseded);
             agreementWithoutDate.SignedDate = null;
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
             accountsService.Setup(x => x.GetLegalEntity(query.HashedAccountId, applicationResponse.LegalEntityId)).ReturnsAsync(legalEntityResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

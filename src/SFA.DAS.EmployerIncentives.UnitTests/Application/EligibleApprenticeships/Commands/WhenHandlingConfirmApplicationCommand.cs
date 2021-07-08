@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             DateTime submittedOn,
             string submittedByEmail,
             string submittedByName,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             ConfirmApplicationCommandHandler handler)
         {
 
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             await handler.Handle(command, CancellationToken.None);
 
-            employerIncentivesService.Verify(x => x.ConfirmIncentiveApplication(
+            applicationService.Verify(x => x.Confirm(
                     It.Is<ConfirmIncentiveApplicationRequest>(
                         r =>
                             r.Data.DateSubmitted == command.DateSubmitted &&

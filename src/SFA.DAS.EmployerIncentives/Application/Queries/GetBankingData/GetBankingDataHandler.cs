@@ -11,17 +11,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetBankingData
 {
     public class GetBankingDataHandler : IRequestHandler<GetBankingDataQuery, GetBankingDataResult>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
         private readonly IAccountsService _accountsService;
 
-        public GetBankingDataHandler(IEmployerIncentivesService employerIncentivesService, IAccountsService accountsService)
+        public GetBankingDataHandler(IApplicationService applicationService, IAccountsService accountsService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
             _accountsService = accountsService;
         }
         public async Task<GetBankingDataResult> Handle(GetBankingDataQuery request, CancellationToken cancellationToken)
         {
-            var application = await _employerIncentivesService.GetApplication(request.AccountId, request.ApplicationId);
+            var application = await _applicationService.Get(request.AccountId, request.ApplicationId);
             if (application == null) throw new ArgumentException("Requested application details cannot be found in SFA.DAS.EmployerIncentives Application Service");
 
             var legalEntity = await _accountsService.GetLegalEntity(request.HashedAccountId, application.LegalEntityId);

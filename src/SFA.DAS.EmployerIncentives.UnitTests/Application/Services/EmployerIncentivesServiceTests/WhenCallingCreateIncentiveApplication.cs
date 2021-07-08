@@ -16,9 +16,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_InnerApi_Is_Called(
             CreateIncentiveApplicationRequestData requestData,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService sut)
+            ApplicationService sut)
         {
-            await sut.CreateIncentiveApplication(requestData);
+            await sut.Create(requestData);
 
             client.Verify(x =>
                 x.Post<CreateIncentiveApplicationRequestData>(It.Is<CreateIncentiveApplicationRequest>(

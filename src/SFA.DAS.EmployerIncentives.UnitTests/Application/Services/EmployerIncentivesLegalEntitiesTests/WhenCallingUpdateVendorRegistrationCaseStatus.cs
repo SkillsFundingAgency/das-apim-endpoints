@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_Api_Is_Called_To_Update_the_vendor_registration_case_status(
             UpdateVendorRegistrationCaseStatusRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            VendorRegistrationService service)
         {
             await service.UpdateVendorRegistrationCaseStatus(request);
 

@@ -7,15 +7,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities
 {
     public class GetLegalEntitiesHandler : IRequestHandler<GetLegalEntitiesQuery, GetLegalEntitiesResult>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly ILegalEntitiesService _legalEntitiesService;
 
-        public GetLegalEntitiesHandler (IEmployerIncentivesService employerIncentivesService)
+        public GetLegalEntitiesHandler (ILegalEntitiesService legalEntitiesService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _legalEntitiesService = legalEntitiesService;
         }
         public async Task<GetLegalEntitiesResult> Handle(GetLegalEntitiesQuery request, CancellationToken cancellationToken)
         {
-            var response = await _employerIncentivesService.GetAccountLegalEntities(request.AccountId);
+            var response = await _legalEntitiesService.GetAccountLegalEntities(request.AccountId);
             
             return new GetLegalEntitiesResult
             {

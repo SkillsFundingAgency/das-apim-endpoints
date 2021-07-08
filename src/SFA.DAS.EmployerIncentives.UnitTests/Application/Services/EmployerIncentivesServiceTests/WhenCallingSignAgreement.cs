@@ -15,18 +15,16 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_To_Sign_The_Agreement(
-            long accountId,
-            long accountLegalEntityId,
             SignAgreementRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            LegalEntitiesService service)
         {
-            await service.SignAgreement(accountId, accountLegalEntityId, request);
+            await service.SignAgreement(request);
 
             client.Verify(x =>
                 x.Patch(It.Is<PatchSignAgreementRequest>(
                     c =>
-                        c.PatchUrl.Contains(accountId.ToString()) && c.PatchUrl.Contains(accountLegalEntityId.ToString())
+                        c.PatchUrl.Contains(request.AccountId.ToString()) && c.PatchUrl.Contains(request.AccountLegalEntityId.ToString())
                                                                   && c.Data.IsSameOrEqualTo(request)
                 )), Times.Once
             );

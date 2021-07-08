@@ -24,6 +24,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetIncentiveDetailsResponse incentiveDetails,
             [Frozen] Mock<ICommitmentsService> commitmentsService,
             [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApprenticeshipService> apprenticeshipService,
             GetEligibleApprenticeshipsSearchHandler handler
             )
         {
@@ -33,7 +34,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                 x.Apprenticeships(query.AccountId, query.AccountLegalEntityId, incentiveDetails.EligibilityStartDate, incentiveDetails.EligibilityEndDate))
                 .ReturnsAsync(items);
 
-            employerIncentivesService.Setup(x =>
+            apprenticeshipService.Setup(x =>
                 x.GetEligibleApprenticeships(It.Is<IEnumerable<ApprenticeshipItem>>(c => c.Count().Equals(response.Apprenticeships.Count())))).ReturnsAsync(items);
 
             var actual = await handler.Handle(query, CancellationToken.None);

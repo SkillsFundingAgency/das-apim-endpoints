@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_InnerApi_Is_Called(
             ConfirmIncentiveApplicationRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApplicationService service)
         {
             client.Setup(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
                 ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.OK, ""));
 
-            await service.ConfirmIncentiveApplication(request);
+            await service.Confirm(request);
 
             client.Verify(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_An_Exception_Is_Thrown_When_The_InnerApi_Returns_A_Conflict(
             ConfirmIncentiveApplicationRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApplicationService service)
         {
             client.Setup(x =>
                 x.PatchWithResponseCode(It.Is<ConfirmIncentiveApplicationRequest>(
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         c.PatchUrl.Contains(request.Data.IncentiveApplicationId.ToString())
                 ))).ReturnsAsync(new ApiResponse<string>("The Body", HttpStatusCode.Conflict, ""));
 
-            Func<Task> action = async () => await service.ConfirmIncentiveApplication(request);
+            Func<Task> action = async () => await service.Confirm(request);
 
             action.Should().Throw<UlnAlreadySubmittedException>();
         }

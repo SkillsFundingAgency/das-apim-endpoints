@@ -13,16 +13,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
     public class RefreshVendorRegistrationFormCaseStatusCommandHandler : IRequestHandler<RefreshVendorRegistrationFormCaseStatusCommand, DateTime>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
-        private readonly IEmployerIncentivesService _incentivesService;
+        private readonly IVendorRegistrationService _vendorRegistrationService;
         private readonly ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> _logger;
 
         public RefreshVendorRegistrationFormCaseStatusCommandHandler(
             ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService,
+            IVendorRegistrationService vendorRegistrationService,
             ILogger<RefreshVendorRegistrationFormCaseStatusCommandHandler> logger)
         {
             _financeService = financeService;
-            _incentivesService = incentivesService;
+            _vendorRegistrationService = vendorRegistrationService;
             _logger = logger;
         }
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
         {
             Task UpdateVendorRegistrationCaseStatus(VendorRegistrationCase @case)
             {
-                return _incentivesService.UpdateVendorRegistrationCaseStatus(
+                return _vendorRegistrationService.UpdateVendorRegistrationCaseStatus(
                     new UpdateVendorRegistrationCaseStatusRequest
                     {
                         CaseId = @case.CaseId,

@@ -8,11 +8,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
 {
     public class UpdateCollectionCalendarPeriodCommandHandler : IRequestHandler<UpdateCollectionCalendarPeriodCommand>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly ICollectionCalendarService _collectionCalendarService;
     
-        public UpdateCollectionCalendarPeriodCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public UpdateCollectionCalendarPeriodCommandHandler(ICollectionCalendarService collectionCalendarService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _collectionCalendarService = collectionCalendarService;
         }
 
         public async Task<Unit> Handle(UpdateCollectionCalendarPeriodCommand command, CancellationToken cancellationToken)
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
                 Active = command.Active
             };
 
-            await _employerIncentivesService.UpdateCollectionCalendarPeriod(request);
+            await _collectionCalendarService.UpdateCollectionCalendarPeriod(request);
 
             return Unit.Value;
         }

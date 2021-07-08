@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_IncentivesApi_Is_Called_Returning_The_Response(
             GetLatestVendorRegistrationCaseUpdateDateTimeResponse apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service
+            VendorRegistrationService service
         )
         {
             client.Setup(x =>

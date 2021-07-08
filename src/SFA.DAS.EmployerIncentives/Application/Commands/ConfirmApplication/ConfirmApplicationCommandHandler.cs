@@ -8,11 +8,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
     public class ConfirmApplicationCommandHandler : IRequestHandler<ConfirmApplicationCommand>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IApplicationService _applicationService;
 
-        public ConfirmApplicationCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public ConfirmApplicationCommandHandler(IApplicationService applicationService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _applicationService = applicationService;
         }
 
         public async Task<Unit> Handle(ConfirmApplicationCommand command, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
                 Data = new ConfirmIncentiveApplicationRequestData(command.ApplicationId, command.AccountId, command.DateSubmitted, command.SubmittedByEmail, command.SubmittedByName)
             };
 
-            await _employerIncentivesService.ConfirmIncentiveApplication(request, cancellationToken);
+            await _applicationService.Confirm(request, cancellationToken);
 
             return Unit.Value;
         }

@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
         [Test, MoqAutoData]
         public async Task Then_The_legal_entities_are_refreshed(
-            [Frozen] Mock<IEmployerIncentivesService> incentivesService,
+            [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             [Frozen] Mock<IAccountsService> accountsService,
             RefreshLegalEntitiesCommand command,
             RefreshLegalEntitiesCommandHandler handler)
@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             await handler.Handle(command, CancellationToken.None);
 
             accountsService.Verify(x => x.GetLegalEntitiesByPage(command.PageNumber, command.PageSize), Times.Once);
-            incentivesService.Verify(x => x.RefreshLegalEntities(pagedResponse.Data, pagedResponse.Page, command.PageSize, pagedResponse.TotalPages), Times.Once);
+            legalEntitiesService.Verify(x => x.RefreshLegalEntities(pagedResponse.Data, pagedResponse.Page, command.PageSize, pagedResponse.TotalPages), Times.Once);
         }
 
     }

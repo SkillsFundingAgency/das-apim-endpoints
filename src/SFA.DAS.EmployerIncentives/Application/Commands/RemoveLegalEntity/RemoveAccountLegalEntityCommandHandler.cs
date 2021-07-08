@@ -7,15 +7,15 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity
 {
     public class RemoveAccountLegalEntityCommandHandler : IRequestHandler<RemoveAccountLegalEntityCommand, Unit>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly ILegalEntitiesService _legalEntitiesService;
 
-        public RemoveAccountLegalEntityCommandHandler (IEmployerIncentivesService employerIncentivesService)
+        public RemoveAccountLegalEntityCommandHandler (ILegalEntitiesService legalEntitiesService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _legalEntitiesService = legalEntitiesService;
         }
         public async Task<Unit> Handle(RemoveAccountLegalEntityCommand request, CancellationToken cancellationToken)
         {
-            await _employerIncentivesService.DeleteAccountLegalEntity(request.AccountId, request.AccountLegalEntityId);
+            await _legalEntitiesService.DeleteAccountLegalEntity(request.AccountId, request.AccountLegalEntityId);
             
             return Unit.Value;
         }

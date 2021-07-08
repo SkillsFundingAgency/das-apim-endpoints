@@ -17,18 +17,17 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_To_Create_The_New_LegalEntity(
-            long accountId,
             AccountLegalEntityCreateRequest createObject,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            LegalEntitiesService service)
         {
             client.Setup(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
-                y.PutUrl == $"accounts/{accountId}/legalentities" && y.Data.IsSameOrEqualTo(createObject)))).Returns(Task.CompletedTask);
+                y.PutUrl == $"accounts/{createObject.AccountId}/legalentities" && y.Data.IsSameOrEqualTo(createObject)))).Returns(Task.CompletedTask);
             
-            await service.CreateLegalEntity(accountId, createObject);
+            await service.CreateLegalEntity(createObject);
         
             client.Verify(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
-                y.PutUrl == $"accounts/{accountId}/legalentities")), Times.Once);
+                y.PutUrl == $"accounts/{createObject.AccountId}/legalentities")), Times.Once);
         }
     }
 }
