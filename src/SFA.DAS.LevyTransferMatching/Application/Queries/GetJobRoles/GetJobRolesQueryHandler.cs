@@ -11,7 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles
 
         public GetJobRolesQueryHandler(IReferenceDataService referenceDataService)
         {
-            this._referenceDataService = referenceDataService;
+            _referenceDataService = referenceDataService;
         }
 
         public async Task<GetJobRolesQueryResult> Handle(GetJobRolesQuery request, CancellationToken cancellationToken)
