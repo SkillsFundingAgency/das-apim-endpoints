@@ -43,6 +43,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("/registrations/reminders")]
+        public async Task<IActionResult> SendReminders([FromQuery] DateTime invitationCutOffTime)
+        {
+            return await new GetRequest<RegistrationsWrapper>($"/registrations/reminders?invitationCutOffTime={invitationCutOffTime}").Get(_client);
+        }
+
         [HttpPost]
         [Route("/registrations/reminders")]
         public async Task<IActionResult> SendReminders(SendInvitationRemindersCommand request)
