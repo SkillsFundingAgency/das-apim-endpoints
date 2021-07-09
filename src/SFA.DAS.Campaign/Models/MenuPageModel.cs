@@ -11,7 +11,7 @@ namespace SFA.DAS.Campaign.Models
     {
         public MenuPageContent MainContent { get; set; }
 
-        public MenuPageModel Build(CmsContent menu)
+        public ApiMenuPageModel Build(CmsContent menu)
         {
             if (menu.ContentItemsAreNullOrEmpty())
             {
@@ -73,31 +73,32 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
-        private static string GetPageType(string sysId)
+        private static ApiMenuPageModel GenerateHubPageModel(List<UrlDetails> pages)
         {
-            Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
-
-            return pageTypeResult.ToString();
+            return new ApiMenuPageModel()
+            {
+                MainContent = pages
+            };
         }
 
-        private static MenuPageModel GenerateHubPageModel(List<UrlDetails> pages)
+        public class ApiMenuPageModel
         {
-            return new MenuPageModel()
-            {
-                MainContent = new MenuPageContent
-                {
-                    Items = pages
-                }
-            };
+            public List<UrlDetails> MainContent { get; set; }
         }
 
         public class MenuPageContent
         {
             public MenuPageContent()
             {
-                Items = new List<UrlDetails>();
+                TopLevel = new List<UrlDetails>();
+                Apprentices = new List<UrlDetails>();
+                Employers = new List<UrlDetails>();
+                Influencers = new List<UrlDetails>();
             }
-            public List<UrlDetails> Items { get; set; }
+            public List<UrlDetails> TopLevel { get; set; }
+            public List<UrlDetails> Apprentices { get; set; }
+            public List<UrlDetails> Employers { get; set; }
+            public List<UrlDetails> Influencers { get; set; }
         }
     }
 }

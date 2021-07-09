@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Menu;
+using SFA.DAS.Campaign.Models;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
@@ -23,27 +24,29 @@ namespace SFA.DAS.Campaign.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{menuType}")]
-        public async Task<IActionResult> GetMenuAsync(string menuType, CancellationToken cancellationToken = default)
+        [HttpGet]
+        public async Task<IActionResult> GetMenuAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetMenuQuery
-            {
-                MenuType = menuType
-            }, cancellationToken);
+            var topLevelMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "TopLevel"}, cancellationToken);
+            var apprenticesMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Apprentices" }, cancellationToken);
+            var employersMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Employers" }, cancellationToken);
+            var influencersMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Influencers" }, cancellationToken);
 
-            if (result.PageModel == null)
+            var menuModel = new MenuPageModel
             {
-                return new NotFoundObjectResult(new NotFoundResponse
+                MainContent = new MenuPageModel.MenuPageContent
                 {
-                    Message = $"menu not found for {menuType}"
-                });
-            }
-
+                    Apprentices = apprenticesMenuResult.PageModel.MainContent,
+                    Employers = employersMenuResult.PageModel.MainContent,
+                    Influencers = influencersMenuResult.PageModel.MainContent,
+                    TopLevel = topLevelMenuResult.PageModel.MainContent
+                }
+            };
+        
             return Ok(new GetMenuResponse
             {
-                Menu = result.PageModel
+                Menu = menuModel
             });
-
         }
     }
 }
