@@ -7,18 +7,18 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles
 {
     public class GetJobRolesQueryHandler : IRequestHandler<GetJobRolesQuery, GetJobRolesQueryResult>
     {
-        private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        public GetJobRolesQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
+        private readonly IReferenceDataService _referenceDataService;
+
+        public GetJobRolesQueryHandler(IReferenceDataService referenceDataService)
         {
-            _levyTransferMatchingService = levyTransferMatchingService;
+            this._referenceDataService = referenceDataService;
         }
 
         public async Task<GetJobRolesQueryResult> Handle(GetJobRolesQuery request, CancellationToken cancellationToken)
         {
-            var result = await _levyTransferMatchingService.GetJobRoles();
             return new GetJobRolesQueryResult
             {
-                ReferenceDataItems = result
+                ReferenceDataItems = await _referenceDataService.GetJobRoles()
             };
         }
     }
