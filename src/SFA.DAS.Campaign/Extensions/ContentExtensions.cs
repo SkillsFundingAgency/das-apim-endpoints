@@ -152,6 +152,20 @@ namespace SFA.DAS.Campaign.Extensions
             return returnList;
         }
 
+        public static string GetPageTypeValue(this string sysId)
+        {
+            Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
+
+            return pageTypeResult.ToString();
+        }
+
+        public static PageType GetPageType(this string sysId)
+        {
+            Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
+
+            return pageTypeResult;
+        }
+
         private static void ProcessHyperLinkNodeType(ContentDefinition contentDefinition, List<string> returnList)
         {
             if (contentDefinition.NodeType.Equals(HyperLinkNodeTypeKey))

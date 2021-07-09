@@ -24,7 +24,7 @@ namespace SFA.DAS.Campaign.Models
 
             var item = article.Items.FirstOrDefault();
 
-            Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
+            var pageTypeResult = item.Sys.ContentType.Sys.Id.GetPageType();
 
             var contentItems = new List<ContentItem>();
 
