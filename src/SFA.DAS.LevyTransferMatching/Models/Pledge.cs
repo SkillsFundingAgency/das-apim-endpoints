@@ -1,5 +1,4 @@
-﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Models
@@ -14,6 +13,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
         public IEnumerable<string> Levels { get; set; }
-        public List<GetLocationInformationResult> Locations { get; set; }
+        public List<LocationDataItem> Locations { get; set; }
     }
 }

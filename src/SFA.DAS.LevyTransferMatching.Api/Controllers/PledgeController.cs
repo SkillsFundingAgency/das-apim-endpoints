@@ -42,7 +42,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations.Select(x => new GetLocationInformationResult { Name = x, GeoPoint = new double[2] }).ToList()
+                Locations = createPledgeRequest.Locations
             });
 
             return new CreatedResult(

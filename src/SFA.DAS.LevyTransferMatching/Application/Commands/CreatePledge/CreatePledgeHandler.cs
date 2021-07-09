@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,13 +21,30 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 
         public async Task<CreatePledgeResult> Handle(CreatePledgeCommand command, CancellationToken cancellationToken)
         {
-            foreach(var location in command.Locations)
+            var locationDataItems = new List<LocationDataItem>();
+            foreach (var location in command.Locations)
             {
-                var locationInformationResult = await _locationLookupService.GetLocationInformation(location.Name, location.GeoPoint[0], location.GeoPoint[1]);
-                location.GeoPoint = locationInformationResult.GeoPoint;
+                var locationInformationResult = await _locationLookupService.GetLocationInformation(location, 0, 0);
+                locationDataItems.Add(new LocationDataItem
+                {
+                    Name = locationInformationResult.Name,
+                    GeoPoint = locationInformationResult.GeoPoint
+                });
             }
 
-            var pledgeId = await _levyTransferMatchingService.CreatePledge(command);
+            var pledge = new Pledge
+            {
+                AccountId = command.AccountId,
+                Amount = command.Amount,
+                IsNamePublic = command.IsNamePublic,
+                DasAccountName = command.DasAccountName,
+                Sectors = command.Sectors,
+                JobRoles = command.JobRoles,
+                Levels = command.Levels,
+                Locations = locationDataItems
+            };
+
+            var pledgeId = await _levyTransferMatchingService.CreatePledge(pledge);
 
             return new CreatePledgeResult
             {
