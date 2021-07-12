@@ -36,7 +36,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
             GetTrainingCourseProvidersQueryHandler handler)
         {
-            config.Object.Value.EmployerDemandFeatureToggle = true;
             apiCourseResponse.Level = 1;
             query.Location = "";
             query.Lat = 0;
@@ -79,7 +78,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProvidersQueryHandler handler)
         {
-            config.Object.Value.EmployerDemandFeatureToggle = true;
             query.Location = $"{locationName}, {authorityName} ";
             query.Lat = 0;
             query.Lon = 0;
