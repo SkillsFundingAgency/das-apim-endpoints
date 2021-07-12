@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Sectors()
         {
-            _logger.LogInformation("Getting Level reference data");
+            _logger.LogInformation("Getting Sector reference data");
             var result = await _mediator.Send(new GetSectorsQuery());
             return Ok(result.ReferenceDataItems);
         }
@@ -44,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> JobRoles()
         {
-            _logger.LogInformation("Getting Level reference data");
+            _logger.LogInformation("Getting Job Role reference data");
             var result = await _mediator.Send(new GetJobRolesQuery());
             return Ok(result.ReferenceDataItems);
         }
