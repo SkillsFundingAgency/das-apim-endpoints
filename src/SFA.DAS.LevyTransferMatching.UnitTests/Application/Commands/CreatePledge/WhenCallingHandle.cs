@@ -17,6 +17,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
         [Test, MoqAutoData]
         public async Task Then_Pledge_Created_And_Pledge_Id_Returned(
             CreatePledgeCommand createPledgeCommand,
+            long accountId,
             PledgeReference pledgeReference,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
@@ -40,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
         public async Task Then_Account_Is_Created_If_Not_Already_Exists(
             CreatePledgeCommand createPledgeCommand,
             long accountId,
-            int pledgeId,
+            PledgeReference pledgeReference,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
         {
@@ -52,10 +53,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
                 .Setup(x => x.CreateAccount(It.IsAny<CreateAccountRequest>()))
                 .Returns(Task.CompletedTask);
 
-
             mockLevyTransferMatchingService
                 .Setup(x => x.CreatePledge(It.Is<Pledge>(y => y.AccountId == accountId)))
-                .ReturnsAsync(pledgeId);
+                .ReturnsAsync(pledgeReference);
 
             createPledgeCommand.AccountId = accountId;
 
