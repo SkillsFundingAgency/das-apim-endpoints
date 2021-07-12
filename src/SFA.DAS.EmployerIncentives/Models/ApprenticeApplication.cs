@@ -15,5 +15,7 @@ namespace SFA.DAS.EmployerIncentives.Models
         public string SubmittedByEmail { get; set; }
         public PaymentStatus FirstPaymentStatus { get; set; }
         public PaymentStatus SecondPaymentStatus { get; set; }
+        public ClawbackStatus FirstClawbackStatus { get; set; }
+        public ClawbackStatus SecondClawbackStatus { get; set; }
     }
 }
