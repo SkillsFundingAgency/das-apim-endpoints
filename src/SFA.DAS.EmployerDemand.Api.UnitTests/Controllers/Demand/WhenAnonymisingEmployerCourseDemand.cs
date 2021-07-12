@@ -8,54 +8,46 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Controllers;
-using SFA.DAS.EmployerDemand.Api.Models;
-using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 {
-    public class WhenVerifyingEmployerCourseDemand
+    public class WhenAnonymisingEmployerCourseDemand
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Command_Is_Processed_By_Mediator_And_Id_Returned(
-            Guid id,
-            VerifyEmployerDemandCommandResult response,
+        public async Task Then_The_Command_Is_Processed_By_Mediator(
+            Guid employerDemandId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<VerifyEmployerDemandCommand>(command => 
-                        command.Id == id
-                    ),
-                    It.IsAny<CancellationToken>())).ReturnsAsync(response);
+                    It.Is<AnonymiseDemandCommand>(command => command.EmployerDemandId == employerDemandId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Unit.Value);
             
-            var controllerResult = await controller.VerifyCourseDemand(id) as CreatedResult;
+            var controllerResult = await controller.AnonymiseEmployerDemand(employerDemandId) as OkResult;
 
-            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
-            var actualModel = controllerResult.Value as VerifyCourseDemandResponse;
-            Assert.IsNotNull(actualModel);
-            actualModel.Id.Should().Be(response.EmployerDemand.Id);
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_HttpException_It_Is_Returned(
-            Guid id,
             string errorContent,
-            CreateCourseDemandRequest request,
+            Guid employerDemandId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<VerifyEmployerDemandCommand>(),
+                    It.IsAny<AnonymiseDemandCommand>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,errorContent));
             
-            var controllerResult = await controller.VerifyCourseDemand(id) as ObjectResult;
+            var controllerResult = await controller.AnonymiseEmployerDemand(employerDemandId) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
@@ -63,16 +55,16 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_An_Error_A_Bad_Request_Is_Returned(
-            Guid id,
+            Guid employerDemandId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DemandController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<VerifyEmployerDemandCommand>(),
+                    It.IsAny<AnonymiseDemandCommand>(),
                     It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
             
-            var controllerResult = await controller.VerifyCourseDemand(id) as StatusCodeResult;
+            var controllerResult = await controller.AnonymiseEmployerDemand(employerDemandId) as StatusCodeResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }

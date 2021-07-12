@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLevels
 {
@@ -14,15 +15,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLevels
     public class GetLevelsQueryHandlerTests
     {
         private GetLevelsQueryHandler _handler;
-        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private IEnumerable<ReferenceDataItem> _levels;
+        private Mock<IReferenceDataService> _levyTransferMatchingService;
+        private List<ReferenceDataItem> _levels;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
             _levels = _autoFixture.Create<List<ReferenceDataItem>>();
-            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
+            _levyTransferMatchingService = new Mock<IReferenceDataService>();
             _levyTransferMatchingService.Setup(x => x.GetLevels()).ReturnsAsync(_levels);
 
             _handler = new GetLevelsQueryHandler(_levyTransferMatchingService.Object);
