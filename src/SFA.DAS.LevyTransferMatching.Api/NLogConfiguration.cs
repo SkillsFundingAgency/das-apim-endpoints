@@ -13,7 +13,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
     {
         public void ConfigureNLog()
         {
-            const string appName = "das-levy-transfers-matching-outer-api";
+            const string appName = "das-levy-transfer-matching-outer-api";
             var env = Environment.GetEnvironmentVariable("EnvironmentName");
             var config = new LoggingConfiguration();
 
