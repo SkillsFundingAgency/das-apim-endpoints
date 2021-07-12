@@ -5,6 +5,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 {
@@ -12,15 +14,27 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILocationLookupService _locationLookupService;
+        private readonly ILogger<CreatePledgeHandler> _logger;
 
-        public CreatePledgeHandler(ILevyTransferMatchingService levyTransferMatchingService, ILocationLookupService locationLookupService)
+        public CreatePledgeHandler(ILevyTransferMatchingService levyTransferMatchingService, ILocationLookupService locationLookupService, ILogger<CreatePledgeHandler> logger)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _locationLookupService = locationLookupService;
+            _logger = logger;
         }
 
         public async Task<CreatePledgeResult> Handle(CreatePledgeCommand command, CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Creating Pledge for account {command.AccountId}");
+
+            var account = await _levyTransferMatchingService.GetAccount(new GetAccountRequest(command.AccountId));
+
+            if (account == null)
+            {
+                _logger.LogInformation($"Account {command.AccountId} does not exist - creating");
+                await _levyTransferMatchingService.CreateAccount(new CreateAccountRequest(command.AccountId, command.DasAccountName));
+            }
+
             var locationDataItems = new List<LocationDataItem>();
             foreach (var location in command.Locations)
             {
