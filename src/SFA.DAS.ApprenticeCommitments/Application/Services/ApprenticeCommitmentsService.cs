@@ -35,7 +35,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
                 {
                     Data = new ChangeEmailAddressRequestData
                     {
-                        ApprenticeshipId = apprenticeshipId,
                         Email = email,
                     }
                 });
