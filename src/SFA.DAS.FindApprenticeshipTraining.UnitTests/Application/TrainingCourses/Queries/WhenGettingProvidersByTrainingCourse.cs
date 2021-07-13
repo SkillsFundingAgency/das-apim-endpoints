@@ -28,10 +28,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
             int shortlistItemCount,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
             [Frozen] Mock<IShortlistService> shortlistService,
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
             GetTrainingCourseProvidersQueryHandler handler)
@@ -72,7 +70,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
             LocationItem locationServiceResponse,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
