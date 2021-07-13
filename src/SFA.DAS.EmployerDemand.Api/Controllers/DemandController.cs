@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Models;
+using SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.CourseStopped;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.SendAutomaticEmployerDemandDemandCutOff;
@@ -16,6 +17,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemand;
+using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetCourseDemandsOlderThan3Years;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCourseProviderDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRegisterDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand;
@@ -296,6 +298,23 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
         }
 
         [HttpGet]
+        [Route("older-than-3-years")]
+        public async Task<IActionResult> CourseDemandsOlderThan3Years()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCourseDemandsOlderThan3YearsQuery());
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting course demands older than 3 years");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
         [Route("aggregated/providers/{ukprn}")]
         public async Task<IActionResult> GetAggregatedCourseDemandList([FromRoute]int ukprn, int? courseId, string location, int? locationRadius, [FromQuery]List<string> routes)
         {
@@ -377,6 +396,30 @@ namespace SFA.DAS.EmployerDemand.Api.Controllers
                 var model =  (GetCourseDemandResponse) commandResult.EmployerDemand;
 
                 return Ok(model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error stopping employer demand item");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }   
+        }
+
+        [HttpPost]
+        [Route("{id}/anonymise")]
+        public async Task<IActionResult> AnonymiseEmployerDemand(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new AnonymiseDemandCommand
+                {
+                    EmployerDemandId = id
+                });
+
+                return Ok();
             }
             catch (HttpRequestContentException e)
             {

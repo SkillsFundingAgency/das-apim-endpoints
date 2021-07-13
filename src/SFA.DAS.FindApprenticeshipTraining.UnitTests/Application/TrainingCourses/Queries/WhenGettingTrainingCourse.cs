@@ -43,8 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(locationItem);
             config.Object.Value.EmployerDemandFeatureToggle = true;
             levelsApiResponse.Levels.First().Name = "GCSE";
-            levelsApiResponse.Levels.First().Code = 2;
-            coursesApiResponse.Level = 2;
+            coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, locationItem.GeoPoint.First(), locationItem.GeoPoint.Last()).GetUrl;
@@ -92,12 +91,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+            locationLookupService
+                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
                 .ReturnsAsync((LocationItem)null);
             config.Object.Value.EmployerDemandFeatureToggle = true;
             levelsApiResponse.Levels.First().Name = "GCSE";
-            levelsApiResponse.Levels.First().Code = 2;
-            coursesApiResponse.Level = 2;
+            coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, 0, 0).GetUrl;
@@ -180,8 +179,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(locationItem);
             config.Object.Value.EmployerDemandFeatureToggle = false;
             levelsApiResponse.Levels.First().Name = "GCSE";
-            levelsApiResponse.Levels.First().Code = 2;
-            coursesApiResponse.Level = 2;
+            coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
             var url = new GetUkprnsForStandardAndLocationRequest(query.Id, locationItem.GeoPoint.First(), locationItem.GeoPoint.Last()).GetUrl;

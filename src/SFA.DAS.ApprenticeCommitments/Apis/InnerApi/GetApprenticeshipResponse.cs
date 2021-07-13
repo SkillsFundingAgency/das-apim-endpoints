@@ -22,5 +22,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public bool? HowApprenticeshipDeliveredCorrect { get; set; }
         public DateTime? ConfirmBefore { get; set; }
         public DateTime? ConfirmedOn { get; set; }
+        public bool DisplayChangeNotification { get; set; }
     }
 }

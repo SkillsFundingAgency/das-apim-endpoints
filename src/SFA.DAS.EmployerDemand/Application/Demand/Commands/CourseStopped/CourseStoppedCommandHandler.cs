@@ -42,9 +42,10 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.CourseStopped
             var auditTask = _employerDemandApiClient.PostWithResponseCode<object>(
                 new PostEmployerDemandNotificationAuditRequest(request.Id, request.EmployerDemandId, NotificationType.StoppedCourseClosed));
             var patchTask = _employerDemandApiClient.PatchWithResponseCode(new PatchCourseDemandRequest(
-                request.EmployerDemandId, new PatchCourseDemandData
+                request.EmployerDemandId, new PatchOperation
                 {
-                    Stopped = true
+                    Path = "Stopped",
+                    Value = true
                 }));
 
             await Task.WhenAll(auditTask, patchTask);

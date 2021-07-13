@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 using System;
 using System.Linq;
@@ -72,6 +73,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 _logger.LogError(e, $"Error getting Application Details");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
+        public async Task<IActionResult> Sector(int pledgeId)
+        {
+            try
+            {
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery());
+                var opportunityQueryResult = await _mediator.Send(new GetOpportunityQuery { OpportunityId = pledgeId });
+
+                var response = new GetSectorResponse
+                {
+                    Sectors = sectorQueryResult.Sectors,
+                    Opportunity = opportunityQueryResult
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Sector result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

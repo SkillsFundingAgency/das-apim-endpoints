@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.StopEmployerDemand;
 using SFA.DAS.EmployerDemand.Domain.Models;
@@ -32,10 +34,13 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         {
             //Arrange
             getDemandResponse.Stopped = false;
-            var stopResponse = new ApiResponse<GetEmployerDemandResponse>(stopResponseBody, HttpStatusCode.OK, "");
+            var stopResponse = new ApiResponse<string>(JsonConvert.SerializeObject(stopResponseBody), HttpStatusCode.OK, "");
             mockApiClient
-                .Setup(client => client.PostWithResponseCode<GetEmployerDemandResponse>(
-                    It.Is<PostStopEmployerDemandRequest>(request => request.PostUrl.Contains(command.EmployerDemandId.ToString()))))
+                .Setup(client => client.PatchWithResponseCode(
+                    It.Is<PatchCourseDemandRequest>(c=>c.PatchUrl.Contains(command.EmployerDemandId.ToString()) 
+                                                       && c.Data.FirstOrDefault().Path.Equals("Stopped")
+                                                       && c.Data.FirstOrDefault().Value.Equals(true)
+                                                       )))
                 .ReturnsAsync(stopResponse);
             mockApiClient
                 .Setup(client => client.Get<GetEmployerDemandResponse>(
@@ -60,7 +65,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            actual.EmployerDemand.Should().BeEquivalentTo(stopResponse.Body);
+            actual.EmployerDemand.Should().BeEquivalentTo(stopResponseBody);
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
@@ -86,7 +91,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            mockApiClient.Verify(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostStopEmployerDemandRequest>()), 
+            mockApiClient.Verify(client => client.PatchWithResponseCode(It.IsAny<PatchCourseDemandRequest>()), 
                 Times.Never);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
@@ -112,7 +117,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            mockApiClient.Verify(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostStopEmployerDemandRequest>()), 
+            mockApiClient.Verify(client => client.PatchWithResponseCode(It.IsAny<PatchCourseDemandRequest>()), 
                 Times.Never);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
@@ -130,10 +135,10 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         {
             //Arrange
             getDemandResponse.Stopped = false;
-            var stopResponse = new ApiResponse<GetEmployerDemandResponse>(null, HttpStatusCode.InternalServerError, errorContent);
+            var stopResponse = new ApiResponse<string>(null, HttpStatusCode.InternalServerError, errorContent);
             mockApiClient
-                .Setup(client => client.PostWithResponseCode<GetEmployerDemandResponse>(
-                    It.Is<PostStopEmployerDemandRequest>(request => request.PostUrl.Contains(command.EmployerDemandId.ToString()))))
+                .Setup(client => client.PatchWithResponseCode(
+                    It.Is<PatchCourseDemandRequest>(request => request.PatchUrl.Contains(command.EmployerDemandId.ToString()))))
                 .ReturnsAsync(stopResponse);
             mockApiClient
                 .Setup(client => client.Get<GetEmployerDemandResponse>(

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -52,7 +53,10 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedCourseClosed}"))), Times.Once);
             employerDemandApiClient.Verify(
                 x => x.PatchWithResponseCode(It.Is<PatchCourseDemandRequest>(c =>
-                    c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") && c.Data.Stopped)), Times.Once);
+                    c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") 
+                    && c.Data.FirstOrDefault().Path.Equals("Stopped")
+                    && c.Data.FirstOrDefault().Value.Equals(true)
+                    )), Times.Once);
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);

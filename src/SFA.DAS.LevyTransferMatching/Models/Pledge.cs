@@ -13,5 +13,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
         public IEnumerable<string> Levels { get; set; }
+        public List<LocationDataItem> Locations { get; set; }
     }
 }
