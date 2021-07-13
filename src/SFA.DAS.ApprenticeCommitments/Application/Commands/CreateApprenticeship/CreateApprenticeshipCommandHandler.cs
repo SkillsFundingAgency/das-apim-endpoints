@@ -45,8 +45,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             var id = Guid.NewGuid();
 
-            _logger.LogInformation($"Creating registraion for `{apprentice.FirstName} {apprentice.LastName}`");
-
             await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
             {
                 ApprenticeId = id,
