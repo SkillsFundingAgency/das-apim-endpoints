@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetCreate;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -30,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var result = await _mediator.Send(new GetPledgesQuery());
 
-            return new OkObjectResult(result.Select(x => (PledgeDto)x));
+            return Ok(result.Select(x => (PledgeDto)x));
         }
 
         [HttpGet]
@@ -75,6 +76,29 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return new CreatedResult(
                 $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
                 (PledgeIdDto)commandResult.PledgeId);
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/create/amount")]
+        public async Task<IActionResult> Amount(string accountId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetAmountQuery{EncodedAccountId = accountId });
+
+                var response = new GetAmountResponse
+                {
+                    DasAccountName = queryResult.DasAccountName,
+                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Amount result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
