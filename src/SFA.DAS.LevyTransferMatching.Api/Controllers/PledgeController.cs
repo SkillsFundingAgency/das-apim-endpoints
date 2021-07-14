@@ -151,7 +151,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/pledges/create/job-roles")]
+        [Route("accounts/{accountId}/pledges/create/job-role")]
         public async Task<IActionResult> JobRole()
         {
             try
