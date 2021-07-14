@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
+using SFA.DAS.Campaign.Application.Queries.LandingPage;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
@@ -60,6 +61,13 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
         {
             mockMediator
                 .Setup(mediator => mediator.Send(It.Is<GetArticleByHubAndSlugQuery>(c=>c.Hub.Equals(hubName) && c.Slug.Equals(slugName)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+        }
+
+        private static void SetupLandingPageMediator(GetLandingPageQueryResult mediatorResult, Mock<IMediator> mockMediator, string hubName, string slugName)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(It.Is<GetLandingPageQuery>(c => c.Hub.Equals(hubName) && c.Slug.Equals(slugName)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
         }
     }
