@@ -303,6 +303,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("relatedArticles")]
         public List<LandingPage> RelatedArticles { get; set; }
+
+        [JsonProperty("headerImage")]
+        public HeaderImage HeaderImage { get; set; }
+
+        [JsonProperty("cards")]
+        public List<CardItem> Cards { get; set; }
     }
 
     public class MainContent
@@ -359,5 +365,17 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
     public class Marks
     {
         public string Type { get; set; }
+    }
+
+    public class HeaderImage
+    {
+        [JsonProperty("sys")]
+        public LandingPageSys Sys { get; set; }
+    }
+
+    public class CardItem
+    {
+        [JsonProperty("sys")]
+        public LandingPageSys Sys { get; set; }
     }
 }
