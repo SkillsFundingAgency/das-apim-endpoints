@@ -27,8 +27,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [Route("/apprenticeships")]
         public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
         {
-            await _mediator.Send(request);
-            return Accepted();
+            var response = await _mediator.Send(request);
+            return Accepted(response);
         }
 
         [HttpPost]
@@ -97,16 +97,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
                 new RolesAndResponsibilitiesConfirmationRequest(
                     apprenticeId, apprenticeshipId, commitmentStatementId, request.RolesAndResponsibilitiesCorrect));
             
-            return Ok();
-        }
-
-        [HttpPost("/apprentices/{apprenticeId}/email")]
-        public async Task<IActionResult> ChangeApprenticeEmailAddress(
-            Guid apprenticeId,
-            ApprenticeEmailAddressRequest request)
-        {
-            await _mediator.Send(
-                new ChangeEmailAddressCommand(apprenticeId, request.Email));
             return Ok();
         }
 
