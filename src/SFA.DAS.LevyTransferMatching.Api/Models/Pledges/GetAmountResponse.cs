@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Api.Models
+﻿namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetAmountResponse
     {

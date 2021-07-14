@@ -8,8 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -97,6 +99,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Amount result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/create/sector")]
+        public async Task<IActionResult> Sector()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetSectorQuery());
+
+                var response = new GetSectorResponse
+                {
+                    Sectors = queryResult.Sectors
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Sector result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
