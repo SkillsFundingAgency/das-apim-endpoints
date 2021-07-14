@@ -4,6 +4,6 @@ namespace SFA.DAS.Campaign.Application.Queries.Menu
 {
     public class GetMenuQueryResult
     {
-        public MenuPageModel.ApiMenuPageModel PageModel { get; set; }
+        public ApiMenuPageModel PageModel { get; set; }
     }
 }
