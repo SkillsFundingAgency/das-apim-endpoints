@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
 
@@ -164,6 +169,29 @@ namespace SFA.DAS.Campaign.Extensions
             Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
 
             return pageTypeResult;
+        }
+
+        public static async Task<MenuPageModel> RetrieveMenu(this IMediator mediator, CancellationToken cancellationToken = default)
+        {
+            var topLevelMenuResult = mediator.Send(new GetMenuQuery { MenuType = "TopLevel" }, cancellationToken);
+            var apprenticesMenuResult = mediator.Send(new GetMenuQuery { MenuType = "Apprentices" }, cancellationToken);
+            var employersMenuResult = mediator.Send(new GetMenuQuery { MenuType = "Employers" }, cancellationToken);
+            var influencersMenuResult = mediator.Send(new GetMenuQuery { MenuType = "Influencers" }, cancellationToken);
+
+            await Task.WhenAll(topLevelMenuResult, apprenticesMenuResult, employersMenuResult, influencersMenuResult);
+
+            var menuModel = new MenuPageModel
+            {
+                MainContent = new MenuPageModel.MenuPageContent
+                {
+                    Apprentices = apprenticesMenuResult.Result.PageModel.MainContent,
+                    Employers = employersMenuResult.Result.PageModel.MainContent,
+                    Influencers = influencersMenuResult.Result.PageModel.MainContent,
+                    TopLevel = topLevelMenuResult.Result.PageModel.MainContent
+                }
+            };
+
+            return menuModel;
         }
 
         private static void ProcessHyperLinkNodeType(ContentDefinition contentDefinition, List<string> returnList)

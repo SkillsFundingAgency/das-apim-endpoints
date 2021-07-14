@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Menu;
+using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.Models;
 
 namespace SFA.DAS.Campaign.Api.Controllers
@@ -27,21 +28,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMenuAsync(CancellationToken cancellationToken = default)
         {
-            var topLevelMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "TopLevel"}, cancellationToken);
-            var apprenticesMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Apprentices" }, cancellationToken);
-            var employersMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Employers" }, cancellationToken);
-            var influencersMenuResult = await _mediator.Send(new GetMenuQuery { MenuType = "Influencers" }, cancellationToken);
-
-            var menuModel = new MenuPageModel
-            {
-                MainContent = new MenuPageModel.MenuPageContent
-                {
-                    Apprentices = apprenticesMenuResult.PageModel.MainContent,
-                    Employers = employersMenuResult.PageModel.MainContent,
-                    Influencers = influencersMenuResult.PageModel.MainContent,
-                    TopLevel = topLevelMenuResult.PageModel.MainContent
-                }
-            };
+            var menuModel = await _mediator.RetrieveMenu(cancellationToken: cancellationToken);
         
             return Ok(new GetMenuResponse
             {
