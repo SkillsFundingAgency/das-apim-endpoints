@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetAmount
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetAmount
 {
     [TestFixture]
     public class GetAmountQueryHandlerTests

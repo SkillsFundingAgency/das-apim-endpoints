@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 {
     public class GetAmountQueryHandler : IRequestHandler<GetAmountQuery, GetAmountQueryResult>
     {

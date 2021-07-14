@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetCreate
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate
 {
     public class GetCreateQueryHandler : IRequestHandler<GetCreateQuery, GetCreateQueryResult>
     {

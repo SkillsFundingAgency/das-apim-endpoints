@@ -8,8 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetCreate;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {

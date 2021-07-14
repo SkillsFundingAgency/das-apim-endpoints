@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 {
     public class GetAmountQuery : IRequest<GetAmountQueryResult>
     {

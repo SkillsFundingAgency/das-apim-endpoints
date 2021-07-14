@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAmount
+﻿namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 {
     public class GetAmountQueryResult
     {
