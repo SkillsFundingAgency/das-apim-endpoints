@@ -14,18 +14,18 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetSectors
     public class GetSectorsQueryHandlerTests
     {
         private GetSectorsQueryHandler _handler;
-        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private IEnumerable<ReferenceDataItem> _sectors;
+        private Mock<IReferenceDataService> _referenceDataService;
+        private List<ReferenceDataItem> _sectors;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
             _sectors = _autoFixture.Create<List<ReferenceDataItem>>();
-            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
+            _referenceDataService = new Mock<IReferenceDataService>();
+            _referenceDataService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
 
-            _handler = new GetSectorsQueryHandler(_levyTransferMatchingService.Object);
+            _handler = new GetSectorsQueryHandler(_referenceDataService.Object);
         }
 
         [Test]
