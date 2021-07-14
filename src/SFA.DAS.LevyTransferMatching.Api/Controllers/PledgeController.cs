@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -121,6 +122,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Sector result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/create/level")]
+        public async Task<IActionResult> Level()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetLevelQuery());
+
+                var response = new GetLevelResponse
+                {
+                    Levels = queryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Level result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

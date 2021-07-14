@@ -8,40 +8,40 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
     [TestFixture]
-    public class GetSectorTests
+    public class GetLevelTests
     {
         private PledgeController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-        private GetSectorQueryResult _queryResult;
+        private GetLevelQueryResult _queryResult;
 
         [SetUp]
         public void SetUp()
         {
             _mediator = new Mock<IMediator>();
-            _queryResult = _fixture.Create<GetSectorQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetSectorQuery>(), It.IsAny<CancellationToken>()))
+            _queryResult = _fixture.Create<GetLevelQueryResult>();
+            _mediator.Setup(x => x.Send(It.IsAny<GetLevelQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
         }
 
         [Test]
-        public async Task GetSector_Returns_GetSectorResponse()
+        public async Task GetLevel_Returns_GetLevelResponse()
         {
-            var controllerResponse = await _controller.Sector();
+            var controllerResponse = await _controller.Level();
 
             var okObjectResult = controllerResponse as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
-            var response = okObjectResult.Value as GetSectorResponse;
+            var response = okObjectResult.Value as GetLevelResponse;
             Assert.IsNotNull(response);
 
-            Assert.AreEqual(_queryResult.Sectors, response.Sectors);
+            Assert.AreEqual(_queryResult.Levels, response.Levels);
         }
     }
 }

@@ -11,7 +11,7 @@ using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetSector
 {
     [TestFixture]
-    public class GetSectorQueryHandlerTests
+    public class GetLevelQueryHandlerTests
     {
         private GetSectorQueryHandler _handler;
         private Mock<IReferenceDataService> _referenceDataService;
