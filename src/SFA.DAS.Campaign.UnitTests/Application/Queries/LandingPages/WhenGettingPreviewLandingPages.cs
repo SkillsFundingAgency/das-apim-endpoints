@@ -4,7 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
+using SFA.DAS.Campaign.Application.Queries.PreviewLandingPage;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
@@ -13,21 +13,21 @@ using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
+namespace SFA.DAS.Campaign.UnitTests.Application.Queries.LandingPages
 {
-    public class WhenGettingPreviewArticles
+    public class WhenGettingPreviewLandingPages
     {
         [Test, RecursiveMoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Article_Is_Returned(
-            GetPreviewArticleByHubAndSlugQuery query,
+        public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Landing_Page_Is_Returned(
+            GetPreviewLandingPageQuery query,
             CmsContent apiResponse,
-            CmsPageModel response,
+            HubPageModel response,
             [Frozen] Mock<IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration>> apiClient,
-            GetPreviewArticleByHubAndSlugQueryHandler handler)
+            GetPreviewLandingPageQueryHandler handler)
         {
             apiClient.Setup(o =>
                     o.Get<CmsContent>(
-                        It.Is<GetArticleEntriesRequest>(c =>
+                        It.Is<GetLandingPageRequest>(c =>
                             c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}&fields.slug={query.Slug}"))))
                 .ReturnsAsync(apiResponse);
 
