@@ -1,34 +1,38 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
+using SFA.DAS.Campaign.Application.Queries.PreviewHub;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
+namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
 {
-    public class WhenGettingPreviewArticles
+    public class WhenGettingAHubPreview
     {
         [Test, RecursiveMoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Article_Is_Returned(
-            GetPreviewArticleByHubAndSlugQuery query,
+        public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Hub_Is_Returned(
+            GetPreviewHubQuery query,
             CmsContent apiResponse,
-            CmsPageModel response,
+            HubPageModel response,
             [Frozen] Mock<IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration>> apiClient,
-            GetPreviewArticleByHubAndSlugQueryHandler handler)
+            GetPreviewHubQueryHandler handler)
         {
             apiClient.Setup(o =>
                     o.Get<CmsContent>(
-                        It.Is<GetArticleEntriesRequest>(c =>
-                            c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}&fields.slug={query.Slug}"))))
+                        It.Is<GetHubEntriesRequest>(c =>
+                            c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}"))))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
