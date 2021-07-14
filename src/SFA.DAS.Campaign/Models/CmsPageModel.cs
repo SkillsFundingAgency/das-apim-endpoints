@@ -11,11 +11,12 @@ namespace SFA.DAS.Campaign.Models
     {
         public PageModel PageAttributes { get; set; }
         public PageContent MainContent { get; set; }
+        public MenuPageModel.MenuPageContent MenuContent { get; set; }
 
         public List<PageModel> RelatedArticles { get; set; }
         public List<ResourceItem> Attachments { get; set; }
 
-        public CmsPageModel Build(CmsContent article)
+        public CmsPageModel Build(CmsContent article, MenuPageModel.MenuPageContent menu)
         {
             if (article.ContentItemsAreNullOrEmpty())
             {
@@ -30,7 +31,7 @@ namespace SFA.DAS.Campaign.Models
 
             if (item.Fields.Content?.Content == null)
             {
-                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null);
+                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu);
             }
 
             foreach (var contentItem in item.Fields.Content.Content)
@@ -42,7 +43,7 @@ namespace SFA.DAS.Campaign.Models
 
             var parentPage = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
 
-            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage);
+            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu);
         }
 
         private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent article, SubContentItems contentItem,
@@ -84,7 +85,7 @@ namespace SFA.DAS.Campaign.Models
         }
 
         private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult, List<ContentItem> contentItems,
-            Entry parentPage)
+            Entry parentPage, MenuPageModel.MenuPageContent menu)
         {
             return new CmsPageModel
             {
@@ -133,7 +134,8 @@ namespace SFA.DAS.Campaign.Models
                         HubType = parentPage.Fields.HubType,
                         MetaDescription = parentPage.Fields.MetaDescription
                     }
-                    : null
+                    : null,
+                MenuContent = menu
             };
         }
 
