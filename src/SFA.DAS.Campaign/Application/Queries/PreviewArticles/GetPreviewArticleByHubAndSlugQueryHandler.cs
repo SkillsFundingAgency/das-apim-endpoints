@@ -23,11 +23,6 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewArticles
         {
             var article = await _client.Get<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug));
             
-            if (article.Total == 0)
-            {
-                article = await _client.Get<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug));
-            }
-            
             var pageModel = new CmsPageModel().Build(article);
             
             return new GetPreviewArticleByHubAndSlugQueryResult
