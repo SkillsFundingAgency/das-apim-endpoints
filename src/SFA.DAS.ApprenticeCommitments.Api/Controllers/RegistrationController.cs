@@ -7,6 +7,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
