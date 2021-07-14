@@ -50,7 +50,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test]
-        [RecursiveMoqInlineAutoData("article",PageType.Article )]
+        [RecursiveMoqInlineAutoData("article", PageType.Article )]
         [RecursiveMoqInlineAutoData("landingpage", PageType.LandingPage)]
         [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
         public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source)
@@ -95,7 +95,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.ParentPage.Slug.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Slug);
             actual.ParentPage.HubType.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.HubType);
             actual.ParentPage.Summary.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Summary);
+        }
+        
+        [Test, RecursiveMoqAutoData]
+        public void Then_If_No_Parent_Page_Is_Set_Then_Null_Returned_For_Parent_Page(CmsContent source, string parentId)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.LandingPage = null;
             
+            
+            //Act
+            var actual = new CmsPageModel().Build(source);
+            
+            //Assert
+            actual.ParentPage.Should().BeNull();
         }
         
         [Test, RecursiveMoqAutoData]
