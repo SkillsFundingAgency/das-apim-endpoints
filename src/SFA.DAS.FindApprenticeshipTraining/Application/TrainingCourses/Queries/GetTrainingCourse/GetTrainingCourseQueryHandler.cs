@@ -18,7 +18,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
-        private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly ILocationLookupService _locationLookupService;
         private readonly FindApprenticeshipTrainingConfiguration _config;
@@ -26,8 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
         public GetTrainingCourseQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> apiClient, 
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, 
-            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
+            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICacheStorageService cacheStorageService,
             IShortlistService shortlistService,
             ILocationLookupService locationLookupService,
@@ -35,7 +33,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             _apiClient = apiClient;
             _courseDeliveryApiClient = courseDeliveryApiClient;
-            _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
             _config = config.Value;
