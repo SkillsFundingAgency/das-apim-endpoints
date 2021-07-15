@@ -187,7 +187,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             var request = new RefreshLegalEntitiesRequestData { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
             await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
         }
-        
+
+        public async Task<ApprenticeshipIncentiveDto[]> GetApprenticeshipIncentives(long accountId, long accountLegalEntityId)
+        {
+            var response = await _client.GetAll<ApprenticeshipIncentiveDto>(new GetApprenticeshipIncentivesRequest(accountId, accountLegalEntityId));
+
+            return response.ToArray();
+        }
+
         public async Task<GetLatestVendorRegistrationCaseUpdateDateTimeResponse> GetLatestVendorRegistrationCaseUpdateDateTime()
         {
             return await _client.Get<GetLatestVendorRegistrationCaseUpdateDateTimeResponse>(new GetLatestVendorRegistrationCaseUpdateDateTimeRequest());
