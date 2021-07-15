@@ -26,15 +26,8 @@ namespace SFA.DAS.Campaign.Models
             return hub.Items.Select(item => new UrlDetails
             {
                 Hub = item?.Fields.HubType, Title = item?.Fields.Title, Slug = item?.Fields.Slug,
-                PageType = GetPageType(item.Sys.ContentType.Sys.Id).ToString()
+                PageType = item.Sys.ContentType.Sys.Id.GetPageTypeValue()
             }).ToList();
-        }
-
-        private static string GetPageType(string sysId)
-        {
-            Enum.TryParse<PageType>(sysId, true, out var pageTypeResult);
-
-            return pageTypeResult.ToString();
         }
 
         private static SiteMapPageModel GenerateHubPageModel(List<UrlDetails> pages)

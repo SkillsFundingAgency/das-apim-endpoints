@@ -13,18 +13,23 @@ namespace SFA.DAS.Campaign.Application.Queries.LandingPage
     public class GetLandingPageQueryHandler : IRequestHandler<GetLandingPageQuery, GetLandingPageQueryResult>
     {
         private readonly IReliableCacheStorageService _reliableCacheStorageService;
+        private readonly IMediator _mediator;
 
         public GetLandingPageQueryHandler(
-            IReliableCacheStorageService reliableCacheStorageService)
+            IReliableCacheStorageService reliableCacheStorageService, IMediator mediator)
         {
             _reliableCacheStorageService = reliableCacheStorageService;
+            _mediator = mediator;
         }
 
         public async Task<GetLandingPageQueryResult> Handle(GetLandingPageQuery request, CancellationToken cancellationToken)
         {
-            var landingPage = await _reliableCacheStorageService.GetData<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_landingPage");
+            var landingPage = _reliableCacheStorageService.GetData<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_landingPage");
+            var menu = _mediator.RetrieveMenu(cancellationToken);
 
-            var pageModel = new LandingPageModel().Build(landingPage);
+            await Task.WhenAll(landingPage, menu);
+
+            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent);
 
             return new GetLandingPageQueryResult
             {

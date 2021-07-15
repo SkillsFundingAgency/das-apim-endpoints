@@ -14,17 +14,21 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewLandingPage
     public class GetPreviewLandingPageQueryHandler : IRequestHandler<GetPreviewLandingPageQuery, GetPreviewLandingPageQueryResult>
     {
         private readonly IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> _client;
+        private readonly IMediator _mediator;
 
-        public GetPreviewLandingPageQueryHandler (IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client)
+        public GetPreviewLandingPageQueryHandler (IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client, IMediator mediator)
         {
             _client = client;
+            _mediator = mediator;
         }
         
         public async Task<GetPreviewLandingPageQueryResult> Handle(GetPreviewLandingPageQuery request, CancellationToken cancellationToken)
         {
-            var landingPage = await _client.Get<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug));
-            
-            var pageModel = new LandingPageModel().Build(landingPage);
+            var landingPage = _client.Get<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug));
+            var menu = _mediator.RetrieveMenu(cancellationToken);
+
+            await Task.WhenAll(landingPage, menu);
+            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent);
 
             return new GetPreviewLandingPageQueryResult()
             {

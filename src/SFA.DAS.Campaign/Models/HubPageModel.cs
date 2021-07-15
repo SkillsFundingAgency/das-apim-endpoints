@@ -13,8 +13,9 @@ namespace SFA.DAS.Campaign.Models
     {
         public PageModel PageAttributes { get; set; }
         public HubContent MainContent { get; set; }
+        public MenuPageModel.MenuPageContent MenuContent { get; set; }
 
-        public HubPageModel Build(CmsContent hub)
+        public HubPageModel Build(CmsContent hub, MenuPageModel.MenuPageContent menu)
         {
             if (hub.ContentItemsAreNullOrEmpty())
             {
@@ -25,7 +26,7 @@ namespace SFA.DAS.Campaign.Models
 
             Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
 
-            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item));
+            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item), menu);
         }
 
         private static List<CardPageModel> ProcessCards(CmsContent hub)
@@ -94,7 +95,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage)
+        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage, MenuPageModel.MenuPageContent menu)
         {
             return new HubPageModel()
             {
@@ -111,7 +112,8 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Cards = cards,
                     HeaderImage = headerImage
-                }
+                },
+                MenuContent = menu
             };
         }
 

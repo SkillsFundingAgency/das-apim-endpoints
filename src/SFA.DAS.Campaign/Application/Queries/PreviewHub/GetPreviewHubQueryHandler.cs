@@ -15,18 +15,23 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewHub
     public class GetPreviewHubQueryHandler : IRequestHandler<GetPreviewHubQuery, GetPreviewHubQueryResult>
     {
         private readonly IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> _client;
+        private readonly IMediator _mediator;
 
-        public GetPreviewHubQueryHandler(IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client)
+        public GetPreviewHubQueryHandler(IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client, IMediator mediator)
         {
             _client = client;
+            _mediator = mediator;
         }
 
         public async Task<GetPreviewHubQueryResult> Handle(GetPreviewHubQuery request, CancellationToken cancellationToken)
         {
-            var article = await _client.Get<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()));
+            var article = _client.Get<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()));
+            var menu = _mediator.RetrieveMenu(cancellationToken);
 
-            var pageModel = new HubPageModel().Build(article);
+            await Task.WhenAll(article, menu);
 
+            var pageModel = new HubPageModel().Build(article.Result, menu.Result.MainContent);
+           
             return new GetPreviewHubQueryResult
             {
                 PageModel = pageModel
