@@ -38,6 +38,8 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
 
         public EqaProvider EqaProvider { get; set; }
 
+        public bool EPAChanged { get; set; }
+
         protected override int GetFundingDetails(string prop)
         {
             if (ApprenticeshipFunding == null || ApprenticeshipFunding.Any() == false)

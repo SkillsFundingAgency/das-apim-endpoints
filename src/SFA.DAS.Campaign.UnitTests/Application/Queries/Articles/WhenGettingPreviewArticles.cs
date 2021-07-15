@@ -35,32 +35,5 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
 
             actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse));
         }
-
-        [Test, RecursiveMoqAutoData]
-        public async Task Then_If_The_Article_Is_Not_Found_The_Landing_Page_Is_Requested(
-            GetPreviewArticleByHubAndSlugQuery query,
-            CmsContent apiResponse,
-            CmsPageModel response,
-            [Frozen] Mock<IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration>> apiClient,
-            GetPreviewArticleByHubAndSlugQueryHandler handler)
-        {
-            apiClient.Setup(o =>
-                    o.Get<CmsContent>(
-                        It.Is<GetArticleEntriesRequest>(c =>
-                            c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}&fields.slug={query.Slug}"))))
-                .ReturnsAsync(new CmsContent
-                {
-                    Total = 0
-                });
-            apiClient.Setup(o =>
-                    o.Get<CmsContent>(
-                        It.Is<GetLandingPageRequest>(c =>
-                            c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}&fields.slug={query.Slug}"))))
-                .ReturnsAsync(apiResponse);
-
-            var actual = await handler.Handle(query, CancellationToken.None);
-
-            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse));
-        }
     }
 }
