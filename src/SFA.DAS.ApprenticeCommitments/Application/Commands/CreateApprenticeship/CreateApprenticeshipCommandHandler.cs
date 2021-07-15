@@ -66,14 +66,11 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             // return parameters for the invitation
             var res = new CreateApprenticeshipResponse
             {
-                ClientId = _loginConfiguration.IdentityServerClientId,
                 SourceId = id,
                 Email = apprentice.Email,
                 GivenName = apprentice.FirstName,
                 FamilyName = apprentice.LastName,
                 ApprenticeshipName = apprentice.CourseName,
-                CallbackUrl = _loginConfiguration.CallbackUrl,
-                RedirectUrl = _loginConfiguration.RedirectUrl
             };
 
             _logger.LogInformation($"Create Apprenticeship response: {JsonConvert.SerializeObject(res)}");
