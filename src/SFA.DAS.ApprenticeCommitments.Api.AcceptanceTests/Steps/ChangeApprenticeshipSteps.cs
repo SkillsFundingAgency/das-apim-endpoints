@@ -207,9 +207,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.DateOfBirth.ToString("yyyy-MM-dd").Should().Be(dob);
         }
 
-
-
-
         [Then("the inner API should return these errors")]
         public async Task ThenTheInnerAPIShouldReturnTheseErrors(Table table)
         {
