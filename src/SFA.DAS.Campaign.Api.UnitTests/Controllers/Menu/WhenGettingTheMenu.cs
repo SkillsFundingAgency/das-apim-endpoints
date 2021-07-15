@@ -30,10 +30,10 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Menu
 
             var actualResult = controllerResult.Value as GetMenuResponse;
             Assert.IsNotNull(actualResult);
-            actualResult.Menu.MainContent.Apprentices.Should().NotBeNullOrEmpty();
-            actualResult.Menu.MainContent.Employers.Should().NotBeNullOrEmpty();
-            actualResult.Menu.MainContent.Influencers.Should().NotBeNullOrEmpty();
-            actualResult.Menu.MainContent.TopLevel.Should().NotBeNullOrEmpty();
+            mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("TopLevel")), CancellationToken.None), Times.Once);
+            mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("Apprentices")), CancellationToken.None), Times.Once);
+            mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("Employers")), CancellationToken.None), Times.Once);
+            mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("Influencers")), CancellationToken.None), Times.Once);
         }
     }
 }
