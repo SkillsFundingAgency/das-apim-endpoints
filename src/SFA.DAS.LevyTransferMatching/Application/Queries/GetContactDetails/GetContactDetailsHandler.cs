@@ -38,11 +38,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
                     AllJobRolesCount = allJobRoles.Count,
                     AllLevelsCount = allLevels.Count,
                     AllSectorsCount = allSectors.Count,
-                    PledgeAmount = pledge.Amount,
-                    PledgeDasAccountName = pledge.DasAccountName,
-                    PledgeJobRoles = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)),
-                    PledgeLevels = allLevels.Where(x => pledge.Levels.Contains(x.Id)),
-                    PledgeSectors = allSectors.Where(x => pledge.Sectors.Contains(x.Id)),
+                    OpportunityAmount = pledge.Amount,
+                    OpportunityDasAccountName = pledge.DasAccountName,
+                    OpportunityJobRoleDescriptions = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)).Select(x => x.Description),
+                    OpportunityLevelDescriptions = allLevels.Where(x => pledge.Levels.Contains(x.Id)).Select(x => x.ShortDescription), // Note: levels here are different - the ShortDescription is used
+                    OpportunitySectorDescriptions = allSectors.Where(x => pledge.Sectors.Contains(x.Id)).Select(x => x.Description),
+                    OpportunityIsNamePublic = pledge.IsNamePublic,
                 };
             }
             else
