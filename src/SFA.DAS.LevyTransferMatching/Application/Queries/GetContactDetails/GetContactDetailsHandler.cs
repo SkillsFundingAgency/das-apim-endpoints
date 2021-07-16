@@ -19,27 +19,27 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
 
         public async Task<GetContactDetailsResult> Handle(GetContactDetailsQuery request, CancellationToken cancellationToken)
         {
-            var allJobRolesTask = _referenceDataService.GetJobRoles();
-            var allLevelsTask = _referenceDataService.GetLevels();
-            var allSectorsTask = _referenceDataService.GetSectors();
-            var pledgeTask = _levyTransferMatchingService.GetPledge(request.OpportunityId);
-
-            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask);
-
-            var allJobRoles = allJobRolesTask.Result;
-            var allLevels = allLevelsTask.Result;
-            var allSectors = allSectorsTask.Result;
-            var pledge = pledgeTask.Result;
+            var pledge = await _levyTransferMatchingService.GetPledge(request.OpportunityId);
 
             if (pledge != null)
             {
+                var allJobRolesTask = _referenceDataService.GetJobRoles();
+                var allLevelsTask = _referenceDataService.GetLevels();
+                var allSectorsTask = _referenceDataService.GetSectors();
+
+                await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+
+                var allJobRoles = allJobRolesTask.Result;
+                var allLevels = allLevelsTask.Result;
+                var allSectors = allSectorsTask.Result;
+
                 return new GetContactDetailsResult()
                 {
                     AllJobRolesCount = allJobRoles.Count,
                     AllLevelsCount = allLevels.Count,
                     AllSectorsCount = allSectors.Count,
-                    PledgeAmount = pledgeTask.Result.Amount,
-                    PledgeDasAccountName = pledgeTask.Result.DasAccountName,
+                    PledgeAmount = pledge.Amount,
+                    PledgeDasAccountName = pledge.DasAccountName,
                     PledgeJobRoles = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)),
                     PledgeLevels = allLevels.Where(x => pledge.Levels.Contains(x.Id)),
                     PledgeSectors = allSectors.Where(x => pledge.Sectors.Contains(x.Id)),
