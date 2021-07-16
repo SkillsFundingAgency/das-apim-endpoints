@@ -30,11 +30,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 await _levyTransferMatchingService.CreateAccount(new CreateAccountRequest(command.AccountId, command.DasAccountName));
             }
 
-            var pledgeId = await _levyTransferMatchingService.CreatePledge(command);
+            var pledgeReference = await _levyTransferMatchingService.CreatePledge(command);
 
             return new CreatePledgeResult
             {
-                PledgeId = pledgeId
+                PledgeId = pledgeReference.Id.Value,
             };
         }
     }

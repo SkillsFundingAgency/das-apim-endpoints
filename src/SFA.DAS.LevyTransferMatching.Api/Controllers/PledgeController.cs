@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -26,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("pledges")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPledges()
         {
             var result = await _mediator.Send(new GetPledgesQuery());
