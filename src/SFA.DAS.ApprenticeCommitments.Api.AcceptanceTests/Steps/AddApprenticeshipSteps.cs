@@ -161,6 +161,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             innerApiRequest.Should().NotBeNull();
             innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
+            innerApiRequest.FirstName.Should().Be(expectedCommitment.FirstName);
+            innerApiRequest.LastName.Should().Be(expectedCommitment.LastName);
+            innerApiRequest.DateOfBirth.Should().Be(expectedCommitment.DateOfBirth);
             innerApiRequest.Email.Should().Be(expectedCommitment.Email);
             innerApiRequest.CommitmentsApprenticeshipId.Should().Be(_request.CommitmentsApprenticeshipId);
             innerApiRequest.CommitmentsApprovedOn.Should().Be(_request.CommitmentsApprovedOn);

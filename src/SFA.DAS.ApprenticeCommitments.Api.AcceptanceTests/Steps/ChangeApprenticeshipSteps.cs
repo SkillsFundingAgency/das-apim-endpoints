@@ -182,6 +182,31 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.CourseLevel.Should().Be(level);
         }
 
+        [Then(@"the apprentice name should be '(.*)' '(.*)'")]
+        public void ThenTheApprenticeNameShouldBe(string firstName, string lastName)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.FirstName.Should().Be(firstName);
+            innerApiRequest.LastName.Should().Be(lastName);
+        }
+
+        [Then(@"the apprentice date of Birth should be '(.*)'")]
+        public void ThenTheApprenticeDateOfBirthShouldBe(string dob)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.DateOfBirth.ToString("yyyy-MM-dd").Should().Be(dob);
+        }
+
         [Then("the inner API should return these errors")]
         public async Task ThenTheInnerAPIShouldReturnTheseErrors(Table table)
         {

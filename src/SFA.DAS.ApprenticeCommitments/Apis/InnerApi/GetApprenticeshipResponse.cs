@@ -23,5 +23,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public DateTime? ConfirmBefore { get; set; }
         public DateTime? ConfirmedOn { get; set; }
         public bool DisplayChangeNotification { get; set; }
+        public DateTime? LastViewed { get; set; }
     }
 }
