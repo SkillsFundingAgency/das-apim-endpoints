@@ -50,6 +50,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, accountId)
                 .With(x => x.CourseCode, courseId.ToString())
+                .Without(x=>x.StandardUId)
+                .With(x=>x.Email, "valid@email.com")
                 .Create();
 
             _server

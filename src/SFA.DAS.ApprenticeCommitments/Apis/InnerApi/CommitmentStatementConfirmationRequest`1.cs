@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
             _confirmationPath = confirmationPath;
         }
 
-        public string PostUrl => $"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/statements/{_commitmentStatementId}/{_confirmationPath}";
+        public string PostUrl => $"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/revisions/{_commitmentStatementId}/{_confirmationPath}";
 
         public T Data { get; set; }
     }

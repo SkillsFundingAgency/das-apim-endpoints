@@ -51,6 +51,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             {
                 ApprenticeId = id,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
+                FirstName = apprentice.FirstName,
+                LastName = apprentice.LastName,
+                DateOfBirth = apprentice.DateOfBirth,
                 Email = apprentice.Email,
                 EmployerName = command.EmployerName,
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
