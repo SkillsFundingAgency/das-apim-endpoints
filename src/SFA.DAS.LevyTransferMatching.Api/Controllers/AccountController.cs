@@ -5,6 +5,7 @@ using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetAccount;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -23,6 +24,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("{encodedAccountId}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAccount(string encodedAccountId)
         {
             _logger.LogInformation($"Getting account {encodedAccountId}");
