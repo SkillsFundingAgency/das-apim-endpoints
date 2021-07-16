@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
-using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
@@ -17,6 +17,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
         public static implicit operator GetContactDetailsResponse(GetContactDetailsResult getContactDetailsResult)
         {
+            var pledgeJobRoles = getContactDetailsResult.PledgeJobRoles
+                .Select(x => new ReferenceDataItem()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                });
+
+            // Note: levels here are different - the ShortDescription is used
+            var pledgeLevels = getContactDetailsResult.PledgeLevels
+                .Select(x => new ReferenceDataItem()
+                {
+                    Id = x.Id,
+                    Description = x.ShortDescription,
+                });
+
+            var pledgeSectors = getContactDetailsResult.PledgeSectors
+                .Select(x => new ReferenceDataItem()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                });
+
             return new GetContactDetailsResponse()
             {
                 AllJobRolesCount = getContactDetailsResult.AllJobRolesCount,
@@ -24,10 +46,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                 AllSectorsCount = getContactDetailsResult.AllSectorsCount,
                 PledgeAmount = getContactDetailsResult.PledgeAmount,
                 PledgeDasAccountName = getContactDetailsResult.PledgeDasAccountName,
-                PledgeJobRoles = getContactDetailsResult.PledgeJobRoles,
-                PledgeLevels = getContactDetailsResult.PledgeLevels,
-                PledgeSectors = getContactDetailsResult.PledgeSectors,
+                PledgeJobRoles = pledgeJobRoles,
+                PledgeLevels = pledgeLevels,
+                PledgeSectors = pledgeSectors,
             };
+        }
+
+        public class ReferenceDataItem
+        {
+            public string Id { get; set; }
+            public string Description { get; set; }
         }
     }
 }
