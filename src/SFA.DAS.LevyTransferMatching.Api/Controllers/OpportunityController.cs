@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -78,17 +77,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
-        public async Task<IActionResult> Sector(int pledgeId)
+        public async Task<IActionResult> Sector(int pledgeId, [FromQuery] string postcode)
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery());
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode });
                 var opportunityQueryResult = await _mediator.Send(new GetOpportunityQuery { OpportunityId = pledgeId });
 
                 var response = new GetSectorResponse
                 {
                     Sectors = sectorQueryResult.Sectors,
-                    Opportunity = opportunityQueryResult
+                    Opportunity = opportunityQueryResult,
+                    Location = sectorQueryResult.Location
                 };
 
                 return Ok(response);

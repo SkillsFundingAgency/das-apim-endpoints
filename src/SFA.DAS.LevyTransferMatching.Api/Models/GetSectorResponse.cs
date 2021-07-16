@@ -10,5 +10,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
     {
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public PledgeDto Opportunity { get; set; }
+        public string Location { get; set; }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetSector
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
 {
     public class GetSectorQueryResult
     {
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
+        public string Location { get; set; }
     }
 }
