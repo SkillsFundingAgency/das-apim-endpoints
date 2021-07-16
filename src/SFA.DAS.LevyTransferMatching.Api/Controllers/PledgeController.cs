@@ -70,6 +70,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
+                Locations = createPledgeRequest.Locations
             });
 
             return new CreatedResult(
