@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             string hashedLegalEntityId,
             string employerVendorId,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService sut)
+            VendorRegistrationService sut)
         {
             await sut.AddEmployerVendorIdToLegalEntity(hashedLegalEntityId, employerVendorId);
 

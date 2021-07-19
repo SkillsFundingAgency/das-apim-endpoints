@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             long[] apprenticeshipIds,
             Guid applicationId,
             ApprenticeshipResponse[] apprenticeshipDetails,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             [Frozen] Mock<ICommitmentsService> commitmentsService,
             CreateApplicationCommandHandler handler)
         {
@@ -49,8 +49,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             await handler.Handle(command, CancellationToken.None);
 
-            employerIncentivesService.Verify(
-                x => x.CreateIncentiveApplication(
+            applicationService.Verify(
+                x => x.Create(
                     It.Is<CreateIncentiveApplicationRequestData>(p => p.IncentiveApplicationId == command.ApplicationId &&
                                                            p.AccountId == command.AccountId && p.AccountLegalEntityId == command.AccountLegalEntityId &&
                                                            p.Apprenticeships.Length == apprenticeshipDetails.Length)),
