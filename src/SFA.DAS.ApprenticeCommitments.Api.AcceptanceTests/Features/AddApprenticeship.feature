@@ -18,11 +18,11 @@ Background:
 	| 1002  | My Only Name |                 |
 
 	Given the following courses exist
-	| Id   | Title                   | Level | StandardUId |
-	| 9001 | Artificial Intelligence | 1     |             |
-	| 9002 | Zoology                 | 3     |             |
-	| 9003 | Not Whitelisted         | 2     |             |
-	| 9004 | Sociology               | 2     | SOC191_1.0  |
+	| Id   | Title                   | Level | StandardUId | CourseDuration |
+	| 9001 | Artificial Intelligence | 1     |             | 12				|
+	| 9002 | Zoology                 | 3     |             | 14				|
+	| 9003 | Not Whitelisted         | 2     |             | 15				|
+	| 9004 | Sociology               | 2     | SOC191_1.0  | 16				|
 
 Scenario: New apprenticeship is recieved and is valid 
 	When the following apprenticeship is posted
@@ -30,7 +30,7 @@ Scenario: New apprenticeship is recieved and is valid
 	| 1                            | Apple         | 123                              | 1002                 | 2015-04-20  |
 	Then the inner API has received the posted values
 	And the Training Provider Name should be 'My Only Name'
-	And the course should be `Artificial Intelligence` level 1
+	And the course should be `Artificial Intelligence` level 1 courseDuration 12
 	And the invitation was sent successfully
 
 Scenario: New apprenticeship is recieved and is valid and there is a trading name for provider
