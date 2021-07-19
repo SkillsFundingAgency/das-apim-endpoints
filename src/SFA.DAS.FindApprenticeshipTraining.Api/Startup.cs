@@ -85,12 +85,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
                     .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check")
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
-                if (configuration.EmployerDemandFeatureToggle)
-                {
-                    services.AddHealthChecks()
-                        .AddCheck<EmployerDemandApiHealthCheck>("Employer Demand API health check");
-                }
-                    
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
