@@ -6,11 +6,11 @@ Feature: ChangeApprenticeship
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email |
-	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   |
-	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   |
-	| 3  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        | c@c   |
-	| 4  | Zachary    | Zimmerman | Zoology                 | 9002        | 1002       | 8002                 | Google        |       |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email |
+	| 1  | Alexa      | Armstrong | 2000-01-01    | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   |
+	| 2  | Zachary    | Zimmerman | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   |
+	| 3  | Zachary    | Zimmerman | 2001-03-03    | Zoology                 | 9002        | 1002       | 8002                 | Google        | c@c   |
+	| 4  | Zachary    | Zimmerman | 2004-04-19    | Zoology                 | 9002        | 1002       | 8002                 | Google        |       |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -39,6 +39,8 @@ Scenario: Apprenticeship update is recieved and is valid and there is a trading 
 	And the Employer should be Legal Entity 8002 named 'Google'
 	And the Training Provider should be 'My Trading Name'
 	And the course should be `Zoology` level 3
+	And the apprentice name should be 'Zachary' 'Zimmerman'
+	And the apprentice date of Birth should be '2000-12-28'
 
 Scenario: Apprenticeship update is recieved and is a continuation apprenticeship
 	When the following apprenticeship update is posted
