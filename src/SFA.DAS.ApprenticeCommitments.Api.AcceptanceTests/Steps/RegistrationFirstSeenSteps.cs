@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AutoFixture;
+using FluentAssertions;
+using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using Newtonsoft.Json;
-using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationReminders;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {

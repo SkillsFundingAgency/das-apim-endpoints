@@ -17,7 +17,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 
     public class ChangeEmailAddressRequestData
     {
-        public Guid ApprenticeshipId { get; set; }
         public string Email { get; set; }
     }
 

@@ -14,22 +14,22 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetJobRoles
     public class GetJobRolesQueryHandlerTests
     {
         private GetJobRolesQueryHandler _handler;
-        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private IEnumerable<ReferenceDataItem> _jobRoles;
+        private Mock<IReferenceDataService> _referenceDataService;
+        private List<ReferenceDataItem> _jobRoles;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
             _jobRoles = _autoFixture.Create<List<ReferenceDataItem>>();
-            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.GetJobRoles()).ReturnsAsync(_jobRoles);
+            _referenceDataService = new Mock<IReferenceDataService>();
+            _referenceDataService.Setup(x => x.GetJobRoles()).ReturnsAsync(_jobRoles);
 
-            _handler = new GetJobRolesQueryHandler(_levyTransferMatchingService.Object);
+            _handler = new GetJobRolesQueryHandler(_referenceDataService.Object);
         }
 
         [Test]
-        public async Task Handle_Returns_Sectors()
+        public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(new GetJobRolesQuery(), CancellationToken.None);
             Assert.AreEqual(_jobRoles, result.ReferenceDataItems);

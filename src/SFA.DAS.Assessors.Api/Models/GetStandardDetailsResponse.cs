@@ -47,6 +47,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public int MaxFunding { get; set; }
         public int TypicalDuration { get; set; }
         public bool IsActive { get; set; }
+        public bool EPAChanged { get; set; }
 
         public static implicit operator GetStandardDetailsResponse(StandardDetailResponse source)
         {
@@ -85,7 +86,8 @@ namespace SFA.DAS.Assessors.Api.Models
                 Options = source.Options,
                 MaxFunding = source.MaxFunding,
                 TypicalDuration = source.TypicalDuration,
-                IsActive = source.IsActive
+                IsActive = source.IsActive,
+                EPAChanged = source.EPAChanged
             };
         }
     }
