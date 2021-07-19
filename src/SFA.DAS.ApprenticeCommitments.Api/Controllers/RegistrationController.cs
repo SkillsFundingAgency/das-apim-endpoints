@@ -50,6 +50,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return await new GetRequest<RegistrationsWrapper>($"/registrations/reminders?invitationCutOffTime={invitationCutOffTime}").Get(_client);
         }
 
+        [HttpPost("registrations/{apprenticeId}/reminder")]
+        public async Task<IActionResult> RegistrationReminderSent(Guid apprenticeId, [FromBody] InvitationReminderSentRequest request)
+        {
+            return await new PostRequest($"registrations/{apprenticeId}/reminder").Post(_client, request);
+        }
+
+
         [HttpPost("/registrations/{apprenticeId}/firstseen")]
         public async Task<IActionResult> RegistrationFirstSeen(Guid apprenticeId,
             [FromBody] RegistrationFirstSeenRequestData request)
