@@ -58,11 +58,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 Locations = locationDataItems
             };
 
-            var pledgeId = await _levyTransferMatchingService.CreatePledge(pledge);
+            var pledgeReference = await _levyTransferMatchingService.CreatePledge(pledge);
 
             return new CreatePledgeResult
             {
-                PledgeId = pledgeId
+                PledgeId = pledgeReference.Id.Value,
             };
         }
     }
