@@ -52,6 +52,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
             {
                 CommitmentsContinuedApprenticeshipId = command.CommitmentsContinuedApprenticeshipId,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
+                FirstName = apprenticeship.FirstName,
+                LastName = apprenticeship.LastName,
+                DateOfBirth = apprenticeship.DateOfBirth,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
