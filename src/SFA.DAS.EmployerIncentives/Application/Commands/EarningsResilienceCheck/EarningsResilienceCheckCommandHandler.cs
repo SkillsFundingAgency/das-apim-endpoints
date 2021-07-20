@@ -7,16 +7,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.EarningsResilienceChec
 {
     public class EarningsResilienceCheckCommandHandler : IRequestHandler<EarningsResilienceCheckCommand>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IEarningsResilienceCheckService _earningsResilienceCheckService;
 
-        public EarningsResilienceCheckCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public EarningsResilienceCheckCommandHandler(IEarningsResilienceCheckService earningsResilienceCheckService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _earningsResilienceCheckService = earningsResilienceCheckService;
         }
 
         public async Task<Unit> Handle(EarningsResilienceCheckCommand request, CancellationToken cancellationToken)
         {
-            await _employerIncentivesService.EarningsResilienceCheck();
+            await _earningsResilienceCheckService.RunCheck();
 
             return Unit.Value;
         }

@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_The_InnerApi_Is_Called(
            UpdateCollectionCalendarPeriodRequestData request,
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-           EmployerIncentivesService sut)
+           CollectionCalendarService sut)
         {
             await sut.UpdateCollectionCalendarPeriod(request);
 
