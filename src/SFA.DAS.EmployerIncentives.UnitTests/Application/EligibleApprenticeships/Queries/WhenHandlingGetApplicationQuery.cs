@@ -21,14 +21,14 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             GetApplicationQuery query,
             IncentiveApplicationDto applicationResponse,
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             GetApplicationHandler handler
             )
         {
             commitmentsClient.Setup(client => client.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
                 .ReturnsAsync(new GetApprenticeshipResponse());
 
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             IncentiveApplicationDto applicationResponse,
             GetApprenticeshipResponse apprenticeshipResponse,
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             GetApplicationHandler handler
         )
         {
@@ -56,8 +56,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                         c.GetUrl.EndsWith($"/{applicationResponse.Apprenticeships.First().ApprenticeshipId}"))))
                 .ReturnsAsync(apprenticeshipResponse);
 
-            employerIncentivesService
-                .Setup(x => x.GetApplication(query.AccountId, query.ApplicationId))
+            applicationService
+                .Setup(x => x.Get(query.AccountId, query.ApplicationId))
                 .ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -71,13 +71,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             IncentiveApplicationDto applicationResponse,
             GetApprenticeshipResponse apprenticeshipResponse,
             [Frozen] Mock<ICommitmentsApiClient<CommitmentsConfiguration>> commitmentsClient,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<IApplicationService> applicationService,
             GetApplicationHandler handler
         )
         {
             query.IncludeApprenticeships = false;
 
-            employerIncentivesService.Setup(x => x.GetApplication(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
+            applicationService.Setup(x => x.Get(query.AccountId, query.ApplicationId)).ReturnsAsync(applicationResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
