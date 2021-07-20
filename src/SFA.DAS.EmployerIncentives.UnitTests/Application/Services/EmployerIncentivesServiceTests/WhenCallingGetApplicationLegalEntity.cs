@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                long accountId,
                Guid applicationId,
                [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-               EmployerIncentivesService sut)
+               ApplicationService sut)
         {
             await sut.GetApplicationLegalEntity(accountId, applicationId);
 
