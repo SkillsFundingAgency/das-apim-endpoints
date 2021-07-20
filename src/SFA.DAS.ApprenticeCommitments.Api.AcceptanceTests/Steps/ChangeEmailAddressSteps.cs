@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then(@"return an ok response")]
         public void ThenReturnAnOkResponse()
         {
-            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            _context.OuterApiClient.Response.Should().Be200Ok();
         }
     }
 }

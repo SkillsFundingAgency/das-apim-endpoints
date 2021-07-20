@@ -8,6 +8,8 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.LevyTransferMatching.Configuration;
+using SFA.DAS.LevyTransferMatching.Clients;
 
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {
@@ -23,10 +25,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<ILevyTransferMatchingService, LevyTransferMatchingService>();
             services.AddTransient<IReferenceDataService, ReferenceDataService>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
 
             services.AddTransient<IAccountsService, AccountsService>();
 
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }
 }
