@@ -40,7 +40,6 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             Assert.IsNotNull(actualModel);
             actualModel.Id.Should().Be(response.EmployerDemand.Id);
         }
-
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_HttpException_It_Is_Returned(

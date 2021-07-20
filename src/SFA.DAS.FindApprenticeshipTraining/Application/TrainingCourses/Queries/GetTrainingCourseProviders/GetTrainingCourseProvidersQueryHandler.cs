@@ -18,25 +18,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly ILocationLookupService _locationLookupService;
-        private readonly FindApprenticeshipTrainingConfiguration _config;
 
         public GetTrainingCourseProvidersQueryHandler (
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             IShortlistService shortlistService, 
-            ILocationLookupService locationLookupService,
-            IOptions<FindApprenticeshipTrainingConfiguration> config)
+            ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _coursesApiClient = coursesApiClient;
-            _employerDemandApiClient = employerDemandApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
-            _config = config.Value;
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)

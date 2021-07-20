@@ -4,7 +4,8 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
-using System.Linq;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
@@ -34,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.GetAll<ReferenceDataItem>(new GetJobRolesRequest());
         }
 
-        public async Task<int> CreatePledge(Pledge pledge)
+        public async Task<PledgeReference> CreatePledge(Pledge pledge)
         {
             var apiResponse = await _levyTransferMatchingApiClient.PostWithResponseCode<PledgeReference>(
                 new CreatePledgeRequest(pledge.AccountId)
@@ -42,12 +43,29 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
                     Data = pledge,
                 });
 
-            return apiResponse.Body.Id.Value;
+            return apiResponse.Body;
         }
 
         public async Task<IEnumerable<Pledge>> GetPledges()
         {
             var response = await _levyTransferMatchingApiClient.GetAll<Pledge>(new GetPledgesRequest());
+
+            return response;
+        }
+
+        public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetAccountResponse>(request);
+        }
+
+        public async Task CreateAccount(CreateAccountRequest request)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<CreateAccountRequest>(request);
+        }
+
+        public async Task<Pledge> GetPledge(int id)
+        {
+            var response = await _levyTransferMatchingApiClient.Get<Pledge>(new GetPledgeRequest(id));
 
             return response;
         }

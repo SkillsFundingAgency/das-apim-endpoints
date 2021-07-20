@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private object _command;
 
         public object ApprenticeshipApiPath =>
-            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}/statements/{_fixture.Create<long>()}";
+            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}/revisions/{_fixture.Create<long>()}";
 
         public ConfirmApprenticeshipSteps(TestContext context)
         {
@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenWeConfirmTheRolesAndResponsibilities()
         {
             await _context.OuterApiClient.Post(
-                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/statements/rolesandresponsibilitiesconfirmation",
+                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/revisions/rolesandresponsibilitiesconfirmation",
                 _command);
         }
 
