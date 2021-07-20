@@ -6,11 +6,11 @@ Feature: AddApprenticeship
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Course Name             | Course Code | StandardUId | Email             |
-	| 1  | Alexa      | Armstrong | Artificial Intelligence | 9001        |             | alexa@example.org |
-	| 3  | Iris       | Ignored   | Not Whitelisted         | 9003        |             |                   |
-	| 4  | Simon      | Standard  | Sociology               |             | SOC191_1.0  | simon@example.org |
-	| 2  | Zachary    | Zimmerman | Zoology                 | 9002        |             | zach@example.org  |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             |
+	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org |
+	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   |
+	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org |
+	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
