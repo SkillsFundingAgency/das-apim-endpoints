@@ -14,7 +14,7 @@ namespace SFA.DAS.Campaign.UnitTests.ExternalApi.Requests
             var actual = new GetSiteMapRequest(contentType);
             
             //Assert
-            actual.GetUrl.Should().Be($"entries?select=sys.id,sys.contentType,fields.slug,fields.title,fields.hubType&content_type={contentType}");
+            actual.GetUrl.Should().Be($"entries?content_type={contentType}&include=2");
         }
     }
 }
