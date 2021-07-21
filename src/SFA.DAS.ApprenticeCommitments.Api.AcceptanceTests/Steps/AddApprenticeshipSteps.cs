@@ -215,25 +215,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         }
 
         [Then("the invitation was sent successfully")]
-        public void ThenTheInvitationWasSentSuccessfully()
+        public async Task ThenTheInvitationWasSentSuccessfully()
         {
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            var logs = _context.LoginApi.MockServer.LogEntries;
-            logs.Should().HaveCount(1);
+            var response = JsonConvert.DeserializeObject<CreateApprenticeshipResponse>(
+                await _context.OuterApiClient.Response.Content.ReadAsStringAsync());
 
-            var loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(
-                logs.First().RequestMessage.Body);
-            loginApiRequest.Should().NotBeNull();
-            loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
-            loginApiRequest.Email.Should().Be(expectedCommitment.Email);
-            loginApiRequest.GivenName.Should().Be(expectedCommitment.FirstName);
-            loginApiRequest.FamilyName.Should().Be(expectedCommitment.LastName);
-            loginApiRequest.OrganisationName.Should().Be(_request.EmployerName);
-            loginApiRequest.ApprenticeshipName.Should().Be(expectedCommitment.CourseName);
-            loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
-            loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
+            response.Should().BeEquivalentTo(new
+            {
+                GivenName = expectedCommitment.FirstName,
+                FamilyName = expectedCommitment.LastName,
+                ApprenticeshipName = expectedCommitment.CourseName,
+            });
         }
 
         [Then("the invitation was not sent")]
