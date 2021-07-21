@@ -87,6 +87,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 

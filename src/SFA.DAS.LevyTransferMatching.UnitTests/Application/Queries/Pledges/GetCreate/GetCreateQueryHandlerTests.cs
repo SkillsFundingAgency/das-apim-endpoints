@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetCreate;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetCreate
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetCreate
 {
     [TestFixture]
     public class GetCreateQueryHandlerTests
