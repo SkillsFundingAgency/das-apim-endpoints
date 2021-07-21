@@ -14,6 +14,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -42,6 +43,9 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+
+            services.Configure<EmployerAccountsConfiguration>(_configuration.GetSection("EmployerAccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerAccountsConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {

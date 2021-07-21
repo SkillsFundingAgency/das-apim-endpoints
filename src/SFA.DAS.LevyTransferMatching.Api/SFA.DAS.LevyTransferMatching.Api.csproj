@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Swagger\**" />
+    <Content Remove="Swagger\**" />
+    <EmbeddedResource Remove="Swagger\**" />
+    <None Remove="Swagger\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.LevyTransferMatching\SFA.DAS.LevyTransferMatching.csproj" />
   </ItemGroup>
 
@@ -17,10 +24,6 @@
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Swagger\" />
   </ItemGroup>
 
 

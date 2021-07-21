@@ -8,18 +8,21 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
 {
     public class SendBankDetailsRequiredEmailCommandHandler : IRequestHandler<SendBankDetailsRequiredEmailCommand>
     {
-        private readonly IEmployerIncentivesService _employerIncentivesService;
+        private readonly IEmailService _emailService;
 
-        public SendBankDetailsRequiredEmailCommandHandler(IEmployerIncentivesService employerIncentivesService)
+        public SendBankDetailsRequiredEmailCommandHandler(IEmailService emailService)
         {
-            _employerIncentivesService = employerIncentivesService;
+            _emailService = emailService;
         }
 
         public async Task<Unit> Handle(SendBankDetailsRequiredEmailCommand command, CancellationToken cancellationToken)
         {
-            var request = new SendBankDetailsEmailRequest(command.AccountId, command.AccountLegalEntityId, command.EmailAddress, command.AddBankDetailsUrl);
+            var request = new PostBankDetailsRequiredEmailRequest
+            {
+                Data = new SendBankDetailsEmailRequest(command.AccountId, command.AccountLegalEntityId, command.EmailAddress, command.AddBankDetailsUrl)
+            };
 
-            await _employerIncentivesService.SendBankDetailRequiredEmail(command.AccountId, request);
+            await _emailService.SendEmail(request);
 
             return Unit.Value;
         }

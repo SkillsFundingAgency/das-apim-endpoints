@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.LevyTransferMatching.Models;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetAllPledges
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges
 {
     public class GetPledgesResult : List<Pledge>
     {

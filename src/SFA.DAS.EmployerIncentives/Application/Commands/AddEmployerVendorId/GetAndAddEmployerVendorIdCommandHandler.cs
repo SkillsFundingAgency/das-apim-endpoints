@@ -10,16 +10,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
     public class GetAndAddEmployerVendorIdCommandHandler : IRequestHandler<GetAndAddEmployerVendorIdCommand>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
-        private readonly IEmployerIncentivesService _incentivesService;
+        private readonly IVendorRegistrationService _vendorRegistrationService;
         private readonly ILogger<GetAndAddEmployerVendorIdCommandHandler> _logger;
 
         public GetAndAddEmployerVendorIdCommandHandler(
             ICustomerEngagementFinanceService financeService,
-            IEmployerIncentivesService incentivesService, 
+            IVendorRegistrationService vendorRegistrationService, 
             ILogger<GetAndAddEmployerVendorIdCommandHandler> logger)
         {
             _financeService = financeService;
-            _incentivesService = incentivesService;
+            _vendorRegistrationService = vendorRegistrationService;
             _logger = logger;
         }
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
             if (!string.IsNullOrEmpty(employerVendorId))
             {
                 _logger.LogInformation("Received VendorId '{VendorId}' for LegalEntityId [{LegalEntityId}]", employerVendorId, request.HashedLegalEntityId);
-                await _incentivesService.AddEmployerVendorIdToLegalEntity(request.HashedLegalEntityId, employerVendorId);
+                await _vendorRegistrationService.AddEmployerVendorIdToLegalEntity(request.HashedLegalEntityId, employerVendorId);
             }
 
             return Unit.Value;

@@ -1,5 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,11 +13,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
     public class CreatePledgeHandler : IRequestHandler<CreatePledgeCommand, CreatePledgeResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
+        private readonly ILocationLookupService _locationLookupService;
         private readonly ILogger<CreatePledgeHandler> _logger;
 
-        public CreatePledgeHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<CreatePledgeHandler> logger)
+        public CreatePledgeHandler(ILevyTransferMatchingService levyTransferMatchingService, ILocationLookupService locationLookupService, ILogger<CreatePledgeHandler> logger)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
+            _locationLookupService = locationLookupService;
             _logger = logger;
         }
 
@@ -30,11 +35,34 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 await _levyTransferMatchingService.CreateAccount(new CreateAccountRequest(command.AccountId, command.DasAccountName));
             }
 
-            var pledgeId = await _levyTransferMatchingService.CreatePledge(command);
+            var locationDataItems = new List<LocationDataItem>();
+            foreach (var location in command.Locations)
+            {
+                var locationInformationResult = await _locationLookupService.GetLocationInformation(location, 0, 0);
+                locationDataItems.Add(new LocationDataItem
+                {
+                    Name = locationInformationResult.Name,
+                    GeoPoint = locationInformationResult.GeoPoint
+                });
+            }
+
+            var pledge = new Pledge
+            {
+                AccountId = command.AccountId,
+                Amount = command.Amount,
+                IsNamePublic = command.IsNamePublic,
+                DasAccountName = command.DasAccountName,
+                Sectors = command.Sectors,
+                JobRoles = command.JobRoles,
+                Levels = command.Levels,
+                Locations = locationDataItems
+            };
+
+            var pledgeReference = await _levyTransferMatchingService.CreatePledge(pledge);
 
             return new CreatePledgeResult
             {
-                PledgeId = pledgeId
+                PledgeId = pledgeReference.Id.Value,
             };
         }
     }
