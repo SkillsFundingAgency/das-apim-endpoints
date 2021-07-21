@@ -17,11 +17,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         public async Task Then_The_AccountLegalEntity_Is_Returned(
             GetLegalEntityQuery query,
             AccountLegalEntity response,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             GetLegalEntityHandler handler
         )
         {
-            employerIncentivesService.Setup(x =>
+            legalEntitiesService.Setup(x =>
                 x.GetLegalEntity(query.AccountId, query.AccountLegalEntityId)).ReturnsAsync(response);
             
             var actual = await handler.Handle(query, CancellationToken.None);

@@ -14,6 +14,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -35,12 +36,16 @@ namespace SFA.DAS.LevyTransferMatching.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddNLog();
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
 
             services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+
+            services.Configure<EmployerAccountsConfiguration>(_configuration.GetSection("EmployerAccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerAccountsConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
