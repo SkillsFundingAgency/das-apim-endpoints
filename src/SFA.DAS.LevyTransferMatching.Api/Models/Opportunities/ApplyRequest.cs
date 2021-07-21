@@ -2,5 +2,6 @@
 {
     public class ApplyRequest
     {
+        public string EncodedAccountId { get; set; }
     }
 }

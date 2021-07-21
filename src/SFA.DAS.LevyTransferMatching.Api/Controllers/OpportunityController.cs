@@ -48,7 +48,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             var result = await _mediator.Send(new CreateApplicationCommand
             {
                 EmployerAccountId = accountId,
-                PledgeId = opportunityId
+                PledgeId = opportunityId,
+                EncodedAccountId = request.EncodedAccountId
             });
 
             return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);
