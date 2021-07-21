@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetCreate
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate
 {
     public class GetCreateQueryResult
     {

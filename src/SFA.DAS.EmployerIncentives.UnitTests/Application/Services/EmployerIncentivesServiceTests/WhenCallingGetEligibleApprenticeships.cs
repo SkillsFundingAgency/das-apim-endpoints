@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         public async Task Then_Each_Apprentice_Record_Is_Checked(
             List<ApprenticeshipItem> allApprenticeship,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApprenticeshipService service)
         {
             //Arrange
             client.Setup(x =>
@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             List<ApprenticeshipItem> allApprenticeship,
             ApprenticeshipItem passingApprenticeship,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApprenticeshipService service)
         { 
             //Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<IGetApiRequest>()))
@@ -71,7 +71,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             List<ApprenticeshipItem> allApprenticeship,
             ApprenticeshipItem passingApprenticeship,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service)
+            ApprenticeshipService service)
         {
             //Arrange
             client.Setup(x =>

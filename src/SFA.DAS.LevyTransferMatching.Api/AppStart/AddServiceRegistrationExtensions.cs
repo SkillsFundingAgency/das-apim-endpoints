@@ -10,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Clients;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {

@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             Guid applicationId,
             IncentiveApplicationDto apiResponse,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmployerIncentivesService service
+            ApplicationService service
         )
         {
             client.Setup(x =>
@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
                         It.Is<GetApplicationRequest>(c => c.GetUrl.Contains(accountId.ToString()) && c.GetUrl.Contains(applicationId.ToString()))))
                 .ReturnsAsync(apiResponse);
 
-            var actual = await service.GetApplication(accountId, applicationId);
+            var actual = await service.Get(accountId, applicationId);
 
             actual.Should().BeEquivalentTo(apiResponse);
         }
