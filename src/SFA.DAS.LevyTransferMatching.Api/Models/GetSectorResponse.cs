@@ -1,15 +1,13 @@
-﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using System;
+﻿using SFA.DAS.LevyTransferMatching.Api.Models.Shared;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
     public class GetSectorResponse
     {
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
-        public PledgeDto Opportunity { get; set; }
+        public OpportunitySummary Opportunity { get; set; }
         public string Location { get; set; }
     }
 }
