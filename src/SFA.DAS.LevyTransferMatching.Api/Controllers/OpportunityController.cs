@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
+using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;

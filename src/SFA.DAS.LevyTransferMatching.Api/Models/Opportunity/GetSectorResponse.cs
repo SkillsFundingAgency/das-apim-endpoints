@@ -2,7 +2,7 @@
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Api.Models
+namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
 {
     public class GetSectorResponse
     {
