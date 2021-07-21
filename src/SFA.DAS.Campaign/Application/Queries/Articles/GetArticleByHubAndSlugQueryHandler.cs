@@ -12,18 +12,23 @@ namespace SFA.DAS.Campaign.Application.Queries.Articles
     public class GetArticleByHubAndSlugQueryHandler : IRequestHandler<GetArticleByHubAndSlugQuery, GetArticleByHubAndSlugQueryResult>
     {
         private readonly IReliableCacheStorageService _reliableCacheStorageService;
+        private readonly IMediator _mediator;
 
         public GetArticleByHubAndSlugQueryHandler(
-            IReliableCacheStorageService reliableCacheStorageService)
+            IReliableCacheStorageService reliableCacheStorageService, IMediator mediator)
         {
             _reliableCacheStorageService = reliableCacheStorageService;
+            _mediator = mediator;
         }
 
         public async Task<GetArticleByHubAndSlugQueryResult> Handle(GetArticleByHubAndSlugQuery request, CancellationToken cancellationToken)
         {
-            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_article");
+            var article = _reliableCacheStorageService.GetData<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_article");
+            var menu = _mediator.RetrieveMenu(cancellationToken);
 
-            var pageModel = new CmsPageModel().Build(article);
+            await Task.WhenAll(article, menu);
+
+            var pageModel = new CmsPageModel().Build(article.Result, menu.Result.MainContent);
             
             return new GetArticleByHubAndSlugQueryResult
             {
