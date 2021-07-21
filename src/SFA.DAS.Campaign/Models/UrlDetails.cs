@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public string Hub { get; set; }
         public string PageType { get; set; } 
+        public string ParentSlug { get; set; }
     }
 }

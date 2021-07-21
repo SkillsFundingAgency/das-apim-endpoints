@@ -16,18 +16,23 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
     public class GetHubQueryHandler : IRequestHandler<GetHubQuery, GetHubQueryResult>
     {
         private readonly IReliableCacheStorageService _reliableCacheStorageService;
+        private readonly IMediator _mediator;
 
         public GetHubQueryHandler(
-            IReliableCacheStorageService reliableCacheStorageService)
+            IReliableCacheStorageService reliableCacheStorageService, IMediator mediator)
         {
             _reliableCacheStorageService = reliableCacheStorageService;
+            _mediator = mediator;
         }
 
         public async Task<GetHubQueryResult> Handle(GetHubQuery request, CancellationToken cancellationToken)
         {
-            var article = await _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub");
+            var article = _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub");
+            var menu = _mediator.RetrieveMenu(cancellationToken);
 
-            var pageModel = new HubPageModel().Build(article);
+            await Task.WhenAll(article, menu);
+
+            var pageModel = new HubPageModel().Build(article.Result, menu.Result.MainContent);
 
             return new GetHubQueryResult
             {
