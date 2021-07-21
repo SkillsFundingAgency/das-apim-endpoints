@@ -21,7 +21,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
         {
             var pledge = await _levyTransferMatchingService.GetPledge(request.OpportunityId);
 
-            if (pledge != null)
+            if (pledge == null)
+            {
+                return null;
+            }
+            else
             {
                 var allJobRolesTask = _referenceDataService.GetJobRoles();
                 var allLevelsTask = _referenceDataService.GetLevels();
@@ -45,10 +49,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
                     OpportunitySectorDescriptions = allSectors.Where(x => pledge.Sectors.Contains(x.Id)).Select(x => x.Description),
                     OpportunityIsNamePublic = pledge.IsNamePublic,
                 };
-            }
-            else
-            {
-                return null;
             }
         }
     }

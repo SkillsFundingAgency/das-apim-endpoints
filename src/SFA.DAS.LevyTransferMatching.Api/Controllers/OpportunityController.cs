@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,10 +13,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
     [ApiController]
     public class OpportunityController : ControllerBase
     {
+        private readonly ILogger<OpportunityController> _logger;
         private readonly IMediator _mediator;
 
-        public OpportunityController(IMediator mediator)
+        public OpportunityController(ILogger<OpportunityController> logger, IMediator mediator)
         {
+            _logger = logger;
             _mediator = mediator;
         }
 
@@ -45,18 +49,26 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> ContactDetails(int opportunityId)
         {
-            var result = await _mediator.Send(new GetContactDetailsQuery()
+            try
             {
-                OpportunityId = opportunityId,
-            });
+                var result = await _mediator.Send(new GetContactDetailsQuery()
+                {
+                    OpportunityId = opportunityId,
+                });
 
-            if (result != null)
-            {
-                return Ok((GetContactDetailsResponse)result);
+                if (result != null)
+                {
+                    return Ok((GetContactDetailsResponse)result);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception e)
             {
-                return NotFound();
+                _logger.LogError(e, $"Error attempting to get {nameof(GetContactDetailsQuery)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }
