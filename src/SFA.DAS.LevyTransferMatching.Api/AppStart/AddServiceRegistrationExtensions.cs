@@ -30,11 +30,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
 
             services.AddTransient<IAccountsService, AccountsService>();
 
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }
 }

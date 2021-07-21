@@ -64,7 +64,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
                         .WithPing()
                         .WithAValidApprentice(EmployerAccountId, ApprenticeshipId, CourseStandardId)
-                        .WithAnyApprenticeship()
+                        //.WithAnyApprenticeship()
                         .Build();
                 }
 
@@ -108,6 +108,9 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
                 _fakeTrainingProviderApi?.Stop();
                 _fakeTrainingProviderApi?.Dispose();
+
+                _fakeCoursesApi?.Stop();
+                _fakeCoursesApi?.Dispose();
             }
         }
     }

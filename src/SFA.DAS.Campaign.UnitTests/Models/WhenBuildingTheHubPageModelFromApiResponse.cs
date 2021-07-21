@@ -11,39 +11,39 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 {
     public class WhenBuildingTheHubPageModelFromApiResponse
     {
-        [Test]
-        public void Then_If_No_Items_Returned_Then_Null_Returned()
+        [Test, RecursiveMoqAutoData]
+        public void Then_If_No_Items_Returned_Then_Null_Returned(MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             var source = new CmsContent { Items = new List<Item>(), Total = 1 };
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.Should().BeNull();
         }
         [Test, RecursiveMoqAutoData]
-        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(CmsContent source)
+        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(CmsContent source, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             source.Total = 0;
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.Should().BeNull();
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_No_Content_Items_Returns_Empty_Header_Image_And_Cards(CmsContent source)
+        public void Then_No_Content_Items_Returns_Empty_Header_Image_And_Cards(CmsContent source, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.HeaderImage = null;
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.MainContent.HeaderImage.Should().BeNull();
@@ -53,23 +53,23 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         [Test]
         [RecursiveMoqInlineAutoData("hub", PageType.Hub)]
         [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
-        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source)
+        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Sys.ContentType.Sys.Id = pageType;
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.PageAttributes.PageType.Should().Be(type);
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Page_Level_Fields_Are_Set(CmsContent source)
+        public void Then_The_Page_Level_Fields_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent)
         {
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.PageAttributes.Title.Should().Be(source.Items.FirstOrDefault()?.Fields.Title);
@@ -80,7 +80,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Header_Image_Is_Added(CmsContent source, string contentValue, AssetFields fields)
+        public void Then_The_Header_Image_Is_Added(CmsContent source, string contentValue, AssetFields fields, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             fields.File.Url = $"//{fields.File.Url}";
@@ -98,7 +98,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
 
             ////Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.MainContent.HeaderImage.Should().NotBeNull();
@@ -114,7 +114,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage)
+        public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             source.Items[0].Fields.Cards[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
@@ -149,7 +149,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
 
             //Act
-            var actual = new HubPageModel().Build(source);
+            var actual = new HubPageModel().Build(source, menuContent);
 
             //Assert
             actual.MainContent.Cards.Count.Should().Be(1);

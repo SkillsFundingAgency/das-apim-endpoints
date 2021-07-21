@@ -14,12 +14,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_With_The_Request_To_Remove(
             RemoveAccountLegalEntityCommand command,
-            [Frozen] Mock<IEmployerIncentivesService> employerIncentivesService,
+            [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             RemoveAccountLegalEntityCommandHandler handler)
         {
             await handler.Handle(command, CancellationToken.None);
             
-            employerIncentivesService.Verify(x => x.DeleteAccountLegalEntity(command.AccountId, command.AccountLegalEntityId), Times.Once);
+            legalEntitiesService.Verify(x => x.DeleteAccountLegalEntity(command.AccountId, command.AccountLegalEntityId), Times.Once);
         }
     }
 }
