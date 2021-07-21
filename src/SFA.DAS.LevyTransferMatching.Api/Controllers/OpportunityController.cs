@@ -81,13 +81,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode });
-                var opportunityQueryResult = await _mediator.Send(new GetOpportunityQuery { OpportunityId = pledgeId });
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode, OpportunityId = pledgeId });
 
                 var response = new GetSectorResponse
                 {
                     Sectors = sectorQueryResult.Sectors,
-                    Opportunity = opportunityQueryResult,
+                    Opportunity = sectorQueryResult.Opportunity,
                     Location = sectorQueryResult.Location
                 };
 

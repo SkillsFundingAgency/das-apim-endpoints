@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+﻿using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
@@ -7,5 +8,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
     {
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public string Location { get; set; }
+        public Pledge Opportunity { get; set; }
     }
 }
