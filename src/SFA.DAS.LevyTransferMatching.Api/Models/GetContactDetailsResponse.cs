@@ -1,34 +1,34 @@
 ﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
     public class GetContactDetailsResponse
     {
-        public int AllSectorsCount { get; set; }
-        public int AllJobRolesCount { get; set; }
-        public int AllLevelsCount { get; set; }
-        public int OpportunityAmount { get; set; }
-        public string OpportunityDasAccountName { get; set; }
-        public IEnumerable<string> OpportunitySectorDescriptions { get; set; }
-        public IEnumerable<string> OpportunityJobRoleDescriptions { get; set; }
-        public IEnumerable<string> OpportunityLevelDescriptions { get; set; }
-        public bool OpportunityIsNamePublic { get; set; }
+        public IEnumerable<ReferenceDataItem> AllSectors { get; set; }
+        public IEnumerable<ReferenceDataItem> AllJobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> AllLevels { get; set; }
+        public int Amount { get; set; }
+        public string DasAccountName { get; set; }
+        public IEnumerable<ReferenceDataItem> Sectors { get; set; }
+        public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> Levels { get; set; }
+        public bool IsNamePublic { get; set; }
 
         public static implicit operator GetContactDetailsResponse(GetContactDetailsResult getContactDetailsResult)
         {
             return new GetContactDetailsResponse()
             {
-                AllSectorsCount = getContactDetailsResult.AllSectorsCount,
-                AllJobRolesCount = getContactDetailsResult.AllJobRolesCount,
-                AllLevelsCount = getContactDetailsResult.AllLevelsCount,
-                OpportunityAmount = getContactDetailsResult.OpportunityAmount,
-                OpportunityDasAccountName = getContactDetailsResult.OpportunityDasAccountName,
-                OpportunitySectorDescriptions = getContactDetailsResult.OpportunitySectorDescriptions,
-                OpportunityJobRoleDescriptions = getContactDetailsResult.OpportunityJobRoleDescriptions,
-                OpportunityLevelDescriptions = getContactDetailsResult.OpportunityLevelDescriptions,
-                OpportunityIsNamePublic = getContactDetailsResult.OpportunityIsNamePublic,
+                AllSectors = getContactDetailsResult.AllSectors,
+                AllJobRoles = getContactDetailsResult.AllJobRoles,
+                AllLevels = getContactDetailsResult.AllLevels,
+                Amount = getContactDetailsResult.Amount,
+                DasAccountName = getContactDetailsResult.DasAccountName,
+                Sectors = getContactDetailsResult.Sectors,
+                JobRoles = getContactDetailsResult.JobRoles,
+                Levels = getContactDetailsResult.Levels,
+                IsNamePublic = getContactDetailsResult.IsNamePublic,
             };
         }
     }

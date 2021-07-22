@@ -73,14 +73,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
 
             Assert.IsNotNull(result);
             
-            Assert.AreEqual(allJobRoles.Count(), result.AllJobRolesCount);
-            Assert.AreEqual(1, result.OpportunityJobRoleDescriptions.Count());
+            CollectionAssert.AreEqual(allJobRoles, result.AllJobRoles);
+            Assert.AreEqual(1, result.JobRoles.Count());
 
-            Assert.AreEqual(allLevels.Count(), result.AllLevelsCount);
-            Assert.AreEqual(2, result.OpportunityLevelDescriptions.Count());
+            CollectionAssert.AreEqual(allLevels, result.AllLevels);
+            Assert.AreEqual(2, result.Levels.Count());
 
-            Assert.AreEqual(allSectors.Count(), result.AllSectorsCount);
-            Assert.AreEqual(3, result.OpportunitySectorDescriptions.Count());
+            CollectionAssert.AreEqual(allSectors, result.AllSectors);
+            Assert.AreEqual(3, result.Sectors.Count());
         }
     }
 }

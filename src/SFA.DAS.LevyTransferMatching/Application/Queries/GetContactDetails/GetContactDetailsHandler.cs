@@ -25,31 +25,29 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
             {
                 return null;
             }
-            else
+
+            var allJobRolesTask = _referenceDataService.GetJobRoles();
+            var allLevelsTask = _referenceDataService.GetLevels();
+            var allSectorsTask = _referenceDataService.GetSectors();
+
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+
+            var allJobRoles = allJobRolesTask.Result;
+            var allLevels = allLevelsTask.Result;
+            var allSectors = allSectorsTask.Result;
+
+            return new GetContactDetailsResult()
             {
-                var allJobRolesTask = _referenceDataService.GetJobRoles();
-                var allLevelsTask = _referenceDataService.GetLevels();
-                var allSectorsTask = _referenceDataService.GetSectors();
-
-                await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
-
-                var allJobRoles = allJobRolesTask.Result;
-                var allLevels = allLevelsTask.Result;
-                var allSectors = allSectorsTask.Result;
-
-                return new GetContactDetailsResult()
-                {
-                    AllJobRolesCount = allJobRoles.Count,
-                    AllLevelsCount = allLevels.Count,
-                    AllSectorsCount = allSectors.Count,
-                    OpportunityAmount = pledge.Amount,
-                    OpportunityDasAccountName = pledge.DasAccountName,
-                    OpportunityJobRoleDescriptions = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)).Select(x => x.Description),
-                    OpportunityLevelDescriptions = allLevels.Where(x => pledge.Levels.Contains(x.Id)).Select(x => x.ShortDescription), // Note: levels here are different - the ShortDescription is used
-                    OpportunitySectorDescriptions = allSectors.Where(x => pledge.Sectors.Contains(x.Id)).Select(x => x.Description),
-                    OpportunityIsNamePublic = pledge.IsNamePublic,
-                };
-            }
+                AllJobRoles = allJobRoles,
+                AllLevels = allLevels,
+                AllSectors = allSectors,
+                Amount = pledge.Amount,
+                DasAccountName = pledge.DasAccountName,
+                JobRoles = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)),
+                Levels = allLevels.Where(x => pledge.Levels.Contains(x.Id)),
+                Sectors = allSectors.Where(x => pledge.Sectors.Contains(x.Id)),
+                IsNamePublic = pledge.IsNamePublic,
+            };
         }
     }
 }

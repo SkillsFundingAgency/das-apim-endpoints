@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
 {
     public class GetContactDetailsResult
     {
-        public int AllSectorsCount { get; set; }
-        public int AllJobRolesCount { get; set; }
-        public int AllLevelsCount { get; set; }
-        public int OpportunityAmount { get; set; }
-        public string OpportunityDasAccountName { get; set; }
-        public IEnumerable<string> OpportunitySectorDescriptions { get; set; }
-        public IEnumerable<string> OpportunityJobRoleDescriptions { get; set; }
-        public IEnumerable<string> OpportunityLevelDescriptions { get; set; }
-        public bool OpportunityIsNamePublic { get; set; }
+        public IEnumerable<ReferenceDataItem> AllSectors { get; set; }
+        public IEnumerable<ReferenceDataItem> AllJobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> AllLevels { get; set; }
+        public int Amount { get; set; }
+        public string DasAccountName { get; set; }
+        public IEnumerable<ReferenceDataItem> Sectors { get; set; }
+        public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> Levels { get; set; }
+        public bool IsNamePublic { get; set; }
     }
 }
