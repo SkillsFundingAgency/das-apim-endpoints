@@ -71,13 +71,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
 
             if (IsNullOrEmpty(apprenticeship.Email))
             {
-                _logger.LogInformation($"Apprenticeship {apprenticeship.Id} does not have an email, no point in calling Apprentice Commitments");
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in calling Apprentice Commitments", apprenticeship.Id);
                 return default;
             }
 
             if (apprenticeship.CourseCode.Contains("-"))
             {
-                _logger.LogInformation($"Apprenticeship {apprenticeship.Id} is for a framework, no point in calling Apprentice Commitments");
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);
                 return default;
             }
 
