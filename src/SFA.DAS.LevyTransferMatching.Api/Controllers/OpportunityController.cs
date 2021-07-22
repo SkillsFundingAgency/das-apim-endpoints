@@ -49,7 +49,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 EmployerAccountId = accountId,
                 PledgeId = opportunityId,
-                EncodedAccountId = request.EncodedAccountId
+                EncodedAccountId = request.EncodedAccountId,
+                Details = request.Details,
+                StandardId = request.StandardId,
+                NumberOfApprentices = request.NumberOfApprentices,
+                StartDate = request.StartDate,
+                HasTrainingProvider = request.HasTrainingProvider,
+                Sectors = request.Sectors,
+                Postcode = request.Postcode,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                EmailAddresses = request.EmailAddresses,
+                BusinessWebsite = request.BusinessWebsite
             });
 
             return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);

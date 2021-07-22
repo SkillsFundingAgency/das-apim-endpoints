@@ -38,7 +38,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             _mediator.Setup(x => x.Send(It.Is<CreateApplicationCommand>(command =>
                     command.PledgeId == _opportunityId &&
                     command.EmployerAccountId == _accountId &&
-                    command.EncodedAccountId == _request.EncodedAccountId
+                    command.EncodedAccountId == _request.EncodedAccountId &&
+                    command.Details == _request.Details &&
+                    command.StandardId == _request.StandardId &&
+                    command.NumberOfApprentices == _request.NumberOfApprentices &&
+                    command.StartDate == _request.StartDate &&
+                    command.HasTrainingProvider == _request.HasTrainingProvider &&
+                    command.Sectors.Equals(_request.Sectors) &&
+                    command.Postcode == _request.Postcode &&
+                    command.FirstName == _request.FirstName &&
+                    command.LastName == _request.LastName &&
+                    command.EmailAddresses.Equals(_request.EmailAddresses) &&
+                    command.BusinessWebsite == _request.BusinessWebsite
                 ), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_result);
         }
