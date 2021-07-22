@@ -30,7 +30,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.SiteMap
             service.Setup(o =>
                     o.GetData<CmsContent>(
                         It.Is<GetSiteMapRequest>(c =>
-                            c.GetUrl.Contains($"entries?select=sys.id,sys.contentType,fields.slug,fields.title,fields.hubType&content_type={query.ContentType}")),
+                            c.GetUrl.Contains($"entries?content_type={query.ContentType}&include=2")),
                         $"SiteMap_{query.ContentType}"))
                 .ReturnsAsync(apiResponse);
 

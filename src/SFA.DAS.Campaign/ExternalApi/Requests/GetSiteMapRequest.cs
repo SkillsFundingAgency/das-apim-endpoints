@@ -15,7 +15,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Requests
 
         private string BuildUrl()
         {
-            var getUrl = $"entries?select=sys.id,sys.contentType,fields.slug,fields.title,fields.hubType&content_type={_contentType}";
+            var getUrl = $"entries?content_type={_contentType}&include=2";
 
             return getUrl;
         }
