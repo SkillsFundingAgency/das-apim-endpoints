@@ -10,5 +10,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public string VrfCaseStatus { get; set; }
         public string HashedLegalEntityId { get; set; }
         public bool IsAgreementSigned { get; set; }
+        public bool BankDetailsRequired { get; set; }
     }
 }
