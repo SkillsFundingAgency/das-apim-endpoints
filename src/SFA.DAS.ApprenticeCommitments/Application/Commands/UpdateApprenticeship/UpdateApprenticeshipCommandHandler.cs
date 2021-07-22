@@ -77,7 +77,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
 
             if (apprenticeship.CourseCode.Contains("-"))
             {
-                _logger.LogInformation("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);
+                _logger.LogWarning("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);
                 return default;
             }
 
