@@ -605,5 +605,63 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
             actual.MainContent.Items.FirstOrDefault().TableValue.Should().BeEquivalentTo(tableData);
         }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, string contentValue, string linkedContentId, List<List<string>> tableData, MenuPageModel.MenuPageContent menuContent)
+        {
+            //Arrange
+            //source.Items.FirstOrDefault().Fields.Content.Content = new List<SubContentItems>
+            //{
+            //    new SubContentItems
+            //    {
+            //        NodeType = "paragraph",
+            //        Content = new List<ContentDefinition>
+            //        {
+            //            new ContentDefinition
+            //            {
+            //                Content = new List<RelatedContent>(),
+            //                Data = new RelatedData
+            //                {
+            //                    Target = new LandingPage
+            //                    {
+            //                        Sys = new LandingPageSys
+            //                        {
+            //                            Id = linkedContentId
+            //                        }
+            //                    }
+            //                },
+            //                NodeType = "embedded-entry-inline"
+            //            }
+            //        }
+            //    }
+            //};
+            //source.Includes.Entry = new List<Entry>
+            //{
+            //    new Entry
+            //    {
+            //        Sys = new AssetSys
+            //        {
+            //            Id = linkedContentId,
+
+            //        },
+            //        Fields = new EntryFields
+            //        {
+            //            Table = new Table
+            //            {
+            //                TableData = tableData
+            //            }
+            //        }
+            //    }
+            //};
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent);
+
+            //Assert
+            actual.TabbedContents.Any().Should().BeTrue();
+            actual.TabbedContents.FirstOrDefault().TabTitle.Should().NotBeNullOrWhiteSpace();
+            actual.TabbedContents.FirstOrDefault().TabName.Should().NotBeNullOrWhiteSpace();
+            actual.TabbedContents.FirstOrDefault().Content.Items.Any().Should().BeTrue();
+        }
     }
 }
