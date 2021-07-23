@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirmation;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -35,10 +36,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 return Ok((PledgeDto)result);
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return NotFound();
         }
 
         [HttpPost]
@@ -64,6 +63,23 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/confirmation")]
+        public async Task<IActionResult> Confirmation(long accountId, int opportunityId)
+        {
+            var result = await _mediator.Send(new GetConfirmationQuery
+            {
+                OpportunityId = opportunityId
+            });
+
+            if (result != null)
+            {
+                return Ok((GetConfirmationResponse)result);
+            }
+
+            return NotFound();
         }
     }
 }
