@@ -2,11 +2,12 @@
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -92,6 +93,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             foreach (var course in _courseResponses)
             {
+                var apiResponse = new StandardApiResponse
+                {
+                    Level = course.Level,
+                    Title = course.Title,
+                    ApprenticeshipFunding = new List<SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding>
+                    {
+                        new SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding
+                        {
+                            Duration = course.CourseDuration,
+                            EffectiveFrom = new System.DateTime(2020, 1,1),
+                            EffectiveTo = new System.DateTime(2030,1,1)
+                        }
+                    }
+                };
+
                 _context.CoursesInnerApi.MockServer
                     .Given(
                         Request.Create()
@@ -101,7 +117,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                         Response.Create()
                             .WithStatusCode((int)HttpStatusCode.OK)
                             .WithHeader("Content-Type", "application/json")
-                            .WithBody(JsonConvert.SerializeObject(course)));
+                            .WithBody(JsonConvert.SerializeObject(apiResponse)));
             }
         }
 
@@ -175,8 +191,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 });
         }
 
-        [Then("the course should be `(.*)` level (.*)")]
-        public void ThenTheCourseLevelShouldBe(string name, int level)
+        [Then("the course should be `(.*)` level (.*) courseDuration (.*)")]
+        public void ThenTheCourseLevelDurationShouldBe(string name, int level, int courseDuration)
         {
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
@@ -186,6 +202,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             innerApiRequest.CourseName.Should().Be(name);
             innerApiRequest.CourseLevel.Should().Be(level);
+            innerApiRequest.CourseDuration.Should().Be(courseDuration);
         }
 
         [Then(@"the apprentice name should be '(.*)' '(.*)'")]
