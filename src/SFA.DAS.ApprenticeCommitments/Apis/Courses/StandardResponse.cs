@@ -6,5 +6,6 @@
         public string StandardUId { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public int CourseDuration { get; set; }
     }
 }
