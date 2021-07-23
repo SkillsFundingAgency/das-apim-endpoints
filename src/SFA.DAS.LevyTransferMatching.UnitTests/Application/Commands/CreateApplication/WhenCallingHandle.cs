@@ -23,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
         private Account _account;
         private CreateApplicationCommand _command;
         private CreateApplicationResponse _response;
+        private CreateApplicationRequest _createApplicationRequest;
 
         [SetUp]
         public void SetUp()
@@ -40,16 +41,37 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
             _levyTransferMatchingService.Setup(x => x.GetAccount(It.Is<GetAccountRequest>(r => r.AccountId == _command.EmployerAccountId)))
                 .ReturnsAsync(_getAccountResponse);
 
-            _levyTransferMatchingService.Setup(x => x.CreateApplication(It.Is<CreateApplicationRequest>(r =>
-                r.PledgeId == _command.PledgeId &&
-                ((CreateApplicationRequest.CreateApplicationRequestData) r.Data).EmployerAccountId == _command.EmployerAccountId
-                ))).ReturnsAsync(_response);
+            _levyTransferMatchingService.Setup(x => x.CreateApplication(It.IsAny<CreateApplicationRequest>()))
+                .Callback<CreateApplicationRequest>(r => _createApplicationRequest = r)
+                .ReturnsAsync(_response);
 
             _handler = new CreateApplicationCommandHandler(_levyTransferMatchingService.Object, _accountsService.Object, Mock.Of<ILogger<CreateApplicationCommandHandler>>());
         }
 
         [Test]
-        public async Task Application_Is_Created_And_Id_Returned()
+        public async Task Application_Is_Created()
+        {
+            await _handler.Handle(_command, CancellationToken.None);
+
+            var createdApplication = (CreateApplicationRequest.CreateApplicationRequestData)_createApplicationRequest.Data;
+
+            Assert.AreEqual(_command.PledgeId, _createApplicationRequest.PledgeId);
+            Assert.AreEqual(_command.EmployerAccountId, createdApplication.EmployerAccountId);
+            Assert.AreEqual(_command.Details, createdApplication.Details);
+            Assert.AreEqual(_command.StandardId, createdApplication.StandardId);
+            Assert.AreEqual(_command.NumberOfApprentices, createdApplication.NumberOfApprentices);
+            Assert.AreEqual(_command.StartDate, createdApplication.StartDate);
+            Assert.AreEqual(_command.HasTrainingProvider, createdApplication.HasTrainingProvider);
+            CollectionAssert.AreEqual(_command.Sectors, createdApplication.Sectors);
+            Assert.AreEqual(_command.Postcode, createdApplication.Postcode);
+            Assert.AreEqual(_command.FirstName, createdApplication.FirstName);
+            Assert.AreEqual(_command.LastName, createdApplication.LastName);
+            CollectionAssert.AreEqual(_command.EmailAddresses, createdApplication.EmailAddresses);
+            Assert.AreEqual(_command.BusinessWebsite, createdApplication.BusinessWebsite);
+        }
+
+        [Test]
+        public async Task Application_Id_Is_Returned()
         {
             var result = await _handler.Handle(_command, CancellationToken.None);
             Assert.AreEqual(_response.ApplicationId, result.ApplicationId);
