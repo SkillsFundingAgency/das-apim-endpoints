@@ -15,6 +15,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -38,6 +39,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             var result = await _mediator.Send(new GetPledgesQuery());
 
             return Ok(result.Select(x => (PledgeDto)x));
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/my-pledges")]
+        public async Task<IActionResult> MyPledges(long accountId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetMyPledgesQuery(accountId));
+
+                var response = new GetMyPledgesResponse
+                {
+                    Pledges = queryResult.Pledges.Select(x => new GetMyPledgesResponse.MyPledge { Id = x.Id, Amount = x.Amount })
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get MyPledges result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
