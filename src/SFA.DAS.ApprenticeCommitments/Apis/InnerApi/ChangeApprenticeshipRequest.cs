@@ -24,6 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public string TrainingProviderName { get; set; }
         public string CourseName { get; set; }
         public int CourseLevel { get; set; }
+        public int CourseDuration { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
     }

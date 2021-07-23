@@ -309,6 +309,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("cards")]
         public List<CardItem> Cards { get; set; }
+
+        [JsonProperty("menuItems")]
+        public List<MenuItem> MenuItems { get; set; }
     }
 
     public class MainContent
@@ -374,6 +377,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
     }
 
     public class CardItem
+    {
+        [JsonProperty("sys")]
+        public LandingPageSys Sys { get; set; }
+    }
+
+    public class MenuItem
     {
         [JsonProperty("sys")]
         public LandingPageSys Sys { get; set; }
