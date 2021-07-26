@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
 
             _result = _fixture.Create<GetConfirmationQueryResult>();
 
-            _mediator = new Mock<IMediator>();
+            _mediator = new Mock<IMediator>(MockBehavior.Strict);
 
             _controller = new OpportunityController(_mediator.Object);
 
