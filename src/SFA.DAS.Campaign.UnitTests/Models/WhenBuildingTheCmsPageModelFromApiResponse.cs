@@ -508,7 +508,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Attachments_Are_Built(CmsContent source, EntryFields linkedPage, AssetFields fields, string linkedContentId, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Attachments_Are_Built(CmsContent source, AssetFields fields, string linkedContentId, MenuPageModel.MenuPageContent menuContent)
         {
             //Arrange
             fields.File.Url = $"//{fields.File.Url}";
@@ -607,52 +607,66 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, string contentValue, string linkedContentId, List<List<string>> tableData, MenuPageModel.MenuPageContent menuContent)
+        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
         {
+            source.Items.FirstOrDefault().Fields.TabbedContents[0].Sys.Id = "321EDF";
+            source.Items.FirstOrDefault().Fields.TabbedContents[1].Sys.Id = "321EDC";
             //Arrange
-            //source.Items.FirstOrDefault().Fields.Content.Content = new List<SubContentItems>
-            //{
-            //    new SubContentItems
-            //    {
-            //        NodeType = "paragraph",
-            //        Content = new List<ContentDefinition>
-            //        {
-            //            new ContentDefinition
-            //            {
-            //                Content = new List<RelatedContent>(),
-            //                Data = new RelatedData
-            //                {
-            //                    Target = new LandingPage
-            //                    {
-            //                        Sys = new LandingPageSys
-            //                        {
-            //                            Id = linkedContentId
-            //                        }
-            //                    }
-            //                },
-            //                NodeType = "embedded-entry-inline"
-            //            }
-            //        }
-            //    }
-            //};
-            //source.Includes.Entry = new List<Entry>
-            //{
-            //    new Entry
-            //    {
-            //        Sys = new AssetSys
-            //        {
-            //            Id = linkedContentId,
-
-            //        },
-            //        Fields = new EntryFields
-            //        {
-            //            Table = new Table
-            //            {
-            //                TableData = tableData
-            //            }
-            //        }
-            //    }
-            //};
+            source.Includes.Entry = new List<Entry>
+            {
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id="321EDF",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space"
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "tab",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                },
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id="321EDC",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space",
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "tab",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                }
+            };
 
             //Act
             var actual = new CmsPageModel().Build(source, menuContent);
@@ -661,7 +675,6 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.TabbedContents.Any().Should().BeTrue();
             actual.TabbedContents.FirstOrDefault().TabTitle.Should().NotBeNullOrWhiteSpace();
             actual.TabbedContents.FirstOrDefault().TabName.Should().NotBeNullOrWhiteSpace();
-            actual.TabbedContents.FirstOrDefault().Content.Items.Any().Should().BeTrue();
         }
     }
 }
