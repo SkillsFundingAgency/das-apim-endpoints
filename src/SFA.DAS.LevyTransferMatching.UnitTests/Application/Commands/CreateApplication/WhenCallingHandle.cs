@@ -53,7 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
         {
             await _handler.Handle(_command, CancellationToken.None);
 
-            var createdApplication = (CreateApplicationRequest.CreateApplicationRequestData)_createApplicationRequest.Data;
+            var createdApplication = (CreateApplicationRequestData) _createApplicationRequest.Data;
 
             Assert.AreEqual(_command.PledgeId, _createApplicationRequest.PledgeId);
             Assert.AreEqual(_command.EmployerAccountId, createdApplication.EmployerAccountId);

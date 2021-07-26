@@ -32,19 +32,23 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 await CreateAccount(request);
             }
 
-            var createApplicationRequest = new CreateApplicationRequest(request.PledgeId,
-                request.EmployerAccountId,
-                request.Details,
-                request.StandardId,
-                request.NumberOfApprentices,
-                request.StartDate,
-                request.HasTrainingProvider,
-                request.Sectors,
-                request.Postcode,
-                request.FirstName,
-                request.LastName,
-                request.EmailAddresses,
-                request.BusinessWebsite);
+            var data = new CreateApplicationRequestData
+            {
+                EmployerAccountId = request.EmployerAccountId,
+                Details = request.Details,
+                StandardId = request.StandardId,
+                NumberOfApprentices = request.NumberOfApprentices,
+                StartDate = request.StartDate,
+                HasTrainingProvider = request.HasTrainingProvider,
+                Sectors = request.Sectors,
+                Postcode = request.Postcode,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                EmailAddresses = request.EmailAddresses,
+                BusinessWebsite = request.BusinessWebsite
+            };
+
+            var createApplicationRequest = new CreateApplicationRequest(request.PledgeId, data);
 
             var result = await _levyTransferMatchingService.CreateApplication(createApplicationRequest);
 
