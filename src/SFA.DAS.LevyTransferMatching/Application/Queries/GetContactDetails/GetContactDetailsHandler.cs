@@ -43,9 +43,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
                 AllSectors = allSectors,
                 Amount = pledge.Amount,
                 DasAccountName = pledge.DasAccountName,
-                JobRoles = allJobRoles.Where(x => pledge.JobRoles.Contains(x.Id)),
-                Levels = allLevels.Where(x => pledge.Levels.Contains(x.Id)),
-                Sectors = allSectors.Where(x => pledge.Sectors.Contains(x.Id)),
+                JobRoles = pledge.JobRoles,
+                Levels = pledge.Levels,
+                Sectors = pledge.Sectors,
                 IsNamePublic = pledge.IsNamePublic,
             };
         }
