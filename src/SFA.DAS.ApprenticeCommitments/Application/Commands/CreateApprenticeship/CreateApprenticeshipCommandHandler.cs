@@ -60,6 +60,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
                 TrainingProviderName = string.IsNullOrWhiteSpace(trainingProvider.TradingName) ? trainingProvider.LegalName : trainingProvider.TradingName,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
+                CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,

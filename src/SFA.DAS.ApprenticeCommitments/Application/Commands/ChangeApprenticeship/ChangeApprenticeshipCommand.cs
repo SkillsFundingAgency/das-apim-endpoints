@@ -57,6 +57,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeApprenticeshi
                 CourseLevel = course.Level,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
+                CourseDuration = course.TypicalDuration,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
