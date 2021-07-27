@@ -47,6 +47,9 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.Configure<EmployerAccountsConfiguration>(_configuration.GetSection("EmployerAccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerAccountsConfiguration>>().Value);
 
+            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
