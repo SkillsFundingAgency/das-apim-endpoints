@@ -177,7 +177,8 @@ namespace SFA.DAS.Campaign.Models
                 var tabModel = new TabbedContentModel
                 {
                     TabName = tab.Fields.TabName,
-                    TabTitle = tab.Fields.TabTitle
+                    TabTitle = tab.Fields.TabTitle,
+                    FindTraineeship = tab.Fields.FindTraineeship
                 };
 
                 foreach (var contentItem in tab.Fields.TabContent.Content)

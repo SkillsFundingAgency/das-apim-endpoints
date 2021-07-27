@@ -202,6 +202,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("tabContent", NullValueHandling = NullValueHandling.Ignore)]
         public PurpleContent TabContent { get; set; }
+        [JsonProperty("findTraineeship")]
+        public bool FindTraineeship { get; set; }
     }
 
     public class PurpleContent

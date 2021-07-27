@@ -12,6 +12,7 @@ namespace SFA.DAS.Campaign.Models
         }
         public string TabName { get; set; }
         public string TabTitle { get; set; }
+        public bool FindTraineeship { get; set; }
         public CmsPageModel.PageContent Content { get; set; }
     }
 }
