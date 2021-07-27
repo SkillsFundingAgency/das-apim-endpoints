@@ -6,6 +6,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using GetAccountRequest = SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.GetAccountRequest;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 
 namespace SFA.DAS.LevyTransferMatching.Interfaces
 {
@@ -15,7 +16,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<IEnumerable<ReferenceDataItem>> GetSectors();
         Task<IEnumerable<ReferenceDataItem>> GetJobRoles();
         Task<PledgeReference> CreatePledge(Pledge pledge);
-		Task<IEnumerable<Pledge>> GetPledges();
+		Task<GetPledgesResponse> GetPledges(GetPledgesRequest getPledgesRequest);
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
         Task CreateAccount(CreateAccountRequest request);
         Task<Pledge> GetPledge(int id);

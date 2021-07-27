@@ -46,9 +46,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return apiResponse.Body;
         }
 
-        public async Task<IEnumerable<Pledge>> GetPledges()
+        public async Task<GetPledgesResponse> GetPledges(GetPledgesRequest getPledgesRequest)
         {
-            var response = await _levyTransferMatchingApiClient.GetAll<Pledge>(new GetPledgesRequest());
+            var response = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>(getPledgesRequest);
 
             return response;
         }
