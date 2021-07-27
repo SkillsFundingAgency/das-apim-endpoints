@@ -77,7 +77,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
+        [Route("accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
         public async Task<IActionResult> Sector(int pledgeId, [FromQuery] string postcode)
         {
             try
