@@ -1,11 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
+using System.Threading;
+using System.Threading.Tasks;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
@@ -23,7 +22,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
 
         public UpdateApprenticeshipCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
-            ApprenticeLoginService apprenticeLoginService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
             CoursesService coursesService,
@@ -40,13 +38,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
             UpdateApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
-            var (provider, apprenticeship, course) = await GetExternalData(command);
+            var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
 
-            if (IsNullOrEmpty(apprenticeship.Email))
-            {
-                _logger.LogInformation($"Apprenticeship {apprenticeship.Id} does not have an email, no point in calling Apprentice Commitments");
-                return Unit.Value;
-            }
+            if (apprenticeship == null) return default;
 
             await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
             {
@@ -61,26 +55,39 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
                 TrainingProviderName = IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
+                CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
-            return Unit.Value;
+            return default;
         }
 
-        private async Task<(TrainingProviderResponse, ApprenticeshipResponse apprenticeship, StandardApiResponse)>
+        private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
             GetExternalData(UpdateApprenticeshipCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
+
+            if (IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in calling Apprentice Commitments", apprenticeship.Id);
+                return default;
+            }
+
+            if (apprenticeship.CourseCode.Contains("-"))
+            {
+                _logger.LogWarning("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);
+                return default;
+            }
 
             var course = _coursesService.GetCourse(apprenticeship.CourseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
 
             await Task.WhenAll(course, provider);
 
-            return (provider.Result, apprenticeship, course.Result);
+            return (apprenticeship, provider.Result, course.Result);
         }
     }
 }
