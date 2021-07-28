@@ -65,7 +65,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("accounts/{accountId}/pledges")]
+        [Route("accounts/{accountId}/pledges/create")]
         public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
