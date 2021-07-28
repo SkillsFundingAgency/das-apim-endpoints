@@ -90,11 +90,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("opportunities/{opportunityId}/create/application-details")]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetApplicationDetails(int opportunityId)
+        public async Task<IActionResult> GetApplicationDetails(long accountId, int opportunityId)
         {
             try
             {
