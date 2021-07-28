@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
@@ -33,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
 
             _mediator = new Mock<IMediator>();
 
-            _controller = new OpportunityController(_mediator.Object);
+            _controller = new OpportunityController(Mock.Of<ILogger<OpportunityController>>(),_mediator.Object);
 
             _mediator.Setup(x => x.Send(It.Is<CreateApplicationCommand>(command =>
                     command.PledgeId == _opportunityId &&
