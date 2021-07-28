@@ -51,7 +51,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetMyPledgesResponse
                 {
-                    Pledges = queryResult.Pledges.Select(x => new GetMyPledgesResponse.MyPledge { Id = x.Id, Amount = x.Amount })
+                    Pledges = queryResult.Pledges.Select(x => new GetMyPledgesResponse.MyPledge 
+                    {
+                        Id = x.Id,
+                        Amount = x.Amount,
+                        RemainingAmount = x.RemainingAmount,
+                        ApplicationCount = x.ApplicationCount
+                    })
                 };
 
                 return Ok(response);

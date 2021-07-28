@@ -10,6 +10,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges
         {
             public int Id { get; set; }
             public int Amount { get; set; }
+            public int RemainingAmount { get; set; }
+            public int ApplicationCount { get; set; }
         }
     }
 }

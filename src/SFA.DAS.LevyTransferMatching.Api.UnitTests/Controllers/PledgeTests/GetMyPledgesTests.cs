@@ -51,6 +51,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             CollectionAssert.IsNotEmpty(response.Pledges);
             Assert.That(!response.Pledges.Any(x => x.Id == 0));
             Assert.That(!response.Pledges.Any(x => x.Amount == 0));
+            Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));
+            Assert.That(!response.Pledges.Any(x => x.ApplicationCount == 0));
         }
     }
 }
