@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
     {
         Task<bool> IsHealthy();
         Task<GetIncentiveDetailsResponse> GetIncentiveDetails();
+        Task<ApprenticeshipIncentiveDto[]> GetApprenticeshipIncentives(long accountId, long accountLegalEntityId);
     }
 }
