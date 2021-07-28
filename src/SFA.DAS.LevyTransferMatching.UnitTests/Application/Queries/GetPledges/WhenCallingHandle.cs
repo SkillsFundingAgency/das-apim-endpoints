@@ -2,6 +2,8 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -14,20 +16,20 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetPledges
     public class WhenCallingHandle
     {
         [Test, MoqAutoData]
-        public async Task And_No_Id_Specified_Then_All_Pledges_Returned(
-            IEnumerable<Pledge> pledges,
+        public async Task And_No_AccountId_Specified_Then_All_Pledges_Returned(
+            GetPledgesResponse getPledgesResponse,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             GetPledgesQueryHandler getPledgesQueryHandler)
         {
             GetPledgesQuery getPledgesQuery = new GetPledgesQuery();
 
             mockLevyTransferMatchingService
-                .Setup(x => x.GetPledges())
-                .ReturnsAsync(pledges);
+                .Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>()))
+                .ReturnsAsync(getPledgesResponse);
 
             var results = await getPledgesQueryHandler.Handle(getPledgesQuery, CancellationToken.None);
 
-            CollectionAssert.AreEqual(pledges, results);
+            CollectionAssert.AreEqual(getPledgesResponse.Items, results);
         }
     }
 }

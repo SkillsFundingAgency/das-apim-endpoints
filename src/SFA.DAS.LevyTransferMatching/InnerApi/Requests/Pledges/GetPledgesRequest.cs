@@ -2,8 +2,18 @@
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges
 {
-    public class GetPledgesRequest : IGetAllApiRequest
+    public class GetPledgesRequest : IGetApiRequest
     {
-        public string GetAllUrl => $"pledges";
+        public GetPledgesRequest(long? accountId = null)
+        {
+            this.GetUrl = "pledges";
+
+            if (accountId.HasValue)
+            {
+                this.GetUrl += $"?accountId={accountId}";
+            }
+        }
+
+        public string GetUrl { get; set; }
     }
 }
