@@ -178,7 +178,8 @@ namespace SFA.DAS.Campaign.Models
                 {
                     TabName = tab.Fields.TabName,
                     TabTitle = tab.Fields.TabTitle,
-                    FindTraineeship = tab.Fields.FindTraineeship
+                    FindTraineeship = tab.Fields.FindTraineeship,
+                    Id = tab.Sys.Id
                 };
 
                 foreach (var contentItem in tab.Fields.TabContent.Content)
@@ -191,6 +192,16 @@ namespace SFA.DAS.Campaign.Models
                 tabModel.Content.Items = contentItems;
 
                 tabbedContentModels.Add(tabModel);
+            }
+
+            if (!tabbedContentModels.Any())
+            {
+                return tabbedContentModels;
+            }
+
+            for (var i = 0; i < item.Fields.TabbedContents.Count; i++)
+            {
+                tabbedContentModels = tabbedContentModels.OrderBy(o => o.Id == item.Fields.TabbedContents[i].Sys.Id).ToList();
             }
 
             return tabbedContentModels;
@@ -235,43 +246,5 @@ namespace SFA.DAS.Campaign.Models
                 });
             }
         }
-        //var cards = hub.Includes?.Entry != null
-        //    ? hub
-        //        .Includes
-        //.Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
-        //                  && c.Sys.ContentType.Sys.Type.Equals("link",
-        //                      StringComparison.CurrentCultureIgnoreCase)
-        //                  && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
-        //                      StringComparison.CurrentCultureIgnoreCase)
-        //                  && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
-        //                  type == PageType.Article &&
-        //                  hub.Items[0].Fields.Cards.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
-        //)
-        //        .Select(entry => new CardPageModel
-        //        {
-        //            Id = entry.Sys.Id,
-        //            Slug = entry.Fields.Slug,
-        //            Summary = entry.Fields.Summary,
-        //            Title = entry.Fields.Title,
-        //            HubType = entry.Fields.HubType,
-        //            MetaDescription = entry.Fields.MetaDescription,
-        //            LandingPage = SetLandingPageDetails(hub, entry)
-        //        })
-        //        .ToList()
-        //    : new List<CardPageModel>();
-
-        //if (!cards.Any())
-        //{
-        //    return cards;
-        //}
-
-        //for (var i = 0; i < hub.Items[0].Fields.Cards.Count; i++)
-        //{
-        //    cards = cards.OrderBy(o => o.Id == hub.Items[0].Fields.Cards[i].Sys.Id).ToList();
-        //}
-
-        //return cards;
     }
-
-   
 }
