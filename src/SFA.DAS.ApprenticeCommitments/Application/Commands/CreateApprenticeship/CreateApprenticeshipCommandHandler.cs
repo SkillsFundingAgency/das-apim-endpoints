@@ -8,6 +8,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.String;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {
@@ -40,9 +41,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             CreateApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
-            var (trainingProvider, apprentice, course) = await GetExternalData(command);
+            var (apprentice, trainingProvider, course) = await GetExternalData(command) ?? default;
 
-            if (string.IsNullOrEmpty(apprentice.Email)) return null;
+            if (apprentice == null) return default;
 
             var id = Guid.NewGuid();
 
@@ -81,7 +82,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             return res;
         }
 
-        private async Task<(TrainingProviderResponse, Apis.CommitmentsV2InnerApi.ApprenticeshipResponse, StandardApiResponse course)> GetExternalData(CreateApprenticeshipCommand command)
+        private async Task<(Apis.CommitmentsV2InnerApi.ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
+            GetExternalData(CreateApprenticeshipCommand command)
         {
             var trainingProviderTask = _trainingProviderService.GetTrainingProviderDetails(command.TrainingProviderId);
 
@@ -91,11 +93,23 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
 
             await Task.WhenAll(trainingProviderTask, apprenticeTask);
 
+            if (IsNullOrEmpty(apprenticeTask.Result.Email))
+            {
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in calling Apprentice Commitments", apprenticeTask.Result.Id);
+                return default;
+            }
+
+            if (apprenticeTask.Result.CourseCode.Contains("-"))
+            {
+                _logger.LogWarning("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeTask.Result.Id);
+                return default;
+            }
+
             var courseCode = ApprenticeCourseCode(apprenticeTask.Result);
 
             var course = await _coursesService.GetCourse(courseCode);
 
-            return (trainingProviderTask.Result, apprenticeTask.Result, course);
+            return (apprenticeTask.Result, trainingProviderTask.Result, course);
         }
 
         private static string ApprenticeCourseCode(Apis.CommitmentsV2InnerApi.ApprenticeshipResponse apprenticeTask)
