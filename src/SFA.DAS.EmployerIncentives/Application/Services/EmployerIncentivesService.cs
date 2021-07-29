@@ -2,6 +2,7 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses;
 using SFA.DAS.EmployerIncentives.Interfaces;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -34,5 +35,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             return await _client.Get<GetIncentiveDetailsResponse>(new GetIncentiveDetailsRequest());
         }
 
+        public async Task<ApprenticeshipIncentiveDto[]> GetApprenticeshipIncentives(long accountId, long accountLegalEntityId)
+        {
+            var response = await _client.GetAll<ApprenticeshipIncentiveDto>(new GetApprenticeshipIncentivesRequest(accountId, accountLegalEntityId));
+
+            return response.ToArray();
+        }
     }
 }

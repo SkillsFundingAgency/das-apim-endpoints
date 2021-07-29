@@ -20,19 +20,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
+            services.AddTransient<ICacheStorageService, CacheStorageService>();
+
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
             services.AddTransient<ILevyTransferMatchingService, LevyTransferMatchingService>();
             services.AddTransient<IReferenceDataService, ReferenceDataService>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-            services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-
+            services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
+            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<IAccountsService, AccountsService>();
-
             services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }
