@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/pledges/my-pledges")]
+        [Route("accounts/{accountId}/pledges")]
         public async Task<IActionResult> MyPledges(long accountId)
         {
             try
