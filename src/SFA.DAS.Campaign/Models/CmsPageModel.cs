@@ -36,9 +36,9 @@ namespace SFA.DAS.Campaign.Models
 
             foreach (var contentItem in item.Fields.Content.Content)
             {
-                ProcessContentNodeTypes(article, contentItem, contentItems);
-                ProcessListNodeTypes(contentItem, contentItems);
-                ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
+                article.ProcessContentNodeTypes(contentItem, contentItems);
+                contentItem.ProcessListNodeTypes(contentItems);
+                article.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
             }
 
             var parentPage = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
@@ -46,44 +46,7 @@ namespace SFA.DAS.Campaign.Models
             return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu);
         }
 
-        private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent article, SubContentItems contentItem,
-            List<ContentItem> contentItems)
-        {
-            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
-            {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    EmbeddedResource = article.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
-                });
-            }
-        }
-
-        private static void ProcessListNodeTypes(SubContentItems contentItem, List<ContentItem> contentItems)
-        {
-            if (contentItem.NodeType.NodeTypeIsList())
-            {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    TableValue = contentItem.GetListItems()
-                });
-            }
-        }
-
-        private static void ProcessContentNodeTypes(CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
-        {
-            if (contentItem.NodeType.NodeTypeIsContent())
-            {
-                contentItems.Add(new ContentItem
-                {
-                    Type = contentItem.NodeType,
-                    Values = contentItem.BuildParagraph(),
-                    TableValue = contentItem.BuildTable(article)
-                });
-            }
-        }
-
+       
         private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult, List<ContentItem> contentItems,
             Entry parentPage, MenuPageModel.MenuPageContent menu)
         {

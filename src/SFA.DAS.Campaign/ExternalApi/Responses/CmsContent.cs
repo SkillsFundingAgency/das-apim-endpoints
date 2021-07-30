@@ -312,6 +312,15 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("menuItems")]
         public List<MenuItem> MenuItems { get; set; }
+
+        [JsonProperty("backgroundColour", NullValueHandling = NullValueHandling.Ignore)]
+        public string BackgroundColour { get; set; }
+
+        [JsonProperty("allowUserToHideTheBanner", NullValueHandling = NullValueHandling.Ignore)]
+        public bool AllowUserToHideTheBanner { get; set; }
+
+        [JsonProperty("showOnTheHomepageOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool ShowOnTheHomepageOnly { get; set; }
     }
 
     public class MainContent
