@@ -10,6 +10,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -39,7 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getStandardsQueryResult);
 
-            var controllerResult = await opportunityController.GetApplicationDetails(opportunityId);
+            var controllerResult = await opportunityController.GetApplicationDetails(opportunityId, default);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as ApplicationDetailsResponse;
 
@@ -61,7 +62,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetOpportunityResult)null);
 
-            var controllerResult = await opportunityController.GetApplicationDetails(opportunityId);
+            var controllerResult = await opportunityController.GetApplicationDetails(opportunityId, default);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);
