@@ -13,7 +13,8 @@ namespace SFA.DAS.Campaign.Models
         public PageModel PageAttributes { get; set; }
         public HubContent MainContent { get; set; }
         public MenuPageModel.MenuPageContent MenuContent { get; set; }
-        public LandingPageModel Build(CmsContent hub, MenuPageModel.MenuPageContent menu)
+        public BannerPageModel BannerModels { get; set; }
+        public LandingPageModel Build(CmsContent hub, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             if (hub.ContentItemsAreNullOrEmpty())
             {
@@ -24,7 +25,7 @@ namespace SFA.DAS.Campaign.Models
 
             Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
 
-            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item), menu);
+            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item), menu, banners);
         }
 
         private static List<CardPageModel> ProcessCards(CmsContent hub)
@@ -104,7 +105,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static LandingPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage, MenuPageModel.MenuPageContent menu)
+        private static LandingPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new LandingPageModel()
             {
@@ -122,7 +123,8 @@ namespace SFA.DAS.Campaign.Models
                     Cards = cards,
                     HeaderImage = headerImage
                 },
-                MenuContent = menu
+                MenuContent = menu,
+                BannerModels = banners
             };
         }
 

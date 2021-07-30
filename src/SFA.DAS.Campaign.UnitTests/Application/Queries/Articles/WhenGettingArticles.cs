@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
@@ -27,7 +28,9 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
         public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Article_Is_Returned(
             GetArticleByHubAndSlugQuery query,
             GetMenuQueryResult menuResult,
+            GetBannerQueryResult bannerResult,
             MenuPageModel.MenuPageContent menuContent, 
+            BannerPageModel bannerContent,
             CmsContent apiResponse,
             CmsPageModel response,
             [Frozen] Mock<IReliableCacheStorageService> service,
@@ -42,13 +45,13 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
                 .ReturnsAsync(apiResponse);
 
             mediator.SetupMenu(menuResult, menuContent);
+            mediator.SetupBanners(bannerResult, bannerContent);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            var cmsPageModel = response.Build(apiResponse, menuContent);
+            var cmsPageModel = response.Build(apiResponse, menuContent, bannerContent);
             
             actual.PageModel.Should().BeEquivalentTo(cmsPageModel);
-            service.Verify(x=>x.GetData<CmsContent>(It.IsAny<GetLandingPageRequest>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

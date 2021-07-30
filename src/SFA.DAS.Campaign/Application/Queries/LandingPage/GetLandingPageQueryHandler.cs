@@ -26,10 +26,11 @@ namespace SFA.DAS.Campaign.Application.Queries.LandingPage
         {
             var landingPage = _reliableCacheStorageService.GetData<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug), $"{request.Hub.ToTitleCase()}_{request.Slug}_landingPage");
             var menu = _mediator.RetrieveMenu(cancellationToken);
+            var banners = _mediator.RetrieveBanners(cancellationToken: cancellationToken);
 
-            await Task.WhenAll(landingPage, menu);
+            await Task.WhenAll(landingPage, menu, banners);
 
-            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent);
+            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent, banners.Result);
 
             return new GetLandingPageQueryResult
             {

@@ -12,11 +12,11 @@ namespace SFA.DAS.Campaign.Models
         public PageModel PageAttributes { get; set; }
         public PageContent MainContent { get; set; }
         public MenuPageModel.MenuPageContent MenuContent { get; set; }
-
+        public BannerPageModel BannerModels { get; set; }
         public List<PageModel> RelatedArticles { get; set; }
         public List<ResourceItem> Attachments { get; set; }
 
-        public CmsPageModel Build(CmsContent article, MenuPageModel.MenuPageContent menu)
+        public CmsPageModel Build(CmsContent article, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             if (article.ContentItemsAreNullOrEmpty())
             {
@@ -31,7 +31,7 @@ namespace SFA.DAS.Campaign.Models
 
             if (item.Fields.Content?.Content == null)
             {
-                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu);
+                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu, banners);
             }
 
             foreach (var contentItem in item.Fields.Content.Content)
@@ -43,12 +43,12 @@ namespace SFA.DAS.Campaign.Models
 
             var parentPage = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
 
-            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu);
+            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu, banners);
         }
 
        
         private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult, List<ContentItem> contentItems,
-            Entry parentPage, MenuPageModel.MenuPageContent menu)
+            Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new CmsPageModel
             {
@@ -98,7 +98,8 @@ namespace SFA.DAS.Campaign.Models
                         MetaDescription = parentPage.Fields.MetaDescription
                     }
                     : null,
-                MenuContent = menu
+                MenuContent = menu,
+                BannerModels = banners
             };
         }
 

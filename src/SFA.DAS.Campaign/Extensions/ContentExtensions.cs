@@ -5,6 +5,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
@@ -192,6 +193,18 @@ namespace SFA.DAS.Campaign.Extensions
             };
 
             return menuModel;
+        }
+
+        public static async Task<BannerPageModel> RetrieveBanners(this IMediator mediator, CancellationToken cancellationToken = default)
+        {
+            var banners = await  mediator.Send(new GetBannerQuery(), cancellationToken);
+          
+            var bannerModels = new BannerPageModel
+            {
+                MainContent = banners.PageModel.MainContent
+            };
+
+            return bannerModels;
         }
 
         private static void ProcessHyperLinkNodeType(ContentDefinition contentDefinition, List<string> returnList)

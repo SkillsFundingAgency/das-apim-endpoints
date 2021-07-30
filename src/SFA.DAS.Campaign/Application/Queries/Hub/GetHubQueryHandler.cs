@@ -29,10 +29,11 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
         {
             var article = _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub");
             var menu = _mediator.RetrieveMenu(cancellationToken);
+            var banners = _mediator.RetrieveBanners(cancellationToken: cancellationToken);
 
-            await Task.WhenAll(article, menu);
+            await Task.WhenAll(article, menu, banners);
 
-            var pageModel = new HubPageModel().Build(article.Result, menu.Result.MainContent);
+            var pageModel = new HubPageModel().Build(article.Result, menu.Result.MainContent, banners.Result);
 
             return new GetHubQueryResult
             {

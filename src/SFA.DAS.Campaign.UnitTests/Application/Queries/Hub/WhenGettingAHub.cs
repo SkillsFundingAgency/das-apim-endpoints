@@ -9,6 +9,7 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Application.Queries.Articles;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Hub;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Extensions;
@@ -29,6 +30,8 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             MenuPageModel.MenuPageContent menuContent,
             CmsContent apiResponse,
             HubPageModel response,
+            GetBannerQueryResult bannerResult,
+            BannerPageModel bannerContent,
             [Frozen] Mock<IReliableCacheStorageService> service,
             [Frozen] Mock<IMediator> mediator,
             GetHubQueryHandler handler)
@@ -41,10 +44,11 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
                 .ReturnsAsync(apiResponse);
 
             mediator.SetupMenu(menuResult, menuContent);
+            mediator.SetupBanners(bannerResult, bannerContent);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent));
+            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent, bannerContent));
             service.Verify(x => x.GetData<CmsContent>(It.IsAny<GetHubEntriesRequest>(), It.IsAny<string>()), Times.Once);
         }
     }

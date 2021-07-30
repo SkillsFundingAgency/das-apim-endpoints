@@ -5,16 +5,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Application\Services\**" />
+      <EmbeddedResource Remove="Application\Services\**" />
+      <None Remove="Application\Services\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="contentful.aspnetcore" Version="6.0.7" />
       <PackageReference Include="MediatR" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Application\Services" />
     </ItemGroup>
 
 </Project>
