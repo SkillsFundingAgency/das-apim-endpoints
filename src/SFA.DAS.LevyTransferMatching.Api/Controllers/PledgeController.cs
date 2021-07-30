@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -30,11 +31,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges")]
-        public async Task<IActionResult> MyPledges(long accountId)
+        public async Task<IActionResult> Pledges(long accountId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetMyPledgesQuery(accountId));
+                var queryResult = await _mediator.Send(new GetPledgesQuery(accountId));
 
                 var response = new GetMyPledgesResponse
                 {

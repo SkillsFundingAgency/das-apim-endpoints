@@ -6,32 +6,29 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges;
-using System;
-using System.Collections.Generic;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
     [TestFixture]
-    public class GetMyPledgesTests
+    public class GetPledgesTests
     {
         private PledgeController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-        private GetMyPledgesQueryResult _queryResult;
+        private GetPledgesQueryResult _queryResult;
         private int _accountId;
 
         [SetUp]
         public void SetUp()
         {
             _mediator = new Mock<IMediator>();
-            _queryResult = _fixture.Create<GetMyPledgesQueryResult>();
+            _queryResult = _fixture.Create<GetPledgesQueryResult>();
             _accountId = _fixture.Create<int>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetMyPledgesQuery>(), It.IsAny<CancellationToken>()))
+            _mediator.Setup(x => x.Send(It.IsAny<GetPledgesQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
@@ -40,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task GetMyPledges_Returns_GetMyPledgesResponse()
         {
-            var controllerResponse = await _controller.MyPledges(_accountId);
+            var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
             Assert.IsNotNull(okObjectResult);

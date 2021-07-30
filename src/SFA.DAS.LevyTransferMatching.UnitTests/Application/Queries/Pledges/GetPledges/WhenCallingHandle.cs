@@ -1,26 +1,22 @@
 ﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetMyPledges
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetPledges
 {
     [TestFixture]
     public class WhenCallingHandle
     {
-        private GetMyPledgesQueryHandler _handler;
+        private GetPledgesQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private GetMyPledgesQuery _query;
+        private GetPledgesQuery _query;
         private GetPledgesResponse _pledgeResponse;
         private Fixture _fixture;
 
@@ -32,12 +28,12 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _pledgeResponse = _fixture.Create<GetPledgesResponse>();
 
             var accountId = _fixture.Create<int>();
-            _query = new GetMyPledgesQuery(accountId);
+            _query = new GetPledgesQuery(accountId);
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_pledgeResponse);
 
-            _handler = new GetMyPledgesQueryHandler(_levyTransferMatchingService.Object);
+            _handler = new GetPledgesQueryHandler(_levyTransferMatchingService.Object);
         }
 
         [Test]
