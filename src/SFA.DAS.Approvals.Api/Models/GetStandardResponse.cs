@@ -14,7 +14,9 @@ namespace SFA.DAS.Approvals.Api.Models
         public string Status { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public decimal Version { get; set; }
+        public string Version { get; set; }
+        public int VersionMajor { get; set; }
+        public int VersionMinor { get; set; }
         public List<string> Options { get; set; }
         public StandardVersionDetail VersionDetail { get; set; }
         
