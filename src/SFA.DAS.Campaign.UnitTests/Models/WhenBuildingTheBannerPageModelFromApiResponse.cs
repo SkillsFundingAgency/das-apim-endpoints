@@ -37,14 +37,32 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Banner_Is_Built(CmsContent source, EntryFields linkedPage)
+        public void Then_The_Banner_Is_Built(CmsContent source, string contentValue)
         {
+            source.Items[0].Fields.AllowUserToHideTheBanner = true;
+            source.Items[0].Fields.ShowOnTheHomepageOnly = true;
+
+            foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
+            {
+                subContentItems.NodeType = "paragraph";
+                subContentItems.Content = new List<ContentDefinition>
+                {
+                    new ContentDefinition
+                    {
+                        NodeType = "text",
+                        Value = contentValue
+                    }
+                };
+            }
+
             var actual = new BannerPageModel().Build(source);
 
-            //actual.MainContent.Should().NotBeNullOrEmpty();
-            //actual.MainContent[0].Title.Should().NotBeNullOrWhiteSpace();
-            //actual.MainContent[0].Hub.Should().NotBeNullOrWhiteSpace();
-            //actual.MainContent[0].Slug.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.Should().NotBeNullOrEmpty();
+            actual.MainContent.ElementAt(0).Title.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.ElementAt(0).AllowUserToHideTheBanner.Should().BeTrue();
+            actual.MainContent.ElementAt(0).BackgroundColour.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.ElementAt(0).ShowOnTheHomepageOnly.Should().BeTrue();
+            actual.MainContent.ElementAt(0).Items.Any().Should().BeTrue();
         }
     }
 }
