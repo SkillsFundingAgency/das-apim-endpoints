@@ -1,5 +1,5 @@
-﻿using SFA.DAS.LevyTransferMatching.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges
 {

@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
+using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using Pledge = SFA.DAS.LevyTransferMatching.Models.Pledge;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Services
 {

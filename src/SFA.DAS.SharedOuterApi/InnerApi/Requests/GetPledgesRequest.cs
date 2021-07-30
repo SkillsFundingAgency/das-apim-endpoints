@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetPledgesRequest : IGetApiRequest
     {

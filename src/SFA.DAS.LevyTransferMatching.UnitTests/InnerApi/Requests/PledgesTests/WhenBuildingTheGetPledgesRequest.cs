@@ -1,6 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
 {
