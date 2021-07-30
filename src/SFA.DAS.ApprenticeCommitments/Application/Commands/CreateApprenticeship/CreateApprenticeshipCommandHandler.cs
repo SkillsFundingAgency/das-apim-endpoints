@@ -1,17 +1,20 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.CreateApprenticeshipRequestData;
+
+#nullable enable
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
 {
-    public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand, CreateApprenticeshipResponse>
+    public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand, CreateApprenticeshipResponse?>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
@@ -36,13 +39,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             _logger = logger;
         }
 
-        public async Task<CreateApprenticeshipResponse> Handle(
+        public async Task<CreateApprenticeshipResponse?> Handle(
             CreateApprenticeshipCommand command,
             CancellationToken cancellationToken)
         {
-            var (trainingProvider, apprentice, course) = await GetExternalData(command);
+            var (apprentice, trainingProvider, course) = await GetExternalData(command) ?? default;
 
-            if (string.IsNullOrEmpty(apprentice.Email)) return null;
+            if (apprentice == null) return default;
 
             var id = Guid.NewGuid();
 
@@ -81,29 +84,22 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             return res;
         }
 
-        private async Task<(TrainingProviderResponse, Apis.CommitmentsV2InnerApi.ApprenticeshipResponse, StandardApiResponse course)> GetExternalData(CreateApprenticeshipCommand command)
+        private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
+            GetExternalData(CreateApprenticeshipCommand command)
         {
-            var trainingProviderTask = _trainingProviderService.GetTrainingProviderDetails(command.TrainingProviderId);
+            var provider = _trainingProviderService.GetTrainingProviderDetails(
+                    command.TrainingProviderId);
 
-            var apprenticeTask = _commitmentsService.GetApprenticeshipDetails(
+            var apprentice = _commitmentsService.GetApprenticeshipDetails(
                 command.EmployerAccountId,
                 command.CommitmentsApprenticeshipId);
 
-            await Task.WhenAll(trainingProviderTask, apprenticeTask);
+            var courseCode = (await apprentice).GetCourseCode(_logger);
+            if (courseCode is null) return default;
 
-            var courseCode = ApprenticeCourseCode(apprenticeTask.Result);
+            var course = _coursesService.GetCourse(courseCode);
 
-            var course = await _coursesService.GetCourse(courseCode);
-
-            return (trainingProviderTask.Result, apprenticeTask.Result, course);
-        }
-
-        private static string ApprenticeCourseCode(Apis.CommitmentsV2InnerApi.ApprenticeshipResponse apprenticeTask)
-        {
-            // Remove after Standards Versioning goes live
-            // Revert to just StandardUId
-            return string.IsNullOrWhiteSpace(apprenticeTask.StandardUId)
-                ? apprenticeTask.CourseCode : apprenticeTask.StandardUId;
+            return (await apprentice, await provider, await course);
         }
     }
 }

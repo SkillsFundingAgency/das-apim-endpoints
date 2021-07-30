@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
@@ -140,6 +141,35 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Sector result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/contact-details")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> ContactDetails(int opportunityId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetContactDetailsQuery()
+                {
+                    OpportunityId = opportunityId,
+                });
+
+                if (result != null)
+                {
+                    return Ok((GetContactDetailsResponse)result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get {nameof(GetContactDetailsQuery)} result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
