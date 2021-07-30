@@ -32,16 +32,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("pledges")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPledges()
-        {
-            var result = await _mediator.Send(new GetPledgesQuery());
-
-            return Ok(result.Select(x => (PledgeDto)x));
-        }
-
-        [HttpGet]
         [Route("accounts/{accountId}/pledges/my-pledges")]
         public async Task<IActionResult> MyPledges(long accountId)
         {

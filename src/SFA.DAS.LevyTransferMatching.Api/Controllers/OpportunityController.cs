@@ -6,9 +6,11 @@ using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
@@ -88,6 +90,41 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet]
+        [Route("opportunities")]
+        public async Task<IActionResult> GetIndex()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetIndexQuery());
+
+                var response = new GetIndexResponse
+                {
+                    Opportunities = result.Opportunities.Select(x => new GetIndexResponse.Opportunity
+                    {
+                        Id = x.Id,
+                        Amount = x.Amount,
+                        IsNamePublic = x.IsNamePublic,
+                        DasAccountName = x.DasAccountName,
+                        Sectors = x.Sectors,
+                        JobRoles = x.JobRoles,
+                        Levels = x.Levels,
+                        Locations = x.Locations
+                    }),
+                    Sectors = result.Sectors,
+                    JobRoles = result.JobRoles,
+                    Levels = result.Levels,
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Index result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
