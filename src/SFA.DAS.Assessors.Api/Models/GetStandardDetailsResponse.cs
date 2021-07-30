@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Assessors.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
