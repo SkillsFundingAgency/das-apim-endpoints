@@ -40,6 +40,8 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public EqaProvider EqaProvider { get; set; }
 
         public bool EPAChanged { get; set; }
+        public int VersionMajor { get; set; }
+        public int VersionMinor { get; set; }
 
         protected override int GetFundingDetails(string prop)
         {

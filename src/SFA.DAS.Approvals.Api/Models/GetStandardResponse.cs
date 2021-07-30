@@ -39,13 +39,15 @@ namespace SFA.DAS.Approvals.Api.Models
                 Title = source.Title,
                 Level = source.Level,
                 Version = source.Version,
+                VersionMajor = source.VersionMajor,
+                VersionMinor = source.VersionMinor,
                 Options = source.Options,
                 VersionDetail = source.VersionDetail,
                 Duration = source.TypicalDuration,
                 MaxFunding = source.MaxFunding,
-                EffectiveFrom = source.StandardDates.EffectiveFrom,
-                EffectiveTo = source.StandardDates.EffectiveTo,
-                LastDateForNewStarts = source.StandardDates.LastDateStarts,
+                EffectiveFrom = source.StandardDates?.EffectiveFrom,
+                EffectiveTo = source.StandardDates?.EffectiveTo,
+                LastDateForNewStarts = source.StandardDates?.LastDateStarts,
                 ApprenticeshipFunding = source.ApprenticeshipFunding.Select(c => (GetStandardFundingResponse)c).ToList()
             };
         }
