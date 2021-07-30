@@ -11,6 +11,7 @@ Background:
 	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   |
 	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org |
 	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -54,3 +55,9 @@ Scenario: New apprenticeship is recieved with Standards Versioning
 	| 4                            | Irrelevant    | 123                              | 1002                 | 2015-04-20              |
 	Then the course should be `Sociology` level 2
 
+Scenario: New Framework apprenticeship is received
+	When the following apprenticeship is posted
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
+	| 5                            | Apple         | 123                              | 1002                 | 2015-04-20              |
+	Then the request should be ignored
+	And the invitation was not sent

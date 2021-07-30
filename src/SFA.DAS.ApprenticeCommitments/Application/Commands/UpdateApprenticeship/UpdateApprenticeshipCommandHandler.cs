@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
@@ -70,24 +71,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
 
-            if (IsNullOrEmpty(apprenticeship.Email))
-            {
-                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in calling Apprentice Commitments", apprenticeship.Id);
-                return default;
-            }
+            var courseCode = apprenticeship.GetCourseCode(_logger);
+            if (courseCode is null) return default;
 
-            if (apprenticeship.CourseCode.Contains("-"))
-            {
-                _logger.LogWarning("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);
-                return default;
-            }
-
-            var course = _coursesService.GetCourse(apprenticeship.CourseCode);
+            var course = _coursesService.GetCourse(courseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
 
-            await Task.WhenAll(course, provider);
-
-            return (apprenticeship, provider.Result, course.Result);
+            return (apprenticeship, await provider, await course);
         }
     }
 }
