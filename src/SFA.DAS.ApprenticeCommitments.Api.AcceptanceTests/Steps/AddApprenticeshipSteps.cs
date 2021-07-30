@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
@@ -230,6 +230,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then("the request should be ignored")]
         public void ThenTheRequestShouldBeIgnored()
         {
+            _context.OuterApiClient.Response.Should().Be2XXSuccessful();
             _context.InnerApi.MockServer.LogEntries.Should().BeEmpty();
         }
 
