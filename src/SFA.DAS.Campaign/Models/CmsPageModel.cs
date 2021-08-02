@@ -182,13 +182,17 @@ namespace SFA.DAS.Campaign.Models
                     Id = tab.Sys.Id
                 };
 
-                foreach (var contentItem in tab.Fields.TabContent.Content)
+                if (tab.Fields?.TabContent != null)
                 {
-                    ProcessContentNodeTypes(article, contentItem, contentItems);
-                    ProcessListNodeTypes(contentItem, contentItems);
-                    ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
-                }
 
+                    foreach (var contentItem in tab.Fields?.TabContent?.Content)
+                    {
+                        ProcessContentNodeTypes(article, contentItem, contentItems);
+                        ProcessListNodeTypes(contentItem, contentItems);
+                        ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
+                    }
+                }
+                
                 tabModel.Content.Items = contentItems;
 
                 tabbedContentModels.Add(tabModel);
