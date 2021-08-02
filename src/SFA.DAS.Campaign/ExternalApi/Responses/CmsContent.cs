@@ -192,6 +192,18 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("metaDescription", NullValueHandling = NullValueHandling.Ignore)]
         public string MetaDescription { get; set; }
+
+        [JsonProperty("tabName", NullValueHandling = NullValueHandling.Ignore)]
+        public string TabName { get; set; }
+
+
+        [JsonProperty("tabTitle", NullValueHandling = NullValueHandling.Ignore)]
+        public string TabTitle { get; set; }
+
+        [JsonProperty("tabContent", NullValueHandling = NullValueHandling.Ignore)]
+        public PurpleContent TabContent { get; set; }
+        [JsonProperty("findTraineeship")]
+        public bool FindTraineeship { get; set; }
     }
 
     public class PurpleContent
@@ -312,6 +324,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("menuItems")]
         public List<MenuItem> MenuItems { get; set; }
+
+        [JsonProperty("tabbedContent")]
+        public List<TabbedContent> TabbedContents { get; set; }
     }
 
     public class MainContent
@@ -383,6 +398,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
     }
 
     public class MenuItem
+    {
+        [JsonProperty("sys")]
+        public LandingPageSys Sys { get; set; }
+    }
+
+    public class TabbedContent
     {
         [JsonProperty("sys")]
         public LandingPageSys Sys { get; set; }
