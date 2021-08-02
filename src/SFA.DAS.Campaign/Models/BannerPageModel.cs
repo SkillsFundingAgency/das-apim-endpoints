@@ -55,7 +55,8 @@ namespace SFA.DAS.Campaign.Models
                 AllowUserToHideTheBanner = item.Fields.AllowUserToHideTheBanner,
                 BackgroundColour = item.Fields.BackgroundColour,
                 ShowOnTheHomepageOnly = item.Fields.ShowOnTheHomepageOnly,
-                Title = item.Fields.Title
+                Title = item.Fields.Title,
+                Id = item.Sys.Id
             };
             
             return banner;
@@ -80,6 +81,7 @@ namespace SFA.DAS.Campaign.Models
             public bool AllowUserToHideTheBanner { get; set; }
             public bool ShowOnTheHomepageOnly { get; set; }
             public string Title { get; set; }
+            public string Id { get; set; }
         }
     }
 }
