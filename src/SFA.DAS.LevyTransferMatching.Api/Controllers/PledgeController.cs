@@ -37,9 +37,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 var queryResult = await _mediator.Send(new GetPledgesQuery(accountId));
 
-                var response = new GetMyPledgesResponse
+                var response = new GetPledgesResponse
                 {
-                    Pledges = queryResult.Pledges.Select(x => new GetMyPledgesResponse.MyPledge 
+                    Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge 
                     {
                         Id = x.Id,
                         Amount = x.Amount,
@@ -52,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get MyPledges result");
+                _logger.LogError(e, $"Error attempting to get Pledges result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

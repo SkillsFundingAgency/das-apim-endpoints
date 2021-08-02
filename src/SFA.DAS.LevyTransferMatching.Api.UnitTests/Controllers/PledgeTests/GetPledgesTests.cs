@@ -35,13 +35,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         }
 
         [Test]
-        public async Task GetMyPledges_Returns_GetMyPledgesResponse()
+        public async Task GetPledges_Returns_GetPledgesResponse()
         {
             var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
-            var response = okObjectResult.Value as GetMyPledgesResponse;
+            var response = okObjectResult.Value as GetPledgesResponse;
             Assert.IsNotNull(response);
 
             Assert.IsNotNull(response.Pledges);

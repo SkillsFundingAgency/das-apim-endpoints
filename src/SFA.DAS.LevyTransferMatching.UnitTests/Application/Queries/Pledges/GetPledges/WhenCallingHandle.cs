@@ -37,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         }
 
         [Test]
-        public async Task Returns_MyPledges()
+        public async Task Returns_Pledges()
         {
             var result = await _handler.Handle(_query, new CancellationToken());
 

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetMyPledges
+namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
-    public class GetMyPledgesQueryResult
+    public class GetPledgesResponse
     {
-        public IEnumerable<MyPledge> Pledges { get; set; }
+        public IEnumerable<Pledge> Pledges { get; set; }
 
-        public class MyPledge
+        public class Pledge
         {
             public int Id { get; set; }
             public int Amount { get; set; }

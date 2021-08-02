@@ -22,7 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
             return new GetPledgesQueryResult
             {
-                Pledges = response?.Items?.Select(x => new GetPledgesQueryResult.MyPledge
+                Pledges = response?.Items?.Select(x => new GetPledgesQueryResult.Pledge
                 {
                     Id = x.Id.Value,
                     Amount = x.Amount,
