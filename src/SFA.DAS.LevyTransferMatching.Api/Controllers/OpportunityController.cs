@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirmation;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -118,6 +119,31 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 _logger.LogError(e, $"Error getting Application Details");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
+        public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
+        {
+            try
+            {
+                var moreDetailsQueryResult = await _mediator.Send(new GetMoreDetailsQuery { OpportunityId = opportunityId });
+
+                var response = new GetMoreDetailsResponse
+                {
+                    Opportunity = moreDetailsQueryResult.Opportunity,
+                    Sectors = moreDetailsQueryResult.Sectors,
+                    JobRoles = moreDetailsQueryResult.JobRoles,
+                    Levels = moreDetailsQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get MoreDetails result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
