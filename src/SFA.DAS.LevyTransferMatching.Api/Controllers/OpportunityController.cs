@@ -8,12 +8,12 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirmation;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -46,6 +46,31 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply")]
+        public async Task<IActionResult> Apply(int accountId, int opportunityId)
+        {
+            try
+            {
+                var applyQueryResult = await _mediator.Send(new GetApplyQuery { OpportunityId = opportunityId });
+
+                var response = new GetApplyResponse
+                {
+                    Opportunity = applyQueryResult.Opportunity,
+                    Sectors = applyQueryResult.Sectors,
+                    JobRoles = applyQueryResult.JobRoles,
+                    Levels = applyQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Apply result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPost]
