@@ -4,6 +4,7 @@ using Contentful.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Campaign.Application.Services;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.ExternalApi;
 using SFA.DAS.Campaign.Interfaces;
@@ -25,6 +26,7 @@ namespace SFA.DAS.Campaign.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IContentService, ContentService>();
 
             services.AddTransient(typeof(IContentfulApiClient<>), typeof(ContentfulApiClient<>));
 

@@ -5,12 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Application\Services\**" />
-      <EmbeddedResource Remove="Application\Services\**" />
-      <None Remove="Application\Services\**" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 

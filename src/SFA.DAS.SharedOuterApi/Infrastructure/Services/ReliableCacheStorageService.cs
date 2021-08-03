@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 {
@@ -15,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             _client = client;
             _cacheStorageService = cacheStorageService;
         }
-        public async Task<T> GetData<T>(IGetApiRequest request, string cacheKey)
+        public async Task<T> GetData<T>(IGetApiRequest request, string cacheKey, Func<ApiResponse<T>, bool> requestCheck)
         {
             var cachedItem = await _cacheStorageService.RetrieveFromCache<T>(cacheKey);
 
@@ -26,7 +27,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             
             var requestData = await _client.GetWithResponseCode<T>(request);
 
-            if (requestData.StatusCode == HttpStatusCode.NotFound)
+            if (requestData.StatusCode == HttpStatusCode.NotFound || !requestCheck(requestData))
             {
                 return default;
             }

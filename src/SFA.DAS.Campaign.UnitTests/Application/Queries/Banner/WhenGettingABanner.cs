@@ -10,8 +10,10 @@ using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Banner
@@ -23,14 +25,16 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Banner
             GetBannerQuery query,
             CmsContent apiResponse,
             BannerPageModel response,
+            [Frozen] Mock<IContentService> contentService,
             [Frozen] Mock<IReliableCacheStorageService> service,
             GetBannerQueryHandler handler)
         {
+            contentService.Setup(x => x.HasContent(It.IsAny<ApiResponse<CmsContent>>())).Returns(true);
             service.Setup(o =>
                     o.GetData<CmsContent>(
                         It.Is<GetBannerRequest>(c =>
                             c.GetUrl.Contains($"entries?content_type=banner")),
-                        $"Banners"))
+                        $"Banners", contentService.Object.HasContent))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

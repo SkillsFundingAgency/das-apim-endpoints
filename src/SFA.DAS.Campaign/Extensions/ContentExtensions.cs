@@ -26,8 +26,8 @@ namespace SFA.DAS.Campaign.Extensions
         public const string EmbeddedAssetBlockNodeTypeKey = "embedded-asset-block";
 
         public static bool ContentItemsAreNullOrEmpty(this CmsContent pageContent)
-        {
-            if (pageContent.Total == 0)
+        {   
+            if (pageContent == null || pageContent.Total == 0)
             {
                 return true;
             }
