@@ -607,7 +607,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
+        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             source.Items.FirstOrDefault().Fields.TabbedContents[0].Sys.Id = "321EDF";
             source.Items.FirstOrDefault().Fields.TabbedContents[1].Sys.Id = "321EDC";
@@ -669,7 +669,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
 
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
 
             //Assert
             actual.TabbedContents.Any().Should().BeTrue();

@@ -138,7 +138,7 @@ Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
                     }
                     : null,
                 MenuContent = menu,
-                TabbedContents = ProcessTabbedContent(article, item)
+                TabbedContents = ProcessTabbedContent(article, item),
                 BannerModels = banners
             };
         }
