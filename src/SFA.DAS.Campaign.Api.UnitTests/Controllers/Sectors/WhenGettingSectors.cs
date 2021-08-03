@@ -44,7 +44,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Sectors
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task And_Exception_Then_Returns_InternalServerError(
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]SectorsController controller)
         {
@@ -54,9 +54,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Sectors
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetSectors() as BadRequestResult;
+            var controllerResult = await controller.GetSectors() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }

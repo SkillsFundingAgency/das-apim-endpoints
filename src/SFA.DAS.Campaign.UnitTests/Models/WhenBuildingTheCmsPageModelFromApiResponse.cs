@@ -605,5 +605,76 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
             actual.MainContent.Items.FirstOrDefault().TableValue.Should().BeEquivalentTo(tableData);
         }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
+        {
+            source.Items.FirstOrDefault().Fields.TabbedContents[0].Sys.Id = "321EDF";
+            source.Items.FirstOrDefault().Fields.TabbedContents[1].Sys.Id = "321EDC";
+            //Arrange
+            source.Includes.Entry = new List<Entry>
+            {
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id="321EDF",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space"
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "tab",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                },
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id="321EDC",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space",
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "tab",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                }
+            };
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent);
+
+            //Assert
+            actual.TabbedContents.Any().Should().BeTrue();
+            actual.TabbedContents.FirstOrDefault().TabTitle.Should().NotBeNullOrWhiteSpace();
+            actual.TabbedContents.FirstOrDefault().TabName.Should().NotBeNullOrWhiteSpace();
+        }
     }
 }
