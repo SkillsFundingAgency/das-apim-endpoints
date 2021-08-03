@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Hub;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
@@ -32,15 +30,17 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             HubPageModel response,
             GetBannerQueryResult bannerResult,
             BannerPageModel bannerContent,
+            [Frozen] Mock<IContentService> contentService,
             [Frozen] Mock<IReliableCacheStorageService> service,
             [Frozen] Mock<IMediator> mediator,
             GetHubQueryHandler handler)
         {
+            contentService.Setup(x=>x.HasContent(It.IsAny<ApiResponse<CmsContent>>())).Returns(true);
             service.Setup(o =>
                     o.GetData<CmsContent>(
                         It.Is<GetHubEntriesRequest>(c =>
                             c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}")),
-                        $"{query.Hub.ToTitleCase()}_hub"))
+                        $"{query.Hub.ToTitleCase()}_hub", contentService.Object.HasContent))
                 .ReturnsAsync(apiResponse);
 
             mediator.SetupMenu(menuResult, menuContent);
@@ -49,7 +49,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent, bannerContent));
-            service.Verify(x => x.GetData<CmsContent>(It.IsAny<GetHubEntriesRequest>(), It.IsAny<string>()), Times.Once);
+            service.Verify(x => x.GetData<CmsContent>(It.IsAny<GetHubEntriesRequest>(), It.IsAny<string>(), contentService.Object.HasContent), Times.Once);
         }
     }
 }
