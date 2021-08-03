@@ -11,7 +11,7 @@ using SFA.DAS.Campaign.Application.Queries.Banner;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class BannerController : ControllerBase
     {
