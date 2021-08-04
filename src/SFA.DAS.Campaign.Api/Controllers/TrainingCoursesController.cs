@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,13 +34,14 @@ namespace SFA.DAS.Campaign.Api.Controllers
 
                 return Ok(new GetStandardsResponse
                 {
-                    Standards = result.Standards.Select(c => (GetStandardsResponseItem)c).ToList()
+                    Standards = result.Standards != null ? result.Standards.Select(c => (GetStandardsResponseItem)c).ToList() 
+                        : new List<GetStandardsResponseItem>()
                 });
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting standards by sector {sector}");
-                return BadRequest();
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
     }
