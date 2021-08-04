@@ -5,8 +5,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetPledgesResponse
     {
-        public IEnumerable<Pledge> Items { get; set; }
-        public int TotalItems { get; set; }
+        public IEnumerable<Pledge> Pledges { get; set; }
+        public int TotalPledges { get; set; }
 
         public class Pledge
         {
@@ -19,13 +19,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<string> Sectors { get; set; }
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
-            public IEnumerable<LocationDataItem> Locations { get; set; }
-
-            public class LocationDataItem
-            {
-                public string Name { get; set; }
-                public double[] GeoPoint { get; set; }
-            }
         }
     }
 }

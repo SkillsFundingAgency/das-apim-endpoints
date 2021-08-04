@@ -24,8 +24,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.GetPledges
 
             return new GetPledgesQueryResult()
             {
-                Pledges = response.Items,
-                TotalPledges = response.TotalItems,
+                Pledges = response.Pledges,
+                TotalPledges = response.TotalPledges,
             };
         }
     }

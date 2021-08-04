@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
     public class WhenBuildingTheGetPledgesRequest
     {

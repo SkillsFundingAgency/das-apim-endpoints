@@ -21,22 +21,6 @@ namespace SFA.DAS.ManageApprenticeships.Api.Models
             public IEnumerable<string> Sectors { get; set; }
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
-            public IEnumerable<LocationDataItem> Locations { get; set; }
-
-            public class LocationDataItem
-            {
-                public string Name { get; set; }
-                public double[] GeoPoint { get; set; }
-
-                public static implicit operator LocationDataItem(SharedOuterApi.InnerApi.Responses.GetPledgesResponse.Pledge.LocationDataItem locationDataItem)
-                {
-                    return new LocationDataItem()
-                    {
-                        GeoPoint = locationDataItem.GeoPoint,
-                        Name = locationDataItem.Name,
-                    };
-                }
-            }
 
             public static implicit operator Pledge(SharedOuterApi.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
             {
@@ -50,7 +34,6 @@ namespace SFA.DAS.ManageApprenticeships.Api.Models
                     IsNamePublic = pledge.IsNamePublic,
                     JobRoles = pledge.JobRoles,
                     Levels = pledge.Levels,
-                    Locations = pledge.Locations?.Select(x => (LocationDataItem)x),
                     Sectors = pledge.Sectors,
                 };
             }

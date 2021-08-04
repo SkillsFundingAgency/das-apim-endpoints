@@ -27,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetPledges
 
             var results = await getPledgesQueryHandler.Handle(getPledgesQuery, CancellationToken.None);
 
-            CollectionAssert.AreEqual(getPledgesResponse.Items, results);
+            CollectionAssert.AreEqual(getPledgesResponse.Pledges, results);
         }
     }
 }
