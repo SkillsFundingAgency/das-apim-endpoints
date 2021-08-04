@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e,"Error getting list of sectors");
-                return BadRequest();
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
     }

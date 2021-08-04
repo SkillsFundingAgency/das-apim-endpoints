@@ -9,6 +9,7 @@ namespace SFA.DAS.Campaign.Models
         Unknown = 0,
         LandingPage = 1,
         Article = 2,
-        Hub = 3
+        Hub = 3,
+        Tab = 4
     }
 }
