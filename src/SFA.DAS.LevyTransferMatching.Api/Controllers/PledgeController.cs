@@ -1,15 +1,14 @@
 ﻿using System;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.LevyTransferMatching.Api.Models;
-using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles;
+using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
@@ -37,7 +36,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var result = await _mediator.Send(new GetPledgesQuery());
 
-            return Ok(result.Select(x => (PledgeDto)x));
+            var pledges = result.Select(x => (GetPledgesResponse.Pledge)x);
+
+            return Ok(new GetPledgesResponse(pledges));
         }
 
         [HttpGet]
