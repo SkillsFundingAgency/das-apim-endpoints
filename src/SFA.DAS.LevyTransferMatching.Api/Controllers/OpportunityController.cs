@@ -67,7 +67,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 EmailAddresses = request.EmailAddresses,
-                BusinessWebsite = request.BusinessWebsite
+                BusinessWebsite = request.BusinessWebsite,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
             });
 
             return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);
