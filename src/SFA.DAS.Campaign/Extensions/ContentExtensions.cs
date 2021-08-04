@@ -299,7 +299,7 @@ namespace SFA.DAS.Campaign.Extensions
           
             var bannerModels = new BannerPageModel
             {
-                MainContent = banners.PageModel.MainContent
+                MainContent = banners.PageModel == null ? new List<BannerPageModel.BannerPageContent>() : banners.PageModel.MainContent
             };
 
             return bannerModels;
