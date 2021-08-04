@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/apply")]
-        public async Task<IActionResult> Apply(int accountId, int opportunityId)
+        public async Task<IActionResult> Apply(long accountId, int opportunityId)
         {
             try
             {
