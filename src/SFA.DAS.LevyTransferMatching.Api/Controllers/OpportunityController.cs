@@ -7,13 +7,12 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirmation;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -99,19 +98,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var opportunity = await _mediator.Send(new GetOpportunityQuery() { OpportunityId = opportunityId });
+                var result = await _mediator.Send(new GetApplicationDetailsQuery { OpportunityId = opportunityId, StandardId = standardId });
 
-                if(opportunity == null)
+                if(result.Opportunity == null)
                 {
                     return NotFound();
                 }
 
-                var standards = await _mediator.Send(new GetStandardsQuery() { StandardId = standardId});
-
                 return Ok(new ApplicationDetailsResponse
                 {
-                    Standards = standards.Standards,
-                    Opportunity = opportunity
+                    Opportunity = result.Opportunity,
+                    Standards = result.Standards,
+                    Sectors = result.Sectors,
+                    JobRoles = result.JobRoles,
+                    Levels = result.Levels
                 });
             }
             catch (Exception e)
