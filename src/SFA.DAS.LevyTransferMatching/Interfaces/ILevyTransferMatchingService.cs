@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<IEnumerable<ReferenceDataItem>> GetLevels();
         Task<IEnumerable<ReferenceDataItem>> GetSectors();
         Task<IEnumerable<ReferenceDataItem>> GetJobRoles();
-        Task<PledgeReference> CreatePledge(Pledge pledge);
+        Task<CreatePledgeResponse> CreatePledge(CreatePledgeRequest pledge);
 		Task<IEnumerable<Pledge>> GetPledges();
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
         Task CreateAccount(CreateAccountRequest request);
