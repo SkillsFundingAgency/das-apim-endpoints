@@ -120,7 +120,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetApplicationDetails(long accountId, int opportunityId)
+        public async Task<IActionResult> GetApplicationDetails(long accountId, int opportunityId, [FromQuery] string standardId)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     return NotFound();
                 }
 
-                var standards = await _mediator.Send(new GetStandardsQuery());
+                var standards = await _mediator.Send(new GetStandardsQuery() { StandardId = standardId});
 
                 return Ok(new ApplicationDetailsResponse
                 {
