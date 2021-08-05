@@ -16,6 +16,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirma
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
