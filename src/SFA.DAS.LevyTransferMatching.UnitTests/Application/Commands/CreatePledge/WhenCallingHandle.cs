@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
                 .ReturnsAsync(() => new GetAccountResponse());
 
             mockLevyTransferMatchingService
-                .Setup(x => x.CreatePledge(It.Is<CreatePledgeRequest>(y =>  y.AccountId == accountId)))
+                .Setup(x => x.CreatePledge(It.IsAny<CreatePledgeRequest>()))
                 .ReturnsAsync(response);
 
             createPledgeCommand.AccountId = accountId;
@@ -53,7 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
                 .Returns(Task.CompletedTask);
 
             mockLevyTransferMatchingService
-                .Setup(x => x.CreatePledge(It.Is<CreatePledgeRequest>(y => y.AccountId == accountId)))
+                .Setup(x => x.CreatePledge(It.IsAny<CreatePledgeRequest>()))
                 .ReturnsAsync(response);
 
             createPledgeCommand.AccountId = accountId;

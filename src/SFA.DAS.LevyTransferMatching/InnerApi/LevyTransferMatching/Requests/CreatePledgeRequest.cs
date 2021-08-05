@@ -9,8 +9,6 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
     {
         private readonly long _accountId;
 
-        public long AccountId => _accountId;
-
         public CreatePledgeRequest(long accountId, CreatePledgeRequestData data)
         {
             _accountId = accountId;

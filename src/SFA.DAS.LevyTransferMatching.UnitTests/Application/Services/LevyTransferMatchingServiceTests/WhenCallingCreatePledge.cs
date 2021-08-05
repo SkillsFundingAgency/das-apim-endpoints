@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
             LevyTransferMatchingService levyTransferMatchingService)
         {
             mockLevyTransferMatchingApiClient
-                .Setup(x => x.PostWithResponseCode<CreatePledgeResponse>(It.Is<CreatePledgeRequest>(y => y.PostUrl.Contains(pledge.AccountId.ToString()))))
+                .Setup(x => x.PostWithResponseCode<CreatePledgeResponse>(It.IsAny<CreatePledgeRequest>()))
                 .ReturnsAsync(() => new ApiResponse<CreatePledgeResponse>(response, HttpStatusCode.Accepted, null));
 
             var actual = await levyTransferMatchingService.CreatePledge(pledge);
