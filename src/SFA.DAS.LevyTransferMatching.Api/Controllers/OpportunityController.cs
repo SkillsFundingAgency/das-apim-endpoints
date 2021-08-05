@@ -164,9 +164,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetSectorResponse
                 {
-                    Sectors = sectorQueryResult.Sectors,
                     Opportunity = sectorQueryResult.Opportunity,
-                    Location = sectorQueryResult.Location
+                    Location = sectorQueryResult.Location,
+                    Sectors = sectorQueryResult.Sectors,
+                    JobRoles = sectorQueryResult.JobRoles,
+                    Levels = sectorQueryResult.Levels
                 };
 
                 return Ok(response);
