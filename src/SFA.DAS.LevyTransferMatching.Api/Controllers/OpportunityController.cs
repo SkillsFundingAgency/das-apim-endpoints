@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using System.Net;
 using System.Threading.Tasks;
@@ -28,25 +28,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             _logger = logger;
             _mediator = mediator;
-        }
-
-        [HttpGet]
-        [Route("opportunities/{opportunityId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetOpportunity(int opportunityId)
-        {
-            var result = await _mediator.Send(new GetOpportunityQuery()
-            {
-                OpportunityId = opportunityId,
-            });
-
-            if (result != null)
-            {
-                return Ok((PledgeDto)result);
-            }
-
-            return NotFound();
         }
 
         [HttpGet]
@@ -222,6 +203,31 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get {nameof(GetContactDetailsQuery)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("opportunities/{opportunityId}")]
+        public async Task<IActionResult> Detail(int opportunityId)
+        {
+            try
+            {
+                var detailQueryResult = await _mediator.Send(new GetDetailQuery { OpportunityId = opportunityId });
+
+                var response = new GetDetailResponse
+                {
+                    Opportunity = detailQueryResult.Opportunity,
+                    Sectors = detailQueryResult.Sectors,
+                    JobRoles = detailQueryResult.JobRoles,
+                    Levels = detailQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Detail result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
