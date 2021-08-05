@@ -9,6 +9,7 @@ using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetIndex
@@ -49,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         [Test]
         public async Task Handle_Returns_Opportunities()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
 
             CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Items.Select(x => x.Id));
         }
@@ -57,21 +58,21 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         [Test]
         public async Task Handle_Returns_Sectors()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_sectors, result.Sectors);
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_jobRoles, result.JobRoles);
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_levels, result.Levels);
         }
     }

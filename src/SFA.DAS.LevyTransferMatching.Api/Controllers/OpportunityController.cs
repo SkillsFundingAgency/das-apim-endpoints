@@ -9,7 +9,6 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
-using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
