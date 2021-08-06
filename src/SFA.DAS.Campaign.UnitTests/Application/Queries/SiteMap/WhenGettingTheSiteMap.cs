@@ -11,8 +11,10 @@ using SFA.DAS.Campaign.Application.Queries.SiteMap;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Queries.SiteMap
@@ -24,14 +26,16 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.SiteMap
             GetSiteMapQuery query,
             CmsContent apiResponse,
             SiteMapPageModel response,
+            [Frozen] Mock<IContentService> contentService,
             [Frozen] Mock<IReliableCacheStorageService> service,
             GetSiteMapQueryHandler handler)
         {
+            contentService.Setup(x=>x.HasContent(It.IsAny<ApiResponse<CmsContent>>())).Returns(true);
             service.Setup(o =>
                     o.GetData<CmsContent>(
                         It.Is<GetSiteMapRequest>(c =>
                             c.GetUrl.Contains($"entries?content_type={query.ContentType}&include=2")),
-                        $"SiteMap_{query.ContentType}"))
+                        $"SiteMap_{query.ContentType}", contentService.Object.HasContent))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

@@ -12,38 +12,38 @@ namespace SFA.DAS.Campaign.UnitTests.Models
     public class WhenBuildingTheCmsPageModelFromApiResponse
     {
         [Test, RecursiveMoqAutoData]
-        public void Then_If_No_Items_Returned_Then_Null_Returned(MenuPageModel.MenuPageContent menuContent)
+        public void Then_If_No_Items_Returned_Then_Null_Returned(MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             var source = new CmsContent {Items = new List<Item>(), Total = 1};
 
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.Should().BeNull();
         }
         [Test, RecursiveMoqAutoData]
-        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(CmsContent source, MenuPageModel.MenuPageContent menuContent)
+        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Total = 0;
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.Should().BeNull();
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_No_Content_Items_Returns_Empty_List(CmsContent source, MenuPageModel.MenuPageContent menuContent)
+        public void Then_No_Content_Items_Returns_Empty_List(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.Content = null;
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.Should().BeEmpty();
@@ -53,23 +53,23 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         [RecursiveMoqInlineAutoData("article", PageType.Article )]
         [RecursiveMoqInlineAutoData("landingpage", PageType.LandingPage)]
         [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
-        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Sys.ContentType.Sys.Id = pageType;
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.PageAttributes.PageType.Should().Be(type);
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Page_Level_Fields_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Page_Level_Fields_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
 
             //Assert
             actual.PageAttributes.Title.Should().Be(source.Items.FirstOrDefault()?.Fields.Title);
@@ -80,14 +80,14 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Parent_Page_Is_Set(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Parent_Page_Is_Set(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.LandingPage.Sys.Id = parentId;
             source.Includes.Entry.FirstOrDefault().Sys.Id = parentId;
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.ParentPage.Title.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Title);
@@ -98,21 +98,21 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_If_No_Parent_Page_Is_Set_Then_Null_Returned_For_Parent_Page(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent)
+        public void Then_If_No_Parent_Page_Is_Set_Then_Null_Returned_For_Parent_Page(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.LandingPage = null;
             
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.ParentPage.Should().BeNull();
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_Paragraphs(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_Paragraphs(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -129,7 +129,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
@@ -137,7 +137,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_Headings(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_Headings(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -154,7 +154,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("heading")).Should().BeTrue();
@@ -162,7 +162,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
          
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_Block_Quotes(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_Block_Quotes(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -186,7 +186,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.Should().NotBeEmpty();
@@ -195,7 +195,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_Hr_Content_Type(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_Hr_Content_Type(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -205,7 +205,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.Should().NotBeEmpty();
@@ -216,7 +216,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         [Test]
         [RecursiveMoqInlineAutoData("unordered-list")]
         [RecursiveMoqInlineAutoData("ordered-list")]
-        public void Then_The_Content_Items_Are_Added_For_ListItems_with_Styling(string listType, CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_ListItems_with_Styling(string listType, CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -266,7 +266,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items[0].Type.Should().Be(listType);
@@ -277,7 +277,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Embedded_Items_Are_Added(CmsContent source, string contentValue, string linkedContentId, AssetFields fields, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Embedded_Items_Are_Added(CmsContent source, string contentValue, string linkedContentId, AssetFields fields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             fields.File.Url = $"//{fields.File.Url}"; 
@@ -314,7 +314,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items[0].Type.Should().Be("embedded-asset-block");
@@ -329,7 +329,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_If_Content_Contains_HyperLink_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent)
+        public void Then_If_Content_Contains_HyperLink_The_Content_Items_Are_Added_For_ListItems(CmsContent source, string contentValue, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
@@ -390,7 +390,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
 
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
 
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("unordered-list")).Should().BeTrue();
@@ -399,7 +399,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Content_Items_Are_Added_For_Links(CmsContent source, string contentValue, string uri, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Content_Items_Are_Added_For_Links(CmsContent source, string contentValue, string uri, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             var expectedUri = $"https://{uri}/";
@@ -427,7 +427,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             }
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
@@ -435,7 +435,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Related_Articles_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Related_Articles_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Includes.Entry = new List<Entry>
@@ -495,7 +495,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.RelatedArticles.Count.Should().Be(1);
@@ -508,7 +508,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
         
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Attachments_Are_Built(CmsContent source, AssetFields fields, string linkedContentId, MenuPageModel.MenuPageContent menuContent)
+        public void Then_The_Attachments_Are_Built(CmsContent source, EntryFields linkedPage, AssetFields fields, string linkedContentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             fields.File.Url = $"//{fields.File.Url}";
@@ -537,7 +537,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.Attachments.Count.Should().Be(1);
@@ -551,7 +551,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_Any_Linked_Types_Are_Added_To_The_Content_Items(CmsContent source,string contentValue, string linkedContentId, List<List<string>> tableData, MenuPageModel.MenuPageContent menuContent)
+        public void Then_Any_Linked_Types_Are_Added_To_The_Content_Items(CmsContent source,string contentValue, string linkedContentId, List<List<string>> tableData, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.Content.Content = new List<SubContentItems>
@@ -599,7 +599,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
             
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
             
             //Assert
             actual.MainContent.Items.TrueForAll(c => c.Type.Equals("paragraph")).Should().BeTrue();
@@ -607,7 +607,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent)
+        public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             source.Items.FirstOrDefault().Fields.TabbedContents[0].Sys.Id = "321EDF";
             source.Items.FirstOrDefault().Fields.TabbedContents[1].Sys.Id = "321EDC";
@@ -669,7 +669,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             };
 
             //Act
-            var actual = new CmsPageModel().Build(source, menuContent);
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
 
             //Assert
             actual.TabbedContents.Any().Should().BeTrue();
