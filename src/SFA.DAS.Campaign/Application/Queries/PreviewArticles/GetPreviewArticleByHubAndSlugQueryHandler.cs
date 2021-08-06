@@ -25,10 +25,11 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewArticles
         {
             var article = _client.Get<CmsContent>(new GetArticleEntriesRequest(request.Hub.ToTitleCase(), request.Slug));
             var menu = _mediator.RetrieveMenu(cancellationToken);
+            var banners = _mediator.RetrieveBanners(cancellationToken: cancellationToken);
 
             await Task.WhenAll(article, menu);
 
-            var pageModel = new CmsPageModel().Build(article.Result, menu.Result.MainContent);
+            var pageModel = new CmsPageModel().Build(article.Result, menu.Result.MainContent, banners.Result);
             
             return new GetPreviewArticleByHubAndSlugQueryResult
             {

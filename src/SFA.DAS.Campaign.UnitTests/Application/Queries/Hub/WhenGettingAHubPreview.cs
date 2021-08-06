@@ -8,6 +8,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Application.Queries.PreviewHub;
 using SFA.DAS.Campaign.Configuration;
@@ -30,6 +31,8 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             MenuPageModel.MenuPageContent menuContent,
             CmsContent apiResponse,
             HubPageModel response,
+            GetBannerQueryResult bannerResult,
+            BannerPageModel bannerContent,
             [Frozen] Mock<IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration>> apiClient,
             [Frozen] Mock<IMediator> mediator,
             GetPreviewHubQueryHandler handler)
@@ -41,10 +44,11 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
                 .ReturnsAsync(apiResponse);
 
             mediator.SetupMenu(menuResult, menuContent);
+            mediator.SetupBanners(bannerResult, bannerContent);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent));
+            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent, bannerContent));
         }
     }
 }
