@@ -12,11 +12,12 @@ namespace SFA.DAS.Campaign.Models
         public PageModel PageAttributes { get; set; }
         public PageContent MainContent { get; set; }
         public MenuPageModel.MenuPageContent MenuContent { get; set; }
+        public BannerPageModel BannerModels { get; set; }
         public List<TabbedContentModel> TabbedContents { get; set; }
         public List<PageModel> RelatedArticles { get; set; }
         public List<ResourceItem> Attachments { get; set; }
 
-        public CmsPageModel Build(CmsContent article, MenuPageModel.MenuPageContent menu)
+        public CmsPageModel Build(CmsContent article, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             if (article.ContentItemsAreNullOrEmpty())
             {
@@ -31,20 +32,20 @@ namespace SFA.DAS.Campaign.Models
 
             if (item.Fields.Content?.Content == null)
             {
-                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu);
+                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu, banners);
             }
 
             foreach (var contentItem in item.Fields.Content.Content)
             {
-                ProcessContentNodeTypes(article, contentItem, contentItems);
-                ProcessListNodeTypes(contentItem, contentItems);
-                ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
+                article.ProcessContentNodeTypes(contentItem, contentItems);
+                contentItem.ProcessListNodeTypes(contentItems);
+                article.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
             }
 
             var parentPage =
                 article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
 
-            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu);
+            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu, banners);
         }
 
         private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent article, SubContentItems contentItem,
@@ -72,8 +73,7 @@ namespace SFA.DAS.Campaign.Models
             }
         }
 
-        private static void ProcessContentNodeTypes(CmsContent article, SubContentItems contentItem,
-            List<ContentItem> contentItems)
+        private static void ProcessContentNodeTypes(CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
         {
             if (contentItem.NodeType.NodeTypeIsContent())
             {
@@ -86,9 +86,8 @@ namespace SFA.DAS.Campaign.Models
             }
         }
 
-        private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult,
-            List<ContentItem> contentItems,
-            Entry parentPage, MenuPageModel.MenuPageContent menu)
+        private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult, List<ContentItem> contentItems,
+Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new CmsPageModel
             {
@@ -105,8 +104,7 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Items = contentItems
                 },
-                Attachments = item.Fields.Attachments
-                    ?.Select(attachment => article.GetEmbeddedResource(attachment.Sys.Id))
+                Attachments = item.Fields.Attachments?.Select(attachment => article.GetEmbeddedResource(attachment.Sys.Id))
                     .ToList(),
                 RelatedArticles = article.Includes?.Entry != null
                     ? article
@@ -140,7 +138,8 @@ namespace SFA.DAS.Campaign.Models
                     }
                     : null,
                 MenuContent = menu,
-                TabbedContents = ProcessTabbedContent(article, item)
+                TabbedContents = ProcessTabbedContent(article, item),
+                BannerModels = banners
             };
         }
 

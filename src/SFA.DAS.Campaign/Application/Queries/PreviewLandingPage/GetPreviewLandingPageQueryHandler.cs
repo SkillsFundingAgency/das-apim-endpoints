@@ -26,9 +26,11 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewLandingPage
         {
             var landingPage = _client.Get<CmsContent>(new GetLandingPageRequest(request.Hub.ToTitleCase(), request.Slug));
             var menu = _mediator.RetrieveMenu(cancellationToken);
+            var banners = _mediator.RetrieveBanners(cancellationToken: cancellationToken);
 
-            await Task.WhenAll(landingPage, menu);
-            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent);
+
+            await Task.WhenAll(landingPage, menu, banners);
+            var pageModel = new LandingPageModel().Build(landingPage.Result, menu.Result.MainContent, banners.Result);
 
             return new GetPreviewLandingPageQueryResult()
             {

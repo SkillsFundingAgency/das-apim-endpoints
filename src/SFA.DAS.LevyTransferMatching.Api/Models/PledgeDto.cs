@@ -8,6 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
         public int Id { get; set; }
         public long AccountId { get; set; }
         public int Amount { get; set; }
+        public int RemainingAmount { get; set; }
         public bool IsNamePublic { get; set; }
         public string DasAccountName { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -22,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                 Id = pledge.Id.Value,
                 AccountId = pledge.AccountId,
                 Amount = pledge.Amount,
+                RemainingAmount = pledge.RemainingAmount,
                 CreatedOn = pledge.CreatedOn,
                 IsNamePublic = pledge.IsNamePublic,
                 DasAccountName = pledge.IsNamePublic ? pledge.DasAccountName : "Opportunity",

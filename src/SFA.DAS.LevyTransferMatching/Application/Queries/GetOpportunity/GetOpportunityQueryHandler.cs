@@ -24,6 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity
                 {
                      AccountId = opportunity.AccountId,
                      Amount = opportunity.Amount,
+                     RemainingAmount = opportunity.RemainingAmount,
                      CreatedOn = opportunity.CreatedOn,
                      DasAccountName = opportunity.DasAccountName,
                      Id = opportunity.Id,

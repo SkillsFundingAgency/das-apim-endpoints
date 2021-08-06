@@ -5,6 +5,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
 using SFA.DAS.Campaign.Configuration;
@@ -23,6 +24,8 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
         public async Task Then_The_Api_Is_Called_With_The_Valid_Request_Parameters_And_The_Article_Is_Returned(
             GetPreviewArticleByHubAndSlugQuery query,
             GetMenuQueryResult menuResult,
+            GetBannerQueryResult bannerResult,
+            BannerPageModel bannerContent,
             MenuPageModel.MenuPageContent menuContent,
             CmsContent apiResponse,
             CmsPageModel response,
@@ -37,10 +40,10 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Articles
                 .ReturnsAsync(apiResponse);
 
             mediator.SetupMenu(menuResult, menuContent);
-
+            mediator.SetupBanners(bannerResult, bannerContent);
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent));
+            actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent, bannerContent));
         }
     }
 }
