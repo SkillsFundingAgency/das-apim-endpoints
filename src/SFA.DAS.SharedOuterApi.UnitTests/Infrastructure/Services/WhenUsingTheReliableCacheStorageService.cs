@@ -30,7 +30,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
                 .ReturnsAsync(response);
             
             //Act
-            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey);
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey, _ => true);
             
             //Assert
             actual.Should().BeEquivalentTo(requestData);
@@ -51,7 +51,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             cacheStorageService.Setup(x => x.RetrieveFromCache<TestData>(cacheKey)).ReturnsAsync(requestData);
             
             //Act
-            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey);
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey, _ => true);
             
             //Assert
             actual.Should().BeEquivalentTo(requestData);
@@ -75,7 +75,30 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
                 .ReturnsAsync(response);
             
             //Act
-            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey);
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey, _ => true);
+            
+            //Assert
+            actual.Should().BeNull();
+            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_RequestCheck_Returns_False_Then_The_Cache_Is_Not_Updated(
+            string cacheKey,
+            TestRequest request,
+            TestData requestData,
+            [Frozen] Mock<IGetApiClient<IApiConfiguration>> getApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
+            ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
+        {
+            var response = new ApiResponse<TestData>(requestData, HttpStatusCode.OK, "");
+            getApiClient
+                .Setup(
+                    x => x.GetWithResponseCode<TestData>(It.Is<IGetApiRequest>(c => c.GetUrl.Equals(request.GetUrl))))
+                .ReturnsAsync(response);
+            
+            //Act
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey, _ => false);
             
             //Assert
             actual.Should().BeNull();
@@ -103,7 +126,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
                 .ReturnsAsync(response);
             
             //Act
-            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey);
+            var actual = await reliableCacheStorageService.GetData<TestData>(request, cacheKey, _ => true);
             
             //Assert
             actual.Should().BeEquivalentTo(cacheData);

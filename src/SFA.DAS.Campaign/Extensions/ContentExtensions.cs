@@ -5,6 +5,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
@@ -25,8 +26,8 @@ namespace SFA.DAS.Campaign.Extensions
         public const string EmbeddedAssetBlockNodeTypeKey = "embedded-asset-block";
 
         public static bool ContentItemsAreNullOrEmpty(this CmsContent pageContent)
-        {
-            if (pageContent.Total == 0)
+        {   
+            if (pageContent == null || pageContent.Total == 0)
             {
                 return true;
             }
@@ -292,6 +293,18 @@ namespace SFA.DAS.Campaign.Extensions
             return menuModel;
         }
 
+        public static async Task<BannerPageModel> RetrieveBanners(this IMediator mediator, CancellationToken cancellationToken = default)
+        {
+            var banners = await  mediator.Send(new GetBannerQuery(), cancellationToken);
+          
+            var bannerModels = new BannerPageModel
+            {
+                MainContent = banners.PageModel == null ? new List<BannerPageModel.BannerPageContent>() : banners.PageModel.MainContent
+            };
+
+            return bannerModels;
+        }
+
         private static void ProcessHyperLinkNodeType(ContentDefinition contentDefinition, List<string> returnList)
         {
             if (contentDefinition.NodeType.Equals(HyperLinkNodeTypeKey))
@@ -324,6 +337,44 @@ namespace SFA.DAS.Campaign.Extensions
             var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
 
             returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
+        }
+
+        public static void ProcessEmbeddedAssetBlockNodeTypes(this CmsContent article, SubContentItems contentItem,
+            List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    EmbeddedResource = article.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
+                });
+            }
+        }
+
+        public static void ProcessListNodeTypes(this SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsList())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.GetListItems()
+                });
+            }
+        }
+
+        public static void ProcessContentNodeTypes(this CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsContent())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    Values = contentItem.BuildParagraph(),
+                    TableValue = contentItem.BuildTable(article)
+                });
+            }
         }
 
         private static void ProcessTextNodeType(RelatedContent contentDefinition, List<string> returnList)

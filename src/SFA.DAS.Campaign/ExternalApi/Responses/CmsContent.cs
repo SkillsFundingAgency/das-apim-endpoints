@@ -327,6 +327,14 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonProperty("tabbedContent")]
         public List<TabbedContent> TabbedContents { get; set; }
+        [JsonProperty("backgroundColour", NullValueHandling = NullValueHandling.Ignore)]
+        public string BackgroundColour { get; set; }
+
+        [JsonProperty("allowUserToHideTheBanner", NullValueHandling = NullValueHandling.Ignore)]
+        public bool AllowUserToHideTheBanner { get; set; }
+
+        [JsonProperty("showOnTheHomepageOnly", NullValueHandling = NullValueHandling.Ignore)]
+        public bool ShowOnTheHomepageOnly { get; set; }
     }
 
     public class MainContent
