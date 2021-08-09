@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
@@ -16,33 +16,34 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTests
 {
-    public class WhenCallingGetSector
+    public class WhenCallingGetMoreDetails
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Ok_And_Response(
-            int pledgeId,
-            string postcode,
-            GetSectorQueryResult getSectorQueryResult,
+            long accountId,
+            int opportunityId,
+            GetMoreDetailsQueryResult getMoreDetailsQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetSectorQuery>(y => y.Postcode == postcode),
+                    It.Is<GetMoreDetailsQuery>(y => y.OpportunityId == opportunityId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getSectorQueryResult);
+                .ReturnsAsync(getMoreDetailsQueryResult);
 
-            var controllerResult = await opportunityController.Sector(pledgeId, postcode);
+            var controllerResult = await opportunityController.MoreDetails(accountId, opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
-            var response = okObjectResult.Value as GetSectorResponse;
+            var response = okObjectResult.Value as GetMoreDetailsResponse;
 
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(response);
             Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getSectorQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getSectorQueryResult.Location, response.Location);
-            Assert.AreEqual(getSectorQueryResult.Opportunity.Id, response.Opportunity.Id);
+            Assert.AreEqual(getMoreDetailsQueryResult.Opportunity.Id, response.Opportunity.Id);
+            Assert.AreEqual(getMoreDetailsQueryResult.Sectors, response.Sectors);
+            Assert.AreEqual(getMoreDetailsQueryResult.JobRoles, response.JobRoles);
+            Assert.AreEqual(getMoreDetailsQueryResult.Levels, response.Levels);
         }
     }
 }

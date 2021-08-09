@@ -1,13 +1,12 @@
-﻿using SFA.DAS.LevyTransferMatching.Models;
+﻿using SFA.DAS.LevyTransferMatching.Api.Models.Shared;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
+namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
 {
-    public class GetSectorQueryResult
+    public class GetApplyResponse
     {
-        public string Location { get; set; }
-        public Pledge Opportunity { get; set; }
+        public OpportunitySummary Opportunity { get; set; }
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
         public IEnumerable<ReferenceDataItem> Levels { get; set; }

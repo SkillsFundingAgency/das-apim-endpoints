@@ -2,11 +2,10 @@
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply
 {
-    public class GetSectorQueryResult
+    public class GetApplyQueryResult
     {
-        public string Location { get; set; }
         public Pledge Opportunity { get; set; }
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
