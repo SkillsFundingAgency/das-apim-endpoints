@@ -50,7 +50,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
                     command.FirstName == _request.FirstName &&
                     command.LastName == _request.LastName &&
                     command.EmailAddresses.Equals(_request.EmailAddresses) &&
-                    command.BusinessWebsite == _request.BusinessWebsite
+                    command.BusinessWebsite == _request.BusinessWebsite &&
+                    command.UserId == _request.UserId &&
+                    command.UserDisplayName == _request.UserDisplayName
                 ), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_result);
         }

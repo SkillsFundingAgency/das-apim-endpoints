@@ -45,7 +45,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 EmailAddresses = request.EmailAddresses,
-                BusinessWebsite = request.BusinessWebsite
+                BusinessWebsite = request.BusinessWebsite,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
             };
 
             var createApplicationRequest = new CreateApplicationRequest(request.PledgeId, data);

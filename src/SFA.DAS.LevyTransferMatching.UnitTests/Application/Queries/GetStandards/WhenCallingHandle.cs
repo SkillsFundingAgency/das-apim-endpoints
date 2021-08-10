@@ -2,7 +2,6 @@
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.Testing.AutoFixture;

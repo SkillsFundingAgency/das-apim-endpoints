@@ -22,6 +22,16 @@ namespace SFA.DAS.Campaign.UnitTests.Extensions
         }
 
         [Test]
+        public void Then_If_The_CmsContent_Is_Null_Then_True_Returned()
+        {
+            CmsContent ci = null;
+
+            var actual = ci.ContentItemsAreNullOrEmpty();
+
+            actual.Should().BeTrue();
+        }
+
+        [Test]
         public void
             A_CmsContent_Object_Is_Passed_To_ContentItemsAreNullOrEmpty_And_The_Total_Is_Greater_Than_Zero_Then_Returns_False()
         {

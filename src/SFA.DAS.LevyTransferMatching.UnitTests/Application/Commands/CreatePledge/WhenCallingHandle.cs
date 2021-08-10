@@ -3,7 +3,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
         public async Task Then_Pledge_Created_And_Pledge_Id_Returned(
             CreatePledgeCommand createPledgeCommand,
             long accountId,
-            PledgeReference pledgeReference,
+            CreatePledgeResponse response,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
         {
@@ -27,21 +26,21 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
                 .ReturnsAsync(() => new GetAccountResponse());
 
             mockLevyTransferMatchingService
-                .Setup(x => x.CreatePledge(It.Is<Pledge>(y => y.AccountId == accountId)))
-                .ReturnsAsync(pledgeReference);
+                .Setup(x => x.CreatePledge(It.IsAny<CreatePledgeRequest>()))
+                .ReturnsAsync(response);
 
             createPledgeCommand.AccountId = accountId;
 
             var result = await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
 
-            Assert.AreEqual(result.PledgeId, pledgeReference.Id);
+            Assert.AreEqual(result.PledgeId, response.Id);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Account_Is_Created_If_Not_Already_Exists(
             CreatePledgeCommand createPledgeCommand,
             long accountId,
-            PledgeReference pledgeReference,
+            CreatePledgeResponse response,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             CreatePledgeHandler createPledgeHandler)
         {
@@ -54,8 +53,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
                 .Returns(Task.CompletedTask);
 
             mockLevyTransferMatchingService
-                .Setup(x => x.CreatePledge(It.Is<Pledge>(y => y.AccountId == accountId)))
-                .ReturnsAsync(pledgeReference);
+                .Setup(x => x.CreatePledge(It.IsAny<CreatePledgeRequest>()))
+                .ReturnsAsync(response);
 
             createPledgeCommand.AccountId = accountId;
 
