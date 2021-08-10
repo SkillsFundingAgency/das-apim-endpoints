@@ -5,6 +5,5 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference
     public class GetLevelsRequest : IGetAllApiRequest
     {
         public string GetAllUrl => "reference/levels";
-        public string Version { get; }
     }
 }
