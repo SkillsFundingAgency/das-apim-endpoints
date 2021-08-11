@@ -19,6 +19,13 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<string> Sectors { get; set; }
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
+            public List<LocationDataItem> Locations { get; set; }
+
+            public class LocationDataItem
+            {
+                public string Name { get; set; }
+                public double[] GeoPoint { get; set; }
+            }
         }
     }
 }

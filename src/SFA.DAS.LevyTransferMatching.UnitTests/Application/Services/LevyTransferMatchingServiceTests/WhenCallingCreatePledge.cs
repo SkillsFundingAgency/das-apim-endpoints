@@ -10,6 +10,10 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransferMatchingServiceTests
 {
@@ -17,18 +21,18 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_The_PledgeReference(
-            Pledge pledge,
-            PledgeReference pledgeReference,
+            CreatePledgeRequest pledge,
+            CreatePledgeResponse response,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLevyTransferMatchingApiClient,
             LevyTransferMatchingService levyTransferMatchingService)
         {
             mockLevyTransferMatchingApiClient
-                .Setup(x => x.PostWithResponseCode<PledgeReference>(It.Is<CreatePledgeRequest>(y => y.PostUrl.Contains(pledge.AccountId.ToString()))))
-                .ReturnsAsync(() => new ApiResponse<PledgeReference>(pledgeReference, HttpStatusCode.Accepted, null));
+                .Setup(x => x.PostWithResponseCode<CreatePledgeResponse>(It.IsAny<CreatePledgeRequest>()))
+                .ReturnsAsync(() => new ApiResponse<CreatePledgeResponse>(response, HttpStatusCode.Accepted, null));
 
             var actual = await levyTransferMatchingService.CreatePledge(pledge);
 
-            Assert.AreEqual(actual.Id, pledgeReference.Id);
+            Assert.AreEqual(actual.Id, response.Id);
         }
     }
 }

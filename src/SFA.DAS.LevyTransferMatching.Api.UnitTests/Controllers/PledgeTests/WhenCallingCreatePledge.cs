@@ -11,7 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTests
+namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
     public class WhenCallingCreatePledge
     {

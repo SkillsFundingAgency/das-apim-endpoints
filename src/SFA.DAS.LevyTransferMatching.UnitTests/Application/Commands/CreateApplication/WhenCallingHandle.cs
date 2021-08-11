@@ -68,6 +68,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
             Assert.AreEqual(_command.LastName, createdApplication.LastName);
             CollectionAssert.AreEqual(_command.EmailAddresses, createdApplication.EmailAddresses);
             Assert.AreEqual(_command.BusinessWebsite, createdApplication.BusinessWebsite);
+            Assert.AreEqual(_command.UserId, createdApplication.UserId);
+            Assert.AreEqual(_command.UserDisplayName, createdApplication.UserDisplayName);
         }
 
         [Test]

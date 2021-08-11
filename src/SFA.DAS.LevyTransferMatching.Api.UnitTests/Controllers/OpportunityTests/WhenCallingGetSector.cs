@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.Testing.AutoFixture;
 using System;

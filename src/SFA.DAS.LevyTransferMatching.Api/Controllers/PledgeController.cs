@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
@@ -27,18 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
-        }
-
-        [HttpGet]
-        [Route("pledges")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPledges()
-        {
-            var result = await _mediator.Send(new GetPledgesQuery());
-
-            var pledges = result.Select(x => (GetPledgesResponse.Pledge)x);
-
-            return Ok(new GetPledgesResponse(pledges));
         }
 
         [HttpGet]
@@ -78,7 +64,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations
+                Locations = createPledgeRequest.Locations,
+                UserId = createPledgeRequest.UserId,
+                UserDisplayName = createPledgeRequest.UserDisplayName
             });
 
             return new CreatedResult(

@@ -23,20 +23,20 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
             _logger = logger;
         }
 
-        public async Task<CreatePledgeResult> Handle(CreatePledgeCommand command, CancellationToken cancellationToken)
+        public async Task<CreatePledgeResult> Handle(CreatePledgeCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Creating Pledge for account {command.AccountId}");
+            _logger.LogInformation($"Creating Pledge for account {request.AccountId}");
 
-            var account = await _levyTransferMatchingService.GetAccount(new GetAccountRequest(command.AccountId));
+            var account = await _levyTransferMatchingService.GetAccount(new GetAccountRequest(request.AccountId));
 
             if (account == null)
             {
-                _logger.LogInformation($"Account {command.AccountId} does not exist - creating");
-                await _levyTransferMatchingService.CreateAccount(new CreateAccountRequest(command.AccountId, command.DasAccountName));
+                _logger.LogInformation($"Account {request.AccountId} does not exist - creating");
+                await _levyTransferMatchingService.CreateAccount(new CreateAccountRequest(request.AccountId, request.DasAccountName));
             }
 
             var locationDataItems = new List<LocationDataItem>();
-            foreach (var location in command.Locations)
+            foreach (var location in request.Locations)
             {
                 var locationInformationResult = await _locationLookupService.GetLocationInformation(location, 0, 0);
                 locationDataItems.Add(new LocationDataItem
@@ -46,23 +46,25 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 });
             }
 
-            var pledge = new Pledge
+            var apiRequest = new CreatePledgeRequest(request.AccountId, new CreatePledgeRequest.CreatePledgeRequestData
             {
-                AccountId = command.AccountId,
-                Amount = command.Amount,
-                IsNamePublic = command.IsNamePublic,
-                DasAccountName = command.DasAccountName,
-                Sectors = command.Sectors,
-                JobRoles = command.JobRoles,
-                Levels = command.Levels,
-                Locations = locationDataItems
-            };
+                AccountId = request.AccountId,
+                Amount = request.Amount,
+                IsNamePublic = request.IsNamePublic,
+                DasAccountName = request.DasAccountName,
+                Sectors = request.Sectors,
+                JobRoles = request.JobRoles,
+                Levels = request.Levels,
+                Locations = locationDataItems,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
+            });
 
-            var pledgeReference = await _levyTransferMatchingService.CreatePledge(pledge);
+            var result = await _levyTransferMatchingService.CreatePledge(apiRequest);
 
             return new CreatePledgeResult
             {
-                PledgeId = pledgeReference.Id.Value,
+                PledgeId = result.Id,
             };
         }
     }

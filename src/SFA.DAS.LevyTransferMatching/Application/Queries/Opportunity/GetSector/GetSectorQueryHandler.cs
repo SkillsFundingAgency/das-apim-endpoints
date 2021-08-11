@@ -22,16 +22,20 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
         public async Task<GetSectorQueryResult> Handle(GetSectorQuery request, CancellationToken cancellationToken)
         {
             var locationInformationTask = _locationLookupService.GetLocationInformation(request.Postcode, 0, 0, true);
-            var sectorsTask = _referenceDataService.GetSectors();
             var opportunityTask = _levyTransferMatchingService.GetPledge(request.OpportunityId);
+            var sectorsTask = _referenceDataService.GetSectors();
+            var jobRolesTask = _referenceDataService.GetJobRoles();
+            var levelsTask = _referenceDataService.GetLevels();
 
-            await Task.WhenAll(locationInformationTask, sectorsTask, opportunityTask);
+            await Task.WhenAll(locationInformationTask, opportunityTask, sectorsTask, jobRolesTask, levelsTask);
 
             return new GetSectorQueryResult
             {
-                Sectors = sectorsTask.Result,
                 Location = locationInformationTask.Result?.Name,
-                Opportunity = opportunityTask.Result
+                Opportunity = opportunityTask.Result,
+                Sectors = sectorsTask.Result,
+                JobRoles = jobRolesTask.Result,
+                Levels = levelsTask.Result
             };
         }
     }
