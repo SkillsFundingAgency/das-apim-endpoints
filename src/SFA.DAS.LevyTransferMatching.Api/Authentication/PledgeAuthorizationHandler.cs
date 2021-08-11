@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Authorization;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Authentication
 {
@@ -14,17 +12,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Authentication
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<PledgeAuthorizationHandler> _logger;
         private readonly ILevyTransferMatchingService _service;
-        private readonly IConfiguration _configuration;
 
         public PledgeAuthorizationHandler(IHttpContextAccessor httpContextAccessor,
             ILogger<PledgeAuthorizationHandler> logger,
-            ILevyTransferMatchingService service,
-            IConfiguration configuration)
+            ILevyTransferMatchingService service)
         {
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
             _service = service;
-            _configuration = configuration;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PledgeRequirement requirement)
