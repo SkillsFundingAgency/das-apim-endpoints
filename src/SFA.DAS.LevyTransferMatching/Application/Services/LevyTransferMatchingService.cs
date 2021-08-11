@@ -69,5 +69,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
            var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
            return response.Body;
         }
+
+        public async Task<IEnumerable<Models.Application>> GetApplications(GetApplicationsRequest request)
+        {
+            return await _levyTransferMatchingApiClient.GetAll<Models.Application>(request);
+        }
     }
 }

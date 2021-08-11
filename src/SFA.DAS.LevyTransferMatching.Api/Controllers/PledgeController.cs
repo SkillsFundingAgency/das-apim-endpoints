@@ -5,13 +5,17 @@ using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Authentication;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -161,6 +165,26 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 _logger.LogError(e, $"Error attempting to get JobRoles result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [Authorize(Policy = PolicyNames.PledgeAccount)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
+        public async Task<IActionResult> PledgeApplications(int pledgeId)
+        {
+            var applications = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
+            var standardsResponse = await _mediator.Send(new GetStandardsQuery() { StandardId = applications.First().StandardId });
+
+            if (standardsResponse != null)
+            {
+                return Ok(new GetApplicationsResponse
+                {
+                    Applications = applications,
+                    Standard = standardsResponse.Standards.First()
+                });
+            }
+
+            return NotFound();
         }
     }
 }
