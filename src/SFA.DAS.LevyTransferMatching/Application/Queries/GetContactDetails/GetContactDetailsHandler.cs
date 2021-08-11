@@ -46,6 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
                 JobRoles = pledge.JobRoles,
                 Levels = pledge.Levels,
                 Sectors = pledge.Sectors,
+                Locations = pledge.Locations.Select(x => x.Name),
                 IsNamePublic = pledge.IsNamePublic,
             };
         }
