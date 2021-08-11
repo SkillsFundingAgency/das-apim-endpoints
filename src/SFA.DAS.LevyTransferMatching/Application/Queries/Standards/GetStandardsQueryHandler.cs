@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
@@ -20,11 +22,23 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Standards
         }
         public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
         {
-            var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+            var standards = new List<GetStandardsListItem>();
+
+            if (string.IsNullOrEmpty(request.StandardId))
+            {
+                var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+                standards = standardsResponse.Standards.ToList();
+            }
+
+            else
+            {
+                var standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(request.StandardId));
+                standards.Add(standard);
+            }
 
             return new GetStandardsQueryResult
             {
-                Standards = standardsResponse.Standards
+                Standards = standards
             };
         }        
     }

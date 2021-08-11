@@ -3,13 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetPledges;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetJobRoles;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
@@ -28,16 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
-        }
-
-        [HttpGet]
-        [Route("pledges")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPledges()
-        {
-            var result = await _mediator.Send(new GetPledgesQuery());
-
-            return Ok(result.Select(x => (PledgeDto)x));
         }
 
         [HttpGet]
@@ -65,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("accounts/{accountId}/pledges")]
+        [Route("accounts/{accountId}/pledges/create")]
         public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
@@ -77,7 +64,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = createPledgeRequest.JobRoles,
                 Levels = createPledgeRequest.Levels,
                 Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations
+                Locations = createPledgeRequest.Locations,
+                UserId = createPledgeRequest.UserId,
+                UserDisplayName = createPledgeRequest.UserDisplayName
             });
 
             return new CreatedResult(

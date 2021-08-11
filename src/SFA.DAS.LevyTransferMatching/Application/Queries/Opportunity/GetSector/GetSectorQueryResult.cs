@@ -6,8 +6,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector
 {
     public class GetSectorQueryResult
     {
-        public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public string Location { get; set; }
         public Pledge Opportunity { get; set; }
+        public IEnumerable<ReferenceDataItem> Sectors { get; set; }
+        public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> Levels { get; set; }
     }
 }

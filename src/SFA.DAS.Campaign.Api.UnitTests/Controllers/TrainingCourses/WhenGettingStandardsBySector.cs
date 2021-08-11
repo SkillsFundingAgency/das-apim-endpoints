@@ -43,6 +43,29 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
             var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem { Id = s.LarsCode });
             model.Standards.Should().BeEquivalentTo(response);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Returns_Empty_List_If_None_Returned_From_Standards_By_Sector_From_Mediator(
+            string sector,
+            GetStandardsQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] TrainingCoursesController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetStandardsQuery>(c => c.Sector.Equals(sector)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetStandardsQueryResult());
+
+            var controllerResult = await controller.GetStandardsBySector(sector) as ObjectResult;
+
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetStandardsResponse;
+            Assert.IsNotNull(model);
+
+            model.Standards.Should().BeEmpty();
+        }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
@@ -55,9 +78,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetStandardsBySector("") as BadRequestResult;
+            var controllerResult = await controller.GetStandardsBySector("") as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }

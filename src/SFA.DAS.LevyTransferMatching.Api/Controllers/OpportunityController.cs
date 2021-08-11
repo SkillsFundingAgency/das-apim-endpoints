@@ -1,15 +1,22 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetOpportunity;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
-using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Api.Models.Opportunities;
+using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConfirmation;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -26,54 +33,163 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("opportunities/{opportunityId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetOpportunity(int opportunityId)
+        [Route("opportunities")]
+        public async Task<IActionResult> GetIndex()
         {
-            var result = await _mediator.Send(new GetOpportunityQuery()
+            try
             {
-                OpportunityId = opportunityId,
-            });
+                var result = await _mediator.Send(new GetIndexQuery());
 
-            if (result != null)
-            {
-                return Ok((PledgeDto)result);
+                var response = new GetIndexResponse
+                {
+                    Opportunities = result.Opportunities.Select(x => new GetIndexResponse.Opportunity
+                    {
+                        Id = x.Id,
+                        Amount = x.Amount,
+                        IsNamePublic = x.IsNamePublic,
+                        DasAccountName = x.DasAccountName,
+                        Sectors = x.Sectors,
+                        JobRoles = x.JobRoles,
+                        Levels = x.Levels,
+                        Locations = x.Locations
+                    }),
+                    Sectors = result.Sectors,
+                    JobRoles = result.JobRoles,
+                    Levels = result.Levels,
+                };
+
+                return Ok(response);
             }
-            else
+            catch (Exception e)
             {
-                return NotFound();
+                _logger.LogError(e, $"Error attempting to get Index result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
         [HttpGet]
-        [Route("opportunities/{opportunityId}/create/application-details")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetApplicationDetails(int opportunityId)
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply")]
+        public async Task<IActionResult> Apply(long accountId, int opportunityId)
         {
             try
             {
-                var opportunity = await _mediator.Send(new GetOpportunityQuery() { OpportunityId = opportunityId });
+                var applyQueryResult = await _mediator.Send(new GetApplyQuery { OpportunityId = opportunityId });
 
-                if(opportunity == null)
+                var response = new GetApplyResponse
+                {
+                    Opportunity = applyQueryResult.Opportunity,
+                    Sectors = applyQueryResult.Sectors,
+                    JobRoles = applyQueryResult.JobRoles,
+                    Levels = applyQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Apply result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply")]
+        public async Task<IActionResult> Apply(long accountId, int opportunityId, [FromBody] ApplyRequest request)
+        {
+            var result = await _mediator.Send(new CreateApplicationCommand
+            {
+                EmployerAccountId = accountId,
+                PledgeId = opportunityId,
+                EncodedAccountId = request.EncodedAccountId,
+                Details = request.Details,
+                StandardId = request.StandardId,
+                NumberOfApprentices = request.NumberOfApprentices,
+                StartDate = request.StartDate,
+                HasTrainingProvider = request.HasTrainingProvider,
+                Sectors = request.Sectors,
+                Postcode = request.Postcode,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                EmailAddresses = request.EmailAddresses,
+                BusinessWebsite = request.BusinessWebsite,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
+            });
+
+            return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/confirmation")]
+        public async Task<IActionResult> Confirmation(long accountId, int opportunityId)
+        {
+            var result = await _mediator.Send(new GetConfirmationQuery
+            {
+                OpportunityId = opportunityId
+            });
+
+            if (result != null)
+            {
+                return Ok((GetConfirmationResponse)result);
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetApplicationDetails(long accountId, int opportunityId, [FromQuery] string standardId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApplicationDetailsQuery { OpportunityId = opportunityId, StandardId = standardId });
+
+                if(result.Opportunity == null)
                 {
                     return NotFound();
                 }
 
-                var standards = await _mediator.Send(new GetStandardsQuery());
-
                 return Ok(new ApplicationDetailsResponse
                 {
-                    Standards = standards.Standards,
-                    Opportunity = opportunity
+                    Opportunity = result.Opportunity,
+                    Standards = result.Standards,
+                    Sectors = result.Sectors,
+                    JobRoles = result.JobRoles,
+                    Levels = result.Levels
                 });
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting Application Details");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
+        public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
+        {
+            try
+            {
+                var moreDetailsQueryResult = await _mediator.Send(new GetMoreDetailsQuery { OpportunityId = opportunityId });
+
+                var response = new GetMoreDetailsResponse
+                {
+                    Opportunity = moreDetailsQueryResult.Opportunity,
+                    Sectors = moreDetailsQueryResult.Sectors,
+                    JobRoles = moreDetailsQueryResult.JobRoles,
+                    Levels = moreDetailsQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get MoreDetails result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -87,9 +203,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetSectorResponse
                 {
-                    Sectors = sectorQueryResult.Sectors,
                     Opportunity = sectorQueryResult.Opportunity,
-                    Location = sectorQueryResult.Location
+                    Location = sectorQueryResult.Location,
+                    Sectors = sectorQueryResult.Sectors,
+                    JobRoles = sectorQueryResult.JobRoles,
+                    Levels = sectorQueryResult.Levels
                 };
 
                 return Ok(response);
@@ -126,6 +244,31 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get {nameof(GetContactDetailsQuery)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("opportunities/{opportunityId}")]
+        public async Task<IActionResult> Detail(int opportunityId)
+        {
+            try
+            {
+                var detailQueryResult = await _mediator.Send(new GetDetailQuery { OpportunityId = opportunityId });
+
+                var response = new GetDetailResponse
+                {
+                    Opportunity = detailQueryResult.Opportunity,
+                    Sectors = detailQueryResult.Sectors,
+                    JobRoles = detailQueryResult.JobRoles,
+                    Levels = detailQueryResult.Levels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Detail result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

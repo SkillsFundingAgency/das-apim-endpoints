@@ -5,6 +5,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
@@ -25,8 +26,8 @@ namespace SFA.DAS.Campaign.Extensions
         public const string EmbeddedAssetBlockNodeTypeKey = "embedded-asset-block";
 
         public static bool ContentItemsAreNullOrEmpty(this CmsContent pageContent)
-        {
-            if (pageContent.Total == 0)
+        {   
+            if (pageContent == null || pageContent.Total == 0)
             {
                 return true;
             }
@@ -49,7 +50,40 @@ namespace SFA.DAS.Campaign.Extensions
             return returnList;
         }
 
+        public static List<string> BuildParagraph(this FluffyContent contentItemContent)
+        {
+            var returnList = new List<string>();
+
+            foreach (var contentDefinition in contentItemContent.Content)
+            {
+                ProcessTextNodeType(contentDefinition, returnList);
+                ProcessParagraphNodeType(contentDefinition, returnList);
+                ProcessHyperLinkNodeType(contentDefinition, returnList);
+            }
+
+            return returnList;
+        }
+
         public static List<List<string>> BuildTable(this SubContentItems contentItem, CmsContent article)
+        {
+            var data = new List<List<string>>();
+            foreach (var subContentItem in contentItem.Content)
+            {
+                if (subContentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey))
+                {
+                    var linkedItemId = subContentItem.Data.Target.Sys.Id;
+                    var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                    if (item != null)
+                    {
+                        data.AddRange(item.Fields.Table.TableData);
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        public static List<List<string>> BuildTable(this FluffyContent contentItem, CmsContent article)
         {
             var data = new List<List<string>>();
             foreach (var subContentItem in contentItem.Content)
@@ -88,7 +122,7 @@ namespace SFA.DAS.Campaign.Extensions
 
         public static bool NodeTypeIsEmbeddedAssetBlock(this string nodeType)
         {
-            return nodeType.Equals(EmbeddedAssetBlockNodeTypeKey, StringComparison.CurrentCultureIgnoreCase) ;
+            return nodeType.Equals(EmbeddedAssetBlockNodeTypeKey, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public static ResourceItem GetEmbeddedResource(this CmsContent article, string id)
@@ -121,40 +155,105 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     continue;
                 }
+
                 foreach (var content in relatedContent.Content)
                 {
-                    var list = new List<string>();
                     switch (content.NodeType)
                     {
                         case ParagraphNodeTypeKey:
-                            {
-                                foreach (var innerContent in content.Content)
-                                {
-                                    if (innerContent.NodeType.Equals(TextNodeTypeKey))
-                                    {
-                                        var fontEffect = innerContent.Marks?.FirstOrDefault()?.Type;
-                                        list.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
-                                    }
-                                    if (innerContent.NodeType.Equals(HyperLinkNodeTypeKey))
-                                    {
-                                        list.Add($"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
-                                    }
-                                }
-                                break;
-                            }
                         case TextNodeTypeKey:
-                            var font = content.Marks?.FirstOrDefault()?.Type;
-                            list.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
-                            break;
+                            // do something
+                            goto case HyperLinkNodeTypeKey;
                         case HyperLinkNodeTypeKey:
-                            list.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
+                            // do something else
+                            ProcessNodeType(returnList, content);
+                            break;
+                        default:
+                            ProcessListItemRelatedContentForGet(content, returnList);
                             break;
                     }
-                    returnList.Add(list);
                 }
             }
 
             return returnList;
+        }
+
+        public static List<List<string>> GetListItems(this FluffyContent contentItems)
+        {
+            var returnList = new List<List<string>>();
+            foreach (var relatedContent in contentItems.Content)
+            {
+                if (relatedContent.NodeType != "list-item")
+                {
+                    continue;
+                }
+
+                ProcessListItemRelatedContentForGet(relatedContent, returnList);
+            }
+
+            return returnList;
+        }
+
+        private static void ProcessListItemRelatedContentForGet(RelatedContent relatedContent, List<List<string>> returnList)
+        {
+            if (relatedContent?.Content == null)
+            {
+                return;
+            }
+
+            foreach (var content in relatedContent.Content)
+            {
+                switch (content.NodeType)
+                {
+                    case ParagraphNodeTypeKey: 
+                    case TextNodeTypeKey:
+                        // do something
+                        goto case HyperLinkNodeTypeKey;
+                    case HyperLinkNodeTypeKey:
+                        // do something else
+                        ProcessNodeType(returnList, content);
+                        break;
+                }
+                
+                //ProcessNodeType(returnList, content);
+            }
+        }
+
+        private static void ProcessNodeType(List<List<string>> returnList, RelatedContent content)
+        {
+            var list = new List<string>();
+            switch (content.NodeType)
+            {
+                case ParagraphNodeTypeKey:
+                    {
+                        foreach (var innerContent in content.Content)
+                        {
+                            if (innerContent.NodeType.Equals(TextNodeTypeKey))
+                            {
+                                var fontEffect = innerContent.Marks?.FirstOrDefault()?.Type;
+                                list.Add(
+                                    $"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{innerContent.Value}");
+                            }
+
+                            if (innerContent.NodeType.Equals(HyperLinkNodeTypeKey))
+                            {
+                                list.Add(
+                                    $"[{innerContent.Content.FirstOrDefault().Value}]({innerContent.Data.Uri})");
+                            }
+                        }
+
+                        break;
+                    }
+                case TextNodeTypeKey:
+                    var font = content.Marks?.FirstOrDefault()?.Type;
+                    list.Add($"{(string.IsNullOrWhiteSpace(font) ? "" : $"[{font}]")}{content.Value}");
+                    break;
+                case HyperLinkNodeTypeKey:
+                    list.Add($"[{content.Content.FirstOrDefault().Value}]({content.Data.Uri})");
+                    break;
+            }
+
+            returnList.Add(list);
         }
 
         public static string GetPageTypeValue(this string sysId)
@@ -194,6 +293,18 @@ namespace SFA.DAS.Campaign.Extensions
             return menuModel;
         }
 
+        public static async Task<BannerPageModel> RetrieveBanners(this IMediator mediator, CancellationToken cancellationToken = default)
+        {
+            var banners = await  mediator.Send(new GetBannerQuery(), cancellationToken);
+          
+            var bannerModels = new BannerPageModel
+            {
+                MainContent = banners.PageModel == null ? new List<BannerPageModel.BannerPageContent>() : banners.PageModel.MainContent
+            };
+
+            return bannerModels;
+        }
+
         private static void ProcessHyperLinkNodeType(ContentDefinition contentDefinition, List<string> returnList)
         {
             if (contentDefinition.NodeType.Equals(HyperLinkNodeTypeKey))
@@ -227,5 +338,79 @@ namespace SFA.DAS.Campaign.Extensions
 
             returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
         }
+
+        public static void ProcessEmbeddedAssetBlockNodeTypes(this CmsContent article, SubContentItems contentItem,
+            List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    EmbeddedResource = article.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
+                });
+            }
+        }
+
+        public static void ProcessListNodeTypes(this SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsList())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.GetListItems()
+                });
+            }
+        }
+
+        public static void ProcessContentNodeTypes(this CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsContent())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    Values = contentItem.BuildParagraph(),
+                    TableValue = contentItem.BuildTable(article)
+                });
+            }
+        }
+
+        private static void ProcessTextNodeType(RelatedContent contentDefinition, List<string> returnList)
+        {
+            if (!contentDefinition.NodeType.Equals(TextNodeTypeKey))
+            {
+                return;
+            }
+
+            var fontEffect = contentDefinition.Marks?.FirstOrDefault()?.Type;
+
+            returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{contentDefinition.Value}");
+        }
+
+        private static void ProcessParagraphNodeType(RelatedContent contentDefinition, List<string> returnList)
+        {
+            if (!contentDefinition.NodeType.Equals(ParagraphNodeTypeKey))
+            {
+                return;
+            }
+
+            foreach (var content in contentDefinition.Content)
+            {
+                var fontEffect = content.Marks?.FirstOrDefault()?.Type;
+                returnList.Add($"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{content.Value}");
+            }
+        }
+
+        private static void ProcessHyperLinkNodeType(RelatedContent contentDefinition, List<string> returnList)
+        {
+            if (contentDefinition.NodeType.Equals(HyperLinkNodeTypeKey))
+            {
+                returnList.Add($"[{contentDefinition.Content.FirstOrDefault().Value}]({contentDefinition.Data.Uri})");
+            }
+        }
+
+
     }
 }
