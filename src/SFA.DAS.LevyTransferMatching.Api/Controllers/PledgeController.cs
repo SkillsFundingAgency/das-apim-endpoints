@@ -172,7 +172,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 var queryResult = await _mediator.Send(new GetApplicationQuery()
                 {
-                    Id = applicationId,
+                    ApplicationId = applicationId,
                 });
 
                 if (queryResult != null)
