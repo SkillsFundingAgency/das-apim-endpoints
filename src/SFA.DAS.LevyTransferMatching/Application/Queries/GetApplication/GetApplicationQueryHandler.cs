@@ -54,6 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                     Sector = application.Sectors,
                     StartBy = application.StartDate,
                     TypeOfJobRole = typeOfJobRole,
+                    EmployerAccountName = application.EmployerAccountName,
                 };
             }
 

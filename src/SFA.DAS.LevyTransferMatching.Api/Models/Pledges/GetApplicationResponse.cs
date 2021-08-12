@@ -19,6 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
+        public string EmployerAccountName { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -37,6 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 Sector = result.Sector,
                 StartBy = result.StartBy,
                 TypeOfJobRole = result.TypeOfJobRole,
+                EmployerAccountName = result.EmployerAccountName,
             };
         }
     }
