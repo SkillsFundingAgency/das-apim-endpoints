@@ -2,6 +2,6 @@
 {
     public static class PolicyNames
     {
-        public const string PledgeAccount = "PledgeAccount";
+        public const string PledgeAccess = "PledgeAccess";
     }
 }

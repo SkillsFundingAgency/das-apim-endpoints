@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.AddSingleton<IAuthorizationHandler, PledgeAuthorizationHandler>();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(PolicyNames.PledgeAccount, policy =>
+                options.AddPolicy(PolicyNames.PledgeAccess, policy =>
                 {
                     policy.Requirements.Add(new PledgeRequirement());
                 });

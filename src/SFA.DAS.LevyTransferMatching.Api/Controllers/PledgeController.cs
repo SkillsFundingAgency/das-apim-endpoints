@@ -168,20 +168,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
         }
 
-        [Authorize(Policy = PolicyNames.PledgeAccount)]
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
         public async Task<IActionResult> PledgeApplications(int pledgeId)
         {
-            var applications = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
-            var standardsResponse = await _mediator.Send(new GetStandardsQuery() { StandardId = applications.First().StandardId });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
 
-            if (standardsResponse != null)
+            if (queryResult.Standard != null)
             {
                 return Ok(new GetApplicationsResponse
                 {
-                    Applications = applications,
-                    Standard = standardsResponse.Standards.First()
+                    Applications = queryResult.Applications,
+                    Standard = queryResult.Standard
                 });
             }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -12,9 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -25,7 +20,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         private readonly Fixture _fixture = new Fixture();
         private GetApplicationsQueryResult _queryResult;
         private int _pledgeId;
-        private GetStandardsQueryResult _standardsQueryResult;
 
         [SetUp]
         public void SetUp()
@@ -36,10 +30,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             _queryResult = _fixture.Create<GetApplicationsQueryResult>();
             _mediator.Setup(x => x.Send(It.Is<GetApplicationsQuery>(q => q.PledgeId == _pledgeId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
-
-            _standardsQueryResult = _fixture.Create<GetStandardsQueryResult>();
-            _mediator.Setup(x => x.Send(It.Is<GetStandardsQuery>(q => q.StandardId == _queryResult.First().StandardId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_standardsQueryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
         }
@@ -54,8 +44,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var response = okObjectResult.Value as GetApplicationsResponse;
             Assert.IsNotNull(response);
 
-            Assert.AreEqual(_queryResult.Count, response.Applications.Count());
-            Assert.AreEqual(_standardsQueryResult.Standards.First().StandardUId, response.Standard.StandardUId);
+            Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
+            Assert.AreEqual(_queryResult.Standard.StandardUId, response.Standard.StandardUId);
         }
     }
 }
