@@ -12,6 +12,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -159,6 +160,35 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get JobRoles result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
+        public async Task<IActionResult> PledgeApplication(int applicationId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationQuery()
+                {
+                    Id = applicationId,
+                });
+
+                if (queryResult != null)
+                {
+                    var response = (GetApplicationResponse)queryResult;
+
+                    return Ok(response);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get application");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
