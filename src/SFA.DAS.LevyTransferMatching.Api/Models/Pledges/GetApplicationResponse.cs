@@ -9,9 +9,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string Location { get; set; }
         public IEnumerable<string> Sector { get; set; }
         public string TypeOfJobRole { get; set; }
-        public string Level { get; set; }
+        public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
-        public TimeSpan EstimatedDuration { get; set; }
+        public int EstimatedDurationMonths { get; set; }
         public DateTime StartBy { get; set; }
         public bool HasTrainingProvider { get; set; }
         public string AboutOpportunity { get; set; }
@@ -19,6 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
+        public string EmployerAccountName { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -27,16 +28,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AboutOpportunity = result.AboutOpportunity,
                 BusinessWebsite = result.BusinessWebsite,
                 EmailAddresses = result.EmailAddresses,
-                EstimatedDuration = result.EstimatedDuration,
+                EstimatedDurationMonths = result.EstimatedDurationMonths,
                 FirstName = result.FirstName,
                 HasTrainingProvider = result.HasTrainingProvider,
                 LastName = result.LastName,
                 Level = result.Level,
-                Location = result.Level,
+                Location = result.Location,
                 NumberOfApprentices = result.NumberOfApprentices,
                 Sector = result.Sector,
                 StartBy = result.StartBy,
                 TypeOfJobRole = result.TypeOfJobRole,
+                EmployerAccountName = result.EmployerAccountName,
             };
         }
     }
