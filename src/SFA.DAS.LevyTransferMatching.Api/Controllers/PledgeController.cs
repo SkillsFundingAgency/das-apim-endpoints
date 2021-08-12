@@ -192,5 +192,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet]
+        [Route("accounts/{encodedAccountId}/pledges/{encodedPledgeId}/applications/{encodedApplicationId}/approved")]
+        public async Task<IActionResult> ApplicationApproved()
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationApprovedQuery());
+
+                var response = new GetApplicationApprovedResponse
+                {
+                    ApplicantName = queryResult.ApplicantName
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get ApplicationApproved result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
