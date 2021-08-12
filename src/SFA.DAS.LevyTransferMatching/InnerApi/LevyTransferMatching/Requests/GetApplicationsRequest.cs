@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
 {
-    public class GetApplicationsRequest : IGetAllApiRequest
+    public class GetApplicationsRequest : IGetApiRequest
     {
         public GetApplicationsRequest(int pledgeId)
         {
@@ -11,6 +11,6 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
 
         public int PledgeId { get; }
 
-        public string GetAllUrl => $"pledges/{PledgeId}/applications";
+        public string GetUrl => $"pledges/{PledgeId}/applications";
     }
 }

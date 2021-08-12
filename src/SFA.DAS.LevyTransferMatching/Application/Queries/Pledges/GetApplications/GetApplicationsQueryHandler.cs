@@ -25,12 +25,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
         public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
         {
-            var applications = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest(request.PledgeId));
-            var standardResponse = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(applications.First().StandardId));
+            var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest(request.PledgeId));
+            var standardResponse = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(applicationsResponse.Applications.First().StandardId));
 
             return new GetApplicationsQueryResult()
             {
-                Applications = applications,
+                Applications = applicationsResponse.Applications,
                 Standard = new Standard()
                 {
                     LarsCode = standardResponse.LarsCode,

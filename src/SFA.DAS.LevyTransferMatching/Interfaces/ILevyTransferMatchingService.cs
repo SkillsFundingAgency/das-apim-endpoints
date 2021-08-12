@@ -19,6 +19,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task CreateAccount(CreateAccountRequest request);
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
-        Task<IEnumerable<Models.Application>> GetApplications(GetApplicationsRequest request);
+        Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
     }
 }
