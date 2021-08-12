@@ -13,6 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApproved;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -194,8 +195,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{encodedAccountId}/pledges/{encodedPledgeId}/applications/{encodedApplicationId}/approved")]
-        public async Task<IActionResult> ApplicationApproved()
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approved")]
+        public async Task<IActionResult> ApplicationApproved(long accountId, int pledgeId, int applicationId)
         {
             try
             {
@@ -203,7 +204,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetApplicationApprovedResponse
                 {
-                    ApplicantName = queryResult.ApplicantName
+                    EmployerAccountName = queryResult.EmployerAccountName
                 };
 
                 return Ok(response);
