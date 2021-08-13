@@ -24,7 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             return new GetApplicationApprovedQueryResult
             {
-                EmployerAccountName = "Test Ltd"
+                EmployerAccountName = response.EmployerAccountName
             };
         }
     }

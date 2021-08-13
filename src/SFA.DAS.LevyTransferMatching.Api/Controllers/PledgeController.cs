@@ -200,7 +200,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetApplicationApprovedQuery());
+                var queryResult = await _mediator.Send(new GetApplicationApprovedQuery { PledgeId = pledgeId, ApplicationId = applicationId });
 
                 var response = new GetApplicationApprovedResponse
                 {
