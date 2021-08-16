@@ -17,5 +17,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public int VersionMinor { get; set; }
         public List<string> Options { get; set; }
         public StandardVersionDetail VersionDetail { get; set; }
+        public string StandardPageUrl { get; set; }
     }
 }
