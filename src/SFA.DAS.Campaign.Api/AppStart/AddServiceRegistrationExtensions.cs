@@ -1,6 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Net.Http;
+using Contentful.Core;
+using Contentful.Core.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Campaign.Application.Services;
+using SFA.DAS.Campaign.Configuration;
+using SFA.DAS.Campaign.ExternalApi;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
@@ -19,6 +26,23 @@ namespace SFA.DAS.Campaign.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IContentService, ContentService>();
+
+            services.AddTransient(typeof(IContentfulApiClient<>), typeof(ContentfulApiClient<>));
+
+            services.AddTransient<IContentfulMasterApiClient<ContentfulApiConfiguration>, ContentfulMasterApiClient>();
+            services.AddTransient<IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration>, ContentfulPreviewApiClient>();
+
+            services.AddTransient(typeof(IGetApiClient<>), typeof(ContentfulApiClient<>));
+            
+            services.AddTransient<IReliableCacheStorageService, ReliableCacheStorageService<ContentfulApiConfiguration>>(
+                cfg =>
+                {
+                    var client = cfg.GetService<IContentfulMasterApiClient<ContentfulApiConfiguration>>();
+                    var cache = cfg.GetService<ICacheStorageService>();
+                    return new ReliableCacheStorageService<ContentfulApiConfiguration>(client, cache);
+                });
+            
         }
     }
 }

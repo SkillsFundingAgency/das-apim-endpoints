@@ -10,9 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -34,12 +36,19 @@ namespace SFA.DAS.LevyTransferMatching.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddNLog();
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
 
             services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+
+            services.Configure<EmployerAccountsConfiguration>(_configuration.GetSection("EmployerAccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerAccountsConfiguration>>().Value);
+
+            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -63,7 +72,12 @@ namespace SFA.DAS.LevyTransferMatching.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(x =>
+                {
+                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -75,10 +89,12 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
-            });
+            services
+                .AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
+                })
+                .AddSwaggerGenNewtonsoftSupport();
 
         }
 

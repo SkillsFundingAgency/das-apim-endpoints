@@ -1,13 +1,13 @@
-using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationReminders;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -44,16 +44,22 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("/registrations/reminders")]
-        public async Task<IActionResult> SendReminders(SendInvitationRemindersCommand request)
+        public async Task<IActionResult> SendReminders([FromQuery] DateTime invitationCutOffTime)
         {
-            await _mediator.Send(request);
-            return Ok();
+            return await new GetRequest<RegistrationsWrapper>($"/registrations/reminders?invitationCutOffTime={invitationCutOffTime}").Get(_client);
         }
 
+        [HttpPost("registrations/{apprenticeId}/reminder")]
+        public async Task<IActionResult> RegistrationReminderSent(Guid apprenticeId, [FromBody] InvitationReminderSentRequest request)
+        {
+            return await new PostRequest($"registrations/{apprenticeId}/reminder").Post(_client, request);
+        }
+
+
         [HttpPost("/registrations/{apprenticeId}/firstseen")]
-        public async Task<IActionResult> RegistrationFirstSeen(Guid apprenticeId, 
+        public async Task<IActionResult> RegistrationFirstSeen(Guid apprenticeId,
             [FromBody] RegistrationFirstSeenRequestData request)
         {
             await _client.Post(new RegistrationFirstSeenRequest(apprenticeId, request));

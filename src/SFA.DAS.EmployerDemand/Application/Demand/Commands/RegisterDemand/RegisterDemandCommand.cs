@@ -20,5 +20,6 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
         public string StopSharingUrl { get ; set ; }
         public string StartSharingUrl { get ; set ; }
         public Guid? ExpiredCourseDemandId { get ; set ; }
+        public short? EntryPoint { get ; set ; }
     }
 }

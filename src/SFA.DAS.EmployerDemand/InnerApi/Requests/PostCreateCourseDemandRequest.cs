@@ -42,8 +42,10 @@ namespace SFA.DAS.EmployerDemand.InnerApi.Requests
         public string StopSharingUrl { get; set; }
         [JsonProperty("startSharingUrl")]
         public string StartSharingUrl { get; set; }
-        [JsonProperty]
+        [JsonProperty("expiredCourseDemandId")]
         public Guid? ExpiredCourseDemandId { get; set; }
+        [JsonProperty("entryPoint")]
+        public short? EntryPoint { get; set; }
     }
     
     public class Course

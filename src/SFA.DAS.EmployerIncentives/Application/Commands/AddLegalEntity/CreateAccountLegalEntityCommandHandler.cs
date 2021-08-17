@@ -8,16 +8,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity
 {
     public class CreateAccountLegalEntityCommandHandler : IRequestHandler<CreateAccountLegalEntityCommand, CreateAccountLegalEntityCommandResult>
     {
-        private readonly IEmployerIncentivesService _service;
+        private readonly ILegalEntitiesService _service;
 
-        public CreateAccountLegalEntityCommandHandler (IEmployerIncentivesService service)
+        public CreateAccountLegalEntityCommandHandler (ILegalEntitiesService service)
         {
             _service = service;
         }
         public async Task<CreateAccountLegalEntityCommandResult> Handle(CreateAccountLegalEntityCommand request, CancellationToken cancellationToken)
         {
-            await _service.CreateLegalEntity(request.AccountId, new AccountLegalEntityCreateRequest
+            await _service.CreateLegalEntity(new AccountLegalEntityCreateRequest
             {
+                AccountId = request.AccountId,
                 OrganisationName = request.OrganisationName,
                 LegalEntityId = request.LegalEntityId,
                 AccountLegalEntityId = request.AccountLegalEntityId

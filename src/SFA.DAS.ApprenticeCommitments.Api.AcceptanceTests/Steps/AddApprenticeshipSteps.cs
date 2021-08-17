@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Newtonsoft.Json;
-using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,6 +124,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     ? course.Id.ToString()
                     : course.StandardUId;
 
+                var apiResponse = new StandardApiResponse
+                {
+                    Level = course.Level,
+                    Title = course.Title,
+                    ApprenticeshipFunding = new List<SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding>
+                    {
+                        new SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding
+                        {
+                            Duration = course.CourseDuration,
+                            EffectiveFrom = new DateTime(2020, 1,1),
+                            EffectiveTo = new DateTime(2030,1,1)
+                        }
+                    }
+                };
+
                 _context.CoursesInnerApi.MockServer
                     .Given(
                         Request.Create()
@@ -133,7 +148,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                         Response.Create()
                             .WithStatusCode((int)HttpStatusCode.OK)
                             .WithHeader("Content-Type", "application/json")
-                            .WithBody(JsonConvert.SerializeObject(course)));
+                            .WithBody(JsonConvert.SerializeObject(apiResponse)));
             }
         }
 
@@ -161,6 +176,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             innerApiRequest.Should().NotBeNull();
             innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
+            innerApiRequest.FirstName.Should().Be(expectedCommitment.FirstName);
+            innerApiRequest.LastName.Should().Be(expectedCommitment.LastName);
+            innerApiRequest.DateOfBirth.Should().Be(expectedCommitment.DateOfBirth);
             innerApiRequest.Email.Should().Be(expectedCommitment.Email);
             innerApiRequest.CommitmentsApprenticeshipId.Should().Be(_request.CommitmentsApprenticeshipId);
             innerApiRequest.CommitmentsApprovedOn.Should().Be(_request.CommitmentsApprovedOn);
@@ -182,8 +200,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
         }
 
-        [Then("the course should be `(.*)` level (.*)")]
-        public void ThenTheCourseLevelShouldBe(string name, int level)
+        [Then("the course should be `(.*)` level (.*) courseDuration (.*)")]
+        public void ThenTheCourseLevelDurationShouldBe(string name, int level, int courseDuration)
         {
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
@@ -193,6 +211,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             innerApiRequest.CourseName.Should().Be(name);
             innerApiRequest.CourseLevel.Should().Be(level);
+            innerApiRequest.CourseDuration.Should().Be(courseDuration);
         }
 
         [Then("the inner API should return these errors")]
@@ -211,29 +230,25 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then("the request should be ignored")]
         public void ThenTheRequestShouldBeIgnored()
         {
+            _context.OuterApiClient.Response.Should().Be2XXSuccessful();
             _context.InnerApi.MockServer.LogEntries.Should().BeEmpty();
         }
 
         [Then("the invitation was sent successfully")]
-        public void ThenTheInvitationWasSentSuccessfully()
+        public async Task ThenTheInvitationWasSentSuccessfully()
         {
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            var logs = _context.LoginApi.MockServer.LogEntries;
-            logs.Should().HaveCount(1);
+            var response = JsonConvert.DeserializeObject<CreateApprenticeshipResponse>(
+                await _context.OuterApiClient.Response.Content.ReadAsStringAsync());
 
-            var loginApiRequest = JsonConvert.DeserializeObject<SendInvitationRequestData>(
-                logs.First().RequestMessage.Body);
-            loginApiRequest.Should().NotBeNull();
-            loginApiRequest.SourceId.Should().NotBe(Guid.Empty);
-            loginApiRequest.Email.Should().Be(expectedCommitment.Email);
-            loginApiRequest.GivenName.Should().Be(expectedCommitment.FirstName);
-            loginApiRequest.FamilyName.Should().Be(expectedCommitment.LastName);
-            loginApiRequest.OrganisationName.Should().Be(_request.EmployerName);
-            loginApiRequest.ApprenticeshipName.Should().Be(expectedCommitment.CourseName);
-            loginApiRequest.Callback.Should().Be(_context.LoginConfig.CallbackUrl);
-            loginApiRequest.UserRedirect.Should().Be(_context.LoginConfig.RedirectUrl);
+            response.Should().BeEquivalentTo(new
+            {
+                GivenName = expectedCommitment.FirstName,
+                FamilyName = expectedCommitment.LastName,
+                ApprenticeshipName = expectedCommitment.CourseName,
+            });
         }
 
         [Then("the invitation was not sent")]
