@@ -43,6 +43,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             services.Configure<CommitmentsV2Configuration>(_configuration.GetSection("CommitmentsV2InnerApi"));
             services.Configure<TrainingProviderConfiguration>(_configuration.GetSection("TrainingProviderApi"));
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApi"));
+            services.AddSingleton<IOwnerApiConfiguration>(s => s.GetRequiredService<ApprenticeCommitmentsConfiguration>());
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeLoginConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2Configuration>>().Value);

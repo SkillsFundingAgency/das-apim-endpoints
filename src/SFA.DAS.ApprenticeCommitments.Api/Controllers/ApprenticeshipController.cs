@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeEmailAddress;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Configuration;
@@ -38,12 +37,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         {
             await _mediator.Send(request);
             return Accepted();
-        }
-
-        [HttpGet("/apprentices/{apprenticeId}")]
-        public async Task<IActionResult> GetApprentice(Guid apprenticeId)
-        {
-            return await new GetRequest<Apprentice>($"/apprentices/{apprenticeId}").Get(_client);
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
