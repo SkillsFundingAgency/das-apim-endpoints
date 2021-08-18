@@ -15,18 +15,19 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         public ListApprenticeshipsController(IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
         {
-            this._client = client;
+            _client = client;
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships")]
         public async Task<IActionResult> AddApprenticeship(Guid apprenticeId)
         {
-            var response = await _client.Get<List<ApprenticeshipsRepsonse>>(
-                            new GetApprenticeshipsRequest(apprenticeId));
-            if (response == null)
-                return NotFound();
+            var response = await _client.GetWithResponseCode<List<ApprenticeshipsRepsonse>>(
+                new GetApprenticeshipsRequest(apprenticeId));
+
+            if (response.Body != null)
+                return StatusCode((int)response.StatusCode, response.Body);
             else
-                return Ok(response);
+                return StatusCode((int)response.StatusCode, response.ErrorContent);
         }
     }
 }

@@ -16,15 +16,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public async Task<StandardApiResponse> GetCourse(string courseCode)
         {
-            var course = await _client.Get<StandardApiResponse>(
+            var course = await _client.GetWithResponseCode<StandardApiResponse>(
                 new GetStandardDetailsByIdRequest(courseCode));
 
-            if (course == null)
-            {
-                throw new HttpRequestException($"Course `{courseCode}` not found");
-            }
+            if (course.StatusCode != System.Net.HttpStatusCode.OK)
+                throw new HttpRequestException(course.ErrorContent);
 
-            return course;
+            return course.Body;
         }
     }
 
