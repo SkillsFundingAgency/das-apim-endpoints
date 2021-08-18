@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/apprenticeships")
+                        .WithPath("/registrations")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "ApprenticeshipId != `0` && contains(Email, '@')"))
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath("/apprenticeships")
+                    Request.Create().WithPath("/registrations")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "!contains(Email, '@')"))
