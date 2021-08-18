@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services
@@ -31,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             return new HttpResponseMessageResult(response);
         }
 
-        private static JsonContent CreateJsonContent<T>(T data)
-            => data == null ? null : JsonContent.Create(data);
+        private static HttpContent CreateJsonContent<T>(T data)
+            => data == null ? null : new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
     }
 }
