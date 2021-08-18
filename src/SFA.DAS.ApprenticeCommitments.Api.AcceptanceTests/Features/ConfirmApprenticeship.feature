@@ -1,17 +1,17 @@
-Feature: ConfirmApprenticeshipFeature
+Feature: Confirm Apprenticeship
 
 Scenario Outline: Confirm an aspect of the apprenticeship
-	Given <command> containing `<data>` for <confirmation>
+	Given `<data>`
 	And the inner API will accept the confirmation
 	When we confirm the aspect
 	Then return an ok response
 	And confirm the details with the inner API
 
 	Examples: 
-	| confirmation                                 | data                                        | command                                         |
-	| ApprenticeshipDetailsConfirmation            | {"ApprenticeshipDetailsCorrect": true}      | ApprenticeshipDetailsConfirmationRequestData    |
-	| EmployerConfirmation                         | {"EmployerCorrect": true}                   | EmployerConfirmationRequestData                 |
-	| TrainingProviderConfirmation                 | {"TrainingProviderCorrect": true}           | TrainingProviderConfirmationRequestData         |
-	| RolesAndResponsibilitiesConfirmation         | {"RolesAndResponsibilitiesCorrect": true}   | RolesAndResponsibilitiesConfirmationRequestData |
-	| HowApprenticeshipWillBeDeliveredConfirmation | {"HowApprenticeshipDeliveredCorrect": true} | HowApprenticeshipWillBeDeliveredRequestData     |
-	| ApprenticeshipConfirmation                   | {"ApprenticeshipCorrect": true}             | ApprenticeshipConfirmationRequestData           |
+	| data                                        |
+	| {"ApprenticeshipDetailsCorrect": true}      |
+	| {"EmployerCorrect": true}                   |
+	| {"TrainingProviderCorrect": true}           |
+	| {"RolesAndResponsibilitiesCorrect": true}   |
+	| {"HowApprenticeshipDeliveredCorrect": true} |
+	| {"ApprenticeshipCorrect": true}             |

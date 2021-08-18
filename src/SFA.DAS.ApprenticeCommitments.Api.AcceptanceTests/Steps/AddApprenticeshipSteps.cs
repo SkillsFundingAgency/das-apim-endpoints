@@ -156,7 +156,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<CreateRegistrationCommand>();
-            await _context.OuterApiClient.Post("apprenticeships", _request);
+            await _context.OuterApiClient.Post("registrations", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -165,8 +165,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            _context.OuterApiClient.Response.StatusCode
-                .Should().Be(HttpStatusCode.Accepted);
+            _context.OuterApiClient.Response.Should().Be200Ok();
 
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);

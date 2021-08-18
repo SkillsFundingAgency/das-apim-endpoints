@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpPost]
-        public async Task CreateRegistrationFromApproval(CreateRegistrationCommand request)
+        public async Task<ActionResult<CreateRegistrationResponse>> CreateRegistrationFromApproval(CreateRegistrationCommand request)
             => await _mediator.Send(request);
 
         [HttpPost]
