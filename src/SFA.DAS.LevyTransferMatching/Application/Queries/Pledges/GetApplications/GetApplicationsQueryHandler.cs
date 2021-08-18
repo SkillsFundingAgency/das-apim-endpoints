@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,25 +27,36 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
         {
             var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest(request.PledgeId));
-            var standardResponse = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(applicationsResponse.Applications.First().StandardId));
+            var distinctStandards = applicationsResponse.Applications.Select(app => app.StandardId).Distinct();
+            var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
+            
+            standardTasks.AddRange(distinctStandards.Select(standardId => _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(standardId))));
+
+            await Task.WhenAll(standardTasks);
+
+            foreach (var application in applicationsResponse.Applications)
+            {
+                var standard = standardTasks.Select(s => s.Result).Single(s => s.StandardUId == application.StandardId);
+                application.Standard = new Standard()
+                {
+                    LarsCode = standard.LarsCode,
+                    Level = standard.Level,
+                    StandardUId = standard.StandardUId,
+                    Title = standard.Title,
+                    ApprenticeshipFunding = standard.ApprenticeshipFunding?.Select(funding =>
+                        new ApprenticeshipFunding()
+                        {
+                            Duration = funding.Duration,
+                            EffectiveFrom = funding.EffectiveFrom,
+                            EffectiveTo = funding.EffectiveTo,
+                            MaxEmployerLevyCap = funding.MaxEmployerLevyCap
+                        })
+                };
+            }
 
             return new GetApplicationsQueryResult()
             {
-                Applications = applicationsResponse.Applications,
-                Standard = new Standard()
-                {
-                    LarsCode = standardResponse.LarsCode,
-                    Level = standardResponse.Level,
-                    StandardUId = standardResponse.StandardUId,
-                    Title = standardResponse.Title,
-                    ApprenticeshipFunding = standardResponse.ApprenticeshipFunding?.Select(funding => new ApprenticeshipFunding()
-                    {
-                        Duration = funding.Duration,
-                        EffectiveFrom = funding.EffectiveFrom,
-                        EffectiveTo = funding.EffectiveTo,
-                        MaxEmployerLevyCap = funding.MaxEmployerLevyCap
-                    })
-                }
+                Applications = applicationsResponse.Applications
             };
         }
     }

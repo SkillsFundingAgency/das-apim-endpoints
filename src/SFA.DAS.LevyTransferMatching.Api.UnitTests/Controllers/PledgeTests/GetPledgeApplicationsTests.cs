@@ -13,7 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
-    public class GetPledgeApplications
+    public class GetPledgeApplicationsTests
     {
         private PledgeController _controller;
         private Mock<IMediator> _mediator;
@@ -40,12 +40,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.PledgeApplications(_pledgeId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
             var response = okObjectResult.Value as GetApplicationsResponse;
-            Assert.IsNotNull(response);
 
+            Assert.IsNotNull(okObjectResult);
+            Assert.IsNotNull(response);
             Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
-            Assert.AreEqual(_queryResult.Standard.StandardUId, response.Standard.StandardUId);
         }
     }
 }

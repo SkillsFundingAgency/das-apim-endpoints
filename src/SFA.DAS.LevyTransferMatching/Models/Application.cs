@@ -21,5 +21,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public string BusinessWebsite { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
         public DateTime CreatedOn { get; set; }
+        public Standard Standard { get; set; }
     }
 }

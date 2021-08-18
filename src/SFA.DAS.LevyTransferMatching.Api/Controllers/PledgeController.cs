@@ -174,17 +174,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> PledgeApplications(int pledgeId)
         {
             var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
-
-            if (queryResult.Standard != null)
+            
+            return Ok(new GetApplicationsResponse
             {
-                return Ok(new GetApplicationsResponse
-                {
-                    Applications = queryResult.Applications,
-                    Standard = queryResult.Standard
-                });
-            }
-
-            return NotFound();
+                Applications = queryResult.Applications
+            });
         }
     }
 }

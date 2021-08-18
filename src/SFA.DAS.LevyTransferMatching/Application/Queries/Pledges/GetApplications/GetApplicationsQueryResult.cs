@@ -7,6 +7,5 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
     public class GetApplicationsQueryResult
     {
         public IEnumerable<Models.Application> Applications { get; set; }
-        public Standard Standard { get; set; }
     }
 }
