@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
-        public Task ChangeApprenticeship(ChangeApprenticeshipRequestData data)
+        public Task ChangeRegistration(ChangeRegistrationRequestData data)
             => _client.Post(new ChangeApprenticeshipRequest { Data = data });
     }
 }

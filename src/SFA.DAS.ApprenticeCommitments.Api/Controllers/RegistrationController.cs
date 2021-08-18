@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
@@ -23,6 +24,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         [HttpPost]
         public async Task CreateRegistrationFromApproval(CreateRegistrationCommand request)
+            => await _mediator.Send(request);
+
+        [HttpPost]
+        [Route("update")]
+        public async Task UpdateRegistrationFromApproval(ChangeRegistrationCommand request)
             => await _mediator.Send(request);
 
         [HttpGet]

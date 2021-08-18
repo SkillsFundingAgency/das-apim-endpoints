@@ -3,14 +3,14 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class ChangeApprenticeshipRequest : IPostApiRequest<ChangeApprenticeshipRequestData>
+    public class ChangeApprenticeshipRequest : IPostApiRequest<ChangeRegistrationRequestData>
     {
         public string PostUrl => "/apprenticeships/change";
 
-        public ChangeApprenticeshipRequestData Data { get; set; }
+        public ChangeRegistrationRequestData Data { get; set; }
     }
 
-    public class ChangeApprenticeshipRequestData
+    public class ChangeRegistrationRequestData
     {
         public long? CommitmentsContinuedApprenticeshipId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }

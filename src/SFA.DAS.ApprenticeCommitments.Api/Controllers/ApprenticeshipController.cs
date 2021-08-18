@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
@@ -29,14 +29,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         {
             var response = await _mediator.Send(request);
             return Accepted(response);
-        }
-
-        [HttpPost]
-        [Route("/apprenticeships/update")]
-        public async Task<IActionResult> UpdateApprenticeship(UpdateApprenticeshipCommand request)
-        {
-            await _mediator.Send(request);
-            return Accepted();
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]

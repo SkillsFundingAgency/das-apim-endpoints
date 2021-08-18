@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class ChangeApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private UpdateApprenticeshipCommand _request;
+        private ChangeRegistrationCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -124,8 +124,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship update is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<UpdateApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships/update", _request);
+            _request = table.CreateInstance<ChangeRegistrationCommand>();
+            await _context.OuterApiClient.Post("registrations/update", _request);
         }
 
         [Then("the response should be OK")]
@@ -140,11 +140,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            _context.OuterApiClient.Response.StatusCode
-                .Should().Be(HttpStatusCode.Accepted);
+            _context.OuterApiClient.Response.Should().Be200Ok();
 
             _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
-                .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .And.ShouldBeJson<ChangeRegistrationRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
                     _request.CommitmentsContinuedApprenticeshipId,
@@ -168,7 +167,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
             _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
-                .And.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .And.ShouldBeJson<ChangeRegistrationRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
                     EmployerAccountLegalEntityId = expectedCommitment.AccountLegalEntityId,
@@ -183,7 +182,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 x.LegalName == trainingProviderName || x.TradingName == trainingProviderName);
 
             _context.InnerApi.MockServer.LogEntries.Should().NotBeEmpty()
-                .And.Subject.First().RequestMessage.Body.ShouldBeJson<ChangeApprenticeshipRequestData>()
+                .And.Subject.First().RequestMessage.Body.ShouldBeJson<ChangeRegistrationRequestData>()
                 .Which.Should().BeEquivalentTo(new
                 {
                     TrainingProviderId = provider.Ukprn,
