@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,7 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         [HttpPost]
         [Route("/apprenticeships")]
-        public async Task<IActionResult> AddApprenticeship(CreateApprenticeshipCommand request)
+        public async Task<IActionResult> AddApprenticeship(CreateRegistrationCommand request)
         {
             var response = await _mediator.Send(request);
             return Accepted(response);

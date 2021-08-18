@@ -12,24 +12,24 @@ using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.Inner
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
 {
-    public class CreateApprenticeshipCommandHandler : IRequestHandler<CreateApprenticeshipCommand, CreateApprenticeshipResponse?>
+    public class CreateRegistrationCommandHandler : IRequestHandler<CreateRegistrationCommand, CreateRegistrationResponse?>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly ApprenticeLoginConfiguration _loginConfiguration;
         private readonly CoursesService _coursesService;
-        private readonly ILogger<CreateApprenticeshipCommandHandler> _logger;
+        private readonly ILogger<CreateRegistrationCommandHandler> _logger;
 
-        public CreateApprenticeshipCommandHandler(
+        public CreateRegistrationCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginConfiguration loginConfiguration,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
             CoursesService coursesService,
-            ILogger<CreateApprenticeshipCommandHandler> logger)
+            ILogger<CreateRegistrationCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _loginConfiguration = loginConfiguration;
@@ -39,8 +39,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             _logger = logger;
         }
 
-        public async Task<CreateApprenticeshipResponse?> Handle(
-            CreateApprenticeshipCommand command,
+        public async Task<CreateRegistrationResponse?> Handle(
+            CreateRegistrationCommand command,
             CancellationToken cancellationToken)
         {
             var (apprentice, trainingProvider, course) = await GetExternalData(command) ?? default;
@@ -70,7 +70,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
             });
 
             // return parameters for the invitation
-            var res = new CreateApprenticeshipResponse
+            var res = new CreateRegistrationResponse
             {
                 SourceId = id,
                 Email = apprentice.Email,
@@ -85,7 +85,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeshi
         }
 
         private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
-            GetExternalData(CreateApprenticeshipCommand command)
+            GetExternalData(CreateRegistrationCommand command)
         {
             var provider = _trainingProviderService.GetTrainingProviderDetails(
                     command.TrainingProviderId);

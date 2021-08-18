@@ -2,7 +2,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class AddApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private CreateApprenticeshipCommand _request;
+        private CreateRegistrationCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -155,7 +155,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<CreateApprenticeshipCommand>();
+            _request = table.CreateInstance<CreateRegistrationCommand>();
             await _context.OuterApiClient.Post("apprenticeships", _request);
         }
 
@@ -240,7 +240,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            var response = JsonConvert.DeserializeObject<CreateApprenticeshipResponse>(
+            var response = JsonConvert.DeserializeObject<CreateRegistrationResponse>(
                 await _context.OuterApiClient.Response.Content.ReadAsStringAsync());
 
             response.Should().BeEquivalentTo(new
