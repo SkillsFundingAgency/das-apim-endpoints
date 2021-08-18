@@ -15,13 +15,17 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 
         public ApprenticeController(ResponseReturningApiClient client) => _client = client;
 
+        [HttpPost]
+        public Task<IActionResult> CreateApprentice(Apprentice apprentice)
+            => _client.Post("apprentices", apprentice);
+
         [HttpGet("{id}")]
         public Task<IActionResult> GetApprentice(Guid id)
             => _client.Get($"apprentices/{id}");
 
-        [HttpPost]
-        public Task<IActionResult> CreateApprentice(Apprentice apprentice)
-            => _client.Post("apprentices", apprentice);
+        [HttpGet("/apprentices/{apprenticeId}/apprenticeships")]
+        public Task<IActionResult> ListApprenticeApprenticeships(Guid id)
+            => _client.Get($"apprentices/{id}");
 
         [HttpPatch("{id}")]
         public Task<IActionResult> UpdateApprentice(Guid id, JsonPatchDocument<Apprentice> changes)
