@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
     [ApiController]
-    [Route("/registrations")]
     public class RegistrationController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,30 +21,30 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             _client = client;
         }
 
-        [HttpPost]
+        [HttpPost("/registrations")]
         public async Task<ActionResult<CreateRegistrationResponse>> CreateRegistrationFromApproval(CreateRegistrationCommand request)
             => await _mediator.Send(request);
 
         [HttpPost]
-        [Route("update")]
+        [Route("/registrations/update")]
         public async Task UpdateRegistrationFromApproval(ChangeRegistrationCommand request)
             => await _mediator.Send(request);
 
         [HttpGet]
-        [Route("{registrationId}")]
+        [Route("/registrations/{registrationId}")]
         public Task<IActionResult> Get(Guid registrationId)
             => _client.Get($"registrations/{registrationId}");
 
         [HttpGet]
-        [Route("reminders")]
+        [Route("/registrations/reminders")]
         public Task<IActionResult> GetRemindersToSend([FromQuery] DateTime invitationCutOffTime)
             => _client.Get($"registrations/reminders?invitationCutOffTime={invitationCutOffTime}");
 
-        [HttpPost("registrations/{registrationId}/reminder")]
+        [HttpPost("/registrations/{registrationId}/reminder")]
         public Task<IActionResult> RegistrationReminderSent(Guid registrationId, [FromBody] InvitationReminderSentRequest request)
             => _client.Post($"registrations/{registrationId}/reminder", request);
 
-        [HttpPost("{registrationId}/firstseen")]
+        [HttpPost("/registrations/{registrationId}/firstseen")]
         public Task<IActionResult> RegistrationFirstSeen(Guid registrationId, [FromBody] RegistrationFirstSeenRequestData request)
             => _client.Post($"registrations/{registrationId}/firstseen", request);
     }
