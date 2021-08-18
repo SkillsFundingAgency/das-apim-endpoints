@@ -1,7 +1,7 @@
 Feature: Confirm Apprenticeship
 
 Scenario Outline: Confirm an aspect of the apprenticeship
-	Given `<data>`
+	Given the confirmation `<data>`
 	And the inner API will accept the confirmation
 	When we confirm the aspect
 	Then return an ok response

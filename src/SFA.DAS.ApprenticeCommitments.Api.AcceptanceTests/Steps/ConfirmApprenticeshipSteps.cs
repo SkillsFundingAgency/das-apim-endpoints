@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context = context;
         }
 
-        [Given("containing `(.*)`")]
+        [Given("the confirmation `(.*)`")]
         public void GivenDataForConfirmation(string json)
         {
             var t = typeof(Confirmations);
