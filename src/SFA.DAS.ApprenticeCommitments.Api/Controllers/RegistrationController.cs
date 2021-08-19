@@ -27,12 +27,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [Route("/registrations/{apprenticeId}")]
         public async Task<IActionResult> Get(Guid apprenticeId)
         {
-            var result = await _mediator.Send(new RegistrationQuery { ApprenticeshipId = apprenticeId });
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return new OkObjectResult(result);
+            var response = await _client.GetWithResponseCode<RegistrationResponse>(
+                new GetRegistrationDetailsRequest(apprenticeId));
+
+            if (response.Body != null)
+                return StatusCode((int)response.StatusCode, response.Body);
+            else
+                return StatusCode((int)response.StatusCode, response.ErrorContent);
         }
 
         [HttpPost]
