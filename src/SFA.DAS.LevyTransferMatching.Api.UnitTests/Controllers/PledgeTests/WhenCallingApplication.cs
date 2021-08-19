@@ -13,7 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
-    public class WhenCallingPledgeApplication
+    public class WhenCallingApplication
     {
         [Test, MoqAutoData]
         public async Task And_Mediator_Returns_Result_Then_Return_Response_And_Ok(
@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getApplicationResult);
 
-            var controllerResult = await pledgeController.PledgeApplication(applicationId);
+            var controllerResult = await pledgeController.Application(applicationId);
             var createdResult = controllerResult as OkObjectResult;
             var getApplicationResponse = createdResult.Value as GetApplicationResponse;
 
@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetApplicationResult)null);
 
-            var controllerResult = await pledgeController.PledgeApplication(applicationId);
+            var controllerResult = await pledgeController.Application(applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);

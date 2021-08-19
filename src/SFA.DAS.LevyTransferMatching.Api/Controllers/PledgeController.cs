@@ -166,7 +166,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
-        public async Task<IActionResult> PledgeApplication(int applicationId)
+        public async Task<IActionResult> Application(int applicationId)
         {
             try
             {
