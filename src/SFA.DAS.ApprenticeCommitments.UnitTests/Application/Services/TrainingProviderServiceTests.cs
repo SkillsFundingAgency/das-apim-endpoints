@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -9,10 +7,12 @@ using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
 {
-
     [TestFixture]
     public class TrainingProviderServiceTests
     {
@@ -21,8 +21,11 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long trainingProviderId,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
+            ClientReturnsSearchWith(client, new TrainingProviderResponse[0]);
             var sut = new TrainingProviderService(client.Object);
-            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId)).Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
+                .Should().Throw<HttpRequestContentException>()
+                .WithMessage($"Training Provider Id {trainingProviderId} not found");
         }
 
         [Test, AutoData]
@@ -32,10 +35,10 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
             ClientReturnsSearchWith(client, results);
-            
             var sut = new TrainingProviderService(client.Object);
-
-            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId)).Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
+                .Should().Throw<HttpRequestContentException>()
+                .WithMessage($"Training Provider Id {trainingProviderId} finds multiple matches");
         }
 
         [Test, AutoData]
@@ -44,20 +47,34 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             TrainingProviderResponse result,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
-            ClientReturnsSearchWith(client, new [] { result });
+            ClientReturnsSearchWith(client, new[] { result });
 
             var sut = new TrainingProviderService(client.Object);
-
             var response = await sut.GetTrainingProviderDetails(trainingProviderId);
-
             response.Should().Be(result);
         }
 
-        private void ClientReturnsSearchWith(Mock<IInternalApiClient<TrainingProviderConfiguration>> client, TrainingProviderResponse[] results)
+        [Test, AutoData]
+        public void WhenAnErrorIsFound(
+            long trainingProviderId,
+            [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
+        {
+            ClientReturnsSearchWith(client, null, HttpStatusCode.InternalServerError, "some internal error");
+            var sut = new TrainingProviderService(client.Object);
+            sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
+                .Should().Throw<HttpRequestContentException>().WithMessage("some internal error");
+        }
+
+        private void ClientReturnsSearchWith(
+            Mock<IInternalApiClient<TrainingProviderConfiguration>> client,
+            TrainingProviderResponse[] results,
+            HttpStatusCode statusCode = HttpStatusCode.OK,
+            string error = null)
         {
             client.Setup(x =>
-                    x.Get<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
-                .ReturnsAsync(new SearchResponse { SearchResults = results });
+                   x.GetWithResponseCode<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<SearchResponse>(
+                    new SearchResponse { SearchResults = results }, statusCode, error));
         }
     }
 }
