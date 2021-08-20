@@ -3,11 +3,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetIndex
 {
@@ -39,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             _referenceDataService.Setup(x => x.GetLevels()).ReturnsAsync(_levels);
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.GetPledges()).ReturnsAsync(_pledges);
+            _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>())).ReturnsAsync(new GetPledgesResponse() { Pledges = _pledges, TotalPledges = _pledges.Count() });
 
             _handler = new GetIndexQueryHandler(_levyTransferMatchingService.Object, _referenceDataService.Object);
         }
