@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,9 +22,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
             return new GetPledgesQueryResult
             {
-                Pledges = response?.Items?.Select(x => new GetPledgesQueryResult.Pledge
+                Pledges = response?.Pledges.Select(x => new GetPledgesQueryResult.Pledge
                 {
-                    Id = x.Id.Value,
+                    Id = x.Id,
                     Amount = x.Amount,
                     RemainingAmount = x.RemainingAmount,
                     ApplicationCount = x.ApplicationCount

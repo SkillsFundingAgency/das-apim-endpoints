@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,9 +30,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 
             return new GetIndexQueryResult
             {
-                Opportunities = opportunitiesTask.Result.Items.Select(x => new GetIndexQueryResult.Opportunity
+                Opportunities = opportunitiesTask.Result.Pledges.Select(x => new GetIndexQueryResult.Opportunity
                 {
-                    Id = x.Id.Value,
+                    Id = x.Id,
                     Amount = x.Amount,
                     IsNamePublic = x.IsNamePublic,
                     DasAccountName = x.DasAccountName,

@@ -5,12 +5,14 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetIndex
 {
@@ -52,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Items.Select(x => x.Id));
+            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Pledges.Select(x => x.Id));
         }
 
         [Test]
