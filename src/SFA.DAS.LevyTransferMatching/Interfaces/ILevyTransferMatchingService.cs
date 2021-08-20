@@ -3,7 +3,6 @@ using SFA.DAS.LevyTransferMatching.Models;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Accounts;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using GetAccountRequest = SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.GetAccountRequest;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
@@ -21,5 +20,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task CreateAccount(CreateAccountRequest request);
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
+        Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
     }
 }

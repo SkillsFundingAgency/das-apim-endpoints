@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
+using SFA.DAS.LevyTransferMatching.Api.Authentication;
 using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
@@ -36,6 +38,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isLocalOrDev = _configuration.IsLocalOrDev();
+
             services.AddNLog();
             services.AddSingleton(_env);
 
@@ -50,11 +54,12 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
 
-            if (!_configuration.IsLocalOrDev())
+            if (!isLocalOrDev)
             {
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
+                
                 var policies = new Dictionary<string, string>
                 {
                     {"default", "APIM"}
@@ -63,12 +68,20 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddServiceRegistration();
+            services.AddSingleton<IAuthorizationHandler, PledgeAuthorizationHandler>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PolicyNames.PledgeAccess, policy =>
+                {
+                    policy.Requirements.Add(new PledgeRequirement());
+                });
+            });
 
+            services.AddServiceRegistration();
             services
                 .AddMvc(o =>
                 {
-                    if (!_configuration.IsLocalOrDev())
+                    if (!isLocalOrDev)
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
@@ -95,7 +108,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
                 })
                 .AddSwaggerGenNewtonsoftSupport();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +126,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
             }
 
             app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
