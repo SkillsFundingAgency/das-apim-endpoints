@@ -22,5 +22,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationResponse> GetApplication(GetApplicationRequest request);
+        Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
     }
 }

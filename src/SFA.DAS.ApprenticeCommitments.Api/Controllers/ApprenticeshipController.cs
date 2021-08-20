@@ -49,14 +49,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
         public async Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
         {
-            var response = await _client.Get<ApprenticeshipResponse>(new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
+            var response = await _client.GetWithResponseCode<ApprenticeshipResponse>(
+                new GetApprenticeshipRequest(apprenticeId, apprenticeshipId));
 
-            if (response == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(response);
+            if(response.Body != null)
+                return StatusCode((int)response.StatusCode, response.Body);
+            else
+                return StatusCode((int)response.StatusCode, response.ErrorContent);
         }
 
         [HttpGet("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions")]
