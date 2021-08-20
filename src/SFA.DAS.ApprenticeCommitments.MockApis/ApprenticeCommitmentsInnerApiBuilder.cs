@@ -14,6 +14,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private readonly WireMockServer _server;
         private readonly Fixture _fixture;
         private IEnumerable<RegistrationsRemindersInvitationsResponse.Registration> _registrationsInNeedOfReminders;
+        private readonly ApprenticeshipResponse _existingApprenticship;
 
         public ApprenticeCommitmentsInnerApiBuilder(int port)
         {
@@ -21,6 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             _server = WireMockServer.StartWithAdminInterface(port, true);
 
             _registrationsInNeedOfReminders = _fixture.CreateMany<RegistrationsRemindersInvitationsResponse.Registration>();
+            _existingApprenticship = _fixture.Create<ApprenticeshipResponse>();
         }
 
         public static ApprenticeCommitmentsInnerApiBuilder Create(int port)
@@ -85,6 +87,23 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.Accepted)
+                );
+
+            return this;
+        }
+
+        internal ApprenticeCommitmentsInnerApiBuilder WithExistingApprenticeship()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/e3bab44c-469b-4609-b926-afffef41f451/apprenticeships/100")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                    .WithStatusCode((int)HttpStatusCode.OK)
+                    .WithBodyAsJson(_existingApprenticship)
                 );
 
             return this;
