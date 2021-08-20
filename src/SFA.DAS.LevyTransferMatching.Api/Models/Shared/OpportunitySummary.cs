@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.LevyTransferMatching.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Shared
 {
@@ -24,7 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Shared
                 IsNamePublic = pledge.IsNamePublic,
                 JobRoles = pledge.JobRoles,
                 Levels = pledge.Levels,
-                Sectors = pledge.Sectors
+                Sectors = pledge.Sectors,
+                Locations = pledge.Locations.Select(x => x.Name)
             };
         }
     }

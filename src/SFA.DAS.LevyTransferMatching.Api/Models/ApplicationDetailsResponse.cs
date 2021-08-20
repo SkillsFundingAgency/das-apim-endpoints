@@ -2,6 +2,7 @@
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
@@ -31,6 +32,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
             public IEnumerable<string> Sectors { get; set; }
 
+            public IEnumerable<string> Locations { get; set; }
+
             public static implicit operator OpportunityData(Pledge pledge)
             {
                 return new OpportunityData()
@@ -42,7 +45,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                     IsNamePublic = pledge.IsNamePublic,
                     JobRoles = pledge.JobRoles,
                     Levels = pledge.Levels,
-                    Sectors = pledge.Sectors
+                    Sectors = pledge.Sectors,
+                    Locations = pledge.Locations.Select(x => x.Name)
                 };
             }
         }
