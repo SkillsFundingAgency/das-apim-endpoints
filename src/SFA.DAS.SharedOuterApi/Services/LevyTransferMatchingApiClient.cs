@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
     public class LevyTransferMatchingApiClient : ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>
     {
