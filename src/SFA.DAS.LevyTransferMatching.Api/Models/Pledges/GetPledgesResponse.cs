@@ -4,17 +4,17 @@ using static SFA.DAS.LevyTransferMatching.Api.Models.Pledges.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
-    public class GetPledgesResponse : List<Pledge>
+    public class GetPledgesResponse
     {
-        public GetPledgesResponse(IEnumerable<Pledge> collection) : base(collection)
-        {
-        }
+        public IEnumerable<Pledge> Pledges { get; set; }
 
         public class Pledge
         {
             public int Id { get; set; }
             public long AccountId { get; set; }
             public int Amount { get; set; }
+            public int RemainingAmount { get; set; }
+            public int ApplicationCount { get; set; }
             public bool IsNamePublic { get; set; }
             public string DasAccountName { get; set; }
             public DateTime CreatedOn { get; set; }

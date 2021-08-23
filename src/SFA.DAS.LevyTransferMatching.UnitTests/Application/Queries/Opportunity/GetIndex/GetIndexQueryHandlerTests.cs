@@ -2,12 +2,15 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
+using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
@@ -23,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         private List<ReferenceDataItem> _jobRoles;
         private List<ReferenceDataItem> _levels;
         private GetIndexQuery _query;
-        private List<Pledge> _pledges;
+        private GetPledgesResponse _pledges;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
@@ -33,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             _jobRoles = _autoFixture.Create<List<ReferenceDataItem>>();
             _levels = _autoFixture.Create<List<ReferenceDataItem>>();
             _query = _autoFixture.Create<GetIndexQuery>();
-            _pledges = _autoFixture.Create<List<Pledge>>();
+            _pledges = _autoFixture.Create<GetPledgesResponse>();
 
             _referenceDataService = new Mock<IReferenceDataService>();
             _referenceDataService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
@@ -41,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             _referenceDataService.Setup(x => x.GetLevels()).ReturnsAsync(_levels);
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>())).ReturnsAsync(new GetPledgesResponse() { Pledges = _pledges, TotalPledges = _pledges.Count() });
+            _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_pledges);
 
             _handler = new GetIndexQueryHandler(_levyTransferMatchingService.Object, _referenceDataService.Object);
         }
@@ -49,29 +52,29 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         [Test]
         public async Task Handle_Returns_Opportunities()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Select(x => x.Id));
+            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Pledges.Select(x => x.Id));
         }
 
         [Test]
         public async Task Handle_Returns_Sectors()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_sectors, result.Sectors);
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_jobRoles, result.JobRoles);
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_levels, result.Levels);
         }
     }
