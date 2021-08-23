@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
 {
@@ -17,5 +18,9 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
+        public IEnumerable<string> PledgeSectors { get; set; }
+        public IEnumerable<string> PledgeLevels { get; set; }
+        public IEnumerable<string> PledgeJobRoles { get; set; }
+        public List<LocationDataItem> Locations { get; set; }
     }
 }

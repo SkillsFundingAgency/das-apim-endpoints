@@ -56,6 +56,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                     StartBy = application.StartDate,
                     TypeOfJobRole = typeOfJobRole,
                     EmployerAccountName = application.EmployerAccountName,
+                    PledgeSectors = application.PledgeSectors,
+                    PledgeLevels = application.PledgeLevels,
+                    PledgeJobRoles = application.PledgeJobRoles,
+                    PledgeLocations = application.Locations,
                 };
             }
 
