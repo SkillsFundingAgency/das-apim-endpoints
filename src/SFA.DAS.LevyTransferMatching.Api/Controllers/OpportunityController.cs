@@ -262,7 +262,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     Opportunity = detailQueryResult.Opportunity,
                     Sectors = detailQueryResult.Sectors,
                     JobRoles = detailQueryResult.JobRoles,
-                    Levels = detailQueryResult.Levels
+                    Levels = detailQueryResult.Levels,
                 };
 
                 return Ok(response);

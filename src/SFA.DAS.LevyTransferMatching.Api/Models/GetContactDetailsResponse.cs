@@ -14,6 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
         public IEnumerable<string> Levels { get; set; }
+        public IEnumerable<string> Locations { get; set; }
         public bool IsNamePublic { get; set; }
 
         public static implicit operator GetContactDetailsResponse(GetContactDetailsResult getContactDetailsResult)
@@ -28,6 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                 Sectors = getContactDetailsResult.Sectors,
                 JobRoles = getContactDetailsResult.JobRoles,
                 Levels = getContactDetailsResult.Levels,
+                Locations = getContactDetailsResult.Locations,
                 IsNamePublic = getContactDetailsResult.IsNamePublic,
             };
         }
