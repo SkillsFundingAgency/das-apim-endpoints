@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
 {
@@ -10,20 +7,4 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
         public int PledgeId { get; set; }
         public int Amount { get; set; }
     }
-
-    public class DebitPledgeCommandHandler : IRequestHandler<DebitPledgeCommand>
-    {
-        public DebitPledgeCommandHandler()
-        {
-            
-        }
-
-        public Task<Unit> Handle(DebitPledgeCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-
 }
