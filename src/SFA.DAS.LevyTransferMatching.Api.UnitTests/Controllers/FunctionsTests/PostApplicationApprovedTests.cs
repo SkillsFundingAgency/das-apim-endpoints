@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             await _controller.ApplicationApproved(_request);
 
             _mediator.Verify(x =>
-                x.Send(It.Is<DebitPledgeCommand>(c => c.PledgeId == _request.PledgeId && c.Amount == _request.Amount),
+                x.Send(It.Is<DebitPledgeCommand>(c => c.PledgeId == _request.PledgeId && c.Amount == _request.Amount && c.ApplicationId == _request.ApplicationId),
                     It.IsAny<CancellationToken>()));
         }
     }

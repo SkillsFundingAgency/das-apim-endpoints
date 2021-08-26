@@ -43,6 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitPledg
 
             Assert.AreEqual($"pledges/{_command.PledgeId}/debit", _request.PostUrl);
             Assert.AreEqual(_command.Amount, debit.Amount);
+            Assert.AreEqual(_command.ApplicationId, debit.ApplicationId);
         }
     }
 }

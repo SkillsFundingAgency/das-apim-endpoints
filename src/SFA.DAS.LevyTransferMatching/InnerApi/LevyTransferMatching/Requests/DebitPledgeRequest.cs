@@ -19,6 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
         public class DebitPledgeRequestData
         {
             public int Amount { get; set; }
+            public int ApplicationId { get; set; }
         }
     }
 }
