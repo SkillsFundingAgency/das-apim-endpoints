@@ -13,6 +13,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
         public IEnumerable<string> Levels { get; set; }
+        public IEnumerable<string> Locations { get; set; }
         public bool IsNamePublic { get; set; }
     }
 }
