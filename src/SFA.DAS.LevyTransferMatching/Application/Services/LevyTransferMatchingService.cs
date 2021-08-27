@@ -85,5 +85,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitPledgeRequest>(request);
         }
+
+        public async Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<UndoApplicationApprovalRequest>(request);
+        }
     }
 }

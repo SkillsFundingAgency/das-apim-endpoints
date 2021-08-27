@@ -29,7 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new DebitPledgeCommand
+                var result = await _mediator.Send(new UndoApplicationApprovalCommand
                 {
                     PledgeId = request.PledgeId,
                     Amount = request.Amount,
@@ -46,6 +46,33 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to Debit Pledge");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Route("pledge-debit-failed")]
+        [HttpPost]
+        public async Task<IActionResult> PledgeDebitFailed(PledgeDebitFailedRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UndoApplicationApprovalCommand
+                {
+                    PledgeId = request.PledgeId,
+                    Amount = request.Amount,
+                    ApplicationId = request.ApplicationId
+                });
+
+                if (!result.StatusCode.IsSuccess())
+                {
+                    _logger.LogError($"Error attempting to Undo Application Approval {result.ErrorContent}");
+                }
+
+                return new StatusCodeResult((int)result.StatusCode);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to Undo Application Approval");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

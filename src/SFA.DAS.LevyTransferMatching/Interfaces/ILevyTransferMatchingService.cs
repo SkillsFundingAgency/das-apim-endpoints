@@ -24,5 +24,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
+        Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request);
     }
 }
