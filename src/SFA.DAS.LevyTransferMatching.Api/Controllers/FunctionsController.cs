@@ -29,7 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new UndoApplicationApprovalCommand
+                var result = await _mediator.Send(new DebitPledgeCommand
                 {
                     PledgeId = request.PledgeId,
                     Amount = request.Amount,
