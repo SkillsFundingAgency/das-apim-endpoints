@@ -15,17 +15,17 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitPledg
     [TestFixture]
     public class WhenCallingHandle
     {
-        private UndoApplicationApprovalCommandHandler _handler;
+        private DebitPledgeCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private readonly Fixture _fixture = new Fixture();
 
-        private UndoApplicationApprovalCommand _command;
+        private DebitPledgeCommand _command;
         private DebitPledgeRequest _request;
 
         [SetUp]
         public void Setup()
         {
-            _command = _fixture.Create<UndoApplicationApprovalCommand>();
+            _command = _fixture.Create<DebitPledgeCommand>();
 
             var apiResponse = new ApiResponse<DebitPledgeRequest>(new DebitPledgeRequest(_command.PledgeId, new DebitPledgeRequest.DebitPledgeRequestData()), HttpStatusCode.OK, string.Empty);
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitPledg
                 .Callback<DebitPledgeRequest>(r => _request = r)
                 .ReturnsAsync(apiResponse);
             
-            _handler = new UndoApplicationApprovalCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<UndoApplicationApprovalCommandHandler>>());
+            _handler = new DebitPledgeCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<DebitPledgeCommandHandler>>());
         }
 
         [Test]
