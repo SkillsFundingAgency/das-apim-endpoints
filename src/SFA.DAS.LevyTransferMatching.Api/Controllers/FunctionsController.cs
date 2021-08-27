@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -28,20 +29,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new DebitPledgeCommand
+                var result = await _mediator.Send(new DebitPledgeCommand
                 {
                     PledgeId = request.PledgeId,
                     Amount = request.Amount,
                     ApplicationId = request.ApplicationId
                 });
+
+                if (!result.StatusCode.IsSuccess())
+                {
+                    _logger.LogError($"Error attempting to Debit Pledge {result.ErrorContent}");
+                }
+
+                return new StatusCodeResult((int) result.StatusCode);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get Amount result");
+                _logger.LogError(e, $"Error attempting to Debit Pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-
-            return Ok();
         }
     }
 }

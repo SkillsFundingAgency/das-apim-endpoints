@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitPledge
 {
@@ -25,11 +27,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitPledg
         {
             _command = _fixture.Create<DebitPledgeCommand>();
 
+            var apiResponse = new ApiResponse<DebitPledgeRequest>(new DebitPledgeRequest(_command.PledgeId, new DebitPledgeRequest.DebitPledgeRequestData()), HttpStatusCode.OK, string.Empty);
+
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
 
             _levyTransferMatchingService.Setup(x => x.DebitPledge(It.IsAny<DebitPledgeRequest>()))
                 .Callback<DebitPledgeRequest>(r => _request = r)
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(apiResponse);
             
             _handler = new DebitPledgeCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<DebitPledgeCommandHandler>>());
         }

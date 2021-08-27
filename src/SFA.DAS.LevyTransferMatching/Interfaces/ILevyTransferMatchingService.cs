@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using GetAccountRequest = SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.GetAccountRequest;
 using Pledge = SFA.DAS.LevyTransferMatching.Models.Pledge;
 
@@ -23,6 +23,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
-        Task DebitPledge(DebitPledgeRequest request);
+        Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
     }
 }

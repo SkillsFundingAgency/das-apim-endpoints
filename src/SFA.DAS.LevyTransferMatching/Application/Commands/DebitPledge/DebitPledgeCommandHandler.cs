@@ -7,7 +7,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
 {
-    public class DebitPledgeCommandHandler : IRequestHandler<DebitPledgeCommand>
+    public class DebitPledgeCommandHandler : IRequestHandler<DebitPledgeCommand, DebitPledgeCommandResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<DebitPledgeCommandHandler> _logger;
@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(DebitPledgeCommand request, CancellationToken cancellationToken)
+        public async Task<DebitPledgeCommandResult> Handle(DebitPledgeCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Debiting pledge {request.PledgeId}");
 
@@ -30,9 +30,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
             
             var debitRequest = new DebitPledgeRequest(request.PledgeId, data);
 
-            await _levyTransferMatchingService.DebitPledge(debitRequest);
+            var response = await _levyTransferMatchingService.DebitPledge(debitRequest);
 
-            return Unit.Value;
+            return new DebitPledgeCommandResult
+            {
+                ErrorContent = response.ErrorContent,
+                StatusCode = response.StatusCode
+            };
         }
     }
 }
