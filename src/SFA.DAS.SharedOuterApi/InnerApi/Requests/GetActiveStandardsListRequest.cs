@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"api/courses/standards?filter=ActiveAvailable";
+            var url = $"api/courses/standards?filter=Active";
 
             if (RouteIds != null && RouteIds.Any())
             {
