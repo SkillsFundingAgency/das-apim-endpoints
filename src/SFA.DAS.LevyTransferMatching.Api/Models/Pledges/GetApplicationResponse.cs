@@ -14,6 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int EstimatedDurationMonths { get; set; }
+        public int MaxFunding { get; set; }
         public DateTime StartBy { get; set; }
         public bool HasTrainingProvider { get; set; }
         public string AboutOpportunity { get; set; }
@@ -25,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
+        public int PledgeRemainingAmount { get; set; }
         public List<LocationDataItem> PledgeLocations { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
@@ -38,6 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 BusinessWebsite = result.BusinessWebsite,
                 EmailAddresses = result.EmailAddresses,
                 EstimatedDurationMonths = result.EstimatedDurationMonths,
+                MaxFunding = result.MaxFunding,
                 FirstName = result.FirstName,
                 HasTrainingProvider = result.HasTrainingProvider,
                 LastName = result.LastName,
@@ -52,6 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeLevels = result.PledgeLevels,
                 PledgeJobRoles = result.PledgeJobRoles,
                 PledgeLocations = result.PledgeLocations,
+                PledgeRemainingAmount = result.PledgeRemainingAmount,
                 AllJobRoles = result.AllJobRoles,
                 AllSectors = result.AllSectors,
                 AllLevels = result.AllLevels,
