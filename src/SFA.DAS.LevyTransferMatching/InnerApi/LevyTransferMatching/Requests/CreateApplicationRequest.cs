@@ -26,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
         public int NumberOfApprentices { get; set; }
         public DateTime StartDate { get; set; }
         public bool HasTrainingProvider { get; set; }
+        public int Amount { get; set; }
         public IEnumerable<string> Sectors { get; set; }
         public string Postcode { get; set; }
         public string FirstName { get; set; }
