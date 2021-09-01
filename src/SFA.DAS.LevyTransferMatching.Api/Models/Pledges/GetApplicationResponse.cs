@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -25,6 +26,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public List<LocationDataItem> PledgeLocations { get; set; }
+        public List<ReferenceDataItem> AllJobRoles { get; set; }
+        public List<ReferenceDataItem> AllSectors { get; set; }
+        public List<ReferenceDataItem> AllLevels { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -48,6 +52,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeLevels = result.PledgeLevels,
                 PledgeJobRoles = result.PledgeJobRoles,
                 PledgeLocations = result.PledgeLocations,
+                AllJobRoles = result.AllJobRoles,
+                AllSectors = result.AllSectors,
+                AllLevels = result.AllLevels,
             };
         }
     }

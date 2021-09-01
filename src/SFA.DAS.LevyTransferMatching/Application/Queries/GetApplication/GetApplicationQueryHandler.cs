@@ -16,12 +16,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
+        private readonly IReferenceDataService _referenceDataService;
 
-        public GetApplicationQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, ILocationApiClient<LocationApiConfiguration> locationApiClient)
+        public GetApplicationQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, ILocationApiClient<LocationApiConfiguration> locationApiClient, IReferenceDataService referenceDataService)
         {
             _coursesApiClient = coursesApiClient;
             _levyTransferMatchingService = levyTransferMatchingService;
             _locationApiClient = locationApiClient;
+            _referenceDataService = referenceDataService;
         }
 
         public async Task<GetApplicationResult> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
@@ -31,14 +33,17 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
             GetApplicationResult getApplicationResult = null;
             if (application != null)
             {
-                var standard = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
-                var location = _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(application.Postcode));
+                var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
+                var locationTask = _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(application.Postcode));
+                var allJobRolesTask = _referenceDataService.GetJobRoles();
+                var allLevelsTask = _referenceDataService.GetLevels();
+                var allSectorsTask = _referenceDataService.GetSectors();
 
-                await Task.WhenAll(standard, location);
+                await Task.WhenAll(standardTask, locationTask, allJobRolesTask, allLevelsTask, allSectorsTask);
 
-                int estimatedDurationMonths = standard.Result.TypicalDuration;
-                int level = standard.Result.Level;
-                string typeOfJobRole = standard.Result.Title;
+                int estimatedDurationMonths = standardTask.Result.TypicalDuration;
+                int level = standardTask.Result.Level;
+                string typeOfJobRole = standardTask.Result.Title;
 
                 getApplicationResult = new GetApplicationResult()
                 {
@@ -50,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                     HasTrainingProvider = application.HasTrainingProvider,
                     LastName = application.LastName,
                     Level = level,
-                    Location = location.Result.DistrictName,
+                    Location = locationTask.Result.DistrictName,
                     NumberOfApprentices = application.NumberOfApprentices,
                     Sector = application.Sectors,
                     StartBy = application.StartDate,
@@ -60,6 +65,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                     PledgeLevels = application.PledgeLevels,
                     PledgeJobRoles = application.PledgeJobRoles,
                     PledgeLocations = application.Locations,
+                    AllJobRoles = allJobRolesTask.Result,
+                    AllLevels = allLevelsTask.Result,
+                    AllSectors = allSectorsTask.Result,
                 };
             }
 
