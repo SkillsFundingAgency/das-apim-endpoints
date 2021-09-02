@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
         {
         }
 
-        protected override Task AddAuthenticationHeader(HttpRequestMessage requestMessage)
+        protected override Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
             return Task.CompletedTask;
         }

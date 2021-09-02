@@ -81,7 +81,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return !((int)statusCode >= 200 && (int)statusCode <= 299);
         }
 
-        protected abstract Task AddAuthenticationHeader(HttpRequestMessage requestMessage);
+        protected abstract Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage);
 
     }
 }
