@@ -4,9 +4,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public static class HttpRequestMessageExtensions
     {
-        public static void AddVersion(this HttpRequestMessage request, string version)
+        public static void AddVersion(this HttpRequestMessage httpRequestMessage, string version)
         {
-            request.Headers.Add("X-Version", version);
+            httpRequestMessage.Headers.Add("X-Version", version);
         }
     }
 }
