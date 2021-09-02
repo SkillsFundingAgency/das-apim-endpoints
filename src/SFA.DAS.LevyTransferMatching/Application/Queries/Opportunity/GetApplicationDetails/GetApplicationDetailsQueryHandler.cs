@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplic
 
             if (string.IsNullOrEmpty(standardId))
             {
-                var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+                var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
                 standards = standardsResponse.Standards.ToList();
             }
 
