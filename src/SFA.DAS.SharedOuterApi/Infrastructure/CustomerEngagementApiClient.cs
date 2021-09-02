@@ -12,14 +12,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
         }
 
-        protected override async Task AddAuthenticationHeader()
+        protected override async Task AddAuthenticationHeader(HttpRequestMessage requestMessage)
         {
-            HttpClient.DefaultRequestHeaders.Remove("Ocp-Apim-Subscription-Key");
-            HttpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", Configuration.SubscriptionKey);
-        }
-
-        protected override void AddVersionHeader(string requestVersion)
-        {
+            requestMessage.Headers.Add("Ocp-Apim-Subscription-Key", Configuration.SubscriptionKey);
         }
     }
 }
