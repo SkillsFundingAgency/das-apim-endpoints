@@ -26,14 +26,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandard
             var getStandardsQuery = new GetStandardsQuery();
 
             client
-                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(response);
 
             var result = await getStandardsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(response.Standards.Count(), result.Standards.Count());
-            client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()), Times.Once);
+            client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
