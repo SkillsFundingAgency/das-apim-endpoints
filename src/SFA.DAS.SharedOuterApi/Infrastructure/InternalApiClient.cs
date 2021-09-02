@@ -21,19 +21,13 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             _azureClientCredentialHelper = azureClientCredentialHelper;
         }
 
-        protected override async Task AddAuthenticationHeader()
+        protected override async Task AddAuthenticationHeader(HttpRequestMessage request)
         {
             if (!HostingEnvironment.IsDevelopment())
             {
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(Configuration.Identifier);
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             }
-        }
-
-        protected override void AddVersionHeader(string requestVersion)
-        {
-            HttpClient.DefaultRequestHeaders.Remove("X-Version");
-            HttpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
     }
 }
