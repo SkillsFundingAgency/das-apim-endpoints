@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetOpportunityApply
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount
 {
-    public class GetOpportunityApplyQueryResult
+    public class GetSelectAccountQueryResult
     {
         public IEnumerable<Account> Accounts { get; set; }
 

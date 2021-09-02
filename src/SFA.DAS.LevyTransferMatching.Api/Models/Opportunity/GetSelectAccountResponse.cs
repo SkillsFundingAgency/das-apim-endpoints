@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetOpportunityApply;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
 {
-    public class GetOpportunityApplyResponse
+    public class GetSelectAccountResponse
     {
         public IEnumerable<Account> Accounts { get; set; }
 
@@ -13,7 +13,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
             public string EncodedAccountId { get; set; }
             public string Name { get; set; }
 
-            public static implicit operator Account(GetOpportunityApplyQueryResult.Account account)
+            public static implicit operator Account(GetSelectAccountQueryResult.Account account)
             {
                 return new Account()
                 {
@@ -23,9 +23,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
             }
         }
 
-        public static implicit operator GetOpportunityApplyResponse(GetOpportunityApplyQueryResult result)
+        public static implicit operator GetSelectAccountResponse(GetSelectAccountQueryResult result)
         {
-            return new GetOpportunityApplyResponse()
+            return new GetSelectAccountResponse()
             {
                 Accounts = result.Accounts.Select(x => (Account)x),
             };

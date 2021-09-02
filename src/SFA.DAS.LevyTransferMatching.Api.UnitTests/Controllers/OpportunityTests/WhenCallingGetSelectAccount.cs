@@ -9,33 +9,33 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetOpportunityApply;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.UserTests
 {
     [TestFixture]
-    public class WhenCallingGetOpportunityApply
+    public class WhenCallingGetSelectAccount
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Accounts(
             int opportunityId,
             string userId,
-            GetOpportunityApplyQueryResult getOpportunityApplyQueryResult,
+            GetSelectAccountQueryResult getSelectAccountQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetOpportunityApplyQuery>(y => y.UserId == userId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getOpportunityApplyQueryResult);
+                .Setup(x => x.Send(It.Is<GetSelectAccountQuery>(y => y.UserId == userId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(getSelectAccountQueryResult);
 
-            var controllerResult = await opportunityController.OpportunityApply(opportunityId, userId) as OkObjectResult;
-            var response = controllerResult.Value as GetOpportunityApplyResponse;
+            var controllerResult = await opportunityController.SelectAccount(opportunityId, userId) as OkObjectResult;
+            var response = controllerResult.Value as GetSelectAccountResponse;
 
             Assert.IsNotNull(controllerResult);
             Assert.AreEqual(controllerResult.StatusCode, (int)HttpStatusCode.OK);
             Assert.IsNotNull(response);
-            Assert.AreEqual(getOpportunityApplyQueryResult.Accounts.Count(), response.Accounts.Count());
+            Assert.AreEqual(getSelectAccountQueryResult.Accounts.Count(), response.Accounts.Count());
         }
     }
 }
