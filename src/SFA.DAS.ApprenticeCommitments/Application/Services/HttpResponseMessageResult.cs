@@ -22,6 +22,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         {
             context.HttpContext.Response.StatusCode = (int)_responseMessage.StatusCode;
 
+            if (_responseMessage.Content.Headers.TryGetValues("Content-Type", out var values))
+                context.HttpContext.Response.Headers.TryAdd("Content-Type", new StringValues(values.ToArray()));
+
             using var stream = await _responseMessage.Content.ReadAsStreamAsync();
             await stream.CopyToAsync(context.HttpContext.Response.Body);
             await context.HttpContext.Response.Body.FlushAsync();
