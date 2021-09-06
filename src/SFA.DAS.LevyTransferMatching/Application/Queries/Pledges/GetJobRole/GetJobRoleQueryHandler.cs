@@ -18,7 +18,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole
         {
             return new GetJobRoleQueryResult
             {
-                JobRoles = await _referenceDataService.GetJobRoles()
+                JobRoles = await _referenceDataService.GetJobRoles(),
+                Sectors = await _referenceDataService.GetSectors()
             };
         }
     }
