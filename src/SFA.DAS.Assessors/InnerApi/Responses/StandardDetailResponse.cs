@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public string Status { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public decimal Version { get; set; }
+        public string Version { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
         public string Route { get; set; }
@@ -39,6 +40,8 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public EqaProvider EqaProvider { get; set; }
 
         public bool EPAChanged { get; set; }
+        public int VersionMajor { get; set; }
+        public int VersionMinor { get; set; }
 
         protected override int GetFundingDetails(string prop)
         {

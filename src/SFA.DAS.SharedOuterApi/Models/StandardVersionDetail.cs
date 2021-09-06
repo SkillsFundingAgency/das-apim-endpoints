@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Assessors.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class StandardVersionDetail
     {
