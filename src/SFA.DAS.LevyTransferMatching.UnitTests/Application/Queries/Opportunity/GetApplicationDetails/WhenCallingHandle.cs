@@ -37,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
                 .ReturnsAsync(opportunity);
 
             client
-                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(response);
 
             var result = await getApplicationDetailsQueryHandler.Handle(getApplicationDetailsQuery, CancellationToken.None);
@@ -65,7 +65,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
                 .ReturnsAsync((Pledge)null);
 
             client
-                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(response);
 
             var result = await getApplicationDetailsQueryHandler.Handle(getApplicationDetailsQuery, CancellationToken.None);
@@ -82,7 +82,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             var getStandardsQuery = new GetApplicationDetailsQuery();
 
             client
-                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
                 .ReturnsAsync(response);
 
             var result = await getApplicationDetailsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
@@ -90,7 +90,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Standards);
             Assert.AreEqual(response.Standards.Count(), result.Standards.Count());
-            client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()), Times.Once);
+            client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]

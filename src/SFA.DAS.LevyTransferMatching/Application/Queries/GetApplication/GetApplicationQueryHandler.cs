@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
@@ -30,48 +31,49 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         {
             var application = await _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.PledgeId, request.ApplicationId));
 
-            GetApplicationResult getApplicationResult = null;
-            if (application != null)
+            if (application == null)
             {
-                var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
-                var locationTask = _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(application.Postcode));
-                var allJobRolesTask = _referenceDataService.GetJobRoles();
-                var allLevelsTask = _referenceDataService.GetLevels();
-                var allSectorsTask = _referenceDataService.GetSectors();
-
-                await Task.WhenAll(standardTask, locationTask, allJobRolesTask, allLevelsTask, allSectorsTask);
-
-                int estimatedDurationMonths = standardTask.Result.TypicalDuration;
-                int level = standardTask.Result.Level;
-                string typeOfJobRole = standardTask.Result.Title;
-
-                getApplicationResult = new GetApplicationResult()
-                {
-                    AboutOpportunity = application.Details,
-                    BusinessWebsite = application.BusinessWebsite,
-                    EmailAddresses = application.EmailAddresses,
-                    EstimatedDurationMonths = estimatedDurationMonths,
-                    MaxFunding = standardTask.Result.MaxFunding,
-                    FirstName = application.FirstName,
-                    HasTrainingProvider = application.HasTrainingProvider,
-                    LastName = application.LastName,
-                    Level = level,
-                    Location = locationTask.Result.DistrictName,
-                    NumberOfApprentices = application.NumberOfApprentices,
-                    Sector = application.Sectors,
-                    StartBy = application.StartDate,
-                    TypeOfJobRole = typeOfJobRole,
-                    EmployerAccountName = application.EmployerAccountName,
-                    PledgeSectors = application.PledgeSectors,
-                    PledgeLevels = application.PledgeLevels,
-                    PledgeJobRoles = application.PledgeJobRoles,
-                    PledgeLocations = application.Locations,
-                    PledgeRemainingAmount = application.PledgeRemainingAmount,
-                    AllJobRoles = allJobRolesTask.Result,
-                    AllLevels = allLevelsTask.Result,
-                    AllSectors = allSectorsTask.Result,
-                };
+                return null;
             }
+
+            var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
+            var locationTask = _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(application.Postcode));
+            var allJobRolesTask = _referenceDataService.GetJobRoles();
+            var allLevelsTask = _referenceDataService.GetLevels();
+            var allSectorsTask = _referenceDataService.GetSectors();
+
+            await Task.WhenAll(standardTask, locationTask, allJobRolesTask, allLevelsTask, allSectorsTask);
+
+            var estimatedDurationMonths = standardTask.Result.TypicalDuration;
+            var level = standardTask.Result.Level;
+            var typeOfJobRole = standardTask.Result.Title;
+
+            var getApplicationResult = new GetApplicationResult()
+            {
+                AboutOpportunity = application.Details,
+                BusinessWebsite = application.BusinessWebsite,
+                EmailAddresses = application.EmailAddresses,
+                EstimatedDurationMonths = estimatedDurationMonths,
+                MaxFunding = standardTask.Result.MaxFunding,
+                FirstName = application.FirstName,
+                HasTrainingProvider = application.HasTrainingProvider,
+                LastName = application.LastName,
+                Level = level,
+                Location = locationTask.Result.DistrictName,
+                NumberOfApprentices = application.NumberOfApprentices,
+                Sector = application.Sectors,
+                StartBy = application.StartDate,
+                TypeOfJobRole = typeOfJobRole,
+                EmployerAccountName = application.EmployerAccountName,
+                PledgeSectors = application.PledgeSectors,
+                PledgeLevels = application.PledgeLevels,
+                PledgeJobRoles = application.PledgeJobRoles,
+                PledgeLocations = application.Locations?.Select(x => x.Name),
+                PledgeRemainingAmount = application.PledgeRemainingAmount,
+                AllJobRoles = allJobRolesTask.Result,
+                AllLevels = allLevelsTask.Result,
+                AllSectors = allSectorsTask.Result,
+            };
 
             return getApplicationResult;
         }

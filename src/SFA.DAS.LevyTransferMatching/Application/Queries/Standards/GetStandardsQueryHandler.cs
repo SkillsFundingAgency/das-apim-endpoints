@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Standards
 
             if (string.IsNullOrEmpty(request.StandardId))
             {
-                var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+                var standardsResponse = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
                 standards = standardsResponse.Standards.ToList();
             }
 

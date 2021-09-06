@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
@@ -25,8 +24,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
+        public IEnumerable<string> PledgeLocations { get; set; }
         public int PledgeRemainingAmount { get; set; }
-        public List<LocationDataItem> PledgeLocations { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }

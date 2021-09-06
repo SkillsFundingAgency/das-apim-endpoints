@@ -16,12 +16,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 
         public async Task<GetAmountQueryResult> Handle(GetAmountQuery request, CancellationToken cancellationToken)
         {
-            // var account = await _accountsService.GetAccount(request.EncodedAccountId);
+            var account = await _accountsService.GetAccount(request.EncodedAccountId);
 
             return new GetAmountQueryResult
             {
-                RemainingTransferAllowance = 2000, // account.RemainingTransferAllowance,
-                DasAccountName = "TESCO" // account.DasAccountName
+                RemainingTransferAllowance = account.RemainingTransferAllowance,
+                DasAccountName = account.DasAccountName
             };
         }
     }
