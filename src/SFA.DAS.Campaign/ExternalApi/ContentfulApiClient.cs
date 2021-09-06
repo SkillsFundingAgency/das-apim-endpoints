@@ -12,13 +12,9 @@ namespace SFA.DAS.Campaign.ExternalApi
         {
         }
         
-        protected override async Task AddAuthenticationHeader()
+        protected override async Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            HttpClient.DefaultRequestHeaders.Remove("Authorization");
-            HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Configuration.AccessToken}");
-        }
-        protected override void AddVersionHeader(string requestVersion)
-        {
+            httpRequestMessage.Headers.Add("Authorization", $"Bearer {Configuration.AccessToken}");
         }
     }
 }
