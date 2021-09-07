@@ -55,6 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 EmailAddresses = application.EmailAddresses,
                 EstimatedDurationMonths = estimatedDurationMonths,
                 MaxFunding = standardTask.Result.MaxFunding,
+                Amount = application.Amount,
                 FirstName = application.FirstName,
                 HasTrainingProvider = application.HasTrainingProvider,
                 LastName = application.LastName,
