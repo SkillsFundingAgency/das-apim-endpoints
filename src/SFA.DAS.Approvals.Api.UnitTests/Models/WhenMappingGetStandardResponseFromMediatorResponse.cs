@@ -26,7 +26,13 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
             actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);
             actual.LastDateForNewStarts.Should().Be(source.StandardDates.LastDateStarts);
             actual.Duration.Should().Be(source.TypicalDuration);
-            actual.Id.Should().Be(source.LarsCode);
+            actual.LarsCode.Should().Be(source.LarsCode);
+            actual.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
+            actual.Version.Should().Be(source.Version);
+            actual.VersionMajor.Should().Be(source.VersionMajor);
+            actual.VersionMinor.Should().Be(source.VersionMinor);
+            actual.VersionDetail.Should().BeEquivalentTo(source.VersionDetail);
+
         }
     }
 }

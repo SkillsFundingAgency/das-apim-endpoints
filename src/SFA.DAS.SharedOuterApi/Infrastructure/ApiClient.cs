@@ -36,14 +36,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
       
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
 
-            var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
-                .ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             
@@ -67,88 +67,88 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         [Obsolete("Use PostWithResponseCode")]
         public async Task Post<TData>(IPostApiRequest<TData> request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
-
-            var response = await HttpClient.PostAsync(request.PostUrl, stringContent)
-                .ConfigureAwait(false);
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Delete(IDeleteApiRequest request)
         {
-            await AddAuthenticationHeader();
-            AddVersionHeader(request.Version);
-
-            var response = await HttpClient.DeleteAsync(request.DeleteUrl)
-                .ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
+            requestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
+        [Obsolete("Use PatchWithResponseCode")]
         public async Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            await AddAuthenticationHeader();
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
-
-            var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
-                .ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
 
-            var response = await HttpClient.PatchAsync(request.PatchUrl, stringContent)
-                .ConfigureAwait(false);
-
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return new ApiResponse<string>(responseContent, response.StatusCode, ""); //TODO - Error content should be correctly set
         }
 
         public async Task Put(IPutApiRequest request)
-
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Put, request.PutUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
 
-            var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
-                .ConfigureAwait(false);
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task Put<TData>(IPutApiRequest<TData> request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
-
-            var response = await HttpClient.PutAsync(request.PutUrl, stringContent)
-                .ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Put, request.PutUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
         public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
-            await AddAuthenticationHeader();
-            AddVersionHeader(request.Version);
-            var response = await HttpClient.GetAsync(request.GetAllUrl).ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetAllUrl);
+            requestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -161,19 +161,22 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
-            await AddAuthenticationHeader();
-            AddVersionHeader(request.Version);
-            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
-
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            requestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            
             return response.StatusCode;
         }
 
         public async Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
-            await AddAuthenticationHeader();
-            AddVersionHeader(request.Version);
-
-            var response = await HttpClient.GetAsync(request.GetPagedUrl).ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetPagedUrl);
+            requestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(requestMessage);
+            
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {

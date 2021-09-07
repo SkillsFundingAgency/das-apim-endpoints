@@ -40,22 +40,22 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
-            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            httpRequestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(httpRequestMessage);
+            
+            var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             return response.StatusCode;
         }
 
         public async Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
         {
-            await AddAuthenticationHeader();
-
-            AddVersionHeader(request.Version);
-
-            var response = await HttpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            httpRequestMessage.AddVersion(request.Version);
+            await AddAuthenticationHeader(httpRequestMessage);
+            
+            var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             
@@ -81,8 +81,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             return !((int)statusCode >= 200 && (int)statusCode <= 299);
         }
 
-        protected abstract Task AddAuthenticationHeader();
+        protected abstract Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage);
 
-        protected abstract void AddVersionHeader(string requestVersion);
     }
 }

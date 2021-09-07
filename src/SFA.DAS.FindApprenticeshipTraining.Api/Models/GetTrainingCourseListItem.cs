@@ -11,7 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public string Title { get; set; }
         public int Level { get; set; }
         public string LevelEquivalent { get; set; }
-        public decimal Version { get; set; }
+        public string Version { get; set; }
         public int MaxFunding { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
