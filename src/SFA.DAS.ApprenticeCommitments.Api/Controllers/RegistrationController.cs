@@ -25,8 +25,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public async Task<ActionResult<CreateRegistrationResponse>> CreateRegistrationFromApproval(CreateRegistrationCommand request)
             => await _mediator.Send(request);
 
-        [HttpPost]
-        [Route("/registrations/update")]
+        [HttpPut]
+        [Route("/registrations")]
         public async Task UpdateRegistrationFromApproval(ChangeRegistrationCommand request)
             => await _mediator.Send(request);
 

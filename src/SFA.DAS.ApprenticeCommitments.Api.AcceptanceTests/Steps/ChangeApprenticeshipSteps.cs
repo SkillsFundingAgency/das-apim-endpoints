@@ -32,8 +32,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/apprenticeships/change")
-                        .UsingPost()
+                        .WithPath("/registrations")
+                        .UsingPut()
                       )
                 .RespondWith(
                     Response.Create()
@@ -125,7 +125,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<ChangeRegistrationCommand>();
-            await _context.OuterApiClient.Post("registrations/update", _request);
+            await _context.OuterApiClient.Put("registrations", _request);
         }
 
         [Then("the response should be OK")]

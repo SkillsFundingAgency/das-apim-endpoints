@@ -3,9 +3,9 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class ChangeApprenticeshipRequest : IPostApiRequest<ChangeRegistrationRequestData>
+    public class ChangeApprenticeshipRequest : IPutApiRequest<ChangeRegistrationRequestData>
     {
-        public string PostUrl => "/apprenticeships/change";
+        public string PutUrl => "/registrations";
 
         public ChangeRegistrationRequestData Data { get; set; }
     }
