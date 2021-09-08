@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
             Data = data;
         }
 
-        public string PostUrl => $"/pledges/{PledgeId}/applications/{ApplicationId}";
+        public string PostUrl => $"/pledges/{PledgeId}/applications/{ApplicationId}/approve";
         public object Data { get; set; }
     }
 
