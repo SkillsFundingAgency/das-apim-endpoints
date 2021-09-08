@@ -26,6 +26,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<CommitmentsV2Service>();
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
+            services.AddTransient<ApimClient>();
+            services.AddTransient<ResponseReturningApiClient>();
         }
     }
 }

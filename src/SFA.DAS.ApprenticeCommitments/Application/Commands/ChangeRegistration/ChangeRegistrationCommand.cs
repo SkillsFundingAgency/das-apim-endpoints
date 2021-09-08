@@ -3,9 +3,9 @@ using MediatR;
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
 {
-    public class UpdateApprenticeshipCommand : IRequest
+    public class ChangeRegistrationCommand : IRequest
     {
         public long? CommitmentsContinuedApprenticeshipId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }
