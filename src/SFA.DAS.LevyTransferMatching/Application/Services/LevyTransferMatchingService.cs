@@ -98,5 +98,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<UndoApplicationApprovalRequest>(request);
         }
+
+        public async Task ApproveApplication(ApproveApplicationRequest request)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request);
+        }
     }
 }

@@ -19,6 +19,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApp
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -239,6 +240,31 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
+        public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] ApproveApplicationRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ApproveApplicationCommand
+                {
+                    ApplicationId = applicationId,
+                    PledgeId = pledgeId, 
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to approve application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
 
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]

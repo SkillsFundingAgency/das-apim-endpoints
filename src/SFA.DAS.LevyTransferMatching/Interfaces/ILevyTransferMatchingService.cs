@@ -4,7 +4,6 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -30,5 +29,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
 
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
         Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request);
+        Task ApproveApplication(ApproveApplicationRequest request);
     }
 }
