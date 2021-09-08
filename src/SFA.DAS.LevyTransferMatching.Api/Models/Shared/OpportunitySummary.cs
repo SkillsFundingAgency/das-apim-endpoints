@@ -20,7 +20,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Shared
             return new OpportunitySummary()
             {
                 Id = pledge.Id.Value,
-                Amount = pledge.Amount,
+                Amount = pledge.RemainingAmount,
                 DasAccountName = pledge.IsNamePublic ? pledge.DasAccountName : "Opportunity",
                 IsNamePublic = pledge.IsNamePublic,
                 JobRoles = pledge.JobRoles,
