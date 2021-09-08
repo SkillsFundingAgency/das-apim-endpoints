@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -12,6 +13,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int EstimatedDurationMonths { get; set; }
+        public int MaxFunding { get; set; }
+        public int Amount { get; set; }
         public DateTime StartBy { get; set; }
         public bool HasTrainingProvider { get; set; }
         public string AboutOpportunity { get; set; }
@@ -20,6 +23,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
+        public IEnumerable<string> PledgeSectors { get; set; }
+        public IEnumerable<string> PledgeLevels { get; set; }
+        public IEnumerable<string> PledgeJobRoles { get; set; }
+        public IEnumerable<string> PledgeLocations { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public List<ReferenceDataItem> AllJobRoles { get; set; }
+        public List<ReferenceDataItem> AllSectors { get; set; }
+        public List<ReferenceDataItem> AllLevels { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -29,6 +40,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 BusinessWebsite = result.BusinessWebsite,
                 EmailAddresses = result.EmailAddresses,
                 EstimatedDurationMonths = result.EstimatedDurationMonths,
+                MaxFunding = result.MaxFunding,
+                Amount = result.Amount,
                 FirstName = result.FirstName,
                 HasTrainingProvider = result.HasTrainingProvider,
                 LastName = result.LastName,
@@ -39,6 +52,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 StartBy = result.StartBy,
                 TypeOfJobRole = result.TypeOfJobRole,
                 EmployerAccountName = result.EmployerAccountName,
+                PledgeSectors = result.PledgeSectors,
+                PledgeLevels = result.PledgeLevels,
+                PledgeJobRoles = result.PledgeJobRoles,
+                PledgeLocations = result.PledgeLocations,
+                PledgeRemainingAmount = result.PledgeRemainingAmount,
+                AllJobRoles = result.AllJobRoles,
+                AllSectors = result.AllSectors,
+                AllLevels = result.AllLevels,
             };
         }
     }
