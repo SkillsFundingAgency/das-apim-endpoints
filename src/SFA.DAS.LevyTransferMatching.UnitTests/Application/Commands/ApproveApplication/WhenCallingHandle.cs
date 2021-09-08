@@ -16,24 +16,24 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveApp
     [TestFixture]
     public class WhenCallingHandle
     {
-        private ApproveApplicationCommandHandler _handler;
+        private SetApplicationOutcomeCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private Fixture _fixture = new Fixture();
 
-        private ApproveApplicationCommand _command;
+        private SetApplicationOutcomeCommand _command;
         private ApproveApplicationRequest _request;
 
         [SetUp]
         public void Setup()
         {
-            _command = _fixture.Create<ApproveApplicationCommand>();
+            _command = _fixture.Create<SetApplicationOutcomeCommand>();
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()))
                 .Callback<ApproveApplicationRequest>(request => _request = request)
                 .Returns(Task.CompletedTask);
 
-            _handler = new ApproveApplicationCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<ApproveApplicationCommandHandler>>());
+            _handler = new SetApplicationOutcomeCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<SetApplicationOutcomeCommandHandler>>());
         }
 
 

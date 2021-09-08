@@ -245,23 +245,24 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpPost]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
-        public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] ApproveApplicationRequest request)
+        public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] SetApplicationOutcomeRequest outcomeRequest)
         {
             try
             {
-                await _mediator.Send(new ApproveApplicationCommand
+                await _mediator.Send(new SetApplicationOutcomeCommand
                 {
                     ApplicationId = applicationId,
                     PledgeId = pledgeId, 
-                    UserId = request.UserId,
-                    UserDisplayName = request.UserDisplayName
+                    UserId = outcomeRequest.UserId,
+                    UserDisplayName = outcomeRequest.UserDisplayName,
+                    Outcome = outcomeRequest.Outcome
                 });
 
                 return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to approve application");
+                _logger.LogError(e, $"Error attempting to approve/reject application");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
