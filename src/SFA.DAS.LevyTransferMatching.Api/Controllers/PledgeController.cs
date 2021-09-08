@@ -212,6 +212,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
         }
 
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
         public async Task<IActionResult> Application(int applicationId)
@@ -241,7 +242,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
         }
 
-
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpPost]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
         public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] ApproveApplicationRequest request)
