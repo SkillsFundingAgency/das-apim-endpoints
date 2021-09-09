@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -73,6 +74,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
            var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
            return response.Body;
+        }
+
+        public async Task<GetApplicationResponse> GetApplication(GetApplicationRequest request)
+        {
+            var response = await _levyTransferMatchingApiClient.Get<GetApplicationResponse>(request);
+
+            return response;
         }
 
         public async Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request)
