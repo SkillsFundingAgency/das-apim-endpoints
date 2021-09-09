@@ -17,6 +17,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     [Scope(Feature = "GetApprenticeship")]
     public class GetApprenticeshipSteps
     {
+        private const string ContentType = "application/test-content-type";
         private readonly TestContext _context;
         private readonly Fixture _fixture = new Fixture();
         private Guid _apprenticeId;
@@ -47,6 +48,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     Response.Create()
                         .WithStatusCode((int) HttpStatusCode.OK)
                         .WithBodyAsJson(_apprenticeship)
+                        .WithHeader("Content-Type", ContentType)
                 );
 
             _context.InnerApi.MockServer
@@ -87,7 +89,15 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then("the result should be OK")]
         public void ThenTheResultShouldBeOK()
         {
-            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            _context.OuterApiClient.Response.Should().Be200Ok();
+        }
+
+        [Then("the result should have the correct Content-Type")]
+        public void ThenTheResultShouldBeJson()
+        {
+            _context.OuterApiClient.Response
+                .Should().HaveHeader("Content-Type")
+                .And.Match(ContentType);
         }
 
         [Then(@"the result should contain the anticipated values")]

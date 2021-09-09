@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using System;
 using System.Net;
@@ -19,20 +20,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private string _apiPath;
         private object _command;
 
-        public object ApprenticeshipApiPath =>
-            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}/revisions/{_fixture.Create<long>()}";
+        public string ApprenticeshipApiPath =>
+            $"/apprentices/{_fixture.Create<Guid>()}/apprenticeships/{_fixture.Create<long>()}/revisions/{_fixture.Create<long>()}/confirmations";
 
         public ConfirmApprenticeshipSteps(TestContext context)
         {
             _context = context;
         }
 
-        [Given("(.*) containing `(.*)` for (.*)")]
-        public void GivenDataForConfirmation(string typename, string json, string path)
+        [Given("the confirmation `(.*)`")]
+        public void GivenDataForConfirmation(string json)
         {
-            var t = Type.GetType(typename);
+            var t = typeof(Confirmations);
             _command = JsonConvert.DeserializeObject(json, t);
-            _apiPath = $"{ApprenticeshipApiPath}/{path.ToLower()}";
+            _apiPath = ApprenticeshipApiPath;
         }
 
         [Given("the inner API will accept the confirmation")]
@@ -46,21 +47,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("we confirm the aspect")]
         public async Task WhenWeConfirmTheTrainingProvider()
         {
-            await _context.OuterApiClient.Post(_apiPath, _command);
-        }
-
-        [When(@"we confirm the roles and responsibilities")]
-        public async Task WhenWeConfirmTheRolesAndResponsibilities()
-        {
-            await _context.OuterApiClient.Post(
-                $"/apprentices/{Guid.NewGuid()}/apprenticeships/{1234}/revisions/rolesandresponsibilitiesconfirmation",
-                _command);
+            await _context.OuterApiClient.Patch(_apiPath, _command);
         }
 
         [Then("return an ok response")]
         public void ThenReturnAnOkResponse()
         {
-            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            _context.OuterApiClient.Response.Should().Be200Ok();
         }
 
         [Then("confirm the details with the inner API")]

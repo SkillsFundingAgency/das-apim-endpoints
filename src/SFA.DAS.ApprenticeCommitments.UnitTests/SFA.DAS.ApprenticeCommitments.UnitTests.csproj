@@ -19,9 +19,5 @@
     <ProjectReference Include="..\SFA.DAS.ApprenticeCommitments\SFA.DAS.ApprenticeCommitments.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Commands\VerifyIdentityRegistrationTests\" />
-  </ItemGroup>
-
 
 </Project>
