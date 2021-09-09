@@ -2,7 +2,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApprenticeship;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class AddApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private CreateApprenticeshipCommand _request;
+        private CreateRegistrationCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/apprenticeships")
+                        .WithPath("/registrations")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "ApprenticeshipId != `0` && contains(Email, '@')"))
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath("/apprenticeships")
+                    Request.Create().WithPath("/registrations")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "!contains(Email, '@')"))
@@ -155,8 +155,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<CreateApprenticeshipCommand>();
-            await _context.OuterApiClient.Post("apprenticeships", _request);
+            _request = table.CreateInstance<CreateRegistrationCommand>();
+            await _context.OuterApiClient.Post("registrations", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -165,8 +165,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            _context.OuterApiClient.Response.StatusCode
-                .Should().Be(HttpStatusCode.Accepted);
+            _context.OuterApiClient.Response.Should().Be200Ok();
 
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
@@ -175,7 +174,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.Should().NotBeNull();
-            innerApiRequest.ApprenticeId.Should().NotBe(Guid.Empty);
+            innerApiRequest.RegistrationId.Should().NotBe(Guid.Empty);
             innerApiRequest.FirstName.Should().Be(expectedCommitment.FirstName);
             innerApiRequest.LastName.Should().Be(expectedCommitment.LastName);
             innerApiRequest.DateOfBirth.Should().Be(expectedCommitment.DateOfBirth);
@@ -240,7 +239,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            var response = JsonConvert.DeserializeObject<CreateApprenticeshipResponse>(
+            var response = JsonConvert.DeserializeObject<CreateRegistrationResponse>(
                 await _context.OuterApiClient.Response.Content.ReadAsStringAsync());
 
             response.Should().BeEquivalentTo(new

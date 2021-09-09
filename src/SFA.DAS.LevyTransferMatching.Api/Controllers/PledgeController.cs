@@ -15,6 +15,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 
@@ -208,6 +209,35 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 Applications = queryResult.Applications
             });
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
+        public async Task<IActionResult> Application(int applicationId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationQuery()
+                {
+                    ApplicationId = applicationId,
+                });
+
+                if (queryResult != null)
+                {
+                    var response = (GetApplicationResponse)queryResult;
+
+                    return Ok(response);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
