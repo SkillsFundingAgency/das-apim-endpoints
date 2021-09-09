@@ -11,22 +11,22 @@ using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2I
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeship
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
 {
-    public class UpdateApprenticeshipCommandHandler : IRequestHandler<UpdateApprenticeshipCommand>
+    public class ChangeRegistrationCommandHandler : IRequestHandler<ChangeRegistrationCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly CoursesService _coursesService;
-        private readonly ILogger<UpdateApprenticeshipCommandHandler> _logger;
+        private readonly ILogger<ChangeRegistrationCommandHandler> _logger;
 
-        public UpdateApprenticeshipCommandHandler(
+        public ChangeRegistrationCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
             CoursesService coursesService,
-            ILogger<UpdateApprenticeshipCommandHandler> logger)
+            ILogger<ChangeRegistrationCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _commitmentsService = commitmentsV2Service;
@@ -36,14 +36,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
         }
 
         public async Task<Unit> Handle(
-            UpdateApprenticeshipCommand command,
+            ChangeRegistrationCommand command,
             CancellationToken cancellationToken)
         {
             var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
 
             if (apprenticeship == null) return default;
 
-            await _apprenticeCommitmentsService.ChangeApprenticeship(new ChangeApprenticeshipRequestData
+            await _apprenticeCommitmentsService.ChangeRegistration(new ChangeRegistrationRequestData
             {
                 CommitmentsContinuedApprenticeshipId = command.CommitmentsContinuedApprenticeshipId,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
@@ -66,7 +66,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApprenticeshi
         }
 
         private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
-            GetExternalData(UpdateApprenticeshipCommand command)
+            GetExternalData(ChangeRegistrationCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
