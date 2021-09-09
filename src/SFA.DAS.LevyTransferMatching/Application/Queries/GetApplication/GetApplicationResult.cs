@@ -12,6 +12,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int EstimatedDurationMonths { get; set; }
+        public int MaxFunding { get; set; }
+        public int Amount { get; set; }
         public DateTime StartBy { get; set; }
         public bool HasTrainingProvider { get; set; }
         public string AboutOpportunity { get; set; }
@@ -24,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public IEnumerable<string> PledgeLocations { get; set; }
+        public int PledgeRemainingAmount { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
