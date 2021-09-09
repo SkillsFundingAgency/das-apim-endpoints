@@ -53,7 +53,7 @@ Scenario: New apprenticeship is recieved with Standards Versioning
 	When the following apprenticeship is posted
 	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
 	| 4                            | Irrelevant    | 123                              | 1002                 | 2015-04-20              |
-	Then the course should be `Sociology` level 2
+	Then the course should be `Sociology` level 2 courseDuration 16
 
 Scenario: New Framework apprenticeship is received
 	When the following apprenticeship is posted
