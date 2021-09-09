@@ -1,29 +1,29 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetUserAccounts;
-using SFA.DAS.LevyTransferMatching.Application.Services;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
+using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetUserAccounts
 {
     [TestFixture]
-    public class GetUserAccountsHandlerTests
+    public class GetSelectAccountQueryHandlerTests
     {
         private Fixture _fixture;
         private Mock<IUserService> _userService;
-        private GetUserAccountsHandler _getUserAccountsHandler;
+        private GetSelectAccountQueryHandler _getSelectAccountQueryHandler;
 
         [SetUp]
         public void Setup()
         {
             _fixture = new Fixture();
             _userService = new Mock<IUserService>();
-            _getUserAccountsHandler = new GetUserAccountsHandler(_userService.Object);
+            _getSelectAccountQueryHandler = new GetSelectAccountQueryHandler(_userService.Object);
         }
 
         [Test]
@@ -36,14 +36,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetUserAcco
                 .Setup(x => x.GetUserAccounts(It.Is<string>(y => y == userId)))
                 .ReturnsAsync(userAccounts);
 
-            GetUserAccountsQuery getUserAccountsQuery = new GetUserAccountsQuery()
+            GetSelectAccountQuery getSelectAccountQuery = new GetSelectAccountQuery()
             {
                 UserId = userId,
             };
 
-            var result = await _getUserAccountsHandler.Handle(getUserAccountsQuery, CancellationToken.None);
+            var result = await _getSelectAccountQueryHandler.Handle(getSelectAccountQuery, CancellationToken.None);
 
-            CollectionAssert.AreEqual(userAccounts, result.UserAccounts);
+            Assert.AreEqual(userAccounts.Count(), result.Accounts.Count());
         }
     }
 }

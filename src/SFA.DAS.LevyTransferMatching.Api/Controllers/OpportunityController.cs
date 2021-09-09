@@ -17,6 +17,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
 using System.Linq;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -270,6 +271,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Detail result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("opportunities/{opportunityId}/select-account")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SelectAccount(int opportunityId, string userId)
+        {
+            try
+            {
+                var getSelectAccountQueryResult = await _mediator.Send(new GetSelectAccountQuery
+                {
+                    UserId = userId,
+                });
+
+                return Ok((GetSelectAccountResponse)getSelectAccountQueryResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get SelectAccount result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
