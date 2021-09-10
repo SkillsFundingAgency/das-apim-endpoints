@@ -16,9 +16,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole
 
         public async Task<GetJobRoleQueryResult> Handle(GetJobRoleQuery request, CancellationToken cancellationToken)
         {
+            var jobRolesTask = _referenceDataService.GetJobRoles();
+            var sectorsTask = _referenceDataService.GetSectors();
+
+            await Task.WhenAll(jobRolesTask, sectorsTask);
+
             return new GetJobRoleQueryResult
             {
-                JobRoles = await _referenceDataService.GetJobRoles()
+                JobRoles = jobRolesTask.Result,
+                Sectors = sectorsTask.Result
             };
         }
     }

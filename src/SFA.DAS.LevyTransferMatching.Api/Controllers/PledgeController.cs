@@ -185,7 +185,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetJobRoleResponse()
                 {
-                    JobRoles = queryResult.JobRoles
+                    JobRoles = queryResult.JobRoles,
+                    Sectors = queryResult.Sectors
                 };
 
                 return Ok(response);
