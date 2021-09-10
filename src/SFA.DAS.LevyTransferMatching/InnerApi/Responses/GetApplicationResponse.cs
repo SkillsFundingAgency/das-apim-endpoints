@@ -21,6 +21,8 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public int Amount { get; set; }
         public List<LocationDataItem> Locations { get; set; }
     }
 }
