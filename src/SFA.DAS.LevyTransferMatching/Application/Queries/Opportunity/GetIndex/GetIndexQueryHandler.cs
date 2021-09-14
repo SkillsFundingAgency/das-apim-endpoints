@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
                 Opportunities = opportunitiesTask.Result.Pledges.Select(x => new GetIndexQueryResult.Opportunity
                 {
                     Id = x.Id,
-                    Amount = x.Amount,
+                    Amount = x.RemainingAmount,
                     IsNamePublic = x.IsNamePublic,
                     DasAccountName = x.DasAccountName,
                     Sectors = x.Sectors,

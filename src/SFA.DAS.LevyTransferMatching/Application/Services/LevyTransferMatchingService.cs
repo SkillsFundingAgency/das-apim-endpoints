@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using Pledge = SFA.DAS.LevyTransferMatching.Models.Pledge;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Services
@@ -86,6 +87,21 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
+        }
+
+        public async Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitPledgeRequest>(request);
+        }
+
+        public async Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<UndoApplicationApprovalRequest>(request);
+        }
+
+        public async Task ApproveApplication(ApproveApplicationRequest request)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request);
         }
     }
 }
