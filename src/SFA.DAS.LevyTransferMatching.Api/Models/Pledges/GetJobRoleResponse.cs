@@ -6,5 +6,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
     public class GetJobRoleResponse
     {
         public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
+        public IEnumerable<ReferenceDataItem> Sectors { get; set; }
     }
 }
