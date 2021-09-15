@@ -139,6 +139,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/application-details")]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -171,6 +172,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/more-details")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
         public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
         {
@@ -196,12 +198,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
-        public async Task<IActionResult> Sector(int pledgeId, [FromQuery] string postcode)
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/create/sector")]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/sector")]
+        public async Task<IActionResult> Sector(int opportunityId, [FromQuery] string postcode)
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode, OpportunityId = pledgeId });
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode, OpportunityId = opportunityId });
 
                 var response = new GetSectorResponse
                 {
