@@ -2,15 +2,17 @@
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Reference;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using Pledge = SFA.DAS.LevyTransferMatching.Models.Pledge;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Services
@@ -75,9 +77,31 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
            return response.Body;
         }
 
+        public async Task<GetApplicationResponse> GetApplication(GetApplicationRequest request)
+        {
+            var response = await _levyTransferMatchingApiClient.Get<GetApplicationResponse>(request);
+
+            return response;
+        }
+
         public async Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
+        }
+
+        public async Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitPledgeRequest>(request);
+        }
+
+        public async Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<UndoApplicationApprovalRequest>(request);
+        }
+
+        public async Task ApproveApplication(ApproveApplicationRequest request)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request);
         }
     }
 }

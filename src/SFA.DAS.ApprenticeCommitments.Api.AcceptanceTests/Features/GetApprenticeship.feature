@@ -7,6 +7,7 @@ Scenario: The apprenticeship exists
 	Given there is an apprenticeship
 	When the apprenticeship is requested
 	Then the result should be OK
+	And the result should have the correct Content-Type
 	And the result should contain the anticipated values
 
 Scenario: The apprenticeship does not exist

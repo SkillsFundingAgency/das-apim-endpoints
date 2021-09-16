@@ -41,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetContactDetails
                 AllJobRoles = allJobRoles,
                 AllLevels = allLevels,
                 AllSectors = allSectors,
-                Amount = pledge.Amount,
+                Amount = pledge.RemainingAmount,
                 DasAccountName = pledge.DasAccountName,
                 JobRoles = pledge.JobRoles,
                 Levels = pledge.Levels,

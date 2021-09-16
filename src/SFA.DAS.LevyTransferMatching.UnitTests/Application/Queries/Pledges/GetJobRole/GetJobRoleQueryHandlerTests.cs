@@ -16,14 +16,17 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         private GetJobRoleQueryHandler _handler;
         private Mock<IReferenceDataService> _referenceDataService;
         private List<ReferenceDataItem> _jobRoles;
+        private List<ReferenceDataItem> _sectors;
         private readonly Fixture _autoFixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
             _jobRoles = _autoFixture.Create<List<ReferenceDataItem>>();
+            _sectors = _autoFixture.Create<List<ReferenceDataItem>>();
             _referenceDataService = new Mock<IReferenceDataService>();
             _referenceDataService.Setup(x => x.GetJobRoles()).ReturnsAsync(_jobRoles);
+            _referenceDataService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
 
             _handler = new GetJobRoleQueryHandler(_referenceDataService.Object);
         }
@@ -33,6 +36,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(new GetJobRoleQuery(), CancellationToken.None);
             Assert.AreEqual(_jobRoles, result.JobRoles);
+        }
+
+        [Test]
+        public async Task Handle_Returns_Sectors()
+        {
+            var result = await _handler.Handle(new GetJobRoleQuery(), CancellationToken.None);
+            Assert.AreEqual(_sectors, result.Sectors);
         }
     }
 }
