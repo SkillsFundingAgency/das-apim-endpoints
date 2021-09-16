@@ -3,9 +3,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,14 +23,17 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
         public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
         {
             var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>(new GetPledgesRequest(request.AccountId));
+            var applicationsTask = _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest(request.AccountId));
             var transferStatusTask = _commitmentsApiClient.Get<GetAccountTransferStatusResponse>(new GetAccountTransferStatusRequest(request.AccountId));
 
-            await Task.WhenAll(pledgesTask, transferStatusTask);
+            await Task.WhenAll(pledgesTask, applicationsTask, transferStatusTask);
 
             return new GetIndexQueryResult
             {
                 PledgesCount = pledgesTask.Result.TotalPledges,
-                IsTransferReceiver = transferStatusTask.Result.IsTransferReceiver
+                ApplicationsCount = applicationsTask.Result.Applications.Count(),
+                IsTransferReceiver = transferStatusTask.Result.IsTransferReceiver,
+                IsTransferSender = transferStatusTask.Result.IsTransferSender
             };
         }
     }

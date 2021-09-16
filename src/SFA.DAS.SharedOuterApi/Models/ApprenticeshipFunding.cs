@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.LevyTransferMatching.Models
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class ApprenticeshipFunding
     {

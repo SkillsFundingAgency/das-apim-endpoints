@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Models
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class Standard
     {
