@@ -4,5 +4,6 @@
     {
         public int PledgesCount { get; set; }
         public bool IsTransferReceiver { get; set; }
+        public bool IsTransferSender { get; set; }
     }
 }
