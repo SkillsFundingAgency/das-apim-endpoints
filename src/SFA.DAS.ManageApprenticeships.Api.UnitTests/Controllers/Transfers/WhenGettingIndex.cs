@@ -31,15 +31,15 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.Transfers
             var actionResult = await transfersController.GetIndex(accountId);
             var okObjectResult = actionResult as OkObjectResult;
             var value = okObjectResult.Value;
-            var getTransfersResponse = value as GetIndexResponse;
+            var getIndexResponse = value as GetIndexResponse;
 
             Assert.IsNotNull(actionResult);
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(value);
-            Assert.IsNotNull(getTransfersResponse);
+            Assert.IsNotNull(getIndexResponse);
 
-            Assert.AreEqual(mediatorResult.PledgesCount, getTransfersResponse.PledgesCount);
-            Assert.AreEqual(mediatorResult.IsTransferReceiver, getTransfersResponse.IsTransferReceiver);
+            Assert.AreEqual(mediatorResult.PledgesCount, getIndexResponse.PledgesCount);
+            Assert.AreEqual(mediatorResult.IsTransferReceiver, getIndexResponse.IsTransferReceiver);
         }
     }
 }
