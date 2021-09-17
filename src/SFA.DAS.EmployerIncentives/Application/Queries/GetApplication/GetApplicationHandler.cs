@@ -50,6 +50,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 LegalEntityId = applicationDto.LegalEntityId,
                 SubmittedByEmail = applicationDto.SubmittedByEmail,
                 SubmittedByName = applicationDto.SubmittedByName,
+                NewAgreementRequired = applicationDto.NewAgreementRequired
             };
         }
 
