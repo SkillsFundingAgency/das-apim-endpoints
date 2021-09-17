@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 Uln = x.Uln,
                 PlannedStartDate = x.PlannedStartDate,
                 EmploymentStartDate = x.EmploymentStartDate,
-                HasEligibleEmploymentStartDate = x.HasEligibleEmploymentStartDate
+                StartDatesAreEligible = x.StartDatesAreEligible
             });
         }
 
