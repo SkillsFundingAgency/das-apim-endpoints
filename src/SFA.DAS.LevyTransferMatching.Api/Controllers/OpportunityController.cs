@@ -209,7 +209,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     Location = sectorQueryResult.Location,
                     Sectors = sectorQueryResult.Sectors,
                     JobRoles = sectorQueryResult.JobRoles,
-                    Levels = sectorQueryResult.Levels
+                    Levels = sectorQueryResult.Levels,
+                    PledgeLocations = sectorQueryResult.Opportunity.Locations.Select(x => new GetSectorResponse.PledgeLocation { Id = x.Id, Name = x.Name})
                 };
 
                 return Ok(response);
