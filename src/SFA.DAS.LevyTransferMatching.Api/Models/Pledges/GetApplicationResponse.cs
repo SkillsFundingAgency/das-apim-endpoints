@@ -28,6 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public IEnumerable<string> PledgeLocations { get; set; }
         public int PledgeRemainingAmount { get; set; }
+        public string Status { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
@@ -57,6 +58,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeJobRoles = result.PledgeJobRoles,
                 PledgeLocations = result.PledgeLocations,
                 PledgeRemainingAmount = result.PledgeRemainingAmount,
+                Status = result.Status,
                 AllJobRoles = result.AllJobRoles,
                 AllSectors = result.AllSectors,
                 AllLevels = result.AllLevels,

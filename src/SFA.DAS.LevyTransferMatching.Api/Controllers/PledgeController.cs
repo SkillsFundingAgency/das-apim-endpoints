@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,8 +15,11 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApproved;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
+using System.Linq;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -185,7 +187,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetJobRoleResponse()
                 {
-                    JobRoles = queryResult.JobRoles
+                    JobRoles = queryResult.JobRoles,
+                    Sectors = queryResult.Sectors
                 };
 
                 return Ok(response);
@@ -210,6 +213,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
         }
 
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
         public async Task<IActionResult> Application(int applicationId)
@@ -235,6 +239,55 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
+        public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] SetApplicationOutcomeRequest outcomeRequest)
+        {
+            try
+            {
+                await _mediator.Send(new SetApplicationOutcomeCommand
+                {
+                    ApplicationId = applicationId,
+                    PledgeId = pledgeId, 
+                    UserId = outcomeRequest.UserId,
+                    UserDisplayName = outcomeRequest.UserDisplayName,
+                    Outcome = outcomeRequest.Outcome
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to approve/reject application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approved")]
+        public async Task<IActionResult> ApplicationApproved(long accountId, int pledgeId, int applicationId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationApprovedQuery { PledgeId = pledgeId, ApplicationId = applicationId });
+
+                var response = new GetApplicationApprovedResponse
+                {
+                    EmployerAccountName = queryResult.EmployerAccountName
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get ApplicationApproved result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

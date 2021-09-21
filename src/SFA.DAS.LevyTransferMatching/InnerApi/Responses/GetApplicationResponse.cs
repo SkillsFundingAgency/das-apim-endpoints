@@ -24,5 +24,6 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public int PledgeRemainingAmount { get; set; }
         public int Amount { get; set; }
         public List<LocationDataItem> Locations { get; set; }
+        public string Status { get; set; }
     }
 }
