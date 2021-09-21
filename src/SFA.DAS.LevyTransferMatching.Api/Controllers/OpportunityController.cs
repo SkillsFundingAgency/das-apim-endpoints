@@ -81,7 +81,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     Opportunity = applyQueryResult.Opportunity,
                     Sectors = applyQueryResult.Sectors,
                     JobRoles = applyQueryResult.JobRoles,
-                    Levels = applyQueryResult.Levels
+                    Levels = applyQueryResult.Levels,
+                    PledgeLocations = applyQueryResult.Opportunity.Locations.Select(x => new GetApplyResponse.PledgeLocation { Id = x.Id, Name = x.Name })
                 };
 
                 return Ok(response);
@@ -197,16 +198,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
-        public async Task<IActionResult> Sector(int pledgeId, [FromQuery] string postcode)
+        public async Task<IActionResult> Sector(int pledgeId)
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode, OpportunityId = pledgeId });
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = pledgeId });
 
                 var response = new GetSectorResponse
                 {
                     Opportunity = sectorQueryResult.Opportunity,
-                    Location = sectorQueryResult.Location,
                     Sectors = sectorQueryResult.Sectors,
                     JobRoles = sectorQueryResult.JobRoles,
                     Levels = sectorQueryResult.Levels,
