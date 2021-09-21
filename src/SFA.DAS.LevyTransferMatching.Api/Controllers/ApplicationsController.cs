@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -24,7 +25,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/applications")]
         public async Task<IActionResult> GetApplications(long accountId)
         {
-            return Ok();
+            var viewModel = await _mediator.Send(new GetApplicationsQuery
+            {
+                AccountId = accountId
+            });
+
+            return Ok(viewModel);
         }
     }
 }
