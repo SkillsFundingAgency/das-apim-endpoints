@@ -19,7 +19,7 @@ namespace SFA.DAS.Assessors.InnerApi.Requests
             string sinceTimeParam = string.Empty;
             if(null != sinceTime && sinceTime.HasValue)
             {
-                sinceTimeParam = sinceTime.Value.ToString("yyyy-MM-dd");
+                sinceTimeParam = sinceTime.Value.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
             }
 
             _url = $"api/learners?sinceTime={sinceTimeParam}&batch_number={batchNumber}&batch_size={batchSize}";
