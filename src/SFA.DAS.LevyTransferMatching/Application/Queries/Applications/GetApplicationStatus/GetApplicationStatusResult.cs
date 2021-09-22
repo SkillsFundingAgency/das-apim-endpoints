@@ -9,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
-        public IEnumerable<string> Locations { get; set; }
+        public IEnumerable<string> PledgeLocations { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
@@ -22,5 +22,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
         public DateTime StartBy { get; set; }
+        public int OpportunityId { get; set; }
     }
 }

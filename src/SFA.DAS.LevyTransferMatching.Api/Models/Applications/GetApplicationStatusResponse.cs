@@ -10,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
-        public IEnumerable<string> Locations { get; set; }
+        public IEnumerable<string> PledgeLocations { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
         public List<ReferenceDataItem> AllJobRoles { get; set; }
@@ -23,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
         public DateTime StartBy { get; set; }
+        public int OpportunityId { get; set; }
 
         public static implicit operator GetApplicationStatusResponse(GetApplicationStatusResult result)
         {
@@ -38,12 +39,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 JobRoles = result.JobRoles,
                 Level = result.Level,
                 Levels = result.Levels,
-                Locations = result.Locations,
+                PledgeLocations = result.PledgeLocations,
                 NumberOfApprentices = result.NumberOfApprentices,
                 RemainingAmount = result.RemainingAmount,
                 Sectors = result.Sectors,
                 StartBy = result.StartBy,
                 Status = result.Status,
+                OpportunityId = result.OpportunityId,
             };
         }
     }

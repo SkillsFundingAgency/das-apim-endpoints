@@ -66,7 +66,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
-            getApplicationResponse.Locations = null;
+            getApplicationResponse.PledgeLocations = null;
 
             mockLevyTransferMatchingService
                 .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getApplicationQuery.PledgeId.ToString()) && y.GetUrl.Contains(getApplicationQuery.ApplicationId.ToString()))))

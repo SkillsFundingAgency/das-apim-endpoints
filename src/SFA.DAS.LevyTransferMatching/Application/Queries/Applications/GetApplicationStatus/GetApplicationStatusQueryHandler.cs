@@ -55,12 +55,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 JobRoles = application.PledgeJobRoles,
                 Level = level,
                 Levels = application.PledgeLevels,
-                Locations = application.Locations?.Select(x => x.Name),
+                PledgeLocations = application.PledgeLocations,
                 NumberOfApprentices = application.NumberOfApprentices,
                 RemainingAmount = application.PledgeRemainingAmount,
                 Sectors = application.Sectors,
                 StartBy = application.StartDate,
                 Status = application.Status,
+                OpportunityId = application.PledgeId,
             };
         }
     }
