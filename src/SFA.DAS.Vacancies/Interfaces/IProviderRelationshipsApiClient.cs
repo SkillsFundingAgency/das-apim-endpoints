@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Vacancies.Interfaces
 {
-    public interface IProviderRelationshipsApiClient<T> : IGetApiClient<T>
+    public interface IProviderRelationshipsApiClient<T> : IInternalApiClient<T>
     {
         
     }
