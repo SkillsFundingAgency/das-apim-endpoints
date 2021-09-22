@@ -203,11 +203,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/sector")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/sector")]
-        public async Task<IActionResult> Sector(int pledgeId)
+        public async Task<IActionResult> Sector(int opportunityId)
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = pledgeId });
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = opportunityId });
 
                 var response = new GetSectorResponse
                 {
