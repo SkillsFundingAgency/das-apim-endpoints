@@ -110,7 +110,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 HasTrainingProvider = request.HasTrainingProvider,
                 Amount = request.Amount,
                 Sectors = request.Sectors,
-                Postcode = request.Postcode,
+                Locations = request.Locations,
+                AdditionalLocation = request.AdditionalLocation,
+                SpecificLocation = request.SpecificLocation,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 EmailAddresses = request.EmailAddresses,
@@ -140,6 +142,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/application-details")]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -172,6 +175,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/more-details")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
         public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
         {
@@ -197,7 +201,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/create/sector")]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/sector")]
         public async Task<IActionResult> Sector(int pledgeId)
         {
             try

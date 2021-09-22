@@ -28,7 +28,9 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
         public bool HasTrainingProvider { get; set; }
         public int Amount { get; set; }
         public IEnumerable<string> Sectors { get; set; }
-        public string Postcode { get; set; }
+        public List<int> Locations { get; set; }
+        public string AdditionalLocation { get; set; }
+        public string SpecificLocation { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
