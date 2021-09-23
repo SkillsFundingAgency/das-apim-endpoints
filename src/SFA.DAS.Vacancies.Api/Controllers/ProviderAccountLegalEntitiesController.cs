@@ -22,7 +22,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public async Task<IActionResult> GetList(int ukprn)
+        [Route("{ukprn}")]
+        public async Task<IActionResult> GetList([FromRoute]int ukprn)
         {
             try
             {
