@@ -31,6 +31,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 AccountId = request.AccountId
             });
 
+            if (!ltm.Applications.Any())
+            {
+                return new GetApplicationsResult
+                {
+                    Applications = new List<Models.Application>()
+                };
+            }
+
             var distinctStandards = ltm.Applications.Select(app => app.StandardId).Distinct();
             var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
             
