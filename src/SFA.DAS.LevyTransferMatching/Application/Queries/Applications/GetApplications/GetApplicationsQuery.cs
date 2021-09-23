@@ -7,5 +7,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
 {
     public class GetApplicationsQuery : IRequest<GetApplicationsResult>
     {
+        public long  AccountId { get; set; }
     }
 }

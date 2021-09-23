@@ -1,7 +1,10 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
+﻿using System.Collections.Generic;
+using Microsoft.Azure.Amqp.Serialization;
+
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
 {
     public class GetApplicationsResult
     {
-        public long AccountId { get; set; }
+        public List<Models.Application> Applications { get; set; }
     }
 }
