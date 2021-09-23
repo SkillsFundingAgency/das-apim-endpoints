@@ -3,7 +3,7 @@ using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities
 {
-    public class GetProviderAccountLegalEntitiesResponse
+    public class GetProviderAccountLegalEntitiesQueryResponse
     {
         public List<GetProviderAccountLegalEntityItem> ProviderAccountLegalEntities { get ; set ; }
     }

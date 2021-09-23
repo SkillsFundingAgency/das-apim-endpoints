@@ -7,7 +7,7 @@ using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities
 {
-    public class GetProviderAccountLegalEntitiesQueryHandler : IRequestHandler<GetProviderAccountLegalEntitiesQuery, GetProviderAccountLegalEntitiesResponse>
+    public class GetProviderAccountLegalEntitiesQueryHandler : IRequestHandler<GetProviderAccountLegalEntitiesQuery, GetProviderAccountLegalEntitiesQueryResponse>
     {
         private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
 
@@ -15,13 +15,13 @@ namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLega
         {
             _apiClient = apiClient;
         }
-        public async Task<GetProviderAccountLegalEntitiesResponse> Handle(GetProviderAccountLegalEntitiesQuery request, CancellationToken cancellationToken)
+        public async Task<GetProviderAccountLegalEntitiesQueryResponse> Handle(GetProviderAccountLegalEntitiesQuery request, CancellationToken cancellationToken)
         {
             var response =
-                await _apiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+                await _apiClient.Get<GetProviderAccountLegalEntitiesQueryResponse>(
                     new GetProviderAccountLegalEntitiesRequest(request.Ukprn));
 
-            return new GetProviderAccountLegalEntitiesResponse
+            return new GetProviderAccountLegalEntitiesQueryResponse
             {
                 ProviderAccountLegalEntities = response.ProviderAccountLegalEntities
             };

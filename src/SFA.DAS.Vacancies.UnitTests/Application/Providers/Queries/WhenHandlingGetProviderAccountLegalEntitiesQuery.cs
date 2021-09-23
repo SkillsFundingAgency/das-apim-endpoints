@@ -16,19 +16,19 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Providers.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Api_Called_For_Ukprn(
-            GetProviderAccountLegalEntitiesResponse apiResponse,
+            GetProviderAccountLegalEntitiesQueryResponse apiQueryResponse,
             GetProviderAccountLegalEntitiesQuery query,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> apiClient,
             GetProviderAccountLegalEntitiesQueryHandler handler)
         {
             apiClient.Setup(x =>
-                    x.Get<GetProviderAccountLegalEntitiesResponse>(
+                    x.Get<GetProviderAccountLegalEntitiesQueryResponse>(
                         It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={query.Ukprn}"))))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(apiQueryResponse);
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiResponse.ProviderAccountLegalEntities);
+            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiQueryResponse.ProviderAccountLegalEntities);
         }
     }
 }
