@@ -23,5 +23,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public DateTime CreatedOn { get; set; }
         public Standard Standard { get; set; }
         public string Status { get; set; }
+        public bool IsAnonymousPledge { get; set; }
     }
 }
