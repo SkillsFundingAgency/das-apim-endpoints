@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationStatus;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationStatus;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
