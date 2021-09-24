@@ -6,7 +6,7 @@ using SFA.DAS.Vacancies.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingGetEmployerAccountLegalEntities
+    public class WhenBuildingGetEmployerAccountLegalEntitiesRequest
     {
         [Test, AutoData]
         public void Then_The_Request_Is_Correctly_Build(string encodedAccountId)
