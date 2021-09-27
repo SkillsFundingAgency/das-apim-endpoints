@@ -12,6 +12,14 @@ namespace SFA.DAS.Vacancies.Api.Models
         public static implicit operator GetProviderAccountLegalEntitiesListResponse(
             GetProviderAccountLegalEntitiesQueryResponse source)
         {
+            if (source.ProviderAccountLegalEntities == null)
+            {
+                return new GetProviderAccountLegalEntitiesListResponse
+                {
+                    ProviderAccountLegalEntities = new List<GetProviderAccountLegalEntitiesListItem>()
+                };
+            }
+            
             return new GetProviderAccountLegalEntitiesListResponse
             {
                 ProviderAccountLegalEntities = source.ProviderAccountLegalEntities.Select(c=>(GetProviderAccountLegalEntitiesListItem)c).ToList()

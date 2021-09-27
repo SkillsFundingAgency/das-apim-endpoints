@@ -20,5 +20,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.AccountProviderId)
             );
         }
+
+        [Test, AutoData]
+        public void Then_If_Null_Empty_List_Returned(GetProviderAccountLegalEntitiesQueryResponse source)
+        {
+            source.ProviderAccountLegalEntities = null;
+            
+            var actual = (GetProviderAccountLegalEntitiesListResponse) source;
+
+            actual.ProviderAccountLegalEntities.Should().BeEmpty();
+        }
     }
 }
