@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             [Frozen] Mock<ILevyTransferMatchingService> levyTransferMatchingService,
             GetApplicationsQueryHandler handler)
         {
-            levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.Applications.GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
+            levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
                 new GetApplicationsResponse
                 {
                     Applications = new List<Models.Application>()
@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.AreEqual(0, result.Applications.Count);
+            Assert.AreEqual(0, result.Applications.Count());
             coursesApiClient.Verify(o => o.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Never);
         }
 
@@ -52,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
                 response.Applications.First()
             };
 
-            levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.Applications.GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
+            levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
                 new GetApplicationsResponse
                 {
                     Applications = response.Applications

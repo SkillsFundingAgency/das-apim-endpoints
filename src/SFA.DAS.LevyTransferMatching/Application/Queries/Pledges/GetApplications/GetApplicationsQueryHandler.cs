@@ -26,7 +26,20 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
         public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
         {
-            var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest(request.PledgeId));
+            var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
+            {
+                PledgeId = request?.PledgeId,
+                AccountId = request?.AccountId
+            });
+
+            if (applicationsResponse.Applications == null)
+            {
+                return new GetApplicationsQueryResult()
+                {
+                    Applications = applicationsResponse.Applications
+                };
+            }
+
             var distinctStandards = applicationsResponse.Applications.Select(app => app.StandardId).Distinct();
             var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
             

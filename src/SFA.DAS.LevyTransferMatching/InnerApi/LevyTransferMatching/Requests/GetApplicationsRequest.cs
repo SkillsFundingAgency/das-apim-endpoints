@@ -1,16 +1,38 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System.Text;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
 {
     public class GetApplicationsRequest : IGetApiRequest
     {
-        public GetApplicationsRequest(int pledgeId)
+        public int? PledgeId { get; set; }
+        public long? AccountId { get; set; }
+
+        public string GetUrl
         {
-            PledgeId = pledgeId;
+            get
+            {
+                var sb = new StringBuilder("applications");
+
+                if (PledgeId.HasValue)
+                {
+                    sb.Append($"?pledgeId={PledgeId}");
+                }
+
+                if (!AccountId.HasValue)
+                {
+                    return sb.ToString();
+                }
+                
+                if (PledgeId.HasValue)
+                {
+                    sb.Append("&");
+                }
+
+                sb.Append($"?accountId={AccountId}");
+
+                return sb.ToString();
+            }
         }
-
-        public int PledgeId { get; }
-
-        public string GetUrl => $"pledges/{PledgeId}/applications";
     }
 }

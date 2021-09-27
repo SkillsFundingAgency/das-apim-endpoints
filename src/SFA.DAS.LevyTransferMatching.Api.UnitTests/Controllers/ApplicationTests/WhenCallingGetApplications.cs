@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTests
@@ -17,14 +17,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
     public class WhenCallingGetApplications
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Applications_From_Mediator(GetApplicationsResult result, [Frozen]Mock<IMediator> mediator,
+        public async Task Then_Gets_Applications_From_Mediator(GetApplicationsQueryResult result, [Frozen]Mock<IMediator> mediator,
             [Greedy]ApplicationsController controller)
         {
             mediator.Setup(o => o.Send(It.IsAny<GetApplicationsQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(result);
 
             var controllerResult = await controller.GetApplications(1) as OkObjectResult;
-            var applications = controllerResult.Value as GetApplicationsResult;
+            var applications = controllerResult.Value as GetApplicationsQueryResult;
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(applications);
             Assert.AreEqual(applications, result);
