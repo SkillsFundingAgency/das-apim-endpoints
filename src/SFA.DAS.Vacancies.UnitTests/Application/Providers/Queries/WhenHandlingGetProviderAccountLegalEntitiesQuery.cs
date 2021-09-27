@@ -8,6 +8,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
+using SFA.DAS.Vacancies.InnerApi.Responses;
 using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Providers.Queries
@@ -16,19 +17,19 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Providers.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Api_Called_For_Ukprn(
-            GetProviderAccountLegalEntitiesQueryResponse apiQueryResponse,
+            GetProviderAccountLegalEntitiesResponse apiQueryResponse,
             GetProviderAccountLegalEntitiesQuery query,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> apiClient,
             GetProviderAccountLegalEntitiesQueryHandler handler)
         {
             apiClient.Setup(x =>
-                    x.Get<GetProviderAccountLegalEntitiesQueryResponse>(
+                    x.Get<GetProviderAccountLegalEntitiesResponse>(
                         It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={query.Ukprn}"))))
                 .ReturnsAsync(apiQueryResponse);
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiQueryResponse.ProviderAccountLegalEntities);
+            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiQueryResponse.AccountProviderLegalEntities);
         }
     }
 }
