@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Models
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class Standard
     {
