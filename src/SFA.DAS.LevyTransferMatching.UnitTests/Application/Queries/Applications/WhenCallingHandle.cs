@@ -13,6 +13,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -29,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
                 new GetApplicationsResponse
                 {
-                    Applications = new List<Models.Application>()
+                    Applications = new List<SharedOuterApi.Models.Application>()
                 }
             );
 
@@ -47,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             [Frozen] Mock<ILevyTransferMatchingService> levyTransferMatchingService,
             GetApplicationsQueryHandler handler)
         {
-            response.Applications = new List<Models.Application>
+            response.Applications = new List<SharedOuterApi.Models.Application>
             {
                 response.Applications.First()
             };
