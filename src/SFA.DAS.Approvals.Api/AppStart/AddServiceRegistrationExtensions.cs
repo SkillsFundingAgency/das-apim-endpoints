@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
             services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>();
+            services.AddTransient<IApprenticesApiClient<ApprenticesApiConfiguration>, ApprenticesApiClient>();
         }
     }
 }
