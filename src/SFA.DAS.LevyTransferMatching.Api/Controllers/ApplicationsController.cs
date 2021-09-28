@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {

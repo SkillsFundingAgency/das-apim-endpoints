@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTests
