@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             long accountId,
             GetPledgesResponse getPledgesResponse,
             GetAccountTransferStatusResponse getAccountTransferStatusResponse,
+            GetApplicationsResponse getApplicationsResponse,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingClient,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             GetIndexQueryHandler getIndexQueryHandler)
@@ -35,6 +37,10 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
                 .Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>()))
                 .ReturnsAsync(getPledgesResponse);
 
+            levyTransferMatchingClient
+                .Setup(x => x.Get<GetApplicationsResponse>(It.IsAny<GetApplicationsRequest>()))
+                .ReturnsAsync(getApplicationsResponse);
+
             commitmentsApiClient
                 .Setup(x => x.Get<GetAccountTransferStatusResponse>(It.IsAny<GetAccountTransferStatusRequest>()))
                 .ReturnsAsync(getAccountTransferStatusResponse);
@@ -42,7 +48,9 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             var results = await getIndexQueryHandler.Handle(getIndexQuery, CancellationToken.None);
 
             Assert.AreEqual(getPledgesResponse.TotalPledges, results.PledgesCount);
+            Assert.AreEqual(getApplicationsResponse.Applications.Count(), results.ApplicationsCount);
             Assert.AreEqual(getAccountTransferStatusResponse.IsTransferReceiver, results.IsTransferReceiver);
+            Assert.AreEqual(getAccountTransferStatusResponse.IsTransferSender, results.IsTransferSender);
         }
     }
 }
