@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class ApprenticesApiClient : IApprenticesApiClient<ApprenticesApiConfiguration>
+    public class ApprenticeCommitmentsApiClient : IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>
     {
-        private readonly IInternalApiClient<ApprenticesApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<ApprenticeCommitmentsApiConfiguration> _apiClient;
 
-        public ApprenticesApiClient(IInternalApiClient<ApprenticesApiConfiguration> apiClient)
+        public ApprenticeCommitmentsApiClient(IInternalApiClient<ApprenticeCommitmentsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
