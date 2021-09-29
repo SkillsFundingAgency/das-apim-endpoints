@@ -21,18 +21,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
         [Test, MoqAutoData]
         public async Task Then_Returns_Ok_And_Response(
             int pledgeId,
-            string postcode,
             GetSectorQueryResult getSectorQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetSectorQuery>(y => y.Postcode == postcode),
+                    It.IsAny<GetSectorQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getSectorQueryResult);
 
-            var controllerResult = await opportunityController.Sector(pledgeId, postcode);
+            var controllerResult = await opportunityController.Sector(pledgeId);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetSectorResponse;
 
@@ -41,7 +40,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             Assert.IsNotNull(response);
             Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
             Assert.AreEqual(getSectorQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getSectorQueryResult.Location, response.Location);
             Assert.AreEqual(getSectorQueryResult.Opportunity.Id, response.Opportunity.Id);
         }
     }

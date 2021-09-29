@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,9 +6,7 @@ using AutoFixture;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -39,13 +36,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId)))
                 .ReturnsAsync(new GetApplicationsResponse()
                 {
-                    Applications = new List<Models.Application>()
+                    Applications = new List<SharedOuterApi.Models.Application>()
                     {
-                        new Models.Application()
+                        new SharedOuterApi.Models.Application()
                         {
                             StandardId = "1"
                         },
-                        new Models.Application()
+                        new SharedOuterApi.Models.Application()
                         {
                             StandardId = "2"
                         }
