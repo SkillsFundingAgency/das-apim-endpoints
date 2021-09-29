@@ -6,6 +6,8 @@ variables:
 - group: RELEASE das-apim-endpoints
 - name: OuterApiObject
   value: $(EmployerIncentivesOuterApiObject)
+- name: DeployOuterApi
+  value: true
 
 resources:
   repositories:
@@ -13,12 +15,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.3.31
+    ref: refs/tags/0.4.0
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.4.1
+    ref: refs/tags/4.5.0
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
