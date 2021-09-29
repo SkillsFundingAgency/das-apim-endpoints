@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Models
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class Application
     {
@@ -22,6 +22,5 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public IEnumerable<string> EmailAddresses { get; set; }
         public DateTime CreatedOn { get; set; }
         public Standard Standard { get; set; }
-        public string Status { get; set; }
     }
 }

@@ -19,7 +19,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
     {
         private GetSectorQueryHandler _handler;
         private Mock<IReferenceDataService> _referenceDataService;
-        private Mock<ILocationLookupService> _locationLookupService;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private List<ReferenceDataItem> _sectors;
         private GetSectorQuery _query;
@@ -35,14 +34,11 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             _referenceDataService = new Mock<IReferenceDataService>();
             _referenceDataService.Setup(x => x.GetSectors()).ReturnsAsync(_sectors);
-
-            _locationLookupService = new Mock<ILocationLookupService>();
-            _locationLookupService.Setup(x => x.GetLocationInformation(_query.Postcode, 0, 0, true)).ReturnsAsync(new LocationItem(_query.Postcode, new double[2]));
-
+            
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.GetPledge(_query.OpportunityId)).ReturnsAsync(_pledge);
 
-            _handler = new GetSectorQueryHandler(_referenceDataService.Object, _locationLookupService.Object, _levyTransferMatchingService.Object);
+            _handler = new GetSectorQueryHandler(_referenceDataService.Object, _levyTransferMatchingService.Object);
         }
 
         [Test]
@@ -50,13 +46,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
             Assert.AreEqual(_sectors, result.Sectors);
-        }
-
-        [Test]
-        public async Task Handle_Returns_Location()
-        {
-            var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
-            Assert.AreEqual(_query.Postcode, result.Location);
         }
 
         [Test]
