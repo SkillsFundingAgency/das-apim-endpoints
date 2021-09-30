@@ -6,6 +6,10 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Vacancies.Api.AppStart;
+using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
 {
