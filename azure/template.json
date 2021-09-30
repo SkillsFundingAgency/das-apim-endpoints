@@ -209,7 +209,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[if(equals(parameters('deployOuterApi'), 'true'), reference(concat('api-application-insights-', parameters('outerApiObject').appServiceName)).outputs.InstrumentationKey.value, '')]"
+                                    "value": "[if(parameters('deployOuterApi'), reference(concat('api-application-insights-', parameters('outerApiObject').appServiceName)).outputs.InstrumentationKey.value, '')]"
                                 }
                             ]
                         }
@@ -218,7 +218,7 @@
                         "value": "[parameters('outerApiObject').customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(equals(parameters('deployOuterApi'), 'true'), reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(parameters('deployOuterApi'), reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
@@ -243,7 +243,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[if(equals(parameters('deployOuterApi'), 'true'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value, '')]"
+                        "value": "[if(parameters('deployOuterApi'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value, '')]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -268,7 +268,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[if(equals(parameters('deployOuterApi'), 'true'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value, '')]"
+                        "value": "[if(parameters('deployOuterApi'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value, '')]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
