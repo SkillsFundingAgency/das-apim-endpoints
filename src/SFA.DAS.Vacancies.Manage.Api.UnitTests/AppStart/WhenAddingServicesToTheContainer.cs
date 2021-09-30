@@ -16,7 +16,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
     public class WhenAddingServicesToTheContainer
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
-        [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
+        [TestCase(typeof(IQualificationsApiClient<QualificationsApiConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();

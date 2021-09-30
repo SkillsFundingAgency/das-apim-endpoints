@@ -21,7 +21,7 @@ using SFA.DAS.Vacancies.Api.AppStart;
 using SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities;
 using SFA.DAS.Vacancies.Configuration;
 
-namespace SFA.DAS.Vacancies.Api
+namespace SFA.DAS.Vacancies.Manage.Api
 {
     public class Startup
     {
@@ -55,7 +55,7 @@ namespace SFA.DAS.Vacancies.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetProviderAccountLegalEntitiesQuery).Assembly);
+            services.AddMediatR(typeof(GetQualificationsQuery).Assembly);
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
@@ -85,7 +85,7 @@ namespace SFA.DAS.Vacancies.Api
             {
                 var configuration = _configuration
                     .GetSection("VacanciesConfiguration")
-                    .Get<VacanciesConfiguration>();
+                    .Get<VacanciesManageConfiguration>();
 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -127,7 +127,7 @@ namespace SFA.DAS.Vacancies.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesManageOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }

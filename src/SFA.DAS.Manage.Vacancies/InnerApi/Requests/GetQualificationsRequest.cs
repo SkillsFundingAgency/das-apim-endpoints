@@ -1,12 +1,12 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Vacancies.InnerApi.Requests
+namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
 {
-    public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest
+    public class GetQualificationsRequest : IGetApiRequest
     {
         private readonly int _ukprn;
 
-        public GetProviderAccountLegalEntitiesRequest(int ukprn)
+        public GetQualificationsRequest(int ukprn)
         {
             _ukprn = ukprn;
         }

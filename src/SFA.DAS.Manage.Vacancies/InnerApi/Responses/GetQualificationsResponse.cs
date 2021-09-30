@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.Vacancies.InnerApi.Responses
+namespace SFA.DAS.Vacancies.Manage.InnerApi.Responses
 {
-    public class GetProviderAccountLegalEntitiesResponse
+    public class GetQualificationsResponse
     {
-        [JsonProperty("AccountProviderLegalEntities")]
-        public List<GetProviderAccountLegalEntityItem> AccountProviderLegalEntities { get; set; }
+        [JsonProperty("Qualifications")]
+        public List<GetQualificationsItem> Qualifications { get; set; }
     }
 
     public class GetProviderAccountLegalEntityItem

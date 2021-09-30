@@ -3,16 +3,16 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
+using SFA.DAS.Vacancies.Manage.Configuration;
+using SFA.DAS.Vacancies.Manage.Interfaces;
 
-namespace SFA.DAS.Vacancies.Services
+namespace SFA.DAS.Vacancies.Manage.Services
 {
-    public class ProviderRelationshipsApiClient : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
+    public class QualificationsApiClient : IQualificationsApiClient<QualificationsApiConfiguration>
     {
-        private readonly IInternalApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<QualificationsApiConfiguration> _apiClient;
 
-        public ProviderRelationshipsApiClient (IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+        public QualificationsApiClient (IInternalApiClient<QualificationsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }

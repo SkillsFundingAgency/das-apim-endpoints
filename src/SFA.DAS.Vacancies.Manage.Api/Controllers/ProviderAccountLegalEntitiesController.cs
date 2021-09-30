@@ -27,7 +27,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
+                var queryResponse = await _mediator.Send(new GetQualificationsQuery
                 {
                     Ukprn = ukprn
                 });
