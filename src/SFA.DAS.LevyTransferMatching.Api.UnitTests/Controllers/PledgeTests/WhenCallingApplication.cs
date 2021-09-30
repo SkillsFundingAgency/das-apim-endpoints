@@ -17,6 +17,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
     {
         [Test, MoqAutoData]
         public async Task And_Mediator_Returns_Result_Then_Return_Response_And_Ok(
+            int pledgeId,
             int applicationId,
             GetApplicationResult getApplicationResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -28,7 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getApplicationResult);
 
-            var controllerResult = await pledgeController.Application(applicationId);
+            var controllerResult = await pledgeController.Application(pledgeId, applicationId);
             var createdResult = controllerResult as OkObjectResult;
             var getApplicationResponse = createdResult.Value as GetApplicationResponse;
 
@@ -40,6 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 
         [Test, MoqAutoData]
         public async Task And_Mediator_Doesnt_Return_Result_Then_Return_NotFound(
+            int pledgeId,
             int applicationId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] PledgeController pledgeController)
@@ -50,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetApplicationResult)null);
 
-            var controllerResult = await pledgeController.Application(applicationId);
+            var controllerResult = await pledgeController.Application(pledgeId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationStatus
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication
 {
-    public class GetApplicationStatusResult
+    public class GetApplicationResult
     {
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }

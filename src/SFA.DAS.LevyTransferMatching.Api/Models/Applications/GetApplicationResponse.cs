@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationStatus;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 {
-    public class GetApplicationStatusResponse
+    public class GetApplicationResponse
     {
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }
@@ -25,9 +25,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
 
-        public static implicit operator GetApplicationStatusResponse(GetApplicationStatusResult result)
+        public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
-            return new GetApplicationStatusResponse()
+            return new GetApplicationResponse()
             {
                 AllJobRoles = result.AllJobRoles,
                 AllLevels = result.AllLevels,
