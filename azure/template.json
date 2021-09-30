@@ -218,7 +218,7 @@
                         "value": "[parameters('outerApiObject').customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value ]"
+                        "value": "[reference(concat('cert-', parameters('outerApiObject').appServiceName), '2020-12-01').outputs.certificateThumbprint.value ]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
@@ -243,7 +243,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName), '2020-12-01').outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -268,7 +268,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName), '2020-12-01').outputs.stagingManagedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
