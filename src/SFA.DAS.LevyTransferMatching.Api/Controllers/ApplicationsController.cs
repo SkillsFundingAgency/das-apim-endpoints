@@ -26,12 +26,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/applications")]
         public async Task<IActionResult> GetApplications(long accountId)
         {
-            var viewModel = await _mediator.Send(new GetApplicationsQuery
+            var result = await _mediator.Send(new GetApplicationsQuery
             {
                 AccountId = accountId
             });
 
-            return Ok(viewModel);
+            return Ok(result);
         }
 
         [HttpGet]

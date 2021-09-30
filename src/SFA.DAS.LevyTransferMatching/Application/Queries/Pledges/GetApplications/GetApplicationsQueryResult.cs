@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
-using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications
 {
-    public class GetApplicationsQueryResult
+    public class GetApplicationsQueryResult : GetApplicationsQueryResultBase
     {
-        public IEnumerable<Models.Application> Applications { get; set; }
+        
     }
 }

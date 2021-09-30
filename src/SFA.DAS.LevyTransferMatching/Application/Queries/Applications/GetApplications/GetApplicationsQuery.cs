@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediatR;
+﻿using MediatR;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
 {
-    public class GetApplicationsQuery : IRequest<GetApplicationsResult>
+    public class GetApplicationsQuery : GetApplicationsQueryBase, IRequest<GetApplicationsQueryResult>
     {
-        public long  AccountId { get; set; }
+
     }
 }

@@ -25,7 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
-        Task<GetApplicationsResponse> GetApplications(InnerApi.LevyTransferMatching.Requests.Applications.GetApplicationsRequest request);
         Task<GetApplicationResponse> GetApplication(GetApplicationRequest request);
 
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
