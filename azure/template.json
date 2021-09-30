@@ -67,7 +67,7 @@
         }
     },
     "variables": {
-        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/dasd-9073-app-service/templates/",
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
@@ -113,7 +113,7 @@
         {
             "apiVersion": "2020-06-01",
             "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('cert-', parameters('outerApiObject').appServiceName)]",
+            "name": "[concat('cert-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -138,7 +138,7 @@
         {
             "apiVersion": "2020-06-01",
             "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('api-application-insights-', parameters('outerApiObject').appServiceName)]",
+            "name": "[concat('api-application-insights-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -160,7 +160,7 @@
         {
             "apiVersion": "2020-06-01",
             "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('api-app-service-', parameters('outerApiObject').appServiceName)]",
+            "name": "[concat('api-app-service-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "dependsOn": [],
@@ -232,7 +232,7 @@
         {
             "apiVersion": "2020-06-01",
             "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('role-assignment-', parameters('outerApiObject').appServiceName)]",
+            "name": "[concat('role-assignment-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -257,7 +257,7 @@
         {
             "apiVersion": "2020-06-01",
             "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('role-assignment-staging-', parameters('outerApiObject').appServiceName)]",
+            "name": "[concat('role-assignment-staging-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
