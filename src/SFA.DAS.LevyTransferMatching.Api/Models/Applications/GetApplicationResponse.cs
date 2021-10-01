@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 {
@@ -24,6 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public int Amount { get; set; }
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
+        public Standard Standard { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -35,9 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 Amount = result.Amount,
                 EmployerAccountName = result.EmployerAccountName,
                 IsNamePublic = result.IsNamePublic,
-                JobRole = result.JobRole,
                 JobRoles = result.JobRoles,
-                Level = result.Level,
                 Levels = result.Levels,
                 PledgeLocations = result.PledgeLocations,
                 NumberOfApprentices = result.NumberOfApprentices,
@@ -46,6 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 StartBy = result.StartBy,
                 Status = result.Status,
                 OpportunityId = result.OpportunityId,
+                Standard = result.Standard,
             };
         }
     }

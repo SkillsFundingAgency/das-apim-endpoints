@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
@@ -6,7 +7,9 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication
 {
@@ -32,15 +35,30 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 return null;
             }
 
-            var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
+            var standardListItemTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
             var allJobRolesTask = _referenceDataService.GetJobRoles();
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
 
             await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
 
-            var level = standardTask.Result.Level;
-            var jobRole = standardTask.Result.Title;
+            var standardListItem = standardListItemTask.Result;
+
+            var standard = new Standard()
+            {
+                LarsCode = standardListItem.LarsCode,
+                Level = standardListItem.Level,
+                StandardUId = standardListItem.StandardUId,
+                Title = standardListItem.Title,
+                ApprenticeshipFunding = standardListItem.ApprenticeshipFunding?.Select(funding =>
+                    new ApprenticeshipFunding()
+                    {
+                        Duration = funding.Duration,
+                        EffectiveFrom = funding.EffectiveFrom,
+                        EffectiveTo = funding.EffectiveTo,
+                        MaxEmployerLevyCap = funding.MaxEmployerLevyCap,
+                    })
+            };
 
             return new GetApplicationResult()
             {
@@ -50,9 +68,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 Amount = application.Amount,
                 EmployerAccountName = application.EmployerAccountName,
                 IsNamePublic = application.PledgeIsNamePublic,
-                JobRole = jobRole,
                 JobRoles = application.PledgeJobRoles,
-                Level = level,
                 Levels = application.PledgeLevels,
                 PledgeLocations = application.PledgeLocations,
                 NumberOfApprentices = application.NumberOfApprentices,
@@ -61,6 +77,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 StartBy = application.StartDate,
                 Status = application.Status,
                 OpportunityId = application.PledgeId,
+                Standard = standard,
             };
         }
     }

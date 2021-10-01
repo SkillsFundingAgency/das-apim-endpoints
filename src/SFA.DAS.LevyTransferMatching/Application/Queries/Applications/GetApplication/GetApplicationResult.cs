@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication
 {
@@ -17,11 +18,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public bool IsNamePublic { get; set; }
         public string EmployerAccountName { get; set; }
         public string Status { get; set; }
-        public string JobRole { get; set; }
-        public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
+        public Standard Standard { get; set; }
     }
 }

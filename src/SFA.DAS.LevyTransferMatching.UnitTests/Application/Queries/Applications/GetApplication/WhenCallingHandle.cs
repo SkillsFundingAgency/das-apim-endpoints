@@ -46,7 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             Assert.IsNotNull(result);
             Assert.AreEqual(getApplicationResponse.Status, result.Status);
-            Assert.AreEqual(getStandardsListItem.Level, result.Level);
+            Assert.AreEqual(getStandardsListItem.StandardUId, result.Standard.StandardUId);
         }
 
         [Test, MoqAutoData]
