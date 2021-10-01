@@ -7,7 +7,6 @@ variables:
 - name: OuterApiObject
   value: $(RecruitOuterApiObject)
 
-
 resources:
   repositories:
   - repository: self
