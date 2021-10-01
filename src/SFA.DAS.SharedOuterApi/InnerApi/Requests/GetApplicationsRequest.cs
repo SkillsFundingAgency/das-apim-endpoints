@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         public GetApplicationsRequest(long accountId)
         {
             AccountId = accountId;
-            GetUrl = $"applications?accountId={accountId}";
+            GetUrl = $"accounts/{accountId}/applications";
         }
 
         public int PledgeId { get; }
