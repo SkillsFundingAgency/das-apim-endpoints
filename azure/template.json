@@ -41,12 +41,6 @@
         },
         "configurationStorageConnectionString": {
             "type": "securestring"
-        },
-        "tags": {
-            "type": "object"
-        },
-        "resourceGroupLocation": {
-            "type": "string"
         }
     },
     "variables": {
@@ -56,15 +50,6 @@
         "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
     },
     "resources": [
-        {
-            "apiVersion": "2021-04-01",
-            "name": "[variables('resourceGroupName')]",
-            "type": "Microsoft.Resources/resourceGroups",
-            "location": "[parameters('resourceGroupLocation')]",
-            "tags": "[parameters('tags')]",
-            "properties": {
-            }
-        },
         {
             "apiVersion": "2021-04-01",
             "name": "[concat('cert-', parameters('outerApiObject').appServiceName)]",
