@@ -11,22 +11,6 @@
         "serviceName": {
             "type": "string"
         },
-        "appServicePlanSku": {
-            "type": "object",
-            "defaultValue": {
-                "tier": "Standard",
-                "size": "2",
-                "instances": 2
-            }
-        },
-        "deployAppServicePlan": {
-            "type": "bool",
-            "defaultValue": false
-        },
-        "deployOuterApi": {
-            "type": "bool",
-            "defaultValue": false
-        },
         "appServiceAllowedIPs": {
             "type": "array",
             "defaultValue": []
@@ -35,8 +19,7 @@
             "type": "string"
         },
         "outerApiObject": {
-            "type": "object",
-            "defaultValue": {}
+            "type": "object"
         },
         "sharedKeyVaultName": {
             "type": "string"
@@ -84,36 +67,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployAppServicePlan')]",
-            "name": "apim-endpoint-app-service-plan",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[variables('appServicePlanName')]"
-                    },
-                    "aspSize": {
-                        "value": "[parameters('appServicePlanSku').size]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('appServicePlanSku').instances]"
-                    },
-                    "nonASETier": {
-                        "value": "[parameters('appServicePlanSku').tier]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('cert-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
+            "name": "[concat('cert-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -137,8 +91,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('api-application-insights-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
+            "name": "[concat('api-application-insights-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -159,8 +112,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('api-app-service-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
+            "name": "[concat('api-app-service-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "dependsOn": [],
@@ -209,7 +161,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[if(parameters('deployOuterApi'), reference(concat('api-application-insights-', parameters('outerApiObject').appServiceName)).outputs.InstrumentationKey.value, '')]"
+                                    "value": "[reference(concat('api-application-insights-', parameters('outerApiObject').appServiceName)).outputs.InstrumentationKey.value]"
                                 }
                             ]
                         }
@@ -218,7 +170,7 @@
                         "value": "[parameters('outerApiObject').customHostName]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(parameters('deployOuterApi'), reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value, '')]"
+                        "value": "[reference(concat('cert-', parameters('outerApiObject').appServiceName)).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
@@ -231,8 +183,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('role-assignment-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
+            "name": "[concat('role-assignment-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -243,7 +194,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[if(parameters('deployOuterApi'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value, '')]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -256,8 +207,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "condition": "[parameters('deployOuterApi')]",
-            "name": "[concat('role-assignment-staging-', if(parameters('deployOuterApi'), parameters('outerApiObject').appServiceName, 'placeholder'))]",
+            "name": "[concat('role-assignment-staging-', parameters('outerApiObject').appServiceName)]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -268,7 +218,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[if(parameters('deployOuterApi'), reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value, '')]"
+                        "value": "[reference(concat('api-app-service-', parameters('outerApiObject').appServiceName)).outputs.stagingManagedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"

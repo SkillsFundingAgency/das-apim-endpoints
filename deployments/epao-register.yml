@@ -6,8 +6,6 @@ variables:
 - group: RELEASE das-apim-endpoints
 - name: OuterApiObject
   value: $(EpaoRegisterOuterApiObject)
-- name: DeployOuterApi
-  value: true
 
 resources:
   repositories:

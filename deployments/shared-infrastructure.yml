@@ -4,8 +4,6 @@ pr: none
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- name: DeployAppServicePlan
-  value: true
 
 resources:
   repositories:
