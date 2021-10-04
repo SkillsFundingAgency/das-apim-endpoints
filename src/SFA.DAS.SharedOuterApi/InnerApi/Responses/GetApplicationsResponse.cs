@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetApplicationsResponse
     {

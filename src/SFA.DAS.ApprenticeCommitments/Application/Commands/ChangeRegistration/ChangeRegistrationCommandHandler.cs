@@ -50,6 +50,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
                 FirstName = apprenticeship.FirstName,
                 LastName = apprenticeship.LastName,
                 DateOfBirth = apprenticeship.DateOfBirth,
+                Email = apprenticeship.Email,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
@@ -59,7 +60,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,          
             });
 
             return default;
