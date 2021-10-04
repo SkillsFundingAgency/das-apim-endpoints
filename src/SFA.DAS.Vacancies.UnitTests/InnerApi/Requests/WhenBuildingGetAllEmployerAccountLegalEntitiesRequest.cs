@@ -6,14 +6,14 @@ using SFA.DAS.Vacancies.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingGetEmployerAccountLegalEntitiesRequest
+    public class WhenBuildingGetAllEmployerAccountLegalEntitiesRequest
     {
         [Test, AutoData]
         public void Then_The_Request_Is_Correctly_Build(string encodedAccountId)
         {
-            var actual = new GetEmployerAccountLegalEntitiesRequest(encodedAccountId);
+            var actual = new GetAllEmployerAccountLegalEntitiesRequest(encodedAccountId);
 
-            actual.GetUrl.Should().Be($"api/accounts/{encodedAccountId}/legalentities");
+            actual.GetAllUrl.Should().Be($"api/accounts/{encodedAccountId}/legalentities");
         }
     }
 }

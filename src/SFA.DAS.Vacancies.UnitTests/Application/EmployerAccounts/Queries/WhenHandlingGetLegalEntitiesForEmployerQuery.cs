@@ -20,25 +20,25 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.EmployerAccounts.Queries
         [Test, MoqAutoData]
         public async Task Then_Gets_Legal_Entities_For_Account(
             GetLegalEntitiesForEmployerQuery query,
-            GetResourceListResponse apiResponse,
+            List<Resource> apiResponse,
             List<GetEmployerAccountLegalEntityItem> legalEntities,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockApiClient,
             GetLegalEntitiesForEmployerQueryHandler handler)
         {
             //arrange
             mockApiClient
-                .Setup(client => client.Get<GetResourceListResponse>(
-                    It.Is<GetEmployerAccountLegalEntitiesRequest>(request =>
+                .Setup(client => client.GetAll<Resource>(
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(request =>
                         request.EncodedAccountId.Equals(query.EncodedAccountId))))
                 .ReturnsAsync(apiResponse);
-            var resources = apiResponse.Resources.ToList();
-            for (var i = 0; i < resources.Count; i++)
+
+            for (var i = 0; i < apiResponse.Count; i++)
             {
                 var index = i;
                 mockApiClient
                     .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
                         It.Is<GetEmployerAccountLegalEntityRequest>(request =>
-                            request.GetUrl.Equals(resources[index].Href))))
+                            request.GetUrl.Equals(apiResponse[index].Href))))
                     .ReturnsAsync(legalEntities[index]);
             }
             
