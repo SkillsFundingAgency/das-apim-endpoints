@@ -17,9 +17,9 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.Vacancies.Api.AppStart;
-using SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities;
-using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Manage.Api.AppStart;
+using SFA.DAS.Vacancies.Manage.Application.Qualifications.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Manage.Configuration;
 
 namespace SFA.DAS.Vacancies.Manage.Api
 {

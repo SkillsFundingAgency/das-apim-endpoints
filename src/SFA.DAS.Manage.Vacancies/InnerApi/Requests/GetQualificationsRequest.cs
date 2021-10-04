@@ -11,6 +11,6 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
             _ukprn = ukprn;
         }
 
-        public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&operations=1&operations=2";
+        public string GetUrl => $"candidate-qualifications?ukprn={_ukprn}&operations=1&operations=2";
     }
 }

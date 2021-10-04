@@ -3,11 +3,11 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
-using SFA.DAS.Vacancies.Services;
+using SFA.DAS.Vacancies.Manage.Configuration;
+using SFA.DAS.Vacancies.Manage.Interfaces;
+using SFA.DAS.Vacancies.Manage.Services;
 
-namespace SFA.DAS.Vacancies.Api.AppStart
+namespace SFA.DAS.Vacancies.Manage.Api.AppStart
 {
     public static class AddServiceRegistrationExtensions
     {

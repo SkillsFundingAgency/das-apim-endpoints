@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAccountLegalEntities
+namespace SFA.DAS.Vacancies.Manage.Application.Qualifications.Queries.GetQualifications
 {
     public class GetQualificationsQuery : IRequest<GetQualificationsQueryResponse>
     {

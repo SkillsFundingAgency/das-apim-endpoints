@@ -6,7 +6,7 @@ using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
 using SFA.DAS.Vacancies.Manage.Interfaces;
 
-namespace SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAccountLegalEntities
+namespace SFA.DAS.Vacancies.Manage.Application.Qualifications.Queries.GetQualifications
 {
     public class GetQualificationsQueryHandler : IRequestHandler<GetQualificationsQuery, GetQualificationsQueryResponse>
     {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAcco
 
             return new GetQualificationsQueryResponse
             {
-                ProviderAccountLegalEntities = response.AccountProviderLegalEntities
+                Qualifications = response.Qualifications
             };
         }
     }

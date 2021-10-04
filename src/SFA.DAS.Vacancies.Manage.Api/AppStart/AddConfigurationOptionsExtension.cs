@@ -2,9 +2,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Manage.Configuration;
 
-namespace SFA.DAS.Vacancies.Api.AppStart
+namespace SFA.DAS.Vacancies.Manage.Api.AppStart
 {
     public static class AddConfigurationOptionsExtension
     {

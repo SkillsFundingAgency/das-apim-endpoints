@@ -9,27 +9,30 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Responses
         public List<GetQualificationsItem> Qualifications { get; set; }
     }
 
-    public class GetProviderAccountLegalEntityItem
+    public class GetQualificationsItem
     {
-        [JsonProperty("AccountId")]
-        public long AccountId { get; set; }
+        [JsonProperty("GcseOrEquivalent")]
+        public string GcseOrEquivalent { get; set; }
 
-        [JsonProperty("AccountPublicHashedId")]
-        public string AccountPublicHashedId { get; set; }
+        [JsonProperty("AsLevelOrEquivalent")]
+        public string AsLevelOrEqivalant { get; set; }
 
-        [JsonProperty("AccountName")]
-        public string AccountName { get; set; }
+        [JsonProperty("ALevelOrEquivalent")]
+        public string ALevelOrEquivalent { get; set; }
 
-        [JsonProperty("AccountLegalEntityId")]
-        public long AccountLegalEntityId { get; set; }
+        [JsonProperty("BtecOrEquivalent")]
+        public string BtecOrEquivalent { get; set; }
 
-        [JsonProperty("AccountLegalEntityPublicHashedId")]
-        public string AccountLegalEntityPublicHashedId { get; set; }
+        [JsonProperty("NvqOrSvqLevel1OrEquivalent")]
+        public string NvqOrSvqLevel1OrEquivalent { get; set; }
 
-        [JsonProperty("AccountLegalEntityName")]
-        public string AccountLegalEntityName { get; set; }
+        [JsonProperty("NvqOrSvqLevel2OrEquivalent")]
+        public string NvqOrSvqLevel2OrEquivalent { get; set; }
 
-        [JsonProperty("AccountProviderId")]
-        public long AccountProviderId { get; set; }
+        [JsonProperty("NvqOrSvqLevel3OrEquivalent")]
+        public long NvqOrSvqLevel3OrEquivalent { get; set; }
+
+        [JsonProperty("Other")]
+        public long Other { get; set; }
     }
 }

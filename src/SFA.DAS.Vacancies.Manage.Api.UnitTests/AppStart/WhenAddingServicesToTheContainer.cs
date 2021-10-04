@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.Vacancies.Api.AppStart;
-using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
+using SFA.DAS.Vacancies.Manage.Api.AppStart;
+using SFA.DAS.Vacancies.Manage.Configuration;
+using SFA.DAS.Vacancies.Manage.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
 {
