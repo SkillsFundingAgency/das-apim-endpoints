@@ -8,6 +8,7 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
 using SFA.DAS.LevyTransferMatching.Application.Commands.AcceptFunding;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -85,6 +86,34 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             _logger.LogInformation($"Failed to accept funding for accountId: {accountId}, applicationId: {applicationId}");
 
             return BadRequest();
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [Route("/accounts/{accountId}/applications/{applicationId}/accepted")]
+        public async Task<IActionResult> Accepted(int applicationId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAcceptedQuery()
+                {
+                    ApplicationId = applicationId,
+                });
+
+                if (result != null)
+                {
+                    return Ok((GetAcceptedResponse)result);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get {nameof(Accepted)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
