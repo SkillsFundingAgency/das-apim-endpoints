@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Controllers
@@ -28,7 +29,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             {
                 var queryResponse = await _mediator.Send(new GetQualificationsQuery());
 
-                return Ok((GetQualificationsQueryResponse) queryResponse);
+                return Ok((GetQualificationsResponse) queryResponse);
 
             }
             catch (Exception e)

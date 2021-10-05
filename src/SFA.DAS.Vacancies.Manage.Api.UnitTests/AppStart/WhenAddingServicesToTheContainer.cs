@@ -41,7 +41,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1")
+                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1")
                 }
             };
 

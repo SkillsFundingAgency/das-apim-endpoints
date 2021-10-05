@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetQualificationsQueryResponse;
+            var model = controllerResult.Value as GetQualificationsResponse;
             Assert.IsNotNull(model);
             model.Qualifications.Should().BeEquivalentTo(mediatorResult.Qualifications);
         }
@@ -48,7 +48,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetQualificationsQuery>(),
                     It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
+                .ThrowsAsync(new InvalidOperationException());
 
             var controllerResult = await controller.GetList() as StatusCodeResult;
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -16,19 +17,19 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Api_Called(
-            GetQualificationsQueryResponse apiQueryResponse,
+            List<string> apiQueryResponse,
             GetQualificationsQuery query,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
           GetQualificationsQueryHandler handler)
         {
             apiClient.Setup(x =>
-                    x.Get<GetQualificationsQueryResponse>(
+                    x.Get<List<string>>(
                         It.Is<GetQualificationsRequest>(c => c.GetUrl.Contains($"referencedata/candidate-qualifications"))))
                 .ReturnsAsync(apiQueryResponse);
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Qualifications.Should().BeEquivalentTo(apiQueryResponse.Qualifications);
+            actual.Qualifications.Should().BeEquivalentTo(apiQueryResponse);
         }
     }
 }
