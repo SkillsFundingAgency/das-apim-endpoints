@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Manage.Vacancies\SFA.DAS.Vacancies.Manage.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Vacancies.Manage\SFA.DAS.Vacancies.Manage.csproj" />
   </ItemGroup>
 
 </Project>
