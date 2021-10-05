@@ -128,11 +128,20 @@ jobs:
       projects: 'src/SFA.DAS.LevyTransferMatching.Api/SFA.DAS.LevyTransferMatching.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Vacancies Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Vacancies.Api/SFA.DAS.Vacancies.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
     inputs:      
       Contents: |
-        azure/**          
+        azure/**
       TargetFolder: '$(build.artifactstagingdirectory)/publish'
       OverWrite: true
 

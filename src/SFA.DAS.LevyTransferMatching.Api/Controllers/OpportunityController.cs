@@ -17,6 +17,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
 using System.Linq;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -80,7 +81,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     Opportunity = applyQueryResult.Opportunity,
                     Sectors = applyQueryResult.Sectors,
                     JobRoles = applyQueryResult.JobRoles,
-                    Levels = applyQueryResult.Levels
+                    Levels = applyQueryResult.Levels,
+                    PledgeLocations = applyQueryResult.Opportunity.Locations.Select(x => new GetApplyResponse.PledgeLocation { Id = x.Id, Name = x.Name })
                 };
 
                 return Ok(response);
@@ -106,8 +108,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 NumberOfApprentices = request.NumberOfApprentices,
                 StartDate = request.StartDate,
                 HasTrainingProvider = request.HasTrainingProvider,
+                Amount = request.Amount,
                 Sectors = request.Sectors,
-                Postcode = request.Postcode,
+                Locations = request.Locations,
+                AdditionalLocation = request.AdditionalLocation,
+                SpecificLocation = request.SpecificLocation,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 EmailAddresses = request.EmailAddresses,
@@ -137,6 +142,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/application-details")]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -169,6 +175,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/more-details")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
         public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
         {
@@ -194,20 +201,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/opportunities/{pledgeId}/create/sector")]
-        public async Task<IActionResult> Sector(int pledgeId, [FromQuery] string postcode)
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/create/sector")]
+        [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/sector")]
+        public async Task<IActionResult> Sector(int opportunityId)
         {
             try
             {
-                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { Postcode = postcode, OpportunityId = pledgeId });
+                var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = opportunityId });
 
                 var response = new GetSectorResponse
                 {
                     Opportunity = sectorQueryResult.Opportunity,
-                    Location = sectorQueryResult.Location,
                     Sectors = sectorQueryResult.Sectors,
                     JobRoles = sectorQueryResult.JobRoles,
-                    Levels = sectorQueryResult.Levels
+                    Levels = sectorQueryResult.Levels,
+                    PledgeLocations = sectorQueryResult.Opportunity.Locations.Select(x => new GetSectorResponse.PledgeLocation { Id = x.Id, Name = x.Name})
                 };
 
                 return Ok(response);
@@ -269,6 +277,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Detail result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("opportunities/{opportunityId}/select-account")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SelectAccount(int opportunityId, string userId)
+        {
+            try
+            {
+                var getSelectAccountQueryResult = await _mediator.Send(new GetSelectAccountQuery
+                {
+                    UserId = userId,
+                });
+
+                return Ok((GetSelectAccountResponse)getSelectAccountQueryResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get SelectAccount result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
