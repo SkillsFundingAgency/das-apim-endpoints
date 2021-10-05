@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Vacancies.Manage.Application.Qualifications.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 {
@@ -21,22 +21,19 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             _logger = logger;
         }
         [HttpGet]
-        [Route("{ukprn}")]
-        public async Task<IActionResult> GetList([FromRoute]int ukprn)
+        [Route("")]
+        public async Task<IActionResult> GetList()
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetQualificationsQuery
-                {
-                    Ukprn = ukprn
-                });
+                var queryResponse = await _mediator.Send(new GetQualificationsQuery());
 
                 return Ok((GetQualificationsQueryResponse) queryResponse);
 
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get qualifications [{ukprn}]");
+                _logger.LogError(e, "Error attempting to get qualifications");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }

@@ -1,5 +1,8 @@
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Vacancies.Manage.Api.Models;
+using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
 {
@@ -8,23 +11,19 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Correctly_Mapped(GetQualificationsQueryResponse source)
         {
-            var actual = (GetQualificationsListResponse) source;
+            var actual = (GetQualificationsResponse) source;
 
-            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(source.ProviderAccountLegalEntities, options => options
-                .Excluding(c=>c.AccountId)
-                .Excluding(c=>c.AccountLegalEntityId)
-                .Excluding(c=>c.AccountProviderId)
-            );
+            actual.Qualifications.Should().BeEquivalentTo(source.Qualifications);
         }
 
         [Test, AutoData]
         public void Then_If_Null_Empty_List_Returned(GetQualificationsQueryResponse source)
         {
-            source.ProviderAccountLegalEntities = null;
+            source.Qualifications = null;
             
-            var actual = (GetQualificationsListResponse) source;
+            var actual = (GetQualificationsResponse) source;
 
-            actual.ProviderAccountLegalEntities.Should().BeEmpty();
+            actual.Qualifications.Should().BeEmpty();
         }
     }
 }

@@ -18,7 +18,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Manage.Api.AppStart;
-using SFA.DAS.Vacancies.Manage.Application.Qualifications.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.Vacancies.Manage.Configuration;
 
 namespace SFA.DAS.Vacancies.Manage.Api
@@ -97,7 +97,7 @@ namespace SFA.DAS.Vacancies.Manage.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacanciesOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacanciesManageOuterApi", Version = "v1" });
             });
         }
 

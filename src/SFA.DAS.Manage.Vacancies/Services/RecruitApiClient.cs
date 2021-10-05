@@ -8,11 +8,11 @@ using SFA.DAS.Vacancies.Manage.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.Services
 {
-    public class QualificationsApiClient : IQualificationsApiClient<QualificationsApiConfiguration>
+    public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
     {
-        private readonly IInternalApiClient<QualificationsApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<RecruitApiConfiguration> _apiClient;
 
-        public QualificationsApiClient (IInternalApiClient<QualificationsApiConfiguration> apiClient)
+        public RecruitApiClient (IInternalApiClient<RecruitApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
