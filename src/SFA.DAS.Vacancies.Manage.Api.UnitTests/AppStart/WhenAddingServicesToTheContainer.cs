@@ -17,6 +17,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
+        [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -41,7 +42,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1")
+                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1")
                 }
             };
 

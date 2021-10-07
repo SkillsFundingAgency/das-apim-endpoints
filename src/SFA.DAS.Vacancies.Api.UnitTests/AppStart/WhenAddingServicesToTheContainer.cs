@@ -9,14 +9,12 @@ using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Vacancies.Api.AppStart;
 using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
 {
     public class WhenAddingServicesToTheContainer
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
-        [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
