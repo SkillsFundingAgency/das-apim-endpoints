@@ -73,7 +73,8 @@ namespace SFA.DAS.Vacancies.Api
 
             if (_configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks();
+                services.AddHealthChecks()
+                    .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
                 //     .AddCheck<ProviderRelationsHealthCheck>("Provider Relations API health check");
             }
             
