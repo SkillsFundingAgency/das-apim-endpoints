@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.Vacancies.Manage.Configuration;
 
 namespace SFA.DAS.Vacancies.Manage.Api.AppStart
@@ -15,6 +16,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<RecruitApiConfiguration>(configuration.GetSection(nameof(RecruitApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+            services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection("ProviderRelationshipsApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRelationshipsApiConfiguration>>().Value);
         }
     }
 }

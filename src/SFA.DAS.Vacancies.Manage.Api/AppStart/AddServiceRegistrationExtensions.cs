@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.Interfaces;
 using SFA.DAS.Vacancies.Manage.Services;
@@ -18,6 +20,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         }
     }
 }

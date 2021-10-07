@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Manage.Api.AppStart;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.Interfaces;
@@ -18,6 +20,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
+        [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -43,7 +46,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
                 InitialData = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1")
+                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1")
                 }
             };
 
