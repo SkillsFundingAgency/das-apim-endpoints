@@ -14,13 +14,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement
         {
             _legalEntitiesService = legalEntitiesService;
         }
+
         public async Task<Unit> Handle(SignAgreementCommand request, CancellationToken cancellationToken)
         {
             var signAgreementRequest = new SignAgreementRequest
             {
                 AccountId = request.AccountId,
                 AccountLegalEntityId = request.AccountLegalEntityId,
-                AgreementVersion = request.AgreementVersion
+                AgreementVersion = request.AgreementVersion,
+                LegalEntityId = request.LegalEntityId,
+                LegalEntityName = request.LegalEntityName
             };
             await _legalEntitiesService.SignAgreement(signAgreementRequest);
             
