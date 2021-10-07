@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
@@ -8,8 +7,9 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.EmployerIncentives.Infrastructure
+namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class AccountsApiHealthCheck : IHealthCheck
     {
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Infrastructure
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var timer = Stopwatch.StartNew();
-            var result = await _client.GetResponseCode(new GetAccountsApiPingRequest());
+            var result = await _client.GetResponseCode(new GetPingRequest());
             timer.Stop();
             var durationString = timer.Elapsed.ToHumanReadableString();
             if (result != HttpStatusCode.OK)
