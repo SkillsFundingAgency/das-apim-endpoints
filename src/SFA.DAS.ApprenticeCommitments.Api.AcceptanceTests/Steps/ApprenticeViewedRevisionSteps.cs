@@ -17,14 +17,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     [Scope(Feature = "ApprenticeViewedRevision")]
     public class ApprenticeViewedRevisionSteps
     {
-        private const string ContentType = "application/test-content-type";
         private readonly TestContext _context;
         private readonly Fixture _fixture = new Fixture();
         private Guid _apprenticeId;
         private long _apprenticeshipId;
         private long _revisionId;
         private JsonPatchDocument<RevisionPatch> _change;
-        private ApprenticeshipResponse _apprenticeship;
         private DateTime? _viewedOn;
 
         public ApprenticeViewedRevisionSteps(TestContext context)
@@ -33,9 +31,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _apprenticeId = _fixture.Create<Guid>();
             _apprenticeshipId = _fixture.Create<long>();
             _revisionId = _fixture.Create<long>();
-            _apprenticeship = _fixture.Build<ApprenticeshipResponse>()
-                .With(x=>x.Id, _apprenticeshipId)
-                .Create();
         }
 
 
