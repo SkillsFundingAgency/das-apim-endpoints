@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement
 
         public async Task<Unit> Handle(SignAgreementCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[SignAgreementCommandHandler] request {1}", request);
+            _logger.LogInformation("[SignAgreementCommandHandler] request {@request}", request);
 
             var signAgreementRequest = new SignAgreementRequest
             {
