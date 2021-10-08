@@ -30,7 +30,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             recruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
-                        c.PostUrl.Contains(command.Id.ToString())
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         )))
                 .ReturnsAsync(apiResponse);

@@ -58,6 +58,8 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
         [JsonProperty("thingsToConsider")]
         public string ThingsToConsider { get ; set ; }
+        [JsonProperty("outcomeDescription")]
+        public string OutcomeDescription { get ; set ; }
     }
     
     public class PostVacancyUserData

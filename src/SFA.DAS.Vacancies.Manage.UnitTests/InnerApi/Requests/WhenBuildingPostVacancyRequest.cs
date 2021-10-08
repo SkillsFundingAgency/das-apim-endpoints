@@ -9,11 +9,11 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.InnerApi.Requests
     public class WhenBuildingPostVacancyRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(Guid id)
+        public void Then_The_Url_Is_Correctly_Built(Guid id, PostVacancyRequestData data)
         {
-            var actual = new PostVacancyRequest(id, null);
+            var actual = new PostVacancyRequest(id, data);
 
-            actual.PostUrl.Should().Be($"api/Vacancies/{id}");
+            actual.PostUrl.Should().Be($"api/Vacancies/{id}?ukprn={data.User.Ukprn}&userEmail={data.User.Email}");
         }
 
         [Test, AutoData]

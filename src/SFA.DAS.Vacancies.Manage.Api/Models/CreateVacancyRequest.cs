@@ -36,6 +36,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Address = source.Address,
                 Wage = source.Wage,
                 Skills = source.Skills,
+                OutcomeDescription = source.OutcomeDescription,
                 EmployerNameOption = (InnerApi.Requests.EmployerNameOption)employerNameOption,
                 AnonymousReason = source.AnonymousReason,
                 ApplicationInstructions = source.ApplicationInstructions,
@@ -63,8 +64,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string ShortDescription { get ; set ; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get ; set ; }
-        // [JsonProperty("outcomeDescription")]//TODO check this is required
-        // public string OutcomeDescription { get ; set ; }
+        [JsonProperty("outcomeDescription")]//TODO check this is required
+        public string OutcomeDescription { get ; set ; }
         [JsonProperty("accountLegalEntityPublicHashedId")]
         public string AccountLegalEntityPublicHashedId { get ; set ; }
         [JsonProperty("closingDate")]
