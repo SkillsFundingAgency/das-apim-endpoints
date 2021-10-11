@@ -1,3 +1,5 @@
+using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -24,7 +26,13 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
 
             if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
             {
-                throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
+                if (result.StatusCode.Equals(HttpStatusCode.BadRequest))
+                {
+                    throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);    
+                }
+
+                throw new Exception(
+                    $"Response status code does not indicate success: {(int) result.StatusCode} ({result.StatusCode})");
             }
             
             return new CreateVacancyCommandResponse

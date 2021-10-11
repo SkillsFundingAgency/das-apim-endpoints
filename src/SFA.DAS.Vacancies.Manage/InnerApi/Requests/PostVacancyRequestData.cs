@@ -22,8 +22,6 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         public string ShortDescription { get ; set ; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get ; set ; }
-        // [JsonProperty("outcomeDescription")]//TODO check this is required
-        // public string OutcomeDescription { get ; set ; }
         [JsonProperty("accountLegalEntityPublicHashedId")]
         public string AccountLegalEntityPublicHashedId { get ; set ; }
         [JsonProperty("closingDate")]

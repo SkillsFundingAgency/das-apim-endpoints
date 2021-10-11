@@ -43,7 +43,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_An_Error_From_The_Api_A_Exception_Is_Returned(
+        public void Then_If_There_Is_A_Bad_Request_Error_From_The_Api_A_Exception_Is_Returned(
             string errorContent,
             CreateVacancyCommand command,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -61,6 +61,26 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             //Assert
             act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
                 .Which.ErrorContent.Should().Be(errorContent);
+        }
+        [Test, MoqAutoData]
+        public void Then_If_There_Is_An_Error_From_The_Api_A_Exception_Is_Returned(
+            string errorContent,
+            CreateVacancyCommand command,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            var apiResponse = new ApiResponse<string>(null, HttpStatusCode.InternalServerError, errorContent);
+            recruitApiClient
+                .Setup(client => client.PostWithResponseCode<string>(It.IsAny<PostVacancyRequest>()))
+                .ReturnsAsync(apiResponse);
+            
+            //Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+            
+            //Assert
+            act.Should().Throw<Exception>()
+                .WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})");
         }
     }
 }
