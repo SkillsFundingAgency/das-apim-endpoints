@@ -206,10 +206,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> PledgeApplications(int pledgeId)
         {
             var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
-            
+
             return Ok(new GetApplicationsResponse
             {
-                Applications = ((GetApplicationsQueryResult)queryResult)?.Applications
+                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
             });
         }
 

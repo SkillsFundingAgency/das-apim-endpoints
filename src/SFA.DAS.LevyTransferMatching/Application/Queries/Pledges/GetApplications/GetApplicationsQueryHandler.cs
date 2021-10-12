@@ -20,5 +20,82 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             base(levyTransferMatchingService, coursesApiClient)
         {
         }
+
+        public override async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
+        {
+            var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
+            {
+                PledgeId = request?.PledgeId,
+                AccountId = request?.AccountId
+            });
+
+            if (applicationsResponse.Applications == null)
+            {
+                return new GetApplicationsQueryResult()
+                {
+                    Applications = null
+                };
+            }
+
+            var pledgeResponse = await _levyTransferMatchingService.GetPledge(request.PledgeId.Value);
+            var distinctStandards = applicationsResponse.Applications.Select(app => app.StandardId).Distinct();
+            var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
+
+            standardTasks.AddRange(distinctStandards.Select(standardId => _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(standardId))));
+
+            await Task.WhenAll(standardTasks);
+
+            foreach (var application in applicationsResponse.Applications)
+            {
+                var standard = standardTasks.Select(s => s.Result).Single(s => s.StandardUId == application.StandardId);
+                application.Standard = new Standard()
+                {
+                    LarsCode = standard.LarsCode,
+                    Level = standard.Level,
+                    StandardUId = standard.StandardUId,
+                    Title = standard.Title,
+                    Route = standard.Route,
+                    ApprenticeshipFunding = standard.ApprenticeshipFunding?.Select(funding =>
+                        new ApprenticeshipFunding()
+                        {
+                            Duration = funding.Duration,
+                            EffectiveFrom = funding.EffectiveFrom,
+                            EffectiveTo = funding.EffectiveTo,
+                            MaxEmployerLevyCap = funding.MaxEmployerLevyCap
+                        })
+                };
+
+                application.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
+                application.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
+                application.IsJobRoleMatch = !pledgeResponse.Levels.Any() || pledgeResponse.JobRoles.Contains(application.Standard.Route);
+                application.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Contains(MapLevelIntToString(application.Standard.Level));
+            }
+
+            return new GetApplicationsQueryResult
+            {
+                Applications = applicationsResponse.Applications.Select(x => (GetApplicationsQueryResultBase.Application)x)
+            };
+        }
+
+        public string MapLevelIntToString(int levelInt)
+        {
+            switch (levelInt)
+            {
+                case 2:
+                    return "Level2";
+                case 3:
+                    return "Level3";
+                case 4:
+                    return "Level4";
+                case 5:
+                    return "Level5";
+                case 6:
+                    return "Level6";
+                case 7:
+                    return "Level7";
+                default:
+                    return "";
+            }
+        }
     }
 }
