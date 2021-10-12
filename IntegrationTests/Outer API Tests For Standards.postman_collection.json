@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0e78b910-0aeb-4332-a683-03d3b4f78b05",
+		"_postman_id": "7ba30af8-855e-4673-9c91-c368c3895e06",
 		"name": "Outer API Tests For Standards",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -317,6 +317,91 @@
 					"path": [
 						"assessors",
 						"TrainingCourses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Standards - Learners",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Learners list matches batch size\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.learners.length).to.eql(parseInt(pm.environment.get(\"batchSize\")));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Total number of batches is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.totalNumberOfBatches).to.eql(parseInt(pm.environment.get(\"totalNumberOfBatches\")));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Learner data is as expected\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.learners[0].apprenticeshipId).to.eql(1054498);\r",
+							"    pm.expect(jsonData.learners[0].firstName).to.eql('Test');\r",
+							"    pm.expect(jsonData.learners[0].lastName).to.eql('Name2191114878');\r",
+							"    pm.expect(jsonData.learners[0].uln).to.eql('2191114878');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{apim-subscription-key}}",
+						"description": "This key is provided by DevOps which authenticates the APIM gateway.  ",
+						"type": "text"
+					},
+					{
+						"key": "X-Version",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{apim-base-url}}/assessors/Learners?batch_size={{batchSize}}&batch_number={{batchNumber}}&sinceTime={{since_time}}",
+					"host": [
+						"{{apim-base-url}}"
+					],
+					"path": [
+						"assessors",
+						"Learners"
+					],
+					"query": [
+						{
+							"key": "sinceTime",
+							"value": "2021-01-01",
+							"disabled": true
+						},
+						{
+							"key": "batch_number",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "batch_size",
+							"value": "{{batchSize}}"
+						},
+						{
+							"key": "batch_number",
+							"value": "{{batchNumber}}"
+						},
+						{
+							"key": "sinceTime",
+							"value": "{{since_time}}"
+						}
 					]
 				}
 			},
