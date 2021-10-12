@@ -16,14 +16,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
         private readonly IReferenceDataService _referenceDataService;
 
-        public GetApplicationQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, ILocationApiClient<LocationApiConfiguration> locationApiClient, IReferenceDataService referenceDataService)
+        public GetApplicationQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
         {
             _coursesApiClient = coursesApiClient;
             _levyTransferMatchingService = levyTransferMatchingService;
-            _locationApiClient = locationApiClient;
             _referenceDataService = referenceDataService;
         }
 
@@ -37,12 +35,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
             }
 
             var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
-            var locationTask = _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(application.Postcode));
             var allJobRolesTask = _referenceDataService.GetJobRoles();
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
 
-            await Task.WhenAll(standardTask, locationTask, allJobRolesTask, allLevelsTask, allSectorsTask);
+            await Task.WhenAll(standardTask, allJobRolesTask, allLevelsTask, allSectorsTask);
 
             var estimatedDurationMonths = standardTask.Result.TypicalDuration;
             var level = standardTask.Result.Level;
@@ -60,7 +57,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 HasTrainingProvider = application.HasTrainingProvider,
                 LastName = application.LastName,
                 Level = level,
-                Location = locationTask.Result.DistrictName,
+                Location = string.Empty, //replaced in TM-169
                 NumberOfApprentices = application.NumberOfApprentices,
                 Sector = application.Sectors,
                 StartBy = application.StartDate,

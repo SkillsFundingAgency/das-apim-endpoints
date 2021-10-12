@@ -30,10 +30,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
             GetApplicationQuery getApplicationQuery,
             GetApplicationResponse getApplicationResponse,
             GetStandardsListItem getStandardsListItem,
-            GetLocationsListItem getLocationsListItem,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
             mockLevyTransferMatchingService
@@ -43,16 +41,38 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
             mockCoursesApiClient
                 .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(getApplicationResponse.StandardId))))
                 .ReturnsAsync(getStandardsListItem);
-            mockLocationApiClient
-                .Setup(x => x.Get<GetLocationsListItem>(It.Is<GetLocationByFullPostcodeRequest>(y => y.GetUrl.Contains(getApplicationResponse.Postcode))))
-                .ReturnsAsync(getLocationsListItem);
 
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
             Assert.AreEqual(getStandardsListItem.TypicalDuration, result.EstimatedDurationMonths);
-            Assert.AreEqual(getLocationsListItem.DistrictName, result.Location);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Application_Exists_And_No_Specific_Locations_Returned_Stitches_Up_Standard_And_Location_To_Result(
+            GetApplicationQuery getApplicationQuery,
+            GetApplicationResponse getApplicationResponse,
+            GetStandardsListItem getStandardsListItem,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
+            GetApplicationQueryHandler getApplicationQueryHandler)
+        {
+            getApplicationResponse.Locations = null;
+
+            mockLevyTransferMatchingService
+                .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getApplicationQuery.PledgeId.ToString()) && y.GetUrl.Contains(getApplicationQuery.ApplicationId.ToString()))))
+                .ReturnsAsync(getApplicationResponse);
+
+            mockCoursesApiClient
+                .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(getApplicationResponse.StandardId))))
+                .ReturnsAsync(getStandardsListItem);
+
+            var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
+            Assert.AreEqual(getStandardsListItem.TypicalDuration, result.EstimatedDurationMonths);
         }
 
         [Test, MoqAutoData]
