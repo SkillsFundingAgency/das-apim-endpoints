@@ -79,6 +79,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 Status = application.Status,
                 OpportunityId = application.PledgeId,
                 Standard = standard,
+                PledgeAmount = application.PledgeAmount,
             };
         }
     }
