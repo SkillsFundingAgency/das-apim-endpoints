@@ -89,7 +89,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         public async Task And_Exception_Then_Returns_InternalServerError(
             string encodedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerAccountLegalEntitiesController controller)
+            [Greedy] AccountLegalEntitiesController controller)
         {
             var accountIdentifier = $"Employer|{encodedAccountId}";
             mockMediator
