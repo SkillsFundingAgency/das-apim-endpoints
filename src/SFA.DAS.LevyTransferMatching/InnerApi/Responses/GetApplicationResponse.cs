@@ -18,6 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
+        public string PledgeEmployerAccountName { get; set; }
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
