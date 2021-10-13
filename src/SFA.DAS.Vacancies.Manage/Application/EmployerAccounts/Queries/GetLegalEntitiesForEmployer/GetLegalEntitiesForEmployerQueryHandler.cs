@@ -20,14 +20,16 @@ namespace SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegal
         
         public async Task<GetLegalEntitiesForEmployerResult> Handle(GetLegalEntitiesForEmployerQuery request, CancellationToken cancellationToken)
         {
-            var resourceListResponse = await _accountsApiClient.GetAll<Resource>(
+            var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
                 new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
 
             var legalEntities = new List<GetEmployerAccountLegalEntityItem>();
-            foreach (var resource in resourceListResponse)
+            foreach (var resource in resourceListResponse.LegalEntities)
             {
                 var accountLegalEntityItem = await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
                     new GetEmployerAccountLegalEntityRequest(resource.Href));
+                accountLegalEntityItem.AccountPublicHashedId = request.EncodedAccountId;
+                accountLegalEntityItem.AccountName = resourceListResponse.DasAccountName;
                 legalEntities.Add(accountLegalEntityItem);
             }
             

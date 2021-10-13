@@ -11,9 +11,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Correctly_Mapped(GetProviderAccountLegalEntitiesQueryResponse source)
         {
-            var actual = (GetProviderAccountLegalEntitiesListResponse) source;
+            var actual = (GetAccountLegalEntitiesListResponse) source;
 
-            actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(source.ProviderAccountLegalEntities, options => options
+            actual.AccountLegalEntities.Should().BeEquivalentTo(source.ProviderAccountLegalEntities, options => options
                 .Excluding(c=>c.AccountId)
                 .Excluding(c=>c.AccountLegalEntityId)
                 .Excluding(c=>c.AccountProviderId)
@@ -25,9 +25,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         {
             source.ProviderAccountLegalEntities = null;
             
-            var actual = (GetProviderAccountLegalEntitiesListResponse) source;
+            var actual = (GetAccountLegalEntitiesListResponse) source;
 
-            actual.ProviderAccountLegalEntities.Should().BeEmpty();
+            actual.AccountLegalEntities.Should().BeEmpty();
         }
     }
 }

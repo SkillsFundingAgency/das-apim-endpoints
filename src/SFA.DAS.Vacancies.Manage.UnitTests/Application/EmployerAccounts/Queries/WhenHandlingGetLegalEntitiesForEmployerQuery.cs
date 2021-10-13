@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -19,25 +20,25 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
         [Test, MoqAutoData]
         public async Task Then_Gets_Legal_Entities_For_Account(
             GetLegalEntitiesForEmployerQuery query,
-            List<Resource> apiResponse,
+            AccountDetail apiResponse,
             List<GetEmployerAccountLegalEntityItem> legalEntities,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockApiClient,
             GetLegalEntitiesForEmployerQueryHandler handler)
         {
             //arrange
             mockApiClient
-                .Setup(client => client.GetAll<Resource>(
+                .Setup(client => client.Get<AccountDetail>(
                     It.Is<GetAllEmployerAccountLegalEntitiesRequest>(request =>
                         request.EncodedAccountId.Equals(query.EncodedAccountId))))
                 .ReturnsAsync(apiResponse);
 
-            for (var i = 0; i < apiResponse.Count; i++)
+            for (var i = 0; i < apiResponse.LegalEntities.Count; i++)
             {
                 var index = i;
                 mockApiClient
                     .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
                         It.Is<GetEmployerAccountLegalEntityRequest>(request =>
-                            request.GetUrl.Equals(apiResponse[index].Href))))
+                            request.GetUrl.Equals(apiResponse.LegalEntities[index].Href))))
                     .ReturnsAsync(legalEntities[index]);
             }
             
@@ -45,7 +46,11 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
             var result = await handler.Handle(query, CancellationToken.None);
 
             //assert
-            result.LegalEntities.Should().BeEquivalentTo(legalEntities);
+            result.LegalEntities.Should().BeEquivalentTo(legalEntities, options=>options.Excluding(c=>c.AccountPublicHashedId));
+            result.LegalEntities.ToList().TrueForAll(c => c.AccountPublicHashedId.Equals(query.EncodedAccountId))
+                .Should().BeTrue();
+            result.LegalEntities.ToList().TrueForAll(c => c.AccountName.Equals(apiResponse.DasAccountName))
+                .Should().BeTrue();
         }
     }
 }
