@@ -31,7 +31,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
             return new GetEmployerAccountLegalEntitiesItem
             {
                 Address = source.Address,
-                Name = source.Name,
+                Name = source.AccountLegalEntityName,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId
             };
         }
