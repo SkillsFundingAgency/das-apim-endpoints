@@ -38,7 +38,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task And_Exception_Then_Returns_InternalServerError(
             string encodedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountLegalEntitiesController controller)
