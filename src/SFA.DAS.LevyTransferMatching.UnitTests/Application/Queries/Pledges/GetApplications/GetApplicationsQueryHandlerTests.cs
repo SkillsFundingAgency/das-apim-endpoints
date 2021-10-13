@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -47,6 +48,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
                             StandardId = "2"
                         }
                     }
+                });
+
+            _service.Setup(x => x.GetPledge(_query.PledgeId.Value))
+                .ReturnsAsync(new Pledge
+                {
+                    Locations = new List<LocationDataItem>(),
+                    Sectors = new List<string>(),
+                    JobRoles = new List<string>(),
+                    Levels = new List<string>()
                 });
 
             _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();

@@ -67,7 +67,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
                 application.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
                 application.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
-                application.IsJobRoleMatch = !pledgeResponse.Levels.Any() || pledgeResponse.JobRoles.Contains(application.Standard.Route);
+                application.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || pledgeResponse.JobRoles.Contains(application.Standard.Route);
                 application.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Contains(MapLevelIntToString(application.Standard.Level));
             }
 
