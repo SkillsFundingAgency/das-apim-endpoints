@@ -17,10 +17,11 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.Vacancies.Api.AppStart;
-using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Manage.Api.AppStart;
+using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Manage.Configuration;
 
-namespace SFA.DAS.Vacancies.Api
+namespace SFA.DAS.Vacancies.Manage.Api
 {
     public class Startup
     {
@@ -54,7 +55,7 @@ namespace SFA.DAS.Vacancies.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            //services.AddMediatR(typeof(GetProviderAccountLegalEntitiesQuery).Assembly);
+            services.AddMediatR(typeof(GetQualificationsQuery).Assembly);
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
@@ -72,8 +73,7 @@ namespace SFA.DAS.Vacancies.Api
 
             if (_configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks()
-                    .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
+                services.AddHealthChecks();
                 //     .AddCheck<ProviderRelationsHealthCheck>("Provider Relations API health check");
             }
             
@@ -85,7 +85,7 @@ namespace SFA.DAS.Vacancies.Api
             {
                 var configuration = _configuration
                     .GetSection("VacanciesConfiguration")
-                    .Get<VacanciesConfiguration>();
+                    .Get<VacanciesManageConfiguration>();
 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -97,7 +97,7 @@ namespace SFA.DAS.Vacancies.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacanciesOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacanciesManageOuterApi", Version = "v1" });
             });
         }
 
@@ -127,7 +127,7 @@ namespace SFA.DAS.Vacancies.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesManageOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
