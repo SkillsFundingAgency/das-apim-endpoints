@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -31,6 +32,36 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/applications/{applicationId}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> Application(int applicationId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApplicationQuery()
+                {
+                    ApplicationId = applicationId,
+                });
+
+                if (result != null)
+                {
+                    return Ok((GetApplicationResponse)result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get {nameof(Application)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
