@@ -19,7 +19,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
     public class WhenGettingAccountLegalEntities
     {
         [Test, MoqAutoData]
-        public async Task Then_If_Employer_Account_Identifier_Then_Get_Account_Legal_Entities_Called(
+        public async Task Then_If_Employer_Account_Identifier_Then_Get_Account_Legal_Entities_Called_And_Values_UpperCased(
             string encodedAccountId,
             GetLegalEntitiesForEmployerResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -28,7 +28,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             var accountIdentifier = $"Employer|{encodedAccountId}";
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetLegalEntitiesForEmployerQuery>(c=>c.EncodedAccountId.Equals(encodedAccountId)),
+                    It.Is<GetLegalEntitiesForEmployerQuery>(c=>c.EncodedAccountId.Equals(encodedAccountId.ToUpper())),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 

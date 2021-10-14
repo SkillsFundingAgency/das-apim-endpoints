@@ -40,7 +40,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 {
                     case "Employer":
                         var employerQueryResponse = await _mediator.Send(new GetLegalEntitiesForEmployerQuery
-                            {EncodedAccountId = id});
+                            {EncodedAccountId = id.ToUpper()});
                         return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
                     case "Provider":
 
