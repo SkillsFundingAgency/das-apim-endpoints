@@ -209,7 +209,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             
             return Ok(new GetApplicationsResponse
             {
-                Applications = queryResult.Applications
+                Applications = ((GetApplicationsQueryResult)queryResult)?.Applications
             });
         }
 
