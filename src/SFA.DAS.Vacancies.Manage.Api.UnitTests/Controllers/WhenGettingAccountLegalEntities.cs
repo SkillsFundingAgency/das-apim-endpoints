@@ -80,9 +80,23 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var accountIdentifier = $"{identifier}";
             
-            var controllerResult = await controller.GetList(accountIdentifier) as StatusCodeResult;
+            var controllerResult = await controller.GetList(accountIdentifier) as BadRequestObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.Value.Should().BeEquivalentTo("Account Identifier is not in the correct format.");
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Provider_And_Not_Numeric_Then_BadRequest_Returned(
+            string identifier,
+            [Greedy] AccountLegalEntitiesController controller)
+        {
+            var accountIdentifier = $"Provider|{identifier}";
+            
+            var controllerResult = await controller.GetList(accountIdentifier) as BadRequestObjectResult;
+
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.Value.Should().BeEquivalentTo("Provider Id is not numeric");
         }
         
         [Test, MoqAutoData]

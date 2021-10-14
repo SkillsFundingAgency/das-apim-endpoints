@@ -24,6 +24,15 @@ namespace SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegal
                 new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
 
             var legalEntities = new List<GetEmployerAccountLegalEntityItem>();
+            
+            if (resourceListResponse == null)
+            {
+                return new GetLegalEntitiesForEmployerResult
+                {
+                    LegalEntities = legalEntities
+                };
+            }
+
             foreach (var resource in resourceListResponse.LegalEntities)
             {
                 var accountLegalEntityItem = await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(

@@ -52,5 +52,27 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
             result.LegalEntities.ToList().TrueForAll(c => c.AccountName.Equals(apiResponse.DasAccountName))
                 .Should().BeTrue();
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Account_Not_Found_Empty_Response_Returned(
+            GetLegalEntitiesForEmployerQuery query,
+            AccountDetail apiResponse,
+            List<GetEmployerAccountLegalEntityItem> legalEntities,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockApiClient,
+            GetLegalEntitiesForEmployerQueryHandler handler)
+        {
+            //arrange
+            mockApiClient
+                .Setup(client => client.Get<AccountDetail>(
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(request =>
+                        request.EncodedAccountId.Equals(query.EncodedAccountId))))
+                .ReturnsAsync((AccountDetail)null);
+            
+            //act
+            var result = await handler.Handle(query, CancellationToken.None);
+            
+            //Assert
+            result.LegalEntities.Should().BeEmpty();
+        }
     }
 }

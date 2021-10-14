@@ -46,7 +46,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
 
     public class GetAccountLegalEntitiesItem
     {
-        public string Address { get; set; }
         public string AccountLegalEntityName { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public string AccountPublicHashedId { get ; set ; }
@@ -56,7 +55,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         {
             return new GetAccountLegalEntitiesItem
             {
-                Address = source.Address,
                 AccountLegalEntityName = source.AccountLegalEntityName,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
                 AccountPublicHashedId = source.AccountPublicHashedId,
@@ -68,7 +66,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         {
             return new GetAccountLegalEntitiesItem
             {
-                Address = "",
                 AccountLegalEntityName = source.AccountLegalEntityName,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
                 AccountPublicHashedId = source.AccountPublicHashedId,

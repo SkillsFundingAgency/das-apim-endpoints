@@ -31,7 +31,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             {
                 if (accountIdentifier.Split("|").Length != 2)
                 {
-                    return new StatusCodeResult((int) HttpStatusCode.BadRequest);
+                    return new BadRequestObjectResult("Account Identifier is not in the correct format.");
                 }
                 
                 var id = accountIdentifier.Split("|")[1];
@@ -43,9 +43,15 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                             {EncodedAccountId = id});
                         return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
                     case "Provider":
-                        var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
-                            {Ukprn = Convert.ToInt32(id)});
-                        return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);
+
+                        if (int.TryParse(id, out var providerId))
+                        {
+                            var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
+                                {Ukprn = providerId});
+                            return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
+                        }
+                        return new BadRequestObjectResult("Provider Id is not numeric");
+                        
                     default:
                         return new StatusCodeResult((int) HttpStatusCode.Forbidden);
                 }
