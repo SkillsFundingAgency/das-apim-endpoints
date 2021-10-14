@@ -74,7 +74,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 PledgeLocations = application.PledgeLocations,
                 NumberOfApprentices = application.NumberOfApprentices,
                 RemainingAmount = application.PledgeRemainingAmount,
-                Sectors = application.Sectors,
+                Sectors = application.PledgeSectors,
                 StartBy = application.StartDate,
                 Status = application.Status,
                 OpportunityId = application.PledgeId,
