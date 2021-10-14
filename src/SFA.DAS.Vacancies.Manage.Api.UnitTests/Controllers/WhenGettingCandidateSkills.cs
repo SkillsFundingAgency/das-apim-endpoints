@@ -34,9 +34,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetQualificationsResponse;
+            var model = controllerResult.Value as GetCandidateSkillsListResponse;
             Assert.IsNotNull(model);
-            model.Qualifications.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
+            model.CandidateSkills.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
         }
 
         [Test, MoqAutoData]
