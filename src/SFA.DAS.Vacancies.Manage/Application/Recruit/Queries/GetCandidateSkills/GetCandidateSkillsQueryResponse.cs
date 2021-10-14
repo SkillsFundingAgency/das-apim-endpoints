@@ -4,6 +4,6 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetCandidateSkill
 {
     public class GetCandidateSkillsQueryResponse
     {
-        public List<string> CandidateSkills { get ; set ; }
+        public IList<string> CandidateSkills { get ; set ; }
     }
 }
