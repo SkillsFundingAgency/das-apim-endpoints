@@ -25,10 +25,28 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> CreateVacancy([FromRoute]Guid id, [FromBody]CreateVacancyRequest request)
+        public async Task<IActionResult> CreateVacancy([FromHeader(Name = "x-request-context-account-identifier")] string accountIdentifier, [FromRoute]Guid id, [FromBody]CreateVacancyRequest request)
         {
             try
             {
+                var account = new AccountIdentifier(accountIdentifier);
+                switch (account.AccountType)
+                {
+                    case AccountType.Unknown:
+                        return new StatusCodeResult((int) HttpStatusCode.Forbidden);
+                    case AccountType.Provider when account.Ukprn == null:
+                        return new BadRequestObjectResult("Account Identifier is not in the correct format.");
+                    case AccountType.Provider:
+                        request.User = new VacancyUser
+                        {
+                            Ukprn = account.Ukprn.Value
+                        };
+                        break;
+                    case AccountType.Employer:
+                        request.EmployerAccountId = account.AccountPublicHashedId;
+                        break;
+                }
+
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
