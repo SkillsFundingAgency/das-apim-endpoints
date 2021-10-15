@@ -29,29 +29,23 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         {
             try
             {
-                if (accountIdentifier.Split("|").Length != 2)
+                var account = new AccountIdentifier(accountIdentifier);
+                
+                if (account.AccountType == AccountType.Provider && account.Ukprn == null)
                 {
                     return new BadRequestObjectResult("Account Identifier is not in the correct format.");
                 }
                 
-                var id = accountIdentifier.Split("|")[1];
-
-                switch (accountIdentifier.Split("|")[0])
+                switch (account.AccountType)
                 {
-                    case "Employer":
+                    case AccountType.Employer:
                         var employerQueryResponse = await _mediator.Send(new GetLegalEntitiesForEmployerQuery
-                            {EncodedAccountId = id.ToUpper()});
+                            {EncodedAccountId = account.AccountPublicHashedId});
                         return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
-                    case "Provider":
-
-                        if (int.TryParse(id, out var providerId))
-                        {
-                            var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
-                                {Ukprn = providerId});
-                            return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
-                        }
-                        return new BadRequestObjectResult("Provider Id is not numeric");
-                        
+                    case AccountType.Provider:
+                        var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
+                            {Ukprn = account.Ukprn.Value});
+                        return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
                     default:
                         return new StatusCodeResult((int) HttpStatusCode.Forbidden);
                 }
