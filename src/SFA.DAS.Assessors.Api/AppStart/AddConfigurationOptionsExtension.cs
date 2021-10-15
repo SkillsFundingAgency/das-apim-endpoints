@@ -15,6 +15,8 @@ namespace SFA.DAS.Assessors.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
         }
     }
 }
