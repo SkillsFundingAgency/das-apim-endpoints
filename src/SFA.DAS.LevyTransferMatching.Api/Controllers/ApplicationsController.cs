@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
-using SFA.DAS.LevyTransferMatching.Application.Commands.AcceptFunding;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 
@@ -67,14 +67,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/applications/{applicationId}/accept-funding")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> AcceptFunding(long accountId, int applicationId, [FromBody] AcceptFundingRequest request)
+        public async Task<IActionResult> Application(long accountId, int applicationId, [FromBody] SetApplicationAcceptanceRequest request)
         {
-            var successfulOperation = await _mediator.Send(new AcceptFundingCommand
+            var successfulOperation = await _mediator.Send(new SetApplicationAcceptanceCommand
             {
                 UserId = request.UserId,
                 UserDisplayName = request.UserDisplayName,
                 AccountId = accountId,
-                ApplicationId = applicationId
+                ApplicationId = applicationId,
+                Acceptance = request.Acceptance,
             });
 
             if (successfulOperation)

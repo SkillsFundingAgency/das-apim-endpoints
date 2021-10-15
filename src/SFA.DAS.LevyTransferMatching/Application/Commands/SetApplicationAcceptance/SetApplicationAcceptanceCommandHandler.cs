@@ -9,21 +9,26 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.AcceptFunding
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance
 {
-    public class AcceptFundingCommandHandler : IRequestHandler<AcceptFundingCommand, bool>
+    public class SetApplicationAcceptanceCommandHandler : IRequestHandler<SetApplicationAcceptanceCommand, bool>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ILogger<AcceptFundingCommandHandler> _logger;
+        private readonly ILogger<SetApplicationAcceptanceCommandHandler> _logger;
 
-        public AcceptFundingCommandHandler(ILogger<AcceptFundingCommandHandler> logger, ILevyTransferMatchingService levyTransferMatchingService)
+        public SetApplicationAcceptanceCommandHandler(ILogger<SetApplicationAcceptanceCommandHandler> logger, ILevyTransferMatchingService levyTransferMatchingService)
         {
             _logger = logger;
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<bool> Handle(AcceptFundingCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SetApplicationAcceptanceCommand request, CancellationToken cancellationToken)
         {
+            if (request.Acceptance != Types.ApplicationAcceptance.Accept)
+            {
+                throw new NotImplementedException();
+            }
+
             _logger.LogInformation($"Accepting funding for Application {request.ApplicationId}.");
 
             var apiRequestData = new AcceptFundingRequestData
