@@ -6,8 +6,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
-using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Api.AppStart
 {
@@ -19,8 +17,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-            services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+            
         }
     }
 }
