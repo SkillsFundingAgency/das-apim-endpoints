@@ -1,0 +1,17 @@
+<policies>
+    <inbound>
+        <set-header name="x-request-context-subscription-name" exists-action="override">
+            <value>@(context.Subscription.Name)</value>
+        </set-header>
+        <base />
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
