@@ -18,6 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
+        public string PledgeEmployerAccountName { get; set; }
         public List<LocationDataItem> PledgeLocations { get; set; }
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
@@ -28,6 +29,9 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
         public string Status { get; set; }
+        public bool PledgeIsNamePublic { get; set; }
+        public int PledgeId { get; set; }
+        public int PledgeAmount { get; set; }
 
         public class ApplicationLocation
         {

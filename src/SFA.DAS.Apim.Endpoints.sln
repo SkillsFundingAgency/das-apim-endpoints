@@ -182,25 +182,33 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LevyTransferMatching", "Lev
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1DD62DFC-FB80-4E47-90E1-3C0F1DBF614A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching.Api", "SFA.DAS.LevyTransferMatching.Api\SFA.DAS.LevyTransferMatching.Api.csproj", "{27CA3EA8-9E44-43AD-B58B-394D258B5E51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.LevyTransferMatching.Api", "SFA.DAS.LevyTransferMatching.Api\SFA.DAS.LevyTransferMatching.Api.csproj", "{27CA3EA8-9E44-43AD-B58B-394D258B5E51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching", "SFA.DAS.LevyTransferMatching\SFA.DAS.LevyTransferMatching.csproj", "{21E57CDD-B7CD-4172-A4C0-474AACF0D4EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.LevyTransferMatching", "SFA.DAS.LevyTransferMatching\SFA.DAS.LevyTransferMatching.csproj", "{21E57CDD-B7CD-4172-A4C0-474AACF0D4EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching.Api.UnitTests", "SFA.DAS.LevyTransferMatching.Api.UnitTests\SFA.DAS.LevyTransferMatching.Api.UnitTests.csproj", "{37CC0129-16A0-4B6A-89A5-A8D3F633D627}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.LevyTransferMatching.Api.UnitTests", "SFA.DAS.LevyTransferMatching.Api.UnitTests\SFA.DAS.LevyTransferMatching.Api.UnitTests.csproj", "{37CC0129-16A0-4B6A-89A5-A8D3F633D627}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching.UnitTests", "SFA.DAS.LevyTransferMatching.UnitTests\SFA.DAS.LevyTransferMatching.UnitTests.csproj", "{29743536-0DFC-4254-9896-6C29001ECEE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.LevyTransferMatching.UnitTests", "SFA.DAS.LevyTransferMatching.UnitTests\SFA.DAS.LevyTransferMatching.UnitTests.csproj", "{29743536-0DFC-4254-9896-6C29001ECEE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vacancies", "Vacancies", "{DF0A7DE2-749D-4454-91E6-8724ECC7633A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{91912579-AF79-4333-B630-152F66DBF482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies", "SFA.DAS.Vacancies\SFA.DAS.Vacancies.csproj", "{F1FAF68B-9372-4D7B-B6BD-6FD5FCBB9628}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies", "SFA.DAS.Vacancies\SFA.DAS.Vacancies.csproj", "{F1FAF68B-9372-4D7B-B6BD-6FD5FCBB9628}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Api", "SFA.DAS.Vacancies.Api\SFA.DAS.Vacancies.Api.csproj", "{F2933D00-4673-4119-82DF-545BF4AC29A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Api", "SFA.DAS.Vacancies.Api\SFA.DAS.Vacancies.Api.csproj", "{F2933D00-4673-4119-82DF-545BF4AC29A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Api.UnitTests", "SFA.DAS.Vacancies.Api.UnitTests\SFA.DAS.Vacancies.Api.UnitTests.csproj", "{EEC4ED1B-63DF-46A9-9AB1-A41F12338C64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Api.UnitTests", "SFA.DAS.Vacancies.Api.UnitTests\SFA.DAS.Vacancies.Api.UnitTests.csproj", "{EEC4ED1B-63DF-46A9-9AB1-A41F12338C64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.UnitTests", "SFA.DAS.Vacancies.UnitTests\SFA.DAS.Vacancies.UnitTests.csproj", "{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.UnitTests", "SFA.DAS.Vacancies.UnitTests\SFA.DAS.Vacancies.UnitTests.csproj", "{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.Api.UnitTests", "SFA.DAS.Vacancies.Manage.Api.UnitTests\SFA.DAS.Vacancies.Manage.Api.UnitTests.csproj", "{16348C58-2E11-4002-977F-7444EEBE8343}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.Api", "SFA.DAS.Vacancies.Manage.Api\SFA.DAS.Vacancies.Manage.Api.csproj", "{17C8F0CD-07AD-468E-844D-F13774D910BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage", "SFA.DAS.Vacancies.Manage\SFA.DAS.Vacancies.Manage.csproj", "{4526B4F6-9694-404D-8BC2-796F4823BCCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.UnitTests", "SFA.DAS.Vacancies.Manage.UnitTests\SFA.DAS.Vacancies.Manage.UnitTests.csproj", "{A9695DDF-3803-4197-8ACF-0F50B64C38D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -468,6 +476,22 @@ Global
 		{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16348C58-2E11-4002-977F-7444EEBE8343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16348C58-2E11-4002-977F-7444EEBE8343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16348C58-2E11-4002-977F-7444EEBE8343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16348C58-2E11-4002-977F-7444EEBE8343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C8F0CD-07AD-468E-844D-F13774D910BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C8F0CD-07AD-468E-844D-F13774D910BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C8F0CD-07AD-468E-844D-F13774D910BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C8F0CD-07AD-468E-844D-F13774D910BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4526B4F6-9694-404D-8BC2-796F4823BCCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4526B4F6-9694-404D-8BC2-796F4823BCCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4526B4F6-9694-404D-8BC2-796F4823BCCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4526B4F6-9694-404D-8BC2-796F4823BCCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9695DDF-3803-4197-8ACF-0F50B64C38D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9695DDF-3803-4197-8ACF-0F50B64C38D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9695DDF-3803-4197-8ACF-0F50B64C38D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9695DDF-3803-4197-8ACF-0F50B64C38D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -554,6 +578,10 @@ Global
 		{F2933D00-4673-4119-82DF-545BF4AC29A3} = {DF0A7DE2-749D-4454-91E6-8724ECC7633A}
 		{EEC4ED1B-63DF-46A9-9AB1-A41F12338C64} = {91912579-AF79-4333-B630-152F66DBF482}
 		{8B87E93D-04CD-4C44-A398-F9BA3985EC7E} = {91912579-AF79-4333-B630-152F66DBF482}
+		{16348C58-2E11-4002-977F-7444EEBE8343} = {91912579-AF79-4333-B630-152F66DBF482}
+		{17C8F0CD-07AD-468E-844D-F13774D910BE} = {DF0A7DE2-749D-4454-91E6-8724ECC7633A}
+		{4526B4F6-9694-404D-8BC2-796F4823BCCA} = {DF0A7DE2-749D-4454-91E6-8724ECC7633A}
+		{A9695DDF-3803-4197-8ACF-0F50B64C38D7} = {91912579-AF79-4333-B630-152F66DBF482}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
