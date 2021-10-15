@@ -8,9 +8,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
     public class WhenMappingAccountIdentifierModelFromRequestHeaderValue
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped_For_Employer_And_Id_Upper_Cased(string accountId)
+        public void Then_The_Fields_Are_Mapped_For_Employer_And_Id_Upper_Cased()
         {
-            var accountIdentifier = $"Employer|{accountId}";
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
             
             var actual = new AccountIdentifier(accountIdentifier);
 
@@ -22,7 +23,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped_For_Provider(int ukprn)
         {
-            var accountIdentifier = $"Provider|{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}";
             
             var actual = new AccountIdentifier(accountIdentifier);
 
@@ -32,9 +33,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         }
         
         [Test, AutoData]
-        public void Then_The_Null_Set_For_Ukprn_If_Not_In_Correct_Format(string ukprn)
+        public void Then_The_Null_Set_For_Ukprn_If_Not_In_Correct_Format()
         {
-            var accountIdentifier = $"Provider|{ukprn}";
+            var ukprn = "ABC123";
+            var accountIdentifier = $"Provider-{ukprn}";
             
             var actual = new AccountIdentifier(accountIdentifier);
 
@@ -64,9 +66,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         }
         
         [Test, AutoData]
-        public void Then_If_Not_Recognised_AccountType_Format_Not_Know_Type_Returned(string accountId)
+        public void Then_If_Not_Recognised_AccountType_Format_Not_Know_Type_Returned()
         {
-            var accountIdentifier = $"Citizen|{accountId}";
+            var accountId = "ABC123";
+            var accountIdentifier = $"Citizen-{accountId}";
             
             var actual = new AccountIdentifier(accountIdentifier);
 

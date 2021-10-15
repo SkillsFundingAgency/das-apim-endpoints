@@ -9,14 +9,14 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
             AccountPublicHashedId = null;
             Ukprn = null;
             
-            if (string.IsNullOrEmpty(accountIdentifier) || accountIdentifier.Split("|").Length != 2)
+            if (string.IsNullOrEmpty(accountIdentifier) || accountIdentifier.Split("-").Length != 2)
             {
                 AccountType = AccountType.Unknown;
                 return;
             }
-            var id = accountIdentifier.Split("|")[1];
+            var id = accountIdentifier.Split("-")[1];
             
-            Enum.TryParse(typeof(AccountType), accountIdentifier.Split("|")[0], true,
+            Enum.TryParse(typeof(AccountType), accountIdentifier.Split("-")[0], true,
                 out var accountType);
 
             AccountType = (AccountType?) accountType ?? AccountType.Unknown;

@@ -20,14 +20,15 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Response_Returned_And_Type_Set_For_Employer(
-            string accountId,
+            
             Guid id,
             CreateVacancyCommandResponse mediatorResponse,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer|{accountId}";
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
@@ -52,7 +53,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             request.User = null;
-            var accountIdentifier = $"Provider|{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
@@ -70,24 +71,24 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Format_Is_Not_Correct_For_The_AccountIdentifier_Then_Forbidden_Returned(
-            string accountIdentifier,
+            long accountIdentifier,
             Guid id,
             CreateVacancyRequest request,
             [Greedy] VacancyController controller)
         {
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), id, request) as StatusCodeResult;
             
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
         }
         
         [Test, MoqAutoData]
         public async Task Then_If_The_Ukprn_Is_Not_Correct_For_The_AccountIdentifier_Then_Forbidden_Returned(
-            string ukprn,
             Guid id,
             CreateVacancyRequest request,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Provider|{ukprn}";
+            var ukprn = "ABC123";
+            var accountIdentifier = $"Provider-{ukprn}";
             
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
             
@@ -97,14 +98,14 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         
         [Test, MoqAutoData]
         public async Task Then_If_ContentException_Bad_Request_Is_Returned(
-            string accountId,
             Guid id,
             string errorContent,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer|{accountId}";
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
@@ -119,14 +120,14 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         
         [Test, MoqAutoData]
         public async Task Then_If_Exception_Internal_Server_Error_Is_Returned(
-            string accountId,
             Guid id,
             string errorContent,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer|{accountId}";
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
