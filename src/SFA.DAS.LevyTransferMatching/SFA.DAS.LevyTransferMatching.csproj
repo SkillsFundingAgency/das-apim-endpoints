@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\Queries\Applications\**" />
-    <EmbeddedResource Remove="Application\Queries\Applications\**" />
-    <None Remove="Application\Queries\Applications\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 

@@ -14,10 +14,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
             services.AddOptions();
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
-            services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection("ProviderRelationshipsApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRelationshipsApiConfiguration>>().Value);
+            
         }
     }
 }

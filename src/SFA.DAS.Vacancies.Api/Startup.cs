@@ -18,7 +18,6 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Api.AppStart;
-using SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities;
 using SFA.DAS.Vacancies.Configuration;
 
 namespace SFA.DAS.Vacancies.Api
@@ -55,7 +54,7 @@ namespace SFA.DAS.Vacancies.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetProviderAccountLegalEntitiesQuery).Assembly);
+            //services.AddMediatR(typeof(GetProviderAccountLegalEntitiesQuery).Assembly);
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
