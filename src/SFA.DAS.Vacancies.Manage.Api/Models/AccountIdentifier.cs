@@ -9,7 +9,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
             AccountPublicHashedId = null;
             Ukprn = null;
             
-            if (accountIdentifier.Split("|").Length != 2)
+            if (string.IsNullOrEmpty(accountIdentifier) || accountIdentifier.Split("|").Length != 2)
             {
                 AccountType = AccountType.Unknown;
                 return;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                     Ukprn = providerId;
                     break;
                 case AccountType.Employer:
-                    AccountPublicHashedId = id;
+                    AccountPublicHashedId = id.ToUpper();
                     break;
                 case AccountType.Unknown:
                     break;
