@@ -60,7 +60,7 @@ stages:
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ApiPolicies: 
-        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+        - "policies/set-context-headers.xml"
 
 - stage: Deploy_TEST
   dependsOn: []
@@ -91,7 +91,7 @@ stages:
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ApiPolicies: 
-        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+        - "policies/set-context-headers.xml"
 
 - stage: Deploy_TEST2
   dependsOn: []
@@ -122,7 +122,7 @@ stages:
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       ApiPolicies: 
-        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_PP
 #  dependsOn: []
@@ -153,7 +153,7 @@ stages:
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 #      ApiPolicies: 
-#        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_PROD
 #  dependsOn: []
@@ -184,7 +184,7 @@ stages:
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 #      ApiPolicies: 
-#        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_MO
 #  dependsOn: []
@@ -215,7 +215,7 @@ stages:
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 #      ApiPolicies: 
-#        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_DEMO
 #  dependsOn: []
@@ -246,4 +246,4 @@ stages:
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 #      ApiPolicies: 
-#        - "$(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/policies/set-context-headers.xml"
+#        - "policies/set-context-headers.xml"

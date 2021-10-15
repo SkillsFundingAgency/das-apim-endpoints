@@ -150,7 +150,6 @@ jobs:
     inputs:      
       Contents: |
         azure/**
-        policies/**
       TargetFolder: '$(build.artifactstagingdirectory)/publish'
       OverWrite: true
 
