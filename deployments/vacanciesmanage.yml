@@ -18,7 +18,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/heads/add-apim-policy-script #don't merge until this is set back to the latest tag
+    ref: refs/tags/4.5.0
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -59,8 +59,6 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ApiPolicies: 
-        - "policies/set-context-headers.xml"
 
 - stage: Deploy_TEST
   dependsOn: []
@@ -90,8 +88,6 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ApiPolicies: 
-        - "policies/set-context-headers.xml"
 
 - stage: Deploy_TEST2
   dependsOn: []
@@ -121,8 +117,6 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      ApiPolicies: 
-        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_PP
 #  dependsOn: []
@@ -152,8 +146,6 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      ApiPolicies: 
-#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_PROD
 #  dependsOn: []
@@ -183,8 +175,6 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      ApiPolicies: 
-#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_MO
 #  dependsOn: []
@@ -214,8 +204,6 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      ApiPolicies: 
-#        - "policies/set-context-headers.xml"
 #
 #- stage: Deploy_DEMO
 #  dependsOn: []
@@ -245,5 +233,3 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#      ApiPolicies: 
-#        - "policies/set-context-headers.xml"
