@@ -23,8 +23,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{query}")]
-        public async Task<IActionResult> Index(string query)
+        [Route("")]
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
             try
             {
