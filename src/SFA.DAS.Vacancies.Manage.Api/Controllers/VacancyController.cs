@@ -25,7 +25,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> CreateVacancy([FromHeader(Name = "x-request-context-account-identifier")] string accountIdentifier, [FromRoute]Guid id, [FromBody]CreateVacancyRequest request)
+        public async Task<IActionResult> CreateVacancy([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromRoute]Guid id, [FromBody]CreateVacancyRequest request)
         {
             try
             {

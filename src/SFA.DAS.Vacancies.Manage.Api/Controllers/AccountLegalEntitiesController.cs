@@ -25,7 +25,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-account-identifier")] string accountIdentifier)
+        public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier)
         {
             try
             {
