@@ -23,8 +23,8 @@ namespace SFA.DAS.Assessors.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{query}")]
-        public async Task<IActionResult> Index(string query)
+        [Route("")]
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
             try
             {
