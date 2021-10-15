@@ -1,13 +1,11 @@
-using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.SendInvitationReminders;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.VerifyIdentityRegistration;
-using SFA.DAS.ApprenticeCommitments.Application.Queries.Registration;
-using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
+using SFA.DAS.ApprenticeCommitments.Application.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -15,48 +13,39 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IInternalApiClient<ApprenticeCommitmentsConfiguration> _client;
+        private readonly ResponseReturningApiClient _client;
 
-        public RegistrationController(IMediator mediator, IInternalApiClient<ApprenticeCommitmentsConfiguration> client)
+        public RegistrationController(IMediator mediator, ResponseReturningApiClient client)
         {
             _mediator = mediator;
             _client = client;
         }
 
-        [HttpGet]
-        [Route("/registrations/{apprenticeId}")]
-        public async Task<IActionResult> Get(Guid apprenticeId)
-        {
-            var result = await _mediator.Send(new RegistrationQuery { ApprenticeshipId = apprenticeId });
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return new OkObjectResult(result);
-        }
+        [HttpPost("/registrations")]
+        public async Task<ActionResult<CreateRegistrationResponse>> CreateRegistrationFromApproval(CreateRegistrationCommand request)
+            => await _mediator.Send(request);
 
-        [HttpPost]
+        [HttpPut]
         [Route("/registrations")]
-        public async Task<IActionResult> VerifyRegistration(VerifyIdentityRegistrationCommand request)
-        {
-            await _mediator.Send(request);
-            return Ok();
-        }
+        public async Task UpdateRegistrationFromApproval(ChangeRegistrationCommand request)
+            => await _mediator.Send(request);
 
-        [HttpPost]
+        [HttpGet]
+        [Route("/registrations/{registrationId}")]
+        public Task<IActionResult> Get(Guid registrationId)
+            => _client.Get($"registrations/{registrationId}");
+
+        [HttpGet]
         [Route("/registrations/reminders")]
-        public async Task<IActionResult> SendReminders(SendInvitationRemindersCommand request)
-        {
-            await _mediator.Send(request);
-            return Ok();
-        }
+        public Task<IActionResult> GetRemindersToSend([FromQuery] DateTime invitationCutOffTime)
+            => _client.Get($"registrations/reminders?invitationCutOffTime={invitationCutOffTime}");
 
-        [HttpPost("/registrations/{apprenticeId}/firstseen")]
-        public async Task<IActionResult> RegistrationFirstSeen(Guid apprenticeId, 
-            [FromBody] RegistrationFirstSeenRequestData request)
-        {
-            await _client.Post(new RegistrationFirstSeenRequest(apprenticeId, request));
-            return Accepted();
-        }
+        [HttpPost("/registrations/{registrationId}/reminder")]
+        public Task<IActionResult> RegistrationReminderSent(Guid registrationId, [FromBody] InvitationReminderSentRequest request)
+            => _client.Post($"registrations/{registrationId}/reminder", request);
+
+        [HttpPost("/registrations/{registrationId}/firstseen")]
+        public Task<IActionResult> RegistrationFirstSeen(Guid registrationId, [FromBody] RegistrationFirstSeenRequestData request)
+            => _client.Post($"registrations/{registrationId}/firstseen", request);
     }
 }

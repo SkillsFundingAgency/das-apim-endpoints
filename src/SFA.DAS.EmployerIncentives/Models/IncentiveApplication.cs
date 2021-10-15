@@ -9,7 +9,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public string SubmittedByEmail { get; set; }
         public string SubmittedByName { get; set; }
         public bool BankDetailsRequired { get; set; }
-        public bool NewAgreementRequired { get; set; }
         public IEnumerable<IncentiveApplicationApprenticeship> Apprenticeships { get; set; }
     }
 }

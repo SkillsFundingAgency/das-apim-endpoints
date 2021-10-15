@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.Campaign.Api.AppStart
@@ -15,6 +16,12 @@ namespace SFA.DAS.Campaign.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            
+            services.Configure<ContentfulApiConfiguration>(configuration.GetSection(nameof(ContentfulApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ContentfulApiConfiguration>>().Value);
+            
+            services.Configure<ContentfulPreviewApiConfiguration>(configuration.GetSection(nameof(ContentfulPreviewApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ContentfulPreviewApiConfiguration>>().Value);
         }
     }
 }

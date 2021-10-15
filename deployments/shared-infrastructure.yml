@@ -1,0 +1,117 @@
+trigger: none
+pr: none
+
+variables:
+- group: Release Management Resources
+- group: RELEASE das-apim-endpoints
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.0
+    endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.5.0
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-apim-endpoints-build
+    project: Digital Apprenticeship Service
+    source: das-apim-endpoints (build)
+    branch: master
+
+stages:
+- stage: Deploy_AT
+  dependsOn: []
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      Environment: AT
+
+- stage: Deploy_TEST
+  dependsOn: []
+  displayName: Deploy to TEST
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  - group: TEST das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      Environment: TEST
+
+- stage: Deploy_TEST2
+  dependsOn: []
+  displayName: Deploy to TEST2
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST2 DevTest Shared Resources
+  - group: TEST2 das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      Environment: TEST2
+
+- stage: Deploy_PP
+  dependsOn: []
+  displayName: Deploy to PP
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      Environment: PP
+
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      Environment: PROD
+
+- stage: Deploy_MO
+  dependsOn: []
+  displayName: Deploy to MO
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      Environment: MO
+
+- stage: Deploy_DEMO
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      Environment: DEMO

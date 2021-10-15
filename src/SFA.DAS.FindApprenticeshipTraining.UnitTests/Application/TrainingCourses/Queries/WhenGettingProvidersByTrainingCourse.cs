@@ -27,17 +27,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
-            GetShowEmployerDemandResponse showEmployerDemandResponse,
             int shortlistItemCount,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
             [Frozen] Mock<IShortlistService> shortlistService,
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
             GetTrainingCourseProvidersQueryHandler handler)
         {
-            config.Object.Value.EmployerDemandFeatureToggle = true;
             apiCourseResponse.Level = 1;
             query.Location = "";
             query.Lat = 0;
@@ -51,9 +47,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
-            mockEmployerDemandApiClient
-                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             mockLocationLookup
@@ -65,7 +58,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
-            result.ShowEmployerDemand.Should().BeTrue();
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
             result.Location.Should().BeNull();
         }
@@ -78,13 +70,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
             LocationItem locationServiceResponse,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             GetTrainingCourseProvidersQueryHandler handler)
         {
-            config.Object.Value.EmployerDemandFeatureToggle = true;
             query.Location = $"{locationName}, {authorityName} ";
             query.Lat = 0;
             query.Lon = 0;
@@ -112,84 +102,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             result.Location.Name.Should().Be(locationServiceResponse.Name);
             result.Location.GeoPoint.Should().BeEquivalentTo(locationServiceResponse.GeoPoint);
         }
-
-        [Test, MoqAutoData]
-        public async Task And_ShowDemandResponse_Not_OK_Then_ShowDemand_False(
-            GetTrainingCourseProvidersQuery query,
-            GetProvidersListResponse apiResponse,
-            GetStandardsListItem apiCourseResponse,
-            int shortlistItemCount,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
-            [Frozen] Mock<IShortlistService> shortlistService,
-            GetTrainingCourseProvidersQueryHandler handler)
-        {
-            config.Object.Value.EmployerDemandFeatureToggle = true;
-            apiCourseResponse.Level = 1;
-            query.Location = "";
-            query.Lat = 0;
-            query.Lon = 0;
-            mockApiClient
-                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
-                    c.GetUrl.Contains(query.Id.ToString()) 
-                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}&level={apiCourseResponse.Level}")
-                )))
-                .ReturnsAsync(apiResponse);
-            mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
-                .ReturnsAsync(apiCourseResponse);
-            mockEmployerDemandApiClient
-                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync(HttpStatusCode.Forbidden);
-            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
-                .ReturnsAsync(shortlistItemCount);
-            
-            var result = await handler.Handle(query, CancellationToken.None);
-            
-            result.ShowEmployerDemand.Should().BeFalse();
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_If_Feature_Not_Enabled_For_Employer_Demand_Then_Show_Demand_False(
-            GetTrainingCourseProvidersQuery query,
-            GetProvidersListResponse apiResponse,
-            GetStandardsListItem apiCourseResponse,
-            int shortlistItemCount,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingConfiguration>> config,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockEmployerDemandApiClient,
-            [Frozen] Mock<IShortlistService> shortlistService,
-            GetTrainingCourseProvidersQueryHandler handler)
-        {
-            config.Object.Value.EmployerDemandFeatureToggle = false;
-            apiCourseResponse.Level = 1;
-            query.Location = "";
-            query.Lat = 0;
-            query.Lon = 0;
-            mockApiClient
-                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
-                    c.GetUrl.Contains(query.Id.ToString()) 
-                    && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}&level={apiCourseResponse.Level}")
-                )))
-                .ReturnsAsync(apiResponse);
-            mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
-                .ReturnsAsync(apiCourseResponse);
-            mockEmployerDemandApiClient
-                .Setup(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()))
-                .ReturnsAsync(HttpStatusCode.Forbidden);
-            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
-                .ReturnsAsync(shortlistItemCount);
-            
-            var result = await handler.Handle(query, CancellationToken.None);
-            
-            result.ShowEmployerDemand.Should().BeFalse();
-            mockEmployerDemandApiClient
-                .Verify(client => client.GetResponseCode(It.IsAny<GetShowEmployerDemandRequest>()), Times.Never);
-        }
-        
     }
 }

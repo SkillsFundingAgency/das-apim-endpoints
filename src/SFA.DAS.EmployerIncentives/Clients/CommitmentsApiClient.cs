@@ -30,6 +30,12 @@ namespace SFA.DAS.EmployerIncentives.Clients
         {
             return _client.GetResponseCode(request);
         }
+
+        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+        {
+            return _client.GetWithResponseCode<TResponse>(request);
+        }
+
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             return _client.Post<TResponse>(request);
@@ -61,6 +67,11 @@ namespace SFA.DAS.EmployerIncentives.Clients
         }
 
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

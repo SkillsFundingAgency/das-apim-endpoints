@@ -24,14 +24,14 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Email_Sent_If_ResponseCode_Is_Created(
             RegisterDemandCommand command,
-            PostCreateCourseDemand responseBody,
+            PostEmployerCourseDemand responseBody,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Created);
-            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Created, "");
+            apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.Is<PostCreateCourseDemandRequest>(c=>
                     
                     ((CreateCourseDemandData)c.Data).Id.Equals(command.Id)
                     && ((CreateCourseDemandData)c.Data).ContactEmailAddress.Equals(command.ContactEmailAddress)
@@ -43,7 +43,11 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     && ((CreateCourseDemandData)c.Data).Course.Title.Equals(command.CourseTitle)
                     && ((CreateCourseDemandData)c.Data).Course.Level.Equals(command.CourseLevel)
                     && ((CreateCourseDemandData)c.Data).Course.Id.Equals(command.CourseId)
-                    && ((CreateCourseDemandData)c.Data).Course.Route.Equals(command.CourseSector)
+                    && ((CreateCourseDemandData)c.Data).Course.Route.Equals(command.CourseRoute)
+                    && ((CreateCourseDemandData)c.Data).StopSharingUrl.Equals(command.StopSharingUrl)
+                    && ((CreateCourseDemandData)c.Data).StartSharingUrl.Equals(command.StartSharingUrl)
+                    && ((CreateCourseDemandData)c.Data).ExpiredCourseDemandId.Equals(command.ExpiredCourseDemandId)
+                    && ((CreateCourseDemandData)c.Data).EntryPoint.Equals(command.EntryPoint)
                 )))
                 .ReturnsAsync(apiResponse);
 
@@ -52,13 +56,12 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
                 .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
-            var expectedEmail = new CreateDemandConfirmationEmail(
+            var expectedEmail = new VerifyEmployerDemandEmail(
                 command.ContactEmailAddress,
-                command.OrganisationName, 
+                command.OrganisationName,
                 command.CourseTitle, 
                 command.CourseLevel,
-                command.LocationName, 
-                command.NumberOfApprentices);
+                command.ConfirmationLink);
 
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
@@ -70,17 +73,17 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
         }
         
-         [Test, MoqAutoData]
+        [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Email_Not_Sent_If_ResponseCode_Is_Not_Created(
             RegisterDemandCommand command,
-            PostCreateCourseDemand responseBody,
+            PostEmployerCourseDemand responseBody,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
             [Frozen]Mock<INotificationService> mockNotificationService,
             RegisterDemandCommandHandler handler)
         {
             //Arrange
-            var apiResponse = new ApiResponse<PostCreateCourseDemand>(responseBody, HttpStatusCode.Accepted);
-            apiClient.Setup(x => x.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Accepted, "");
+            apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
                 )))
                 .ReturnsAsync(apiResponse);
 
@@ -91,9 +94,33 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             actual.Should().Be(apiResponse.Body.Id);
             mockNotificationService.Verify(x=>x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
         }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Api_Is_Called_And_Null_Returned_If_ResponseCode_Is_Conflict(
+            RegisterDemandCommand command,
+            PostEmployerCourseDemand responseBody,
+            [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
+            [Frozen]Mock<INotificationService> mockNotificationService,
+            RegisterDemandCommandHandler handler)
+        {
+            //Arrange
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Conflict, "");
+            apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
+                )))
+                .ReturnsAsync(apiResponse);
+
+            //Act
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            //Assert
+            actual.Should().BeNull();
+            mockNotificationService.Verify(x=>x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
+        }
 
         [Test, MoqAutoData]
         public void And_Demand_Not_Saved_Then_No_Confirmation_Email(
+            string errorContent,
             RegisterDemandCommand command,
             HttpRequestContentException apiException,
             [Frozen]Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> apiClient,
@@ -101,15 +128,17 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             RegisterDemandCommandHandler handler)
         {
             //Arrange
+            var apiResponse = new ApiResponse<PostEmployerCourseDemand>(null, HttpStatusCode.BadRequest, errorContent);
             apiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
-                .ThrowsAsync(apiException);
+                .Setup(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
+                .ReturnsAsync(apiResponse);
 
             //Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>();
+            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Which.ErrorContent.Should().Be(errorContent);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);
         }

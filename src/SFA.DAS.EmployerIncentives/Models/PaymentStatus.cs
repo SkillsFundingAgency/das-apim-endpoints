@@ -13,5 +13,8 @@ namespace SFA.DAS.EmployerIncentives.Models
         public bool PaymentSent { get; set; }
         public bool PaymentSentIsEstimated { get; set; }
         public bool RequiresNewEmployerAgreement { get; set; }
+        public bool PaymentIsStopped { get; set; }
+        public bool WithdrawnByEmployer { get; set; }
+        public bool WithdrawnByCompliance { get; set; }
     }
 }

@@ -20,9 +20,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
     public class ShortlistController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<LocationsController> _logger;
+        private readonly ILogger<ShortlistController> _logger;
 
-        public ShortlistController (IMediator mediator, ILogger<LocationsController> logger)
+        public ShortlistController (IMediator mediator, ILogger<ShortlistController> logger)
         {
             _mediator = mediator;
             _logger = logger;

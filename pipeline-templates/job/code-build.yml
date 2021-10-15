@@ -1,7 +1,8 @@
 jobs:
 - job: CodeBuild
   pool:
-    name: DAS - Continuous Integration
+    name: DAS - Continuous Integration Agents
+    demands: LATEST_DOTNET_VERSION -equals 3.1
   variables:
   - group: Prod Management Resources
   - name: buildConfiguration
@@ -9,12 +10,7 @@ jobs:
   workspace:
     clean: all
   steps:
-  - task: UseGitVersion@5
-    displayName: GitVersion
-    inputs:
-      versionSpec: 5.x
-      useConfigFile: true
-      configFilePath: GitVersion.yml
+  - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
 
@@ -122,13 +118,38 @@ jobs:
       command: publish
       publishWebProjects: false
       projects: 'src/SFA.DAS.EmployerDemand.Api/SFA.DAS.EmployerDemand.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Levy Transfer Matching Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.LevyTransferMatching.Api/SFA.DAS.LevyTransferMatching.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Vacancies Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Vacancies.Api/SFA.DAS.Vacancies.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Vacancies Manage Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Vacancies.Manage.Api/SFA.DAS.Vacancies.Manage.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
     inputs:      
       Contents: |
-        azure/**          
+        azure/**
       TargetFolder: '$(build.artifactstagingdirectory)/publish'
       OverWrite: true
 

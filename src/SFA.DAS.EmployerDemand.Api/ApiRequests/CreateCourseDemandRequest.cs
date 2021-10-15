@@ -23,7 +23,18 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
 
         [JsonProperty("TrainingCourse")]
         public TrainingCourse TrainingCourse { get; set; }
+        [JsonProperty("ResponseUrl")]
+        public string ResponseUrl { get; set; }
+        [JsonProperty("StopSharingUrl")]
+        public string StopSharingUrl { get; set; }
+        [JsonProperty("StartSharingUrl")]
+        public string StartSharingUrl { get ; set ; }
+        [JsonProperty("ExpiredCourseDemandId")]
+        public Guid? ExpiredCourseDemandId { get ; set ; }
+        [JsonProperty("EntryPoint")]
+        public short? EntryPoint { get ; set ; }
     }
+
     public class LocationItem
     {
         [JsonProperty("location")]
@@ -50,7 +61,7 @@ namespace SFA.DAS.EmployerDemand.Api.ApiRequests
         [JsonProperty("level")]
         public int Level { get; set; }
 
-        [JsonProperty("sector")]
-        public string Sector { get ; set ; }
+        [JsonProperty("route")]
+        public string Route { get ; set ; }
     }
 }

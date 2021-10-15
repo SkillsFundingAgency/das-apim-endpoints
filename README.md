@@ -20,7 +20,6 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
-* [das-employerdemand-api](https://github.com/SkillsFundingAgency/das-employerdemand-api)
 
 
 You are able to run the API by doing the following:
@@ -41,10 +40,6 @@ Data: {
     },
     "LocationApiConfiguration" : {
         "url":"https://localhost:5008/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
-    "EmployerDemandApiConfiguration":{
-        "url":"https://localhost:5501/",
         "identifier":"https://**********.onmicrosoft.com/*******"
     }
 }
@@ -303,3 +298,50 @@ You will need override the setting in the config ```SFA.DAS.EmployerIncentives.O
 
 To invoke the Fake CommitmentsV2Api start the console application ```SFA.DAS.EmployerIncentives.FakeApis``` 
 
+
+### Employer Demand
+
+The Employer Demand outer api relies on the following inner apis:
+
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-employerdemand-api](https://github.com/SkillsFundingAgency/das-employerdemand-api)
+
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerDemand.OuterApi_1.0
+Data: {
+    "CoursesApiConfiguration": {
+        "url":"https://localhost:5001/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "CourseDeliveryApiConfiguration" : {
+        "url":"https://localhost:5006/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "LocationApiConfiguration" : {
+        "url":"https://localhost:5008/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "EmployerDemandApiConfiguration":{
+        "url":"https://localhost:5501/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "NServiceBusConfiguration":{
+        "NServiceBusConnectionString":"*****",
+        "NServiceBusLicense":"*******"
+    },
+    "EmployerDemandConfiguration": {
+        "ApimEndpointsRedisConnectionString": " "
+    }
+}
+```
+* Start the api project ```SFA.DAS.EmployerDemand.Api```
+
+Starting the API will then show the swagger definition with the available operations. Alternatively you can connect [das-employerdemand-web](https://github.com/SkillsFundingAgency/das-employerdemand-web) which is the consuming service of this outer API.

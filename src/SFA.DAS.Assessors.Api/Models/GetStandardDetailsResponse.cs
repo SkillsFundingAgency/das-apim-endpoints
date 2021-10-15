@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Assessors.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public string Status { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public decimal Version { get; set; }
+        public string Version { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
         public string Route { get; set; }
@@ -41,12 +42,15 @@ namespace SFA.DAS.Assessors.Api.Models
         public string ApprovalBody { get; set; }
         public List<string> Duties { get; set; }
         public bool CoreAndOptions { get; set; }
-        public string CoreDuties { get; set; }
+        public List<string> CoreDuties { get; set; }
         public bool IntegratedApprenticeship { get; set; }
         public List<string> Options { get; set; }
         public int MaxFunding { get; set; }
         public int TypicalDuration { get; set; }
         public bool IsActive { get; set; }
+        public bool EPAChanged { get; set; }
+        public int VersionMajor { get; set; }
+        public int VersionMinor { get; set; }
 
         public static implicit operator GetStandardDetailsResponse(StandardDetailResponse source)
         {
@@ -85,7 +89,10 @@ namespace SFA.DAS.Assessors.Api.Models
                 Options = source.Options,
                 MaxFunding = source.MaxFunding,
                 TypicalDuration = source.TypicalDuration,
-                IsActive = source.IsActive
+                IsActive = source.IsActive,
+                EPAChanged = source.EPAChanged,
+                VersionMajor = source.VersionMajor,
+                VersionMinor = source.VersionMinor
             };
         }
     }
@@ -116,11 +123,11 @@ namespace SFA.DAS.Assessors.Api.Models
         {
             if (source == null) return null;
             return new StandardDatesResponse
-               {
-                   LastDateStarts = source.LastDateStarts,
-                   EffectiveTo = source.EffectiveTo,
-                   EffectiveFrom = source.EffectiveFrom
-               };
+            {
+                LastDateStarts = source.LastDateStarts,
+                EffectiveTo = source.EffectiveTo,
+                EffectiveFrom = source.EffectiveFrom
+            };
         }
     }
 
@@ -133,7 +140,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public int ProposedTypicalDuration { get; set; }
         public int ProposedMaxFunding { get; set; }
 
-        public static implicit operator StandardVersionDetailResponse(StandardVersionDetail source) 
+        public static implicit operator StandardVersionDetailResponse(StandardVersionDetail source)
             => new StandardVersionDetailResponse
             {
                 EarliestStartDate = source.EarliestStartDate,
@@ -152,8 +159,8 @@ namespace SFA.DAS.Assessors.Api.Models
         public string ContactEmail { get; set; }
         public string WebLink { get; set; }
 
-        public static implicit operator EqaProviderResponse(EqaProvider source) 
-            => new EqaProviderResponse 
+        public static implicit operator EqaProviderResponse(EqaProvider source)
+            => new EqaProviderResponse
             {
                 Name = source.Name,
                 ContactName = source.ContactName,

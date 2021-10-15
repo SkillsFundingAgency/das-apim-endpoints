@@ -67,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, Guid? shortlistUserId = null)
+        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string location = "", Guid? shortlistUserId = null)
         {
             try
             {
@@ -76,6 +76,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     Id = id,
                     Lat = lat,
                     Lon = lon,
+                    LocationName = location,
                     ShortlistUserId = shortlistUserId
                 });
 
@@ -93,8 +94,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                         TotalProviders  = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
                     },
-                    ShortlistItemCount = result.ShortlistItemCount,
-                    ShowEmployerDemand = result.ShowEmployerDemand
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
@@ -139,8 +139,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                             GeoPoint = result.Location?.GeoPoint
                         }
                     },
-                    ShortlistItemCount = result.ShortlistItemCount,
-                    ShowEmployerDemand = result.ShowEmployerDemand
+                    ShortlistItemCount = result.ShortlistItemCount
                 };
                 return Ok(model);
             }
