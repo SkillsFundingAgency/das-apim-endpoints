@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
@@ -68,34 +68,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 application.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
                 application.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
                 application.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || pledgeResponse.JobRoles.Contains(application.Standard.Route);
-                application.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Contains(MapLevelIntToString(application.Standard.Level));
+                application.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Select(x => char.GetNumericValue(x.Last())).Contains(application.Standard.Level);
             }
 
             return new GetApplicationsQueryResult
             {
                 Applications = applicationsResponse.Applications.Select(x => (GetApplicationsQueryResultBase.Application)x)
             };
-        }
-
-        public string MapLevelIntToString(int levelInt)
-        {
-            switch (levelInt)
-            {
-                case 2:
-                    return "Level2";
-                case 3:
-                    return "Level3";
-                case 4:
-                    return "Level4";
-                case 5:
-                    return "Level5";
-                case 6:
-                    return "Level6";
-                case 7:
-                    return "Level7";
-                default:
-                    return "";
-            }
         }
     }
 }
