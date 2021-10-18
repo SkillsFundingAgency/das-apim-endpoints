@@ -6,25 +6,43 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetCandidateSkills;
+using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class CandidateSkillsController : ControllerBase
+    public class ReferenceDataController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<CandidateSkillsController> _logger;
+        private readonly ILogger<ReferenceDataController> _logger;
 
-        public CandidateSkillsController (IMediator mediator, ILogger<CandidateSkillsController> logger)
+        public ReferenceDataController (IMediator mediator, ILogger<ReferenceDataController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
         
         [HttpGet]
-        [Route("")]
-        public async Task<IActionResult> GetList()
+        [Route("qualifications")]
+        public async Task<IActionResult> GetQualifications()
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetQualificationsQuery());
+
+                return Ok((GetQualificationsResponse) queryResponse);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get qualifications");
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+        [HttpGet]
+        [Route("skills")]
+        public async Task<IActionResult> GetSkills()
         {
             try
             {

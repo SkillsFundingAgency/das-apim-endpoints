@@ -22,7 +22,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         public async Task Then_Gets_Skills_From_Mediator(
             GetCandidateSkillsQueryResponse mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CandidateSkillsController controller)
+            [Greedy] ReferenceDataController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -30,7 +30,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList() as ObjectResult;
+            var controllerResult = await controller.GetSkills() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -42,7 +42,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] CandidateSkillsController controller)
+            [Greedy] ReferenceDataController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -50,7 +50,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetList() as StatusCodeResult;
+            var controllerResult = await controller.GetSkills() as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
