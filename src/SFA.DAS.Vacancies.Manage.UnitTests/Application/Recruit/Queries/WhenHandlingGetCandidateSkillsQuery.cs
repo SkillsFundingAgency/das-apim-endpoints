@@ -34,6 +34,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Queries
                 .Verify(x => x.Get<List<string>>(
                     It.Is<GetCandidateSkillsRequest>(c => c.GetUrl.Contains($"referencedata/candidate-skills"))), Times.Never);
         }
+        
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Api_Called_And_Added_To_Cache(
             List<string> apiQueryResponse,
