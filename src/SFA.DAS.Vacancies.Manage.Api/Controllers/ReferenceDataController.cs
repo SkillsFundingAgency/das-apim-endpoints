@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetCandidateSkills;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Manage.Application.TrainingCourses.Queries;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 {
@@ -53,6 +54,24 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get candidate skills");
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("courses")]
+        public async Task<IActionResult> GetTrainingCourses()
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetTrainingCoursesQuery());
+
+                return Ok((GetTrainingCoursesListResponse) queryResponse);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get training courses");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
