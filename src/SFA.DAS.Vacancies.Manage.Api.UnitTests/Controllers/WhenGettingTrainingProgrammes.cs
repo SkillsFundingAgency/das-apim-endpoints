@@ -18,7 +18,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
     public class WhenGettingTrainingProgrammes
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Skills_From_Mediator(
+        public async Task Then_Gets_Training_Courses_From_Mediator(
             GetTrainingCoursesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReferenceDataController controller)
