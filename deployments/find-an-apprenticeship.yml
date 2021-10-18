@@ -53,7 +53,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -82,7 +82,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -111,7 +111,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -140,7 +140,7 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -169,7 +169,7 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -198,7 +198,7 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
@@ -227,7 +227,7 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(FindAnApprenticeshipOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindAnApprenticeship.Api.zip
-      ApiVersionSetName: $(FindAnApprenticeshipVersionSetName)
+      ApiVersionSetName: $(FindAnApprenticeshipOuterApiVersionSetName)
       ApiPath: $(FindAnApprenticeshipOuterApiPath)
       ApiBaseUrl: $(FindAnApprenticeshipOuterApiBaseUrl)
       ProductId: $(FindAnApprenticeshipProductId)
