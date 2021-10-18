@@ -3,6 +3,7 @@
     public class GetAddressesListItem
     {
         public string Uprn { get; set; }
+        public string Organisation { get; set; }
         public string House { get; set; }
         public string Street { get; set; }
         public string Locality { get; set; }
