@@ -65,7 +65,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/applications/{applicationId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Application(long accountId, int applicationId, [FromBody] SetApplicationAcceptanceRequest request)
         {
@@ -83,7 +83,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return NoContent();
             }
 
-            _logger.LogInformation($"Failed to accept funding for accountId: {accountId}, applicationId: {applicationId}");
+            _logger.LogInformation($"Failed to set {nameof(Application)} acceptance ({request.Acceptance}) for accountId: {accountId}, applicationId: {applicationId}");
 
             return BadRequest();
         }
