@@ -149,7 +149,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: false
-      projects: 'src/SFA.DAS.FindAnApprenticeship/SFA.DAS.FindAnApprenticeship.csproj'
+      projects: 'src/SFA.DAS.FindAnApprenticeship.Api/SFA.DAS.FindAnApprenticeship.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: CopyFiles@2
