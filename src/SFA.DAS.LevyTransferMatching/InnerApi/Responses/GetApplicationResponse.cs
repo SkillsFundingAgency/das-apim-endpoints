@@ -24,10 +24,16 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public int PledgeRemainingAmount { get; set; }
         public int Amount { get; set; }
-        public List<string> PledgeLocations { get; set; }
+        public List<PledgeLocation> PledgeLocations { get; set; }
         public string Status { get; set; }
         public bool PledgeIsNamePublic { get; set; }
         public int PledgeId { get; set; }
         public int PledgeAmount { get; set; }
+
+        public class PledgeLocation
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

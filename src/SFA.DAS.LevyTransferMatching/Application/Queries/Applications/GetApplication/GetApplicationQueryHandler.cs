@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 IsNamePublic = application.PledgeIsNamePublic,
                 JobRoles = application.PledgeJobRoles,
                 Levels = application.PledgeLevels,
-                PledgeLocations = application.PledgeLocations,
+                PledgeLocations = application.PledgeLocations.Select(x => x.Name),
                 NumberOfApprentices = application.NumberOfApprentices,
                 RemainingAmount = application.PledgeRemainingAmount,
                 Sectors = application.PledgeSectors,
