@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -37,9 +38,14 @@ namespace SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegal
             {
                 var accountLegalEntityItem = await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
                     new GetEmployerAccountLegalEntityRequest(resource.Href));
-                accountLegalEntityItem.AccountPublicHashedId = request.EncodedAccountId;
-                accountLegalEntityItem.AccountName = resourceListResponse.DasAccountName;
-                legalEntities.Add(accountLegalEntityItem);
+
+                if (accountLegalEntityItem.Agreements.Any(c => c.Status == EmployerAgreementStatus.Signed))
+                {
+                    accountLegalEntityItem.AccountPublicHashedId = request.EncodedAccountId;
+                    accountLegalEntityItem.AccountName = resourceListResponse.DasAccountName;
+                    legalEntities.Add(accountLegalEntityItem);    
+                }
+                
             }
             
             return new GetLegalEntitiesForEmployerResult

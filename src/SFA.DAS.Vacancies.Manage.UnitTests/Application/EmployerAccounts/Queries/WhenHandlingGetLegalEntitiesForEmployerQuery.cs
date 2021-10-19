@@ -18,7 +18,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
     public class WhenHandlingGetLegalEntitiesForEmployerQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Legal_Entities_For_Account(
+        public async Task Then_Gets_Legal_Entities_For_Account_And_Only_Adds_Those_With_A_Signed_Agreement(
             GetLegalEntitiesForEmployerQuery query,
             AccountDetail apiResponse,
             List<GetEmployerAccountLegalEntityItem> legalEntities,
@@ -32,6 +32,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
                         request.EncodedAccountId.Equals(query.EncodedAccountId))))
                 .ReturnsAsync(apiResponse);
 
+            legalEntities.First().Agreements.First().Status = EmployerAgreementStatus.Signed;
             for (var i = 0; i < apiResponse.LegalEntities.Count; i++)
             {
                 var index = i;
@@ -41,12 +42,14 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Querie
                             request.GetUrl.Equals(apiResponse.LegalEntities[index].Href))))
                     .ReturnsAsync(legalEntities[index]);
             }
-            
+
             //act
             var result = await handler.Handle(query, CancellationToken.None);
 
             //assert
-            result.LegalEntities.Should().BeEquivalentTo(legalEntities, options=>options.Excluding(c=>c.AccountPublicHashedId));
+            result.LegalEntities.Should()
+                .BeEquivalentTo(legalEntities.Where(c=>
+                    c.Agreements.Any(x=>x.Status == EmployerAgreementStatus.Signed)).ToList(), options=>options.Excluding(c=>c.AccountPublicHashedId));
             result.LegalEntities.ToList().TrueForAll(c => c.AccountPublicHashedId.Equals(query.EncodedAccountId))
                 .Should().BeTrue();
             result.LegalEntities.ToList().TrueForAll(c => c.AccountName.Equals(apiResponse.DasAccountName))
