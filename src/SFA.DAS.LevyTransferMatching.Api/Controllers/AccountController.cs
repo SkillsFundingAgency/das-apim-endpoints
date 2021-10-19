@@ -30,22 +30,22 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             _logger.LogInformation($"Getting account {encodedAccountId}");
 
-            try
+            var queryResult = await _mediator.Send(new GetAccountQuery()
             {
-                var queryResult = await _mediator.Send(new GetAccountQuery()
-                {
-                    EncodedAccountId = encodedAccountId,
-                });
+                EncodedAccountId = encodedAccountId,
+            });
 
-                var response = (AccountDto)queryResult.Account;
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            if (queryResult.Account == null)
             {
-                _logger.LogError(e, "Error getting account");
-                return BadRequest();
+                _logger.LogInformation($"Account {encodedAccountId} could not be found");
+                return NotFound();
             }
+
+            var response = (AccountDto)queryResult.Account;
+            
+            _logger.LogInformation($"Account {encodedAccountId} has been found {response}");
+
+            return Ok(response);
         }
     }
 }

@@ -1,17 +1,18 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetAccount;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.Account
+namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.AccountTests
 {
     public class WhenCallingGetAccount
     {
@@ -36,6 +37,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.Account
             var model = controllerResult.Value as AccountDto;
             Assert.IsNotNull(model);
             Assert.AreEqual(getAccountResult.Account.RemainingTransferAllowance, model.RemainingTransferAllowance);
+        }
+        
+
+        private static void SetupMediatorResponse(bool setQueryToReturnValue, string encodedAccountId, GetAccountResult result,
+            Mock<IMediator> mediator)
+        {
+            var mediatorSetup = mediator.Setup(o => o.Send(It.IsAny<GetAccountQuery>(),
+                It.IsAny<CancellationToken>()));
+            //It.Is<GetAccountQuery>(q => q.EncodedAccountId.Equals(encodedAccountId))
+            if (!setQueryToReturnValue)
+            {
+                result.Account = null;
+            }
+
+            mediatorSetup.ReturnsAsync(result);
         }
     }
 }

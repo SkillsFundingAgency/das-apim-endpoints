@@ -16,6 +16,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
 using SFA.DAS.LevyTransferMatching.Api.Authentication;
+using SFA.DAS.LevyTransferMatching.Api.Filters;
 using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Interfaces;
@@ -44,7 +45,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
-
+            services.AddControllers(options =>
+                options.Filters.Add<HttpResponseExceptionFilter>());
             services.Configure<AccountsConfiguration>(_configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
 
@@ -117,7 +119,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+         
             app.UseAuthentication();
 
             if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
