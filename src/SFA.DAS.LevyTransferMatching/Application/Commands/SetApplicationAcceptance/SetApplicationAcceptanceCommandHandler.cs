@@ -22,12 +22,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAccept
 
         public async Task<bool> Handle(SetApplicationAcceptanceCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"");
+
             if (request.Acceptance != Types.ApplicationAcceptance.Accept)
             {
                 throw new NotImplementedException();
             }
 
-            _logger.LogInformation($"Accepting funding for Application {request.ApplicationId}.");
+            _logger.LogInformation($"Accepting funding for Application {request.ApplicationId}. {request}");
 
             var apiRequestData = new AcceptFundingRequestData
             {
@@ -39,7 +41,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAccept
 
             var apiRequest = new AcceptFundingRequest(request.ApplicationId, request.AccountId, apiRequestData);
 
+            _logger.LogInformation($"Passing Accept funding request to the LTM service : {apiRequest}");
+
             var result = await _levyTransferMatchingService.AcceptFunding(apiRequest, cancellationToken);
+
+            _logger.LogInformation($"Response from the LTM Service : {result}");
 
             return result.StatusCode == HttpStatusCode.NoContent;
         }

@@ -69,6 +69,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Application(long accountId, int applicationId, [FromBody] SetApplicationAcceptanceRequest request)
         {
+            _logger.LogInformation($"Attempting to set {nameof(Application)} acceptance ({request.Acceptance}) for accountId: {accountId}, applicationId: {applicationId}");
+
             var successfulOperation = await _mediator.Send(new SetApplicationAcceptanceCommand
             {
                 UserId = request.UserId,
@@ -80,6 +82,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             if (successfulOperation)
             {
+                _logger.LogInformation($"Operation was successful for {nameof(Application)} acceptance ({request.Acceptance}) for accountId: {accountId}, applicationId: {applicationId}");
                 return NoContent();
             }
 
