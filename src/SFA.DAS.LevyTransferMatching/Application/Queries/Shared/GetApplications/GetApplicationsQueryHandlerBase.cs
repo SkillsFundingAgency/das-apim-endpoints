@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplication
             {
                 return new TResult()
                 {
-                    Applications = applicationsResponse.Applications
+                    Applications = new List<SharedOuterApi.Models.Application>()
                 };
             }
 

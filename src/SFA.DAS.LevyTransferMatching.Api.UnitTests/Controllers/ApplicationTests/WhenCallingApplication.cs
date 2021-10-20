@@ -21,10 +21,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationsController applicationController)
         {
-            mockMediator
-                .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getApplicationResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetApplicationResult, GetApplicationQuery>(getApplicationResult, o => o.ApplicationId == applicationId);
+           
             var controllerResult = await applicationController.Application(applicationId);
             var okObjectResult = controllerResult as OkObjectResult;
             var getApplicationResponse = okObjectResult.Value as GetApplicationResponse;
@@ -40,10 +38,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationsController applicationController)
         {
-            mockMediator
-                .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetApplicationResult)null);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetApplicationResult, GetApplicationQuery>(null, o => o.ApplicationId == applicationId);
+          
             var controllerResult = await applicationController.Application(applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 

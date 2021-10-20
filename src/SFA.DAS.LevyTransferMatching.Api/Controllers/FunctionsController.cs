@@ -27,54 +27,38 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> ApplicationApproved(ApplicationApprovedRequest request)
         {
-            try
+            var result = await _mediator.Send(new DebitPledgeCommand
             {
-                var result = await _mediator.Send(new DebitPledgeCommand
-                {
-                    PledgeId = request.PledgeId,
-                    Amount = request.Amount,
-                    ApplicationId = request.ApplicationId
-                });
+                PledgeId = request.PledgeId,
+                Amount = request.Amount,
+                ApplicationId = request.ApplicationId
+            });
 
-                if (!result.StatusCode.IsSuccess())
-                {
-                    _logger.LogError($"Error attempting to Debit Pledge {result.ErrorContent}");
-                }
-
-                return new StatusCodeResult((int) result.StatusCode);
-            }
-            catch (Exception e)
+            if (!result.StatusCode.IsSuccess())
             {
-                _logger.LogError(e, $"Error attempting to Debit Pledge");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                _logger.LogError($"Error attempting to Debit Pledge {result.ErrorContent}");
             }
+
+            return new StatusCodeResult((int)result.StatusCode);
         }
 
         [Route("pledge-debit-failed")]
         [HttpPost]
         public async Task<IActionResult> PledgeDebitFailed(PledgeDebitFailedRequest request)
         {
-            try
+            var result = await _mediator.Send(new UndoApplicationApprovalCommand
             {
-                var result = await _mediator.Send(new UndoApplicationApprovalCommand
-                {
-                    PledgeId = request.PledgeId,
-                    Amount = request.Amount,
-                    ApplicationId = request.ApplicationId
-                });
+                PledgeId = request.PledgeId,
+                Amount = request.Amount,
+                ApplicationId = request.ApplicationId
+            });
 
-                if (!result.StatusCode.IsSuccess())
-                {
-                    _logger.LogError($"Error attempting to Undo Application Approval {result.ErrorContent}");
-                }
-
-                return new StatusCodeResult((int)result.StatusCode);
-            }
-            catch (Exception e)
+            if (!result.StatusCode.IsSuccess())
             {
-                _logger.LogError(e, $"Error attempting to Undo Application Approval");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                _logger.LogError($"Error attempting to Undo Application Approval {result.ErrorContent}");
             }
+
+            return new StatusCodeResult((int)result.StatusCode);
         }
     }
 }

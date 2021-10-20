@@ -16,15 +16,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         private FunctionsController _controller;
         private Mock<IMediator> _mediator;
         private ApplicationApprovedRequest _request;
+        private DebitPledgeCommandResult _debitCommandResult;
         private readonly Fixture _fixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
             _request = _fixture.Create<ApplicationApprovedRequest>();
-
+            _debitCommandResult = _fixture.Create<DebitPledgeCommandResult>();
             _mediator = new Mock<IMediator>();
-            
+            _mediator.SetupMediatorResponseToReturnAsync<DebitPledgeCommandResult, DebitPledgeCommand>(_debitCommandResult, c => c.PledgeId == _request.PledgeId && c.Amount == _request.Amount && c.ApplicationId == _request.ApplicationId);
             _controller = new FunctionsController(_mediator.Object, Mock.Of<Microsoft.Extensions.Logging.ILogger<FunctionsController>>());
         }
 

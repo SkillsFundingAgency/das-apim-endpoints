@@ -17,14 +17,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
     public class WhenCallingGetApplications
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Applications_From_Mediator(GetApplicationsQueryResult result, [Frozen]Mock<IMediator> mediator,
-            [Greedy]ApplicationsController controller)
+        public async Task Then_Gets_Applications_From_Mediator(long accountId, GetApplicationsQueryResult result, [Frozen]Mock<IMediator> mediator, [Greedy]ApplicationsController controller)
         {
-            mediator.Setup(o => o.Send(It.IsAny<GetApplicationsQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(result);
-
-            var controllerResult = await controller.GetApplications(1) as OkObjectResult;
+            mediator.SetupMediatorResponseToReturnAsync<GetApplicationsQueryResult, GetApplicationsQuery>(result, o => o.AccountId == accountId);
+         
+            var controllerResult = await controller.GetApplications(accountId) as OkObjectResult;
             var applications = controllerResult.Value as GetApplicationsQueryResult;
+           
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(applications);
             Assert.AreEqual(applications, result);

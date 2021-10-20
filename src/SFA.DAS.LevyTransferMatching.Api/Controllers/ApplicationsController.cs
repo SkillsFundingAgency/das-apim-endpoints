@@ -41,27 +41,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Application(int applicationId)
         {
-            try
+            var result = await _mediator.Send(new GetApplicationQuery()
             {
-                var result = await _mediator.Send(new GetApplicationQuery()
-                {
-                    ApplicationId = applicationId,
-                });
+                ApplicationId = applicationId,
+            });
 
-                if (result != null)
-                {
-                    return Ok((GetApplicationResponse)result);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception e)
+            if (result != null)
             {
-                _logger.LogError(e, $"Error attempting to get {nameof(Application)} result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return Ok((GetApplicationResponse)result);
             }
+
+            return NotFound();
         }
     }
 }

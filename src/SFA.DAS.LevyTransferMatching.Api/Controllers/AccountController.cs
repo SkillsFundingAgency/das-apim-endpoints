@@ -38,13 +38,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             if (queryResult.Account == null)
             {
                 _logger.LogInformation($"Account {encodedAccountId} could not be found");
+
                 return NotFound();
             }
 
             var response = (AccountDto)queryResult.Account;
             
-            _logger.LogInformation($"Account {encodedAccountId} has been found {response}");
-
             return Ok(response);
         }
     }
