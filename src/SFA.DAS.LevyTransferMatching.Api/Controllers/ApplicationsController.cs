@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
-using SFA.DAS.LevyTransferMatching.Application.Commands.AcceptFunding;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
@@ -65,17 +65,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("accounts/{accountId}/applications/{applicationId}/accept-funding")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Route("accounts/{accountId}/applications/{applicationId}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> AcceptFunding(long accountId, int applicationId, [FromBody] AcceptFundingRequest request)
+        public async Task<IActionResult> Application(long accountId, int applicationId, [FromBody] SetApplicationAcceptanceRequest request)
         {
-            var successfulOperation = await _mediator.Send(new AcceptFundingCommand
+            var successfulOperation = await _mediator.Send(new SetApplicationAcceptanceCommand
             {
                 UserId = request.UserId,
                 UserDisplayName = request.UserDisplayName,
                 AccountId = accountId,
-                ApplicationId = applicationId
+                ApplicationId = applicationId,
+                Acceptance = request.Acceptance,
             });
 
             if (successfulOperation)
@@ -83,7 +84,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return NoContent();
             }
 
-            _logger.LogInformation($"Failed to accept funding for accountId: {accountId}, applicationId: {applicationId}");
+            _logger.LogInformation($"Failed to set {nameof(Application)} acceptance ({request.Acceptance}) for accountId: {accountId}, applicationId: {applicationId}");
 
             return BadRequest();
         }

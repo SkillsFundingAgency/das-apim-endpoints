@@ -26,6 +26,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
         public Standard Standard { get; set; }
+        public string PledgeEmployerAccountName { get; set; }
+        public int PledgeAmount { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -35,7 +37,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 AllLevels = result.AllLevels,
                 AllSectors = result.AllSectors,
                 Amount = result.Amount,
+                PledgeAmount = result.PledgeAmount,
                 EmployerAccountName = result.EmployerAccountName,
+                PledgeEmployerAccountName = result.PledgeEmployerAccountName,
                 IsNamePublic = result.IsNamePublic,
                 JobRoles = result.JobRoles,
                 Levels = result.Levels,

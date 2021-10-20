@@ -19,6 +19,7 @@ using SFA.DAS.EmployerIncentives.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerIncentives.Api
 {

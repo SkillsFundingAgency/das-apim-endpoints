@@ -64,7 +64,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
             Assert.AreEqual(_command.HasTrainingProvider, createdApplication.HasTrainingProvider);
             Assert.AreEqual(_command.Amount, createdApplication.Amount);
             CollectionAssert.AreEqual(_command.Sectors, createdApplication.Sectors);
-            Assert.AreEqual(_command.Postcode, createdApplication.Postcode);
+            CollectionAssert.AreEqual(_command.Locations, createdApplication.Locations);
+            Assert.AreEqual(_command.AdditionalLocation, createdApplication.AdditionalLocation);
+            Assert.AreEqual(_command.SpecificLocation, createdApplication.SpecificLocation);
             Assert.AreEqual(_command.FirstName, createdApplication.FirstName);
             Assert.AreEqual(_command.LastName, createdApplication.LastName);
             CollectionAssert.AreEqual(_command.EmailAddresses, createdApplication.EmailAddresses);
