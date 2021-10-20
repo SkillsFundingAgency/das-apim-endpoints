@@ -19,7 +19,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            _logger.LogInformation("There has been an unhandled error that has bubbled up the stack");
+            if (context.Exception == null)
+            {
+                return;
+            }
+
+            _logger.LogInformation("There has been an unhandled error that has bubbled up the stack to this global ");
 
             if (context.Exception is HttpResponseException exception)
             {
