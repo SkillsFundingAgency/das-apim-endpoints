@@ -1,17 +1,16 @@
-using System;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement;
+using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
+using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -88,7 +87,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             {
                 AccountId = accountId,
                 AccountLegalEntityId = accountLegalEntityId,
-                AgreementVersion = request.AgreementVersion
+                AgreementVersion = request.AgreementVersion,
+                LegalEntityId = request.LegalEntityId,
+                LegalEntityName = request.LegalEntityName
             });
 
             return NoContent();
