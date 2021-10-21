@@ -36,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             var result = await getAcceptedQueryHandler.Handle(getAcceptedQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(getApplicationResponse.EmployerAccountName, result.EmployerAccountName);
+            Assert.AreEqual(getApplicationResponse.PledgeEmployerAccountName, result.EmployerAccountName);
         }
 
         [Test, MoqAutoData]
