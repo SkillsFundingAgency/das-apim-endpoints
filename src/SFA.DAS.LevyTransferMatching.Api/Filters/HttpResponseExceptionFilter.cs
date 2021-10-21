@@ -35,6 +35,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Filters
                     StatusCode = exception.Status
                 };
             }
+            else if (context.Exception is NullReferenceException)
+            {
+                context.Result = new ObjectResult("An internal error occurred")
+                {
+                    StatusCode = 400
+                };
+            }
             else
             {
                 _logger.LogInformation($"The error has occurred externally : \n\n{context.Exception}");

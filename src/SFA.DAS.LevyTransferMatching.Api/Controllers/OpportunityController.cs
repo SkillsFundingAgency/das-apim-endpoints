@@ -166,6 +166,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var moreDetailsQueryResult = await _mediator.Send(new GetMoreDetailsQuery { OpportunityId = opportunityId });
 
+            if (moreDetailsQueryResult.Opportunity == null)
+            {
+                return NotFound();
+            }
+
             var response = new GetMoreDetailsResponse
             {
                 Opportunity = moreDetailsQueryResult.Opportunity,
@@ -183,6 +188,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> Sector(int opportunityId)
         {
             var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = opportunityId });
+
+            if (sectorQueryResult.Opportunity == null)
+            {
+                return NotFound();
+            }
 
             var response = new GetSectorResponse
             {
