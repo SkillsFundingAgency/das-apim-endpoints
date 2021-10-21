@@ -72,6 +72,12 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
 
+            if (IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in continuing", apprenticeship.Id);
+                return default;
+            }
+
             var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;
 
