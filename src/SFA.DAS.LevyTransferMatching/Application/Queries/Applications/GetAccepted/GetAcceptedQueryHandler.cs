@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccep
 
             return new GetAcceptedResult()
             {
-                EmployerAccountName = application.EmployerAccountName,
+                EmployerAccountName = application.PledgeEmployerAccountName,
                 OpportunityId = application.PledgeId,
             };
         }
