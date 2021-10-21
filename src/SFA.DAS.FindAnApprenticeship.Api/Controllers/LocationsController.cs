@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint;
 using System;
 using System.Linq;
 using System.Net;
@@ -38,6 +39,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get list of addresses");
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("geopoint")]
+        public async Task<IActionResult> GeoPoint([FromQuery] string postcode)
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetGeoPointQuery(postcode));
+
+                if (queryResponse.GetPointResponse == null)
+                    return NotFound();
+
+                return Ok(queryResponse.GetPointResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get geopoint of postcode");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

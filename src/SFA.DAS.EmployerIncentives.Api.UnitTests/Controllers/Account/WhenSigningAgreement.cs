@@ -33,7 +33,10 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
                     It.Is<SignAgreementCommand>(c=>
                         c.AccountId.Equals(accountId) 
                         && c.AccountLegalEntityId.Equals(accountLegalEntityId)
-                        && c.AgreementVersion.Equals(request.AgreementVersion)),
+                        && c.AgreementVersion.Equals(request.AgreementVersion)
+                        && c.LegalEntityName.Equals(request.LegalEntityName)
+                        && c.LegalEntityId.Equals(request.LegalEntityId)
+                        ),
                     It.IsAny<CancellationToken>()), Times.Once);
 
         }

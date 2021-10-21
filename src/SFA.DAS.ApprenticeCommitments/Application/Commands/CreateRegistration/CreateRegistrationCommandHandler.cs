@@ -86,19 +86,26 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
         private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)>
             GetExternalData(CreateRegistrationCommand command)
         {
-            var provider = _trainingProviderService.GetTrainingProviderDetails(
-                    command.TrainingProviderId);
-
-            var apprentice = _commitmentsService.GetApprenticeshipDetails(
+            var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.EmployerAccountId,
                 command.CommitmentsApprenticeshipId);
 
-            var courseCode = (await apprentice).GetCourseCode(_logger);
+            if (string.IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in continuing", apprenticeship.Id);
+                return default;
+            }
+
+            var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;
 
             var course = _coursesService.GetCourse(courseCode);
 
-            return (await apprentice, await provider, await course);
+            var provider = _trainingProviderService.GetTrainingProviderDetails(
+                command.TrainingProviderId);
+
+
+            return (apprenticeship, await provider, await course);
         }
 
         private static string ProviderName(TrainingProviderResponse trainingProvider)
