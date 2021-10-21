@@ -231,6 +231,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var detailQueryResult = await _mediator.Send(new GetDetailQuery { OpportunityId = opportunityId });
 
+            if (detailQueryResult.Opportunity == null)
+            {
+                return NotFound();
+            }
+
             var response = new GetDetailResponse
             {
                 Opportunity = detailQueryResult.Opportunity,
@@ -238,13 +243,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = detailQueryResult.JobRoles,
                 Levels = detailQueryResult.Levels,
             };
-
-            if (response != null)
-            {
-                return Ok(response);
-            }
-
-            return NotFound();
+            
+            return Ok(response);
         }
 
         [HttpGet]
@@ -252,20 +252,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> SelectAccount(int opportunityId, string userId)
         {
-            try
+            var getSelectAccountQueryResult = await _mediator.Send(new GetSelectAccountQuery
             {
-                var getSelectAccountQueryResult = await _mediator.Send(new GetSelectAccountQuery
-                {
-                    UserId = userId,
-                });
+                UserId = userId,
+            });
 
-                return Ok((GetSelectAccountResponse)getSelectAccountQueryResult);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get SelectAccount result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+            return Ok((GetSelectAccountResponse)getSelectAccountQueryResult);
         }
     }
 }

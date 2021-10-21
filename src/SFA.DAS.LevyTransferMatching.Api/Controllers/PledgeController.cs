@@ -39,52 +39,36 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges")]
         public async Task<IActionResult> Pledges(long accountId)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetPledgesQuery(accountId));
+            var queryResult = await _mediator.Send(new GetPledgesQuery(accountId));
 
-                var response = new GetPledgesResponse
+            var response = new GetPledgesResponse
+            {
+                Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge
                 {
-                    Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge 
-                    {
-                        Id = x.Id,
-                        Amount = x.Amount,
-                        RemainingAmount = x.RemainingAmount,
-                        ApplicationCount = x.ApplicationCount
-                    })
-                };
+                    Id = x.Id,
+                    Amount = x.Amount,
+                    RemainingAmount = x.RemainingAmount,
+                    ApplicationCount = x.ApplicationCount
+                })
+            };
 
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get Pledges result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create")]
         public async Task<IActionResult> Create()
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetCreateQuery());
+            var queryResult = await _mediator.Send(new GetCreateQuery());
 
-                var response = new GetCreateResponse
-                {
-                    Levels = queryResult.Levels,
-                    Sectors = queryResult.Sectors,
-                    JobRoles = queryResult.JobRoles
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetCreateResponse
             {
-                _logger.LogError(e, $"Error attempting to get Create result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+                Levels = queryResult.Levels,
+                Sectors = queryResult.Sectors,
+                JobRoles = queryResult.JobRoles
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -105,99 +89,77 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 UserDisplayName = createPledgeRequest.UserDisplayName
             });
 
-            return new CreatedResult(
-                $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
-                (PledgeIdDto)commandResult.PledgeId);
+            if (commandResult.PledgeId > 0)
+            {
+                return new CreatedResult(
+                    $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
+                    (PledgeIdDto)commandResult.PledgeId);
+            }
+
+            return BadRequest();
         }
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/amount")]
         public async Task<IActionResult> Amount(string accountId)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetAmountQuery{EncodedAccountId = accountId });
+            var queryResult = await _mediator.Send(new GetAmountQuery { EncodedAccountId = accountId });
 
-                var response = new GetAmountResponse
-                {
-                    DasAccountName = queryResult.DasAccountName,
-                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            if (queryResult == null)
             {
-                _logger.LogError(e, $"Error attempting to get Amount result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return NotFound();
             }
+
+            var response = new GetAmountResponse
+            {
+                DasAccountName = queryResult.DasAccountName,
+                RemainingTransferAllowance = queryResult.RemainingTransferAllowance
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/sector")]
         public async Task<IActionResult> Sector()
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetSectorQuery());
+            var queryResult = await _mediator.Send(new GetSectorQuery());
 
-                var response = new GetSectorResponse
-                {
-                    Sectors = queryResult.Sectors
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetSectorResponse
             {
-                _logger.LogError(e, $"Error attempting to get Sector result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+                Sectors = queryResult.Sectors
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/level")]
         public async Task<IActionResult> Level()
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetLevelQuery());
+            var queryResult = await _mediator.Send(new GetLevelQuery());
 
-                var response = new GetLevelResponse
-                {
-                    Levels = queryResult.Levels
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetLevelResponse
             {
-                _logger.LogError(e, $"Error attempting to get Level result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+                Levels = queryResult.Levels
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/job-role")]
         public async Task<IActionResult> JobRole()
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetJobRoleQuery());
+            var queryResult = await _mediator.Send(new GetJobRoleQuery());
 
-                var response = new GetJobRoleResponse()
-                {
-                    JobRoles = queryResult.JobRoles,
-                    Sectors = queryResult.Sectors
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetJobRoleResponse()
             {
-                _logger.LogError(e, $"Error attempting to get JobRoles result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+                JobRoles = queryResult.JobRoles,
+                Sectors = queryResult.Sectors
+            };
+
+            return Ok(response);
         }
 
         [Authorize(Policy = PolicyNames.PledgeAccess)]
@@ -218,30 +180,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
         public async Task<IActionResult> Application(int pledgeId, int applicationId)
         {
-            try
+            var queryResult = await _mediator.Send(new GetApplicationQuery()
             {
-                var queryResult = await _mediator.Send(new GetApplicationQuery()
-                {
-                    PledgeId = pledgeId,
-                    ApplicationId = applicationId,
-                });
+                PledgeId = pledgeId,
+                ApplicationId = applicationId,
+            });
 
-                if (queryResult != null)
-                {
-                    var response = (GetApplicationResponse)queryResult;
-
-                    return Ok(response);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception e)
+            if (queryResult != null)
             {
-                _logger.LogError(e, $"Error attempting to get application");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                var response = (GetApplicationResponse)queryResult;
+
+                return Ok(response);
             }
+
+            return NotFound();
         }
 
         [Authorize(Policy = PolicyNames.PledgeAccess)]
@@ -249,24 +201,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
         public async Task<IActionResult> Application(long accountId, int pledgeId, int applicationId, [FromBody] SetApplicationOutcomeRequest outcomeRequest)
         {
-            try
+            await _mediator.Send(new SetApplicationOutcomeCommand
             {
-                await _mediator.Send(new SetApplicationOutcomeCommand
-                {
-                    ApplicationId = applicationId,
-                    PledgeId = pledgeId, 
-                    UserId = outcomeRequest.UserId,
-                    UserDisplayName = outcomeRequest.UserDisplayName,
-                    Outcome = outcomeRequest.Outcome
-                });
+                ApplicationId = applicationId,
+                PledgeId = pledgeId,
+                UserId = outcomeRequest.UserId,
+                UserDisplayName = outcomeRequest.UserDisplayName,
+                Outcome = outcomeRequest.Outcome
+            });
 
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to approve/reject application");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+            return Ok();
         }
 
 
@@ -275,22 +219,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approved")]
         public async Task<IActionResult> ApplicationApproved(long accountId, int pledgeId, int applicationId)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetApplicationApprovedQuery { PledgeId = pledgeId, ApplicationId = applicationId });
+            var queryResult = await _mediator.Send(new GetApplicationApprovedQuery { PledgeId = pledgeId, ApplicationId = applicationId });
 
-                var response = new GetApplicationApprovedResponse
-                {
-                    EmployerAccountName = queryResult.EmployerAccountName
-                };
-
-                return Ok(response);
-            }
-            catch (Exception e)
+            if (queryResult == null)
             {
-                _logger.LogError(e, $"Error attempting to get ApplicationApproved result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return NotFound();
             }
+
+            var response = new GetApplicationApprovedResponse
+            {
+                EmployerAccountName = queryResult.EmployerAccountName
+            };
+
+            return Ok(response);
         }
     }
 }

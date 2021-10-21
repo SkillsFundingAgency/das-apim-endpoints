@@ -22,10 +22,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             var response = await _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.PledgeId, request.ApplicationId));
 
-            return new GetApplicationApprovedQueryResult
+            if (response != null)
             {
-                EmployerAccountName = response.EmployerAccountName
-            };
+                return new GetApplicationApprovedQueryResult
+                {
+                    EmployerAccountName = response.EmployerAccountName
+                };
+            }
+
+            return null;
         }
     }
 }
