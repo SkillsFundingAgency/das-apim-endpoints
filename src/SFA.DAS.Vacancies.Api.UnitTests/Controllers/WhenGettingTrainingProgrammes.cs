@@ -9,34 +9,33 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Vacancies.Manage.Api.Controllers;
-using SFA.DAS.Vacancies.Manage.Api.Models;
-using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetCandidateSkills;
-using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
+using SFA.DAS.Vacancies.Api.Controllers;
+using SFA.DAS.Vacancies.Api.Models;
+using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 
-namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
+namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 {
-    public class WhenGettingCandidateSkills
+    public class WhenGettingTrainingProgrammes
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Skills_From_Mediator(
-            GetCandidateSkillsQueryResponse mediatorResult,
+        public async Task Then_Gets_Courses_From_Mediator(
+            GetTrainingCoursesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReferenceDataController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCandidateSkillsQuery>(),
+                    It.IsAny<GetTrainingCoursesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetSkills() as ObjectResult;
+            var controllerResult = await controller.GetTrainingCourses() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetCandidateSkillsListResponse;
+            var model = controllerResult.Value as GetTrainingCoursesListResponse;
             Assert.IsNotNull(model);
-            model.CandidateSkills.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
+            model.Should().BeEquivalentTo((GetTrainingCoursesListResponse)mediatorResult);
         }
 
         [Test, MoqAutoData]
@@ -46,11 +45,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCandidateSkillsQuery>(),
+                    It.IsAny<GetTrainingCoursesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetSkills() as StatusCodeResult;
+            var controllerResult = await controller.GetTrainingCourses() as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
