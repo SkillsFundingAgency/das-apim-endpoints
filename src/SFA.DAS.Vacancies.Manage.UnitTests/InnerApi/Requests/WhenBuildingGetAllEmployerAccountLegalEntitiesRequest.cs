@@ -12,7 +12,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.InnerApi.Requests
         {
             var actual = new GetAllEmployerAccountLegalEntitiesRequest(encodedAccountId);
 
-            actual.GetAllUrl.Should().Be($"api/accounts/{encodedAccountId}/legalentities");
+            actual.GetUrl.Should().Be($"api/accounts/{encodedAccountId}");
         }
     }
 }

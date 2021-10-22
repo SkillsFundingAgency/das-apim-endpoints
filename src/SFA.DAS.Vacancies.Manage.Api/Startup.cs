@@ -84,7 +84,7 @@ namespace SFA.DAS.Vacancies.Manage.Api
             else
             {
                 var configuration = _configuration
-                    .GetSection("VacanciesConfiguration")
+                    .GetSection("VacanciesManageConfiguration")
                     .Get<VacanciesManageConfiguration>();
 
                 services.AddStackExchangeRedisCache(options =>
