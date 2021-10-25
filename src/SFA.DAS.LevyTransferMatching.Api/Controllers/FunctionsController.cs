@@ -96,7 +96,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     _logger.LogError($"Error attempting to Debit Application {result.ErrorContent}");
                 }
 
-                return new StatusCodeResult((int)result.StatusCode);
+                return new StatusCodeResult((int) result.StatusCode);
             }
             catch (Exception e)
             {

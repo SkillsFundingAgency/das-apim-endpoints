@@ -1,15 +1,16 @@
 ﻿using AutoFixture;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,37 +21,51 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitAppli
     {
         private DebitApplicationCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
+        private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
         private readonly Fixture _fixture = new Fixture();
 
-        private DebitApplicationCommand _command;
-        private DebitApplicationRequest _request;
+        private GetApplicationResponse _getApplicationResponse;
+
+        private GetStandardsListItem _coursesApiResponse;
+
+        private DebitApplicationCommand _debitApplicationCommand;
+        private DebitApplicationRequest _debitApplicationRequest;
 
         [SetUp]
         public void Setup()
         {
-            _command = _fixture.Create<DebitApplicationCommand>();
+            _debitApplicationCommand = _fixture.Create<DebitApplicationCommand>();
+            _getApplicationResponse = _fixture.Create<GetApplicationResponse>();
+            _coursesApiResponse = _fixture.Create<GetStandardsListItem>();
 
-            var apiResponse = new ApiResponse<DebitApplicationRequest>(new DebitApplicationRequest(_command.ApplicationId, new DebitApplicationRequest.DebitApplicationRequestData()), HttpStatusCode.OK, string.Empty);
+            var applicationApiResponse = new ApiResponse<DebitApplicationRequest>(new DebitApplicationRequest(_debitApplicationCommand.ApplicationId, new DebitApplicationRequest.DebitApplicationRequestData()), HttpStatusCode.OK, string.Empty);
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
+            _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+
+            _levyTransferMatchingService.Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(_debitApplicationCommand.ApplicationId.ToString()))))
+                .ReturnsAsync(_getApplicationResponse);
 
             _levyTransferMatchingService.Setup(x => x.DebitApplication(It.IsAny<DebitApplicationRequest>()))
-                .Callback<DebitApplicationRequest>(r => _request = r)
-                .ReturnsAsync(apiResponse);
+                .Callback<DebitApplicationRequest>(r => _debitApplicationRequest = r)
+                .ReturnsAsync(applicationApiResponse);
 
-            _handler = new DebitApplicationCommandHandler(_levyTransferMatchingService.Object);
+            _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(_getApplicationResponse.StandardId))))
+                .ReturnsAsync(_coursesApiResponse);
+
+            _handler = new DebitApplicationCommandHandler(_levyTransferMatchingService.Object, _coursesApiClient.Object);
         }
 
         [Test]
         public async Task Application_Is_Debited()
         {
-            await _handler.Handle(_command, CancellationToken.None);
+            await _handler.Handle(_debitApplicationCommand, CancellationToken.None);
 
-            var debit = (DebitApplicationRequest.DebitApplicationRequestData)_request.Data;
+            var debit = (DebitApplicationRequest.DebitApplicationRequestData)_debitApplicationRequest.Data;
 
-            Assert.AreEqual($"applications/{_command.ApplicationId}/debit", _request.PostUrl);
-            Assert.AreEqual(_command.Amount, debit.Amount);
-            Assert.AreEqual(_command.NumberOfApprentices, debit.NumberOfApprentices);
+            Assert.AreEqual($"applications/{_debitApplicationCommand.ApplicationId}/debit", _debitApplicationRequest.PostUrl);
+            Assert.AreEqual(_debitApplicationCommand.Amount, debit.Amount);
+            Assert.AreEqual(_debitApplicationCommand.NumberOfApprentices, debit.NumberOfApprentices);
         }
     }
 }
