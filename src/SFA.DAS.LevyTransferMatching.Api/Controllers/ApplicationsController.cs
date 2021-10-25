@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 
@@ -52,16 +53,39 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 {
                     return Ok((GetApplicationResponse)result);
                 }
-                else
-                {
-                    return NotFound();
-                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get {nameof(Application)} result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPost]
+        [Route("accounts/{accountId}/applications/{applicationId}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Application(long accountId, int applicationId, [FromBody] SetApplicationAcceptanceRequest request)
+        {
+            var successfulOperation = await _mediator.Send(new SetApplicationAcceptanceCommand
+            {
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName,
+                AccountId = accountId,
+                ApplicationId = applicationId,
+                Acceptance = request.Acceptance,
+            });
+
+            if (successfulOperation)
+            {
+                return NoContent();
+            }
+
+            _logger.LogInformation($"Failed to set {nameof(Application)} acceptance ({request.Acceptance}) for accountId: {accountId}, applicationId: {applicationId}");
+
+            return BadRequest();
         }
     }
 }
