@@ -1,5 +1,4 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,47 +11,45 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Api.Controllers;
 using SFA.DAS.Vacancies.Manage.Api.Models;
-using SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using SFA.DAS.Vacancies.Manage.Application.TrainingCourses.Queries;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 {
-    public class WhenGettingProviderAccountLegalEntities
+    public class WhenGettingTrainingProgrammes
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Account_Legal_Entities_From_Mediator(
-            int ukprn,
-            GetProviderAccountLegalEntitiesQueryResponse mediatorResult,
+        public async Task Then_Gets_Training_Courses_From_Mediator(
+            GetTrainingCoursesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ProviderAccountLegalEntitiesController controller)
+            [Greedy] ReferenceDataController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetProviderAccountLegalEntitiesQuery>(c=>c.Ukprn.Equals(ukprn)),
+                    It.IsAny<GetTrainingCoursesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList(ukprn) as ObjectResult;
+            var controllerResult = await controller.GetTrainingCourses() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetProviderAccountLegalEntitiesListResponse;
+            var model = controllerResult.Value as GetTrainingCoursesListResponse;
             Assert.IsNotNull(model);
-            model.ProviderAccountLegalEntities.Should().BeEquivalentTo(mediatorResult.ProviderAccountLegalEntities.Select(c => (GetProviderAccountLegalEntitiesListItem)c));
+            model.Should().BeEquivalentTo((GetTrainingCoursesListResponse)mediatorResult);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            int ukprn,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ProviderAccountLegalEntitiesController controller)
+            [Greedy] ReferenceDataController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetProviderAccountLegalEntitiesQuery>(),
+                    It.IsAny<GetTrainingCoursesQuery>(),
                     It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
+                .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetList(ukprn) as StatusCodeResult;
+            var controllerResult = await controller.GetTrainingCourses() as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
