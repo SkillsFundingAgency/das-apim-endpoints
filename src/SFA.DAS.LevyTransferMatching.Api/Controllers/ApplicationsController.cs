@@ -52,13 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 return Ok((GetApplicationResponse)result);
             }
-                return NotFound();
-            }
-            catch (Exception e)
-
-                _logger.LogError(e, $"Error attempting to get {nameof(Application)} result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+            return NotFound();
         }
 
         [HttpPost]
@@ -89,23 +83,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [Route("/accounts/{accountId}/applications/{applicationId}/accepted")]
         public async Task<IActionResult> Accepted(int applicationId)
         {
-            try
+            var result = await _mediator.Send(new GetAcceptedQuery()
             {
-                var result = await _mediator.Send(new GetAcceptedQuery()
-                {
-                    ApplicationId = applicationId,
-                });
+                ApplicationId = applicationId,
+            });
 
-                if (result != null)
-                {
-                    return Ok((GetAcceptedResponse)result);
+            if (result != null)
+            {
+                return Ok((GetAcceptedResponse)result);
+            }
 
-                return NotFound();
-                _logger.LogError(e, $"Error attempting to get {nameof(Application)} result");
+            return NotFound();
         }
     }
 }

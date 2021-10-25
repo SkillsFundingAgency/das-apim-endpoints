@@ -28,8 +28,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             _mediator = new Mock<IMediator>();
             _queryResult = _fixture.Create<GetPledgesQueryResult>();
             _accountId = _fixture.Create<int>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetPledgesQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
         }
@@ -37,6 +35,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task GetPledges_Returns_GetPledgesResponse()
         {
+            _mediator.SetupMediatorResponseToReturnAsync<GetPledgesQueryResult, GetPledgesQuery>(_queryResult, o => o.AccountId == _accountId);
+
             var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;

@@ -21,10 +21,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(It.Is<GetContactDetailsQuery>(y => y.OpportunityId == opportunityId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getContactDetailsResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetContactDetailsResult, GetContactDetailsQuery>(getContactDetailsResult, 
+                y => y.OpportunityId == opportunityId);
+       
             var controllerResult = await opportunityController.ContactDetails(opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
             var getContactDetailsResponse = okObjectResult.Value as GetContactDetailsResponse;
@@ -40,10 +39,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(It.Is<GetContactDetailsQuery>(y => y.OpportunityId == opportunityId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetContactDetailsResult)null);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetContactDetailsResult, GetContactDetailsQuery>(null, y => y.OpportunityId == opportunityId);
+         
             var controllerResult = await opportunityController.ContactDetails(opportunityId);
             var notFoundResult = controllerResult as NotFoundResult;
 
