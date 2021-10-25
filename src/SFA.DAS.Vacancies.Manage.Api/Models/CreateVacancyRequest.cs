@@ -47,17 +47,22 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident
             };
         }
-        
-        [JsonProperty("title")]
-        public string Title { get ; set ; }
-        [JsonProperty("description")]
-        public string Description { get ; set ; }
-        [JsonProperty("programmeId")]
-        public string ProgrammeId { get ; set ; }
-        [JsonProperty("EmployerAccountId")]
-        public string EmployerAccountId { get ; set ; }
+
         [JsonProperty("user")]
         public VacancyUser User { get ; set ; }
+
+        [JsonProperty("title", Required = Required.Always)]
+        public string Title { get ; set ; }
+
+        [JsonProperty("description")]
+        public string Description { get ; set ; }
+
+        [JsonProperty("programmeId")]
+        public string ProgrammeId { get ; set ; }
+
+        [JsonProperty("EmployerAccountId")]
+        public string EmployerAccountId { get ; set ; }
+
         [JsonProperty("employerName")]
         public string EmployerName { get ; set ; }
         [JsonProperty("shortDescription")]
@@ -121,7 +126,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("email")]
         public string Email { get; set; }
         [JsonProperty("ukprn")]
-        public long? Ukprn { get; set; }
+        public int Ukprn { get; set; }
     }
     
     public class CreateVacancyAddress
