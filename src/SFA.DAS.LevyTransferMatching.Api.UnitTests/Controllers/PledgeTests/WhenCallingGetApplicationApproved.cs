@@ -27,11 +27,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] PledgeController pledgeController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<GetApplicationApprovedQuery>((x) => x.ApplicationId == applicationId && x.PledgeId == pledgeId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getApplicationApprovedQueryResult);
+            mockMediator.SetupMediatorResponseToReturnAsync<GetApplicationApprovedQueryResult, GetApplicationApprovedQuery>(getApplicationApprovedQueryResult, 
+                x => x.ApplicationId == applicationId && x.PledgeId == pledgeId);
 
             var controllerResult = await pledgeController.ApplicationApproved(accountId, pledgeId, applicationId);
             var okObjectResult = controllerResult as OkObjectResult;
@@ -42,6 +39,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.IsNotNull(response);
             Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
             Assert.AreEqual(response.EmployerAccountName, getApplicationApprovedQueryResult.EmployerAccountName);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Given_Incorrect_Parameters_Returns_Not_Found(
+            long accountId,
+            int pledgeId,
+            int applicationId,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] PledgeController pledgeController)
+        {
+            mockMediator.SetupMediatorResponseToReturnAsync<GetApplicationApprovedQueryResult, GetApplicationApprovedQuery>(null,
+                x => x.ApplicationId == applicationId && x.PledgeId == pledgeId);
+
+            var controllerResult = await pledgeController.ApplicationApproved(accountId, pledgeId, applicationId);
+            var okObjectResult = controllerResult as NotFoundResult;
+
+            Assert.IsNotNull(controllerResult);
+            Assert.IsNotNull(okObjectResult);
+            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.NotFound);
         }
     }
 }

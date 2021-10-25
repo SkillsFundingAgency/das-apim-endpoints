@@ -23,11 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] PledgeController pledgeController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<CreatePledgeCommand>((x) => x.AccountId == accountId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(createPledgeResult);
+            mockMediator.SetupMediatorResponseToReturnAsync<CreatePledgeResult,CreatePledgeCommand>(createPledgeResult, o => o.AccountId == accountId);
 
             var controllerResult = await pledgeController.CreatePledge(accountId, createPledgeRequest);
             var createdResult = controllerResult as CreatedResult;
@@ -39,6 +35,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.Created);
             Assert.AreEqual(createdResult.Location, $"/accounts/{accountId}/pledges/{createPledgeResult.PledgeId}");
             Assert.AreEqual(pledgeReference.Id, createPledgeResult.PledgeId);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Parameters_Are_Incorrect_Then_Returns_BadRequest(
+            long accountId,
+            CreatePledgeRequest createPledgeRequest,
+            CreatePledgeResult createPledgeResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] PledgeController pledgeController)
+        {
+            createPledgeResult.PledgeId = 0;
+            mockMediator.SetupMediatorResponseToReturnAsync<CreatePledgeResult, CreatePledgeCommand>(createPledgeResult, o => o.AccountId == accountId);
+
+            var controllerResult = await pledgeController.CreatePledge(accountId, createPledgeRequest);
+            var result = controllerResult as BadRequestResult;
+            
+            Assert.IsNotNull(controllerResult);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.StatusCode, (int)HttpStatusCode.BadRequest);
         }
     }
 }
