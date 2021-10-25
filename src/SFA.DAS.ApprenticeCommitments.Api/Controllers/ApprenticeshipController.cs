@@ -34,9 +34,5 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
         public Task PatchApprenticeship(Guid apprenticeId, long apprenticeshipId, [FromBody] JsonPatchDocument<ApprenticeshipResponse> changes)
             => _client.Patch($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}", changes);
-
-        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations")]
-        public Task ConfirmApprenticeship(Guid apprenticeId, long apprenticeshipId, long revisionId, [FromBody] Confirmations confirmations)
-            => _client.Patch($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations", confirmations);
     }
 }

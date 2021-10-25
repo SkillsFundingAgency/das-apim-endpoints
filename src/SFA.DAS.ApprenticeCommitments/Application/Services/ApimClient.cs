@@ -12,7 +12,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
     public class ApimClient
     {
         private readonly HttpClient _httpClient;
-        private readonly Func<Task> _addAuthentication;
+        private readonly Func<HttpRequestMessage, Task> _addAuthentication;
 
         public ApimClient(
             IHttpClientFactory httpClientFactory,
@@ -24,28 +24,28 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             _httpClient.BaseAddress = new Uri(configuration.Url);
 
             if (hostingEnvironment.IsDevelopment())
-                _addAuthentication = () => Task.CompletedTask;
+                _addAuthentication = _ => Task.CompletedTask;
             else
-                _addAuthentication = async () => await AddAuthentication();
+                _addAuthentication = async request => await AddAuthentication(request);
 
-            async Task AddAuthentication()
+            async Task AddAuthentication(HttpRequestMessage request)
             {
                 var accessToken = await azureClientCredentialHelper.GetAccessTokenAsync(configuration.Identifier);
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             }
         }
 
-        public async Task<HttpClient> PrepareClient(string apiVersion = "1.0")
+        internal async Task<HttpResponseMessage> Send(HttpRequestMessage request, string apiVersion = "1.0")
         {
-            await _addAuthentication();
-            AddVersionHeader(apiVersion);
-            return _httpClient;
+            await _addAuthentication(request);
+            AddVersionHeader(request, apiVersion);
+            return await _httpClient.SendAsync(request);
         }
 
-        private void AddVersionHeader(string requestVersion)
+        private void AddVersionHeader(HttpRequestMessage request, string requestVersion)
         {
-            _httpClient.DefaultRequestHeaders.Remove("X-Version");
-            _httpClient.DefaultRequestHeaders.Add("X-Version", requestVersion);
+            request.Headers.Remove("X-Version");
+            request.Headers.Add("X-Version", requestVersion);
         }
     }
 }
