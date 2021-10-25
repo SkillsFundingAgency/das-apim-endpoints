@@ -36,28 +36,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
 
             _controller = new OpportunityController(Mock.Of<ILogger<OpportunityController>>(),_mediator.Object);
 
-            _mediator.Setup(x => x.Send(It.Is<CreateApplicationCommand>(command =>
-                    command.PledgeId == _opportunityId &&
-                    command.EmployerAccountId == _accountId &&
-                    command.EncodedAccountId == _request.EncodedAccountId &&
-                    command.Details == _request.Details &&
-                    command.StandardId == _request.StandardId &&
-                    command.NumberOfApprentices == _request.NumberOfApprentices &&
-                    command.StartDate == _request.StartDate &&
-                    command.HasTrainingProvider == _request.HasTrainingProvider &&
-                    command.Amount == _request.Amount &&
-                    command.Sectors.Equals(_request.Sectors) &&
-                    command.Locations.Equals(_request.Locations) &&
-                    command.AdditionalLocation == _request.AdditionalLocation &&
-                    command.SpecificLocation == _request.SpecificLocation &&
-                    command.FirstName == _request.FirstName &&
-                    command.LastName == _request.LastName &&
-                    command.EmailAddresses.Equals(_request.EmailAddresses) &&
-                    command.BusinessWebsite == _request.BusinessWebsite &&
-                    command.UserId == _request.UserId &&
-                    command.UserDisplayName == _request.UserDisplayName
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_result);
+            _mediator.SetupMediatorResponseToReturnAsync<CreateApplicationCommandResult, CreateApplicationCommand>(
+                _result,
+                command => command.PledgeId == _opportunityId &&
+                           command.EmployerAccountId == _accountId &&
+                           command.EncodedAccountId == _request.EncodedAccountId &&
+                           command.Details == _request.Details &&
+                           command.StandardId == _request.StandardId &&
+                           command.NumberOfApprentices == _request.NumberOfApprentices &&
+                           command.StartDate == _request.StartDate &&
+                           command.HasTrainingProvider == _request.HasTrainingProvider &&
+                           command.Amount == _request.Amount &&
+                           command.Sectors.Equals(_request.Sectors) &&
+                           command.Locations.Equals(_request.Locations) &&
+                           command.AdditionalLocation == _request.AdditionalLocation &&
+                           command.SpecificLocation == _request.SpecificLocation &&
+                           command.FirstName == _request.FirstName &&
+                           command.LastName == _request.LastName &&
+                           command.EmailAddresses.Equals(_request.EmailAddresses) &&
+                           command.BusinessWebsite == _request.BusinessWebsite &&
+                           command.UserId == _request.UserId &&
+                           command.UserDisplayName == _request.UserDisplayName);
         }
 
         [Test]

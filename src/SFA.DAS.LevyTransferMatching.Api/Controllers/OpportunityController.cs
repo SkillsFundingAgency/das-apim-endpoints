@@ -35,6 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("opportunities")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetIndex()
         {
             _logger.LogInformation($"attempting to get Index result");
@@ -59,10 +60,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 Levels = result.Levels,
             };
 
+            _logger.LogInformation($"Returning get Index result : {response}");
+
             return Ok(response);
         }
 
         [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/apply")]
         public async Task<IActionResult> Apply(long accountId, int opportunityId)
         {
@@ -84,6 +88,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Apply(long accountId, int opportunityId, [FromBody] ApplyRequest request)
         {
             var result = await _mediator.Send(new CreateApplicationCommand
@@ -119,6 +125,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/confirmation")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Confirmation(long accountId, int opportunityId)
         {
             var result = await _mediator.Send(new GetConfirmationQuery
@@ -138,7 +146,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/apply/application-details")]
         [Route("/accounts/{accountId}/opportunities/{opportunityId}/create/application-details")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetApplicationDetails(long accountId, int opportunityId, [FromQuery] string standardId)
         {
@@ -162,6 +169,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/more-details")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/more-details")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> MoreDetails(long accountId, int opportunityId)
         {
             var moreDetailsQueryResult = await _mediator.Send(new GetMoreDetailsQuery { OpportunityId = opportunityId });
@@ -185,6 +194,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/create/sector")]
         [Route("accounts/{accountId}/opportunities/{opportunityId}/apply/sector")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Sector(int opportunityId)
         {
             var sectorQueryResult = await _mediator.Send(new GetSectorQuery { OpportunityId = opportunityId });
@@ -227,6 +238,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("opportunities/{opportunityId}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Detail(int opportunityId)
         {
             var detailQueryResult = await _mediator.Send(new GetDetailQuery { OpportunityId = opportunityId });

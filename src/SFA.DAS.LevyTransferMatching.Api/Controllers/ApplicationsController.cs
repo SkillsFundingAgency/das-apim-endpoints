@@ -23,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("accounts/{accountId}/applications")]
         public async Task<IActionResult> GetApplications(long accountId)
         {
@@ -38,7 +39,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/applications/{applicationId}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Application(int applicationId)
         {
             var result = await _mediator.Send(new GetApplicationQuery()

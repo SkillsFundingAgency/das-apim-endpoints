@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         [Route("{encodedAccountId}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetAccount(string encodedAccountId)
         {
             _logger.LogInformation($"Getting account {encodedAccountId}");
