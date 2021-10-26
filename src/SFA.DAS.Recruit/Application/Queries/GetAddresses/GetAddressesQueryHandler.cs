@@ -26,17 +26,9 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAddresses
         {
             if (string.IsNullOrEmpty(request.Query)) throw new ArgumentException($"Query is required", nameof(GetAddressesQuery.Query));
 
-           // var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, _config.LocationsApiMinMatch));
+            var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, _config.LocationsApiMinMatch));
 
-            return new GetAddressesQueryResult(new GetAddressesListResponse 
-            { 
-                Addresses = new List<GetAddressesListItem> {
-                    new GetAddressesListItem { County = "GB", House = "bb", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" } ,
-                        new GetAddressesListItem { County = "GB", House = "12", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" },
-                            new GetAddressesListItem { County = "GB", House = "13", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" }
-
-                }
-            });
+            return new GetAddressesQueryResult(addressesResponse);
         }
     }
 }
