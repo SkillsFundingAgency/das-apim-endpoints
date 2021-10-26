@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("geopoint/{postcode}")]
-        public async Task<IActionResult> GetGeopoint([FromQuery]string postcode)
+        public async Task<IActionResult> GetGeopoint(string postcode)
         {
             try
             {
