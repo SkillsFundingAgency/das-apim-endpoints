@@ -29,5 +29,6 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public bool PledgeIsNamePublic { get; set; }
         public int PledgeId { get; set; }
         public int PledgeAmount { get; set; }
+        public long SenderEmployerAccountId { get; set; }
     }
 }
