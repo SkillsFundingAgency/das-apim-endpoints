@@ -18,6 +18,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Api.AppStart;
+using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 using SFA.DAS.Vacancies.Configuration;
 
 namespace SFA.DAS.Vacancies.Api
@@ -54,7 +55,7 @@ namespace SFA.DAS.Vacancies.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            //services.AddMediatR(typeof(GetProviderAccountLegalEntitiesQuery).Assembly);
+            services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
@@ -73,8 +74,7 @@ namespace SFA.DAS.Vacancies.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
-                //     .AddCheck<ProviderRelationsHealthCheck>("Provider Relations API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
             
             if (_configuration.IsLocalOrDev())
@@ -84,7 +84,7 @@ namespace SFA.DAS.Vacancies.Api
             else
             {
                 var configuration = _configuration
-                    .GetSection("VacanciesConfiguration")
+                    .GetSection(nameof(VacanciesConfiguration))
                     .Get<VacanciesConfiguration>();
 
                 services.AddStackExchangeRedisCache(options =>
