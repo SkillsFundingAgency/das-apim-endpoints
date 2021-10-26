@@ -31,6 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
         Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request);
         Task ApproveApplication(ApproveApplicationRequest request);
+        Task RejectApplication(RejectApplicationRequest request);
         Task<ApiResponse<AcceptFundingRequest>> AcceptFunding(AcceptFundingRequest request, CancellationToken cancellationToken = default);
     }
 }
