@@ -12,7 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTests
 {
-    public class WhenCallingApplication
+    public class WhenCallingGetApplication
     {
         [Test, MoqAutoData]
         public async Task And_Application_Exists_Then_Returns_Ok_And_Application(

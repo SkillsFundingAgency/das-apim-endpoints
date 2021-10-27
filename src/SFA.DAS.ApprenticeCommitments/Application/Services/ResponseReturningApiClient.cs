@@ -15,19 +15,17 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             => _client = client;
 
         public async Task<IActionResult> Get(string url)
-            => await Request(client => client.GetAsync(url));
+            => await Request(new HttpRequestMessage(HttpMethod.Get, url));
 
         public async Task<IActionResult> Post<T>(string url, T data)
-            => await Request(client => client.PostAsync(url, CreateJsonContent(data)));
+            => await Request(new HttpRequestMessage(HttpMethod.Post, url) { Content = CreateJsonContent(data) });
 
         public async Task<IActionResult> Patch<T>(string url, T data)
-            => await Request(client => client.PatchAsync(url, CreateJsonContent(data)));
+            => await Request(new HttpRequestMessage(HttpMethod.Patch, url) { Content = CreateJsonContent(data) });
 
-        private async Task<IActionResult> Request(Func<HttpClient, Task<HttpResponseMessage>> request)
+        private async Task<IActionResult> Request(HttpRequestMessage request)
         {
-            var client = await _client.PrepareClient();
-
-            var response = await request(client);
+            var response = await _client.Send(request);
 
             return new HttpResponseMessageResult(response);
         }
