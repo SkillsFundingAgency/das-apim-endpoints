@@ -9,18 +9,18 @@ namespace SFA.DAS.Recruit.Application.Queries.GetGeocode
 {
     public class GetGeoPointQueryHandler : IRequestHandler<GetGeoPointQuery, GetGeoPointQueryResult>
     {
-        private readonly ILocationLookupService _locationApiClient;
+        private readonly ILocationLookupService _locationLookupService;
 
-        public GetGeoPointQueryHandler(ILocationLookupService locationApiClient)
+        public GetGeoPointQueryHandler(ILocationLookupService locationLookupService)
         {
-            _locationApiClient = locationApiClient;
+            _locationLookupService = locationLookupService;
         }
 
         public async Task<GetGeoPointQueryResult> Handle(GetGeoPointQuery request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.Postcode)) throw new ArgumentException($"Postcode is required", nameof(GetGeoPointQuery.Postcode));
 
-            var location = await _locationApiClient.GetLocationInformation(request.Postcode, default, default);
+            var location = await _locationLookupService.GetLocationInformation(request.Postcode, default, default);
 
             return new GetGeoPointQueryResult(new GetGeoPointResponse
             {
