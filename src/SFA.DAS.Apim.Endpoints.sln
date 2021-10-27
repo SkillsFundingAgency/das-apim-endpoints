@@ -228,7 +228,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms.Api.UnitTests", "SFA.DAS.EmployerContactForms.Api.UnitTests\SFA.DAS.EmployerContactForms.Api.UnitTests.csproj", "{1D4D005F-17AF-4A2C-99FE-560A19D3D3D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms..UnitTests", "SFA.DAS.EmployerContactForms.UnitTests\SFA.DAS.EmployerContactForms..UnitTests.csproj", "{A51D1274-E802-49D5-978E-13C10A89DF0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms.UnitTests", "SFA.DAS.EmployerContactForms.UnitTests\SFA.DAS.EmployerContactForms.UnitTests.csproj", "{A51D1274-E802-49D5-978E-13C10A89DF0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerContactForms", "EmployerContactForms", "{EEE7D13D-668C-4E57-9BED-53D55809B04C}"
 EndProject
