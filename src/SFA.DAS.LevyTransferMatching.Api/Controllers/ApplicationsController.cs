@@ -52,6 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 return Ok((GetApplicationResponse)result);
             }
+
             return NotFound();
         }
 

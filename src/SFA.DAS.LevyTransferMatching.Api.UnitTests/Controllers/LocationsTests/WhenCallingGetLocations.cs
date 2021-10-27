@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
         {
             mockMediator.SetupMediatorResponseToReturnAsync<GetLocationsResult, GetLocationsQuery>(getLocationsResult, o => o.SearchTerm == searchTerm);
           
-            var controllerResult = await locationController.GetLocations("test");
+            var controllerResult = await locationController.GetLocations(searchTerm);
             var okObjectResult = controllerResult as OkObjectResult;
             var locations = okObjectResult.Value as LocationsDto;
 
