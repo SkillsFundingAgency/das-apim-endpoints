@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Authentication
             var pledgeIdFromUrl = int.Parse(_httpContextAccessor.HttpContext.Request.RouteValues[RouteValueKeys.PledgeId].ToString());
             var pledge = await _service.GetPledge(pledgeIdFromUrl);
 
-            return pledge.AccountId == accountIdFromUrl;
+            return pledge?.AccountId == accountIdFromUrl;
         }
     }
 }

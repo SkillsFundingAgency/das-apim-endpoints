@@ -28,18 +28,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Filters
 
             if (context.Exception is HttpResponseException exception)
             {
-                _logger.LogInformation($"The error has occurred internally : \n\n{exception}");
+                _logger.LogInformation($"An http exception has occurred : \n\n{exception}");
                 
-                context.Result = new ObjectResult("An internal error occurred")
+                context.Result = new ObjectResult("An http exception has occurred")
                 {
                     StatusCode = exception.Status
                 };
             }
             else
             {
-                _logger.LogInformation($"The error has occurred externally : \n\n{context.Exception}");
+                _logger.LogInformation($"An unhandled error has occurred : \n\n{context.Exception}");
 
-                context.Result = new ObjectResult("An external error occurred")
+                context.Result = new ObjectResult("An unhandled error has occurred")
                 {
                     StatusCode = 500
                 };

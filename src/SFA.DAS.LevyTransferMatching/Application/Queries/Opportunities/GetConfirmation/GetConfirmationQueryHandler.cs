@@ -19,6 +19,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunities.GetConf
         {
             var pledge = await _levyTransferMatchingService.GetPledge(request.OpportunityId);
 
+            if (pledge == null)
+            {
+                return null;
+            }
             return new GetConfirmationQueryResult
             {
                 AccountName = pledge.DasAccountName,
