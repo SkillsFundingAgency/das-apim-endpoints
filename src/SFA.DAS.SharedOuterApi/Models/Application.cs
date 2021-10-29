@@ -24,9 +24,5 @@ namespace SFA.DAS.SharedOuterApi.Models
         public Standard Standard { get; set; }
         public bool IsNamePublic { get; set; }
         public string Status { get; set; }
-        public bool IsLocationMatch { get; set; }
-        public bool IsSectorMatch { get; set; }
-        public bool IsJobRoleMatch { get; set; }
-        public bool IsLevelMatch { get; set; }
     }
 }

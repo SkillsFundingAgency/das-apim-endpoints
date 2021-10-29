@@ -1,6 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplications
 {
