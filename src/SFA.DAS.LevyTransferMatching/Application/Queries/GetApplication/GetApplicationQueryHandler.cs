@@ -66,7 +66,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 PledgeSectors = application.PledgeSectors,
                 PledgeLevels = application.PledgeLevels,
                 PledgeJobRoles = application.PledgeJobRoles,
-                PledgeLocations = application.PledgeLocations.Select(x => x.Name),
+                PledgeLocations = application.PledgeLocations,
                 PledgeRemainingAmount = application.PledgeRemainingAmount,
                 AllJobRoles = allJobRolesTask.Result,
                 AllLevels = allLevelsTask.Result,

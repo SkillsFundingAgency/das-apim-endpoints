@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
 {
@@ -24,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public int PledgeRemainingAmount { get; set; }
         public int Amount { get; set; }
-        public List<PledgeLocation> PledgeLocations { get; set; }
+        public List<string> PledgeLocations { get; set; }
         public string Status { get; set; }
         public bool PledgeIsNamePublic { get; set; }
         public int PledgeId { get; set; }
