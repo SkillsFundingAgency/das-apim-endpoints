@@ -25,5 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public Standard Standard { get; set; }
         public string PledgeEmployerAccountName { get; set; }
         public int PledgeAmount { get; set; }
+        public long SenderEmployerAccountId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -20,15 +21,31 @@ namespace SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegal
         
         public async Task<GetLegalEntitiesForEmployerResult> Handle(GetLegalEntitiesForEmployerQuery request, CancellationToken cancellationToken)
         {
-            var resourceListResponse = await _accountsApiClient.GetAll<Resource>(
+            var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
                 new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
 
             var legalEntities = new List<GetEmployerAccountLegalEntityItem>();
-            foreach (var resource in resourceListResponse)
+            
+            if (resourceListResponse == null)
+            {
+                return new GetLegalEntitiesForEmployerResult
+                {
+                    LegalEntities = legalEntities
+                };
+            }
+
+            foreach (var resource in resourceListResponse.LegalEntities)
             {
                 var accountLegalEntityItem = await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
                     new GetEmployerAccountLegalEntityRequest(resource.Href));
-                legalEntities.Add(accountLegalEntityItem);
+
+                if (accountLegalEntityItem.Agreements.Any(c => c.Status == EmployerAgreementStatus.Signed))
+                {
+                    accountLegalEntityItem.AccountPublicHashedId = request.EncodedAccountId;
+                    accountLegalEntityItem.AccountName = resourceListResponse.DasAccountName;
+                    legalEntities.Add(accountLegalEntityItem);    
+                }
+                
             }
             
             return new GetLegalEntitiesForEmployerResult
