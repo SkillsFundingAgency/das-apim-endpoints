@@ -50,15 +50,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
                     }
                 });
 
-            _service.Setup(x => x.GetPledge(_query.PledgeId.Value))
-                .ReturnsAsync(new Pledge
-                {
-                    Locations = new List<LocationDataItem>(),
-                    Sectors = new List<string>(),
-                    JobRoles = new List<string>(),
-                    Levels = new List<string>()
-                });
-
             _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
 
             _coursesApiClient.Setup(x =>
