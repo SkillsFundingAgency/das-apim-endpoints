@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Api.AppStart;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
 {
@@ -19,6 +20,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(ICacheStorageService))]
+        [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -43,7 +45,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1")
+                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2")
                 }
             };
 

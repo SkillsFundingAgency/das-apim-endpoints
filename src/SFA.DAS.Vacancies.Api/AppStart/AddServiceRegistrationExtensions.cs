@@ -7,6 +7,8 @@ using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Interfaces;
+using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Api.AppStart
 {
@@ -20,6 +22,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+            services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
 
         }
     }

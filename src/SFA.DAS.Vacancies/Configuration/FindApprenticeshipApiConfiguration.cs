@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Vacancies.Manage.Configuration
+namespace SFA.DAS.Vacancies.Configuration
 {
     public class FindApprenticeshipApiConfiguration : IInternalApiConfiguration
     {

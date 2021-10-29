@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.Manage.Configuration;
-using SFA.DAS.Vacancies.Manage.Interfaces;
+using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Interfaces;
 
-namespace SFA.DAS.Vacancies.Manage.Services
+namespace SFA.DAS.Vacancies.Services
 {
-    class FindApprenticeshipApiClient : IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>
+    public class FindApprenticeshipApiClient : IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>
     {
         private readonly IInternalApiClient<FindApprenticeshipApiConfiguration> _apiClient;
 

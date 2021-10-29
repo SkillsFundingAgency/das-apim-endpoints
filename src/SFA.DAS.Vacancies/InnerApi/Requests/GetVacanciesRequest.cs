@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
+namespace SFA.DAS.Vacancies.InnerApi.Requests
 {
     public class GetVacanciesRequest : IGetApiRequest
     {

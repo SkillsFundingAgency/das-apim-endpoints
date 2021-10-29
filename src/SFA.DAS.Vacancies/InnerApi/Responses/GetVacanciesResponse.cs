@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.Vacancies.Manage.InnerApi.Responses
+namespace SFA.DAS.Vacancies.InnerApi.Responses
 {
     public class GetVacanciesResponse
         {
