@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
+using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Extensions;
 
@@ -73,6 +74,33 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to Undo Application Approval");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Route("debit-application")]
+        [HttpPost]
+        public async Task<IActionResult> DebitApplication(DebitApplicationRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new DebitApplicationCommand
+                {
+                    ApplicationId = request.ApplicationId,
+                    NumberOfApprentices = request.NumberOfApprentices,
+                    Amount = request.Amount
+                });
+
+                if (!result.StatusCode.IsSuccess())
+                {
+                    _logger.LogError($"Error attempting to Debit Application {result.ErrorContent}");
+                }
+
+                return new StatusCodeResult((int) result.StatusCode);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to Debit Application");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
