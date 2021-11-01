@@ -80,7 +80,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 OpportunityId = application.PledgeId,
                 Standard = standard,
                 PledgeAmount = application.PledgeAmount,
-                SenderEmployerAccountId = application.SenderEmployerAccountId
+                SenderEmployerAccountId = application.SenderEmployerAccountId,
+                AmountUsed = application.AmountUsed,
+                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed
             };
         }
     }
