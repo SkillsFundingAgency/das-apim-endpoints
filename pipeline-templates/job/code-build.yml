@@ -144,6 +144,14 @@ jobs:
       projects: 'src/SFA.DAS.Vacancies.Manage.Api/SFA.DAS.Vacancies.Manage.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish APIM Developer Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.ApimDeveloper.Api/SFA.DAS.ApimDeveloper.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
