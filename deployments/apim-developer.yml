@@ -18,7 +18,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.4.1
+    ref: refs/tags/4.5.0
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -117,119 +117,119 @@ stages:
       ProductId: $(ApimDeveloperProductId)
       ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#
-#- stage: Deploy_PP
-#  dependsOn: []
-#  displayName: Deploy to PP
-#  variables:
-#  - group: PREPROD Management Resources
-#  - group: PREPROD Shared Resources
-#  - group: PREPROD das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DIG-PreProd-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: PP
-#      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_ApimDeveloper
-#      Environment: PP
-#      ServiceConnection: SFA-DIG-PreProd-ARM
-#      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
-#      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
-#      ApiPath: $(ApimDeveloperOuterApiPath)
-#      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
-#      ProductId: $(ApimDeveloperProductId)
-#      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_PROD
-#  dependsOn: []
-#  displayName: Deploy to PROD
-#  variables:
-#  - group: PROD Management Resources
-#  - group: PROD Shared Resources
-#  - group: PROD das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DIG-Prod-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: PROD
-#      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_ApimDeveloper
-#      Environment: PROD
-#      ServiceConnection: SFA-DIG-Prod-ARM
-#      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
-#      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
-#      ApiPath: $(ApimDeveloperOuterApiPath)
-#      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
-#      ProductId: $(ApimDeveloperProductId)
-#      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_MO
-#  dependsOn: []
-#  displayName: Deploy to MO
-#  variables:
-#  - group: MO Management Resources
-#  - group: MO Shared Resources
-#  - group: MO das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-ASM-ModelOffice-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: MO
-#      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_ApimDeveloper
-#      Environment: MO
-#      ServiceConnection: SFA-ASM-ModelOffice-ARM
-#      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
-#      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
-#      ApiPath: $(ApimDeveloperOuterApiPath)
-#      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
-#      ProductId: $(ApimDeveloperProductId)
-#      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_DEMO
-#  dependsOn: []
-#  displayName: Deploy to DEMO
-#  variables:
-#  - group: DevTest Management Resources
-#  - group: DEMO DevTest Shared Resources
-#  - group: DEMO das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DAS-DevTest-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#      Environment: DEMO
-#      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_ApimDeveloper
-#      Environment: DEMO
-#      ServiceConnection: SFA-DAS-DevTest-ARM
-#      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
-#      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
-#      ApiPath: $(ApimDeveloperOuterApiPath)
-#      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
-#      ProductId: $(ApimDeveloperProductId)
-#      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+- stage: Deploy_PP
+  dependsOn: []
+  displayName: Deploy to PP
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PP
+      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApimDeveloper
+      Environment: PP
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
+      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
+      ApiPath: $(ApimDeveloperOuterApiPath)
+      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
+      ProductId: $(ApimDeveloperProductId)
+      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApimDeveloper
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
+      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
+      ApiPath: $(ApimDeveloperOuterApiPath)
+      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
+      ProductId: $(ApimDeveloperProductId)
+      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_MO
+  dependsOn: []
+  displayName: Deploy to MO
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: MO
+      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApimDeveloper
+      Environment: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
+      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
+      ApiPath: $(ApimDeveloperOuterApiPath)
+      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
+      ProductId: $(ApimDeveloperProductId)
+      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_DEMO
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: DEMO
+      SchemaFilePath: $(ApimDeveloperOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApimDeveloper
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApimDeveloperOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApimDeveloper.Api.zip
+      ApiVersionSetName: $(ApimDeveloperOuterApiVersionSetName)
+      ApiPath: $(ApimDeveloperOuterApiPath)
+      ApiBaseUrl: $(ApimDeveloperOuterApiBaseUrl)
+      ProductId: $(ApimDeveloperProductId)
+      ApplicationIdentifierUri: $(ApimDeveloperOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
