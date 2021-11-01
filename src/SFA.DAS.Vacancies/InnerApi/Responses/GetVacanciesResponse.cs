@@ -13,7 +13,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public long TotalFound { get; set; }
 
             [JsonProperty("apprenticeshipVacancies")]
-            public List<string> ApprenticeshipVacancies { get; set; }
+            public IEnumerable<GetVacanciesItem> ApprenticeshipVacancies { get; set; }
         }
 
         public class GetVacanciesItem
@@ -61,7 +61,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public bool IsRecruitVacancy { get; set; }
 
             [JsonProperty("location")]
-            public Location Location { get; set; }
+            public string Location { get; set; }
 
             [JsonProperty("numberOfPositions")]
             public long NumberOfPositions { get; set; }
