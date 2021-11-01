@@ -19,8 +19,53 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
     public class WhenCreatingVacancy
     {
         [Test, MoqAutoData]
+        public async Task And_Id_Is_Empty_Guid_Then_Returns_Vacancy_Already_Submitted(
+            CreateVacancyCommandResponse mediatorResponse,
+            CreateVacancyRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            var id = Guid.Empty;
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
+            mockMediator.Setup(x => 
+                    x.Send(It.Is<CreateVacancyCommand>(c => 
+                        c.Id.Equals(id)
+                        && c.PostVacancyRequestData.Title.Equals(request.Title)
+                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                    ), CancellationToken.None))
+                .ReturnsAsync(mediatorResponse);
+
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+
+            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.AlreadyReported);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task And_Id_Is_11111111_Then_Returns_Too_Many_Requests(
+            CreateVacancyCommandResponse mediatorResponse,
+            CreateVacancyRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            var id = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}";
+            mockMediator.Setup(x => 
+                    x.Send(It.Is<CreateVacancyCommand>(c => 
+                        c.Id.Equals(id)
+                        && c.PostVacancyRequestData.Title.Equals(request.Title)
+                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                    ), CancellationToken.None))
+                .ReturnsAsync(mediatorResponse);
+
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+
+            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.TooManyRequests);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Response_Returned_And_Type_Set_For_Employer(
-            
             Guid id,
             CreateVacancyCommandResponse mediatorResponse,
             CreateVacancyRequest request,

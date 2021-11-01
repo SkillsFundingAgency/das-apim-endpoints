@@ -21,6 +21,8 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
             var apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+            
+            //todo if sandman then does a validate request. which needs that end point created in recruit
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
 

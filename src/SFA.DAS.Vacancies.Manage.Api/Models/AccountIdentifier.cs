@@ -36,6 +36,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public AccountType AccountType { get; }
         public string AccountPublicHashedId { get; }
         public int? Ukprn { get; }
+        public bool EnterSandman { get; set; }
     }
 
     public enum AccountType
