@@ -22,7 +22,10 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
         {
             var apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
             
-            //todo if sandman then does a validate request. which needs that end point created in recruit
+            if (request.IsSandbox)
+            {
+                //todo call validate
+            }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
 
