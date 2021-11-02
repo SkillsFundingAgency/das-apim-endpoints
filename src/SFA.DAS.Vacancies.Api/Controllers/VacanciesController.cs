@@ -31,7 +31,11 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetVacanciesQuery());
+                var queryResponse = await _mediator.Send(new GetVacanciesQuery
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                });
 
                 return Ok((GetVacanciesListResponse)queryResponse);
 

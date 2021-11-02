@@ -19,7 +19,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         }
         public async Task<GetVacanciesQueryResult> Handle(GetVacanciesQuery request, CancellationToken cancellationToken)
         {
-            var response = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest());
+            var response = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(request.PageNumber, request.PageSize));
 
             return new GetVacanciesQueryResult()
             {

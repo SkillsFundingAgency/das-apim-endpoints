@@ -202,13 +202,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Api.UnitT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.UnitTests", "SFA.DAS.Vacancies.UnitTests\SFA.DAS.Vacancies.UnitTests.csproj", "{8B87E93D-04CD-4C44-A398-F9BA3985EC7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.Api.UnitTests", "SFA.DAS.Vacancies.Manage.Api.UnitTests\SFA.DAS.Vacancies.Manage.Api.UnitTests.csproj", "{16348C58-2E11-4002-977F-7444EEBE8343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.Api.UnitTests", "SFA.DAS.Vacancies.Manage.Api.UnitTests\SFA.DAS.Vacancies.Manage.Api.UnitTests.csproj", "{16348C58-2E11-4002-977F-7444EEBE8343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.Api", "SFA.DAS.Vacancies.Manage.Api\SFA.DAS.Vacancies.Manage.Api.csproj", "{17C8F0CD-07AD-468E-844D-F13774D910BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.Api", "SFA.DAS.Vacancies.Manage.Api\SFA.DAS.Vacancies.Manage.Api.csproj", "{17C8F0CD-07AD-468E-844D-F13774D910BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage", "SFA.DAS.Vacancies.Manage\SFA.DAS.Vacancies.Manage.csproj", "{4526B4F6-9694-404D-8BC2-796F4823BCCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage", "SFA.DAS.Vacancies.Manage\SFA.DAS.Vacancies.Manage.csproj", "{4526B4F6-9694-404D-8BC2-796F4823BCCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Vacancies.Manage.UnitTests", "SFA.DAS.Vacancies.Manage.UnitTests\SFA.DAS.Vacancies.Manage.UnitTests.csproj", "{A9695DDF-3803-4197-8ACF-0F50B64C38D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.UnitTests", "SFA.DAS.Vacancies.Manage.UnitTests\SFA.DAS.Vacancies.Manage.UnitTests.csproj", "{A9695DDF-3803-4197-8ACF-0F50B64C38D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
