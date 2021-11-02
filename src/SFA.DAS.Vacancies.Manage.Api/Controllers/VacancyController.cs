@@ -59,7 +59,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
-                    PostVacancyRequestData = request
+                    PostVacancyRequestData = request,
+                    IsSandbox = account.IsSandbox
                 });
 
                 return new CreatedResult("", new {response.VacancyReference});

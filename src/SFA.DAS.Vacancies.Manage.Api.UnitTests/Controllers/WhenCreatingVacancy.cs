@@ -43,6 +43,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                        && c.IsSandbox.Equals(addSandbox)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
@@ -54,6 +55,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Response_Returned_And_Type_Set_For_Employer(
             Guid id,
+            bool addSandbox,
             CreateVacancyCommandResponse mediatorResponse,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
@@ -61,11 +63,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}";
+            if (addSandbox) accountIdentifier += "-sandbox";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                        && c.IsSandbox.Equals(addSandbox)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
@@ -92,6 +96,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
                         && c.PostVacancyRequestData.User.Email == null
+                        && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
