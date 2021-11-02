@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
 {
-    public class GetAllEmployerAccountLegalEntitiesRequest : IGetAllApiRequest
+    public class GetAllEmployerAccountLegalEntitiesRequest : IGetApiRequest
     {
         public string EncodedAccountId { get; }
 
@@ -11,6 +11,6 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
             EncodedAccountId = encodedAccountId;
         }
 
-        public string GetAllUrl => $"api/accounts/{EncodedAccountId}/legalentities";
+        public string GetUrl => $"api/accounts/{EncodedAccountId}";
     }
 }

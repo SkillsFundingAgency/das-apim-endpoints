@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
@@ -30,5 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
         Task<ApiResponse<UndoApplicationApprovalRequest>> UndoApplicationApproval(UndoApplicationApprovalRequest request);
         Task ApproveApplication(ApproveApplicationRequest request);
+        Task<ApiResponse<AcceptFundingRequest>> AcceptFunding(AcceptFundingRequest request, CancellationToken cancellationToken = default);
+        Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request);
     }
 }

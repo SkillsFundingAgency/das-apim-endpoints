@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
@@ -102,6 +103,16 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task ApproveApplication(ApproveApplicationRequest request)
         {
             await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request);
+        }
+
+        public async Task<ApiResponse<AcceptFundingRequest>> AcceptFunding(AcceptFundingRequest request, CancellationToken cancellationToken = default)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<AcceptFundingRequest>(request);
+        }
+
+        public async Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitApplicationRequest>(request);
         }
     }
 }
