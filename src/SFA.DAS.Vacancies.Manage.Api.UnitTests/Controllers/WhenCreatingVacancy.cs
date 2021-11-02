@@ -6,6 +6,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -18,16 +19,25 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 {
     public class WhenCreatingVacancy
     {
-        [Test, MoqAutoData]
-        public async Task And_Id_Is_Empty_Guid_Then_Returns_Vacancy_Already_Submitted(
+        [Test]
+        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", true, HttpStatusCode.AlreadyReported)]
+        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", false, HttpStatusCode.Created)]
+        [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", true, HttpStatusCode.TooManyRequests)]
+        [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", false, HttpStatusCode.Created)]
+        public async Task Sandbox_Special_Case_Guids(
+            string guid,
+            bool addSandbox,
+            HttpStatusCode expectedStatusCode,
             CreateVacancyCommandResponse mediatorResponse,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var id = Guid.Empty;
+            var id = Guid.Parse(guid);
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}";
+            if (addSandbox) accountIdentifier += "-sandbox";
+            
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
@@ -36,32 +46,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as IStatusCodeActionResult;
 
-            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.AlreadyReported);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task And_Id_Is_11111111_Then_Returns_Too_Many_Requests(
-            CreateVacancyCommandResponse mediatorResponse,
-            CreateVacancyRequest request,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] VacancyController controller)
-        {
-            var id = Guid.Parse("11111111-1111-1111-1111-111111111111");
-            var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}";
-            mockMediator.Setup(x => 
-                    x.Send(It.Is<CreateVacancyCommand>(c => 
-                        c.Id.Equals(id)
-                        && c.PostVacancyRequestData.Title.Equals(request.Title)
-                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
-                    ), CancellationToken.None))
-                .ReturnsAsync(mediatorResponse);
-
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
-
-            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.TooManyRequests);
+            controllerResult.StatusCode.Should().Be((int) expectedStatusCode);
         }
 
         [Test, MoqAutoData]

@@ -29,13 +29,16 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         {
             try
             {
-                //sandbox special cases
-                if (id == Guid.Empty)
-                    return new StatusCodeResult((int) HttpStatusCode.AlreadyReported);
-                if (id == Guid.Parse("11111111-1111-1111-1111-111111111111"))
-                    return new StatusCodeResult((int) HttpStatusCode.TooManyRequests);
-                
                 var account = new AccountIdentifier(accountIdentifier);
+
+                if (account.IsSandbox)
+                {
+                    if (id == Guid.Empty)
+                        return new StatusCodeResult((int) HttpStatusCode.AlreadyReported);
+                    if (id == Guid.Parse("11111111-1111-1111-1111-111111111111"))
+                        return new StatusCodeResult((int) HttpStatusCode.TooManyRequests);
+                }
+                
                 switch (account.AccountType)
                 {
                     case AccountType.Unknown:
