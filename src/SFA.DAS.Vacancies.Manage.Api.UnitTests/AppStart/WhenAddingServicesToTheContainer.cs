@@ -21,6 +21,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
+        [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(ICacheStorageService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -47,6 +49,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1")
                 }
             };

@@ -69,7 +69,7 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         [JsonProperty("email")]
         public string Email { get; set; }
         [JsonProperty("ukprn")]
-        public long? Ukprn { get; set; }
+        public int Ukprn { get; set; }
     }
     
     public class PostVacancyAddressData
