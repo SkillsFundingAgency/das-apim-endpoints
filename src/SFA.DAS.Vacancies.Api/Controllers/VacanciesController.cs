@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using SFA.DAS.Vacancies.InnerApi.Responses;
+
 
 namespace SFA.DAS.Vacancies.Api.Controllers
 {
@@ -17,12 +15,12 @@ namespace SFA.DAS.Vacancies.Api.Controllers
     public class VacanciesController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ReferenceDataController> _logger;
+        private readonly ILogger<VacanciesController> _logger;
 
         public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger)
         {
             _mediator = mediator;
-            _logger = (ILogger<ReferenceDataController>)logger;
+            _logger = logger;
         }
 
         [HttpGet]
