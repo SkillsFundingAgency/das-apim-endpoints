@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
             {
                 return null;
             }
-
+            
             var standardListItemTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
             var allJobRolesTask = _referenceDataService.GetJobRoles();
             var allLevelsTask = _referenceDataService.GetLevels();
@@ -80,6 +80,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 OpportunityId = application.PledgeId,
                 Standard = standard,
                 PledgeAmount = application.PledgeAmount,
+                SenderEmployerAccountId = application.SenderEmployerAccountId,
+                AmountUsed = application.AmountUsed,
+                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed
             };
         }
     }
