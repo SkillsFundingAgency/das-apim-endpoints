@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 using SFA.DAS.Vacancies.Manage.Interfaces;
@@ -18,13 +19,17 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
         {
             _recruitApiClient = recruitApiClient;
         }
+        
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
-            var apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
-            
+            IPostApiRequest apiRequest;
             if (request.IsSandbox)
             {
-                //todo call validate
+                apiRequest = new PostValidateVacancyRequest(request.Id, request.PostVacancyRequestData);
+            }
+            else
+            {
+                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
             }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
