@@ -109,5 +109,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<AcceptFundingRequest>(request);
         }
+
+        public async Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitApplicationRequest>(request);
+        }
     }
 }
