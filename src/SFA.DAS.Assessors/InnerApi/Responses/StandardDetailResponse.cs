@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using System;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public int VersionMajor { get; set; }
         public int VersionMinor { get; set; }
 
-        protected override int GetFundingDetails(string prop)
+        protected override int GetFundingDetails(string prop, DateTime? effectiveDate = null)
         {
             if (ApprenticeshipFunding == null || ApprenticeshipFunding.Any() == false)
             {
@@ -56,7 +57,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
                 }
             }
 
-            return base.GetFundingDetails(prop);
+            return base.GetFundingDetails(prop, effectiveDate);
         }
     }
 }

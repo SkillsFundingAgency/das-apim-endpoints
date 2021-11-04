@@ -17,14 +17,21 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         [JsonIgnore] 
         public bool IsActive => IsStandardActive();
 
-        protected virtual int GetFundingDetails(string prop)
+        public int MaxFundingOn(DateTime effectiveDate)
         {
-            if (ApprenticeshipFunding == null || ApprenticeshipFunding.Any() == false) return 0;
+            return GetFundingDetails(nameof(MaxFunding), effectiveDate);
+        }
+
+        protected virtual int GetFundingDetails(string prop, DateTime? effectiveDate = null)
+        {
+            if (ApprenticeshipFunding == null || !ApprenticeshipFunding.Any()) return 0;
+
+            var effDate = effectiveDate ?? DateTime.UtcNow;
 
             var funding = ApprenticeshipFunding
                 .FirstOrDefault(c =>
-                    c.EffectiveFrom <= DateTime.UtcNow 
-                    && (c.EffectiveTo == null || c.EffectiveTo >= DateTime.UtcNow));
+                    c.EffectiveFrom <= effDate
+                    && (c.EffectiveTo == null || c.EffectiveTo >= effDate));
 
             if (funding == null)
             {
