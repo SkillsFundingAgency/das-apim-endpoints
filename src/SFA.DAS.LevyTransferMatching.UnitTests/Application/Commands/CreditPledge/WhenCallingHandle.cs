@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -15,39 +16,60 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreditPled
     [TestFixture]
     public class WhenCallingHandle
     {
-        private CreditPledgeCommandHandler _handler;
-        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private readonly Fixture _fixture = new Fixture();
 
-        private CreditPledgeCommand _command;
-        private CreditPledgeRequest _request;
+        private CreditPledgeCommandHandler _handler;
+        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
 
         [SetUp]
         public void Setup()
         {
-            _command = _fixture.Create<CreditPledgeCommand>();
-
-            var apiResponse = new ApiResponse<CreditPledgeRequest>(new CreditPledgeRequest(_command.PledgeId, new CreditPledgeRequest.CreditPledgeRequestData()), HttpStatusCode.OK, string.Empty);
-
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-
-            _levyTransferMatchingService.Setup(x => x.CreditPledge(It.IsAny<CreditPledgeRequest>()))
-                .Callback<CreditPledgeRequest>(r => _request = r)
-                .ReturnsAsync(apiResponse);
 
             _handler = new CreditPledgeCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<CreditPledgeCommandHandler>>());
         }
 
-        [Test]
-        public async Task Pledge_Is_Credited()
+        [TestCase(1)]
+        [TestCase(10)]
+        [TestCase(100)]
+        public async Task Amount_Is_Greater_Than_Zero_Pledge_Is_Credited(int amount)
         {
-            await _handler.Handle(_command, CancellationToken.None);
+            var command = _fixture
+                .Build<CreditPledgeCommand>()
+                .With(x => x.Amount, amount)
+                .Create();
+            
+            var apiResponse = new ApiResponse<CreditPledgeRequest>(new CreditPledgeRequest(command.PledgeId, new CreditPledgeRequest.CreditPledgeRequestData()), HttpStatusCode.OK, string.Empty);
 
-            var debit = (CreditPledgeRequest.CreditPledgeRequestData)_request.Data;
+            CreditPledgeRequest request = null;
+            _levyTransferMatchingService.Setup(x => x.CreditPledge(It.IsAny<CreditPledgeRequest>()))
+                .Callback<CreditPledgeRequest>(r => request = r)
+                .ReturnsAsync(apiResponse);
 
-            Assert.AreEqual($"pledges/{_command.PledgeId}/credit", _request.PostUrl);
-            Assert.AreEqual(_command.Amount, debit.Amount);
-            Assert.AreEqual(_command.ApplicationId, debit.ApplicationId);
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            var credit = (CreditPledgeRequest.CreditPledgeRequestData)request.Data;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual($"pledges/{command.PledgeId}/credit", request.PostUrl);
+            Assert.AreEqual(command.Amount, credit.Amount);
+            Assert.AreEqual(command.ApplicationId, credit.ApplicationId);
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-10)]
+        [TestCase(-100)]
+        public async Task Amount_Is_Equal_To_Or_Less_Than_Zero_Pledge_Isnt_Credited(int amount)
+        {
+            var command = _fixture
+                .Build<CreditPledgeCommand>()
+                .With(x => x.Amount, amount)
+                .Create();
+
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            Assert.IsNull(result);
         }
     }
 }
