@@ -119,6 +119,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     ApplicationId = request.ApplicationId
                 });
 
+                if (result == null)
+                {
+                    return Ok();
+                }
+
                 if (!result.StatusCode.IsSuccess())
                 {
                     _logger.LogError($"Error attempting to Credit Pledge {result.ErrorContent}");

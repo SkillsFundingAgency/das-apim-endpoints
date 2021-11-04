@@ -20,6 +20,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge
 
         public async Task<CreditPledgeCommandResult> Handle(CreditPledgeCommand request, CancellationToken cancellationToken)
         {
+            if (request.Amount <= 0)
+            {
+                _logger.LogInformation($"Amount is 0 for pledge {request.PledgeId} - pledge will *not* be credited");
+
+                return null;
+            }
+
             _logger.LogInformation($"Crediting pledge {request.PledgeId}");
 
             var data = new CreditPledgeRequest.CreditPledgeRequestData
