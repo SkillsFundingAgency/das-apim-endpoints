@@ -1,9 +1,9 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Vacancies.Manage.Api.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
+namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 {
     public class WhenMappingAccountIdentifierModelFromRequestHeaderValue
     {
