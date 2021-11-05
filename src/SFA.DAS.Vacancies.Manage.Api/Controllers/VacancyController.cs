@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 if (account.IsSandbox)
                 {
                     if (id == Guid.Empty)
-                        return new StatusCodeResult((int) HttpStatusCode.AlreadyReported);
+                        return new BadRequestObjectResult(new {errors = new[]{"Unable to create Vacancy. Vacancy already submitted"}});
                     if (id == Guid.Parse("11111111-1111-1111-1111-111111111111"))
                         return new StatusCodeResult((int) HttpStatusCode.TooManyRequests);
                 }

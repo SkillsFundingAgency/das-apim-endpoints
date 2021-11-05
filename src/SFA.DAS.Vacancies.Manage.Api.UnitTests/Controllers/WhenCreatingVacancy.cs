@@ -20,7 +20,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
     public class WhenCreatingVacancy
     {
         [Test]
-        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", true, HttpStatusCode.AlreadyReported)]
+        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", true, HttpStatusCode.BadRequest)]
         [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", false, HttpStatusCode.Created)]
         [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", true, HttpStatusCode.TooManyRequests)]
         [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", false, HttpStatusCode.Created)]
