@@ -16,9 +16,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 {
     public class GetApplicationsQueryHandler : GetApplicationsQueryHandlerBase<GetApplicationsQuery, GetApplicationsQueryResult>
     {
-        public GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : 
+        private readonly IReferenceDataService _referenceDataService;
+
+        public GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, IReferenceDataService referenceDataService) : 
             base(levyTransferMatchingService, coursesApiClient)
         {
+            _referenceDataService = referenceDataService;
         }
 
         public override async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
@@ -40,6 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             var pledgeResponse = await _levyTransferMatchingService.GetPledge(request.PledgeId.Value);
             var distinctStandards = applicationsResponse.Applications.Select(app => app.StandardId).Distinct();
             var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
+            var roleReferenceData = await _referenceDataService.GetJobRoles();
 
             standardTasks.AddRange(distinctStandards.Select(standardId => _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(standardId))));
 
@@ -65,9 +69,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                         })
                 };
 
+                var roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id));
+
                 application.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
                 application.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
-                application.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || pledgeResponse.JobRoles.Contains(application.Standard.Route);
+                application.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || roles.Any(r => r.Description == application.Standard.Route);
                 application.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Select(x => char.GetNumericValue(x.Last())).Contains(application.Standard.Level);
             }
 
