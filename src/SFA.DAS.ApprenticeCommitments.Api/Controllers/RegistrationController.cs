@@ -47,5 +47,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPost("/registrations/{registrationId}/firstseen")]
         public Task<IActionResult> RegistrationFirstSeen(Guid registrationId, [FromBody] RegistrationFirstSeenRequestData request)
             => _client.Post($"registrations/{registrationId}/firstseen", request);
+
+        [HttpPost("/registrations/stopped")]
+        public Task<IActionResult> StopRegistration([FromBody] StopRegistrationCommand request)
+            => _client.Post("registrations/stopped", request);
+
     }
 }
