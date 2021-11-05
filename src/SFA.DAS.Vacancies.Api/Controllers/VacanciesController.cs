@@ -28,32 +28,18 @@ namespace SFA.DAS.Vacancies.Api.Controllers
 
         [HttpGet]
         [Route("vacancies")]
-        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null, int? ukprn = null, string accountPublicHashedId = null)
+        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null)
         {
             try
             {
                 var account = new AccountIdentifier(accountIdentifier);
-                switch (account.AccountType)
-                { 
-                    case AccountType.Employer:
-                        accountPublicHashedId = account.AccountPublicHashedId;
-                        //check legalEntityPublishHashedID  matches account before setting value
-                        break;
-                    case AccountType.Provider:
-                        //then the accountLegalEntityPublicHashedId can be set but they must have permission to act on its behalf.
-                        break;
-                    case AccountType.Unknown:
-                        accountLegalEntityPublicHashedId = null;
-                        accountPublicHashedId = null;
-                        break;
-                }
 
                 var queryResponse = await _mediator.Send(new GetVacanciesQuery
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
-                    Ukprn = ukprn,
-                    AccountPublicHashedId = accountPublicHashedId,
+                    Ukprn = account.Ukprn,
+                    AccountPublicHashedId = account.AccountPublicHashedId,
                     AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
                 });
 
