@@ -9,6 +9,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithdrawn;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -113,6 +114,34 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get {nameof(Accepted)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [Route("/accounts/{accountId}/applications/{applicationId}/withdrawn")]
+        public async Task<IActionResult> Withdrawn(int applicationId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetWithdrawnQuery()
+                {
+                    ApplicationId = applicationId,
+                });
+
+                if (result != null)
+                {
+                    return Ok((GetWithdrawnResponse)result);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get {nameof(Withdrawn)} result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
