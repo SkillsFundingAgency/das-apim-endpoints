@@ -17,6 +17,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<VacanciesController> _logger;
 
+
+
         public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger)
         {
             _mediator = mediator;
@@ -25,14 +27,17 @@ namespace SFA.DAS.Vacancies.Api.Controllers
 
         [HttpGet]
         [Route("vacancies")]
-        public async Task<IActionResult> GetVacancies(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetVacancies(int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null, int? ukprn = null, string accountPublicHashedId = null)
         {
             try
             {
                 var queryResponse = await _mediator.Send(new GetVacanciesQuery
                 {
                     PageNumber = pageNumber,
-                    PageSize = pageSize
+                    PageSize = pageSize,
+                    Ukprn = ukprn,
+                    AccountPublicHashedId = accountPublicHashedId,
+                    AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
                 });
 
                 return Ok((GetVacanciesListResponse)queryResponse);

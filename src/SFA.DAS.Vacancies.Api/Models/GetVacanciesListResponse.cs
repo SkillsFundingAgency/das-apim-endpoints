@@ -22,7 +22,7 @@ namespace SFA.DAS.Vacancies.Api.Models
        {
            public long Id { get; set; }
            public string AnonymousEmployerName { get; set; }
-           public int ApprenticeshipLevel { get; set; }
+           public string ApprenticeshipLevel { get; set; }
            public string Category { get; set; }
            public string CategoryCode { get; set; }
            public DateTimeOffset ClosingDate { get; set; }
@@ -34,16 +34,16 @@ namespace SFA.DAS.Vacancies.Api.Models
            public bool IsEmployerAnonymous { get; set; }
            public bool IsPositiveAboutDisability { get; set; }
            public bool IsRecruitVacancy { get; set; }
-           public string Location { get; set; }
+           public Location Location { get; set; }
            public long NumberOfPositions { get; set; }
            public DateTimeOffset PostedDate { get; set; }
            public string ProviderName { get; set; }
-           public long StandardLarsCode { get; set; }
+           public int StandardLarsCode { get; set; }
            public DateTimeOffset StartDate { get; set; }
            public string SubCategory { get; set; }
            public string SubCategoryCode { get; set; }
            public string Title { get; set; }
-           public long Ukprn { get; set; }
+           public int Ukprn { get; set; }
            public string VacancyLocationType { get; set; }
            public long VacancyReference { get; set; }
            public string WageAmount { get; set; }
@@ -53,7 +53,7 @@ namespace SFA.DAS.Vacancies.Api.Models
            public long WageUnit { get; set; }
            public long WageType { get; set; }
            public string WorkingWeek { get; set; }
-           public long Distance { get; set; }
+           public decimal Distance { get; set; }
            public long Score { get; set; }
 
            public static implicit operator GetVacanciesListResponseItem(GetVacanciesItem source)

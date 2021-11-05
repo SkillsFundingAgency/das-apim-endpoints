@@ -25,7 +25,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string AnonymousEmployerName { get; set; }
 
             [JsonProperty("apprenticeshipLevel")]
-            public int ApprenticeshipLevel { get; set; }
+            public string ApprenticeshipLevel { get; set; }
 
             [JsonProperty("category")]
             public string Category { get; set; }
@@ -61,7 +61,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public bool IsRecruitVacancy { get; set; }
 
             [JsonProperty("location")]
-            public string Location { get; set; }
+            public Location Location { get; set; }
 
             [JsonProperty("numberOfPositions")]
             public long NumberOfPositions { get; set; }
@@ -73,7 +73,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string ProviderName { get; set; }
 
             [JsonProperty("standardLarsCode")]
-            public long StandardLarsCode { get; set; }
+            public int StandardLarsCode { get; set; }
 
             [JsonProperty("startDate")]
             public DateTimeOffset StartDate { get; set; }
@@ -88,13 +88,12 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string Title { get; set; }
 
             [JsonProperty("ukprn")]
-            public long Ukprn { get; set; }
+            public int Ukprn { get; set; }
 
             [JsonProperty("vacancyLocationType")]
             public string VacancyLocationType { get; set; }
 
             [JsonProperty("vacancyReference")]
-            [JsonConverter(typeof(string))]
             public long VacancyReference { get; set; }
 
             [JsonProperty("wageAmount")]
@@ -119,7 +118,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string WorkingWeek { get; set; }
 
             [JsonProperty("distance")]
-            public long Distance { get; set; }
+            public decimal Distance { get; set; }
 
             [JsonProperty("score")]
             public long Score { get; set; }
