@@ -9,6 +9,7 @@ namespace SFA.DAS.SharedOuterApi.Models
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public string Route { get; set; }
         public IEnumerable<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
     }
 }
