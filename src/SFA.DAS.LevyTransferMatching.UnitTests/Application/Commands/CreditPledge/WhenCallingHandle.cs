@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -51,6 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreditPled
             var credit = (CreditPledgeRequest.CreditPledgeRequestData)request.Data;
 
             Assert.IsNotNull(result);
+            Assert.IsFalse(result.CreditPledgeSkipped);
             Assert.AreEqual($"pledges/{command.PledgeId}/credit", request.PostUrl);
             Assert.AreEqual(command.Amount, credit.Amount);
             Assert.AreEqual(command.ApplicationId, credit.ApplicationId);
@@ -69,7 +69,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreditPled
 
             var result = await _handler.Handle(command, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.CreditPledgeSkipped);
         }
     }
 }

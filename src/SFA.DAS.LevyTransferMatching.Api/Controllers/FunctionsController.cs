@@ -119,7 +119,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     ApplicationId = request.ApplicationId
                 });
 
-                if (result == null)
+                if (result.CreditPledgeSkipped)
                 {
                     return Ok();
                 }

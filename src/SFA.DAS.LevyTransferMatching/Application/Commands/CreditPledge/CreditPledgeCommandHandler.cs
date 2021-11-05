@@ -24,7 +24,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge
             {
                 _logger.LogInformation($"Amount is 0 for pledge {request.PledgeId} - pledge will *not* be credited");
 
-                return null;
+                return new CreditPledgeCommandResult()
+                {
+                    CreditPledgeSkipped = true,
+                };
             }
 
             _logger.LogInformation($"Crediting pledge {request.PledgeId}");
