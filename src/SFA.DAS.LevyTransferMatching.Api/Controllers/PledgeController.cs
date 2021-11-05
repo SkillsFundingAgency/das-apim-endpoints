@@ -20,6 +20,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsForDownload;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -210,6 +211,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok(new GetApplicationsResponse
             {
                 Applications = ((GetApplicationsQueryResult)queryResult)?.Applications
+            });
+        }
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/download")]
+        public async Task<IActionResult> PledgeApplicationsForDownload(int pledgeId, long accountId)
+        {
+            var queryResult = await _mediator.Send(new GetApplicationsForDownloadQuery { PledgeId = pledgeId, AccountId = accountId });
+
+            return Ok(new GetApplicationsForDownloadResponse
+            {
+                Applications = queryResult.Applications
             });
         }
 

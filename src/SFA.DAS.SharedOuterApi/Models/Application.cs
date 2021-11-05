@@ -24,5 +24,9 @@ namespace SFA.DAS.SharedOuterApi.Models
         public Standard Standard { get; set; }
         public bool IsNamePublic { get; set; }
         public string Status { get; set; }
+        public string AdditionalLocation { get; set; }
+        public string SpecificLocation { get; set; }
+        //public IEnumerable<string> PledgeLocations { get; set; }
+        //public IEnumerable<string> Locations { get; set; }
     }
 }
