@@ -17,8 +17,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplication
         where TQuery : GetApplicationsQueryBase, IRequest<TResult>
         where TResult : GetApplicationsQueryResultBase, new()
     {
-        private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        protected readonly ILevyTransferMatchingService _levyTransferMatchingService;
+        protected readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
 
         protected GetApplicationsQueryHandlerBase(ILevyTransferMatchingService levyTransferMatchingService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
         {
@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplication
             {
                 return new TResult()
                 {
-                    Applications = applicationsResponse.Applications
+                    Applications = null
                 };
             }
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplication
 
             return new TResult
             {
-                Applications = applicationsResponse.Applications
+                Applications = applicationsResponse.Applications.Select(x => (GetApplicationsQueryResultBase.Application)x)
             };
         }
     }
