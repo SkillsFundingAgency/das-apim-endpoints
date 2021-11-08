@@ -17,15 +17,12 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
     public class WhenHandlingGetVacancies
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_Vacancies_Returned
-            (
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_Vacancies_Returned(
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            GetVacanciesQueryHandler handler
-            )
-
-            {
+            GetVacanciesQueryHandler handler)
+        {
             apiClient.Setup(x => x.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>())).ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

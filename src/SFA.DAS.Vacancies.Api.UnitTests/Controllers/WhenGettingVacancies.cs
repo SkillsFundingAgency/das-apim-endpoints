@@ -19,17 +19,19 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator(
+            string accountId,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacanciesController controller)
         {
+            var accountIdentifier = $"Employer-{accountId}";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetVacanciesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetVacancies(1, 10) as ObjectResult;
+            var controllerResult = await controller.GetVacancies(accountIdentifier, 1, 10) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -40,16 +42,18 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
+            string accountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacanciesController controller)
         {
+            var accountIdentifier = $"Employer-{accountId}";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetVacanciesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetVacancies(1,10) as StatusCodeResult;
+            var controllerResult = await controller.GetVacancies(accountIdentifier,1,10) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

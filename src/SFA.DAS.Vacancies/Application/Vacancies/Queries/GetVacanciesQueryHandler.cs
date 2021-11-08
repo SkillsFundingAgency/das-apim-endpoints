@@ -20,18 +20,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
 
-        public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient)
+        public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient, IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
-        }
-
-        public GetVacanciesQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApiClient)
-        {
             _accountsApiClient = accountsApiClient;
-        }
-
-        public GetVacanciesQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
-        {
             _apiClient = apiClient;
         }
 
@@ -46,14 +38,14 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                             new GetProviderAccountLegalEntitiesRequest(request.Ukprn));
                     if (!providerResponse.AccountProviderLegalEntities.Select(c => c.AccountLegalEntityPublicHashedId).Contains(request.AccountLegalEntityPublicHashedId))
                     {
-                        //throw somesecurity exception 
+                        //throw some security exception 
                     }
                 }
                 else if (request.AccountType == AccountType.Employer)
                 {
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
                         new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
-                    if (!resourceListResponse.PublicHashedAccountId.Select(c => c.Id).Contains(request.AccountLegalEntityPublicHashedId))
+                    if (!resourceListResponse.LegalEntities.Select(c => c.Id).Contains(request.AccountLegalEntityPublicHashedId))
                     {
                         //throw some security exception 
                     }
