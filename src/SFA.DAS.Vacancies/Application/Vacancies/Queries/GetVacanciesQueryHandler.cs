@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security;
 using MediatR;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Interfaces;
@@ -38,7 +39,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                             new GetProviderAccountLegalEntitiesRequest(request.Ukprn));
                     if (!providerResponse.AccountProviderLegalEntities.Select(c => c.AccountLegalEntityPublicHashedId).Contains(request.AccountLegalEntityPublicHashedId))
                     {
-                        //throw some security exception 
+                        throw new SecurityException();
                     }
                 }
                 else if (request.AccountType == AccountType.Employer)
@@ -47,7 +48,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                         new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
                     if (!resourceListResponse.LegalEntities.Select(c => c.Id).Contains(request.AccountLegalEntityPublicHashedId))
                     {
-                        //throw some security exception 
+                        throw new SecurityException();
                     }
                 }
             }
