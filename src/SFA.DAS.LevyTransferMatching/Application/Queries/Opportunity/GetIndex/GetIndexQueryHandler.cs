@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 {
@@ -30,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 
             return new GetIndexQueryResult
             {
-                Opportunities = opportunitiesTask.Result.Pledges.Select(x => new GetIndexQueryResult.Opportunity
+                Opportunities = opportunitiesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed).Select(x => new GetIndexQueryResult.Opportunity
                 {
                     Id = x.Id,
                     Amount = x.RemainingAmount,
