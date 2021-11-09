@@ -10,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
     {
         public IEnumerable<ApplicationForDownloadModel> Applications { get; set; }
     }
-
+    
     public class ApplicationForDownloadModel
     {
         public int PledgeId { get; set; }
@@ -19,24 +19,24 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         public string Status { get; set; }
         public string EmployerAccountName { get; set; }
         public IEnumerable<string> Locations { get; set; }
-        public string AdditionalLocation { get; set; }
-        public string SpecificLocation { get; set; }
         public IEnumerable<string> Sectors { get; set; }
-        public string TypeOfJobRole { get; set; }
-        public int Level { get; set; }
-        //public IEnumerable<string> JobRoles { get; set; }
         public int NumberOfApprentices { get; set; }
         public DateTime StartBy { get; set; }
         public bool HasTrainingProvider { get; set; }
         public string AboutOpportunity { get; set; }
-        public int EstimatedDurationMonths { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
         public string BusinessWebsite { get; set; }
-        public IEnumerable<string> PledgeLocations { get; set; }
-        public List<ReferenceDataItem> AllSectors { get; set; }
-        public List<ReferenceDataItem> AllLevels { get; set; }
-        public List<ReferenceDataItem> AllJobRoles { get; set; }
+        public bool IsLocationMatch { get; set; }
+        public bool IsSectorMatch { get; set; }
+        public bool IsJobRoleMatch { get; set; }
+        public bool IsLevelMatch { get; set; }
+        public Standard Standard { get; set; }
+        public int EstimatedDurationMonths { get; set; }
+        public int MaxFunding { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public int Amount { get; set; }
+        public string JobRole { get; set; }
     }
 }

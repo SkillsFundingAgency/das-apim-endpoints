@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -20,6 +21,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IReferenceDataService _referenceDataService;
+        private List<ReferenceDataItem> _allJobRoles;
+        private List<ReferenceDataItem> _allLevels;
+        private List<ReferenceDataItem> _allSectors;
 
 
         public GetApplicationsForDownloadQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
@@ -41,62 +45,110 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             {
                 return new GetApplicationsForDownloadQueryResult
                 {
-
+                    Applications = new List<ApplicationForDownloadModel>()
                 };
             }
 
-            var distinctStandards = applications.Applications.Select(app => app.StandardId).Distinct();
-            var standardTasks = new List<Task<GetStandardsListItem>>(distinctStandards.Count());
+            var standardTasks = RetrieveStandardTasks(applications);
 
-            standardTasks.AddRange(distinctStandards.Select(standardId => _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(standardId))));
-
-            await Task.WhenAll(standardTasks);
-
-            var allJobRolesTask = _referenceDataService.GetJobRoles();
-            var allLevelsTask = _referenceDataService.GetLevels();
-            var allSectorsTask = _referenceDataService.GetSectors();
-
-            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+            await RetrieveFromReferenceDataService();
 
             var applicationModels = new List<ApplicationForDownloadModel>();
 
             foreach (var application in applications.Applications)
             {
-                var standard = standardTasks.Select(s => s.Result).Single(s => s.StandardUId == application.StandardId);
-                var model = new ApplicationForDownloadModel
-                {
-                    Level = standard.Level,
-                    TypeOfJobRole = standard.Title,
-                    EstimatedDurationMonths = standard.TypicalDuration,
-                    AboutOpportunity = application.Details,
-                    AdditionalLocation = application.AdditionalLocation,
-                    AllJobRoles = allJobRolesTask.Result,
-                    AllLevels = allLevelsTask.Result,
-                    AllSectors = allSectorsTask.Result,
-                    ApplicationId = application.Id,
-                    BusinessWebsite = application.BusinessWebsite,
-                    DateApplied = application.CreatedOn,
-                    EmailAddresses = application.EmailAddresses,
-                    EmployerAccountName = application.DasAccountName,
-                    FirstName = application.FirstName,
-                    HasTrainingProvider = application.HasTrainingProvider,
-                    LastName = application.LastName,
-                    NumberOfApprentices = application.NumberOfApprentices,
-                    PledgeId = application.PledgeId,
-                    Sectors = application.Sectors,
-                    SpecificLocation = application.SpecificLocation,
-                    StartBy = application.StartDate,
-                    Status = application.Status
-                    // Locations = application.PledgeLocations?.Where(x => application.Locations.Select(y => y.PledgeLocationId).Contains(application.Id)).Select(x => application.Name),
-                };
+                var standardListItem = standardTasks.First(s => s?.StandardUId == application.StandardId);
+                var standard = BuildStandardFromListItem(standardListItem);
+                var roles = _allJobRoles.Where(x => application.PledgeJobRoles.Contains(x.Id));
 
-                applicationModels.Add(model);
+                BuildApplicationModelAndInsertIntoList(application, standard, standardListItem, roles, applicationModels);
             }
 
             return new GetApplicationsForDownloadQueryResult
             {
                 Applications = applicationModels
             };
+        }
+
+        private static void BuildApplicationModelAndInsertIntoList(SharedOuterApi.Models.Application application, Standard standard,
+            GetStandardsListItem standardListItem, IEnumerable<ReferenceDataItem> roles, List<ApplicationForDownloadModel> applicationModels)
+        {
+            var model = new ApplicationForDownloadModel
+            {
+                AboutOpportunity = application.Details,
+                ApplicationId = application.Id,
+                BusinessWebsite = application.BusinessWebsite,
+                DateApplied = application.CreatedOn,
+                EmailAddresses = application.EmailAddresses,
+                EmployerAccountName = application.DasAccountName,
+                FirstName = application.FirstName,
+                HasTrainingProvider = application.HasTrainingProvider,
+                LastName = application.LastName,
+                NumberOfApprentices = application.NumberOfApprentices,
+                PledgeId = application.PledgeId,
+                Sectors = application.Sectors,
+                StartBy = application.StartDate,
+                Status = application.Status,
+                Standard = standard,
+                EstimatedDurationMonths = standardListItem.TypicalDuration,
+                MaxFunding = standardListItem.MaxFunding,
+                IsLocationMatch = !application.PledgeLocations.Any() || application.Locations.Any(),
+                IsSectorMatch = !application.PledgeSectors.Any() ||
+                                application.Sectors.Any(x => application.PledgeSectors.Contains(x)),
+                IsJobRoleMatch = !application.PledgeJobRoles.Any() || roles.Any(r => r.Description == standard.Route),
+                IsLevelMatch = !application.PledgeLevels.Any() || application.PledgeLevels
+                    .Select(x => char.GetNumericValue(x.Last())).Contains(standard.Level),
+                PledgeRemainingAmount = application.PledgeRemainingAmount,
+                Amount = application.Amount,
+                JobRole = standardListItem.Title
+            };
+
+            applicationModels.Add(model);
+        }
+
+        private static Standard BuildStandardFromListItem(GetStandardsListItem standardListItem)
+        {
+            var standard = new Standard()
+            {
+                LarsCode = standardListItem.LarsCode,
+                Level = standardListItem.Level,
+                StandardUId = standardListItem.StandardUId,
+                Title = standardListItem.Title,
+                ApprenticeshipFunding = standardListItem.ApprenticeshipFunding?.Select(funding =>
+                    new ApprenticeshipFunding()
+                    {
+                        Duration = funding.Duration,
+                        EffectiveFrom = funding.EffectiveFrom,
+                        EffectiveTo = funding.EffectiveTo,
+                        MaxEmployerLevyCap = funding.MaxEmployerLevyCap,
+                    })
+            };
+            return standard;
+        }
+
+        private async Task RetrieveFromReferenceDataService()
+        {
+            var allJobRolesTask = _referenceDataService.GetJobRoles();
+            var allLevelsTask = _referenceDataService.GetLevels();
+            var allSectorsTask = _referenceDataService.GetSectors();
+
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+            
+            _allJobRoles = allJobRolesTask.Result;
+            _allLevels = allLevelsTask.Result;
+            _allSectors = allSectorsTask.Result;
+        }
+
+        private List<GetStandardsListItem> RetrieveStandardTasks(GetApplicationsResponse applications)
+        {
+            var distinctStandards = applications.Applications.Select(app => app.StandardId).Distinct();
+            var standardTasks = new List<GetStandardsListItem>(distinctStandards.Count());
+            var returnedStandards = distinctStandards.Select(async standardId =>
+                await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(standardId)));
+
+            standardTasks.AddRange(returnedStandards.Select(task => task.Result).Where(task => task != null));
+
+            return standardTasks;
         }
     }
 }

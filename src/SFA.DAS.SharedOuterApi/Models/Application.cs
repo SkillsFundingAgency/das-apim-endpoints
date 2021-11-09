@@ -24,15 +24,16 @@ namespace SFA.DAS.SharedOuterApi.Models
         public Standard Standard { get; set; }
         public bool IsNamePublic { get; set; }
         public string Status { get; set; }
-        public string AdditionalLocation { get; set; }
-        public string SpecificLocation { get; set; }
-        //public IEnumerable<string> PledgeLocations { get; set; }
+        public IEnumerable<string> PledgeLocations { get; set; }
+        public IEnumerable<string> PledgeJobRoles { get; set; }
+        public IEnumerable<string> PledgeSectors { get; set; }
+        public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<ApplicationLocation> Locations { get; set; }
         public bool IsLocationMatch { get; set; }
         public bool IsSectorMatch { get; set; }
         public bool IsJobRoleMatch { get; set; }
         public bool IsLevelMatch { get; set; }
-
+        public int PledgeRemainingAmount { get; set; }
         public class ApplicationLocation
         {
             public int Id { get; set; }
