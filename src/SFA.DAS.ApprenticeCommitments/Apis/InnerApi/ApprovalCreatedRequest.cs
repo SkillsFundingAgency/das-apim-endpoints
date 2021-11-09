@@ -3,14 +3,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class CreateApprenticeshipRequest : IPostApiRequest<CreateApprenticeshipRequestData>
+    public class ApprovalCreatedRequest : IPostApiRequest<ApprovalCreatedRequestData>
     {
-        public string PostUrl => "/registrations";
+        public string PostUrl => "/approvals";
 
-        public CreateApprenticeshipRequestData Data { get; set; }
+        public ApprovalCreatedRequestData Data { get; set; }
     }
 
-    public class CreateApprenticeshipRequestData
+    public class ApprovalCreatedRequestData
     {
         public Guid RegistrationId  { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }

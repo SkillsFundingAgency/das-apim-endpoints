@@ -8,7 +8,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.CreateApprenticeshipRequestData;
+using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.ApprovalCreatedRequestData;
 
 #nullable enable
 
