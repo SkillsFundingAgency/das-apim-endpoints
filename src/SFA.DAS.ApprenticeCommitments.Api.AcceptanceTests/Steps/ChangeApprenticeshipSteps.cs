@@ -125,7 +125,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<ChangeRegistrationCommand>();
-            await _context.OuterApiClient.Put("registrations", _request);
+            await _context.OuterApiClient.Put("approvals", _request);
         }
 
         [Then("the response should be OK")]
@@ -196,7 +196,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.CourseName.Should().Be(name);
@@ -210,7 +210,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.FirstName.Should().Be(firstName);
@@ -223,7 +223,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.DateOfBirth.ToString("yyyy-MM-dd").Should().Be(dob);

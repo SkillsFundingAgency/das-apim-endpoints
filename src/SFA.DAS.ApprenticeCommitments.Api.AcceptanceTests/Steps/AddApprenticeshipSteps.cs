@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/registrations")
+                        .WithPath("/approvals")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "ApprenticeshipId != `0` && contains(Email, '@')"))
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath("/registrations")
+                    Request.Create().WithPath("/approvals")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "!contains(Email, '@')"))
@@ -156,7 +156,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
             _request = table.CreateInstance<CreateRegistrationCommand>();
-            await _context.OuterApiClient.Post("registrations", _request);
+            await _context.OuterApiClient.Post("approvals", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -170,7 +170,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.Should().NotBeNull();
@@ -193,7 +193,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
@@ -205,7 +205,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.CourseName.Should().Be(name);
