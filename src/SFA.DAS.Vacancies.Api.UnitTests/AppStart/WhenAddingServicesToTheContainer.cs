@@ -49,8 +49,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("AccountsConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("ProviderRelationshipsApiConfiguration:url", "http://localhost:4")
+                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:4")
                 }
             };
 

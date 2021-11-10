@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
@@ -13,22 +14,22 @@ namespace SFA.DAS.Vacancies.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class VacanciesController : ControllerBase
+    public class VacancyController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<VacanciesController> _logger;
+        private readonly ILogger<VacancyController> _logger;
 
 
 
-        public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger)
+        public VacancyController(IMediator mediator, ILogger<VacancyController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
         [HttpGet]
-        [Route("vacancies")]
-        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null)
+        [Route("")]
+        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null, int? ukprn = null)
         {
             try
             {
@@ -38,13 +39,18 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
-                    Ukprn = account.Ukprn,
+                    Ukprn = account.Ukprn ?? ukprn,
                     AccountPublicHashedId = account.AccountPublicHashedId,
                     AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
                 });
 
                 return Ok((GetVacanciesListResponse)queryResponse);
 
+            }
+            catch (SecurityException e)
+            {
+                _logger.LogInformation($"Unable to get vacancies - {accountLegalEntityPublicHashedId} is not associated with subscription {accountIdentifier}.");
+                return new StatusCodeResult((int) HttpStatusCode.Forbidden);
             }
             catch (Exception e)
             {
