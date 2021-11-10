@@ -32,7 +32,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         {
             if (!string.IsNullOrEmpty(request.AccountLegalEntityPublicHashedId))
             {
-                if (request.AccountType == AccountType.Provider)
+                if (request.Ukprn != null && string.IsNullOrEmpty(request.AccountPublicHashedId))
                 {
                     var providerResponse =
                         await _apiClient.Get<GetProviderAccountLegalEntitiesResponse>(
@@ -42,10 +42,11 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                         throw new SecurityException();
                     }
                 }
-                else if (request.AccountType == AccountType.Employer)
+                
+                if (!string.IsNullOrEmpty(request.AccountPublicHashedId))
                 {
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
-                        new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
+                        new GetAllEmployerAccountLegalEntitiesRequest(request.AccountPublicHashedId));
                     if (!resourceListResponse.LegalEntities.Select(c => c.Id).Contains(request.AccountLegalEntityPublicHashedId))
                     {
                         throw new SecurityException();
