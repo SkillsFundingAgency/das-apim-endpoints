@@ -144,7 +144,6 @@ jobs:
       projects: 'src/SFA.DAS.Vacancies.Manage.Api/SFA.DAS.Vacancies.Manage.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
-      projects: 'src/SFA.DAS.ApimDeveloper.Api/SFA.DAS.ApimDeveloper.Api.csproj'
   - task: DotNetCoreCLI@2
     displayName: 'Publish Find An Apprenticeship Api'
     inputs:
