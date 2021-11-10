@@ -22,6 +22,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
             public List<LocationDataItem> Locations { get; set; }
+            public string Status { get; set; }
 
             public class LocationDataItem
             {
