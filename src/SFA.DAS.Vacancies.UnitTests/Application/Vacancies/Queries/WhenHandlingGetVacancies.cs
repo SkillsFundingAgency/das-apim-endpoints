@@ -169,5 +169,25 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
             providerRelationshipsApiClient.Verify(x=>x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>()), Times.Never);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Is_A_AccountLegalEntityPublicHashedId_And_No_Account_Or_Ukprn_Then_Exception_Thrown(
+                GetVacanciesQuery query,
+                GetVacanciesResponse apiResponse, 
+                AccountDetail accountDetailApiResponse,
+                [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
+                [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+                [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+                GetVacanciesQueryHandler handler)
+        {
+            query.AccountPublicHashedId = null;
+            query.Ukprn = null;
+
+            Assert.ThrowsAsync<SecurityException>(() => handler.Handle(query, CancellationToken.None));
+            
+            providerRelationshipsApiClient.Verify(x=>x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>()), Times.Never);
+            accountsApi.Verify(x => x.Get<AccountDetail>(It.IsAny<GetAllEmployerAccountLegalEntitiesRequest>()), Times.Never);
+            apiClient.Verify(x => x.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>()), Times.Never);
+        }
     }
 }

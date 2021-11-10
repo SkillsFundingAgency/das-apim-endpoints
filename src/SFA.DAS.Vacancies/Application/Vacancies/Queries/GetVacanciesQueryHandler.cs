@@ -32,6 +32,11 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         {
             if (!string.IsNullOrEmpty(request.AccountLegalEntityPublicHashedId))
             {
+                if (request.Ukprn == null && string.IsNullOrEmpty(request.AccountPublicHashedId))
+                {
+                    throw new SecurityException();
+                }
+                
                 if (request.Ukprn != null && string.IsNullOrEmpty(request.AccountPublicHashedId))
                 {
                     var providerResponse =
