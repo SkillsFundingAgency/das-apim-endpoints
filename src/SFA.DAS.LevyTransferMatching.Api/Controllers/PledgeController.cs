@@ -20,6 +20,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationApprovalOptions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -236,6 +237,36 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 {
                     return NotFound();
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approval-options")]
+        public async Task<IActionResult> ApplicationApprovalOptions(int pledgeId, int applicationId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationApprovalOptionsQuery()
+                {
+                    PledgeId = pledgeId,
+                    ApplicationId = applicationId,
+                });
+
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
+
+                var response = (Models.Applications.GetApplicationApprovalOptionsResponse)queryResult;
+
+                return Ok(response);
             }
             catch (Exception e)
             {
