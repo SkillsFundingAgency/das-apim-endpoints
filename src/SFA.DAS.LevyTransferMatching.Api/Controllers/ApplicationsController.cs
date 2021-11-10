@@ -9,6 +9,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -33,7 +34,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 AccountId = accountId
             });
 
-            return Ok(result);
+            return Ok(new GetApplicationsResponse
+            {
+                Applications = result?.Applications.Select(x => (GetApplicationsResponse.Application)x)
+            });
         }
 
         [HttpGet]

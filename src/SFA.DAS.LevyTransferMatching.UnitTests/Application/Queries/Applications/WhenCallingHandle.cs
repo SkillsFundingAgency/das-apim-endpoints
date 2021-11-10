@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -30,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             levyTransferMatchingService.Setup(o => o.GetApplications(It.Is<GetApplicationsRequest>(o => o.AccountId == query.AccountId))).ReturnsAsync(
                 new GetApplicationsResponse
                 {
-                    Applications = new List<SharedOuterApi.Models.Application>()
+                    Applications = new List<GetApplicationsResponse.Application>()
                 }
             );
 
@@ -43,12 +40,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
         [Test, MoqAutoData]
         public async Task AndApplicationsExistReturnsListOfApplications(GetApplicationsQuery query,
             GetApplicationsResponse response,
-            GetStandardsListItem standardsListItem,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> levyTransferMatchingService,
             GetApplicationsQueryHandler handler)
         {
-            response.Applications = new List<SharedOuterApi.Models.Application>
+            response.Applications = new List<GetApplicationsResponse.Application>()
             {
                 response.Applications.First()
             };
@@ -60,15 +55,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
                 }
             );
 
-            standardsListItem.StandardUId = response.Applications.First().StandardId;
-
-            coursesApiClient.Setup(o => o.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(o => o.Id == response.Applications.First().StandardId)))
-                .ReturnsAsync(standardsListItem);
-
             var result = await handler.Handle(query, CancellationToken.None);
 
            Assert.IsTrue(result.Applications.Any());
-           coursesApiClient.Verify(o => o.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Once);
            Assert.AreEqual(response.Applications, response.Applications);
         }
     }
