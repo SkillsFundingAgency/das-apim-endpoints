@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ using SFA.DAS.Vacancies.Interfaces;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using AccountDetail = SFA.DAS.Vacancies.InnerApi.Responses.AccountDetail;
+using GetProviderAccountLegalEntitiesResponse = SFA.DAS.Vacancies.InnerApi.Responses.GetProviderAccountLegalEntitiesResponse;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -122,6 +125,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
             AccountDetail accountDetailApiResponse,
+            GetEmployerAccountLegalEntityItem legalEntity,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
@@ -136,6 +140,10 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                 .Setup(x => x.Get<AccountDetail>(
                     It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{query.AccountPublicHashedId}"))))
                 .ReturnsAsync(accountDetailApiResponse);
+            accountsApi
+                .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
+                    It.IsAny<GetEmployerAccountLegalEntityRequest>()))
+                .ReturnsAsync(legalEntity);
 
             Assert.ThrowsAsync<SecurityException>(() => handler.Handle(query, CancellationToken.None));
             
@@ -147,12 +155,13 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
             AccountDetail accountDetailApiResponse,
+            List<GetEmployerAccountLegalEntityItem> legalEntities,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
-            accountDetailApiResponse.LegalEntities.First().Id =
+            legalEntities.First().AccountLegalEntityPublicHashedId =
                 query.AccountLegalEntityPublicHashedId;
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
@@ -163,6 +172,15 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                 .Setup(x => x.Get<AccountDetail>(
                     It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{query.AccountPublicHashedId}"))))
                 .ReturnsAsync(accountDetailApiResponse);
+            for (var i = 0; i < accountDetailApiResponse.LegalEntities.Count; i++)
+            {
+                var index = i;
+                accountsApi
+                    .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
+                        It.Is<GetEmployerAccountLegalEntityRequest>(request =>
+                            request.GetUrl.Equals(accountDetailApiResponse.LegalEntities[index].Href))))
+                    .ReturnsAsync(legalEntities[index]);
+            }
 
             var actual = await handler.Handle(query, CancellationToken.None);
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security;
 using MediatR;
 using SFA.DAS.Vacancies.Configuration;
@@ -42,7 +43,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                     var providerResponse =
                         await _apiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                             new GetProviderAccountLegalEntitiesRequest(request.Ukprn));
-                    if (!providerResponse.AccountProviderLegalEntities.Select(c => c.AccountLegalEntityPublicHashedId).Contains(request.AccountLegalEntityPublicHashedId))
+                    if (!providerResponse.AccountProviderLegalEntities.Select(c => c.AccountLegalEntityPublicHashedId).Contains(request.AccountLegalEntityPublicHashedId, StringComparer.CurrentCultureIgnoreCase))
                     {
                         throw new SecurityException();
                     }
@@ -52,7 +53,20 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 {
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
                         new GetAllEmployerAccountLegalEntitiesRequest(request.AccountPublicHashedId));
-                    if (!resourceListResponse.LegalEntities.Select(c => c.Id).Contains(request.AccountLegalEntityPublicHashedId))
+                    var isInAccount = false;
+                    foreach (var legalEntity in resourceListResponse.LegalEntities)
+                    {
+                        var legalEntityResponse =
+                            await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
+                                new GetEmployerAccountLegalEntityRequest(legalEntity.Href));
+                        
+                        if (legalEntityResponse.AccountLegalEntityPublicHashedId.Equals(request.AccountLegalEntityPublicHashedId, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            isInAccount = true;
+                            break;
+                        }
+                    }
+                    if (!isInAccount)
                     {
                         throw new SecurityException();
                     }
