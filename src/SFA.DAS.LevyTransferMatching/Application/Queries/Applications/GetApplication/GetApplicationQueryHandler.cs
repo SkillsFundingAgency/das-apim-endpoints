@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 IsNamePublic = application.PledgeIsNamePublic,
                 JobRoles = application.PledgeJobRoles,
                 Levels = application.PledgeLevels,
-                PledgeLocations = application.PledgeLocations,
+                PledgeLocations = application.PledgeLocations.Select(x => x.Name),
                 NumberOfApprentices = application.NumberOfApprentices,
                 RemainingAmount = application.PledgeRemainingAmount,
                 Sectors = application.PledgeSectors,
@@ -80,7 +80,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 OpportunityId = application.PledgeId,
                 Standard = standard,
                 PledgeAmount = application.PledgeAmount,
-                SenderEmployerAccountId = application.SenderEmployerAccountId
+                SenderEmployerAccountId = application.SenderEmployerAccountId,
+                AmountUsed = application.AmountUsed,
+                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed
             };
         }
     }

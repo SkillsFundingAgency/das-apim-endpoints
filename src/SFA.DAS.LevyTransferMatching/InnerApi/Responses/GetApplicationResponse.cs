@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SFA.DAS.LevyTransferMatching.Models;
+using System;
 using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
 {
@@ -19,16 +19,27 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
         public string PledgeEmployerAccountName { get; set; }
+        public List<LocationDataItem> PledgeLocations { get; set; }
         public IEnumerable<string> PledgeSectors { get; set; }
         public IEnumerable<string> PledgeLevels { get; set; }
         public IEnumerable<string> PledgeJobRoles { get; set; }
         public int PledgeRemainingAmount { get; set; }
         public int Amount { get; set; }
-        public List<string> PledgeLocations { get; set; }
+        public List<ApplicationLocation> Locations { get; set; }
+        public string AdditionalLocation { get; set; }
+        public string SpecificLocation { get; set; }
         public string Status { get; set; }
         public bool PledgeIsNamePublic { get; set; }
         public int PledgeId { get; set; }
         public int PledgeAmount { get; set; }
         public long SenderEmployerAccountId { get; set; }
+        public int AmountUsed { get; set; }
+        public int NumberOfApprenticesUsed { get; set; }
+
+        public class ApplicationLocation
+        {
+            public int Id { get; set; }
+            public int PledgeLocationId { get; set; }
+        }
     }
 }

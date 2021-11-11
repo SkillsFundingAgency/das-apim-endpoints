@@ -113,5 +113,35 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             //Assert
             standard.MaxFunding.Should().Be(fundingPrice);
         }
+
+
+        [Test, AutoData]
+        public void Then_If_An_Effective_Date_Is_Provided_The_Funding_Price_As_At_That_Date_Is_Used(int notFundingPrice, int fundingPrice)
+        {
+            var effectiveDate = DateTime.UtcNow;
+
+            //Arrange / Act
+            var standard = new TestStandardResponse
+            {
+                ApprenticeshipFunding = new List<ApprenticeshipFunding>
+                {
+                    new ApprenticeshipFunding
+                    {
+                        EffectiveFrom = effectiveDate.AddDays(-10),
+                        EffectiveTo = effectiveDate.AddDays(-9),
+                        MaxEmployerLevyCap = notFundingPrice
+                    },
+                    new ApprenticeshipFunding
+                    {
+                        EffectiveFrom = effectiveDate.AddDays(-1),
+                        EffectiveTo = null,
+                        MaxEmployerLevyCap = fundingPrice
+                    }
+                }
+            };
+
+            //Assert
+            standard.MaxFundingOn(effectiveDate).Should().Be(fundingPrice);
+        }
     }
 }
