@@ -11,6 +11,6 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
             _accountType = accountType;
         }
 
-        public string GetUrl => $"products?group={_accountType}";
+        public string GetUrl => $"api/products?group={_accountType}";
     }
 }
