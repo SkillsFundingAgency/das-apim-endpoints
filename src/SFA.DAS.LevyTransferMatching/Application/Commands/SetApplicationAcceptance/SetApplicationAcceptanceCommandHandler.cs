@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance
 {
@@ -22,11 +23,18 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAccept
 
         public async Task<bool> Handle(SetApplicationAcceptanceCommand request, CancellationToken cancellationToken)
         {
-            if (request.Acceptance != Types.ApplicationAcceptance.Accept)
-            {
-                throw new NotImplementedException();
-            }
+            HttpStatusCode httpStatusCode;
 
+            if (request.Acceptance == Types.ApplicationAcceptance.Accept)
+                httpStatusCode = await AcceptFunding(request, cancellationToken);
+            else
+                httpStatusCode = await DeclineFunding(request);
+
+            return httpStatusCode == HttpStatusCode.NoContent;
+        }
+
+        private async Task<HttpStatusCode> AcceptFunding(SetApplicationAcceptanceCommand request, CancellationToken cancellationToken)
+        {
             _logger.LogInformation($"Accepting funding for Application {request.ApplicationId}. {request}");
 
             var apiRequestData = new AcceptFundingRequestData
@@ -41,7 +49,26 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAccept
 
             var result = await _levyTransferMatchingService.AcceptFunding(apiRequest, cancellationToken);
 
-            return result.StatusCode == HttpStatusCode.NoContent;
+            return result.StatusCode;
+        }
+
+        private async Task<HttpStatusCode> DeclineFunding(SetApplicationAcceptanceCommand request)
+        {
+            _logger.LogInformation($"Declining funding for Application {request.ApplicationId}. {request}");
+
+            var apiRequestData = new DeclineFundingRequestData
+            {
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName,
+                AccountId = request.AccountId,
+                ApplicationId = request.ApplicationId
+            };
+
+            var apiRequest = new DeclineFundingRequest(request.ApplicationId, request.AccountId, apiRequestData);
+
+            var result = await _levyTransferMatchingService.DeclineFunding(apiRequest);
+
+            return result.StatusCode;
         }
     }
 }
