@@ -28,8 +28,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         private Mock<ILevyTransferMatchingService> _service;
         private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
         private Mock<IReferenceDataService> _referenceDataService;
-        //private GetApplicationsForDownloadQuery _query;
-        //private Models.Account _account;
         private readonly Fixture _fixture = new Fixture();
         private const string StandardId = "1";
 
