@@ -82,7 +82,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 PledgeAmount = application.PledgeAmount,
                 SenderEmployerAccountId = application.SenderEmployerAccountId,
                 AmountUsed = application.AmountUsed,
-                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed
+                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed,
+                AllowTransferRequestAutoApproval = application.AllowTransferRequestAutoApproval
             };
         }
     }

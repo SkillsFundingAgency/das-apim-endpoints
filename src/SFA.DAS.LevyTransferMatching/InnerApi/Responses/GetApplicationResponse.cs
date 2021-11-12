@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public long SenderEmployerAccountId { get; set; }
         public int AmountUsed { get; set; }
         public int NumberOfApprenticesUsed { get; set; }
-
+        public bool AllowTransferRequestAutoApproval { get; set; }
         public class ApplicationLocation
         {
             public int Id { get; set; }

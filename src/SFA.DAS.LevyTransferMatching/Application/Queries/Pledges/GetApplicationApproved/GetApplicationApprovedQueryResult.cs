@@ -7,5 +7,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
     public class GetApplicationApprovedQueryResult
     {
         public string EmployerAccountName { get; set; }
+        public bool AllowTransferRequestAutoApproval { get; set; }
     }
 }

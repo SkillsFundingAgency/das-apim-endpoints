@@ -24,7 +24,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             return new GetApplicationApprovedQueryResult
             {
-                EmployerAccountName = response.EmployerAccountName
+                EmployerAccountName = response.EmployerAccountName,
+                AllowTransferRequestAutoApproval = response.AllowTransferRequestAutoApproval
             };
         }
     }
