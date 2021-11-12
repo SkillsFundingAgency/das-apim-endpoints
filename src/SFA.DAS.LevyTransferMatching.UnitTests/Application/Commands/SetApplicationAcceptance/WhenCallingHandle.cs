@@ -66,17 +66,56 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
             Assert.IsFalse(result);
         }
 
-
         [Test, MoqAutoData]
-        public void And_Acceptance_Is_Decline_Throws_NotImplementedException(
+        public async Task And_Acceptance_Is_Decline_And_Inner_Api_Method_Call_Success_Returns_True(
             SetApplicationAcceptanceCommand setApplicationAcceptanceCommand,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             SetApplicationAcceptanceCommandHandler setApplicationAcceptanceCommandHandler)
         {
             setApplicationAcceptanceCommand.Acceptance = Types.ApplicationAcceptance.Decline;
 
-            // Act/Assert
-            Assert.ThrowsAsync(typeof(NotImplementedException), () => setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None));
+            Func<DeclineFundingRequest, ApiResponse<DeclineFundingRequest>> declineFundingProvider =
+                (x) =>
+                {
+                    return new ApiResponse<DeclineFundingRequest>(
+                        x,
+                        System.Net.HttpStatusCode.NoContent,
+                        null);
+                };
+
+            mockLevyTransferMatchingService
+                .Setup(x => x.DeclineFunding(It.IsAny<DeclineFundingRequest>()))
+                .ReturnsAsync(declineFundingProvider);
+
+            var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Acceptance_Is_Decline_And_Inner_Api_Method_Call_Unsuccessful_Returns_False(
+            SetApplicationAcceptanceCommand setApplicationAcceptanceCommand,
+            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
+            SetApplicationAcceptanceCommandHandler setApplicationAcceptanceCommandHandler)
+        {
+            setApplicationAcceptanceCommand.Acceptance = Types.ApplicationAcceptance.Decline;
+
+            Func<DeclineFundingRequest, ApiResponse<DeclineFundingRequest>> declineFundingProvider =
+                (x) =>
+                {
+                    return new ApiResponse<DeclineFundingRequest>(
+                        x,
+                        System.Net.HttpStatusCode.BadRequest,
+                        null);
+                };
+
+            mockLevyTransferMatchingService
+                .Setup(x => x.DeclineFunding(It.IsAny<DeclineFundingRequest>()))
+                .ReturnsAsync(declineFundingProvider);
+
+            var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
+
+            Assert.IsFalse(result);
         }
     }
 }
