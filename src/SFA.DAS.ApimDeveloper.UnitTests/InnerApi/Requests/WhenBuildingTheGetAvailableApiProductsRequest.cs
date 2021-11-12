@@ -12,7 +12,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.InnerApi.Requests
         {
             var actual = new GetAvailableApiProductsRequest(accountType);
 
-            actual.GetUrl.Should().Be($"products?group={accountType}");
+            actual.GetUrl.Should().Be($"api/products?group={accountType}");
         }
     }
 }
