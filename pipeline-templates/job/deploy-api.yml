@@ -42,16 +42,26 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.ServiceConnection }}
             ScriptPath: das-platform-automation/Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
-            ScriptArguments:
-              -ApimResourceGroup $(ApimResourceGroup) `
-              -InstanceName $(InstanceName) `
-              -AppServiceResourceGroup $(ResourceGroupName) `
-              -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
-              -ApiPath ${{ parameters.ApiPath }} `
-              -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
-              -ProductId ${{ parameters.ProductId }} `
-              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
-              ${{ if(ne(parameters.SandboxProductId, '')) }}:
+            ${{ if(eq(parameters.SandboxProductId, '')) }}:
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+                -ApiPath ${{ parameters.ApiPath }} `
+                -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+                -ProductId ${{ parameters.ProductId }} `
+                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} 
+            ${{ if(ne(parameters.SandboxProductId, '')) }}:
+              ScriptArguments:
+                -ApimResourceGroup $(ApimResourceGroup) `
+                -InstanceName $(InstanceName) `
+                -AppServiceResourceGroup $(ResourceGroupName) `
+                -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+                -ApiPath ${{ parameters.ApiPath }} `
+                -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+                -ProductId ${{ parameters.ProductId }} `
+                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
                 -SandboxProductId ${{ parameters.SandboxProductId }}
             azurePowerShellVersion: LatestVersion
             pwsh: true
