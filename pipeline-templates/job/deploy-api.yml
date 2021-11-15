@@ -51,7 +51,8 @@ jobs:
                 -ApiPath ${{ parameters.ApiPath }} `
                 -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
                 -ProductId ${{ parameters.ProductId }} `
-                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} 
+                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
+                -Verbose
             ${{ if ne(parameters.SandboxProductId, '') }}:
               ScriptArguments:
                 -ApimResourceGroup $(ApimResourceGroup) `
@@ -62,6 +63,7 @@ jobs:
                 -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
                 -ProductId ${{ parameters.ProductId }} `
                 -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
-                -SandboxProductId ${{ parameters.SandboxProductId }}
+                -SandboxProductId ${{ parameters.SandboxProductId }} `
+                -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true
