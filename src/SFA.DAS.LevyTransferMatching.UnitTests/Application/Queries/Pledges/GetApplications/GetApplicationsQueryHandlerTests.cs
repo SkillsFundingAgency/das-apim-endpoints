@@ -39,20 +39,20 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId)))
                 .ReturnsAsync(new GetApplicationsResponse()
                 {
-                    Applications = new List<SharedOuterApi.Models.Application>()
+                    Applications = new List<GetApplicationsResponse.Application>
                     {
-                        new SharedOuterApi.Models.Application()
+                        new GetApplicationsResponse.Application
                         {
                             StandardId = "1"
                         },
-                        new SharedOuterApi.Models.Application()
+                        new GetApplicationsResponse.Application
                         {
                             StandardId = "2"
                         }
                     }
                 });
 
-            _service.Setup(x => x.GetPledge(_query.PledgeId.Value))
+            _service.Setup(x => x.GetPledge(_query.PledgeId))
                 .ReturnsAsync(new Pledge
                 {
                     Locations = new List<LocationDataItem>(),
@@ -100,17 +100,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             _referenceDataService = new Mock<IReferenceDataService>();
             _referenceDataService.Setup(x => x.GetJobRoles()).ReturnsAsync(new List<ReferenceDataItem>());
-        }
-
-        [Test]
-        [AutoData]
-        public async Task Correct_Standard_Is_Added_To_The_Application()
-        {
-            _handler = new GetApplicationsQueryHandler(_service.Object, _coursesApiClient.Object, _referenceDataService.Object);
-
-            var result = await _handler.Handle(_query, CancellationToken.None);
-
-            Assert.IsTrue(result.Applications.All(app => app.Standard.StandardUId == app.StandardId));
         }
     }
 }
