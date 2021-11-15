@@ -10,6 +10,7 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   AppRoleAssignmentsServiceConnection:
+  SandboxProductId: ''
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
@@ -49,6 +50,8 @@ jobs:
               -ApiPath ${{ parameters.ApiPath }} `
               -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
               -ProductId ${{ parameters.ProductId }} `
-              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }}
+              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
+              ${{ if(ne(parameters.SandboxProductId, '')) }}:
+                -SandboxProductId ${{ parameters.SandboxProductId }}
             azurePowerShellVersion: LatestVersion
             pwsh: true
