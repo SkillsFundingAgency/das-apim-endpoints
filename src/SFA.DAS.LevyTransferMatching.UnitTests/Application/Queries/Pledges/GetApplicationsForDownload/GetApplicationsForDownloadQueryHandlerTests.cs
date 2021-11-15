@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             SetupServiceToReturnResponse(query, new GetApplicationsResponse
             {
-                Applications = new List<SharedOuterApi.Models.Application>()
+              //  Applications = new List<SharedOuterApi.Models.Application>()
             });
             
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -80,8 +80,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             if (response.Applications.Any())
             {
-                var responseApplications = new List<SharedOuterApi.Models.Application> {response.Applications.First()};
-                response.Applications = responseApplications;
+                //var responseApplications = new List<SharedOuterApi.Models.Application> {response.Applications.First()};
+                //response.Applications = responseApplications;
                 response.Applications.First().StandardId = StandardId;
             }
 

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -27,6 +30,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public bool IsSectorMatch { get; set; }
             public bool IsJobRoleMatch { get; set; }
             public bool IsLevelMatch { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public IEnumerable<string> EmailAddresses { get; set; }
+            public string BusinessWebsite { get; set; }
+            public string JobRole { get; set; }
+            public int PledgeRemainingAmount { get; set; }
+            public int MaxFunding { get; set; }
+            public string Details { get; set; }
+            public int Level { get; set; }
+            public string EmployerAccountName { get; set; }
+            public IEnumerable<GetApplyResponse.PledgeLocation> PledgeLocations { get; set; }
+            public IEnumerable<InnerApi.Responses.GetApplicationResponse.ApplicationLocation> Locations { get; set; }
+            public string AdditionalLocations { get; set; }
+            public string SpecificLocation { get; set; }
 
             public static implicit operator Application(GetApplicationsQueryResult.Application application)
             {
@@ -46,7 +63,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     IsLocationMatch = application.IsLocationMatch,
                     IsSectorMatch = application.IsSectorMatch,
                     IsJobRoleMatch = application.IsJobRoleMatch,
-                    IsLevelMatch = application.IsLevelMatch
+                    IsLevelMatch = application.IsLevelMatch,
+                    EmailAddresses = application.EmailAddresses,
+                    JobRole = application.JobRole,
+                    BusinessWebsite = application.BusinessWebsite,
+                    PledgeRemainingAmount = application.PledgeRemainingAmount,
+                    MaxFunding = application.StandardMaxFunding,
+                    FirstName = application.FirstName,
+                    LastName = application.LastName,
+                    Details = application.Details,
+                    Level = application.StandardLevel,
+                    EmployerAccountName = application.EmployerAccountName,
+                    PledgeLocations = application.PledgeLocations.Select(o => new GetApplyResponse.PledgeLocation
+                    {
+                        Id = o.Id,
+                        Name = o.Name
+                    }).ToList(),
+                    Locations = application.Locations,
+                    SpecificLocation = application.SpecificLocation,
+                    AdditionalLocations = application.AdditionalLocations
                 };
             }
         }
