@@ -42,7 +42,7 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.ServiceConnection }}
             ScriptPath: das-platform-automation/Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
-            ${{ if(eq(parameters.SandboxProductId, '')) }}:
+            ${{ if eq(parameters.SandboxProductId, '') }}:
               ScriptArguments:
                 -ApimResourceGroup $(ApimResourceGroup) `
                 -InstanceName $(InstanceName) `
@@ -52,7 +52,7 @@ jobs:
                 -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
                 -ProductId ${{ parameters.ProductId }} `
                 -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} 
-            ${{ if(ne(parameters.SandboxProductId, '')) }}:
+            ${{ if ne(parameters.SandboxProductId, '') }}:
               ScriptArguments:
                 -ApimResourceGroup $(ApimResourceGroup) `
                 -InstanceName $(InstanceName) `
