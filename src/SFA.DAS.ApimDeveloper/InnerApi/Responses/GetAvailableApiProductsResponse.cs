@@ -11,6 +11,9 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
 
     public class GetAvailableApiProductItem
     {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("displayName")]
