@@ -35,6 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<string> Locations { get; set; }
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
+        public bool AllowTransferRequestAutoApproval { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -67,7 +68,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AllLevels = result.AllLevels,
                 Locations = result.Locations,
                 AdditionalLocation = result.AdditionalLocation,
-                SpecificLocation = result.SpecificLocation
+                SpecificLocation = result.SpecificLocation,
+                AllowTransferRequestAutoApproval = result.AllowTransferRequestAutoApproval
             };
         }
     }
