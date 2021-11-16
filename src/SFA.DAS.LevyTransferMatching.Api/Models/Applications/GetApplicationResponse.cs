@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 {
     public class GetApplicationResponse
     {
+        public string StandardTitle { get; set; }
+        public int StandardLevel { get; set; }
+        public int StandardDuration { get; set; }
+        public int StandardMaxFunding { get; set; }
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
@@ -23,9 +26,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
+        public int TotalAmount { get; set; }
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
-        public Standard Standard { get; set; }
         public string PledgeEmployerAccountName { get; set; }
         public int PledgeAmount { get; set; }
         public long SenderEmployerAccountId { get; set; }
@@ -35,12 +38,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
-            return new GetApplicationResponse()
+            return new GetApplicationResponse
             {
+                StandardTitle = result.StandardTitle,
+                StandardLevel = result.StandardLevel,
+                StandardDuration = result.StandardDuration,
+                StandardMaxFunding = result.StandardMaxFunding,
                 AllJobRoles = result.AllJobRoles,
                 AllLevels = result.AllLevels,
                 AllSectors = result.AllSectors,
                 Amount = result.Amount,
+                TotalAmount = result.TotalAmount,
                 PledgeAmount = result.PledgeAmount,
                 EmployerAccountName = result.EmployerAccountName,
                 PledgeEmployerAccountName = result.PledgeEmployerAccountName,
@@ -54,7 +62,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 StartBy = result.StartBy,
                 Status = result.Status,
                 OpportunityId = result.OpportunityId,
-                Standard = result.Standard,
                 SenderEmployerAccountId = result.SenderEmployerAccountId,
                 AmountUsed = result.AmountUsed,
                 NumberOfApprenticesUsed = result.NumberOfApprenticesUsed,

@@ -7,6 +7,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
 {
     public class GetApplicationResult
     {
+        public string StandardTitle { get; set; }
+        public int StandardLevel { get; set; }
+        public int StandardDuration { get; set; }
+        public int StandardMaxFunding { get; set; }
         public IEnumerable<string> Sectors { get; set; }
         public IEnumerable<string> Levels { get; set; }
         public IEnumerable<string> JobRoles { get; set; }
@@ -20,9 +24,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public string Status { get; set; }
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
+        public int TotalAmount { get; set; }
         public DateTime StartBy { get; set; }
         public int OpportunityId { get; set; }
-        public Standard Standard { get; set; }
         public string PledgeEmployerAccountName { get; set; }
         public int PledgeAmount { get; set; }
         public long SenderEmployerAccountId { get; set; }
