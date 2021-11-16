@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -19,6 +20,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions
         public async Task Then_The_Api_Is_Called_And_Data_Returned(
             GetApiProductsQuery query, 
             GetAvailableApiProductsResponse apiResponse,
+            GetApiProductSubscriptionsResponse apiSubscriptionsResponse,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> apiClient,
             GetApiProductsQueryHandler handler)
         {
@@ -26,10 +28,15 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions
                 x.Get<GetAvailableApiProductsResponse>(
                     It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith($"?group={query.AccountType}"))))
                 .ReturnsAsync(apiResponse);
+            apiClient.Setup(x =>
+                    x.Get<GetApiProductSubscriptionsResponse>(
+                        It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{query.AccountIdentifier}"))))
+                .ReturnsAsync(apiSubscriptionsResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
             
             actual.Products.Should().BeEquivalentTo(apiResponse.Products);
+            actual.Subscriptions.Should().BeEquivalentTo(apiSubscriptionsResponse.Subscriptions);
         }
     }
 }
