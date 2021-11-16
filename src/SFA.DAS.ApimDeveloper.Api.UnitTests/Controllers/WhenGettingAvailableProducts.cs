@@ -20,30 +20,35 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Data_Returned(
             string accountType,
+            string accountIdentifier,
             GetApiProductsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<GetApiProductsQuery>(c => c.AccountType.Equals(accountType)),
+            mediator.Setup(x => x.Send(It.Is<GetApiProductsQuery>(c => 
+                    c.AccountType.Equals(accountType)
+                    && c.AccountIdentifier.Equals(accountIdentifier)
+                    ),
                 CancellationToken.None)).ReturnsAsync(mediatorResult);
 
-            var actual = await controller.GetAvailableProducts(accountType) as OkObjectResult;
+            var actual = await controller.GetAvailableProducts(accountIdentifier, accountType) as OkObjectResult;
             
             Assert.IsNotNull(actual);
             var actualModel = actual.Value as ProductsApiResponse;
-            actualModel.Should().BeEquivalentTo(mediatorResult);
+            actualModel.Should().BeEquivalentTo(mediatorResult, options=> options.Excluding(c=>c.Subscriptions));
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_Error_Then_Internal_Server_Error_Response(
             string accountType,
+            string accountIdentifier,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetApiProductsQuery>(),
                 CancellationToken.None)).ThrowsAsync(new Exception());
             
-            var actual = await controller.GetAvailableProducts(accountType) as StatusCodeResult;
+            var actual = await controller.GetAvailableProducts(accountIdentifier,accountType) as StatusCodeResult;
             
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
