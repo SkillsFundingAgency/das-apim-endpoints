@@ -19,13 +19,20 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries
         
         public async Task<GetApiProductsQueryResult> Handle(GetApiProductsQuery request, CancellationToken cancellationToken)
         {
-            var result =
-                await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
+            var productsTask =
+                _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
                     new GetAvailableApiProductsRequest(request.AccountType));
 
+            var subscriptionsTask =
+                _apimDeveloperApiClient.Get<GetApiProductSubscriptionsResponse>(
+                    new GetApiProductSubscriptionsRequest(request.AccountIdentifier));
+
+            await Task.WhenAll(productsTask, subscriptionsTask);
+            
             return new GetApiProductsQueryResult
             {
-                Products = result.Products
+                Products = productsTask.Result.Products,
+                Subscriptions = subscriptionsTask.Result.Subscriptions
             };
         }
     }
