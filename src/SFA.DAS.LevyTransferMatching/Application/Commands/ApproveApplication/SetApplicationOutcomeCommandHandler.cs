@@ -22,22 +22,34 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
 
         public async Task<Unit> Handle(SetApplicationOutcomeCommand request, CancellationToken cancellationToken)
         {
-            if (request.Outcome != ApplicationOutcome.Approve)
+            if (request.Outcome == ApplicationOutcome.Approve)
             {
-                throw new NotImplementedException();
+                _logger.LogInformation($"Approving Application {request.ApplicationId} for Pledge {request.PledgeId}");
+
+                var apiRequestData = new ApproveApplicationRequestData
+                {
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                };
+
+                var apiRequest = new ApproveApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
+
+                await _levyTransferMatchingService.ApproveApplication(apiRequest);
             }
-
-            _logger.LogInformation($"Approving Application {request.ApplicationId} for Pledge {request.PledgeId}");
-
-            var apiRequestData = new ApproveApplicationRequestData
+            else if(request.Outcome == ApplicationOutcome.Reject)
             {
-                UserId = request.UserId,
-                UserDisplayName = request.UserDisplayName
-            };
+                _logger.LogInformation($"Rejecting Application {request.ApplicationId} for Pledge {request.PledgeId}");
 
-            var apiRequest = new ApproveApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
+                var apiRequestData = new RejectApplicationRequestData
+                {
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                };
 
-            await _levyTransferMatchingService.ApproveApplication(apiRequest);
+                var apiRequest = new RejectApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
+
+                await _levyTransferMatchingService.RejectApplication(apiRequest);
+            }
 
             return Unit.Value;
         }
