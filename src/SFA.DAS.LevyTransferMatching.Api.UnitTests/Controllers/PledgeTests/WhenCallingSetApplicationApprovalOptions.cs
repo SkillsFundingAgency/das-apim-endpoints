@@ -1,8 +1,6 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.NUnit3;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,7 +9,6 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -44,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task Application_Outcome_Is_Set()
         {
-            await _controller.SetApplicationApprovalOptions(_accountId, _pledgeId, _applicationId, _request);
+            await _controller.SetApplicationApprovalOptions(_pledgeId, _applicationId, _request);
 
             _mediator.Verify(x => x.Send(It.Is<SetApplicationApprovalOptionsCommand>(c =>
                 c.PledgeId == _pledgeId &&
@@ -57,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task OkResponse_Is_Returned()
         {
-            var result = await _controller.SetApplicationApprovalOptions(_accountId, _pledgeId, _applicationId, _request);
+            var result = await _controller.SetApplicationApprovalOptions(_pledgeId, _applicationId, _request);
             Assert.IsInstanceOf<OkResult>(result);
         }
     }
