@@ -29,7 +29,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesQuery>(
@@ -60,7 +60,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Provider-{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesQuery>(
@@ -87,7 +87,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetVacanciesQuery>(),
@@ -105,7 +105,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetVacanciesQuery>(),
