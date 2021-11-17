@@ -54,7 +54,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public List<LocationDataItem> PledgeLocations { get; set; }
             public string AdditionalLocations { get; set; }
             public string SpecificLocation { get; set; }
-
             public static Application BuildApplication(GetApplicationsResponse.Application application,
                 IEnumerable<ReferenceDataItem> roles, Pledge pledgeResponse)
             {

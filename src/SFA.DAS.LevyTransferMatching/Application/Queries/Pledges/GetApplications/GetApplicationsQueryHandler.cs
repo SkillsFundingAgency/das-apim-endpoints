@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 from application in applicationsResponse.Applications
                 let roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id))
                 select GetApplicationsQueryResult.Application.BuildApplication(application, roles, pledgeResponse)).ToList();
-            //GetApplicationsQueryResult.Application
+ 
             return new GetApplicationsQueryResult
             {
                 Applications = result

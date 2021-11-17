@@ -43,6 +43,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public IEnumerable<InnerApi.Responses.GetApplicationResponse.ApplicationLocation> Locations { get; set; }
             public string AdditionalLocations { get; set; }
             public string SpecificLocation { get; set; }
+            public int NumberOfApprentices { get; set; }
+            public IEnumerable<string> Sectors { get; set; }
 
             public static implicit operator Application(GetApplicationsQueryResult.Application application)
             {
@@ -80,7 +82,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     }).ToList(),
                     Locations = application.Locations,
                     SpecificLocation = application.SpecificLocation,
-                    AdditionalLocations = application.AdditionalLocations
+                    AdditionalLocations = application.AdditionalLocations,
+                    NumberOfApprentices = application.NumberOfApprentices,
+                    Sectors = application.Sectors
                 };
             }
         }
