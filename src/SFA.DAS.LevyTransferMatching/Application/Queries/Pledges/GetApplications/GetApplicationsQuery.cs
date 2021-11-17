@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Shared.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications
 {
-    public class GetApplicationsQuery : GetApplicationsQueryBase, IRequest<GetApplicationsQueryResult>
+    public class GetApplicationsQuery : IRequest<GetApplicationsQueryResult>
     {
-
+        public int PledgeId { get; set; }
+        public long AccountId { get; set; }
     }
 }

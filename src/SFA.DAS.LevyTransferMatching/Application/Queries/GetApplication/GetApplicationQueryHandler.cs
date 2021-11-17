@@ -3,24 +3,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
 {
     public class GetApplicationQueryHandler : IRequestHandler<GetApplicationQuery, GetApplicationResult>
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IReferenceDataService _referenceDataService;
 
-        public GetApplicationQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
+        public GetApplicationQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
         {
-            _coursesApiClient = coursesApiClient;
             _levyTransferMatchingService = levyTransferMatchingService;
             _referenceDataService = referenceDataService;
         }
@@ -34,34 +27,29 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 return null;
             }
 
-            var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(application.StandardId));
             var allJobRolesTask = _referenceDataService.GetJobRoles();
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
 
-            await Task.WhenAll(standardTask, allJobRolesTask, allLevelsTask, allSectorsTask);
-
-            var estimatedDurationMonths = standardTask.Result.TypicalDuration;
-            var level = standardTask.Result.Level;
-            var typeOfJobRole = standardTask.Result.Title;
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
 
             var getApplicationResult = new GetApplicationResult()
             {
                 AboutOpportunity = application.Details,
                 BusinessWebsite = application.BusinessWebsite,
                 EmailAddresses = application.EmailAddresses,
-                EstimatedDurationMonths = estimatedDurationMonths,
-                MaxFunding = standardTask.Result.MaxFunding,
+                EstimatedDurationMonths = application.StandardDuration,
+                MaxFunding = application.StandardMaxFunding,
                 Amount = application.Amount,
                 FirstName = application.FirstName,
                 HasTrainingProvider = application.HasTrainingProvider,
                 LastName = application.LastName,
-                Level = level,
+                Level = application.StandardLevel,
                 Location = string.Empty, //replaced in TM-169
                 NumberOfApprentices = application.NumberOfApprentices,
                 Sector = application.Sectors,
                 StartBy = application.StartDate,
-                TypeOfJobRole = typeOfJobRole,
+                TypeOfJobRole = application.StandardTitle,
                 EmployerAccountName = application.EmployerAccountName,
                 Locations = application.PledgeLocations?.Where(x => application.Locations.Select(y => y.PledgeLocationId).Contains(x.Id)).Select(x => x.Name),
                 AdditionalLocation = application.AdditionalLocation,
