@@ -33,38 +33,17 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             var pledgeResponse = await _levyTransferMatchingService.GetPledge(request.PledgeId);
             var roleReferenceData = await _referenceDataService.GetJobRoles();
-
-            var result = new List<GetApplicationsQueryResult.Application>();
             
-            foreach (var application in applicationsResponse.Applications)
-            {
-                var roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id));
-
-                var applicationResult = (GetApplicationsQueryResult.Application)application;
-                
-                AddPledgeDetailsToApplication(applicationResult, pledgeResponse, application, roles);
-                result.Add(applicationResult);
-            }
-
+            var result = (
+                from application in applicationsResponse.Applications
+                let roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id))
+                select GetApplicationsQueryResult.Application.BuildApplication(application, roles, pledgeResponse)).ToList();
+            //GetApplicationsQueryResult.Application
             return new GetApplicationsQueryResult
             {
                 Applications = result
             };
         }
-
-        private static void AddPledgeDetailsToApplication(GetApplicationsQueryResult.Application applicationResult, Pledge pledgeResponse,
-            GetApplicationsResponse.Application application, IEnumerable<ReferenceDataItem> roles)
-        {
-            applicationResult.JobRole = application.StandardTitle;
-            applicationResult.FirstName = application.FirstName;
-            applicationResult.LastName = application.LastName;
-            applicationResult.EmployerAccountName = pledgeResponse.DasAccountName;
-            applicationResult.PledgeRemainingAmount = pledgeResponse.RemainingAmount;
-            applicationResult.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
-            applicationResult.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
-            applicationResult.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || roles.Any(r => r.Description == application.StandardRoute);
-            applicationResult.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Select(x => char.GetNumericValue(x.Last())).Contains(application.StandardLevel);
-            applicationResult.PledgeLocations = pledgeResponse.Locations;
-        }
+        
     }
 }
