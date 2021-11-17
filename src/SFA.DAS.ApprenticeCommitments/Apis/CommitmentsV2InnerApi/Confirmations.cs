@@ -7,7 +7,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public bool? EmployerCorrect { get; set; }
         public bool? TrainingProviderCorrect { get; set; }
         public bool? ApprenticeshipDetailsCorrect { get; set; }
-        public RolesAndResponsibilitiesConfirmations RolesAndResponsibilitiesConfirmations { get; set; }
+        public RolesAndResponsibilitiesConfirmations? RolesAndResponsibilitiesConfirmations { get; set; }
         public bool? HowApprenticeshipDeliveredCorrect { get; set; }
         public bool? ApprenticeshipCorrect { get; set; }
     }
