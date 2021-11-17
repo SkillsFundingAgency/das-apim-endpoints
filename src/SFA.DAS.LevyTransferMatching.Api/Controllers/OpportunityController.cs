@@ -264,6 +264,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 var detailQueryResult = await _mediator.Send(new GetDetailQuery { OpportunityId = opportunityId });
 
+                if(detailQueryResult == null)
+                {
+                    return NotFound();
+                }
+
                 var response = new GetDetailResponse
                 {
                     Opportunity = detailQueryResult.Opportunity,

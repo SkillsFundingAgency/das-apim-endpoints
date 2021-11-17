@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
+using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Extensions;
@@ -101,6 +102,38 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to Debit Application");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Route("application-funding-declined")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationFundingDeclined(ApplicationFundingDeclinedRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreditPledgeCommand
+                {
+                    PledgeId = request.PledgeId,
+                    Amount = request.Amount,
+                    ApplicationId = request.ApplicationId
+                });
+
+                if (result.CreditPledgeSkipped)
+                {
+                    return Ok();
+                }
+
+                if (!result.StatusCode.IsSuccess())
+                {
+                    _logger.LogError($"Error attempting to Credit Pledge {result.ErrorContent}");
+                }
+
+                return new StatusCodeResult((int)result.StatusCode);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to Credit Pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
