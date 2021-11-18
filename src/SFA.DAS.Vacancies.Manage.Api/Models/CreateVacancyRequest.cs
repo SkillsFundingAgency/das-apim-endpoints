@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 
@@ -22,15 +23,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Title = source.Title,
                 Description = source.Description,
                 ProgrammeId = source.ProgrammeId,
-                EmployerAccountId = source.EmployerAccountId,
-                User = source.User,
+                User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 EmployerName = source.EmployerName,
                 ShortDescription = source.ShortDescription,
                 NumberOfPositions = source.NumberOfPositions,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
-                LegalEntityName = source.LegalEntityName,
                 EmployerDescription = source.EmployerDescription,
                 TrainingDescription = source.TrainingDescription,
                 Address = source.Address,
@@ -44,12 +43,16 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 ThingsToConsider = source.ThingsToConsider,
                 Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
                 ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
-                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident
+                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl
             };
         }
 
-        [JsonProperty("user")]
-        public VacancyUser User { get ; set ; }
+        [JsonProperty("submitterContactDetails")]
+        public SubmitterContactDetails SubmitterContactDetails { get ; set ; }
+
+        [JsonProperty("contractingParties")]
+        public ContractingParties ContractingParties { get ; set ; }
 
         [JsonProperty("title", Required = Required.Always)]
         public string Title { get ; set ; }
@@ -57,11 +60,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("description")]
         public string Description { get ; set ; }
 
-        [JsonProperty("programmeId")]
+        [JsonPropertyName("standardLarsCode")]
         public string ProgrammeId { get ; set ; }
-
-        [JsonProperty("EmployerAccountId")]
-        public string EmployerAccountId { get ; set ; }
 
         [JsonProperty("employerName")]
         public string EmployerName { get ; set ; }
@@ -69,16 +69,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string ShortDescription { get ; set ; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get ; set ; }
-        [JsonProperty("outcomeDescription")]//TODO check this is required
+        [JsonProperty("outcomeDescription")]
         public string OutcomeDescription { get ; set ; }
-        [JsonProperty("accountLegalEntityPublicHashedId")]
-        public string AccountLegalEntityPublicHashedId { get ; set ; }
         [JsonProperty("closingDate")]
         public DateTime ClosingDate { get ; set ; }
         [JsonProperty("startDate")]
         public DateTime StartDate { get ; set ; }
-        [JsonProperty("legalEntityName")]
-        public string LegalEntityName { get ; set ; }
         [JsonProperty("employerDescription")]
         public string EmployerDescription { get ; set ; }
         [JsonProperty("trainingDescription")]
@@ -105,6 +101,18 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
         [JsonProperty("thingsToConsider")]
         public string ThingsToConsider { get ; set ; }
+        [JsonProperty("employerWebsiteUrl")]
+        public string EmployerWebsiteUrl { get; set; }
+        
+        public static PostVacancyUserData Map(SubmitterContactDetails submitterContactDetails, ContractingParties contractingParties)
+        {
+            return new PostVacancyUserData
+            {
+                Email = submitterContactDetails.Email,
+                Name = submitterContactDetails.Name,
+                Ukprn = contractingParties.Ukprn
+            };
+        }
     }
     
     public class VacancyUser
@@ -212,6 +220,19 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string Grade { get; set; }
         [JsonProperty("weighting")]
         public QualificationWeighting Weighting { get; set; }
+    }
+
+    public class SubmitterContactDetails
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+    }
+
+    public class ContractingParties
+    {
+        public int Ukprn { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
     
     public enum QualificationWeighting

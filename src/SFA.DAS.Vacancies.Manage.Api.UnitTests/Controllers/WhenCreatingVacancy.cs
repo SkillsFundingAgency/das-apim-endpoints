@@ -13,6 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Api.Controllers;
 using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy;
+using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 {
@@ -34,6 +35,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Employer)
+                        && c.PostVacancyRequestData.EmployerContact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyRequestData.EmployerContact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyRequestData.EmployerContact.Email.Equals(request.SubmitterContactDetails.Email)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
@@ -52,14 +57,16 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            request.User = null;
             var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
-                        && c.PostVacancyRequestData.User.Email == null
+                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Provider)
+                        && c.PostVacancyRequestData.ProviderContact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyRequestData.ProviderContact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyRequestData.ProviderContact.Email.Equals(request.SubmitterContactDetails.Email)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
