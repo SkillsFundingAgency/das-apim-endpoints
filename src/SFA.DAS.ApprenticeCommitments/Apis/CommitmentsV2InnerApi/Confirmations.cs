@@ -15,7 +15,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
     [Flags]
     public enum RolesAndResponsibilitiesConfirmations
     {
-        NoneConfirmed = 0,
+        None = 0,
         ApprenticeRolesAndResponsibilitiesConfirmed = 1,
         EmployerRolesAndResponsibilitiesConfirmed = 2,
         ProviderRolesAndResponsibilitiesConfirmed = 4
