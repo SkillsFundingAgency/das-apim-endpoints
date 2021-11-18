@@ -12,5 +12,6 @@ namespace SFA.DAS.FindEpao.Api.Models
         public IEnumerable<EpaoDeliveryArea> EpaoDeliveryAreas { get; set; }
         public IEnumerable<GetDeliveryAreaListItem> DeliveryAreas { get; set; }
         public IEnumerable<GetCourseListItem> AllCourses { get; set; }
+        public List<GetCourseEpaoStandardsListItem> standardVersions { get; set; }
     }
 }

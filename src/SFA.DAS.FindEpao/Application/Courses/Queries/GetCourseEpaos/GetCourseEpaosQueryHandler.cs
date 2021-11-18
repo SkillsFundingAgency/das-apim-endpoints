@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -48,6 +49,18 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
             var filteredEpaos = epaosTask.Result
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
+
+            foreach (var filtEPAO in filteredEpaos)
+            {
+                var standardsTask = await _assessorsApiClient.Get<GetStandardsExtendedListResponse>(
+                    new GetCourseEpaosStandardVersionsRequest(filtEPAO.EpaoId, request.CourseId));
+
+                foreach (var Version in standardsTask)
+                {
+                    filtEPAO.CourseEpaoDetails.standardVersions.Add(Version);                                                          
+                }
+            }
+
             _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");
             
             return new GetCourseEpaosResult

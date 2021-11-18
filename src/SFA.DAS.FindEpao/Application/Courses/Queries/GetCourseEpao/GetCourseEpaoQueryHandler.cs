@@ -55,8 +55,9 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var epaoCoursesTask = _assessorsApiClient.GetAll<GetEpaoCourseListItem>(new GetEpaoCoursesRequest(request.EpaoId));
             var areasTask = _cachedDeliveryAreasService.GetDeliveryAreas();
             var coursesTask = _cachedCoursesService.GetCourses();
-            
-            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask);
+            var standardVerTask = _assessorsApiClient.GetAll<GetStandardVersionsListItem>(new GetEpaosStandardVersionsRequest(request.EpaoId));
+
+            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask, standardVerTask);
 
             if (epaoTask.Result == default)
             {
@@ -92,7 +93,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                AllCourses = allCourses
+                AllCourses = allCourses,
+                standardVersions = standardVerTask.Result.ToList()
             };
         }
     }
