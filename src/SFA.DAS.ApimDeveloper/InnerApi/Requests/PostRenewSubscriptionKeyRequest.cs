@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
 {
-    public class PostRenewSubscriptionKeyRequest : IPostApiRequest<PostRenewSubscriptionKeyRequestBody>
+    public class PostRenewSubscriptionKeyRequest : IPostApiRequest
     {
         public PostRenewSubscriptionKeyRequest(string accountIdentifier, string productId)
         {
@@ -14,7 +14,7 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
         }
 
         public string PostUrl => "api/subscription/renew";
-        public PostRenewSubscriptionKeyRequestBody Data { get; set; }
+        public object Data { get; set; }
     }
     
     public class PostRenewSubscriptionKeyRequestBody
