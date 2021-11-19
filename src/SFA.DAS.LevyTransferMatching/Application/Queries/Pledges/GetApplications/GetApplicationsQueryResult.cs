@@ -4,7 +4,6 @@ using System.Linq;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications
