@@ -23,12 +23,16 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         }
         
         [HttpGet]
-        [Route("products")]
-        public async Task<IActionResult> GetAvailableProducts(string accountType)
+        [Route("products/{accountIdentifier}")]
+        public async Task<IActionResult> GetAvailableProducts([FromRoute]string accountIdentifier, string accountType)
         {
             try
             {
-                var result = await _mediator.Send(new GetApiProductsQuery { AccountType = accountType });
+                var result = await _mediator.Send(new GetApiProductsQuery 
+                { 
+                    AccountType = accountType, 
+                    AccountIdentifier = accountIdentifier
+                });
                 return Ok((ProductsApiResponse)result);
             }
             catch (Exception e)
