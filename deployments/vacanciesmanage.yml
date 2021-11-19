@@ -18,8 +18,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ##TO DO: revert to latest tag
-    ref: refs/heads/DASD-9228-DeploySandboxApi
+    ref: refs/tags/4.5.7
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
