@@ -89,6 +89,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
 
 - stage: Deploy_TEST2
   dependsOn: []
@@ -118,6 +119,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
 #
 #- stage: Deploy_PP
 #  dependsOn: []
@@ -147,6 +149,7 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+#      SandboxProductId: $(VacanciesManageSandboxProductId)
 #
 #- stage: Deploy_PROD
 #  dependsOn: []
@@ -176,6 +179,7 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+#      SandboxProductId: $(VacanciesManageSandboxProductId)
 #
 #- stage: Deploy_MO
 #  dependsOn: []
@@ -205,6 +209,7 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+#      SandboxProductId: $(VacanciesManageSandboxProductId)
 #
 #- stage: Deploy_DEMO
 #  dependsOn: []
@@ -234,3 +239,4 @@ stages:
 #      ProductId: $(VacanciesManageProductId)
 #      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
 #      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+#      SandboxProductId: $(VacanciesManageSandboxProductId)
