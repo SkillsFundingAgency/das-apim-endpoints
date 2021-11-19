@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -21,17 +20,18 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Sent(
-            RenewSubscriptionKeyApiRequest apiRequest,
+            string id,
+            string productId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] SubscriptionsController controller)
         {
             mockMediator.Setup(x => x.Send(It.Is<RenewSubscriptionKeyCommand>(c =>
-                    c.AccountIdentifier.Equals(apiRequest.AccountIdentifier)
-                    && c.ProductId.Equals(apiRequest.ProductId)
+                    c.AccountIdentifier.Equals(id)
+                    && c.ProductId.Equals(productId)
                 ), CancellationToken.None))
                 .ReturnsAsync(Unit.Value);
 
-            var actual = await controller.RenewSubscriptionKey(apiRequest) as IStatusCodeActionResult;
+            var actual = await controller.RenewSubscriptionKey(id, productId) as IStatusCodeActionResult;
 
             actual!.StatusCode.Should().Be((int) HttpStatusCode.NoContent);
             /*mockMediator.Verify(x => x.Send(It.Is<RenewSubscriptionKeyCommand>(c =>
@@ -44,7 +44,8 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_HttpException_It_Is_Returned(
             string errorContent,
-            RenewSubscriptionKeyApiRequest apiRequest,
+            string id,
+            string productId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] SubscriptionsController controller)
         {
@@ -53,7 +54,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
                     CancellationToken.None))
                 .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest, errorContent));
             
-            var controllerResult = await controller.RenewSubscriptionKey(apiRequest) as ObjectResult;
+            var controllerResult = await controller.RenewSubscriptionKey(id, productId) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
@@ -61,7 +62,8 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_An_Error_A_ServerError_Is_Returned(
-            RenewSubscriptionKeyApiRequest apiRequest,
+            string id,
+            string productId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] SubscriptionsController controller)
         {
@@ -70,7 +72,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
                     CancellationToken.None))
                 .ThrowsAsync(new ApplicationException());
             
-            var controllerResult = await controller.RenewSubscriptionKey(apiRequest) as IStatusCodeActionResult;
+            var controllerResult = await controller.RenewSubscriptionKey(id, productId) as IStatusCodeActionResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }

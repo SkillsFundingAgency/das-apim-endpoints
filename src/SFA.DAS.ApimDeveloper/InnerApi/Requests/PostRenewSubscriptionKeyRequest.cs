@@ -4,22 +4,16 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
 {
     public class PostRenewSubscriptionKeyRequest : IPostApiRequest
     {
+        private readonly string _accountIdentifier;
+        private readonly string _productId;
+
         public PostRenewSubscriptionKeyRequest(string accountIdentifier, string productId)
         {
-            Data = new PostRenewSubscriptionKeyRequestBody
-            {
-                AccountIdentifier = accountIdentifier,
-                ProductId = productId
-            };
+            _accountIdentifier = accountIdentifier;
+            _productId = productId;
         }
 
-        public string PostUrl => "api/subscription/renew";
+        public string PostUrl => $"api/subscription/{_accountIdentifier}/renew/{_productId}";
         public object Data { get; set; }
-    }
-    
-    public class PostRenewSubscriptionKeyRequestBody
-    {
-        public string AccountIdentifier { get; set; }
-        public string ProductId { get; set; }
     }
 }

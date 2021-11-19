@@ -1,11 +1,9 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
@@ -47,15 +45,15 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         }
         
         [HttpPost]
-        [Route("/renew")]
-        public async Task<IActionResult> RenewSubscriptionKey([FromBody] RenewSubscriptionKeyApiRequest request)
+        [Route("{id}/renew/{productId}")]
+        public async Task<IActionResult> RenewSubscriptionKey([FromRoute]string id, [FromRoute]string productId)
         {
             try
             {
                 await _mediator.Send(new RenewSubscriptionKeyCommand
                 {
-                    AccountIdentifier = request.AccountIdentifier,
-                    ProductId = request.ProductId
+                    AccountIdentifier = id,
+                    ProductId = productId
                 });
 
                 return NoContent();

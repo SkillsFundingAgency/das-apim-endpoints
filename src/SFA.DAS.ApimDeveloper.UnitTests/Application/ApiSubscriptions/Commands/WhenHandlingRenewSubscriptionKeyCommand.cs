@@ -25,9 +25,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
             //Assert
             mockApiClient.Verify(x => x.PostWithResponseCode<string>(
                     It.Is<PostRenewSubscriptionKeyRequest>(c =>
-                        c.PostUrl.Contains($"api/subscription/renew")
-                        && ((PostRenewSubscriptionKeyRequestBody)c.Data).AccountIdentifier == command.AccountIdentifier
-                        && ((PostRenewSubscriptionKeyRequestBody)c.Data).ProductId == command.ProductId)),
+                        c.PostUrl.Contains($"api/subscription/{command.AccountIdentifier}/renew/{command.ProductId}"))),
                 Times.Once);
         }
     }

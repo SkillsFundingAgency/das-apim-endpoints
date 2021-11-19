@@ -12,10 +12,8 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.InnerApi.Requests
         {
             var actual = new PostRenewSubscriptionKeyRequest(accountIdentifier, productId);
 
-            actual.PostUrl.Should().Be("api/subscription/renew");
-            actual.Data.Should().NotBeNull();
-            ((PostRenewSubscriptionKeyRequestBody)actual.Data).AccountIdentifier.Should().Be(accountIdentifier);
-            ((PostRenewSubscriptionKeyRequestBody)actual.Data).ProductId.Should().Be(productId);
+            actual.PostUrl.Should().Be($"api/subscription/{accountIdentifier}/renew/{productId}");
+            actual.Data.Should().BeNull();
         }
     }
 }
