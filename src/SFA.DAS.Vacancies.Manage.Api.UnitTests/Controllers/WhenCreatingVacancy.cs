@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -123,6 +124,27 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_SecurityException_Bad_Request_Is_Returned(
+            Guid id,
+            string errorContent,
+            CreateVacancyRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}-product";
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<CreateVacancyCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new SecurityException("Error"));
+            
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+
+            controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
         }
         
         [Test, MoqAutoData]

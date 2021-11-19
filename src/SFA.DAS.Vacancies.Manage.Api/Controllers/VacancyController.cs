@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -66,11 +67,15 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                     PostVacancyRequestData = postVacancyRequestData
                 });
 
-                return new CreatedResult("", new {response.VacancyReference});
+                return new CreatedResult("", new { response.VacancyReference });
             }
             catch (HttpRequestContentException e)
             {
                 return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (SecurityException e)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.Forbidden);
             }
             catch (Exception e)
             {
