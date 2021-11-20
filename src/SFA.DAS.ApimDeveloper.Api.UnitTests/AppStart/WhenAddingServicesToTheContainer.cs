@@ -8,6 +8,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApimDeveloper.Api.AppStart;
+using SFA.DAS.ApimDeveloper.Configuration;
+using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -17,6 +19,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
+        [TestCase(typeof(IApimDeveloperApiClient<ApimDeveloperApiConfiguration>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -41,7 +44,8 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1")
+                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2")
                 }
             };
 
