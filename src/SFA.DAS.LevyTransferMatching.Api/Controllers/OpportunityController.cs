@@ -254,6 +254,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return NotFound();
             }
 
+                if(detailQueryResult == null)
+                {
+                    return NotFound();
+                }
+
             var response = new GetDetailResponse
             {
                 Opportunity = detailQueryResult.Opportunity,

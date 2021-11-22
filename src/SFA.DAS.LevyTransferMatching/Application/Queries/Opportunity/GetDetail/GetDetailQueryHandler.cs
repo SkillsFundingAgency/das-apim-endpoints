@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail
 {
@@ -28,6 +29,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail
             var levelsTask = _referenceDataService.GetLevels();
 
             await Task.WhenAll(opportunityTask, sectorsTask, jobRolesTask, levelsTask);
+
+            if (opportunityTask.Result.Status == PledgeStatus.Closed)
+            {
+                return null;
+            }
 
             return new GetDetailQueryResult
             {

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetIndex
@@ -76,6 +77,19 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_levels, result.Levels);
+        }
+
+        [Test]
+        public async Task Handle_Does_Not_Return_Closed_Opportunities()
+        {
+            foreach(var pledge in _pledges.Pledges)
+            {
+                pledge.Status = PledgeStatus.Closed;
+            }
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            CollectionAssert.AreEqual(result.Opportunities, Enumerable.Empty<Pledge>());
         }
     }
 }
