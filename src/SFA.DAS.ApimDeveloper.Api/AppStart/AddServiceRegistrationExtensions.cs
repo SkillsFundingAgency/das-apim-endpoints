@@ -1,6 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.ApimDeveloper.Configuration;
+using SFA.DAS.ApimDeveloper.Interfaces;
+using SFA.DAS.ApimDeveloper.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -17,6 +20,7 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>, ApimDeveloperApiClient>();
         }
     }
 }
