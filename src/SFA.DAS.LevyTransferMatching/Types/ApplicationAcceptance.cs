@@ -3,6 +3,7 @@
     public enum ApplicationAcceptance
     {
         Accept,
-        Decline
+        Decline,
+        Withdraw
     }
 }
