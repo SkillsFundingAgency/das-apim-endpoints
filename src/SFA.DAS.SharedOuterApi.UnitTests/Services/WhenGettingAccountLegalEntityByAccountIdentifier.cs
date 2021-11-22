@@ -72,6 +72,42 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         }
 
         [Test, MoqAutoData]
+        public async Task Then_If_The_Account_Not_Found_Then_Null_Returned(
+            string accountLegalEntityPublicHashedId,
+            AccountDetail accountDetailApiResponse,
+            GetEmployerAccountLegalEntityItem legalEntityItem,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
+            AccountLegalEntityPermissionService service)
+        {
+            var accountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
+            accountsApi
+                .Setup(x => x.Get<AccountDetail>(
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountPublicHashedId}"))))
+                .ReturnsAsync((AccountDetail)null);
+            
+            var actual = await service.GetAccountLegalEntity(accountIdentifier, accountLegalEntityPublicHashedId);
+
+            actual.Should().BeNull();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Provider_Not_Found_Then_Null_Returned(
+            string accountLegalEntityPublicHashedId,
+            AccountDetail accountDetailApiResponse,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            AccountLegalEntityPermissionService service)
+        {
+            var accountIdentifier = new AccountIdentifier("Provider-123456-Product");
+            providerRelationshipsApiClient.Setup(x =>
+                x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetProviderAccountLegalEntitiesRequest>(c =>
+                    c.GetUrl.Contains(accountIdentifier.Ukprn.ToString())))).ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
+            
+            var actual = await service.GetAccountLegalEntity(accountIdentifier, accountLegalEntityPublicHashedId);
+
+            actual.Should().BeNull();
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_If_Provider_The_Provider_Relations_Api_Is_Checked(
             int ukprn,
             string accountLegalEntityPublicHashedId,

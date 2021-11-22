@@ -27,6 +27,11 @@ namespace SFA.DAS.SharedOuterApi.Services
                     var providerResponse =
                         await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                             new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn));
+                    if (providerResponse == null)
+                    {
+                        return null;
+                        
+                    }
                     var legalEntityItem = providerResponse.AccountProviderLegalEntities
                         .FirstOrDefault(c => c.AccountLegalEntityPublicHashedId.Equals(
                             accountLegalEntityPublicHashedId, StringComparison.CurrentCultureIgnoreCase));
@@ -45,6 +50,12 @@ namespace SFA.DAS.SharedOuterApi.Services
                 case AccountType.Employer:
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
                         new GetAllEmployerAccountLegalEntitiesRequest(accountIdentifier.AccountPublicHashedId));
+
+                    if (resourceListResponse == null)
+                    {
+                        return null;
+                    }
+                    
                     foreach (var legalEntity in resourceListResponse.LegalEntities)
                     {
                         var legalEntityResponse =
