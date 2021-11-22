@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -55,9 +56,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var epaoCoursesTask = _assessorsApiClient.GetAll<GetEpaoCourseListItem>(new GetEpaoCoursesRequest(request.EpaoId));
             var areasTask = _cachedDeliveryAreasService.GetDeliveryAreas();
             var coursesTask = _cachedCoursesService.GetCourses();
-            var standardVerTask = _assessorsApiClient.GetAll<GetStandardVersionsListItem>(new GetEpaosStandardVersionsRequest(request.EpaoId));
 
-            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask, standardVerTask);
+            await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask);
 
             if (epaoTask.Result == default)
             {
@@ -77,13 +77,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             var courseEpao = filteredCourseEpaos.Single(item => 
                 string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase));
-            
-            var filterAdditionalCourses = epaoCoursesTask.Result
-                .Where(x => _courseEpaoIsValidFilterService.ValidateEpaoStandardDates(x.DateStandardApprovedOnRegister,
-                    x.EffectiveTo, x.EffectiveFrom)).ToList();
-            var allCourses = coursesTask.Result.Standards
-                .Where(course =>filterAdditionalCourses 
-                    .Any(item => item.StandardCode == course.LarsCode));
+
+            var standardVers = epaoCoursesTask.Result.SelectMany(x => x.StandardVersions);
 
             return new GetCourseEpaoResult
             {
@@ -93,8 +88,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                AllCourses = allCourses,
-                standardVersions = standardVerTask.Result.ToList()
+                standardVersions = standardVers
             };
         }
     }

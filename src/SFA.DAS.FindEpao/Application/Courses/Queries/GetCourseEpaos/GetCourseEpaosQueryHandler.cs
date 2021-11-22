@@ -50,15 +50,19 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
 
-            foreach (var filtEPAO in filteredEpaos)
+            List<Task<List<GetStandardsExtendedListItem>>> standardsTasks = new List<Task<List<GetStandardsExtendedListItem>>>();
+            Parallel.ForEach(filteredEpaos, filtEPAO =>
             {
-                var standardsTask = await _assessorsApiClient.Get<GetStandardsExtendedListResponse>(
-                    new GetCourseEpaosStandardVersionsRequest(filtEPAO.EpaoId, request.CourseId));
+                standardsTasks.Add(_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
+                    new GetCourseEpaosStandardVersionsRequest(filtEPAO.EpaoId, request.CourseId)));
+                
+            });
+            await Task.WhenAll(standardsTasks);
 
-                foreach (var Version in standardsTask)
-                {
-                    filtEPAO.CourseEpaoDetails.standardVersions.Add(Version);                                                          
-                }
+            for (int i = 0; i < standardsTasks.Count; i++)
+            {
+                if (standardsTasks[i].Result != null)
+                    filteredEpaos[i].CourseEpaoDetails.standardVersions = standardsTasks[i].Result;
             }
 
             _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");

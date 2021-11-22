@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.FindEpao.InnerApi.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,9 +12,7 @@ namespace SFA.DAS.FindEpao.Api.Models
         public string City { get; set; }
         public string Postcode { get; set; }
         public DateTime EffectiveFrom { get; set; }
-
         public List<StandardVersions> standardVersions { get; set; }
-
         public IEnumerable<EpaoDeliveryArea> DeliveryAreas { get; set; }
 
         public static implicit operator GetCourseEpaoListItem(InnerApi.Responses.GetCourseEpaoListItem source)
@@ -26,11 +25,8 @@ namespace SFA.DAS.FindEpao.Api.Models
                 Postcode = source.Postcode,
                 DeliveryAreas = source.DeliveryAreas.Select(area => (EpaoDeliveryArea)area),
                 EffectiveFrom = (DateTime)source.CourseEpaoDetails.EffectiveFrom,
-                standardVersions = source.CourseEpaoDetails.standardVersions.ConvertAll(x => 
-                                        new StandardVersions { standardUId = x.standardUId, dateVersionApproved = x.dateVersionApproved, 
-                                        effectiveFrom = x.effectiveFrom, effectiveTo = x.effectiveTo, larsCode = x.larsCode, 
-                                        status = x.status, title = x.title, version = x.version})
-        };
+                standardVersions = source.CourseEpaoDetails.standardVersions.Select(x => (StandardVersions)x).ToList()
+            };
         }
     }
 
@@ -46,14 +42,28 @@ namespace SFA.DAS.FindEpao.Api.Models
 
     public class StandardVersions
     {
-            public string standardUId { get; set; }
-            public string title { get; set; }
-            public int larsCode { get; set; }
-            public string version { get; set; }
-            public DateTime? effectiveFrom { get; set; }
-            public DateTime? effectiveTo { get; set; }
-            public DateTime? dateVersionApproved { get; set; }
-            public string status { get; set; }
+        public string StandardUId { get; set; }
+        public string Title { get; set; }
+        public int LarsCode { get; set; }
+        public string Version { get; set; }
+        public DateTime? EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
+        public DateTime? DateVersionApproved { get; set; }
+        public string Status { get; set; }
+
+        public static implicit operator StandardVersions(InnerApi.Responses.GetStandardsExtendedListItem source)
+        {
+            return new StandardVersions
+            {
+                DateVersionApproved = source.DateVersionApproved,
+                EffectiveFrom = source.EffectiveFrom,
+                EffectiveTo = source.EffectiveTo,
+                LarsCode = source.LarsCode,
+                StandardUId = source.StandardUId,
+                Status = source.Status,
+                Title = source.Title,
+                Version = source.Version
+            };
+        }
     }
-            
 }

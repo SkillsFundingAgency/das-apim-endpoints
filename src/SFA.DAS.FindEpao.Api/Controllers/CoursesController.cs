@@ -105,9 +105,6 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                 var queryResult = await _mediator.Send(new GetCourseEpaoQuery
                     {CourseId = id, EpaoId = epaoId});
 
-
-
-
                 var model = new GetCourseEpaoResponse
                 {
                     Course = queryResult.Course,
@@ -118,15 +115,8 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                         .Select(area => (EpaoDeliveryArea)area),
                     DeliveryAreas = queryResult.DeliveryAreas
                         .Select(item => (GetDeliveryAreaListItem)item),
-                    AllCourses = queryResult.AllCourses
-                        .Select(item => (GetCourseListItem)item),
-
-                    standardVersions = queryResult.standardVersions.ConvertAll(x => new GetCourseEpaoStandardsListItem { Id = x.Id, dateStandardApprovedOnRegister = x.dateStandardApprovedOnRegister,
-                       effectiveFrom = x.effectiveFrom, effectiveTo = x.effectiveTo, organisationId = x.organisationId, standardCode = x.standardCode, standardReference = x.standardReference,
-                        standardVersions = x.standardVersions.ConvertAll(y => new GetCourseEpaoStandardsListItem.StandardsListItem { 
-                            dateVersionApproved = y.dateVersionApproved, version = y.version, effectiveFrom = y.effectiveFrom, 
-                            effectiveTo = y.effectiveTo, larsCode = y.larsCode, standardUId = y.standardUId, status = y.status , title = y.title }) 
-                        })
+                    standardVersions = queryResult.standardVersions
+                        .Select(item => (GetCourseEpaoStandardsListItem)item).ToList()
                 };
 
                 return Ok(model);

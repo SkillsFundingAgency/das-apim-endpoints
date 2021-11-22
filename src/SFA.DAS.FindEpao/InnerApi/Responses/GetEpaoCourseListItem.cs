@@ -8,5 +8,6 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
         public DateTime? DateStandardApprovedOnRegister { get; set; }
+        public GetStandardsExtendedListResponse StandardVersions { get; set; }
     }
 }
