@@ -64,6 +64,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
+                    AccountIdentifier = account,
                     PostVacancyRequestData = postVacancyRequestData
                 });
 

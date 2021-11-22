@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Api.Controllers;
 using SFA.DAS.Vacancies.Manage.Api.Models;
@@ -34,6 +35,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
+                        && c.AccountIdentifier.AccountType == AccountType.Employer
+                        && c.AccountIdentifier.Ukprn == null
+                        && c.AccountIdentifier.AccountPublicHashedId == accountId
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
                         && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Employer)
@@ -62,6 +66,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
+                        && c.AccountIdentifier.AccountType == AccountType.Provider
+                        && c.AccountIdentifier.Ukprn == ukprn
+                        && c.AccountIdentifier.AccountPublicHashedId == null
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
                         && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Provider)
