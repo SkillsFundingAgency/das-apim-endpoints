@@ -8,6 +8,7 @@ namespace SFA.DAS.FindEpao.Api.Models
         public int Level { get ; set ; }
         public int Id { get ; set ; }
         public bool IntegratedApprenticeship { get ; set ; }
+        public string Versions { get; set; }
 
         public static implicit operator GetCourseListItem(GetStandardsListItem standard)
         {
@@ -16,7 +17,8 @@ namespace SFA.DAS.FindEpao.Api.Models
                 Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
-                IntegratedApprenticeship = standard.IntegratedApprenticeship
+                IntegratedApprenticeship = standard.IntegratedApprenticeship,
+                Versions = standard.Versions
             };
         }
     }

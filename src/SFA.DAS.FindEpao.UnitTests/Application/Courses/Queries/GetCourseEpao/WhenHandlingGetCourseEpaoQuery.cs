@@ -140,6 +140,9 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             result.CourseEpaosCount.Should().Be(courseEpaosApiResponse.Count(item => item.EpaoId == query.EpaoId.ToLower()));//filter returns true
             result.Course.Should().BeEquivalentTo(coursesFromCache.Standards.Single(item => item.LarsCode == query.CourseId));
             result.DeliveryAreas.Should().BeEquivalentTo(areasFromCache);
+            result.AllCourses.Should().BeEquivalentTo(
+                    coursesFromCache.Standards.Where(item =>
+                    epaoCoursesApiResponse.Any(listItem => listItem.StandardCode == item.LarsCode)));
             foreach (var courseListItem in epaoCoursesApiResponse)
             {
                 mockCourseEpaoFilter.Verify(x=>x.ValidateEpaoStandardDates(courseListItem.DateStandardApprovedOnRegister,courseListItem.EffectiveTo,courseListItem.EffectiveFrom), 

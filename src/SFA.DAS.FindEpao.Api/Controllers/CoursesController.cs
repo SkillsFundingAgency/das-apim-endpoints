@@ -115,6 +115,8 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                         .Select(area => (EpaoDeliveryArea)area),
                     DeliveryAreas = queryResult.DeliveryAreas
                         .Select(item => (GetDeliveryAreaListItem)item),
+                    AllCourses = queryResult.AllCourses
+                        .Select(item => (GetCourseListItem)item),
                     standardVersions = queryResult.standardVersions
                         .Select(item => (GetCourseEpaoStandardsListItem)item).ToList()
                 };

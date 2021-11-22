@@ -51,14 +51,13 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 .ToList();
 
             List<Task<List<GetStandardsExtendedListItem>>> standardsTasks = new List<Task<List<GetStandardsExtendedListItem>>>();
-            Parallel.ForEach(filteredEpaos, filtEPAO =>
-            {
-                standardsTasks.Add(_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
-                    new GetCourseEpaosStandardVersionsRequest(filtEPAO.EpaoId, request.CourseId)));
-                
-            });
-            await Task.WhenAll(standardsTasks);
 
+            foreach (var filtEpao in filteredEpaos)
+                standardsTasks.Add(_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
+                     new GetCourseEpaosStandardVersionsRequest(filtEpao.EpaoId, request.CourseId)));
+            
+            await Task.WhenAll(standardsTasks);
+            
             for (int i = 0; i < standardsTasks.Count; i++)
             {
                 if (standardsTasks[i].Result != null)

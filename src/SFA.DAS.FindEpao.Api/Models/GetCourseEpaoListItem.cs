@@ -42,26 +42,16 @@ namespace SFA.DAS.FindEpao.Api.Models
 
     public class StandardVersions
     {
-        public string StandardUId { get; set; }
-        public string Title { get; set; }
-        public int LarsCode { get; set; }
         public string Version { get; set; }
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
-        public DateTime? DateVersionApproved { get; set; }
-        public string Status { get; set; }
 
         public static implicit operator StandardVersions(InnerApi.Responses.GetStandardsExtendedListItem source)
         {
             return new StandardVersions
             {
-                DateVersionApproved = source.DateVersionApproved,
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
-                LarsCode = source.LarsCode,
-                StandardUId = source.StandardUId,
-                Status = source.Status,
-                Title = source.Title,
                 Version = source.Version
             };
         }

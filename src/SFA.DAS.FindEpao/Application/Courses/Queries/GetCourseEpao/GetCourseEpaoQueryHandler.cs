@@ -78,7 +78,16 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var courseEpao = filteredCourseEpaos.Single(item => 
                 string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase));
 
+            var filterAdditionalCourses = epaoCoursesTask.Result
+                .Where(x => _courseEpaoIsValidFilterService.ValidateEpaoStandardDates(x.DateStandardApprovedOnRegister,
+                    x.EffectiveTo, x.EffectiveFrom)).ToList();
+            var allCourses = coursesTask.Result.Standards
+                .Where(course => filterAdditionalCourses
+                    .Any(item => item.StandardCode == course.LarsCode));
+
             var standardVers = epaoCoursesTask.Result.SelectMany(x => x.StandardVersions);
+            foreach (var course in allCourses)
+                course.Versions = string.Join(", ", standardVers.Where(x => x.LarsCode == course.LarsCode).Select(x => x.Version));
 
             return new GetCourseEpaoResult
             {
@@ -88,7 +97,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                standardVersions = standardVers
+                AllCourses = allCourses,
+                standardVersions = standardVers.Where(item => item.LarsCode == request.CourseId && item.status == "Live")
             };
         }
     }
