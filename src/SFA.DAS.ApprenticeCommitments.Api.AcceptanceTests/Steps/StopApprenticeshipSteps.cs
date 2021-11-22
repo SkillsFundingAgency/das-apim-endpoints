@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/registrations/stopped")
+                        .WithPath("/approvals/stopped")
                         .UsingPost()
                       )
                 .RespondWith(
@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public async Task WhenTheFollowingApprenticeshipIsPosted()
         {
             _request = _fixture.Create<StopRegistrationCommand>();
-            await _context.OuterApiClient.Post("registrations/stopped", _request);
+            await _context.OuterApiClient.Post("approvals/stopped", _request);
         }
 
         [Then("the response should be OK")]
