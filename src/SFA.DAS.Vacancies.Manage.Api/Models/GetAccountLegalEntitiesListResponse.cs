@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAccountLegalEntities;
-using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Models
 {

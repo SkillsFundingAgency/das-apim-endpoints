@@ -12,13 +12,13 @@ using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
-using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
 using SFA.DAS.Vacancies.Manage.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
