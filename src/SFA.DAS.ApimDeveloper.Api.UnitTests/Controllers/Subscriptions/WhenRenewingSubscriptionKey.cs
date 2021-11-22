@@ -34,11 +34,11 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers.Subscriptions
             var actual = await controller.RenewSubscriptionKey(id, productId) as IStatusCodeActionResult;
 
             actual!.StatusCode.Should().Be((int) HttpStatusCode.NoContent);
-            /*mockMediator.Verify(x => x.Send(It.Is<RenewSubscriptionKeyCommand>(c =>
-                    c.AccountIdentifier.Equals(accountIdentifier)
+            mockMediator.Verify(x => x.Send(It.Is<RenewSubscriptionKeyCommand>(c =>
+                    c.AccountIdentifier.Equals(id)
                     && c.ProductId.Equals(productId)
                 ), CancellationToken.None),
-                Times.Once);*/
+                Times.Once);
         }
         
         [Test, MoqAutoData]
