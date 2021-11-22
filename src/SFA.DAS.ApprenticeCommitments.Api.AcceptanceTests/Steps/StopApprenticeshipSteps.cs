@@ -15,7 +15,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
-        private StopRegistrationCommand _request;
+        private StopApprovalCommand _request;
 
         public StopApprenticeshipSteps(TestContext context)
         {
@@ -36,7 +36,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("an apprenticeship stop is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted()
         {
-            _request = _fixture.Create<StopRegistrationCommand>();
+            _request = _fixture.Create<StopApprovalCommand>();
             await _context.OuterApiClient.Post("approvals/stopped", _request);
         }
 
@@ -50,7 +50,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         public void ThenTheRequestToTheInnerApiWasMappedCorrectly()
         {
             _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
-                .And.ShouldBeJson<StopRegistrationCommand>()
+                .And.ShouldBeJson<StopApprovalCommand>()
                 .Which.Should().BeEquivalentTo(_request);
         }
     }
