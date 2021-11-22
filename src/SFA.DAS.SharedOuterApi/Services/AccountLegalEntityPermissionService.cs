@@ -67,7 +67,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                             return new AccountLegalEntityItem
                             {
                                 Name = legalEntityResponse.AccountLegalEntityName,
-                                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+                                AccountLegalEntityPublicHashedId = legalEntityResponse.AccountLegalEntityPublicHashedId
                             };
                         }
                     }
