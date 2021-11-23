@@ -87,18 +87,18 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             var standardVers = epaoCoursesTask.Result.SelectMany(x => x.StandardVersions);
             foreach (var course in allCourses)
-                course.Versions = string.Join(", ", standardVers.Where(x => x.LarsCode == course.LarsCode).Select(x => x.Version));
+                course.StandardVersions = string.Join(", ", standardVers.Where(x => x.LarsCode == course.LarsCode).Select(x => x.Version));
 
             return new GetCourseEpaoResult
             {
                 Epao = epaoTask.Result,
                 Course = coursesTask.Result.Standards.Single(item => item.LarsCode == request.CourseId),
+                StandardVersions = standardVers.Where(x => x.LarsCode == request.CourseId).OrderByDescending(x=>x.Version),
                 EpaoDeliveryAreas = courseEpao.DeliveryAreas,
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                AllCourses = allCourses,
-                standardVersions = standardVers.Where(item => item.LarsCode == request.CourseId && item.status == "Live")
+                AllCourses = allCourses
             };
         }
     }

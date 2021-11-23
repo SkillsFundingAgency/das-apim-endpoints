@@ -50,20 +50,19 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
 
-            List<Task<List<GetStandardsExtendedListItem>>> standardsTasks = new List<Task<List<GetStandardsExtendedListItem>>>();
+            IDictionary<string, Task<List<GetStandardsExtendedListItem>>> standardsTasks = 
+                new Dictionary<string, Task<List<GetStandardsExtendedListItem>>>();
 
             foreach (var filtEpao in filteredEpaos)
-                standardsTasks.Add(_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
+                standardsTasks.Add(filtEpao.EpaoId,_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
                      new GetCourseEpaosStandardVersionsRequest(filtEpao.EpaoId, request.CourseId)));
             
-            await Task.WhenAll(standardsTasks);
-            
-            for (int i = 0; i < standardsTasks.Count; i++)
-            {
-                if (standardsTasks[i].Result != null)
-                    filteredEpaos[i].CourseEpaoDetails.standardVersions = standardsTasks[i].Result;
-            }
+            await Task.WhenAll(standardsTasks.Select(x => x.Value));
 
+            foreach (var filt in filteredEpaos)
+                filt.CourseEpaoDetails.StandardVersions = standardsTasks[filt.EpaoId].Result.Where(c => 
+                    _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo)).Select(x => x.Version).ToArray();
+           
             _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");
             
             return new GetCourseEpaosResult

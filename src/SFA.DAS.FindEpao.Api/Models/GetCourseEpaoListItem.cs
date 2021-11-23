@@ -12,8 +12,8 @@ namespace SFA.DAS.FindEpao.Api.Models
         public string City { get; set; }
         public string Postcode { get; set; }
         public DateTime EffectiveFrom { get; set; }
-        public List<StandardVersions> standardVersions { get; set; }
         public IEnumerable<EpaoDeliveryArea> DeliveryAreas { get; set; }
+        public string[] StandardVersions { get; set; }
 
         public static implicit operator GetCourseEpaoListItem(InnerApi.Responses.GetCourseEpaoListItem source)
         {
@@ -25,7 +25,7 @@ namespace SFA.DAS.FindEpao.Api.Models
                 Postcode = source.Postcode,
                 DeliveryAreas = source.DeliveryAreas.Select(area => (EpaoDeliveryArea)area),
                 EffectiveFrom = (DateTime)source.CourseEpaoDetails.EffectiveFrom,
-                standardVersions = source.CourseEpaoDetails.standardVersions.Select(x => (StandardVersions)x).ToList()
+                StandardVersions = source.CourseEpaoDetails.StandardVersions
             };
         }
     }

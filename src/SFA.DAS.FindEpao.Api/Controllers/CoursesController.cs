@@ -108,6 +108,8 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                 var model = new GetCourseEpaoResponse
                 {
                     Course = queryResult.Course,
+                    StandardVersions = queryResult.StandardVersions
+                        .Select(item => (StandardVersions)item),
                     Epao = queryResult.Epao,
                     CourseEpaosCount = queryResult.CourseEpaosCount,
                     EffectiveFrom = queryResult.EffectiveFrom,
@@ -116,9 +118,7 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                     DeliveryAreas = queryResult.DeliveryAreas
                         .Select(item => (GetDeliveryAreaListItem)item),
                     AllCourses = queryResult.AllCourses
-                        .Select(item => (GetCourseListItem)item),
-                    standardVersions = queryResult.standardVersions
-                        .Select(item => (GetCourseEpaoStandardsListItem)item).ToList()
+                        .Select(item => (GetAllCoursesListItem)item)
                 };
 
                 return Ok(model);

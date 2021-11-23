@@ -8,11 +8,11 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
     {
         public GetEpaoResponse Epao { get; set; }
         public GetStandardsListItem Course { get; set; }
+        public IEnumerable<GetStandardsExtendedListItem> StandardVersions { get; set; }
         public int CourseEpaosCount { get; set; }
         public DateTime EffectiveFrom { get; set; }
         public IEnumerable<EpaoDeliveryArea> EpaoDeliveryAreas { get; set; }
         public IEnumerable<GetDeliveryAreaListItem> DeliveryAreas { get; set; }
         public IEnumerable<GetStandardsListItem> AllCourses { get; set; }
-        public IEnumerable<GetStandardsExtendedListItem> standardVersions { get; set; }
     }
 }

@@ -8,7 +8,6 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
 
         public CourseEpaoDetails()
         {
-            standardVersions = new List<GetStandardsExtendedListItem>();
         }
 
 
@@ -16,7 +15,7 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
         public DateTime? DateStandardApprovedOnRegister { get; set; }
-        public List<GetStandardsExtendedListItem> standardVersions { get; set; }
+        public string[] StandardVersions { get; set; }
     }
 
 }
