@@ -47,7 +47,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as IStatusCodeActionResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request, isSandbox) as IStatusCodeActionResult;
 
             controllerResult.StatusCode.Should().Be((int) expectedStatusCode);
         }
@@ -62,17 +62,16 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}";
-            var isSandbox = false;
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
-                        && c.IsSandbox.Equals(isSandbox)
+                        && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as CreatedResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
             controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
@@ -89,18 +88,17 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             request.User = null;
             var accountIdentifier = $"Provider-{ukprn}";
-            var isSandbox = false;
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
                         && c.PostVacancyRequestData.User.Email == null
-                        && c.IsSandbox.Equals(isSandbox)
+                        && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as CreatedResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
             controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
@@ -113,9 +111,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             CreateVacancyRequest request,
             [Greedy] VacancyController controller)
         {
-            var isSandbox = false;
             
-            var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), isSandbox, id, request) as StatusCodeResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), id, request) as StatusCodeResult;
             
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
         }
@@ -128,9 +125,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var ukprn = "ABC123";
             var accountIdentifier = $"Provider-{ukprn}";
-            var isSandbox = false;
             
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as BadRequestObjectResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
             
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
             controllerResult.Value.Should().BeEquivalentTo("Account Identifier is not in the correct format.");
@@ -146,14 +142,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}";
-            var isSandbox = false;
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,errorContent));
             
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as ObjectResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
@@ -169,14 +164,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         {
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}";
-            var isSandbox = false;
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
-            var controllerResult = await controller.CreateVacancy(accountIdentifier, isSandbox, id, request) as StatusCodeResult;
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
             
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }

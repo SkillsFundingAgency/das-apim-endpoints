@@ -27,15 +27,15 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
-            [FromHeader(Name = "x-request-context-subscription-is-sandbox")] bool isSandbox, 
             [FromRoute]Guid id, 
-            [FromBody]CreateVacancyRequest request)
+            [FromBody]CreateVacancyRequest request, 
+            [FromHeader(Name = "x-request-context-subscription-is-sandbox")] bool? isSandbox = false)
         {
             try
             {
                 var account = new AccountIdentifier(accountIdentifier);
 
-                if (isSandbox)
+                if (isSandbox.HasValue && isSandbox.Value)
                 {
                     if (id == Guid.Empty)
                         return new BadRequestObjectResult(new {errors = new[]{"Unable to create Vacancy. Vacancy already submitted"}});
@@ -64,7 +64,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 {
                     Id = id,
                     PostVacancyRequestData = request,
-                    IsSandbox = isSandbox
+                    IsSandbox = isSandbox ?? false
                 });
 
                 return new CreatedResult("", new {response.VacancyReference});
