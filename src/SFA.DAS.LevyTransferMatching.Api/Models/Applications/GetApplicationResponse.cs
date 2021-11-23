@@ -22,8 +22,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public bool IsNamePublic { get; set; }
         public string EmployerAccountName { get; set; }
         public string Status { get; set; }
-        public string JobRole { get; set; }
-        public int Level { get; set; }
         public int NumberOfApprentices { get; set; }
         public int Amount { get; set; }
         public int TotalAmount { get; set; }

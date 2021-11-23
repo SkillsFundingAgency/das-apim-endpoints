@@ -45,8 +45,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
-            getApplicationResponse.PledgeLocations = null;
-
             mockLevyTransferMatchingService
                 .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getApplicationQuery.PledgeId.ToString()) && y.GetUrl.Contains(getApplicationQuery.ApplicationId.ToString()))))
                 .ReturnsAsync(getApplicationResponse);
