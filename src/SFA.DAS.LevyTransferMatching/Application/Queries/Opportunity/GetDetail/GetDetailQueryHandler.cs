@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail
 
             await Task.WhenAll(opportunityTask, sectorsTask, jobRolesTask, levelsTask);
 
-            if (opportunityTask.Result.Status == PledgeStatus.Closed)
+            if (opportunityTask.Result?.Status == PledgeStatus.Closed)
             {
                 return null;
             }

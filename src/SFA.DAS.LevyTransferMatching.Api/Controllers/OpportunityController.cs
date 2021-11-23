@@ -254,11 +254,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 return NotFound();
             }
 
-                if(detailQueryResult == null)
-                {
-                    return NotFound();
-                }
-
             var response = new GetDetailResponse
             {
                 Opportunity = detailQueryResult.Opportunity,
@@ -266,7 +261,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 JobRoles = detailQueryResult.JobRoles,
                 Levels = detailQueryResult.Levels,
             };
-            
+
             return Ok(response);
         }
 

@@ -113,25 +113,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("/accounts/{accountId}/applications/{applicationId}/declined")]
         public async Task<IActionResult> Declined(int applicationId)
         {
-            try
+            var result = await _mediator.Send(new GetDeclinedQuery()
             {
-                var result = await _mediator.Send(new GetDeclinedQuery()
-                {
-                    ApplicationId = applicationId,
-                });
+                ApplicationId = applicationId,
+            });
 
-                if (result != null)
-                {
-                    return Ok((GetDeclinedResponse)result);
-                }
-
-                return NotFound();
-            }
-            catch (Exception e)
+            if (result != null)
             {
-                _logger.LogError(e, $"Error attempting to get {nameof(Declined)} result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return Ok((GetDeclinedResponse)result);
             }
+
+            return NotFound();
         }
 
         [HttpGet]
@@ -141,25 +133,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("/accounts/{accountId}/applications/{applicationId}/withdrawn")]
         public async Task<IActionResult> Withdrawn(int applicationId)
         {
-            try
+            var result = await _mediator.Send(new GetWithdrawnQuery()
             {
-                var result = await _mediator.Send(new GetWithdrawnQuery()
-                {
-                    ApplicationId = applicationId,
-                });
+                ApplicationId = applicationId,
+            });
 
-                if (result != null)
-                {
-                    return Ok((GetWithdrawnResponse)result);
-                }
-
-                return NotFound();
-            }
-            catch (Exception e)
+            if (result != null)
             {
-                _logger.LogError(e, $"Error attempting to get {nameof(Withdrawn)} result");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return Ok((GetWithdrawnResponse)result);
             }
+
+            return NotFound();
         }
     }
 }
