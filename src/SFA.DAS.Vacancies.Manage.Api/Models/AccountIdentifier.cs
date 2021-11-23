@@ -11,7 +11,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
             
             var identifierParts = accountIdentifier?.Split('-');
             
-            if (string.IsNullOrEmpty(accountIdentifier) || !(identifierParts.Length == 2 || identifierParts.Length == 3))
+            if (string.IsNullOrEmpty(accountIdentifier) || identifierParts.Length != 2)
             {
                 AccountType = AccountType.Unknown;
                 return;
@@ -34,17 +34,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 case AccountType.Unknown:
                     break;
             }
-
-            if (identifierParts.Length == 3 && identifierParts[2].ToUpper() == "SANDBOX")
-            {
-                IsSandbox = true;
-            }
         }
 
         public AccountType AccountType { get; }
         public string AccountPublicHashedId { get; }
         public int? Ukprn { get; }
-        public bool IsSandbox { get; }
     }
 
     public enum AccountType
