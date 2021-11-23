@@ -115,9 +115,24 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.PostWithResponseCode<AcceptFundingRequest>(request);
         }
 
+        public async Task WithdrawApplication(WithdrawApplicationRequest request, CancellationToken cancellationToken = default)
+        {
+            await _levyTransferMatchingApiClient.PostWithResponseCode<WithdrawApplicationRequest>(request);
+        }
+
         public async Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DebitApplicationRequest>(request);
+        }
+
+        public async Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request);
+        }
+
+        public async Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<CreditPledgeRequest>(request);
         }
     }
 }
