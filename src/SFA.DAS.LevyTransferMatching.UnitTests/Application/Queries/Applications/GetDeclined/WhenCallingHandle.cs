@@ -26,17 +26,22 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
         public async Task And_Application_Exists_Response_Returned(
             GetDeclinedQuery getDeclinedQuery,
             GetApplicationResponse getApplicationResponse,
+            Models.Pledge pledgeResponse,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             GetDeclinedQueryHandler getDeclinedQueryHandler)
         {
             mockLevyTransferMatchingService
                 .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getDeclinedQuery.ApplicationId.ToString()))))
                 .ReturnsAsync(getApplicationResponse);
+           
+            mockLevyTransferMatchingService
+                .Setup(x => x.GetPledge(It.Is<int>(y => y == getApplicationResponse.PledgeId)))
+                .ReturnsAsync(pledgeResponse);
 
             var result = await getDeclinedQueryHandler.Handle(getDeclinedQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(getApplicationResponse.PledgeEmployerAccountName, result.EmployerAccountName);
+            Assert.AreEqual(pledgeResponse.DasAccountName, result.EmployerAccountName);
         }
 
         [Test, MoqAutoData]

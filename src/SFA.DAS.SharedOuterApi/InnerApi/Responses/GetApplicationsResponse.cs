@@ -34,7 +34,17 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public bool IsNamePublic { get; set; }
             public string Status { get; set; }
             public IEnumerable<ApplicationLocation> Locations { get; set; }
- 
+            public string JobRole { get; set; }
+            public int PledgeRemainingAmount { get; set; }
+            public int MaxFunding { get; set; }
+            public string EmployerAccountName { get; set; }
+            public bool IsLocationMatch { get; set; }
+            public bool IsSectorMatch { get; set; }
+            public bool IsJobRoleMatch { get; set; }
+            public bool IsLevelMatch { get; set; }
+            public List<GetPledgesResponse.Pledge.LocationDataItem> PledgeLocations { get; set; }
+            public string SpecificLocation { get; set; }
+            public string AdditionalLocations { get; set; }
             public class ApplicationLocation
             {
                 public int Id { get; set; }
