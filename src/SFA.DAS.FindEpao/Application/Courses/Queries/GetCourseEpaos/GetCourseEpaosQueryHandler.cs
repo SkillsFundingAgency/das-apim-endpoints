@@ -60,9 +60,16 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
             await Task.WhenAll(standardsTasks.Select(x => x.Value));
 
             foreach (var filt in filteredEpaos)
-                filt.CourseEpaoDetails.StandardVersions = standardsTasks[filt.EpaoId].Result.Where(c => 
-                    _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo)).Select(x => x.Version).ToArray();
-           
+            {
+                if (standardsTasks.ContainsKey(filt.EpaoId))
+                {
+                    if (standardsTasks[filt.EpaoId].Result != null)
+                        filt.CourseEpaoDetails.StandardVersions = standardsTasks[filt.EpaoId].Result
+                            .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
+                            .Select(x => x.Version).ToArray();
+                }
+            }
+
             _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");
             
             return new GetCourseEpaosResult
