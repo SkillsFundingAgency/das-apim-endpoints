@@ -12,7 +12,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.InnerApi.Requests
         {
             var actual = new PostCreateSubscriptionKeyRequest(accountIdentifier, productId);
 
-            actual.PostUrl.Should().Be("api/subscriptions");
+            actual.PostUrl.Should().Be("api/subscription");
             var actualData = actual.Data as CreateSubscriptionApiRequest;
             Assert.IsNotNull(actualData);
             actualData.AccountIdentifier.Should().Be(accountIdentifier);

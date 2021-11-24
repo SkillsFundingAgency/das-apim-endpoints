@@ -13,7 +13,7 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
             };
         }
 
-        public string PostUrl => "api/subscriptions";
+        public string PostUrl => "api/subscription";
         public object Data { get; set; }
     }
     
