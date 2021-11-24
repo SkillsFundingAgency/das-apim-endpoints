@@ -1,6 +1,4 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
-
-namespace SFA.DAS.Vacancies.Manage.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface IProviderRelationshipsApiClient<T> : IInternalApiClient<T>
     {
