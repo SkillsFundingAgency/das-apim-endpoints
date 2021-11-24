@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -29,27 +28,17 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             var pledgeResponse = await _levyTransferMatchingService.GetPledge(request.PledgeId);
             var roleReferenceData = await _referenceDataService.GetJobRoles();
-
-            var result = new List<GetApplicationsQueryResult.Application>();
             
-            foreach (var application in applicationsResponse.Applications)
-            {
-                var roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id));
-
-                var applicationResult = (GetApplicationsQueryResult.Application)application;
-
-                applicationResult.IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any();
-                applicationResult.IsSectorMatch = !pledgeResponse.Sectors.Any() || application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x));
-                applicationResult.IsJobRoleMatch = !pledgeResponse.JobRoles.Any() || roles.Any(r => r.Description == application.StandardRoute);
-                applicationResult.IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels.Select(x => char.GetNumericValue(x.Last())).Contains(application.StandardLevel);
-
-                result.Add(applicationResult);
-            }
-
+            var result = (
+                from application in applicationsResponse.Applications
+                let roles = roleReferenceData.Where(x => pledgeResponse.JobRoles.Contains(x.Id))
+                select GetApplicationsQueryResult.Application.BuildApplication(application, roles, pledgeResponse)).ToList();
+ 
             return new GetApplicationsQueryResult
             {
                 Applications = result
             };
         }
+        
     }
 }
