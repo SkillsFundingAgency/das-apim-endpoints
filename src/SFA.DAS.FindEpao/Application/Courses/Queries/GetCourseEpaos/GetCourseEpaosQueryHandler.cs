@@ -50,23 +50,23 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
 
-            IDictionary<string, Task<List<GetStandardsExtendedListItem>>> standardsTasks = 
-                new Dictionary<string, Task<List<GetStandardsExtendedListItem>>>();
+            var epaoTasks = filteredEpaos.
+                  ToDictionary(
+                  t => t.EpaoId,
+                  t => _assessorsApiClient.Get<IEnumerable<GetStandardsExtendedListItem>>(
+                      new GetCourseEpaosStandardVersionsRequest(t.EpaoId, request.CourseId)));
+
+            await Task.WhenAll(epaoTasks.Select(x => x.Value).ToArray());
 
             foreach (var filtEpao in filteredEpaos)
-                standardsTasks.Add(filtEpao.EpaoId,_assessorsApiClient.Get<List<GetStandardsExtendedListItem>>(
-                     new GetCourseEpaosStandardVersionsRequest(filtEpao.EpaoId, request.CourseId)));
-            
-            await Task.WhenAll(standardsTasks.Select(x => x.Value));
-
-            foreach (var filt in filteredEpaos)
             {
-                if (standardsTasks.ContainsKey(filt.EpaoId))
+                if (epaoTasks.TryGetValue(filtEpao.EpaoId, out var epaoResponse) && epaoResponse.Result != null)
                 {
-                    if (standardsTasks[filt.EpaoId].Result != null)
-                        filt.CourseEpaoDetails.StandardVersions = standardsTasks[filt.EpaoId].Result
-                            .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
-                            .Select(x => x.Version).ToArray();
+                    var epaoVersions = epaoResponse.Result
+                        .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
+                        .Select(x => x.Version).ToArray();
+
+                    filtEpao.CourseEpaoDetails.StandardVersions = epaoVersions;
                 }
             }
 
