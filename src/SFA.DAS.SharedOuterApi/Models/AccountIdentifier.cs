@@ -1,6 +1,6 @@
 using System;
 
-namespace SFA.DAS.Vacancies.Manage.Api.Models
+namespace SFA.DAS.SharedOuterApi.Models
 {
     public class AccountIdentifier
     {

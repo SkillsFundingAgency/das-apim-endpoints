@@ -62,7 +62,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             if (addSandbox) accountIdentifier += "-sandbox";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
@@ -89,7 +89,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             request.User = null;
-            var accountIdentifier = $"Provider-{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
@@ -125,7 +125,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             var ukprn = "ABC123";
-            var accountIdentifier = $"Provider-{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}-product";
             
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
             
@@ -142,7 +142,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
@@ -164,7 +164,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}";
+            var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
