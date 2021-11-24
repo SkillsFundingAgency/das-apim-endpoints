@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -10,6 +11,8 @@ using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
@@ -34,15 +37,32 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
                     x.Get<GetApiProductSubscriptionsResponse>(
                         It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{command.AccountIdentifier}"))))
                 .ReturnsAsync(apiSubscriptionsResponse);
+            var createResponse = new ApiResponse<object>("", HttpStatusCode.Created, "");
+            client.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
+                    ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            client.Verify(
-                x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
-                    ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
-                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId))), Times.Once);
+            
             actual.Product.Should().BeEquivalentTo(apiResponse.Products.First());
             actual.Subscription.Should().BeEquivalentTo(apiSubscriptionsResponse.Subscriptions.First());
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Error_Creating_A_HttpRequestContentException_Is_Thrown(
+            CreateSubscriptionKeyCommand command,
+            [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> client,
+            CreateSubscriptionKeyCommandHandler handler)
+        {
+            var createResponse = new ApiResponse<object>("", HttpStatusCode.BadRequest, "error");
+            client.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
+                    ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
+            
+            Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));
         }
 
         [Test, MoqAutoData]
@@ -62,10 +82,15 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
                     x.Get<GetApiProductSubscriptionsResponse>(
                         It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{command.AccountIdentifier}"))))
                 .ReturnsAsync(apiSubscriptionsResponse);
+            var createResponse = new ApiResponse<object>("", HttpStatusCode.Created, "");
+            client.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
+                    ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            actual.Should().BeNull();
+            actual.Product.Should().BeNull();
         }
         
         [Test, MoqAutoData]
@@ -85,10 +110,15 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
                     x.Get<GetApiProductSubscriptionsResponse>(
                         It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{command.AccountIdentifier}"))))
                 .ReturnsAsync(apiSubscriptionsResponse);
+            var createResponse = new ApiResponse<object>("", HttpStatusCode.Created, "");
+            client.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
+                    ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            actual.Should().BeNull();
+            actual.Subscription.Should().BeNull();
         }
     }
 }
