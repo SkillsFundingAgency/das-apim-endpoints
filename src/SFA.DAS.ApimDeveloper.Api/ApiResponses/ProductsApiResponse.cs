@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses

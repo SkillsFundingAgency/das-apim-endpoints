@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers

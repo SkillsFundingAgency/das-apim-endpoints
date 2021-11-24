@@ -33,18 +33,10 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubs
             var product = productTask.Result.Products.FirstOrDefault(c => c.Id.Equals(request.ProductId));
             var subscription = subscriptionTask.Result.Subscriptions.FirstOrDefault(c => c.Name.Equals(request.ProductId));
 
-            if (product == null || subscription == null)
-            {
-                return null;
-            }
-            
             return new CreateSubscriptionKeyCommandResponse
             {
-                Id = product.Id,
-                Description = product.Description,
-                Name = product.Name,
-                DisplayName = product.DisplayName,
-                Key = subscription.Key
+                Product = product,
+                Subscription = subscription
             };
         }
     }

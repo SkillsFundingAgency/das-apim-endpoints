@@ -41,11 +41,8 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
                 x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
                     ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
                     ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId))), Times.Once);
-            actual.Id.Should().Be(apiResponse.Products.First().Id);
-            actual.Description.Should().Be(apiResponse.Products.First().Description);
-            actual.Name.Should().Be(apiResponse.Products.First().Name);
-            actual.DisplayName.Should().Be(apiResponse.Products.First().DisplayName);
-            actual.Key.Should().Be(apiSubscriptionsResponse.Subscriptions.First().Key);
+            actual.Product.Should().BeEquivalentTo(apiResponse.Products.First());
+            actual.Subscription.Should().BeEquivalentTo(apiSubscriptionsResponse.Subscriptions.First());
         }
 
         [Test, MoqAutoData]
