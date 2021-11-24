@@ -24,9 +24,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccep
                 return null;
             }
 
+            var pledge = await _levyTransferMatchingService.GetPledge(application.PledgeId);
+
             return new GetAcceptedResult()
             {
-                EmployerAccountName = application.PledgeEmployerAccountName,
+                EmployerAccountName = pledge.DasAccountName,
                 OpportunityId = application.PledgeId,
             };
         }

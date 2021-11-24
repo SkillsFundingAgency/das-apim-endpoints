@@ -25,7 +25,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] AccountLegalEntitiesController controller)
         {
             var encodedAccountId = "ABc123";
-            var accountIdentifier = $"Employer-{encodedAccountId}";
+            var accountIdentifier = $"Employer-{encodedAccountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetLegalEntitiesForEmployerQuery>(c=>c.EncodedAccountId.Equals(encodedAccountId.ToUpper())),
@@ -46,7 +46,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountLegalEntitiesController controller)
         {
-            var accountIdentifier = $"Provider-{ukprn}";
+            var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetProviderAccountLegalEntitiesQuery>(c=>c.Ukprn.Equals(ukprn)),
@@ -66,7 +66,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             string identifier,
             [Greedy] AccountLegalEntitiesController controller)
         {
-            var accountIdentifier = $"{accountType}-{identifier}";
+            var accountIdentifier = $"{accountType}-{identifier}-product";
             
             var controllerResult = await controller.GetList(accountIdentifier) as StatusCodeResult;
 
@@ -92,7 +92,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] AccountLegalEntitiesController controller)
         {
             var identifier = "Abc123";
-            var accountIdentifier = $"Provider-{identifier}";
+            var accountIdentifier = $"Provider-{identifier}-product";
             
             var controllerResult = await controller.GetList(accountIdentifier) as BadRequestObjectResult;
 
@@ -106,7 +106,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Greedy] AccountLegalEntitiesController controller)
         {
             var encodedAccountId = "ABC123";
-            var accountIdentifier = $"Employer-{encodedAccountId}";
+            var accountIdentifier = $"Employer-{encodedAccountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetLegalEntitiesForEmployerQuery>(),

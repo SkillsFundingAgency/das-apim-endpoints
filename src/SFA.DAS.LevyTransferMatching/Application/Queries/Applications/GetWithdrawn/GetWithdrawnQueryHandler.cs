@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithd
 
             return new GetWithdrawnQueryResult()
             {
-                EmployerAccountName = application.PledgeEmployerAccountName,
+                EmployerAccountName = application.EmployerAccountName,
                 OpportunityId = application.PledgeId,
             };
         }
