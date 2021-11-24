@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProduct;
@@ -83,8 +84,13 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         {
             try
             {
-                
-                
+                await _mediator.Send(new CreateSubscriptionKeyCommand
+                {
+                    AccountIdentifier = id,
+                    AccountType = accountType,
+                    ProductId = productId
+                });
+
                 return Created($"{id}/products/{productId}?accountType={accountType}",null);
             }
             catch (HttpRequestContentException e)
