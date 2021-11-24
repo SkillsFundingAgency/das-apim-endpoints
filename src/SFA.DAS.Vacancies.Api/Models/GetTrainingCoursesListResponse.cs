@@ -22,13 +22,16 @@ namespace SFA.DAS.Vacancies.Api.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Route { get ; set ; }
+
 
         public static implicit operator GetTrainingCoursesListResponseItem(GetStandardsListItem source)
         {
             return new GetTrainingCoursesListResponseItem
             {
                 Id = source.LarsCode,
-                Title = $"{source.Title} (level {source.Level})"
+                Title = $"{source.Title} (level {source.Level})",
+                Route = source.Route
             };
         }
     }

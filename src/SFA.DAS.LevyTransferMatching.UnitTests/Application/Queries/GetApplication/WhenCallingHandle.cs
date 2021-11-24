@@ -8,10 +8,6 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplication
@@ -29,8 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
         public async Task And_Application_Exists_Stitches_Up_Standard_And_Location_To_Result(
             GetApplicationQuery getApplicationQuery,
             GetApplicationResponse getApplicationResponse,
-            GetStandardsListItem getStandardsListItem,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
@@ -38,41 +32,27 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
                 .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getApplicationQuery.PledgeId.ToString()) && y.GetUrl.Contains(getApplicationQuery.ApplicationId.ToString()))))
                 .ReturnsAsync(getApplicationResponse);
 
-            mockCoursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(getApplicationResponse.StandardId))))
-                .ReturnsAsync(getStandardsListItem);
-
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
-            Assert.AreEqual(getStandardsListItem.TypicalDuration, result.EstimatedDurationMonths);
         }
 
         [Test, MoqAutoData]
         public async Task And_Application_Exists_And_No_Specific_Locations_Returned_Stitches_Up_Standard_And_Location_To_Result(
             GetApplicationQuery getApplicationQuery,
             GetApplicationResponse getApplicationResponse,
-            GetStandardsListItem getStandardsListItem,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
-            getApplicationResponse.Locations = null;
-
             mockLevyTransferMatchingService
                 .Setup(x => x.GetApplication(It.Is<GetApplicationRequest>(y => y.GetUrl.Contains(getApplicationQuery.PledgeId.ToString()) && y.GetUrl.Contains(getApplicationQuery.ApplicationId.ToString()))))
                 .ReturnsAsync(getApplicationResponse);
-
-            mockCoursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(getApplicationResponse.StandardId))))
-                .ReturnsAsync(getStandardsListItem);
 
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
-            Assert.AreEqual(getStandardsListItem.TypicalDuration, result.EstimatedDurationMonths);
         }
 
         [Test, MoqAutoData]

@@ -21,6 +21,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 
+
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
@@ -206,22 +207,23 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> PledgeApplications(int pledgeId)
         {
             var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
-            
+
             return Ok(new GetApplicationsResponse
             {
-                Applications = queryResult.Applications
+                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
             });
         }
-
+        
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
-        public async Task<IActionResult> Application(int applicationId)
+        public async Task<IActionResult> Application(int pledgeId, int applicationId)
         {
             try
             {
                 var queryResult = await _mediator.Send(new GetApplicationQuery()
                 {
+                    PledgeId = pledgeId,
                     ApplicationId = applicationId,
                 });
 
