@@ -9,7 +9,6 @@ namespace SFA.DAS.SharedOuterApi.Models
             AccountPublicHashedId = null;
             Ukprn = null;
             
-            if (string.IsNullOrEmpty(accountIdentifier) || accountIdentifier.Split("-").Length != 3)
             {
                 AccountType = AccountType.Unknown;
                 return;
