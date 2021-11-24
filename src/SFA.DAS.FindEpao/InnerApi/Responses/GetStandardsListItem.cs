@@ -10,7 +10,7 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public bool IntegratedApprenticeship { get; set; }
-        public string StandardVersions { get; set; }
+        public string[] StandardVersions { get; set; }
     }
 
 }

@@ -24,7 +24,7 @@ namespace SFA.DAS.FindEpao.Api.Models
 
     public class GetAllCoursesListItem : GetCourseListItem
     {
-        public string StandardVersions { get; set; }
+        public string[] StandardVersions { get; set; }
 
         public static implicit operator GetAllCoursesListItem(GetStandardsListItem standard)
         {
