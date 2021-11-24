@@ -25,12 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<GetDetailQuery>(y => y.OpportunityId == opportunityId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getDetailQueryResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetDetailQueryResult, GetDetailQuery>(getDetailQueryResult, y => y.OpportunityId == opportunityId);
+        
             var controllerResult = await opportunityController.Detail(opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetDetailResponse;
@@ -43,6 +39,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             Assert.AreEqual(getDetailQueryResult.Sectors, response.Sectors);
             Assert.AreEqual(getDetailQueryResult.JobRoles, response.JobRoles);
             Assert.AreEqual(getDetailQueryResult.Levels, response.Levels);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_When_Given_Incorrect_Parameters_Returns_Not_Found(
+            int opportunityId,
+            GetDetailQueryResult getDetailQueryResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] OpportunityController opportunityController)
+        {
+            getDetailQueryResult.Opportunity = null;
+
+            mockMediator.SetupMediatorResponseToReturnAsync<GetDetailQueryResult, GetDetailQuery>(getDetailQueryResult, y => y.OpportunityId == opportunityId);
+
+            var controllerResult = await opportunityController.Detail(opportunityId);
+            var result = controllerResult as NotFoundResult;
+
+            Assert.IsNotNull(controllerResult);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.StatusCode, (int)HttpStatusCode.NotFound);
         }
     }
 }

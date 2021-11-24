@@ -25,12 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetSectorQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getSectorQueryResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetSectorQueryResult, GetSectorQuery>(getSectorQueryResult, o => o.OpportunityId == pledgeId);
+          
             var controllerResult = await opportunityController.Sector(pledgeId);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetSectorResponse;
@@ -41,6 +37,25 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
             Assert.AreEqual(getSectorQueryResult.Sectors, response.Sectors);
             Assert.AreEqual(getSectorQueryResult.Opportunity.Id, response.Opportunity.Id);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Parameters_Are_Incorrect_Returns_NotFound(
+            int pledgeId,
+            GetSectorQueryResult getSectorQueryResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] OpportunityController opportunityController)
+        {
+            getSectorQueryResult.Opportunity = null;
+
+            mockMediator.SetupMediatorResponseToReturnAsync<GetSectorQueryResult, GetSectorQuery>(getSectorQueryResult, o => o.OpportunityId == pledgeId);
+
+            var controllerResult = await opportunityController.Sector(pledgeId);
+            var result = controllerResult as NotFoundResult;
+
+            Assert.IsNotNull(controllerResult);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(404, result.StatusCode);
         }
     }
 }

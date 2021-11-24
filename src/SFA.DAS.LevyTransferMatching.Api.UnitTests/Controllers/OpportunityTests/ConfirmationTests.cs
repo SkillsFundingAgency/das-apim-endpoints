@@ -34,16 +34,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             _mediator = new Mock<IMediator>(MockBehavior.Strict);
 
             _controller = new OpportunityController(Mock.Of<ILogger<OpportunityController>>(), _mediator.Object);
-
-            _mediator.Setup(x => x.Send(It.Is<GetConfirmationQuery>(query =>
-                    query.OpportunityId == _opportunityId
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_result);
         }
 
         [Test]
         public async Task Get_Returns_GetConfirmationResponse()
         {
+            _mediator.SetupMediatorResponseToReturnAsync<GetConfirmationQueryResult, GetConfirmationQuery>(_result, q => q.OpportunityId == _opportunityId);
+        
             var actionResult = await _controller.Confirmation(_accountId, _opportunityId);
             var createdResult = actionResult as OkObjectResult;
             Assert.IsNotNull(createdResult);
@@ -51,6 +48,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             Assert.IsNotNull(response);
             Assert.AreEqual(_result.AccountName, response.AccountName);
             Assert.AreEqual(_result.IsNamePublic, response.IsNamePublic);
+        }
+
+        [Test]
+        public async Task Get_Given_Incorrect_Parameters_Returns_GetConfirmationResponse()
+        {
+            _mediator.SetupMediatorResponseToReturnAsync<GetConfirmationQueryResult, GetConfirmationQuery>(null, q => q.OpportunityId == _opportunityId);
+
+            var actionResult = await _controller.Confirmation(_accountId, _opportunityId);
+            var result = actionResult as NotFoundResult;
+            
+            Assert.IsNotNull(actionResult);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(404, result.StatusCode);
         }
     }
 }

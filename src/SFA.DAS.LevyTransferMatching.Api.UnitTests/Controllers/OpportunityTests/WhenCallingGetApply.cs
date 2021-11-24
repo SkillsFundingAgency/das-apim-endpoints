@@ -26,12 +26,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<GetApplyQuery>(y => y.OpportunityId == opportunityId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getApplyQueryResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetApplyQueryResult, GetApplyQuery>(getApplyQueryResult, o => o.OpportunityId == opportunityId);
+         
             var controllerResult = await opportunityController.Apply(accountId, opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetApplyResponse;

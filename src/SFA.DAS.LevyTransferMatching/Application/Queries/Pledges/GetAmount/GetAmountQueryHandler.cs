@@ -18,6 +18,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
         {
             var account = await _accountsService.GetAccount(request.EncodedAccountId);
 
+            if (account == null)
+            {
+                return null;
+            }
+
             return new GetAmountQueryResult
             {
                 RemainingTransferAllowance = account.RemainingTransferAllowance,

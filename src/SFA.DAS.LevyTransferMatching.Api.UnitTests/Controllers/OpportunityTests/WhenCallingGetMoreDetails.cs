@@ -26,12 +26,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] OpportunityController opportunityController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<GetMoreDetailsQuery>(y => y.OpportunityId == opportunityId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getMoreDetailsQueryResult);
-
+            mockMediator.SetupMediatorResponseToReturnAsync<GetMoreDetailsQueryResult, GetMoreDetailsQuery>(getMoreDetailsQueryResult, 
+                y => y.OpportunityId == opportunityId);
+          
             var controllerResult = await opportunityController.MoreDetails(accountId, opportunityId);
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetMoreDetailsResponse;
@@ -44,6 +41,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             Assert.AreEqual(getMoreDetailsQueryResult.Sectors, response.Sectors);
             Assert.AreEqual(getMoreDetailsQueryResult.JobRoles, response.JobRoles);
             Assert.AreEqual(getMoreDetailsQueryResult.Levels, response.Levels);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Given_Incorrect_Parameters_Returns_Not_Found(
+            long accountId,
+            int opportunityId,
+            GetMoreDetailsQueryResult getMoreDetailsQueryResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] OpportunityController opportunityController)
+        {
+            getMoreDetailsQueryResult.Opportunity = null;
+
+            mockMediator.SetupMediatorResponseToReturnAsync<GetMoreDetailsQueryResult, GetMoreDetailsQuery>(getMoreDetailsQueryResult,
+                y => y.OpportunityId == opportunityId);
+
+            var controllerResult = await opportunityController.MoreDetails(accountId, opportunityId);
+            var result = controllerResult as NotFoundResult;
+            
+
+            Assert.IsNotNull(controllerResult);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.StatusCode, (int)HttpStatusCode.NotFound);
         }
     }
 }

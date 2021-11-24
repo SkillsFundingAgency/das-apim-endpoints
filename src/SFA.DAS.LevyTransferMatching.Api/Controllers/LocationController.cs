@@ -4,6 +4,7 @@ using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -21,6 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetLocations([FromQuery] string searchTerm)
         {
             var queryResult = await _mediator.Send(new GetLocationsQuery { SearchTerm = searchTerm });
@@ -35,6 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("information")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetLocationInformation([FromQuery] string location)
         {
             var queryResult = await _mediator.Send(new GetLocationInformationQuery() { Location = location });

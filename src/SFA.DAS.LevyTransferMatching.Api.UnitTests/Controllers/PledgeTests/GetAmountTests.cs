@@ -29,15 +29,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 
             _mediator = new Mock<IMediator>();
             _queryResult = _fixture.Create<GetAmountQueryResult>();
-            _mediator.Setup(x => x.Send(It.Is<GetAmountQuery>(q => q.EncodedAccountId == _encodedAccountId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
         }
 
         [Test]
-        public async Task GetCreate_Returns_GetCreateResponse()
+        public async Task Amount_Returns_GetCreateResponse()
         {
+            _mediator.SetupMediatorResponseToReturnAsync<GetAmountQueryResult, GetAmountQuery>(_queryResult, o => o.EncodedAccountId == _encodedAccountId);
+
             var controllerResponse = await _controller.Amount(_encodedAccountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
@@ -47,6 +47,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 
             Assert.AreEqual(_queryResult.RemainingTransferAllowance, response.RemainingTransferAllowance);
             Assert.AreEqual(_queryResult.DasAccountName, response.DasAccountName);
+        }
+
+        [Test]
+        public async Task GetCreate_Returns_GetCreateResponse()
+        {
+            _mediator.SetupMediatorResponseToReturnAsync<GetAmountQueryResult, GetAmountQuery>(null, o => o.EncodedAccountId == _encodedAccountId);
+
+            var controllerResponse = await _controller.Amount(_encodedAccountId);
+
+            var result = controllerResponse as NotFoundResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(404, result.StatusCode);
         }
     }
 }

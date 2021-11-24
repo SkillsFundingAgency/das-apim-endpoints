@@ -20,17 +20,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Locations_From_Mediator(
+            string location,
             GetLocationInformationResult getLocationInformationResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationController locationController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetLocationInformationQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getLocationInformationResult);
-
-            var controllerResult = await locationController.GetLocationInformation("test");
+            mockMediator.SetupMediatorResponseToReturnAsync<GetLocationInformationResult, GetLocationInformationQuery>(getLocationInformationResult, o => o.Location == location);
+         
+            var controllerResult = await locationController.GetLocationInformation(location);
             var okObjectResult = controllerResult as OkObjectResult;
             var locationInformation = okObjectResult.Value as LocationInformationDto;
 

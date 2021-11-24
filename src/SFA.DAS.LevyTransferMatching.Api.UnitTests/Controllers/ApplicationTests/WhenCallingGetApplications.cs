@@ -16,8 +16,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
     public class WhenCallingGetApplications
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Applications_From_Mediator(GetApplicationsQueryResult queryResult, [Frozen]Mock<IMediator> mediator,
-            [Greedy]ApplicationsController controller)
+        public async Task Then_Gets_Applications_From_Mediator(GetApplicationsQueryResult queryResult, [Frozen] Mock<IMediator> mediator,
+            [Greedy] ApplicationsController controller)
         {
             mediator.Setup(o => o.Send(It.IsAny<GetApplicationsQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
@@ -27,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(result);
 
-            var expected = (GetApplicationsResponse) queryResult;
+            var expected = (GetApplicationsResponse)queryResult;
             var x = expected.Applications.First();
             var y = result.Applications.First();
             Assert.AreEqual(expected.Applications.Count(), result.Applications.Count());
