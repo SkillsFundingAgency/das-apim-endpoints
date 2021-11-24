@@ -41,6 +41,29 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
+        public async Task Then_If_Null_Returned_NotFound_Result_Returned(string accountType,
+            string accountIdentifier,
+            string productId,
+            GetApiProductQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] SubscriptionsController controller)
+        {
+            mediatorResult.Product = null;
+            mediatorResult.Subscription = null;
+            mediator.Setup(x => x.Send(It.Is<GetApiProductQuery>(c => 
+                    c.AccountType.Equals(accountType)
+                    && c.AccountIdentifier.Equals(accountIdentifier)
+                    && c.ProductId.Equals(productId)
+                ),
+                CancellationToken.None)).ReturnsAsync(mediatorResult);
+
+            var actual = await controller.GetProductSubscription(accountIdentifier, productId, accountType) as NotFoundResult;
+            
+            Assert.IsNotNull(actual);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_If_Error_Then_Internal_Server_Error_Response(
             string accountType,
             string accountIdentifier,

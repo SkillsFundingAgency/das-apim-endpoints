@@ -60,6 +60,12 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     AccountType = accountType,
                     ProductId = productId
                 });
+
+                if (result.Product == null || result.Subscription == null)
+                {
+                    return NotFound();
+                }
+                
                 var response = ProductsApiResponseItem.Map(result.Product,
                     new List<GetApiProductSubscriptionsResponseItem> { result.Subscription });
                 return Ok(response);
