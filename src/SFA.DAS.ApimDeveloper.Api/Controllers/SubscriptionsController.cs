@@ -5,7 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
 {
@@ -39,6 +41,31 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             {
                 _logger.LogError(e, "Unable to get API products");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        [Route("{id}/renew/{productId}")]
+        public async Task<IActionResult> RenewSubscriptionKey([FromRoute]string id, [FromRoute]string productId)
+        {
+            try
+            {
+                await _mediator.Send(new RenewSubscriptionKeyCommand
+                {
+                    AccountIdentifier = id,
+                    ProductId = productId
+                });
+
+                return NoContent();
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
     }
