@@ -26,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
+        Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request);
         Task<GetApplicationResponse> GetApplication(GetApplicationRequest request);
 
         Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request);
@@ -33,6 +34,8 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task ApproveApplication(ApproveApplicationRequest request);
         Task RejectApplication(RejectApplicationRequest request);
         Task<ApiResponse<AcceptFundingRequest>> AcceptFunding(AcceptFundingRequest request, CancellationToken cancellationToken = default);
+        Task WithdrawApplication(WithdrawApplicationRequest request, CancellationToken cancellationToken = default);
         Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request);
+        Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request);
     }
 }
