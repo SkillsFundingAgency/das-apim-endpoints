@@ -10,7 +10,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey
 {
-    public class CreateSubscriptionKeyCommandHandler : IRequestHandler<CreateSubscriptionKeyCommand, CreateSubscriptionKeyCommandResponse>
+    public class CreateSubscriptionKeyCommandHandler : IRequestHandler<CreateSubscriptionKeyCommand, Unit>
     {
         private readonly IApimDeveloperApiClient<ApimDeveloperApiConfiguration> _apimDeveloperApiClient;
 
@@ -18,7 +18,7 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubs
         {
             _apimDeveloperApiClient = apimDeveloperApiClient;
         }
-        public async Task<CreateSubscriptionKeyCommandResponse> Handle(CreateSubscriptionKeyCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateSubscriptionKeyCommand request, CancellationToken cancellationToken)
         {
             var createResponse = await _apimDeveloperApiClient.PostWithResponseCode<object>(
                 new PostCreateSubscriptionKeyRequest(request.AccountIdentifier, request.ProductId));
@@ -27,24 +27,8 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubs
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)createResponse.StatusCode} ({createResponse.StatusCode})", createResponse.StatusCode, createResponse.ErrorContent);
             }
-            
-            var productTask = _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
-                    new GetAvailableApiProductsRequest(request.AccountType));
-            var subscriptionTask =
-                _apimDeveloperApiClient.Get<GetApiProductSubscriptionsResponse>(
-                    new GetApiProductSubscriptionsRequest(request.AccountIdentifier));
 
-            await Task.WhenAll(productTask, subscriptionTask);
-
-            var product = productTask.Result.Products.FirstOrDefault(c => c.Id.Equals(request.ProductId));
-            var subscription = subscriptionTask.Result.Subscriptions.FirstOrDefault(c => c.Name.Equals(request.ProductId));
-
-            
-            return new CreateSubscriptionKeyCommandResponse
-            {
-                Product = product,
-                Subscription = subscription
-            };
+            return new Unit();
         }
     }
 }
