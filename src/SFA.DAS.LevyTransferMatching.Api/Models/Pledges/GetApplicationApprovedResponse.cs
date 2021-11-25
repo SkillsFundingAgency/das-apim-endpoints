@@ -3,6 +3,6 @@
     public class GetApplicationApprovedResponse
     {
         public string EmployerAccountName { get; set; }
-        public bool AllowTransferRequestAutoApproval { get; set; }
+        public bool AutomaticApproval { get; set; }
     }
 }

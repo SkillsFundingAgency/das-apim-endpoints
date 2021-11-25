@@ -65,7 +65,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 AllLevels = allLevelsTask.Result,
                 AllSectors = allSectorsTask.Result,
                 Status = application.Status,
-                AllowTransferRequestAutoApproval = application.AllowTransferRequestAutoApproval
+                AutomaticApproval = application.AutomaticApproval
             };
 
             return getApplicationResult;
