@@ -74,7 +74,8 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
             
             return new GetCourseEpaosResult
             {
-                Epaos = filteredEpaos.OrderBy(item => item.Name),
+                Epaos = filteredEpaos.Where(x => x.CourseEpaoDetails.StandardVersions.Length > 0)
+                                     .OrderBy(item => item.Name),
                 Course = courseTask.Result
             };
         }

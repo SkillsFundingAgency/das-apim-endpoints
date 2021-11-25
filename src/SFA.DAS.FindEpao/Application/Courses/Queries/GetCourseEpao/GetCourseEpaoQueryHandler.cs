@@ -100,7 +100,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                AllCourses = allCourses
+                AllCourses = allCourses.Where(x => x.StandardVersions.Length > 0)
             };
         }
     }
