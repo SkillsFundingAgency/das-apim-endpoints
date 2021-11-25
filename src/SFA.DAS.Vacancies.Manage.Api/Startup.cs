@@ -97,7 +97,7 @@ namespace SFA.DAS.Vacancies.Manage.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacanciesManageOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on any website and Find an Apprenticeship."});
             });
         }
 
@@ -127,7 +127,8 @@ namespace SFA.DAS.Vacancies.Manage.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesManageOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "recruitment-api-live-name");
+                c.DocumentTitle = "";
                 c.RoutePrefix = string.Empty;
             });
         }

@@ -23,6 +23,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
 
+
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
     [ApiController]
@@ -214,7 +215,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
             });
         }
-
+        
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]

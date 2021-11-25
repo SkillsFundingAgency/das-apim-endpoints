@@ -18,6 +18,7 @@ namespace SFA.DAS.Assessors.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         }
     }
 }
