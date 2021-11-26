@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using System;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
-        private Apis.ApprenticeAccountsApi.Apprentice _apprentice;
+        private Apprentice _apprentice;
         private Guid _registrationId = Guid.NewGuid();
 
         public CreateApprenticeshipSteps(TestContext context)
@@ -31,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("an account")]
         public void GivenAnAccount()
         {
-            _apprentice = _fixture.Create<Apis.ApprenticeAccountsApi.Apprentice>();
+            _apprentice = _fixture.Create<Apprentice>();
 
             _context.InnerApi.MockServer
                 .Given(

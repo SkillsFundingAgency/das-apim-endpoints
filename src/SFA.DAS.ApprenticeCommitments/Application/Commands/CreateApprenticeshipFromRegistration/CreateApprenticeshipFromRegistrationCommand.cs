@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands
 
         public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
-            var apprentice = await _accounts.Get<Apis.ApprenticeAccountsApi.Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
+            var apprentice = await _accounts.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
 
             var response = await _cmad.PostWithResponseCode<object>(new CreateApprenticeshipRequest(
                 request.RegistrationId, request.ApprenticeId, apprentice.LastName, apprentice.DateOfBirth));
