@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
     internal class CreateApprenticeshipRequest : IPostApiRequest
     {
-        public string PostUrl { get; }
+        public string PostUrl => "/apprenticeships";
         public object Data { get; set; }
 
         public CreateApprenticeshipRequest(Guid registrationId, Guid apprenticeId, string lastName, DateTime dateOfBirth)
