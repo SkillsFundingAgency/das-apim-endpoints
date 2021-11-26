@@ -1,9 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +21,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             return new GetApplicationApprovedQueryResult
             {
-                EmployerAccountName = response.EmployerAccountName
+                EmployerAccountName = response.EmployerAccountName,
+                AutomaticApproval = response.AutomaticApproval
             };
         }
     }

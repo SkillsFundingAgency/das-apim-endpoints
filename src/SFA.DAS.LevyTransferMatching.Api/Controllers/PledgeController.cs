@@ -329,7 +329,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetApplicationApprovedResponse
                 {
-                    EmployerAccountName = queryResult.EmployerAccountName
+                    EmployerAccountName = queryResult.EmployerAccountName,
+                    AutomaticApproval = queryResult.AutomaticApproval
                 };
 
                 return Ok(response);
