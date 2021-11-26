@@ -97,7 +97,7 @@ namespace SFA.DAS.Vacancies.Manage.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on any website and Find an Apprenticeship."});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on Find an apprenticeship using your existing systems."});
             });
         }
 
