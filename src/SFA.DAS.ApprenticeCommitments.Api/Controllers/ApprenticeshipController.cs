@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -19,8 +20,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             => (_client, _mediator) = (client, mediator);
 
         [HttpPost("/apprenticeships")]
-        public Task CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
-            => _mediator.Send(request);
+        public async Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
+        {
+            try
+            {
+                await _mediator.Send(request);
+                return Ok();
+            }
+            catch (ApiResponseException e)
+            {
+                return StatusCode((int)e.Status, e.Error);
+            }
+        }
 
         [HttpGet("/apprenticeships/{id}")]
         public Task<IActionResult> GetApprenticeship(Guid id)

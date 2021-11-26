@@ -1,7 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
+﻿using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
-using System.Net.Http;
 
 namespace SFA.DAS.SharedOuterApi.Extensions
 {
@@ -16,8 +16,7 @@ namespace SFA.DAS.SharedOuterApi.Extensions
 
             if (!IsSuccessStatusCode(response.StatusCode))
             {
-                throw new HttpRequestException(
-                    $"HTTP status code did not indicate success: {(int)response.StatusCode} {response.StatusCode}");
+                throw ApiResponseException.Create(response);
             }
 
             return response;
