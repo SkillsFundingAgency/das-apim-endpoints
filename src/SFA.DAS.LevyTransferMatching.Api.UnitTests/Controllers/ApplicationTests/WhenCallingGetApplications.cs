@@ -36,7 +36,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             Assert.AreEqual(x.Amount, y.Amount);
             Assert.AreEqual(x.Status, y.Status);
             Assert.AreEqual(x.CreatedOn, y.CreatedOn);
-            Assert.AreEqual(x.TotalAmount, y.TotalAmount);
             Assert.AreEqual(x.NumberOfApprentices, y.NumberOfApprentices);
             Assert.AreEqual(x.Id, y.Id);
             Assert.AreEqual(x.PledgeId, y.PledgeId);
