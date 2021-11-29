@@ -27,7 +27,6 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
             GetStandardsListItem coursesApiResponse,
             IEnumerable<GetStandardsExtendedListItem> standardsResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsGetStandardsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
             GetCourseEpaosQueryHandler handler)
@@ -40,10 +39,11 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                 .Setup(client => client.Get<GetStandardsListItem>(
                     It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
+
             foreach (var epao in epaoApiResponse)
-                mockAssessorsGetStandardsApiClient
+                mockAssessorsApiClient
                     .Setup(client => client.Get<IEnumerable<GetStandardsExtendedListItem>>(
-                        It.Is<GetCourseEpaosStandardVersionsRequest>(request => request.LarsCode == query.CourseId && 
+                        It.Is<GetCourseEpaosStandardVersionsRequest>(request => request.LarsCode == query.CourseId &&
                         request.organisationId == epao.EpaoId)))
                     .ReturnsAsync(standardsResponse);
             mockCourseEpaoFilter
@@ -55,11 +55,12 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
 
 
             var result = await handler.Handle(query, CancellationToken.None);
-
-            result.Course.StandardVersions.Should().HaveCountGreaterOrEqualTo(1);
+            result.Epaos.Select(x => x.CourseEpaoDetails.StandardVersions)
+                .FirstOrDefault().Should().BeEquivalentTo(standardsResponse.Select(x => x.Version));
             result.Epaos.Should().BeEquivalentTo(epaoApiResponse);
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
+            
         }
 
         [Test, MoqAutoData]
@@ -69,7 +70,6 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
             GetStandardsListItem coursesApiResponse,
             IEnumerable<GetStandardsExtendedListItem> standardsResponse,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsGetStandardsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
             GetCourseEpaosQueryHandler handler)
@@ -85,7 +85,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                 .ReturnsAsync(coursesApiResponse);
 
             foreach (var epao in epaoApiResponse)
-                mockAssessorsGetStandardsApiClient
+                mockAssessorsApiClient
                 .Setup(client => client.Get<IEnumerable<GetStandardsExtendedListItem>>(
                     It.Is<GetCourseEpaosStandardVersionsRequest>(request => request.LarsCode == query.CourseId &&
                     request.organisationId == epao.EpaoId)))
@@ -103,7 +103,8 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
            
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Course.StandardVersions.Should().HaveCountGreaterOrEqualTo(1);
+            result.Epaos.Select(x => x.CourseEpaoDetails.StandardVersions)
+                .FirstOrDefault().Should().BeEquivalentTo(standardsResponse.Select(x => x.Version));
             result.Epaos.Should().BeEquivalentTo(epaoApiResponse.Where(item => item.EpaoId == epaoApiResponse[0].EpaoId).ToList());
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
@@ -117,7 +118,6 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
         GetStandardsListItem coursesApiResponse,
         IEnumerable<GetStandardsExtendedListItem> standardsResponse,
         [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-        [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsGetStandardsApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
         [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
         GetCourseEpaosQueryHandler handler)
@@ -131,7 +131,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
                     It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
                 .ReturnsAsync(coursesApiResponse);
             foreach (var epao in epaoApiResponse)
-                mockAssessorsGetStandardsApiClient
+                mockAssessorsApiClient
                     .Setup(client => client.Get<IEnumerable<GetStandardsExtendedListItem>>(
                         It.Is<GetCourseEpaosStandardVersionsRequest>(request => request.LarsCode == query.CourseId &&
                         request.organisationId == epao.EpaoId)))

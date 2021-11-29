@@ -139,6 +139,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Epao.Should().BeEquivalentTo(epaoApiResponse);
+            result.StandardVersions.Should().BeEmpty();
             result.AllCourses.Should().BeEmpty();
         }
 
