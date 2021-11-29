@@ -30,7 +30,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             {
                 var result = await _mediator.Send(new GetApiProductQuery
                 {
-                    ProductId = id
+                    ProductName = id
                 });
 
                 var model = (ProductApiResponseItem)result.Product;

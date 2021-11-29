@@ -23,10 +23,10 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiProducts.Queries
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> apiClient,
             GetApiProductQueryHandler handler)
         {
-            apiResponse.Products.First().Id = query.ProductId;
+            apiResponse.Products.First().Name = query.ProductName;
             apiClient.Setup(x =>
                     x.Get<GetAvailableApiProductsResponse>(
-                        It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith($"?group=Documentation"))))
+                        It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith("?group=Documentation"))))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

@@ -25,7 +25,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             [Greedy] ProductsController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetApiProductQuery>(c => 
-                    c.ProductId.Equals(productId)
+                    c.ProductName.Equals(productId)
                 ),
                 CancellationToken.None)).ReturnsAsync(mediatorResult);
 

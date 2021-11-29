@@ -23,7 +23,7 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiProducts.Queries.GetApiProduct
             var result =
                 await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
                     new GetAvailableApiProductsRequest("Documentation"));
-            var product = result.Products.FirstOrDefault(c => c.Id.Equals(request.ProductId));
+            var product = result.Products.FirstOrDefault(c => c.Name.Equals(request.ProductName));
 
             return new GetApiProductQueryResult
             {
