@@ -103,9 +103,52 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpaos
            
             var result = await handler.Handle(query, CancellationToken.None);
 
+            result.Course.StandardVersions.Should().HaveCountGreaterOrEqualTo(1);
             result.Epaos.Should().BeEquivalentTo(epaoApiResponse.Where(item => item.EpaoId == epaoApiResponse[0].EpaoId).ToList());
             result.Epaos.Should().BeInAscendingOrder(item => item.Name);
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
         }
+
+
+        [Test, MoqAutoData]
+        public async Task If_No_Valid_Standards_Found_Returns_Zero_Epaos(
+        GetCourseEpaosQuery query,
+        List<GetCourseEpaoListItem> epaoApiResponse,
+        GetStandardsListItem coursesApiResponse,
+        IEnumerable<GetStandardsExtendedListItem> standardsResponse,
+        [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+        [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsGetStandardsApiClient,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+        [Frozen] Mock<ICourseEpaoIsValidFilterService> mockCourseEpaoFilter,
+        GetCourseEpaosQueryHandler handler)
+        {
+            mockAssessorsApiClient
+                .Setup(client => client.GetAll<GetCourseEpaoListItem>(
+                    It.Is<GetCourseEpaosRequest>(request => request.CourseId == query.CourseId)))
+                .ReturnsAsync(epaoApiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardsListItem>(
+                    It.Is<GetStandardRequest>(request => request.StandardId == query.CourseId)))
+                .ReturnsAsync(coursesApiResponse);
+            foreach (var epao in epaoApiResponse)
+                mockAssessorsGetStandardsApiClient
+                    .Setup(client => client.Get<IEnumerable<GetStandardsExtendedListItem>>(
+                        It.Is<GetCourseEpaosStandardVersionsRequest>(request => request.LarsCode == query.CourseId &&
+                        request.organisationId == epao.EpaoId)))
+                    .ReturnsAsync(standardsResponse);
+            mockCourseEpaoFilter
+                .Setup(service => service.IsValidCourseEpao(It.IsAny<GetCourseEpaoListItem>()))
+                .Returns(true);
+            mockCourseEpaoFilter
+                .Setup(service => service.ValidateVersionDates(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(false);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Epaos.Should().BeEmpty();
+        }
+
+
+
     }
 }
