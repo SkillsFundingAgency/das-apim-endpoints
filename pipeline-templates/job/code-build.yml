@@ -5,6 +5,7 @@ jobs:
     demands: LATEST_DOTNET_VERSION -equals 3.1
   variables:
   - group: Prod Management Resources
+  - group: ESFA - SonarCloud    
   - name: buildConfiguration
     value: release
   workspace:
@@ -13,6 +14,9 @@ jobs:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloud: true
+      SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints
 
   - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
