@@ -7,17 +7,17 @@ using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
 
-namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProduct
+namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription
 {
-    public class GetApiProductQueryHandler : IRequestHandler<GetApiProductQuery, GetApiProductQueryResult>
+    public class GetApiProductSubscriptionQueryHandler : IRequestHandler<GetApiProductSubscriptionQuery, GetApiProductSubscriptionQueryResult>
     {
         private readonly IApimDeveloperApiClient<ApimDeveloperApiConfiguration> _apimDeveloperApiClient;
 
-        public GetApiProductQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient)
+        public GetApiProductSubscriptionQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient)
         {
             _apimDeveloperApiClient = apimDeveloperApiClient;
         }
-        public async Task<GetApiProductQueryResult> Handle(GetApiProductQuery request, CancellationToken cancellationToken)
+        public async Task<GetApiProductSubscriptionQueryResult> Handle(GetApiProductSubscriptionQuery request, CancellationToken cancellationToken)
         {
             var productsTask =
                 _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
@@ -32,7 +32,7 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProdu
             var product = productsTask.Result.Products.FirstOrDefault(c => c.Id.Equals(request.ProductId));
             var subscription = subscriptionsTask.Result.Subscriptions.FirstOrDefault(c => c.Name.Equals(request.ProductId));
 
-            return new GetApiProductQueryResult
+            return new GetApiProductSubscriptionQueryResult
             {
                 Product = product,
                 Subscription = subscription
