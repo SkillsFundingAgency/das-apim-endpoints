@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
         public void Then_The_Fields_Are_Mapped_For_Employer_And_Id_Upper_Cased()
         {
             var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}-Product";
+            var accountIdentifier = $"Employer-{accountId}-Product-Sandbox";
             
             var actual = new AccountIdentifier(accountIdentifier);
 
@@ -45,7 +45,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountPublicHashedId.Should().BeNull();
         }
 
-        [Test, AutoData]
+        [Test]
+        [InlineAutoData("")]
+        [InlineAutoData("Identifier")]
+        [InlineAutoData("Identifier-NotValid")]
         public void Then_If_Not_Recognised_Format_Not_Known_Type_Returned(string accountIdentifier)
         {
             var actual = new AccountIdentifier(accountIdentifier);
