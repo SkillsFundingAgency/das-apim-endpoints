@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiProducts.Queries.GetApiProduct
             var result =
                 await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
                     new GetAvailableApiProductsRequest("Documentation"));
-            var product = result.Products.FirstOrDefault(c => c.Name.Equals(request.ProductName));
+            var product = result.Products.FirstOrDefault(c => c.Name.Equals(request.ProductName, StringComparison.CurrentCultureIgnoreCase));
 
             return new GetApiProductQueryResult
             {
