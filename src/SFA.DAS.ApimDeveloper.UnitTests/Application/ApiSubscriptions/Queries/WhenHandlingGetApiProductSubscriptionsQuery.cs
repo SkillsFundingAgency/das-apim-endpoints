@@ -13,7 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
 {
-    public class WhenHandlingGetApiProductsQuery
+    public class WhenHandlingGetApiProductSubscriptionsQuery
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Data_Returned(
