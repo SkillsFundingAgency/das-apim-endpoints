@@ -1,26 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
 {
-    public class ProductsApiResponse
+    public class ProductSubscriptionsApiResponse
     {
-        public List<ProductsApiResponseItem> Products { get; set; }
-        public static implicit operator ProductsApiResponse(GetApiProductSubscriptionsQueryResult source)
+        public List<ProductSubscriptionApiResponseItem> Products { get; set; }
+        public static implicit operator ProductSubscriptionsApiResponse(GetApiProductSubscriptionsQueryResult source)
         {
-            var response =  new ProductsApiResponse
+            var response =  new ProductSubscriptionsApiResponse
             {
-                Products = source.Products.Select(c=>ProductsApiResponseItem.Map(c, source.Subscriptions) ).ToList()
+                Products = source.Products.Select(c=>ProductSubscriptionApiResponseItem.Map(c, source.Subscriptions) ).ToList()
             };
 
             return response;
         }
     }
 
-    public class ProductsApiResponseItem
+    public class ProductSubscriptionApiResponseItem
     {
         public string Id { get ; set ; }
         public string Description { get ; set ; }
@@ -29,9 +28,9 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
         public string Key { get; set; }
 
 
-        public static ProductsApiResponseItem Map(GetAvailableApiProductItem source, IEnumerable<GetApiProductSubscriptionsResponseItem> subscriptions)
+        public static ProductSubscriptionApiResponseItem Map(GetAvailableApiProductItem source, IEnumerable<GetApiProductSubscriptionsResponseItem> subscriptions)
         {
-            return new ProductsApiResponseItem
+            return new ProductSubscriptionApiResponseItem
             {
                 Id = source.Id,
                 Name = source.Name,

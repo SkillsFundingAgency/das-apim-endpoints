@@ -40,7 +40,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     AccountType = accountType, 
                     AccountIdentifier = accountIdentifier
                 });
-                return Ok((ProductsApiResponse)result);
+                return Ok((ProductSubscriptionsApiResponse)result);
             }
             catch (Exception e)
             {
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     return NotFound();
                 }
                 
-                var response = ProductsApiResponseItem.Map(result.Product,
+                var response = ProductSubscriptionApiResponseItem.Map(result.Product,
                     new List<GetApiProductSubscriptionsResponseItem> { result.Subscription });
                 return Ok(response);
             }

@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 {
-    public class WhenGettingAvailableProducts
+    public class WhenGettingAvailableProductSubscriptions
     {
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Data_Returned(
@@ -35,7 +35,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             var actual = await controller.GetAvailableProducts(accountIdentifier, accountType) as OkObjectResult;
             
             Assert.IsNotNull(actual);
-            var actualModel = actual.Value as ProductsApiResponse;
+            var actualModel = actual.Value as ProductSubscriptionsApiResponse;
             actualModel.Should().BeEquivalentTo(mediatorResult, options=> options.Excluding(c=>c.Subscriptions));
         }
 

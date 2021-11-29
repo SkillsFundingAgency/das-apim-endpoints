@@ -16,7 +16,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
             source.Subscriptions.First().Name = name; 
             source.Products.First().Id = name;
             
-            var actual = (ProductsApiResponse)source;
+            var actual = (ProductSubscriptionsApiResponse)source;
             
             actual.Should().BeEquivalentTo(source, options=> options.Excluding(c=>c.Subscriptions));
             actual.Products.FirstOrDefault(c => c.Id.Equals(name))?.Key.Should().Be(source.Subscriptions.First().Key);

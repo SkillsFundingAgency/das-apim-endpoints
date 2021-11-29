@@ -36,7 +36,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             var actual = await controller.GetProductSubscription(accountIdentifier, productId, accountType) as OkObjectResult;
             
             Assert.IsNotNull(actual);
-            var actualModel = actual.Value as ProductsApiResponseItem;
+            var actualModel = actual.Value as ProductSubscriptionApiResponseItem;
             actualModel.Id.Should().Be(mediatorResult.Product.Id);
         }
 
