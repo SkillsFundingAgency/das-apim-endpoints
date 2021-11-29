@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Models
             
             var identifierParts = accountIdentifier?.Split('-');
             
-            if (string.IsNullOrEmpty(accountIdentifier) || identifierParts.Length != 3)
+            if (string.IsNullOrEmpty(accountIdentifier) || identifierParts.Length < 3)
             {
                 AccountType = AccountType.Unknown;
                 return;
