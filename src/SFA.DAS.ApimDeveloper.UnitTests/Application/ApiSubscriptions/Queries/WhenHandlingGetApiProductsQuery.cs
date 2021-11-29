@@ -4,7 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
@@ -17,11 +17,11 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Data_Returned(
-            GetApiProductsQuery query, 
+            GetApiProductSubscriptionsQuery query, 
             GetAvailableApiProductsResponse apiResponse,
             GetApiProductSubscriptionsResponse apiSubscriptionsResponse,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> apiClient,
-            GetApiProductsQueryHandler handler)
+            GetApiProductSubscriptionsQueryHandler handler)
         {
             apiClient.Setup(x =>
                 x.Get<GetAvailableApiProductsResponse>(

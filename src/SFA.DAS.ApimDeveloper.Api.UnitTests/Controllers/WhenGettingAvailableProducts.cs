@@ -11,7 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
@@ -22,11 +22,11 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         public async Task Then_The_Request_Is_Handled_And_Data_Returned(
             string accountType,
             string accountIdentifier,
-            GetApiProductsQueryResult mediatorResult,
+            GetApiProductSubscriptionsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<GetApiProductsQuery>(c => 
+            mediator.Setup(x => x.Send(It.Is<GetApiProductSubscriptionsQuery>(c => 
                     c.AccountType.Equals(accountType)
                     && c.AccountIdentifier.Equals(accountIdentifier)
                     ),
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<GetApiProductsQuery>(),
+            mediator.Setup(x => x.Send(It.IsAny<GetApiProductSubscriptionsQuery>(),
                 CancellationToken.None)).ThrowsAsync(new Exception());
             
             var actual = await controller.GetAvailableProducts(accountIdentifier,accountType) as StatusCodeResult;

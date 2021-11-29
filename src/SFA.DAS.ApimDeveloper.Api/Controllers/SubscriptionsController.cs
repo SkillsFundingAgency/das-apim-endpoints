@@ -9,8 +9,8 @@ using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApiProductsQuery 
+                var result = await _mediator.Send(new GetApiProductSubscriptionsQuery 
                 { 
                     AccountType = accountType, 
                     AccountIdentifier = accountIdentifier

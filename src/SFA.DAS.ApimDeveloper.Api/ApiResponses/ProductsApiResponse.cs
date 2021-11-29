@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
@@ -9,7 +9,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
     public class ProductsApiResponse
     {
         public List<ProductsApiResponseItem> Products { get; set; }
-        public static implicit operator ProductsApiResponse(GetApiProductsQueryResult source)
+        public static implicit operator ProductsApiResponse(GetApiProductSubscriptionsQueryResult source)
         {
             var response =  new ProductsApiResponse
             {
