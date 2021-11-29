@@ -11,14 +11,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
         public void Then_The_Fields_Are_Mapped_For_Employer_And_Id_Upper_Cased()
         {
             var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}-Product";
+            var accountIdentifier = $"Employer-{accountId}-Product-Sandbox";
             
             var actual = new AccountIdentifier(accountIdentifier);
 
             actual.AccountType.Should().Be(AccountType.Employer);
             actual.Ukprn.Should().BeNull();
             actual.AccountPublicHashedId.Should().Be(accountId.ToUpper());
-            actual.IsSandbox.Should().BeFalse();
         }
         
         [Test, AutoData]
@@ -31,7 +30,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountType.Should().Be(AccountType.Provider);
             actual.Ukprn.Should().Be(ukprn);
             actual.AccountPublicHashedId.Should().BeNull();
-            actual.IsSandbox.Should().BeFalse();
         }
         
         [Test, AutoData]
@@ -45,10 +43,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountType.Should().Be(AccountType.Provider);
             actual.Ukprn.Should().BeNull();
             actual.AccountPublicHashedId.Should().BeNull();
-            actual.IsSandbox.Should().BeFalse();
         }
 
-        [Test, AutoData]
+        [Test]
+        [InlineAutoData("")]
+        [InlineAutoData("Identifier")]
+        [InlineAutoData("Identifier-NotValid")]
         public void Then_If_Not_Recognised_Format_Not_Known_Type_Returned(string accountIdentifier)
         {
             var actual = new AccountIdentifier(accountIdentifier);
@@ -56,7 +56,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountType.Should().Be(AccountType.Unknown);
             actual.AccountPublicHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
-            actual.IsSandbox.Should().BeFalse();
         }
         
         [Test]
@@ -67,7 +66,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountType.Should().Be(AccountType.Unknown);
             actual.AccountPublicHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
-            actual.IsSandbox.Should().BeFalse();
         }
         
         [Test, AutoData]
@@ -81,34 +79,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountType.Should().Be(AccountType.Unknown);
             actual.AccountPublicHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
-            actual.IsSandbox.Should().BeFalse();
-        }
-        
-        [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped_For_Sandbox_Employer_And_Id_Upper_Cased()
-        {
-            var accountId = "ABC123";
-            var accountIdentifier = $"Employer-{accountId}-sandbox";
-            
-            var actual = new AccountIdentifier(accountIdentifier);
-
-            actual.AccountType.Should().Be(AccountType.Employer);
-            actual.Ukprn.Should().BeNull();
-            actual.AccountPublicHashedId.Should().Be(accountId.ToUpper());
-            actual.IsSandbox.Should().BeTrue();
-        }
-        
-        [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped_For_Sandbox_Provider(int ukprn)
-        {
-            var accountIdentifier = $"Provider-{ukprn}-sandbox";
-            
-            var actual = new AccountIdentifier(accountIdentifier);
-
-            actual.AccountType.Should().Be(AccountType.Provider);
-            actual.Ukprn.Should().Be(ukprn);
-            actual.AccountPublicHashedId.Should().BeNull();
-            actual.IsSandbox.Should().BeTrue();
         }
     }
 }

@@ -11,12 +11,11 @@ namespace SFA.DAS.SharedOuterApi.Models
             
             var identifierParts = accountIdentifier?.Split('-');
             
-            if (string.IsNullOrEmpty(accountIdentifier) || !(identifierParts.Length == 2 || identifierParts.Length == 3))
+            if (string.IsNullOrEmpty(accountIdentifier) || identifierParts.Length < 3)
             {
                 AccountType = AccountType.Unknown;
                 return;
             }
-            
             var id = identifierParts[1];
             
             Enum.TryParse(typeof(AccountType), identifierParts[0], true,
@@ -34,17 +33,11 @@ namespace SFA.DAS.SharedOuterApi.Models
                 case AccountType.Unknown:
                     break;
             }
-
-            if (identifierParts.Length == 3 && identifierParts[2].ToUpper() == "SANDBOX")
-            {
-                IsSandbox = true;
-            }
         }
 
         public AccountType AccountType { get; }
         public string AccountPublicHashedId { get; }
         public int? Ukprn { get; }
-        public bool IsSandbox { get; }
     }
 
     public enum AccountType
