@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Recruit.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.Recruit.Api.AppStart
@@ -17,6 +18,10 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+            services.Configure<RecruitConfiguration>(configuration.GetSection(nameof(RecruitConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitConfiguration>>().Value);
         }
     }
 }
