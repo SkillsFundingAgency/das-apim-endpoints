@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
@@ -15,9 +16,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     {
         private readonly ResponseReturningApiClient _client;
         private readonly IMediator _mediator;
+        private readonly ILogger<ApprenticeshipController> _logger;
 
-        public ApprenticeshipController(ResponseReturningApiClient client, IMediator mediator)
-            => (_client, _mediator) = (client, mediator);
+        public ApprenticeshipController(ResponseReturningApiClient client, IMediator mediator, ILogger<ApprenticeshipController> logger)
+            => (_client, _mediator, _logger) = (client, mediator, logger);
 
         [HttpPost("/apprenticeships")]
         public async Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
@@ -29,6 +31,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             }
             catch (ApiResponseException e)
             {
+                _logger.LogError(e, "Creating apprenticeship for apprentice {ApprenticeId} from registration {RegistrationId}",
+                    request.ApprenticeId, request.RegistrationId);
+
                 return StatusCode((int)e.Status, e.Error);
             }
         }
