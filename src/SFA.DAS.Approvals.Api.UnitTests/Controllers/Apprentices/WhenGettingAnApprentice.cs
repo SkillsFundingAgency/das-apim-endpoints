@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 {
-    public class WhenGettingAPledgeApplication
+    public class WhenGettingAnApprentice
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Apprentice_From_Mediator(
