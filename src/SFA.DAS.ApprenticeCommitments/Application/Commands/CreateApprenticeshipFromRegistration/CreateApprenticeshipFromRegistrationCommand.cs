@@ -34,7 +34,10 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands
             _logger.LogInformation("CreateApprenticeshipFromRegistration Apprentice: {ApprenticeId} Registration: {RegistrationId}",
                 request.ApprenticeId, request.RegistrationId);
 
-            var apprentice = await _accounts.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
+            var apprenticeResponse = await _accounts.GetWithResponseCode<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
+            apprenticeResponse.EnsureSuccessStatusCode();
+
+            var apprentice = apprenticeResponse.Body;
 
             _logger.LogInformation("CreateApprenticeshipFromRegistration found apprentice {ApprenticeId}", apprentice.ApprenticeId);
 

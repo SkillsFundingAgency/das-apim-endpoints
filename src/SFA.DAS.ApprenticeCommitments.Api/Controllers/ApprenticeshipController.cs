@@ -24,6 +24,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPost("/apprenticeships")]
         public async Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
         {
+            _logger.LogInformation("POST CreateApprenticeship");
+            _logger.LogInformation("Creating apprenticeship for apprentice {ApprenticeId} from registration {RegistrationId}",
+                request.ApprenticeId, request.RegistrationId);
+
             try
             {
                 await _mediator.Send(request);
