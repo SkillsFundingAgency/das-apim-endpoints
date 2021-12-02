@@ -9,59 +9,60 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.LevyTransferMatching.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.PledgeApplications
 {
     public class WhenGettingAPledgeApplication
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Apprentice_From_Mediator(
-            Guid apprenticeId,
-            GetApprenticeResult mediatorResult,
+        public async Task Then_Gets_PledgeApplication_From_Mediator(
+            int pledgeApplicationId,
+            GetPledgeApplicationResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticesController controller)
+            [Greedy] PledgeApplicationsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetApprenticeQuery>(x=>x.ApprenticeId == apprenticeId),
+                    It.Is<GetPledgeApplicationQuery>(x=>x.PledgeApplicationId == pledgeApplicationId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Get(apprenticeId) as ObjectResult;
+            var controllerResult = await controller.Get(pledgeApplicationId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetApprenticeResult;
+            var model = controllerResult.Value as GetPledgeApplicationResponse;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo(mediatorResult);
+            model.Should().BeEquivalentTo((GetPledgeApplicationResponse)mediatorResult);
         }
 
         [Test, MoqAutoData]
         public async Task And_Then_No_Apprentice_Is_Returned_From_Mediator(
-            Guid apprenticeId,
+            int pledgeApplicationId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticesController controller)
+            [Greedy] PledgeApplicationsController controller)
         {
-            var controllerResult = await controller.Get(apprenticeId) as NotFoundResult;
+            var controllerResult = await controller.Get(pledgeApplicationId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            Guid apprenticeId,
+            int pledgeApplicationId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticesController controller)
+            [Greedy] PledgeApplicationsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetApprenticeQuery>(),
+                    It.IsAny<GetPledgeApplicationQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.Get(apprenticeId) as BadRequestResult;
+            var controllerResult = await controller.Get(pledgeApplicationId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

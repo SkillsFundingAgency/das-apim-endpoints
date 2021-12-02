@@ -13,7 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
-    public class WhenGettingAnApprentice
+    public class WhenGettingAPledgeApplication
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_The_Apprentice_Is_Returned(
