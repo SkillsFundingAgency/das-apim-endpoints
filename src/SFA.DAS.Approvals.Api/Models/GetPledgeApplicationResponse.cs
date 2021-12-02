@@ -10,6 +10,7 @@ namespace SFA.DAS.Approvals.Api.Models
         public bool AutomaticApproval { get; set; }
         public int TotalAmount { get; set; }
         public int AmountUsed { get; set; }
+        public int AmountRemaining { get; set; }
 
         public static implicit operator GetPledgeApplicationResponse(GetPledgeApplicationResult source)
         {
@@ -20,7 +21,8 @@ namespace SFA.DAS.Approvals.Api.Models
                 Status = source.Status,
                 AutomaticApproval = source.AutomaticApproval,
                 TotalAmount = source.TotalAmount,
-                AmountUsed = source.AmountUsed
+                AmountUsed = source.AmountUsed,
+                AmountRemaining = source.AmountRemaining
             };
         }
     }
