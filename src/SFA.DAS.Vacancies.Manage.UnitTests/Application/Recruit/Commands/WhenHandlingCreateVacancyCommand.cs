@@ -22,12 +22,13 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
         public async Task Then_The_Command_Is_Handled_And_Api_Called_With_Response(
             string responseValue,
             CreateVacancyCommand command,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
+            command.IsSandbox = false;
             var apiResponse = new ApiResponse<string>(responseValue, HttpStatusCode.Created, "");
-            recruitApiClient.Setup(x =>
+            mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
                         c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
@@ -40,6 +41,36 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body);
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateVacancyRequest>()), 
+                Times.Never);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task And_IsSandbox_Then_Api_Called_To_Validate_Request(
+            string responseValue,
+            CreateVacancyCommand command,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            command.IsSandbox = true;
+            var apiResponse = new ApiResponse<string>(responseValue, HttpStatusCode.Created, "");
+            mockRecruitApiClient
+                .Setup(x =>
+                    x.PostWithResponseCode<string>(
+                        It.Is<PostValidateVacancyRequest>(c => 
+                            c.PostUrl.Contains($"{command.Id.ToString()}/validate?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
+                            && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
+                        )))
+                .ReturnsAsync(apiResponse);
+
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            result.VacancyReference.Should().Be(apiResponse.Body);
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostVacancyRequest>()), 
+                Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -50,6 +81,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             CreateVacancyCommandHandler handler)
         {
             //Arrange
+            command.IsSandbox = false;
             var apiResponse = new ApiResponse<string>(null, HttpStatusCode.BadRequest, errorContent);
             recruitApiClient
                 .Setup(client => client.PostWithResponseCode<string>(It.IsAny<PostVacancyRequest>()))
@@ -70,6 +102,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             CreateVacancyCommandHandler handler)
         {
             //Arrange
+            command.IsSandbox = false;
             var apiResponse = new ApiResponse<string>(null, HttpStatusCode.InternalServerError, errorContent);
             recruitApiClient
                 .Setup(client => client.PostWithResponseCode<string>(It.IsAny<PostVacancyRequest>()))
