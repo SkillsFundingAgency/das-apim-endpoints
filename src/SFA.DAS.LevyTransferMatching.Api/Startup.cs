@@ -41,6 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
             var isLocalOrDev = _configuration.IsLocalOrDev();
 
             services.AddNLog();
+            services.AddNServiceBus();
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
