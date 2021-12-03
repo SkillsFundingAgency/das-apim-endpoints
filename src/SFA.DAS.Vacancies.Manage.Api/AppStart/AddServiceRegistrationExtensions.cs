@@ -19,6 +19,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
