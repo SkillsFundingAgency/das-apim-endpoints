@@ -8,11 +8,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
-using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
-using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.EmployerAccounts.Queries
 {
