@@ -21,6 +21,4 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         public string PostUrl => $"api/Vacancies/{_id}?ukprn={_ukprn}&userEmail={_email}";
         public object Data { get; set; }
     }
-
-    
 }

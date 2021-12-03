@@ -64,7 +64,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 AllJobRoles = allJobRolesTask.Result,
                 AllLevels = allLevelsTask.Result,
                 AllSectors = allSectorsTask.Result,
-                Status = application.Status
+                Status = application.Status,
+                AutomaticApproval = application.AutomaticApproval
             };
 
             return getApplicationResult;

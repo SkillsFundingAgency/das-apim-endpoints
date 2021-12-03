@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Manage.Configuration;
@@ -26,6 +27,7 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             _recruitApiClient = recruitApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
         }
+        
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
             var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(
@@ -37,7 +39,15 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             }
             request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
             
-            var apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+            IPostApiRequest apiRequest;
+            if (request.IsSandbox)
+            {
+                apiRequest = new PostValidateVacancyRequest(request.Id, request.PostVacancyRequestData);
+            }
+            else
+            {
+                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+            }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
 

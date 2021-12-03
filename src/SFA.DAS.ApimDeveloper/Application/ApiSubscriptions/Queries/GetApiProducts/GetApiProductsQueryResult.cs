@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 
-namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries
+namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts
 {
     public class GetApiProductsQueryResult
     {

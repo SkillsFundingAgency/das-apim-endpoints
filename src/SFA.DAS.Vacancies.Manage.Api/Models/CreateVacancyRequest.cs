@@ -77,7 +77,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         /// The Id of Apprenticeship standard. This can be obtained from the GET referenceData/courses endpoint.
         /// </summary>
         /// <example>119</example>
-        [JsonPropertyName("standardLarsCode")]
+        [JsonProperty("standardLarsCode")]
         public string ProgrammeId { get ; set ; }
         /// <summary>
         /// Name of the organisation
