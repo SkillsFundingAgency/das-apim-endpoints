@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,11 +6,11 @@ using AutoFixture;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -25,6 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         private GetApplicationsQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _service;
         private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
+        private Mock<IReferenceDataService> _referenceDataService;
         private GetApplicationsQuery _query;
         private Models.Account _account;
         private readonly Fixture _fixture = new Fixture();
@@ -39,17 +39,26 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId)))
                 .ReturnsAsync(new GetApplicationsResponse()
                 {
-                    Applications = new List<Models.Application>()
+                    Applications = new List<GetApplicationsResponse.Application>
                     {
-                        new Models.Application()
+                        new GetApplicationsResponse.Application
                         {
                             StandardId = "1"
                         },
-                        new Models.Application()
+                        new GetApplicationsResponse.Application
                         {
                             StandardId = "2"
                         }
                     }
+                });
+
+            _service.Setup(x => x.GetPledge(_query.PledgeId))
+                .ReturnsAsync(new Pledge
+                {
+                    Locations = new List<LocationDataItem>(),
+                    Sectors = new List<string>(),
+                    JobRoles = new List<string>(),
+                    Levels = new List<string>()
                 });
 
             _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
@@ -87,20 +96,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
                     LarsCode = _fixture.Create<int>(),
                     Level = _fixture.Create<int>(),
                     StandardDates = _fixture.Create<StandardDate>()
-                })
-                ;
+                });
 
-        }
-
-        [Test]
-        [AutoData]
-        public async Task Correct_Standard_Is_Added_To_The_Application()
-        {
-            _handler = new GetApplicationsQueryHandler(_service.Object, _coursesApiClient.Object);
-
-            var result = await _handler.Handle(_query, CancellationToken.None);
-
-            Assert.IsTrue(result.Applications.All(app => app.Standard.StandardUId == app.StandardId));
+            _referenceDataService = new Mock<IReferenceDataService>();
+            _referenceDataService.Setup(x => x.GetJobRoles()).ReturnsAsync(new List<ReferenceDataItem>());
         }
     }
 }

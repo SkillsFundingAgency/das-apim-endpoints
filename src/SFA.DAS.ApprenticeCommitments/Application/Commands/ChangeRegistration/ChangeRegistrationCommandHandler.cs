@@ -50,6 +50,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
                 FirstName = apprenticeship.FirstName,
                 LastName = apprenticeship.LastName,
                 DateOfBirth = apprenticeship.DateOfBirth,
+                Email = apprenticeship.Email,
                 EmployerName = apprenticeship.EmployerName,
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
@@ -59,7 +60,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,          
             });
 
             return default;
@@ -70,6 +71,12 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
+
+            if (IsNullOrEmpty(apprenticeship.Email))
+            {
+                _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in continuing", apprenticeship.Id);
+                return default;
+            }
 
             var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;

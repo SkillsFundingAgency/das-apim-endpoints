@@ -32,6 +32,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public List<ReferenceDataItem> AllJobRoles { get; set; }
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
+        public IEnumerable<string> Locations { get; set; }
+        public string AdditionalLocation { get; set; }
+        public string SpecificLocation { get; set; }
+        public bool AutomaticApproval { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -62,6 +66,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AllJobRoles = result.AllJobRoles,
                 AllSectors = result.AllSectors,
                 AllLevels = result.AllLevels,
+                Locations = result.Locations,
+                AdditionalLocation = result.AdditionalLocation,
+                SpecificLocation = result.SpecificLocation,
+                AutomaticApproval = result.AutomaticApproval
             };
         }
     }

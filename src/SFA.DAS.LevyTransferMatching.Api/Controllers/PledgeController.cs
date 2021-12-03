@@ -20,6 +20,9 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
+
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -206,22 +209,23 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         public async Task<IActionResult> PledgeApplications(int pledgeId)
         {
             var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
-            
+
             return Ok(new GetApplicationsResponse
             {
-                Applications = queryResult.Applications
+                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
             });
         }
-
+        
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
-        public async Task<IActionResult> Application(int applicationId)
+        public async Task<IActionResult> Application(int pledgeId, int applicationId)
         {
             try
             {
                 var queryResult = await _mediator.Send(new GetApplicationQuery()
                 {
+                    PledgeId = pledgeId,
                     ApplicationId = applicationId,
                 });
 
@@ -268,6 +272,51 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
         }
 
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approval-options")]
+        public async Task<IActionResult> ApplicationApprovalOptions(int pledgeId, int applicationId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApplicationApprovalOptionsQuery()
+                {
+                    PledgeId = pledgeId,
+                    ApplicationId = applicationId,
+                });
+
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
+
+                var response = (GetApplicationApprovalOptionsResponse)queryResult;
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get application approval options");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}/approval-options")]
+        public async Task<IActionResult> SetApplicationApprovalOptions(int pledgeId, int applicationId, [FromBody] SetApplicationApprovalOptionsRequest request)
+        {
+            await _mediator.Send(new SetApplicationApprovalOptionsCommand
+            {
+                PledgeId = pledgeId,
+                ApplicationId = applicationId,
+                UserDisplayName = request.UserDisplayName,
+                UserId = request.UserId,
+                AutomaticApproval = request.AutomaticApproval
+            });
+
+            return Ok();
+        }
 
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
@@ -280,7 +329,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetApplicationApprovedResponse
                 {
-                    EmployerAccountName = queryResult.EmployerAccountName
+                    EmployerAccountName = queryResult.EmployerAccountName,
+                    AutomaticApproval = queryResult.AutomaticApproval
                 };
 
                 return Ok(response);

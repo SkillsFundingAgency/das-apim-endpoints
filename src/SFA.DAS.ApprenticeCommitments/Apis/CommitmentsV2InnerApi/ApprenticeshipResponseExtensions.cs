@@ -8,12 +8,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
     {
         public static string? GetCourseCode(this ApprenticeshipResponse apprenticeship, ILogger logger)
         {
-            if (string.IsNullOrEmpty(apprenticeship.Email))
-            {
-                logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in calling Apprentice Commitments", apprenticeship.Id);
-                return default;
-            }
-
             if (apprenticeship.CourseCode.Contains("-"))
             {
                 logger.LogWarning("Apprenticeship {apprenticeshipId} is for a framework, no point in calling Apprentice Commitments", apprenticeship.Id);

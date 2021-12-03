@@ -3,7 +3,11 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
@@ -11,20 +15,31 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IAccountsService _accountsService;
+        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ILogger<CreateApplicationCommandHandler> _logger;
 
-        public CreateApplicationCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, IAccountsService accountsService, ILogger<CreateApplicationCommandHandler> logger)
+        public CreateApplicationCommandHandler(ILevyTransferMatchingService levyTransferMatchingService,
+            IAccountsService accountsService,
+            ILogger<CreateApplicationCommandHandler> logger,
+            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _accountsService = accountsService;
             _logger = logger;
+            _coursesApiClient = coursesApiClient;
         }
 
         public async Task<CreateApplicationCommandResult> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Creating Application to Pledge {request.PledgeId} for Account {request.EmployerAccountId}");
 
-            var account = await _levyTransferMatchingService.GetAccount(new GetAccountRequest(request.EmployerAccountId));
+            var accountTask = _levyTransferMatchingService.GetAccount(new GetAccountRequest(request.EmployerAccountId));
+            var standardTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(request.StandardId));
+
+            await Task.WhenAll(accountTask, standardTask);
+
+            var account = accountTask.Result;
+            var standard = standardTask.Result;
 
             if (account == null)
             {
@@ -37,12 +52,19 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 EmployerAccountId = request.EmployerAccountId,
                 Details = request.Details,
                 StandardId = request.StandardId,
+                StandardTitle = standard.Title,
+                StandardLevel = standard.Level,
+                StandardDuration = standard.TypicalDuration,
+                StandardMaxFunding = standard.MaxFundingOn(request.StartDate),
+                StandardRoute = standard.Route,
                 NumberOfApprentices = request.NumberOfApprentices,
                 StartDate = request.StartDate,
                 HasTrainingProvider = request.HasTrainingProvider,
                 Amount = request.Amount,
                 Sectors = request.Sectors,
-                Postcode = request.Postcode,
+                Locations = request.Locations,
+                AdditionalLocation = request.AdditionalLocation,
+                SpecificLocation = request.SpecificLocation,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 EmailAddresses = request.EmailAddresses,
