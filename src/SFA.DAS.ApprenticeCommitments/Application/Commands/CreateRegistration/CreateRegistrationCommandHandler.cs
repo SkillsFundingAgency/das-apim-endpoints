@@ -78,7 +78,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
                 ApprenticeshipName = apprentice.CourseName,
             };
 
-            _logger.LogInformation($"Create Apprenticeship response: {JsonConvert.SerializeObject(res)}");
+            _logger.LogInformation($"Create Apprenticeship response was successful: RegistrationId: {res.RegistrationId}, Apprenticeship: {res.ApprenticeshipName} for CommitmentsApprenticeshipId: {command.CommitmentsApprenticeshipId}");
 
             return res;
         }
