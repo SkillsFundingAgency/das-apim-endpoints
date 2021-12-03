@@ -122,121 +122,121 @@ stages:
       SandboxProductId: $(VacanciesManageSandboxProductId)
 
 - stage: Deploy_PP
- dependsOn: []
- displayName: Deploy to PP
- variables:
- - group: PREPROD Management Resources
- - group: PREPROD Shared Resources
- - group: PREPROD das-apim-endpoints
- jobs:
- - template: ../pipeline-templates/job/arm-deploy.yml
-   parameters:
-     ServiceConnection: SFA-DIG-PreProd-ARM
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     Environment: PP
-     SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
+  dependsOn: []
+  displayName: Deploy to PP
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PP
+      SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
 
- - template: ../pipeline-templates/job/deploy-api.yml
-   parameters:
-     DeploymentName: Deploy_VacanciesManage
-     Environment: PP
-     ServiceConnection: SFA-DIG-PreProd-ARM
-     AppServiceName: $(VacanciesManageOuterApiAppServiceName)
-     DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
-     ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
-     ApiPath: $(VacanciesManageOuterApiPath)
-     ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
-     ProductId: $(VacanciesManageProductId)
-     ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     SandboxProductId: $(VacanciesManageSandboxProductId)
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_VacanciesManage
+      Environment: PP
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(VacanciesManageOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
+      ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
+      ApiPath: $(VacanciesManageOuterApiPath)
+      ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
+      ProductId: $(VacanciesManageProductId)
+      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
 
 - stage: Deploy_PROD
- dependsOn: []
- displayName: Deploy to PROD
- variables:
- - group: PROD Management Resources
- - group: PROD Shared Resources
- - group: PROD das-apim-endpoints
- jobs:
- - template: ../pipeline-templates/job/arm-deploy.yml
-   parameters:
-     ServiceConnection: SFA-DIG-Prod-ARM
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     Environment: PROD
-     SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
 
- - template: ../pipeline-templates/job/deploy-api.yml
-   parameters:
-     DeploymentName: Deploy_VacanciesManage
-     Environment: PROD
-     ServiceConnection: SFA-DIG-Prod-ARM
-     AppServiceName: $(VacanciesManageOuterApiAppServiceName)
-     DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
-     ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
-     ApiPath: $(VacanciesManageOuterApiPath)
-     ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
-     ProductId: $(VacanciesManageProductId)
-     ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     SandboxProductId: $(VacanciesManageSandboxProductId)
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_VacanciesManage
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(VacanciesManageOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
+      ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
+      ApiPath: $(VacanciesManageOuterApiPath)
+      ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
+      ProductId: $(VacanciesManageProductId)
+      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
 
 - stage: Deploy_MO
- dependsOn: []
- displayName: Deploy to MO
- variables:
- - group: MO Management Resources
- - group: MO Shared Resources
- - group: MO das-apim-endpoints
- jobs:
- - template: ../pipeline-templates/job/arm-deploy.yml
-   parameters:
-     ServiceConnection: SFA-ASM-ModelOffice-ARM
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     Environment: MO
-     SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
+  dependsOn: []
+  displayName: Deploy to MO
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: MO
+      SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
 
- - template: ../pipeline-templates/job/deploy-api.yml
-   parameters:
-     DeploymentName: Deploy_VacanciesManage
-     Environment: MO
-     ServiceConnection: SFA-ASM-ModelOffice-ARM
-     AppServiceName: $(VacanciesManageOuterApiAppServiceName)
-     DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
-     ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
-     ApiPath: $(VacanciesManageOuterApiPath)
-     ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
-     ProductId: $(VacanciesManageProductId)
-     ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-     SandboxProductId: $(VacanciesManageSandboxProductId)
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_VacanciesManage
+      Environment: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(VacanciesManageOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
+      ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
+      ApiPath: $(VacanciesManageOuterApiPath)
+      ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
+      ProductId: $(VacanciesManageProductId)
+      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
 
 - stage: Deploy_DEMO
- dependsOn: []
- displayName: Deploy to DEMO
- variables:
- - group: DevTest Management Resources
- - group: DEMO DevTest Shared Resources
- - group: DEMO das-apim-endpoints
- jobs:
- - template: ../pipeline-templates/job/arm-deploy.yml
-   parameters:
-     ServiceConnection: SFA-DAS-DevTest-ARM
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-     Environment: DEMO
-     SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: DEMO
+      SchemaFilePath: $(VacanciesManageOuterApiSchemaFilePath)
 
- - template: ../pipeline-templates/job/deploy-api.yml
-   parameters:
-     DeploymentName: Deploy_VacanciesManage
-     Environment: DEMO
-     ServiceConnection: SFA-DAS-DevTest-ARM
-     AppServiceName: $(VacanciesManageOuterApiAppServiceName)
-     DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
-     ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
-     ApiPath: $(VacanciesManageOuterApiPath)
-     ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
-     ProductId: $(VacanciesManageProductId)
-     ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
-     AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-     SandboxProductId: $(VacanciesManageSandboxProductId)
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_VacanciesManage
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(VacanciesManageOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Manage.Api.zip
+      ApiVersionSetName: $(VacanciesManageOuterApiVersionSetName)
+      ApiPath: $(VacanciesManageOuterApiPath)
+      ApiBaseUrl: $(VacanciesManageOuterApiBaseUrl)
+      ProductId: $(VacanciesManageProductId)
+      ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      SandboxProductId: $(VacanciesManageSandboxProductId)
