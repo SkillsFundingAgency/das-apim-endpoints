@@ -30,8 +30,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
             var allJobRolesTask = _referenceDataService.GetJobRoles();
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
+            var pledgeTask = _levyTransferMatchingService.GetPledge(application.PledgeId);
 
-            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask);
             
             return new GetApplicationResult
             {
@@ -45,21 +46,22 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 Amount = application.Amount,
                 TotalAmount = application.TotalAmount,
                 EmployerAccountName = application.EmployerAccountName,
-                PledgeEmployerAccountName = application.PledgeEmployerAccountName,
-                IsNamePublic = application.PledgeIsNamePublic,
-                JobRoles = application.PledgeJobRoles,
-                Levels = application.PledgeLevels,
-                PledgeLocations = application.PledgeLocations.Select(x => x.Name),
+                PledgeEmployerAccountName = pledgeTask.Result.DasAccountName,
+                IsNamePublic = pledgeTask.Result.IsNamePublic,
+                JobRoles = pledgeTask.Result.JobRoles,
+                Levels = pledgeTask.Result.Levels,
+                PledgeLocations = pledgeTask.Result.Locations.Select(x => x.Name),
                 NumberOfApprentices = application.NumberOfApprentices,
-                RemainingAmount = application.PledgeRemainingAmount,
-                Sectors = application.PledgeSectors,
+                RemainingAmount = pledgeTask.Result.RemainingAmount,
+                Sectors = pledgeTask.Result.Sectors,
                 StartBy = application.StartDate,
                 Status = application.Status,
                 OpportunityId = application.PledgeId,
-                PledgeAmount = application.PledgeAmount,
+                PledgeAmount = pledgeTask.Result.Amount,
                 SenderEmployerAccountId = application.SenderEmployerAccountId,
                 AmountUsed = application.AmountUsed,
-                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed
+                NumberOfApprenticesUsed = application.NumberOfApprenticesUsed,
+                AutomaticApproval = application.AutomaticApproval
             };
         }
     }

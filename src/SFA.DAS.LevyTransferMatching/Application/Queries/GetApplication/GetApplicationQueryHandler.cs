@@ -31,7 +31,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
 
-            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask);
+            var pledgeTask = _levyTransferMatchingService.GetPledge(application.PledgeId);
+
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask);
 
             var getApplicationResult = new GetApplicationResult()
             {
@@ -51,18 +53,19 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 StartBy = application.StartDate,
                 TypeOfJobRole = application.StandardTitle,
                 EmployerAccountName = application.EmployerAccountName,
-                Locations = application.PledgeLocations?.Where(x => application.Locations.Select(y => y.PledgeLocationId).Contains(x.Id)).Select(x => x.Name),
+                Locations = pledgeTask.Result.Locations?.Where(x => application.Locations.Select(y => y.PledgeLocationId).Contains(x.Id)).Select(x => x.Name),
                 AdditionalLocation = application.AdditionalLocation,
                 SpecificLocation = application.SpecificLocation,
-                PledgeSectors = application.PledgeSectors,
-                PledgeLevels = application.PledgeLevels,
-                PledgeJobRoles = application.PledgeJobRoles,
-                PledgeLocations = application.PledgeLocations?.Select(x => x.Name),
-                PledgeRemainingAmount = application.PledgeRemainingAmount,
+                PledgeSectors = pledgeTask.Result.Sectors,
+                PledgeLevels = pledgeTask.Result.Levels,
+                PledgeJobRoles = pledgeTask.Result.JobRoles,
+                PledgeLocations = pledgeTask.Result.Locations?.Select(x => x.Name),
+                PledgeRemainingAmount = pledgeTask.Result.RemainingAmount,
                 AllJobRoles = allJobRolesTask.Result,
                 AllLevels = allLevelsTask.Result,
                 AllSectors = allSectorsTask.Result,
-                Status = application.Status
+                Status = application.Status,
+                AutomaticApproval = application.AutomaticApproval
             };
 
             return getApplicationResult;

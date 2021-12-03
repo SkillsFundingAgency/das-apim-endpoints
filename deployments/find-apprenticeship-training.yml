@@ -5,7 +5,7 @@ variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
 - name: OuterApiObject
-  value: $(FindApprenticeshipOuterApiObject)
+  value: $(FindApprenticeshipTrainingOuterApiObject)
 
 resources:
   repositories:
@@ -13,12 +13,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.14
+    ref: refs/tags/0.4.26
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.4
+    ref: refs/tags/4.5.9
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -44,20 +44,20 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
@@ -73,20 +73,20 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: TEST
       ServiceConnection: SFA-DAS-DevTest-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST2
@@ -102,20 +102,20 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: TEST2
       ServiceConnection: SFA-DAS-DevTest-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_PP
@@ -131,20 +131,20 @@ stages:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_PROD
@@ -160,20 +160,20 @@ stages:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
@@ -189,20 +189,20 @@ stages:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: MO
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_DEMO
@@ -218,18 +218,18 @@ stages:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
-      SchemaFilePath: $(FindApprenticeshipOuterApiSchemaFilePath)
+      SchemaFilePath: $(FindApprenticeshipTrainingOuterApiSchemaFilePath)
 
   - template: ../pipeline-templates/job/deploy-api.yml
     parameters:
       DeploymentName: Deploy_FindApprenticeshipTraining
       Environment: DEMO
       ServiceConnection: SFA-DAS-DevTest-ARM
-      AppServiceName: $(FindApprenticeshipOuterApiAppServiceName)
+      AppServiceName: $(FindApprenticeshipTrainingOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.FindApprenticeshipTraining.Api.zip
-      ApiVersionSetName: $(FindApprenticeshipOuterApiVersionSetName)
-      ApiPath: $(FindApprenticeshipOuterApiPath)
-      ApiBaseUrl: $(FindApprenticeshipOuterApiBaseUrl)
-      ProductId: $(FindApprenticeshipProductId)
-      ApplicationIdentifierUri: $(FindApprenticeshipOuterApiIdentifierUri)
+      ApiVersionSetName: $(FindApprenticeshipTrainingOuterApiVersionSetName)
+      ApiPath: $(FindApprenticeshipTrainingOuterApiPath)
+      ApiBaseUrl: $(FindApprenticeshipTrainingOuterApiBaseUrl)
+      ProductId: $(FindApprenticeshipTrainingProductId)
+      ApplicationIdentifierUri: $(FindApprenticeshipTrainingOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS

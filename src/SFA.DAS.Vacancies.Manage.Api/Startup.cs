@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -20,6 +22,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Manage.Api.AppStart;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.Vacancies.Manage.Configuration;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SFA.DAS.Vacancies.Manage.Api
 {
@@ -69,7 +72,8 @@ namespace SFA.DAS.Vacancies.Manage.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true)
+                .AddNewtonsoftJson(options=>options.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -97,8 +101,11 @@ namespace SFA.DAS.Vacancies.Manage.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on any website and Find an Apprenticeship. Give the key and {{this link to the API Page|recruitment_api_doc}} to your developer."});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on Find an apprenticeship using your existing systems."});
+                var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+                c.IncludeXmlComments(filePath);
             });
+            services.AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

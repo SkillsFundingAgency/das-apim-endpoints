@@ -58,6 +58,14 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         public string ThingsToConsider { get ; set ; }
         [JsonProperty("outcomeDescription")]
         public string OutcomeDescription { get ; set ; }
+        [JsonProperty("employerWebsiteUrl")]
+        public string EmployerWebsiteUrl { get; set; }
+        [JsonProperty("employerContact")]
+        public ContactDetails EmployerContact { get; set; }
+        [JsonProperty("providerContact")]
+        public ContactDetails ProviderContact { get; set; }
+        [JsonProperty("ownerType")]
+        public OwnerType OwnerType { get ; set ; }
     }
     
     public class PostVacancyUserData
@@ -115,6 +123,16 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         [JsonProperty("weighting")]
         public QualificationWeighting Weighting { get; set; }
     }
+
+    public class ContactDetails
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+    }
     
     public enum QualificationWeighting
     {
@@ -151,5 +169,10 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
     {
         No = 0,
         Yes
+    }
+    public enum OwnerType
+    {
+        Employer,
+        Provider
     }
 }

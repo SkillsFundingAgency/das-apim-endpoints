@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
 {
