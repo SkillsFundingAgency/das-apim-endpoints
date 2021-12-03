@@ -41,7 +41,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     PageSize = pageSize,
                     Ukprn = account.Ukprn ?? ukprn,
                     AccountPublicHashedId = account.AccountPublicHashedId,
-                    AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+                    AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
+                    AccountIdentifier = account
                 });
 
                 return Ok((GetVacanciesListResponse)queryResponse);
