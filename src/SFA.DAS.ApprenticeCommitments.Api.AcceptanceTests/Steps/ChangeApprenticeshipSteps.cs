@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/registrations")
+                        .WithPath("/approvals")
                         .UsingPut()
                       )
                 .RespondWith(
