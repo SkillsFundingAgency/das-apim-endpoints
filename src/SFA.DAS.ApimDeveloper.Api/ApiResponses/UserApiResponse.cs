@@ -9,6 +9,11 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
 
         public static implicit operator UserApiResponse(AuthenticateUserQueryResult source)
         {
+            if (source.User == null)
+            {
+                return null;
+            }
+                
             return new UserApiResponse
             {
                 User = new UserApiResponseItem

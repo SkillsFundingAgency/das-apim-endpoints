@@ -15,5 +15,18 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
 
             actual.User.Should().BeEquivalentTo(source.User);
         }
+
+        [Test]
+        public void Then_If_Null_Then_Null_Returned()
+        {
+            var source = new AuthenticateUserQueryResult
+            {
+                User = null
+            };
+
+            var actual = (UserApiResponse)source;
+
+            actual.Should().BeNull();
+        }
     }
 }

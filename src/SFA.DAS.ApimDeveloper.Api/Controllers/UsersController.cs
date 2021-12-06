@@ -5,7 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiRequests;
+using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
+using SFA.DAS.ApimDeveloper.Application.Users.Queries;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
@@ -51,5 +53,32 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("authenticate")]
+        public async Task<IActionResult> AuthenticateUser(string email, string password)
+        {
+            try
+            {
+                var result = await _mediator.Send(new AuthenticateUserQuery
+                {
+                    Email = email,
+                    Password = password
+                });
+
+                var model = (UserApiResponse)result;
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unable to get user");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
