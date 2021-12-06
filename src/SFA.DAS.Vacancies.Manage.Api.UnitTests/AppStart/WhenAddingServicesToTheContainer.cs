@@ -23,6 +23,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.AppStart
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(ICacheStorageService))]
+        [TestCase(typeof(IAccountLegalEntityPermissionService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();

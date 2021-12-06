@@ -13,12 +13,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.14
+    ref: refs/tags/0.4.26
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.7
+    ref: refs/tags/4.5.9
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -117,119 +117,119 @@ stages:
       ProductId: $(VacanciesProductId)
       ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#
-#- stage: Deploy_PP
-#  dependsOn: []
-#  displayName: Deploy to PP
-#  variables:
-#  - group: PREPROD Management Resources
-#  - group: PREPROD Shared Resources
-#  - group: PREPROD das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DIG-PreProd-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: PP
-#      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_Vacancies
-#      Environment: PP
-#      ServiceConnection: SFA-DIG-PreProd-ARM
-#      AppServiceName: $(VacanciesOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
-#      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
-#      ApiPath: $(VacanciesOuterApiPath)
-#      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
-#      ProductId: $(VacanciesProductId)
-#      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_PROD
-#  dependsOn: []
-#  displayName: Deploy to PROD
-#  variables:
-#  - group: PROD Management Resources
-#  - group: PROD Shared Resources
-#  - group: PROD das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DIG-Prod-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: PROD
-#      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_Vacancies
-#      Environment: PROD
-#      ServiceConnection: SFA-DIG-Prod-ARM
-#      AppServiceName: $(VacanciesOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
-#      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
-#      ApiPath: $(VacanciesOuterApiPath)
-#      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
-#      ProductId: $(VacanciesProductId)
-#      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_MO
-#  dependsOn: []
-#  displayName: Deploy to MO
-#  variables:
-#  - group: MO Management Resources
-#  - group: MO Shared Resources
-#  - group: MO das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-ASM-ModelOffice-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#      Environment: MO
-#      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_Vacancies
-#      Environment: MO
-#      ServiceConnection: SFA-ASM-ModelOffice-ARM
-#      AppServiceName: $(VacanciesOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
-#      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
-#      ApiPath: $(VacanciesOuterApiPath)
-#      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
-#      ProductId: $(VacanciesProductId)
-#      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#
-#- stage: Deploy_DEMO
-#  dependsOn: []
-#  displayName: Deploy to DEMO
-#  variables:
-#  - group: DevTest Management Resources
-#  - group: DEMO DevTest Shared Resources
-#  - group: DEMO das-apim-endpoints
-#  jobs:
-#  - template: ../pipeline-templates/job/arm-deploy.yml
-#    parameters:
-#      ServiceConnection: SFA-DAS-DevTest-ARM
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#      Environment: DEMO
-#      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
-#
-#  - template: ../pipeline-templates/job/deploy-api.yml
-#    parameters:
-#      DeploymentName: Deploy_Vacancies
-#      Environment: DEMO
-#      ServiceConnection: SFA-DAS-DevTest-ARM
-#      AppServiceName: $(VacanciesOuterApiAppServiceName)
-#      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
-#      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
-#      ApiPath: $(VacanciesOuterApiPath)
-#      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
-#      ProductId: $(VacanciesProductId)
-#      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
-#      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+- stage: Deploy_PP
+  dependsOn: []
+  displayName: Deploy to PP
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PP
+      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Vacancies
+      Environment: PP
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(VacanciesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
+      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
+      ApiPath: $(VacanciesOuterApiPath)
+      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
+      ProductId: $(VacanciesProductId)
+      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Vacancies
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(VacanciesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
+      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
+      ApiPath: $(VacanciesOuterApiPath)
+      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
+      ProductId: $(VacanciesProductId)
+      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_MO
+  dependsOn: []
+  displayName: Deploy to MO
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: MO
+      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Vacancies
+      Environment: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(VacanciesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
+      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
+      ApiPath: $(VacanciesOuterApiPath)
+      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
+      ProductId: $(VacanciesProductId)
+      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_DEMO
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: DEMO
+      SchemaFilePath: $(VacanciesOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_Vacancies
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(VacanciesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.Vacancies.Api.zip
+      ApiVersionSetName: $(VacanciesOuterApiVersionSetName)
+      ApiPath: $(VacanciesOuterApiPath)
+      ApiBaseUrl: $(VacanciesOuterApiBaseUrl)
+      ProductId: $(VacanciesProductId)
+      ApplicationIdentifierUri: $(VacanciesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
