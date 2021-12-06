@@ -32,6 +32,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((PutCreateUserRequestData)c.Data).FirstName.Equals(command.FirstName)
                     && ((PutCreateUserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((PutCreateUserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
+                    && ((PutCreateUserRequestData)c.Data).State.Equals(0)
                 )), Times.Once);
 
         }

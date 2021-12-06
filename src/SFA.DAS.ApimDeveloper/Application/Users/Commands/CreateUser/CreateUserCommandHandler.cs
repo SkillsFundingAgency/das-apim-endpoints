@@ -23,7 +23,8 @@ namespace SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser
                 Password = request.Password,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                ConfirmationEmailLink = request.ConfirmationEmailLink
+                ConfirmationEmailLink = request.ConfirmationEmailLink,
+                State = 0
             }));
             
             return Unit.Value;
