@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -6,18 +7,17 @@ using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
 
-namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts
+namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription
 {
-    public class GetApiProductsQueryHandler : IRequestHandler<GetApiProductsQuery, GetApiProductsQueryResult>
+    public class GetApiProductSubscriptionQueryHandler : IRequestHandler<GetApiProductSubscriptionQuery, GetApiProductSubscriptionQueryResult>
     {
         private readonly IApimDeveloperApiClient<ApimDeveloperApiConfiguration> _apimDeveloperApiClient;
 
-        public GetApiProductsQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient)
+        public GetApiProductSubscriptionQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient)
         {
             _apimDeveloperApiClient = apimDeveloperApiClient;
         }
-        
-        public async Task<GetApiProductsQueryResult> Handle(GetApiProductsQuery request, CancellationToken cancellationToken)
+        public async Task<GetApiProductSubscriptionQueryResult> Handle(GetApiProductSubscriptionQuery request, CancellationToken cancellationToken)
         {
             var productsTask =
                 _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
@@ -29,10 +29,13 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProdu
 
             await Task.WhenAll(productsTask, subscriptionsTask);
             
-            return new GetApiProductsQueryResult
+            var product = productsTask.Result.Products.FirstOrDefault(c => c.Id.Equals(request.ProductId));
+            var subscription = subscriptionsTask.Result.Subscriptions.FirstOrDefault(c => c.Name.Equals(request.ProductId));
+
+            return new GetApiProductSubscriptionQueryResult
             {
-                Products = productsTask.Result.Products,
-                Subscriptions = subscriptionsTask.Result.Subscriptions
+                Product = product,
+                Subscription = subscription
             };
         }
     }
