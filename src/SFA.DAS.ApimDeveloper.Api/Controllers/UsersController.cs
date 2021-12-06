@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Queries;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -45,6 +46,26 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             catch (HttpRequestContentException e)
             {
                 return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unable to create user");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("{id}/activate")]
+        public async Task<IActionResult> ActivateAccount([FromRoute] Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new ActivateUserCommand
+                {
+                    Id = id
+                });
+                
+                return NoContent();
             }
             catch (Exception e)
             {
