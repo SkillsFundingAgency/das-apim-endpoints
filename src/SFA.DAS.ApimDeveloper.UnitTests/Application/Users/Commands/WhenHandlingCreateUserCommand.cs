@@ -22,9 +22,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> client,
             CreateUserCommandHandler handler)
         {
-            await handler.Handle(command, CancellationToken.None);
-            
-            client.Verify(
+            client.Setup(
                 x => x.PostWithResponseCode<object>(It.Is<PostCreateUserRequest>(c =>
                     c.PostUrl.Contains(command.Id.ToString())
                     && ((UserRequestData)c.Data).Email.Equals(command.Email) 
@@ -33,7 +31,9 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
                     && ((UserRequestData)c.Data).State.Equals(0)
-                )), Times.Once);
+                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.NoContent, ""));
+            
+            await handler.Handle(command, CancellationToken.None);
         }
 
         [Test, MoqAutoData]
