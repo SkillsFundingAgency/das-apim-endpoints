@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -48,11 +49,33 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
             var filteredEpaos = epaosTask.Result
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
                 .ToList();
+
+            var epaoTasks = filteredEpaos.
+                  ToDictionary(
+                  t => t.EpaoId,
+                  t => _assessorsApiClient.Get<IEnumerable<GetStandardsExtendedListItem>>(
+                      new GetCourseEpaosStandardVersionsRequest(t.EpaoId, request.CourseId)));
+
+            await Task.WhenAll(epaoTasks.Select(x => x.Value).ToArray());
+
+            foreach (var filtEpao in filteredEpaos)
+            {
+                if (epaoTasks.TryGetValue(filtEpao.EpaoId, out var epaoResponse) && epaoResponse.Result != null)
+                {
+                    var epaoVersions = epaoResponse.Result
+                        .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
+                        .Select(x => x.Version).ToArray();
+
+                    filtEpao.CourseEpaoDetails.StandardVersions = epaoVersions;
+                }
+            }
+
             _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");
             
             return new GetCourseEpaosResult
             {
-                Epaos = filteredEpaos.OrderBy(item => item.Name),
+                Epaos = filteredEpaos.Where(x => x.CourseEpaoDetails.StandardVersions.Length > 0)
+                                     .OrderBy(item => item.Name),
                 Course = courseTask.Result
             };
         }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.Vacancies.Manage.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetEmployerAccountLegalEntityItem
     {

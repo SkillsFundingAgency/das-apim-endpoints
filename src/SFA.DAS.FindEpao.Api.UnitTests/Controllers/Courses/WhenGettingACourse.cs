@@ -38,7 +38,8 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
             Assert.IsNotNull(model);
             model.Course.Should().BeEquivalentTo(mediatorResult.Course, options => options
             .Excluding(c => c.LarsCode)
-            .Excluding(c => c.StandardUId));
+            .Excluding(c => c.StandardUId)
+            .Excluding(c => c.StandardVersions));
 
             model.Course.Id.Should().Be(mediatorResult.Course.LarsCode);
 
