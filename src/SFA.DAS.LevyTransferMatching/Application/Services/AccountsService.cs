@@ -21,6 +21,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             var response = await _client.Get<Account>(new GetAccountRequest(encodedAccountId));
 
             return response;
+        }        
+        
+        public async Task<Account> GetAccount(long accountId)
+        {
+            var response = await _client.Get<Account>(new GetAccountRequest(accountId));
+
+            return response;
         }
     }
 }

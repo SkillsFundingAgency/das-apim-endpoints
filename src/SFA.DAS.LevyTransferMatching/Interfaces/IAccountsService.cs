@@ -6,5 +6,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
     public interface IAccountsService
     {
         Task<Account> GetAccount(string encodedAccountId);
+
+        Task<Account> GetAccount(long accountId);
     }
 }
