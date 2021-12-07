@@ -9,8 +9,8 @@ using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProduct;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProducts;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
@@ -30,17 +30,17 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         }
         
         [HttpGet]
-        [Route("products/{accountIdentifier}")]
+        [Route("{accountIdentifier}/products")]
         public async Task<IActionResult> GetAvailableProducts([FromRoute]string accountIdentifier, string accountType)
         {
             try
             {
-                var result = await _mediator.Send(new GetApiProductsQuery 
+                var result = await _mediator.Send(new GetApiProductSubscriptionsQuery 
                 { 
                     AccountType = accountType, 
                     AccountIdentifier = accountIdentifier
                 });
-                return Ok((ProductsApiResponse)result);
+                return Ok((ProductSubscriptionsApiResponse)result);
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApiProductQuery
+                var result = await _mediator.Send(new GetApiProductSubscriptionQuery
                 {
                     AccountIdentifier = id,
                     AccountType = accountType,
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     return NotFound();
                 }
                 
-                var response = ProductsApiResponseItem.Map(result.Product,
+                var response = ProductSubscriptionApiResponseItem.Map(result.Product,
                     new List<GetApiProductSubscriptionsResponseItem> { result.Subscription });
                 return Ok(response);
             }
