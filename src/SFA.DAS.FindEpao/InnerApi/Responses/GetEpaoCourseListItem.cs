@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
@@ -8,5 +9,6 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
         public DateTime? DateStandardApprovedOnRegister { get; set; }
+        public IEnumerable<GetStandardsExtendedListItem> StandardVersions { get; set; }
     }
 }
