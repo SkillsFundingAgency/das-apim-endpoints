@@ -8,9 +8,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
-using SFA.DAS.ApimDeveloper.Application.Users.Queries;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
@@ -19,17 +21,16 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
-            string email, 
-            string password,
-            AuthenticateUserQueryResult mediatorResult,
+            AuthenticateUserRequest request,
+            AuthenticateUserCommandResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
             mediator.Setup(x =>
-                x.Send(It.Is<AuthenticateUserQuery>(c => c.Email.Equals(email) && c.Password.Equals(password)),
+                x.Send(It.Is<AuthenticateUserCommand>(c => c.Email.Equals(request.Email) && c.Password.Equals(request.Password)),
                     CancellationToken.None)).ReturnsAsync(mediatorResult);
 
-            var actual = await controller.AuthenticateUser(email, password) as OkObjectResult;
+            var actual = await controller.AuthenticateUser(request) as OkObjectResult;
 
             Assert.IsNotNull(actual);
             var actualModel = actual.Value as UserApiResponse;
@@ -39,20 +40,19 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_If_Null_Then_NotFound_Returned(
-            string email, 
-            string password,
-            AuthenticateUserQueryResult mediatorResult,
+            AuthenticateUserRequest request,
+            AuthenticateUserCommandResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
             mediator.Setup(x =>
-                x.Send(It.Is<AuthenticateUserQuery>(c => c.Email.Equals(email) && c.Password.Equals(password)),
-                    CancellationToken.None)).ReturnsAsync(new AuthenticateUserQueryResult
+                x.Send(It.Is<AuthenticateUserCommand>(c => c.Email.Equals(request.Email) && c.Password.Equals(request.Password)),
+                    CancellationToken.None)).ReturnsAsync(new AuthenticateUserCommandResult
             {
                 User = null
             });
             
-            var actual = await controller.AuthenticateUser(email, password) as NotFoundResult;
+            var actual = await controller.AuthenticateUser(request) as NotFoundResult;
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
@@ -60,18 +60,32 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         
         [Test, MoqAutoData]
         public async Task Then_If_Error_Then_InternalServerError_Returned(
-            string email,
-            string password,
+            AuthenticateUserRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy]UsersController controller)
         {
             mediator.Setup(x =>
-                x.Send(It.Is<AuthenticateUserQuery>(c => c.Email.Equals(email) && c.Password.Equals(password)),
+                x.Send(It.Is<AuthenticateUserCommand>(c => c.Email.Equals(request.Email) && c.Password.Equals(request.Password)),
                     CancellationToken.None)).ThrowsAsync(new Exception());
 
-            var actual = await controller.AuthenticateUser(email, password) as StatusCodeResult;
+            var actual = await controller.AuthenticateUser(request) as StatusCodeResult;
             
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_A_HttpRequestException_Then_Returned(
+            AuthenticateUserRequest request,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy]UsersController controller)
+        {
+            mediator.Setup(x =>
+                x.Send(It.Is<AuthenticateUserCommand>(c => c.Email.Equals(request.Email) && c.Password.Equals(request.Password)),
+                    CancellationToken.None)).ThrowsAsync(new HttpRequestContentException("error", HttpStatusCode.BadRequest, "error"));
+
+            var actual = await controller.AuthenticateUser(request) as ObjectResult;
+            
+            actual.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }

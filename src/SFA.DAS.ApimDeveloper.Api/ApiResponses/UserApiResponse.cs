@@ -1,5 +1,5 @@
 using System;
-using SFA.DAS.ApimDeveloper.Application.Users.Queries;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
 {
@@ -7,7 +7,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
     {
         public UserApiResponseItem User { get; set; }
 
-        public static implicit operator UserApiResponse(AuthenticateUserQueryResult source)
+        public static implicit operator UserApiResponse(AuthenticateUserCommandResult source)
         {
             if (source.User == null)
             {

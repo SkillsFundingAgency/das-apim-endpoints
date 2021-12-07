@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
-using SFA.DAS.ApimDeveloper.Application.Users.Queries;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
@@ -74,16 +74,16 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> AuthenticateUser(string email, string password)
+        public async Task<IActionResult> AuthenticateUser(AuthenticateUserRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new AuthenticateUserQuery
+                var result = await _mediator.Send(new AuthenticateUserCommand
                 {
-                    Email = email,
-                    Password = password
+                    Email = request.Email,
+                    Password = request.Password
                 });
 
                 var model = (UserApiResponse)result;
@@ -94,6 +94,10 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                 }
 
                 return Ok(model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
             }
             catch (Exception e)
             {

@@ -2,14 +2,14 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
-using SFA.DAS.ApimDeveloper.Application.Users.Queries;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
 {
     public class WhenMappingUserApiResponseFromMediator
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(AuthenticateUserQueryResult source)
+        public void Then_The_Fields_Are_Mapped(AuthenticateUserCommandResult source)
         {
             var actual = (UserApiResponse)source;
 
@@ -19,7 +19,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
         [Test]
         public void Then_If_Null_Then_Null_Returned()
         {
-            var source = new AuthenticateUserQueryResult
+            var source = new AuthenticateUserCommandResult
             {
                 User = null
             };
