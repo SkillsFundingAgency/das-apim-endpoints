@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
@@ -44,6 +45,21 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             var actual = await controller.ActivateAccount(id) as StatusCodeResult;
             
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Validation_Error_BadRequest_Returned(
+            Guid id,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy]UsersController controller)
+        {
+            mediator.Setup(x => 
+                    x.Send(It.Is<ActivateUserCommand>(c => c.Id.Equals(id)), CancellationToken.None))
+                .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.NotFound));
+
+            var actual = await controller.ActivateAccount(id) as ObjectResult;
+            
+            actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }
 }

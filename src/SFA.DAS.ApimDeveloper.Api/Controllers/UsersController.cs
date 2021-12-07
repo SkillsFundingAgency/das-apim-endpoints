@@ -67,9 +67,13 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                 
                 return NoContent();
             }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
             catch (Exception e)
             {
-                _logger.LogError(e, "Unable to create user");
+                _logger.LogError(e, "Unable to activate user");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
