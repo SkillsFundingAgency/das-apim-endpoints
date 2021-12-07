@@ -25,16 +25,35 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
             await handler.Handle(command, CancellationToken.None);
             
             client.Verify(
-                x => x.Put(It.Is<PutCreateUserRequest>(c =>
-                    c.PutUrl.Contains(command.Id.ToString())
-                    && ((PutCreateUserRequestData)c.Data).Email.Equals(command.Email) 
-                    && ((PutCreateUserRequestData)c.Data).Password.Equals(command.Password)
-                    && ((PutCreateUserRequestData)c.Data).FirstName.Equals(command.FirstName)
-                    && ((PutCreateUserRequestData)c.Data).LastName.Equals(command.LastName)
-                    && ((PutCreateUserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
-                    && ((PutCreateUserRequestData)c.Data).State.Equals(0)
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateUserRequest>(c =>
+                    c.PostUrl.Contains(command.Id.ToString())
+                    && ((UserRequestData)c.Data).Email.Equals(command.Email) 
+                    && ((UserRequestData)c.Data).Password.Equals(command.Password)
+                    && ((UserRequestData)c.Data).FirstName.Equals(command.FirstName)
+                    && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
+                    && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
+                    && ((UserRequestData)c.Data).State.Equals(0)
                 )), Times.Once);
+        }
 
+        [Test, MoqAutoData]
+        public void Then_If_Error_HttpRequestContentException_Returned(
+            CreateUserCommand command,
+            [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> client,
+            CreateUserCommandHandler handler)
+        {
+            client.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostCreateUserRequest>(c =>
+                    c.PostUrl.Contains(command.Id.ToString())
+                    && ((UserRequestData)c.Data).Email.Equals(command.Email) 
+                    && ((UserRequestData)c.Data).Password.Equals(command.Password)
+                    && ((UserRequestData)c.Data).FirstName.Equals(command.FirstName)
+                    && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
+                    && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
+                    && ((UserRequestData)c.Data).State.Equals(0)
+                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Error"));
+
+            Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));
         }
     }
 }

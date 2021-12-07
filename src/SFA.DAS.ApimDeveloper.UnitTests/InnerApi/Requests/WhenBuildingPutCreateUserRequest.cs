@@ -9,12 +9,23 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.InnerApi.Requests
     public class WhenBuildingPutCreateUserRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Are_Data_Are_Correctly_Constructed(Guid id, PutCreateUserRequestData data)
+        public void Then_The_Url_Are_Data_Are_Correctly_Constructed(Guid id, UserRequestData data)
         {
-            var actual = new PutCreateUserRequest(id, data);
+            var actual = new PutUpdateUserRequest(id, data);
 
             actual.PutUrl.Should().Be($"api/users/{id}");
-            ((PutCreateUserRequestData)actual.Data).Should().BeEquivalentTo(data);
+            ((UserRequestData)actual.Data).Should().BeEquivalentTo(data);
+        }
+    }
+    public class WhenBuildingPostCreateUserRequest
+    {
+        [Test, AutoData]
+        public void Then_The_Url_Are_Data_Are_Correctly_Constructed(Guid id, UserRequestData data)
+        {
+            var actual = new PostCreateUserRequest(id, data);
+
+            actual.PostUrl.Should().Be($"api/users/{id}");
+            ((UserRequestData)actual.Data).Should().BeEquivalentTo(data);
         }
     }
 }

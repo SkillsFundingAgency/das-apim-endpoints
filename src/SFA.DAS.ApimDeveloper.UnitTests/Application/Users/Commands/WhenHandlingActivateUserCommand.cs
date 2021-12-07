@@ -21,9 +21,9 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
         {
             await handler.Handle(command, CancellationToken.None);
             
-            apimDeveloperApiClient.Verify(x=>x.Put(It.Is<PutCreateUserRequest>(c=>
+            apimDeveloperApiClient.Verify(x=>x.Put(It.Is<PutUpdateUserRequest>(c=>
                 c.PutUrl.Contains(command.Id.ToString())
-                && ((PutCreateUserRequestData)c.Data).State.Equals(1)
+                && ((UserRequestData)c.Data).State.Equals(1)
                 )), Times.Once);
         }
     }

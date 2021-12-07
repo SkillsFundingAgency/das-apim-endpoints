@@ -18,7 +18,7 @@ namespace SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser
         
         public async Task<Unit> Handle(ActivateUserCommand request, CancellationToken cancellationToken)
         {
-            await _apimDeveloperApiClient.Put(new PutCreateUserRequest(request.Id, new PutCreateUserRequestData
+            await _apimDeveloperApiClient.Put(new PutUpdateUserRequest(request.Id, new UserRequestData
             {
                 State = 1
             }));

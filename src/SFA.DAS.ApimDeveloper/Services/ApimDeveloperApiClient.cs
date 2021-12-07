@@ -64,7 +64,7 @@ namespace SFA.DAS.ApimDeveloper.Services
 
         public Task Put(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Put(request);
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
