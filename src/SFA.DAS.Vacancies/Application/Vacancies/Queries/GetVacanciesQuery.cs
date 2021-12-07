@@ -10,6 +10,6 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         public int? Ukprn { get; set; }
         public string AccountPublicHashedId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-
+        public AccountIdentifier AccountIdentifier { get ; set ; }
     }
 }

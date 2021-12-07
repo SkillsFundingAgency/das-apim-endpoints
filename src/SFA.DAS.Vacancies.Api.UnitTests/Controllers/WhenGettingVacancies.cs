@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Api.Controllers;
 using SFA.DAS.Vacancies.Api.Models;
@@ -20,7 +21,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator(
-            int accountId,
             string accountLegalEntityPublicHashedId,
             int? ukprn,
             int pageNumber, 
@@ -29,15 +29,19 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesQuery>(
-                        c=>c.Ukprn.Equals(ukprn)
-                        && c.PageNumber.Equals(pageNumber)
-                        && c.AccountPublicHashedId.Equals(accountId.ToString())
-                        && c.AccountLegalEntityPublicHashedId.Equals(accountLegalEntityPublicHashedId)
-                        && c.PageSize.Equals(pageSize)),
+                        c=>c.Ukprn.Equals(ukprn) 
+                         && c.AccountIdentifier.AccountType == AccountType.Employer
+                         && c.AccountIdentifier.AccountPublicHashedId == accountId
+                         && c.AccountIdentifier.Ukprn == null
+                         && c.PageNumber.Equals(pageNumber)
+                         && c.AccountPublicHashedId.Equals(accountId)
+                         && c.AccountLegalEntityPublicHashedId.Equals(accountLegalEntityPublicHashedId)
+                         && c.PageSize.Equals(pageSize)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -65,6 +69,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesQuery>(
                         c=>c.Ukprn.Equals(ukprn)
+                           && c.AccountIdentifier.AccountType == AccountType.Provider
+                           && c.AccountIdentifier.AccountPublicHashedId == null
+                           && c.AccountIdentifier.Ukprn == ukprn
                            && c.PageNumber.Equals(pageNumber)
                            && c.AccountPublicHashedId == null
                            && c.AccountLegalEntityPublicHashedId.Equals(accountLegalEntityPublicHashedId)
