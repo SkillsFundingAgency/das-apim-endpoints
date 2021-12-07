@@ -7,5 +7,6 @@ namespace SFA.DAS.FindEpao.Interfaces
     {
         bool IsValidCourseEpao(GetCourseEpaoListItem courseEpao);
         bool ValidateEpaoStandardDates(DateTime? dateStandardApprovedOnRegister, DateTime? effectiveTo, DateTime? effectiveFrom);
+        bool ValidateVersionDates(DateTime? effectiveFrom, DateTime? effectiveTo);
     }
 }
