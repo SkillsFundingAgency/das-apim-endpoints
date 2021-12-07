@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProduct;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
@@ -22,11 +22,11 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             string accountType,
             string accountIdentifier,
             string productId,
-            GetApiProductQueryResult mediatorResult,
+            GetApiProductSubscriptionQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<GetApiProductQuery>(c => 
+            mediator.Setup(x => x.Send(It.Is<GetApiProductSubscriptionQuery>(c => 
                     c.AccountType.Equals(accountType)
                     && c.AccountIdentifier.Equals(accountIdentifier)
                     && c.ProductId.Equals(productId)
@@ -36,7 +36,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             var actual = await controller.GetProductSubscription(accountIdentifier, productId, accountType) as OkObjectResult;
             
             Assert.IsNotNull(actual);
-            var actualModel = actual.Value as ProductsApiResponseItem;
+            var actualModel = actual.Value as ProductSubscriptionApiResponseItem;
             actualModel.Id.Should().Be(mediatorResult.Product.Id);
         }
 
@@ -44,13 +44,13 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         public async Task Then_If_Null_Returned_NotFound_Result_Returned(string accountType,
             string accountIdentifier,
             string productId,
-            GetApiProductQueryResult mediatorResult,
+            GetApiProductSubscriptionQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
             mediatorResult.Product = null;
             mediatorResult.Subscription = null;
-            mediator.Setup(x => x.Send(It.Is<GetApiProductQuery>(c => 
+            mediator.Setup(x => x.Send(It.Is<GetApiProductSubscriptionQuery>(c => 
                     c.AccountType.Equals(accountType)
                     && c.AccountIdentifier.Equals(accountIdentifier)
                     && c.ProductId.Equals(productId)
@@ -71,7 +71,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SubscriptionsController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<GetApiProductQuery>(),
+            mediator.Setup(x => x.Send(It.IsAny<GetApiProductSubscriptionQuery>(),
                 CancellationToken.None)).ThrowsAsync(new Exception());
             
             var actual = await controller.GetProductSubscription(accountIdentifier, productId, accountType) as StatusCodeResult;
