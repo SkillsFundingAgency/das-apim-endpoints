@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class ChangeApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private ChangeRegistrationCommand _request;
+        private UpdateApprovalCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/registrations")
+                        .WithPath("/approvals")
                         .UsingPut()
                       )
                 .RespondWith(
@@ -124,8 +124,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship update is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<ChangeRegistrationCommand>();
-            await _context.OuterApiClient.Put("registrations", _request);
+            _request = table.CreateInstance<UpdateApprovalCommand>();
+            await _context.OuterApiClient.Put("approvals", _request);
         }
 
         [Then("the response should be OK")]
@@ -196,7 +196,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.CourseName.Should().Be(name);
@@ -210,7 +210,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.FirstName.Should().Be(firstName);
@@ -223,7 +223,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.DateOfBirth.ToString("yyyy-MM-dd").Should().Be(dob);
