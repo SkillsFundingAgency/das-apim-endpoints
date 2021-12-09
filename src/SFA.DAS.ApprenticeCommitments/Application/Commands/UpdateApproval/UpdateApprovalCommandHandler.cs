@@ -11,22 +11,22 @@ using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2I
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
 {
-    public class ChangeRegistrationCommandHandler : IRequestHandler<ChangeRegistrationCommand>
+    public class UpdateApprovalCommandHandler : IRequestHandler<UpdateApprovalCommand>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly CoursesService _coursesService;
-        private readonly ILogger<ChangeRegistrationCommandHandler> _logger;
+        private readonly ILogger<UpdateApprovalCommandHandler> _logger;
 
-        public ChangeRegistrationCommandHandler(
+        public UpdateApprovalCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
             CoursesService coursesService,
-            ILogger<ChangeRegistrationCommandHandler> logger)
+            ILogger<UpdateApprovalCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _commitmentsService = commitmentsV2Service;
@@ -36,7 +36,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
         }
 
         public async Task<Unit> Handle(
-            ChangeRegistrationCommand command,
+            UpdateApprovalCommand command,
             CancellationToken cancellationToken)
         {
             var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
@@ -60,14 +60,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
-                CommitmentsApprovedOn = command.CommitmentsApprovedOn,          
+                CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
             return default;
         }
 
         private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)?>
-            GetExternalData(ChangeRegistrationCommand command)
+            GetExternalData(UpdateApprovalCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);

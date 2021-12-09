@@ -1,8 +1,5 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.ChangeRegistration;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading.Tasks;
@@ -12,23 +9,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     [ApiController]
     public class RegistrationController : ControllerBase
     {
-        private readonly IMediator _mediator;
         private readonly ResponseReturningApiClient _client;
 
-        public RegistrationController(IMediator mediator, ResponseReturningApiClient client)
-        {
-            _mediator = mediator;
-            _client = client;
-        }
-
-        [HttpPost("/registrations")]
-        public async Task<ActionResult<CreateRegistrationResponse>> CreateRegistrationFromApproval(CreateRegistrationCommand request)
-            => await _mediator.Send(request);
-
-        [HttpPut]
-        [Route("/registrations")]
-        public async Task UpdateRegistrationFromApproval(ChangeRegistrationCommand request)
-            => await _mediator.Send(request);
+        public RegistrationController(ResponseReturningApiClient client)
+            => _client = client;
 
         [HttpGet]
         [Route("/registrations/{registrationId}")]
