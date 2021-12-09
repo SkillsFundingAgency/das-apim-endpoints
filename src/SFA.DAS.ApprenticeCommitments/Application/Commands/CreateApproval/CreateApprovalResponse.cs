@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 {
-    public class CreateRegistrationResponse
+    public class CreateApprovalResponse
     {
         public Guid RegistrationId { get; set; }
         public string Email { get; internal set; }
