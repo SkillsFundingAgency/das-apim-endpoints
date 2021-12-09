@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api", "SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj", "{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}"
 EndProject
@@ -238,13 +238,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApimDeveloperWeb", "ApimDev
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B79329D3-8A8E-4E50-A10B-1B0A45B5F606}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApimDeveloper.Api", "SFA.DAS.ApimDeveloper.Api\SFA.DAS.ApimDeveloper.Api.csproj", "{F527AC30-D85B-4105-8063-7F5AEE6D29F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApimDeveloper.Api", "SFA.DAS.ApimDeveloper.Api\SFA.DAS.ApimDeveloper.Api.csproj", "{F527AC30-D85B-4105-8063-7F5AEE6D29F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApimDeveloper.Api.UnitTests", "SFA.DAS.ApimDeveloper.Api.UnitTests\SFA.DAS.ApimDeveloper.Api.UnitTests.csproj", "{D99A3EE3-DC45-4027-98CB-5B53D5A52B65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApimDeveloper.Api.UnitTests", "SFA.DAS.ApimDeveloper.Api.UnitTests\SFA.DAS.ApimDeveloper.Api.UnitTests.csproj", "{D99A3EE3-DC45-4027-98CB-5B53D5A52B65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApimDeveloper", "SFA.DAS.ApimDeveloper\SFA.DAS.ApimDeveloper.csproj", "{A43F17C7-6528-44B9-A9D3-B794B1904C98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApimDeveloper", "SFA.DAS.ApimDeveloper\SFA.DAS.ApimDeveloper.csproj", "{A43F17C7-6528-44B9-A9D3-B794B1904C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApimDeveloper.UnitTests", "SFA.DAS.ApimDeveloper.UnitTests\SFA.DAS.ApimDeveloper.UnitTests.csproj", "{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApimDeveloper.UnitTests", "SFA.DAS.ApimDeveloper.UnitTests\SFA.DAS.ApimDeveloper.UnitTests.csproj", "{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApprenticePortal", "ApprenticePortal", "{244A3611-9006-4D95-8BCF-52DE8B28799C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{75F86958-EDBE-48E5-AC29-2A9EC9CDAD12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticePortal", "SFA.DAS.ApprenticePortal\SFA.DAS.ApprenticePortal.csproj", "{02479A3D-6F57-4F2F-97FD-54ED72CB64BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticePortal.Api", "SFA.DAS.ApprenticePortal.Api\SFA.DAS.ApprenticePortal.Api.csproj", "{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -576,6 +584,14 @@ Global
 		{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02479A3D-6F57-4F2F-97FD-54ED72CB64BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02479A3D-6F57-4F2F-97FD-54ED72CB64BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02479A3D-6F57-4F2F-97FD-54ED72CB64BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02479A3D-6F57-4F2F-97FD-54ED72CB64BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -681,6 +697,9 @@ Global
 		{D99A3EE3-DC45-4027-98CB-5B53D5A52B65} = {B79329D3-8A8E-4E50-A10B-1B0A45B5F606}
 		{A43F17C7-6528-44B9-A9D3-B794B1904C98} = {7C6D251A-241D-43B9-8A47-F13286D8CCC2}
 		{2CDC85A1-DCB9-4AB7-A34D-3DFA82B453B5} = {B79329D3-8A8E-4E50-A10B-1B0A45B5F606}
+		{75F86958-EDBE-48E5-AC29-2A9EC9CDAD12} = {244A3611-9006-4D95-8BCF-52DE8B28799C}
+		{02479A3D-6F57-4F2F-97FD-54ED72CB64BB} = {244A3611-9006-4D95-8BCF-52DE8B28799C}
+		{5BCC441E-ECBE-40C5-AF1A-7ACF1FED634F} = {244A3611-9006-4D95-8BCF-52DE8B28799C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
