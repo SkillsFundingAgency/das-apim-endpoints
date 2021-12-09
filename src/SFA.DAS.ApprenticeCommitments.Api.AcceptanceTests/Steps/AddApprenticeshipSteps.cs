@@ -2,7 +2,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class AddApprenticeshipSteps
     {
         private readonly TestContext _context;
-        private CreateRegistrationCommand _request;
+        private CreateApprovalCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
         private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath("/registrations")
+                        .WithPath("/approvals")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "ApprenticeshipId != `0` && contains(Email, '@')"))
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath("/registrations")
+                    Request.Create().WithPath("/approvals")
                         .UsingPost()
                         .WithBody(new JmesPathMatcher(
                             "!contains(Email, '@')"))
@@ -155,8 +155,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the following apprenticeship is posted")]
         public async Task WhenTheFollowingApprenticeshipIsPosted(Table table)
         {
-            _request = table.CreateInstance<CreateRegistrationCommand>();
-            await _context.OuterApiClient.Post("registrations", _request);
+            _request = table.CreateInstance<CreateApprovalCommand>();
+            await _context.OuterApiClient.Post("approvals", _request);
         }
 
         [Then("the inner API has received the posted values")]
@@ -170,7 +170,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.Should().NotBeNull();
@@ -193,7 +193,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
@@ -205,7 +205,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var logs = _context.InnerApi.MockServer.LogEntries;
             logs.Should().HaveCount(1);
 
-            var innerApiRequest = JsonConvert.DeserializeObject<CreateApprenticeshipRequestData>(
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.CourseName.Should().Be(name);
@@ -239,7 +239,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var expectedCommitment = _approvedApprenticeships.First(
                 x => x.Id == _request.CommitmentsApprenticeshipId);
 
-            var response = JsonConvert.DeserializeObject<CreateRegistrationResponse>(
+            var response = JsonConvert.DeserializeObject<CreateApprovalResponse>(
                 await _context.OuterApiClient.Response.Content.ReadAsStringAsync());
 
             response.Should().BeEquivalentTo(new

@@ -8,28 +8,28 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.CreateApprenticeshipRequestData;
+using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.ApprovalCreatedRequestData;
 
 #nullable enable
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 {
-    public class CreateRegistrationCommandHandler : IRequestHandler<CreateRegistrationCommand, CreateRegistrationResponse?>
+    public class CreateApprovalCommandHandler : IRequestHandler<CreateApprovalCommand, CreateApprovalResponse?>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
         private readonly TrainingProviderService _trainingProviderService;
         private readonly ApprenticeLoginConfiguration _loginConfiguration;
         private readonly CoursesService _coursesService;
-        private readonly ILogger<CreateRegistrationCommandHandler> _logger;
+        private readonly ILogger<CreateApprovalCommandHandler> _logger;
 
-        public CreateRegistrationCommandHandler(
+        public CreateApprovalCommandHandler(
             ApprenticeCommitmentsService apprenticeCommitmentsService,
             ApprenticeLoginConfiguration loginConfiguration,
             CommitmentsV2Service commitmentsV2Service,
             TrainingProviderService trainingProviderService,
             CoursesService coursesService,
-            ILogger<CreateRegistrationCommandHandler> logger)
+            ILogger<CreateApprovalCommandHandler> logger)
         {
             _apprenticeCommitmentsService = apprenticeCommitmentsService;
             _loginConfiguration = loginConfiguration;
@@ -39,8 +39,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
             _logger = logger;
         }
 
-        public async Task<CreateRegistrationResponse?> Handle(
-            CreateRegistrationCommand command,
+        public async Task<CreateApprovalResponse?> Handle(
+            CreateApprovalCommand command,
             CancellationToken cancellationToken)
         {
             var (apprentice, trainingProvider, course) = await GetExternalData(command);
@@ -69,7 +69,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
-            var res = new CreateRegistrationResponse
+            var res = new CreateApprovalResponse
             {
                 RegistrationId = id,
                 Email = apprentice.Email,
@@ -84,7 +84,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
         }
 
         private async Task<(ApprenticeshipResponse, TrainingProviderResponse, StandardApiResponse)>
-            GetExternalData(CreateRegistrationCommand command)
+            GetExternalData(CreateApprovalCommand command)
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.EmployerAccountId,

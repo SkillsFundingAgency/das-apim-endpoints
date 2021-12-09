@@ -1,9 +1,9 @@
 using MediatR;
 using System;
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration
+namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 {
-    public class CreateRegistrationCommand : IRequest<CreateRegistrationResponse>
+    public class CreateApprovalCommand : IRequest<CreateApprovalResponse>
     {
         public long EmployerAccountId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }

@@ -14,9 +14,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
 
-        public Task CreateApprenticeship(CreateApprenticeshipRequestData data)
+        public Task CreateApprenticeship(ApprovalCreatedRequestData data)
         {
-            return _client.Post(new CreateApprenticeshipRequest
+            return _client.Post(new ApprovalCreatedRequest
             {
                 Data = data
             });
