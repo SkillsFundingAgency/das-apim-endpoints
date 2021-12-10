@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
                 });
                 s.Configure<ApprenticeAccountsConfiguration>(c =>
                 {
-                    c.Url = _testContext.ApprenticeAccountsApi.BaseAddress;
+                    c.Url = _testContext.InnerApi.BaseAddress;
                 });
                 s.Configure<CommitmentsV2Configuration>(c =>
                 {

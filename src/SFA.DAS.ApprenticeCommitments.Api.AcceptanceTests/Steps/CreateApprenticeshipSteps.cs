@@ -2,6 +2,7 @@
 using FluentAssertions;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -32,7 +33,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         {
             _apprentice = _fixture.Create<Apis.ApprenticeAccountsApi.Apprentice>();
 
-            _context.ApprenticeAccountsApi.MockServer
+            _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
                         .WithPath("/apprentices/*")
@@ -64,7 +65,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Then("the account details are passed to the API")]
         public void ThenTheAccountDetailsArePassedToTheAPI()
         {
-            _context.InnerApi.SingleLogBody.Should().NotBeEmpty()
+            _context.InnerApi.MockServer.LogEntries.Should().NotBeNullOrEmpty();
+            _context.InnerApi.MockServer.LogEntries.Skip(1).First().RequestMessage.Body.Should().NotBeEmpty()
+            //_context.InnerApi.SingleLogBody.Should().NotBeEmpty()
                 .And.ShouldBeJson<PostData>()
                 .Which.Should().BeEquivalentTo(new
                 {
