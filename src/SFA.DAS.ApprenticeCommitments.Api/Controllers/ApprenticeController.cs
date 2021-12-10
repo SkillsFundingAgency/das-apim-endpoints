@@ -22,16 +22,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public Task<IActionResult> GetApprentice(Guid id)
             => _client.Get($"apprentices/{id}");
 
-        [HttpGet("/apprentices/{id}/apprenticeships")]
-        public Task<IActionResult> ListApprenticeApprenticeships(Guid id)
-            => _client.Get($"/apprentices/{id}/apprenticeships");
-
         [HttpPatch("/apprentices/{id}")]
         public Task<IActionResult> UpdateApprentice(Guid id, JsonPatchDocument<Apprentice> changes)
             => _client.Patch($"apprentices/{id}", changes);
-
-        [HttpPost("/apprentices/{id}/email")]
-        public Task<IActionResult> ChangeApprenticeEmailAddress(Guid id, ApprenticeEmailAddressRequest request)
-            => _client.Post($"/apprentices/{id}/email", request);
     }
 }
