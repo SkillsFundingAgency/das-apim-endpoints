@@ -2,6 +2,7 @@
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
@@ -32,10 +33,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands
             var response = await _cmad.PostWithResponseCode<object>(new CreateApprenticeshipRequest(
                 request.RegistrationId, request.ApprenticeId, apprentice.LastName, apprentice.DateOfBirth));
 
-            if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
-            {
-                throw new Exception("hi");
-            }
+            response.EnsureSuccessStatusCode();
 
             return Unit.Value;
         }
