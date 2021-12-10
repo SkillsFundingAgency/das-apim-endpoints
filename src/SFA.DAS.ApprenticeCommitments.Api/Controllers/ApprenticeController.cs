@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading.Tasks;

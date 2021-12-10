@@ -1,6 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading.Tasks;
@@ -11,13 +13,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly ResponseReturningApiClient _client;
+        private readonly IMediator _mediator;
 
-        public ApprenticeshipController(ResponseReturningApiClient client)
-            => _client = client;
+        public ApprenticeshipController(ResponseReturningApiClient client, IMediator mediator)
+            => (_client, _mediator) = (client, mediator);
 
         [HttpPost("/apprenticeships")]
-        public Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration request)
-            => _client.Post("apprenticeships", request);
+        public Task CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
+            => _mediator.Send(request);
 
         [HttpGet("/apprenticeships/{id}")]
         public Task<IActionResult> GetApprenticeship(Guid id)
