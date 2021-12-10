@@ -13,6 +13,7 @@ namespace SFA.DAS.Roatp.Domain.Models
         public string Status { get; set; }
         public string Type { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        public DateTime? RemovalDate { get; set; }
         public List<Trustee> Trustees { get; set; }
 
         public static implicit operator Charity(GetCharityResponse charityResponse)
@@ -24,6 +25,7 @@ namespace SFA.DAS.Roatp.Domain.Models
                 Name = charityResponse.Name,
                 Status = charityResponse.RegistrationStatus,
                 Type = charityResponse.CharityType,
+                RemovalDate = charityResponse.RemovalDate,
                 Trustees = charityResponse.Trustees.Select(c => (Trustee)c).ToList()
             };
     }
