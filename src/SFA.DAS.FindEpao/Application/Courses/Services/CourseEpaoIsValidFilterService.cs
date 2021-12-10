@@ -38,5 +38,11 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
 
             return true;
         }
+
+
+        public bool ValidateVersionDates(DateTime? effectiveFrom, DateTime? effectiveTo) 
+            => ((effectiveFrom.HasValue && effectiveFrom.Value <= DateTime.UtcNow) && 
+            (!effectiveTo.HasValue || effectiveTo.Value >= DateTime.UtcNow));
+
     }
 }

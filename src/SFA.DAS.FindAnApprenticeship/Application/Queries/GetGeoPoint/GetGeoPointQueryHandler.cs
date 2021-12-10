@@ -21,7 +21,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint
             if (string.IsNullOrEmpty(request.Postcode)) throw new ArgumentException($"Postcode is required", nameof(GetGeoPointQuery.Postcode));
 
             var location = await _locationLookupService.GetLocationInformation(request.Postcode, default, default);
-            
+
+            if (location == null)
+            {
+                return new GetGeoPointQueryResult(null);
+            }
+
             return new GetGeoPointQueryResult(new GetGeoPointResponse 
             { 
                 GeoPoint = new GeoPoint 
