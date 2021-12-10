@@ -14,8 +14,8 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         public ApprenticeAccountsController(IMediator mediator)
             => _mediator = mediator;
 
-        [HttpGet("/apprentices/{id}/{entity?}")]
-        public async Task<IActionResult> GetApprentice(Guid id, string entity = "accounts")
+        [HttpGet("/apprentices/{id}")]
+        public async Task<IActionResult> GetApprentice(Guid id)
         {
             var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
 

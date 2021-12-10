@@ -3,15 +3,15 @@ using System;
 
 namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeCommitments.Requests
 {
-    public class GetApprenticeRequest : IGetApiRequest
+    public class GetApprenticeApprenticeshipsRequest : IGetApiRequest
     {
         private readonly Guid _id;
 
-        public GetApprenticeRequest(Guid id)
+        public GetApprenticeApprenticeshipsRequest(Guid id)
         {
             _id = id;
         }
 
-        public string GetUrl => $"apprentices/{_id}";
+        public string GetUrl => $"apprentices/{_id}/apprenticeships";
     }
 }

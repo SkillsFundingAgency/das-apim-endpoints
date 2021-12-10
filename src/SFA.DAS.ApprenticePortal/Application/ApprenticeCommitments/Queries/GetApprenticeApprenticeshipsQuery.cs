@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.ApprenticePortal.Application.ApprenticeCommitments.Queries
 {
-    public class GetApprenticeQuery : IRequest<GetApprenticeQueryResult>
+    public class GetApprenticeApprenticeshipsQuery : IRequest<GetApprenticeApprenticeshipsQueryResult>
     {
         public Guid ApprenticeId { get; set; }
     }

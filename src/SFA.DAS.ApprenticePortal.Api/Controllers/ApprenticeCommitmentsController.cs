@@ -14,15 +14,15 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         public ApprenticeCommitmentsController(IMediator mediator)
             => _mediator = mediator;
 
-        [HttpGet("/apprentices/{id}")]
-        public async Task<IActionResult> GetApprentice(Guid id)
+        [HttpGet("/apprentices/{id}/apprenticeships")]
+        public async Task<IActionResult> GetApprenticeApprenticeships(Guid id)
         {
-            var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
+            var result = await _mediator.Send(new GetApprenticeApprenticeshipsQuery { ApprenticeId = id });
 
-            if (result.apprentice == null)
+            if (result.apprenticeships == null)
                 return NotFound();
 
-            return Ok(result.apprentice);
+            return Ok(result);
         }
     }
 }
