@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Roatp.Api", "SFA.DA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Roatp.Api.UnitTests", "SFA.DAS.Roatp.Api.UnitTests\SFA.DAS.Roatp.Api.UnitTests.csproj", "{06E9595E-2F8C-4EE9-B3B0-89925E73EFF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Roatp.UnitTests", "SFA.DAS.Roatp.UnitTests\SFA.DAS.Roatp.UnitTests.csproj", "{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{06E9595E-2F8C-4EE9-B3B0-89925E73EFF4}.Release|x64.Build.0 = Release|Any CPU
 		{06E9595E-2F8C-4EE9-B3B0-89925E73EFF4}.Release|x86.ActiveCfg = Release|Any CPU
 		{06E9595E-2F8C-4EE9-B3B0-89925E73EFF4}.Release|x86.Build.0 = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|x64.Build.0 = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Debug|x86.Build.0 = Debug|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|x64.ActiveCfg = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|x64.Build.0 = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|x86.ActiveCfg = Release|Any CPU
+		{7476ED34-0EF6-421F-BBAA-B4E39C064C2F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
