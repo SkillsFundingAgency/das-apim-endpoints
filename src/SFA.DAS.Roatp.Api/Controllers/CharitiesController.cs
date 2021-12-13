@@ -31,7 +31,6 @@ namespace SFA.DAS.Roatp.Api.Controllers
 
             var result = await _mediator.Send(new GetCharityQuery(registrationNumber));
 
-
             if (result.Charity == null)
             {
                 _logger.LogInformation("Charity not found for registration number {registrationNumber}", registrationNumber);
