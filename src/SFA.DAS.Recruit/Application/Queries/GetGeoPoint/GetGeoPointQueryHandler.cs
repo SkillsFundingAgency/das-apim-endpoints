@@ -22,6 +22,11 @@ namespace SFA.DAS.Recruit.Application.Queries.GetGeocode
 
             var location = await _locationLookupService.GetLocationInformation(request.Postcode, default, default);
 
+            if(location == null)
+            {
+                return new GetGeoPointQueryResult(null);
+            }
+
             return new GetGeoPointQueryResult(new GetGeoPointResponse
             {
                 GeoPoint = new GeoPoint
