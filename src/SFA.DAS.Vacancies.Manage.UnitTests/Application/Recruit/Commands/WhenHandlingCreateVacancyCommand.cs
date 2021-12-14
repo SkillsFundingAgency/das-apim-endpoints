@@ -61,6 +61,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
         }
         [Test, MoqAutoData]
         public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Provider_And_Api_Called_With_Response(
+            int accountIdentifierId,
             string responseValue,
             CreateVacancyCommand command,
             AccountLegalEntityItem accountLegalEntityItem,
@@ -69,7 +70,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             CreateVacancyCommandHandler handler)
         {
             //Arrange
-            command.PostVacancyRequestData.OwnerType = OwnerType.Provider;
+            command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
             command.IsSandbox = false;
             var apiResponse = new ApiResponse<string>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
