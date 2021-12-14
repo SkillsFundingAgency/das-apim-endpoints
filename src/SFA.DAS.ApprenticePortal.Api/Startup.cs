@@ -13,7 +13,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticePortal.Api.AppStart;
 using SFA.DAS.ApprenticePortal.Api.ErrorHandler;
 using SFA.DAS.ApprenticePortal.Infrastructure;
-using SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries;
+using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticePortal.Api
                 .AddCheck<ApprenticeAccountsApiHealthCheck>(nameof(ApprenticeAccountsApiHealthCheck))
                 .AddCheck<ApprenticeCommitmentsApiHealthCheck>(nameof(ApprenticeCommitmentsApiHealthCheck));
 
-            services.AddMediatR(typeof(GetApprenticeQuery).Assembly);
+            services.AddMediatR(typeof(GetApprenticeHomepageQuery).Assembly);
 
             services.AddServiceRegistration();
 

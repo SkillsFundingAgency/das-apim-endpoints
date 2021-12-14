@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ApprenticePortal.Models
 {
-    public class HomePageApprentice
+    public class ApprenticeHomepage
     {
         public Guid ApprenticeId { get; set; }
         public string FirstName { get; set; }
