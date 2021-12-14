@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
@@ -38,6 +39,10 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
                 throw new SecurityException();
             }
             request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
+            if(request.AccountIdentifier.AccountType == AccountType.Provider)
+            {
+                request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountPublicHashedId;
+            }
             
             IPostApiRequest apiRequest;
             if (request.IsSandbox)
