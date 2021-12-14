@@ -28,6 +28,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
+        [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
             [FromRoute]Guid id, 
@@ -82,7 +85,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                     IsSandbox = isSandbox ?? false
                 });
 
-                return new CreatedResult("", new { response.VacancyReference });
+                return new CreatedResult("", new CreateVacancyResponse { VacancyReference = response.VacancyReference });
             }
             catch (HttpRequestContentException e)
             {
