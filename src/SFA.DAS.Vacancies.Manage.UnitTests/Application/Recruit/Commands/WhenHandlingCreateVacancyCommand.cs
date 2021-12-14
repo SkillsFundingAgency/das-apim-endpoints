@@ -35,6 +35,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             CreateVacancyCommandHandler handler)
         {
             //Arrange
+            command.AccountIdentifier = new AccountIdentifier($"Employer-ABC123-Product");
             command.PostVacancyRequestData.OwnerType = OwnerType.Employer;
             command.IsSandbox = false;
             var apiResponse = new ApiResponse<string>(responseValue, HttpStatusCode.Created, "");
@@ -44,6 +45,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
                         c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
+                        && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
                         )))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService
