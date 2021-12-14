@@ -77,7 +77,7 @@ namespace SFA.DAS.Roatp.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpOuterApi", Version = "v1" });
             });
         }
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -88,8 +88,9 @@ namespace SFA.DAS.Roatp.Api
                 app.UseHsts();
             }
 
+            app.ConfigureExceptionHandler(logger);
+
             app.UseHttpsRedirection()
-                .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger(nameof(Startup)))
                 .UseHealthChecks()
                 .UseAuthentication();
 
@@ -102,8 +103,6 @@ namespace SFA.DAS.Roatp.Api
                     name: "default",
                     pattern: "api/{controller=charities}/{action=index}/{id}");
             });
-
-            app.UseHealthChecks();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
