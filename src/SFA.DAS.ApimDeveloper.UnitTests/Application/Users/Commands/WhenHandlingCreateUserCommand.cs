@@ -39,7 +39,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
                     && ((UserRequestData)c.Data).State.Equals(0)
-                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.NoContent, ""));
+                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Created, ""));
             SendEmailCommand actualEmail = null;
             mockNotificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))

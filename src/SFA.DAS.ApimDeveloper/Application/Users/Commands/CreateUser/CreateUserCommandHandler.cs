@@ -40,7 +40,7 @@ namespace SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser
                 State = 0
             }));
 
-            if (actual.StatusCode != HttpStatusCode.NoContent)
+            if (actual.StatusCode != HttpStatusCode.Created)
             {
                 throw new HttpRequestContentException("Error creating user", actual.StatusCode, actual.ErrorContent);
             }
