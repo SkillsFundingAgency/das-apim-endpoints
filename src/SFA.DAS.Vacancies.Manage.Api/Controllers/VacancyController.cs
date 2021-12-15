@@ -26,6 +26,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Creates an apprenticeship vacancy using the specified values
+        /// </summary>
+        /// <param name="id">The unique ID of the Apprenticeship advert.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}")]
         [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]

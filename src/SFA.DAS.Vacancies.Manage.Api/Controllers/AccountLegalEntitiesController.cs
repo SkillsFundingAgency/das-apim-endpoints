@@ -26,6 +26,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(typeof(GetAccountLegalEntitiesListResponse), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier)
         {
             try
