@@ -3,16 +3,16 @@ using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class ChangeAppovalRequest : IPutApiRequest<ChangeApprovalRequestData>
+    public class CreateApprovalRequest : IPostApiRequest<CreateApprovalRequestData>
     {
-        public string PutUrl => "/approvals";
+        public string PostUrl => "/approvals";
 
-        public ChangeApprovalRequestData Data { get; set; }
+        public CreateApprovalRequestData Data { get; set; }
     }
 
-    public class ChangeApprovalRequestData
+    public class CreateApprovalRequestData
     {
-        public long? CommitmentsContinuedApprenticeshipId { get; set; }
+        public Guid RegistrationId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }
         public DateTime CommitmentsApprovedOn { get; set; }
         public string FirstName { get; set; }

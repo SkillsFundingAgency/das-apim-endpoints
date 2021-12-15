@@ -14,7 +14,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
 
         public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
 
-        public Task CreateApprenticeship(ApprovalCreatedRequestData data)
+        public Task CreateApproval(ApprovalCreatedRequestData data)
         {
             return _client.Post(new ApprovalCreatedRequest
             {
@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
             });
         }
 
-        public Task ChangeRegistration(ChangeRegistrationRequestData data)
-            => _client.Put(new ChangeApprenticeshipRequest { Data = data });
+        public Task ChangeApproval(ChangeApprovalRequestData data)
+            => _client.Put(new ChangeAppovalRequest { Data = data });
     }
 }
