@@ -24,7 +24,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
             _logger = logger;
         }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Pinging ApprenticeAccounts API");
 
