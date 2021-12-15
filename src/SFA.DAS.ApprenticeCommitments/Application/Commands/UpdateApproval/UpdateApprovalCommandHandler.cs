@@ -43,7 +43,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
 
             if (apprenticeship == null) return default;
 
-            await _apprenticeCommitmentsService.ChangeRegistration(new ChangeRegistrationRequestData
+            await _apprenticeCommitmentsService.ChangeApproval(new ChangeApprovalRequestData
             {
                 CommitmentsContinuedApprenticeshipId = command.CommitmentsContinuedApprenticeshipId,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,

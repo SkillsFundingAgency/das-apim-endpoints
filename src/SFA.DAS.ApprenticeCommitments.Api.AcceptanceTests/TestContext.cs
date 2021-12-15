@@ -11,6 +11,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 
         public ApprenticeCommitmentsApi OuterApiClient { get; set; }
         public MockApi InnerApi => _feature.GetOrAdd<MockApi>();
+        public MockApi ApprenticeAccountsApi => _feature.GetOrAdd<MockApi>();
         public MockApi LoginApi { get; set; }
         public MockApi CommitmentsV2InnerApi => _feature.GetOrAdd<MockApi>();
         public MockApi TrainingProviderInnerApi => _feature.GetOrAdd<MockApi>();

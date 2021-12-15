@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
+namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi
 {
     public class Apprentice
     {
