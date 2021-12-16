@@ -4,7 +4,6 @@ using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
 using System;
 using System.Threading.Tasks;
 
-
 namespace SFA.DAS.ApprenticePortal.Api.Controllers
 {
     [ApiController]
@@ -19,6 +18,9 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         public async Task<IActionResult> GetHomepageApprentice(Guid id)
         { 
             var result = await _mediator.Send(new GetApprenticeHomepageQuery { ApprenticeId = id });
+
+            if (result.apprenticeHomepage.apprentice == null)
+                return NotFound();            
 
             return Ok(result.apprenticeHomepage);
         }
