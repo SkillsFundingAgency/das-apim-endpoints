@@ -1,11 +1,18 @@
 using System;
+using System.Linq;
 using System.Net;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
+using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
 using SFA.DAS.Vacancies.Manage.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
@@ -13,14 +20,34 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
     public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
     {
         private readonly IRecruitApiClient<RecruitApiConfiguration> _recruitApiClient;
+        private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
 
-        public CreateVacancyCommandHandler (IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+        public CreateVacancyCommandHandler (IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService)
         {
             _recruitApiClient = recruitApiClient;
+            _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
         }
+        
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
-            var apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+            var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(
+                request.AccountIdentifier, request.PostVacancyRequestData.AccountLegalEntityPublicHashedId);
+
+            if (accountLegalEntity == null)
+            {
+                throw new SecurityException();
+            }
+            request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
+            
+            IPostApiRequest apiRequest;
+            if (request.IsSandbox)
+            {
+                apiRequest = new PostValidateVacancyRequest(request.Id, request.PostVacancyRequestData);
+            }
+            else
+            {
+                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+            }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
 

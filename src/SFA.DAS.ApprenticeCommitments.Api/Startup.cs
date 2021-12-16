@@ -18,8 +18,8 @@ using SFA.DAS.ApprenticeCommitments.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using MediatR.Extensions.FluentValidation.AspNetCore;
-using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateRegistration;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 
 namespace SFA.DAS.ApprenticeCommitments.Api
 {
@@ -39,12 +39,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<ApprenticeCommitmentsConfiguration>(_configuration.GetSection("ApprenticeCommitmentsInnerApi"));
+            services.Configure<ApprenticeAccountsConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
             services.Configure<ApprenticeLoginConfiguration>(_configuration.GetSection("ApprenticeLoginApi"));
             services.Configure<CommitmentsV2Configuration>(_configuration.GetSection("CommitmentsV2InnerApi"));
             services.Configure<TrainingProviderConfiguration>(_configuration.GetSection("TrainingProviderApi"));
             services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApi"));
             services.AddSingleton<IOwnerApiConfiguration>(s => s.GetRequiredService<ApprenticeCommitmentsConfiguration>());
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsConfiguration>>().Value); 
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeLoginConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2Configuration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
@@ -70,8 +72,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                 .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck))
                 .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck));
 
-            services.AddMediatR(GetType().Assembly, typeof(CreateRegistrationCommandHandler).Assembly);
-            services.AddFluentValidation(new[] { typeof(CreateRegistrationCommandHandler).Assembly });
+            services.AddMediatR(GetType().Assembly, typeof(CreateApprovalCommandHandler).Assembly);
+            services.AddFluentValidation(new[] { typeof(CreateApprovalCommandHandler).Assembly });
             services.AddServiceRegistration();
 
             services

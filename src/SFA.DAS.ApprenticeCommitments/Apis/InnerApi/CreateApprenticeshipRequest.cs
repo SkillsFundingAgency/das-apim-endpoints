@@ -3,30 +3,21 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {
-    public class CreateApprenticeshipRequest : IPostApiRequest<CreateApprenticeshipRequestData>
+    internal class CreateApprenticeshipRequest : IPostApiRequest
     {
-        public string PostUrl => "/registrations";
+        public string PostUrl => "/apprenticeships";
+        public object Data { get; set; }
 
-        public CreateApprenticeshipRequestData Data { get; set; }
-    }
+        public CreateApprenticeshipRequest(Guid registrationId, Guid apprenticeId, string lastName, DateTime dateOfBirth)
+        {
+            Data = new
+            {
+                RegistrationId = registrationId,
+                ApprenticeId = apprenticeId,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth,
+            };
+        }
 
-    public class CreateApprenticeshipRequestData
-    {
-        public Guid RegistrationId  { get; set; }
-        public long CommitmentsApprenticeshipId { get; set; }
-        public DateTime CommitmentsApprovedOn { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string Email { get; set; }
-        public string EmployerName { get; set; }
-        public long EmployerAccountLegalEntityId { get; set; }
-        public long TrainingProviderId { get; set; }
-        public string TrainingProviderName { get; set; }
-        public string CourseName { get; set; }
-        public int CourseLevel { get; set; }
-        public int CourseDuration { get; set; }
-        public DateTime PlannedStartDate { get; set; }
-        public DateTime PlannedEndDate { get; set; }
     }
 }
