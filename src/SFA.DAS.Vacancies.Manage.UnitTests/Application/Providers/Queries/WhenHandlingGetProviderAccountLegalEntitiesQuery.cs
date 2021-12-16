@@ -6,13 +6,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Application.Providers.Queries.GetProviderAccountLegalEntities;
-using SFA.DAS.Vacancies.Manage.Configuration;
-using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
-using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
-using SFA.DAS.Vacancies.Manage.Interfaces;
 
 namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Providers.Queries
 {

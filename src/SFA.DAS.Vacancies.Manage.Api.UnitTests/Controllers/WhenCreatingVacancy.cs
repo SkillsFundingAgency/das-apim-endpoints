@@ -1,26 +1,62 @@
 using System;
 using System.Net;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Manage.Api.Controllers;
 using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy;
+using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 {
     public class WhenCreatingVacancy
     {
+        [Test]
+        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", true, HttpStatusCode.BadRequest)]
+        [MoqInlineAutoData("00000000-0000-0000-0000-000000000000", false, HttpStatusCode.Created)]
+        [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", true, HttpStatusCode.TooManyRequests)]
+        [MoqInlineAutoData("11111111-1111-1111-1111-111111111111", false, HttpStatusCode.Created)]
+        [MoqInlineAutoData("d849c8fd-e393-4ab4-beac-09f4504ddd77", true, HttpStatusCode.Created)]
+        public async Task Sandbox_Special_Case_Guids(
+            string guid,
+            bool isSandbox,
+            HttpStatusCode expectedStatusCode,
+            CreateVacancyCommandResponse mediatorResponse,
+            CreateVacancyRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            var id = Guid.Parse(guid);
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}-Product";
+            
+            mockMediator.Setup(x => 
+                    x.Send(It.Is<CreateVacancyCommand>(c => 
+                        c.Id.Equals(id)
+                        && c.PostVacancyRequestData.Title.Equals(request.Title)
+                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                        && c.IsSandbox.Equals(isSandbox)
+                    ), CancellationToken.None))
+                .ReturnsAsync(mediatorResponse);
+
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request, isSandbox) as IStatusCodeActionResult;
+
+            controllerResult.StatusCode.Should().Be((int) expectedStatusCode);
+        }
+
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Handled_And_Response_Returned_And_Type_Set_For_Employer(
-            
             Guid id,
             CreateVacancyCommandResponse mediatorResponse,
             CreateVacancyRequest request,
@@ -32,14 +68,22 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
+                        && c.AccountIdentifier.AccountType == AccountType.Employer
+                        && c.AccountIdentifier.Ukprn == null
+                        && c.AccountIdentifier.AccountPublicHashedId == accountId
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
+                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Employer)
+                        && c.PostVacancyRequestData.EmployerContact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyRequestData.EmployerContact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyRequestData.EmployerContact.Email.Equals(request.SubmitterContactDetails.Email)
+                        && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
-            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.Created);
+            controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
             controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
         }
         
@@ -52,20 +96,26 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            request.User = null;
             var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
+                        && c.AccountIdentifier.AccountType == AccountType.Provider
+                        && c.AccountIdentifier.Ukprn == ukprn
+                        && c.AccountIdentifier.AccountPublicHashedId == null
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
-                        && c.PostVacancyRequestData.User.Email == null
+                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Provider)
+                        && c.PostVacancyRequestData.ProviderContact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyRequestData.ProviderContact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyRequestData.ProviderContact.Email.Equals(request.SubmitterContactDetails.Email)
+                        && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
 
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
-            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.Created);
+            controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
             controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
         }
 
@@ -76,9 +126,10 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             CreateVacancyRequest request,
             [Greedy] VacancyController controller)
         {
+            
             var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), id, request) as StatusCodeResult;
             
-            controllerResult.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
+            controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
         }
         
         [Test, MoqAutoData]
@@ -116,6 +167,27 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             controllerResult.Value.Should().Be(errorContent);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_SecurityException_Bad_Request_Is_Returned(
+            Guid id,
+            string errorContent,
+            CreateVacancyRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            var accountId = "ABC123";
+            var accountIdentifier = $"Employer-{accountId}-product";
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<CreateVacancyCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new SecurityException("Error"));
+            
+            var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
+
+            controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
         }
         
         [Test, MoqAutoData]

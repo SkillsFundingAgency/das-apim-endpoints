@@ -43,6 +43,5 @@ namespace SFA.DAS.FindEpao.Application.Courses.Services
             => ((dateVersionApproved.HasValue && dateVersionApproved.Value.Date <= DateTime.UtcNow) &&
                 (effectiveFrom.HasValue) && 
                 (!effectiveTo.HasValue || effectiveTo.Value >= DateTime.UtcNow));
-
     }
 }

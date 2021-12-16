@@ -164,6 +164,13 @@ jobs:
       projects: 'src/SFA.DAS.ApimDeveloper.Api/SFA.DAS.ApimDeveloper.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish RoATP Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Roatp.Api/SFA.DAS.Roatp.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Employer Contact Forms Api'
