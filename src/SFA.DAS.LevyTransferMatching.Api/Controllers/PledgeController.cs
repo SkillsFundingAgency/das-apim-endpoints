@@ -20,7 +20,8 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
-
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetClosePledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -110,6 +111,29 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
                 (PledgeIdDto)commandResult.PledgeId);
         }
+
+        [HttpPost]
+        [Route("pledges/close/{pledgeId}")]
+        public async Task<IActionResult> ClosePledge(int pledgeId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new ClosePledgeCommand { PledgeId = pledgeId, Status = 1 });
+
+                var response = new GetClosePledgeQueryResult
+                {
+                    Updated = queryResult.Updated
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get ApplicationApproved result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/amount")]
