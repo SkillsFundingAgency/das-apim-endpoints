@@ -11,15 +11,14 @@ using SFA.DAS.NServiceBus.Configuration.NLog;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.EmployerDemand.Api.AppStart
+namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class AddNServiceBusExtension
     {
-        private const string EndpointName = "SFA.DAS.EmployerDemand";
-
         public static async Task<UpdateableServiceProvider> StartNServiceBus(
             this UpdateableServiceProvider serviceProvider,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            string endpointName)
         {
             
               
@@ -27,8 +26,8 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
                 .GetSection("NServiceBusConfiguration")
                 .Get<NServiceBusConfiguration>();
             
-            var endpointConfiguration = new EndpointConfiguration(EndpointName)
-                .UseErrorQueue($"{EndpointName}-errors")
+            var endpointConfiguration = new EndpointConfiguration(endpointName)
+                .UseErrorQueue($"{endpointName}-errors")
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()

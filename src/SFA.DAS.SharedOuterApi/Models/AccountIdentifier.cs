@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace SFA.DAS.SharedOuterApi.Models
 {
@@ -30,6 +31,16 @@ namespace SFA.DAS.SharedOuterApi.Models
                 case AccountType.Employer:
                     AccountPublicHashedId = id.ToUpper();
                     break;
+                case AccountType.External:
+                    if(Guid.TryParse(string.Join("-", identifierParts.Skip(1).Take(identifierParts.Length-2)), out var externalId))
+                    {
+                        ExternalId = externalId;    
+                    }
+                    else
+                    {
+                        AccountType = AccountType.Unknown;
+                    }
+                    break;
                 case AccountType.Unknown:
                     break;
             }
@@ -38,12 +49,14 @@ namespace SFA.DAS.SharedOuterApi.Models
         public AccountType AccountType { get; }
         public string AccountPublicHashedId { get; }
         public int? Ukprn { get; }
+        public Guid ExternalId {get;}
     }
 
     public enum AccountType
     {
         Employer = 0,
         Provider = 1,
+        External = 2,
         Unknown = 3
     }
 }
