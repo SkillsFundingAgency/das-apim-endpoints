@@ -23,6 +23,7 @@ namespace SFA.DAS.EmployerDemand.Api
 {
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.EmployerDemand";
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
@@ -136,7 +137,7 @@ namespace SFA.DAS.EmployerDemand.Api
         
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartNServiceBus(_configuration).GetAwaiter().GetResult();
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }
