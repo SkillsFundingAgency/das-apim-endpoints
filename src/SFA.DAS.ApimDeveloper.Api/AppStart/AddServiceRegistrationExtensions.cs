@@ -21,6 +21,7 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>, ApimDeveloperApiClient>();
+            services.AddTransient<INotificationService, NotificationService>();
         }
     }
 }
