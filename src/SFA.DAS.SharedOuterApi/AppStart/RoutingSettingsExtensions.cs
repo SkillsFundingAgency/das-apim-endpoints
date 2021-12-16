@@ -1,7 +1,7 @@
 ﻿using NServiceBus;
 using SFA.DAS.Notifications.Messages.Commands;
 
-namespace SFA.DAS.EmployerDemand.Api.AppStart
+namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class RoutingSettingsExtensions
     {
