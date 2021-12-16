@@ -25,8 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge
         {
             _logger.LogInformation($"Closing pledge {request.PledgeId}");
 
-            var data = new ClosePledgeRequest.ClosePledgeRequestData(request.Status);
-           
+            var data = new ClosePledgeRequest.ClosePledgeRequestData(request.PledgeId);
 
             var closeRequest = new ClosePledgeRequest(request.PledgeId, data);
 
@@ -34,7 +33,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge
 
             return new ClosePledgeCommandResult
             {
-                Updated = response.Closed
+                Updated = response.Updated,
+                Message = response.Message,
             };
         }
     }
