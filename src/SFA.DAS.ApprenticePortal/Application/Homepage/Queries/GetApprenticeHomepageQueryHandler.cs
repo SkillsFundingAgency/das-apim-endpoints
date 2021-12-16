@@ -24,8 +24,8 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
         public async Task<GetApprenticeHomepageQueryResult> Handle(GetApprenticeHomepageQuery request, CancellationToken cancellationToken)
         {
             var (_apprentice, _apprenticeships) = await TaskEx.AwaitAll(
-                Task.FromResult(_accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId))).Result,
-                Task.FromResult(_commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId))).Result
+                _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId)),
+                _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId))
                 );
 
             return new GetApprenticeHomepageQueryResult
