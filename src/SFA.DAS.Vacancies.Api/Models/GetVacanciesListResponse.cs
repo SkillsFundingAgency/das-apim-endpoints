@@ -21,7 +21,6 @@ namespace SFA.DAS.Vacancies.Api.Models
         public class GetVacanciesListResponseItem
        {
            public long Id { get; set; }
-           public string AnonymousEmployerName { get; set; }
            public string ApprenticeshipLevel { get; set; }
            public string Category { get; set; }
            public string CategoryCode { get; set; }
@@ -31,7 +30,6 @@ namespace SFA.DAS.Vacancies.Api.Models
            public string FrameworkLarsCode { get; set; }
            public long HoursPerWeek { get; set; }
            public bool IsDisabilityConfident { get; set; }
-           public bool IsEmployerAnonymous { get; set; }
            public bool IsPositiveAboutDisability { get; set; }
            public bool IsRecruitVacancy { get; set; }
            public Location Location { get; set; }
@@ -61,17 +59,15 @@ namespace SFA.DAS.Vacancies.Api.Models
                return new GetVacanciesListResponseItem()
                {
                    Id = source.Id,
-                   AnonymousEmployerName = source.AnonymousEmployerName,
                    ApprenticeshipLevel = source.ApprenticeshipLevel,
                    Category = source.Category,
                    CategoryCode = source.CategoryCode,
                    ClosingDate = source.ClosingDate,
                    Description = source.Description,
-                   EmployerName = source.EmployerName,
+                   EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                    FrameworkLarsCode = source.FrameworkLarsCode,
                    HoursPerWeek = source.HoursPerWeek,
                    IsDisabilityConfident = source.IsDisabilityConfident,
-                   IsEmployerAnonymous = source.IsEmployerAnonymous,
                    IsPositiveAboutDisability = source.IsPositiveAboutDisability,
                    IsRecruitVacancy = source.IsRecruitVacancy,
                    Location = source.Location,
