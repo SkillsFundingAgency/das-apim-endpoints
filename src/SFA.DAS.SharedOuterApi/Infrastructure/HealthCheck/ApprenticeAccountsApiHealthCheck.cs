@@ -15,10 +15,10 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     {
         private const string HealthCheckResultDescription = "Apprentice Accounts Api check";
 
-        private readonly IApprenticeCommitmentsApiClient<ApprenticeAccountsApiConfiguration> _apiClient;
+        private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apiClient;
         private readonly ILogger<ApprenticeAccountsApiHealthCheck> _logger;
 
-        public ApprenticeAccountsApiHealthCheck(IApprenticeCommitmentsApiClient<ApprenticeAccountsApiConfiguration> apiClient, ILogger<ApprenticeAccountsApiHealthCheck> logger)
+        public ApprenticeAccountsApiHealthCheck(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apiClient, ILogger<ApprenticeAccountsApiHealthCheck> logger)
         {
             _apiClient = apiClient;
             _logger = logger;

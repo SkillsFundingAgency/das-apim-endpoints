@@ -19,51 +19,98 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
     public class GetApprenticeHomepageQueryTests
     {
         private readonly Fixture _fixture = new Fixture();
+        private Apprentice _moqApprentice;
+        private List<Apprenticeship> _moqApprenticeships;
+
+        private Guid apprenticeId = Guid.NewGuid();
+        private string firstName = "testFirstName", lastName = "testLastName", courseName = "course1", employerName = "employer1";
 
         [Test, MoqAutoData]
-        public async Task TestGetApprenticeHomepageQuery(            
+        public async Task TestGetApprenticeHomepageQuery(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> accountsApiClient,
             [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> commitmentsApiClient,
             GetApprenticeHomepageQueryHandler sut
             )
         {
             //Arrange
-            var apprenticeId = new Guid("80e8b73c-5c3a-11ec-bf63-0242ac130002");
-            string firstName = "testFirstName", lastName = "testLastName", courseName = "course1", employerName = "employer1";
+            SetupMoqApprentice();
 
-            var moqApprentice = _fixture.Build<Apprentice>()
+            accountsApiClient.Setup(client =>
+                client.Get<Apprentice>(It.IsAny<GetApprenticeRequest>()))
+                .ReturnsAsync(_moqApprentice);
+
+            SetupMoqApprenticeships();
+
+            commitmentsApiClient.Setup(client =>
+                client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
+                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { apprenticeships = _moqApprenticeships });
+
+            // Act
+            var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result.apprenticeHomepage);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.FirstName, firstName);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.LastName, lastName);
+            Assert.AreEqual(result.apprenticeHomepage.apprenticeship.CourseName, courseName);
+            Assert.AreEqual(result.apprenticeHomepage.apprenticeship.EmployerName, employerName);
+        }
+
+        [Test, MoqAutoData]
+        public async Task TestGetApprenticeHomepageQueryNoApprenticeships(
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> accountsApiClient,
+            [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> commitmentsApiClient,
+            GetApprenticeHomepageQueryHandler sut
+            )
+        {
+            //Arrange
+            SetupMoqApprentice();
+
+            accountsApiClient.Setup(client =>
+                client.Get<Apprentice>(It.IsAny<GetApprenticeRequest>()))
+                .ReturnsAsync(_moqApprentice);
+
+            SetupBlankMoqApprenticeships();
+
+            commitmentsApiClient.Setup(client =>
+                client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
+                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { apprenticeships = _moqApprenticeships });
+
+            // Act
+            var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result.apprenticeHomepage);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.FirstName, firstName);
+            Assert.AreEqual(result.apprenticeHomepage.apprentice.LastName, lastName);
+            Assert.IsNull(result.apprenticeHomepage.apprenticeship);            
+        }
+
+        private void SetupMoqApprentice()
+        {
+            _moqApprentice = _fixture.Build<Apprentice>()
                 .With(p => p.ApprenticeId, apprenticeId)
                 .With(p => p.FirstName, firstName)
                 .With(p => p.LastName, lastName)
                 .Create();
+        }
 
-            accountsApiClient.Setup(client =>
-                client.Get<Apprentice>(It.IsAny<GetApprenticeRequest>()))
-                .ReturnsAsync(moqApprentice);
-
-            var moqApprenticeships = new List<Apprenticeship>() { 
+        private void SetupMoqApprenticeships()
+        {
+            _moqApprenticeships = new List<Apprenticeship>() {
                 _fixture.Build<Apprenticeship>()
                     .With(p => p.ApprenticeId, apprenticeId)
                     .With(p => p.CourseName, courseName)
                     .With(p => p.EmployerName, employerName)
                     .With(p => p.ConfirmedOn, DateTime.Now)
                     .Create()};
+        }
 
-            commitmentsApiClient.Setup(client =>
-                client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
-                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { apprenticeships = moqApprenticeships });
-                            
-            // Act
-            var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result.apprenticeHomepage);
-            Assert.AreEqual(result.apprenticeHomepage.ApprenticeId, apprenticeId);
-            Assert.AreEqual(result.apprenticeHomepage.FirstName, firstName);
-            Assert.AreEqual(result.apprenticeHomepage.LastName, lastName);
-            Assert.AreEqual(result.apprenticeHomepage.CourseName, courseName);
-            Assert.AreEqual(result.apprenticeHomepage.EmployerName, employerName);
-            Assert.IsTrue(result.apprenticeHomepage.ApprenticeshipComplete);
+        private void SetupBlankMoqApprenticeships()
+        {
+            _moqApprenticeships = new List<Apprenticeship>();                
         }
     }
 }
