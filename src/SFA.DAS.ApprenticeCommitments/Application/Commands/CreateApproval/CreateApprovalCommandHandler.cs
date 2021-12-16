@@ -49,7 +49,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 
             var id = Guid.NewGuid();
 
-            await _apprenticeCommitmentsService.CreateApprenticeship(new CreateApprenticeshipRequestData
+            await _apprenticeCommitmentsService.CreateApproval(new CreateApprenticeshipRequestData
             {
                 RegistrationId = id,
                 CommitmentsApprenticeshipId = command.CommitmentsApprenticeshipId,
