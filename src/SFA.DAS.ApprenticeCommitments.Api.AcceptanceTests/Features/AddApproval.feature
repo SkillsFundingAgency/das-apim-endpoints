@@ -1,5 +1,5 @@
 @loginApi
-Feature: AddApprenticeship
+Feature: AddApproval
 	When an Apprenticeship is approved and forwarded here
 	As an outer API
 	I want to receive the details and save it to the inner api
