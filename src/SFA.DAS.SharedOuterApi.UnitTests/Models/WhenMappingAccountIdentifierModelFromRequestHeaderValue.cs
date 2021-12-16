@@ -1,3 +1,4 @@
+using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -32,6 +33,31 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             actual.AccountPublicHashedId.Should().BeNull();
         }
         
+        [Test, AutoData]
+        public void Then_The_Fields_Are_Mapped_For_External(Guid externalId)
+        {
+            var accountIdentifier = $"External-{externalId}-Product";
+            
+            var actual = new AccountIdentifier(accountIdentifier);
+
+            actual.AccountType.Should().Be(AccountType.External);
+            actual.ExternalId.Should().Be(externalId);
+            actual.AccountPublicHashedId.Should().BeNull();
+            actual.Ukprn.Should().BeNull();
+        }
+        
+        [Test, AutoData]
+        public void Then_Unknown_If_External_Id_Is_Not_In_Correct_Format(string externalId)
+        {
+            var accountIdentifier = $"External-{externalId}-Product";
+            
+            var actual = new AccountIdentifier(accountIdentifier);
+
+            actual.AccountType.Should().Be(AccountType.Unknown);
+            actual.ExternalId.Should().BeEmpty();
+            actual.AccountPublicHashedId.Should().BeNull();
+            actual.Ukprn.Should().BeNull();
+        }
         [Test, AutoData]
         public void Then_The_Null_Set_For_Ukprn_If_Not_In_Correct_Format()
         {
