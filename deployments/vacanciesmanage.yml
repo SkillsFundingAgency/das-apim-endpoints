@@ -18,7 +18,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.9
+    ref: DASD-9304-apim-sandbox-api-per-sandbox-product
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -59,7 +59,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_TEST
   dependsOn: []
@@ -89,7 +89,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_TEST2
   dependsOn: []
@@ -119,7 +119,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_PP
   dependsOn: []
@@ -149,7 +149,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_PROD
   dependsOn: []
@@ -179,7 +179,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_MO
   dependsOn: []
@@ -209,7 +209,7 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
 
 - stage: Deploy_DEMO
   dependsOn: []
@@ -239,4 +239,4 @@ stages:
       ProductId: $(VacanciesManageProductId)
       ApplicationIdentifierUri: $(VacanciesManageOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      SandboxProductId: $(VacanciesManageSandboxProductId)
+      SandboxEnabled: $(VacanciesManageSandboxEnabled)
