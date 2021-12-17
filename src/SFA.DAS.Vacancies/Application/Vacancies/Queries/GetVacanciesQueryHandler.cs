@@ -27,17 +27,25 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         {
             if (!string.IsNullOrEmpty(request.AccountLegalEntityPublicHashedId))
             {
-                if (request.AccountIdentifier.AccountType == AccountType.Unknown)
+                switch (request.AccountIdentifier.AccountType)
                 {
-                    throw new SecurityException();
-                }
-                
-                var accountLegalEntity =
-                    await _accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
-                        request.AccountLegalEntityPublicHashedId);
-                if (accountLegalEntity == null)
-                {
-                    throw new SecurityException();
+                    case AccountType.Unknown:
+                        throw new SecurityException();
+                    case AccountType.External:
+                        request.AccountLegalEntityPublicHashedId = string.Empty;
+                        request.AccountPublicHashedId = string.Empty;
+                        break;
+                    default:
+                    {
+                        var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
+                                request.AccountLegalEntityPublicHashedId);
+                        
+                        if (accountLegalEntity == null)
+                        {
+                            throw new SecurityException();
+                        }
+                        break;
+                    }
                 }
             }
 
