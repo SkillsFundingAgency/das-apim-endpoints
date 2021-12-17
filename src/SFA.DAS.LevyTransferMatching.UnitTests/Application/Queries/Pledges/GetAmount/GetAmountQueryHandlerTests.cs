@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
                 .ReturnsAsync(_account);
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.GetPledges(new GetPledgesRequest(_query.AccountId)))
+            _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>()))
                 .ReturnsAsync(_pledges);
 
             _handler = new GetAmountQueryHandler(_accountsService.Object, _levyTransferMatchingService.Object);
@@ -43,7 +43,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         public async Task Handle_Result_Has_Correct_RemainingTransferAllowance()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance);
+
+            var currentAmount = 0;
+
+            foreach (var pledge in _pledges.Pledges)
+            {
+                currentAmount += pledge.Amount;
+            }
+
+            Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance - currentAmount);
         }
 
         [Test]

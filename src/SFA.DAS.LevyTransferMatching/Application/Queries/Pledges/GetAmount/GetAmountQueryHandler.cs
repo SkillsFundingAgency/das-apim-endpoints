@@ -21,26 +21,29 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 
         public async Task<GetAmountQueryResult> Handle(GetAmountQuery request, CancellationToken cancellationToken)
         {
-            // Get the current amount committed to existing pledges first
-            var response = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId));
+            var pledges = _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId));
 
-            GetPledgesQueryResult getPledgesQueryResult = new GetPledgesQueryResult
-            {
-                Pledges = response?.Pledges.Select(x => new GetPledgesQueryResult.Pledge
+            var account = _accountsService.GetAccount(request.AccountId);
+
+            await Task.WhenAll(pledges, account);
+
+            if (pledges == null || pledges.Result == null)
+                return null;
+
+            var getPledgesQueryResult = new GetPledgesQueryResult
+            {               
+                Pledges = pledges.Result.Pledges.Select(x => new GetPledgesQueryResult.Pledge
                 {
                     Amount = x.Amount
                 })
             };
 
-            int currentTransferAmount = getPledgesQueryResult?.Pledges?.Count() > 0 ? getPledgesQueryResult.Pledges.Sum(p => p.Amount) : 0;
-
-            // Now get the account and get the remaining transfer allowance after subtracting the above already-committed amount
-            var account = await _accountsService.GetAccount(request.AccountId);
+            int currentTransferAmount = getPledgesQueryResult.Pledges.Sum(p => p.Amount);
 
             return new GetAmountQueryResult
             {
-                RemainingTransferAllowance = account.RemainingTransferAllowance - currentTransferAmount,
-                DasAccountName = account.DasAccountName
+                RemainingTransferAllowance = account.Result.RemainingTransferAllowance - currentTransferAmount,
+                DasAccountName = account.Result.DasAccountName
             };
         }
     }

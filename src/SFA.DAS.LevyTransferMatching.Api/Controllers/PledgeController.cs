@@ -121,6 +121,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 var queryResult = await _mediator.Send(new GetAmountQuery{ AccountId = accountId });
 
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
+
                 var response = new GetAmountResponse
                 {
                     DasAccountName = queryResult.DasAccountName,
