@@ -51,7 +51,15 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             }
             else
             {
-                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+                if (request.AccountIdentifier.AccountType == AccountType.Provider)
+                {
+                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, "", request.PostVacancyRequestData);
+                }
+                else
+                {
+                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, request.PostVacancyRequestData.User.Email, request.PostVacancyRequestData);    
+                }
+                
             }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);

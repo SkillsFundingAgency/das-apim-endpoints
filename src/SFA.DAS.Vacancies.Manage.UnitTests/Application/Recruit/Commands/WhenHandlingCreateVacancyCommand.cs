@@ -42,7 +42,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
-                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
@@ -78,7 +78,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
-                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountPublicHashedId)
