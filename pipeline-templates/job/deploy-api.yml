@@ -10,7 +10,7 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   AppRoleAssignmentsServiceConnection:
-  SandboxEnabled: false
+  SandboxEnabled: $False
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
