@@ -25,8 +25,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         }
         
         /// <summary>
-        /// Returns list of qualifications to be used when creating a Vacancy.
+        /// GET list of qualifications.
         /// </summary>
+        /// <remarks>Returns list of qualifications to be used when creating a Vacancy.</remarks>
         /// <returns></returns>
         [HttpGet]
         [Route("qualifications")]
@@ -48,8 +49,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         }
         
         /// <summary>
-        /// Returns list of candidate skills to be used when creating a Vacancy. 
+        /// GET list of candidate skills. 
         /// </summary>
+        /// <remarks>
+        /// Returns list of candidate skills to be used when creating a Vacancy.
+        /// </remarks>
         /// <returns></returns>
         [HttpGet]
         [Route("skills")]
@@ -70,8 +74,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         }
 
         /// <summary>
-        ///  Returns list of courses to be used when creating a Vacancy. The `Id` should be used for `standardsLarsCode` in create Vacancy
+        /// GET list of courses.
         /// </summary>
+        /// <remarks>
+        /// Returns list of courses to be used when creating a Vacancy. The `Id` should be used for `standardsLarsCode` in create Vacancy
+        /// </remarks>
         /// <returns></returns>
         [HttpGet]
         [Route("courses")]

@@ -23,7 +23,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         }
         
         /// <summary>
-        ///  Returns list of courses to be used when creating a Vacancy. The `Id` should be used for `standardsLarsCode` in create Vacancy
+        /// GET list of courses. 
         /// </summary>
         /// <returns></returns>
         [HttpGet]

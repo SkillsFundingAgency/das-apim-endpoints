@@ -26,9 +26,12 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         }
 
         /// <summary>
+        /// GET list of vacancies
+        /// </summary>
+        /// <remarks>
         /// Returns list of Vacancies based on your subscription. For employer subscriptions this will automatically filter by your account.
         /// For providers it will automatically filter by UKPRN. If you provide a `accountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
-        /// </summary>
+        /// </remarks>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <param name="accountLegalEntityPublicHashedId"></param>

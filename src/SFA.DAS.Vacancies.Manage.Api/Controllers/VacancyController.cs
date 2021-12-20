@@ -27,8 +27,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         }
 
         /// <summary>
-        /// Creates an apprenticeship vacancy using the specified values
+        /// POST apprenticeship vacancy
         /// </summary>
+        /// <remarks>Creates an apprenticeship vacancy using the specified values</remarks>
         /// <param name="id">The unique ID of the Apprenticeship advert.</param>
         /// <returns></returns>
         [HttpPost]

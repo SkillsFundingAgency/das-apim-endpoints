@@ -25,10 +25,13 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         }
 
         /// <summary>
+        /// GET list of Account Legal Entities.
+        /// </summary>
+        /// <remarks>
         /// Get a list of Account Legal Entities that are connected to your subscription. This can be used to further filter results in `GET vacancy` request.
         /// If you are a provider only Accounts that have given permission for you to act on there behalf will show in the list. If you are an employer then only
         /// legal entities that have a signed agreement will be in the list. If you are not an employer or provider a forbidden response will be returned.
-        /// </summary>
+        /// </remarks>
         /// <param name="accountIdentifier"></param>
         /// <returns></returns>
         [HttpGet]
