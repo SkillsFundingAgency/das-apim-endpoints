@@ -22,8 +22,13 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             _logger = logger;
         }
         
+        /// <summary>
+        ///  Returns list of courses to be used when creating a Vacancy. The `Id` should be used for `standardsLarsCode` in create Vacancy
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("courses")]
+        [ProducesResponseType(typeof(GetTrainingCoursesListResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetTrainingCourses()
         {
             try

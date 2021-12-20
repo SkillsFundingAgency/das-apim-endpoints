@@ -29,7 +29,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         /// If you are a provider only Accounts that have given permission for you to act on there behalf will show in the list. If you are an employer then only
         /// legal entities that have a signed agreement will be in the list.
         /// </summary>
-        /// <param name="accountIdentifier"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("")]

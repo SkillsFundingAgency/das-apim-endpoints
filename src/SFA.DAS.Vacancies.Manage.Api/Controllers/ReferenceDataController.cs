@@ -24,8 +24,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             _logger = logger;
         }
         
+        /// <summary>
+        /// Returns list of qualifications to be used when creating a Vacancy.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("qualifications")]
+        [ProducesResponseType(typeof(GetQualificationsResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetQualifications()
         {
             try
@@ -41,8 +46,14 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
+        
+        /// <summary>
+        /// Returns list of candidate skills to be used when creating a Vacancy. 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("skills")]
+        [ProducesResponseType(typeof(GetCandidateSkillsListResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetSkills()
         {
             try
@@ -58,8 +69,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             }
         }
 
+        /// <summary>
+        ///  Returns list of courses to be used when creating a Vacancy. The `Id` should be used for `standardsLarsCode` in create Vacancy
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("courses")]
+        [ProducesResponseType(typeof(GetTrainingCoursesListResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetTrainingCourses()
         {
             try
