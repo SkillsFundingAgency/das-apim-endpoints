@@ -27,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
 
             await Task.WhenAll(pledges, account);
 
-            if (pledges == null || pledges.Result == null)
+            if (pledges?.Result == null)
                 return null;
 
             var getPledgesQueryResult = new GetPledgesQueryResult
@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
                 })
             };
 
-            int currentTransferAmount = getPledgesQueryResult.Pledges.Sum(p => p.Amount);
+            var currentTransferAmount = getPledgesQueryResult.Pledges.Sum(p => p.Amount);
 
             return new GetAmountQueryResult
             {

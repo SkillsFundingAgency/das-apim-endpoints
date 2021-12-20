@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -46,12 +47,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             var currentAmount = 0;
 
-            foreach (var pledge in _pledges.Pledges)
-            {
-                currentAmount += pledge.Amount;
-            }
+            currentAmount = _pledges.Pledges.Sum(pledge => pledge.Amount);
 
-            Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance - currentAmount);
+            Assert.AreEqual(_account.RemainingTransferAllowance - currentAmount, result.RemainingTransferAllowance);
         }
 
         [Test]
