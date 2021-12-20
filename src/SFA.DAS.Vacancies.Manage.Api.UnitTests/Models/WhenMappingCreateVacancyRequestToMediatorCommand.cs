@@ -9,11 +9,19 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
     public class WhenMappingCreateVacancyRequestToMediatorCommand
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped(CreateVacancyRequest source)
+        public void Then_The_Fields_Are_Correctly_Mapped_For_Employer(CreateVacancyRequest source)
         {
             var actual = (PostVacancyRequestData) source;
             
-            source.Should().BeEquivalentTo(actual);
+            actual.Should().BeEquivalentTo(source, options=> options
+                .Excluding(c=>c.SubmitterContactDetails)
+                .Excluding(c=>c.ContractingParties)
+            );
+            actual.AccountLegalEntityPublicHashedId.Should().Be(source.ContractingParties.AccountLegalEntityPublicHashedId);
+            actual.User.Ukprn.Should().Be(source.ContractingParties.Ukprn);
+            actual.User.Email.Should().Be(source.SubmitterContactDetails.Email);
+            actual.User.Name.Should().Be(source.SubmitterContactDetails.Name);
+            
         }
     }
 }

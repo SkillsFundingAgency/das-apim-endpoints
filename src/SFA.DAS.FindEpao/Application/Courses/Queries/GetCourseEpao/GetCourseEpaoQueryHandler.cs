@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -55,7 +56,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var epaoCoursesTask = _assessorsApiClient.GetAll<GetEpaoCourseListItem>(new GetEpaoCoursesRequest(request.EpaoId));
             var areasTask = _cachedDeliveryAreasService.GetDeliveryAreas();
             var coursesTask = _cachedCoursesService.GetCourses();
-            
+
             await Task.WhenAll(epaoTask, courseEpaosTask, epaoCoursesTask, areasTask, coursesTask);
 
             if (epaoTask.Result == default)
@@ -76,23 +77,30 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
 
             var courseEpao = filteredCourseEpaos.Single(item => 
                 string.Equals(item.EpaoId, request.EpaoId, StringComparison.CurrentCultureIgnoreCase));
-            
+
             var filterAdditionalCourses = epaoCoursesTask.Result
                 .Where(x => _courseEpaoIsValidFilterService.ValidateEpaoStandardDates(x.DateStandardApprovedOnRegister,
                     x.EffectiveTo, x.EffectiveFrom)).ToList();
             var allCourses = coursesTask.Result.Standards
-                .Where(course =>filterAdditionalCourses 
+                .Where(course => filterAdditionalCourses
                     .Any(item => item.StandardCode == course.LarsCode));
+
+            var standardVers = epaoCoursesTask.Result.SelectMany(x => x.StandardVersions);
+            foreach (var course in allCourses)
+                course.StandardVersions = standardVers
+                    .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.DateVersionApproved, c.EffectiveFrom, c.EffectiveTo))
+                    .Where(x => x.LarsCode == course.LarsCode).Select(x => x.Version).ToArray();
 
             return new GetCourseEpaoResult
             {
                 Epao = epaoTask.Result,
                 Course = coursesTask.Result.Standards.Single(item => item.LarsCode == request.CourseId),
+                StandardVersions = standardVers.Where(x => x.LarsCode == request.CourseId).OrderByDescending(x=>x.Version),
                 EpaoDeliveryAreas = courseEpao.DeliveryAreas,
                 CourseEpaosCount = filteredCourseEpaos.Count,
                 DeliveryAreas = areasTask.Result,
                 EffectiveFrom = courseEpao.CourseEpaoDetails.EffectiveFrom!.Value,
-                AllCourses = allCourses
+                AllCourses = allCourses.Where(x => x.StandardVersions.Length > 0)
             };
         }
     }

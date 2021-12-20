@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -107,15 +108,17 @@ namespace SFA.DAS.FindEpao.Api.Controllers
                 var model = new GetCourseEpaoResponse
                 {
                     Course = queryResult.Course,
+                    StandardVersions = queryResult.StandardVersions
+                        .Select(item => (StandardVersions)item),
                     Epao = queryResult.Epao,
                     CourseEpaosCount = queryResult.CourseEpaosCount,
                     EffectiveFrom = queryResult.EffectiveFrom,
                     EpaoDeliveryAreas = queryResult.EpaoDeliveryAreas
-                        .Select(area => (EpaoDeliveryArea) area),
+                        .Select(area => (EpaoDeliveryArea)area),
                     DeliveryAreas = queryResult.DeliveryAreas
-                        .Select(item => (GetDeliveryAreaListItem) item),
+                        .Select(item => (GetDeliveryAreaListItem)item),
                     AllCourses = queryResult.AllCourses
-                        .Select(item => (GetCourseListItem)item)
+                        .Select(item => (GetAllCoursesListItem)item)
                 };
 
                 return Ok(model);

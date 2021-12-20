@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 
 namespace SFA.DAS.ApimDeveloper.Api
 {
@@ -24,6 +25,6 @@ namespace SFA.DAS.ApimDeveloper.Api
                     webBuilder.UseApplicationInsights()
                         .UseStartup<Startup>()
                         .UseNLog();
-                });
+                }).UseNServiceBusContainer();
     }
 }
