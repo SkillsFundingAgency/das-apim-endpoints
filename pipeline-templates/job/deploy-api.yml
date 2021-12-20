@@ -10,7 +10,7 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   AppRoleAssignmentsServiceConnection:
-  SandboxProductId: ''
+  SandboxEnabled: $False
 
 jobs:
 - deployment: ${{ parameters.DeploymentName }}
@@ -42,28 +42,16 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.ServiceConnection }}
             ScriptPath: das-platform-automation/Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
-            ${{ if eq(parameters.SandboxProductId, '') }}:
-              ScriptArguments:
-                -ApimResourceGroup $(ApimResourceGroup) `
-                -InstanceName $(InstanceName) `
-                -AppServiceResourceGroup $(ResourceGroupName) `
-                -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
-                -ApiPath ${{ parameters.ApiPath }} `
-                -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
-                -ProductId ${{ parameters.ProductId }} `
-                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
-                -Verbose
-            ${{ if ne(parameters.SandboxProductId, '') }}:
-              ScriptArguments:
-                -ApimResourceGroup $(ApimResourceGroup) `
-                -InstanceName $(InstanceName) `
-                -AppServiceResourceGroup $(ResourceGroupName) `
-                -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
-                -ApiPath ${{ parameters.ApiPath }} `
-                -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
-                -ProductId ${{ parameters.ProductId }} `
-                -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
-                -SandboxProductId ${{ parameters.SandboxProductId }} `
-                -Verbose
+            ScriptArguments:
+              -ApimResourceGroup $(ApimResourceGroup) `
+              -InstanceName $(InstanceName) `
+              -AppServiceResourceGroup $(ResourceGroupName) `
+              -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+              -ApiPath ${{ parameters.ApiPath }} `
+              -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+              -ProductId ${{ parameters.ProductId }} `
+              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
+              -SandboxEnabled ${{ parameters.SandboxEnabled }} `
+              -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true

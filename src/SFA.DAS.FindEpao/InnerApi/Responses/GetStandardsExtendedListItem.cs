@@ -9,6 +9,7 @@ namespace SFA.DAS.FindEpao.InnerApi.Responses
         public string Version { get; set; }
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
+        public DateTime? DateVersionApproved { get; set; }
     }
 
 }
