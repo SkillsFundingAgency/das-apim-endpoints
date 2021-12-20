@@ -38,10 +38,17 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             {
                 throw new SecurityException();
             }
+            
             request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
+            
             if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
                 request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountPublicHashedId;
+            }
+
+            if (request.PostVacancyRequestData.EmployerNameOption == EmployerNameOption.RegisteredName)
+            {
+                request.PostVacancyRequestData.EmployerName = accountLegalEntity.Name;
             }
             
             IPostApiRequest apiRequest;

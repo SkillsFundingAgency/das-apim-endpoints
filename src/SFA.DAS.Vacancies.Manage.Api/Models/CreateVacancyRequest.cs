@@ -80,9 +80,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("standardLarsCode")]
         public string ProgrammeId { get ; set ; }
         /// <summary>
-        /// Trading name of the organisation. Used if `EmployerNameOption` is set to `TradingName`. Must not exceed 100 characters
+        /// If `EmployerNameOption` is set to `TradingName` then will be used and Trading name in the application updated. If it is set to `Anonymous` then will be used for the anonymous employer name. If it is set to `RegisteredName` then the Account Legal Entity name will be used. Must not exceed 100 characters
         /// </summary>
-        [JsonProperty("employerTradingName")]
+        [JsonProperty("alternativeEmployerName")]
         public string EmployerName { get ; set ; }
         /// <summary>
         /// A short description of the apprenticeship.
