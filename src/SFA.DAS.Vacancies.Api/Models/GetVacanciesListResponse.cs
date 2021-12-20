@@ -32,7 +32,6 @@ namespace SFA.DAS.Vacancies.Api.Models
            public bool IsDisabilityConfident { get; set; }
            public bool IsPositiveAboutDisability { get; set; }
            public bool IsRecruitVacancy { get; set; }
-           public Location Location { get; set; }
            public long NumberOfPositions { get; set; }
            public DateTimeOffset PostedDate { get; set; }
            public string ProviderName { get; set; }
@@ -51,7 +50,6 @@ namespace SFA.DAS.Vacancies.Api.Models
            public long WageUnit { get; set; }
            public long WageType { get; set; }
            public string WorkingWeek { get; set; }
-           public decimal Distance { get; set; }
            public long Score { get; set; }
 
            public static implicit operator GetVacanciesListResponseItem(GetVacanciesItem source)
@@ -70,7 +68,6 @@ namespace SFA.DAS.Vacancies.Api.Models
                    IsDisabilityConfident = source.IsDisabilityConfident,
                    IsPositiveAboutDisability = source.IsPositiveAboutDisability,
                    IsRecruitVacancy = source.IsRecruitVacancy,
-                   Location = source.Location,
                    NumberOfPositions = source.NumberOfPositions,
                    PostedDate = source.PostedDate,
                    ProviderName = source.ProviderName,
@@ -89,7 +86,6 @@ namespace SFA.DAS.Vacancies.Api.Models
                    WageUnit =source.WageUnit,
                    WageType = source.WageType,
                    WorkingWeek = source.WorkingWeek,
-                   Distance = source.Distance,
                    Score = source.Score
                 };
            }
