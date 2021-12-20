@@ -32,8 +32,8 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
             {
                 apprenticeHomepage = new ApprenticeHomepage
                 {                    
-                    apprentice = _apprentice,
-                    apprenticeship = _apprenticeships?.apprenticeships.FirstOrDefault()
+                    Apprentice = _apprentice,
+                    Apprenticeship = _apprenticeships?.Apprenticeships.FirstOrDefault()
                 },                
             };
         }

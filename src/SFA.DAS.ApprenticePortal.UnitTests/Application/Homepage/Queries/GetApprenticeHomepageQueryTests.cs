@@ -43,18 +43,18 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
 
             commitmentsApiClient.Setup(client =>
                 client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
-                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { apprenticeships = _moqApprenticeships });
+                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { Apprenticeships = _moqApprenticeships });
 
             // Act
             var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result.apprenticeHomepage);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.ApprenticeId, apprenticeId);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.FirstName, firstName);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.LastName, lastName);
-            Assert.AreEqual(result.apprenticeHomepage.apprenticeship.CourseName, courseName);
-            Assert.AreEqual(result.apprenticeHomepage.apprenticeship.EmployerName, employerName);
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.FirstName, firstName);
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.LastName, lastName);
+            Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.CourseName, courseName);
+            Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.EmployerName, employerName);
         }
 
         [Test, MoqAutoData]
@@ -75,17 +75,17 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
 
             commitmentsApiClient.Setup(client =>
                 client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
-                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { apprenticeships = _moqApprenticeships });
+                .ReturnsAsync(new GetApprenticeApprenticeshipsResult { Apprenticeships = _moqApprenticeships });
 
             // Act
             var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result.apprenticeHomepage);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.ApprenticeId, apprenticeId);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.FirstName, firstName);
-            Assert.AreEqual(result.apprenticeHomepage.apprentice.LastName, lastName);
-            Assert.IsNull(result.apprenticeHomepage.apprenticeship);            
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.FirstName, firstName);
+            Assert.AreEqual(result.apprenticeHomepage.Apprentice.LastName, lastName);
+            Assert.IsNull(result.apprenticeHomepage.Apprenticeship);            
         }
 
         private void SetupMoqApprentice()
