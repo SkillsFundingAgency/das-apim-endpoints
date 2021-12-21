@@ -42,7 +42,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
-                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
@@ -78,7 +78,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<string>(
                     It.Is<PostVacancyRequest>(c => 
-                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountPublicHashedId)
@@ -96,6 +96,43 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
             result.VacancyReference.Should().Be(apiResponse.Body);
             mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateVacancyRequest>()), 
                 Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Request_Is_To_Set_The_EmployerNameOption_As_RegisteredAddress_Then_Employer_Name_Is_Set(
+            int accountIdentifierId,
+            string responseValue,
+            CreateVacancyCommand command,
+            AccountLegalEntityItem accountLegalEntityItem,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            command.PostVacancyRequestData.EmployerNameOption = EmployerNameOption.RegisteredName;
+            command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
+            command.IsSandbox = false;
+            var apiResponse = new ApiResponse<string>(responseValue, HttpStatusCode.Created, "");
+            mockRecruitApiClient.Setup(x =>
+                    x.PostWithResponseCode<string>(
+                        It.Is<PostVacancyRequest>(c => 
+                            c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
+                            && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
+                            && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
+                            && ((PostVacancyRequestData)c.Data).EmployerName.Equals(accountLegalEntityItem.Name)
+                            && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountPublicHashedId)
+                        )))
+                .ReturnsAsync(apiResponse);
+            accountLegalEntityPermissionService
+                .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
+                    command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
+                .ReturnsAsync(accountLegalEntityItem);
+            
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            result.VacancyReference.Should().Be(apiResponse.Body);
         }
         
         [Test, MoqAutoData]
