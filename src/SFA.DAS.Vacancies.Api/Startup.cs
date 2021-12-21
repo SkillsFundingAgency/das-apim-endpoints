@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -98,6 +99,8 @@ namespace SFA.DAS.Vacancies.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Display advert API", Version = "v1", Description = "Display recruitment adverts from Find an apprenticeship."});
+                var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+                c.IncludeXmlComments(filePath);
             });
         }
 
