@@ -3,6 +3,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,29 +39,27 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
         public async Task<List<GetPendingApplicationEmailDataQueryResult.EmailData>> GetEmailDataFromAccountsResponse(GetAccountsResponse getAccountsResponse)
         {
             var emailDataList = new List<GetPendingApplicationEmailDataQueryResult.EmailData>();
-            foreach (var employerAccount in getAccountsResponse.EmployerAccounts)
+            
+            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest { ApplicationStatusFilter = PledgeStatus.Pending });
+            var employerAccountIds = getApplicationsResponse.Applications.Select(x => x.SenderEmployerAccountId).Distinct();
+
+            foreach (var employerAccountId in employerAccountIds)
             {
-                List<TeamMember> users = await _accountsService.GetAccountUsers(employerAccount.Id);
+                var employerName = getApplicationsResponse.Applications.First(x => x.SenderEmployerAccountId == employerAccountId).SenderEmployerAccountName;
+                var applicationCount = getApplicationsResponse.Applications.Count(x => x.SenderEmployerAccountId == employerAccountId);
+
+                List<TeamMember> users = await _accountsService.GetAccountUsers(employerAccountId);
                 users = users.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
 
-                if (users.Any())
+                foreach (var user in users)
                 {
-                    var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest { AccountId = employerAccount.Id });
-                    var pendingApplications = getApplicationsResponse.Applications.Where(x => x.Status == "Pending");
-
-                    if (pendingApplications.Any())
+                    emailDataList.Add(new GetPendingApplicationEmailDataQueryResult.EmailData
                     {
-                        foreach(var user in users)
-                        {
-                            emailDataList.Add(new GetPendingApplicationEmailDataQueryResult.EmailData
-                            {
-                                RecipientEmailAddress = user.Email,
-                                EmployerName = employerAccount.Name,
-                                NumberOfApplications = pendingApplications.Count(),
-                                AccountId = employerAccount.Id
-                            });
-                        }
-                    }
+                        RecipientEmailAddress = user.Email,
+                        EmployerName = employerName,
+                        NumberOfApplications = applicationCount,
+                        AccountId = employerAccountId
+                    });
                 }
             }
 
