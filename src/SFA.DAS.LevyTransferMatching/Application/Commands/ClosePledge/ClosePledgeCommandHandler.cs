@@ -31,6 +31,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge
 
             var response = await _levyTransferMatchingService.ClosePledge(closeRequest);
 
+            if(response == null)
+            {
+                return new ClosePledgeCommandResult
+                {
+                    Updated = false,
+                    Message = string.Empty,
+                };
+            }
+
             return new ClosePledgeCommandResult
             {
                 Updated = response.Updated,

@@ -19,16 +19,28 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<VacancyController> _logger;
 
-
-
         public VacancyController(IMediator mediator, ILogger<VacancyController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
+        /// <summary>
+        /// GET list of vacancies
+        /// </summary>
+        /// <remarks>
+        /// Returns list of Vacancies based on your subscription. For employer subscriptions this will automatically filter by your account.
+        /// For providers it will automatically filter by UKPRN. If you provide a `accountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
+        /// </remarks>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="accountLegalEntityPublicHashedId"></param>
+        /// <param name="ukprn"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(typeof(GetVacanciesListResponse), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, int pageNumber = 1, int pageSize = 10, string accountLegalEntityPublicHashedId = null, int? ukprn = null)
         {
             try
