@@ -9,5 +9,6 @@
         public int TotalAmount { get; set; }
         public int AmountUsed { get; set; }
         public int AmountRemaining { get; set; }
+        public int PledgeId { get; set; }
     }
 }
