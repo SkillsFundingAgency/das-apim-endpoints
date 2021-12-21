@@ -119,9 +119,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new ClosePledgeCommand { PledgeId = pledgeId, Status = 1 });
+                var queryResult = await _mediator.Send(new ClosePledgeCommand { PledgeId = pledgeId });
 
                 var response = new GetClosePledgeResponse
+                {
+                    Updated = false,
+                    Message = string.Empty
+                };
+
+                if (queryResult == null)
+                {
+                    return BadRequest(response);
+                }
+
+                response = new GetClosePledgeResponse
                 {
                     Updated = queryResult.Updated,
                     Message = queryResult.Message
