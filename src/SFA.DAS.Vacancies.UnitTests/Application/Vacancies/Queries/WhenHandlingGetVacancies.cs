@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using System;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -103,6 +104,31 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             Assert.ThrowsAsync<SecurityException>(() => handler.Handle(query, CancellationToken.None));
             
+        }
+        [Test, MoqAutoData]
+        public async Task And_The_AccountIdentifier_Is_External_Then_HashedIds_Are_Not_Set(
+            Guid externalId,
+            GetVacanciesQuery query,
+            GetVacanciesResponse apiResponse, 
+            GetProviderAccountLegalEntitiesResponse providerAccountLegalEntitiesResponse,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            GetVacanciesQueryHandler handler)
+        {
+            query.AccountPublicHashedId = "";
+            query.AccountIdentifier = new AccountIdentifier($"External-{externalId}-Product");
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                string.Empty, query.Ukprn, string.Empty);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+            
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
+            accountLegalEntityPermissionService
+                .Verify(x => x.GetAccountLegalEntity(It.IsAny<AccountIdentifier>(),
+                    query.AccountLegalEntityPublicHashedId), Times.Never);
         }
         
         [Test, MoqAutoData]
