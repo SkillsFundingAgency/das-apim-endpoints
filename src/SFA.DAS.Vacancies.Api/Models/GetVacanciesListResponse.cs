@@ -43,7 +43,7 @@ namespace SFA.DAS.Vacancies.Api.Models
            public string WorkingWeekDescription { get; set; }
            public string EmploymentDuration { get; set; }
            public string EmploymentDurationUnit { get; set; }
-           public string Route { get; set; }
+           public long Route { get; set; }
 
            public static implicit operator GetVacanciesListResponseItem(GetVacanciesItem source)
            {
@@ -55,11 +55,11 @@ namespace SFA.DAS.Vacancies.Api.Models
                    EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                    HoursPerWeek = source.HoursPerWeek,
                    IsDisabilityConfident = source.IsDisabilityConfident,
-                   IsNationalVacancy = source.IsNationalVacancy,
+                   IsNationalVacancy = source.VacancyLocationType == "National" ? true : false,
                    NumberOfPositions = source.NumberOfPositions,
                    PostedDate = source.PostedDate,
                    ProviderName = source.ProviderName,
-                   Route = source.Route,
+                   Route = source.Score,
                    StandardLarsCode = source.StandardLarsCode,
                    StartDate = source.StartDate,
                    Title = source.Title,
@@ -68,9 +68,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                    WageAmount = source.WageAmount,
                    WageAmountLowerBound = source.WageAmountLowerBound,
                    WageAmountUpperBound = source.WageAmountUpperBound,
-                   WageAdditionalInformation = source.WageAdditionalInformation,
+                   WageAdditionalInformation = source.WageText,
                    WageType = source.WageType,
-                   WorkingWeekDescription = source.WorkingWeekDescription,
+                   WorkingWeekDescription = source.WorkingWeek,
                    EmploymentDuration = source.EmploymentDuration,
                    EmploymentDurationUnit = source.EmploymenrDurationUnit,
                };
