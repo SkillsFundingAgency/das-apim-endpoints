@@ -53,8 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Id = x.Id,
                         Amount = x.Amount,
                         RemainingAmount = x.RemainingAmount,
-                        ApplicationCount = x.ApplicationCount,
-                        IsPledgeClosed = x.IsPledgeClosed
+                        ApplicationCount = x.ApplicationCount
                     })
                 };
 
@@ -248,7 +247,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok(new GetApplicationsResponse
             {
-                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
+                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x),
+                PledgeStatus = queryResult?.PledgeStatus
             });
         }
         

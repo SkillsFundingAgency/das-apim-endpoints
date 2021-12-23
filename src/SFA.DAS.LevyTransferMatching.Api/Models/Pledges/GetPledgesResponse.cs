@@ -1,7 +1,5 @@
-﻿using SFA.DAS.LevyTransferMatching.Models.Constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using static SFA.DAS.LevyTransferMatching.Api.Models.Pledges.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -18,7 +16,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public int ApplicationCount { get; set; }
             public bool IsNamePublic { get; set; }
             public string DasAccountName { get; set; }
-            public bool IsPledgeClosed { get; set; }
             public DateTime CreatedOn { get; set; }
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
@@ -34,7 +31,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     CreatedOn = pledge.CreatedOn,
                     IsNamePublic = pledge.IsNamePublic,
                     DasAccountName = pledge.IsNamePublic ? pledge.DasAccountName : "Opportunity",
-                    IsPledgeClosed = pledge.Status == PledgeStatus.Closed,
                     JobRoles = pledge.JobRoles,
                     Levels = pledge.Levels,
                     Sectors = pledge.Sectors,
