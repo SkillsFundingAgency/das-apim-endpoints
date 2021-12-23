@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
     public class ClosePledgeRequest : IPostApiRequest
     {
         public int _pledgeId { get; set; }
-        public string PostUrl => $"pledges/close/{_pledgeId}";
+        public string PostUrl => $"pledges/{_pledgeId}/close";
 
         public ClosePledgeRequest(int pledgeId, ClosePledgeRequestData data)
         {
