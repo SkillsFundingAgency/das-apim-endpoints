@@ -32,7 +32,8 @@ namespace SFA.DAS.Approvals.Application.LevyTransferMatching.Queries
                 AutomaticApproval = result.AutomaticApproval,
                 TotalAmount = result.TotalAmount,
                 AmountUsed = result.AmountUsed,
-                AmountRemaining = result.AmountRemaining
+                AmountRemaining = result.AmountRemaining,
+                PledgeId = result.PledgeId
             };
         }
     }
