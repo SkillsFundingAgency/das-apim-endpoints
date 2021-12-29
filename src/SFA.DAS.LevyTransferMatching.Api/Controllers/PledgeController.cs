@@ -114,39 +114,41 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpPost]
-        [Route("pledges/close/{pledgeId}")]
-        public async Task<IActionResult> ClosePledge(int pledgeId)
+        [Route("pledges/{pledgeId}/close")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ClosePledge(int pledgeId, [FromBody] SetClosePledgeRequest request)
         {
             try
             {
-                var queryResult = await _mediator.Send(new ClosePledgeCommand { PledgeId = pledgeId });
+                var result = await _mediator.Send(new ClosePledgeCommand 
+                { 
+                    PledgeId = pledgeId,
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                });
+
+                if(result.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return NotFound();
+                }
 
                 var response = new GetClosePledgeResponse
                 {
-                    Updated = false,
-                    Message = string.Empty
-                };
-
-                if (queryResult == null)
-                {
-                    return BadRequest(response);
-                }
-
-                response = new GetClosePledgeResponse
-                {
-                    Updated = queryResult.Updated,
-                    Message = queryResult.Message
+                    ErrorContent = result.ErrorContent,
+                    StatusCode = result.StatusCode
                 };
 
                 return Ok(response);
+               
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get ApplicationApproved result");
+                _logger.LogError(e, $"Error attempting to close a pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/amount")]

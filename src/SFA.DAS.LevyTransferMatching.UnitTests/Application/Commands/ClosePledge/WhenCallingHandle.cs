@@ -18,47 +18,62 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ClosePledge
 {
+
     [TestFixture]
     public class WhenCallingHandle
     {
-        [Test, MoqAutoData]
-        public async Task Then_Set_Pledge_Status_to_Closed_By_PledgeId(
-            ClosePledgeCommand closePledgeCommand,
-            int pledgeId,
-            ClosePledgeResponse response,
-            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            ClosePledgeCommandHandler createPledgeHandler)
+        private ClosePledgeCommandHandler _handler;
+        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
+        private readonly Fixture _fixture = new Fixture();
+
+        private ClosePledgeCommand _command;
+        private ClosePledgeRequest _request;
+
+        [SetUp]
+        public void Setup()
         {
-            mockLevyTransferMatchingService
-                .Setup(x => x.ClosePledge(It.IsAny<ClosePledgeRequest>()))
-                .ReturnsAsync(response);
+            _command = _fixture.Create<ClosePledgeCommand>();
 
-            closePledgeCommand.PledgeId = pledgeId;
+            var apiResponse = new ApiResponse<ClosePledgeRequest>(new ClosePledgeRequest(_command.PledgeId, 
+                new ClosePledgeRequest.ClosePledgeRequestData()), HttpStatusCode.OK, string.Empty);
 
-            var result = await createPledgeHandler.Handle(closePledgeCommand, CancellationToken.None);
+            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Updated);
+            _levyTransferMatchingService.Setup(x => x.ClosePledge(It.IsAny<ClosePledgeRequest>()))
+                .Callback<ClosePledgeRequest>(r => _request = r)
+                .ReturnsAsync(apiResponse);
+
+            _handler = new ClosePledgeCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<ClosePledgeCommandHandler>>());
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_If_Response_Is_Null_Then_No_Change_To_Pledge(
-            ClosePledgeCommand closePledgeCommand,
-            int pledgeId,
-            ClosePledgeResponse response,
-            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
-            ClosePledgeCommandHandler createPledgeHandler)
+        [Test]
+        public async Task Pledge_Is_Closed_Successfully()
         {
-            response = null;
-            mockLevyTransferMatchingService
-                .Setup(x => x.ClosePledge(It.IsAny<ClosePledgeRequest>()))
-                .ReturnsAsync(response);
+            var response = await _handler.Handle(_command, CancellationToken.None);
 
-            closePledgeCommand.PledgeId = pledgeId;
+            var data = (ClosePledgeRequest.ClosePledgeRequestData)_request.Data;
 
-            var result = await createPledgeHandler.Handle(closePledgeCommand, CancellationToken.None);
+            Assert.AreEqual($"pledges/{_command.PledgeId}/close", _request.PostUrl);
+            Assert.AreEqual(_command.UserId, data.UserId);
+            Assert.AreEqual(_command.UserDisplayName, data.UserDisplayName);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        }
 
-            Assert.IsFalse(result.Updated);
+        [Test]
+        public async Task Pledge_Is_Closed_Unsuccessfull()
+        {
+            var error = _fixture.Create<InvalidOperationException>();
+            var apiResponse = new ApiResponse<ClosePledgeRequest>(new ClosePledgeRequest(_command.PledgeId,
+               new ClosePledgeRequest.ClosePledgeRequestData()), HttpStatusCode.NotFound, error.Message);
+
+            _levyTransferMatchingService.Setup(x => x.ClosePledge(It.IsAny<ClosePledgeRequest>()))
+               .Callback<ClosePledgeRequest>(r => _request = r)
+               .ReturnsAsync(apiResponse);
+
+            var response = await _handler.Handle(_command, CancellationToken.None);
+
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.AreEqual(error.Message, response.ErrorContent);
         }
     }
 }

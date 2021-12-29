@@ -48,10 +48,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return response.Body;
         }
 
-        public async Task<ClosePledgeResponse> ClosePledge(ClosePledgeRequest request)
+        public async Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request)
         {
-            var response = await _levyTransferMatchingApiClient.PostWithResponseCode<ClosePledgeResponse>(request);
-            return response.Body;
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<ClosePledgeRequest>(request);
         }
 
         public async Task<GetPledgesResponse> GetPledges(GetPledgesRequest request)

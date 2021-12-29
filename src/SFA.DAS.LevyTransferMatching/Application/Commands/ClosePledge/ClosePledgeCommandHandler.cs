@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.ClosePledgeRequest;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge
 {
@@ -25,26 +26,22 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge
         {
             _logger.LogInformation($"Closing pledge {request.PledgeId}");
 
-            var data = new ClosePledgeRequest.ClosePledgeRequestData(request.PledgeId);
-
-            var closeRequest = new ClosePledgeRequest(request.PledgeId, data);
-
-            var response = await _levyTransferMatchingService.ClosePledge(closeRequest);
-
-            if(response == null)
+            var apiRequestData = new ClosePledgeRequestData
             {
-                return new ClosePledgeCommandResult
-                {
-                    Updated = false,
-                    Message = string.Empty,
-                };
-            }
+                UserDisplayName = request.UserDisplayName,
+                UserId = request.UserId
+            };
+
+            var apiRequest = new ClosePledgeRequest(request.PledgeId, apiRequestData);
+
+            var response = await _levyTransferMatchingService.ClosePledge(apiRequest);
 
             return new ClosePledgeCommandResult
             {
-                Updated = response.Updated,
-                Message = response.Message,
+                ErrorContent = response.ErrorContent,
+                StatusCode = response.StatusCode
             };
+
         }
     }
 }

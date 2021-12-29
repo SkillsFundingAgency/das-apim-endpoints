@@ -10,6 +10,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,51 +22,59 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test, MoqAutoData]
         public async Task ClosePledge_Returns_Closed_Pledge_Status(
            int pledgeId,
-           ClosePledgeCommandResult closePledgeResult,
+           SetClosePledgeRequest closePledgeRequest,
            [Frozen] Mock<IMediator> mockMediator,
            [Greedy] PledgeController pledgeController)
         {
+            var closePledgeResult = new ClosePledgeCommandResult{
+                 ErrorContent = string.Empty,
+                 StatusCode = HttpStatusCode.OK
+            };
+
             mockMediator
                 .Setup(x => x.Send(
                     It.Is<ClosePledgeCommand>((x) => x.PledgeId == pledgeId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(closePledgeResult);
 
-            var controllerResponse = await pledgeController.ClosePledge(pledgeId);
+            var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
          
             var okObjectResult = controllerResponse as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
             var response = okObjectResult.Value as GetClosePledgeResponse;
             Assert.IsNotNull(response);
-            Assert.IsTrue(response.Updated);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Test, MoqAutoData]
-        public async Task ClosePledge_Returns_BadRequest(
+        public async Task ClosePledge_Returns_NotFound(
           int pledgeId,
-          ClosePledgeCommandResult closePledgeResult,
+          SetClosePledgeRequest closePledgeRequest,
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] PledgeController pledgeController)
         {
-            closePledgeResult = null;
+            var closePledgeResult = new ClosePledgeCommandResult
+            {
+                ErrorContent = string.Empty,
+                StatusCode = HttpStatusCode.NotFound
+            };
             mockMediator
                 .Setup(x => x.Send(
                     It.Is<ClosePledgeCommand>((x) => x.PledgeId == pledgeId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(closePledgeResult);
 
-            var controllerResponse = await pledgeController.ClosePledge(pledgeId);
+            var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
 
-            var badRequestObjectResult = controllerResponse as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-            var response = badRequestObjectResult.Value as GetClosePledgeResponse;
-            Assert.IsNotNull(response);
-            Assert.IsFalse(response.Updated);            
+            var statusResult = controllerResponse as StatusCodeResult;
+            Assert.IsNotNull(statusResult);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, statusResult.StatusCode);            
         }
 
         [Test, MoqAutoData]
         public async Task ClosePledge_Returns_Error(
           int pledgeId,
+           SetClosePledgeRequest closePledgeRequest,
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] PledgeController pledgeController)
         {
@@ -73,13 +82,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                 .Setup(x => x.Send(
                     It.Is<ClosePledgeCommand>((x) => x.PledgeId == pledgeId),
                     It.IsAny<CancellationToken>()))
-                .Throws(new Exception());
+                .Throws(new InvalidOperationException());
             
-            var controllerResponse = await pledgeController.ClosePledge(pledgeId);
+            var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
 
             var exception = controllerResponse as StatusCodeResult;
             Assert.IsNotNull(exception);
-            Assert.AreEqual(500,exception.StatusCode);
+            Assert.AreEqual((int)HttpStatusCode.InternalServerError, exception.StatusCode);
         }
     }
 }

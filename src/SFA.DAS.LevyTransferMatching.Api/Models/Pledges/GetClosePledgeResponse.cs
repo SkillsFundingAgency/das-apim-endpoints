@@ -1,8 +1,10 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
+﻿using System.Net;
+
+namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetClosePledgeResponse
     {
-        public bool Updated { get; set; }
-        public string Message { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
+        public string ErrorContent { get; set; }
     }
 }
