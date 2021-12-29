@@ -127,6 +127,10 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string CourseTitle { get ; set ; }
             [JsonIgnore]
             public string Route { get ; set ; }
+            [JsonIgnore]
+            public int CourseLevel { get ; set ; }
+            [JsonIgnore]
+            public string VacancyUrl { get ; set ; }
         }
 
         public partial class Location

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -47,13 +48,16 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service(
             int standardLarsCode,
+            string findAnApprenticeshipBaseUrl,
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             GetStandardsListItem courseResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacanciesQueryHandler handler)
         {
+            vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl; 
             courseResponse.LarsCode = standardLarsCode;
             foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
             {
@@ -70,7 +74,17 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Vacancies.ToList().TrueForAll(c=>c.CourseTitle.Equals(courseResponse.Title) && c.Route.Equals(courseResponse.Route)).Should().BeTrue();
+            actual.Vacancies.ToList().TrueForAll(c=>
+                c.CourseTitle.Equals(courseResponse.Title) 
+                && c.Route.Equals(courseResponse.Route)
+                && c.CourseLevel.Equals(courseResponse.Level)
+                ).Should().BeTrue();
+
+            foreach (var vacancy in actual.Vacancies)
+            {
+                vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
+            }
+            
         }
 
         [Test, MoqAutoData]

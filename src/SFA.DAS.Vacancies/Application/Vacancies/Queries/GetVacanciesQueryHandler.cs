@@ -5,6 +5,7 @@ using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.InnerApi.Requests;
@@ -18,12 +19,17 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
         private readonly IStandardsService _standardsService;
+        private readonly VacanciesConfiguration _vacanciesConfiguration;
 
-        public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService, IStandardsService standardsService)
+        public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, 
+            IAccountLegalEntityPermissionService accountLegalEntityPermissionService, 
+            IStandardsService standardsService,
+            IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
             _standardsService = standardsService;
+            _vacanciesConfiguration = vacanciesConfiguration.Value;
         }
 
         public async Task<GetVacanciesQueryResult> Handle(GetVacanciesQuery request, CancellationToken cancellationToken)
@@ -66,8 +72,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 {
                     vacanciesItem.CourseTitle = standard.Title;
                     vacanciesItem.Route = standard.Route;
+                    vacanciesItem.CourseLevel = standard.Level;
                 }
-                 
+
+                vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference}";
             }
             
             return new GetVacanciesQueryResult()
