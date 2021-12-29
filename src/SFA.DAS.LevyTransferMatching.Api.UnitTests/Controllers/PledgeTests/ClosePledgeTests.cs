@@ -6,12 +6,9 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
          
             var statusResult = controllerResponse as StatusCodeResult;
             Assert.IsNotNull(statusResult);
-            Assert.AreEqual(HttpStatusCode.OK, statusResult.StatusCode);
+            Assert.AreEqual((int)HttpStatusCode.OK, statusResult.StatusCode);
         }
 
         [Test, MoqAutoData]
