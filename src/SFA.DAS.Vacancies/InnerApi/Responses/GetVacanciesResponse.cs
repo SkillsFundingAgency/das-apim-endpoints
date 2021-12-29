@@ -122,6 +122,11 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
 
             [JsonProperty("score")]
             public long Score { get; set; }
+
+            [JsonIgnore]
+            public string CourseTitle { get ; set ; }
+            [JsonIgnore]
+            public string Route { get ; set ; }
         }
 
         public partial class Location

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +42,35 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
 
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service(
+            int standardLarsCode,
+            GetVacanciesQuery query,
+            GetVacanciesResponse apiResponse,
+            GetStandardsListItem courseResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IStandardsService> standardsService,
+            GetVacanciesQueryHandler handler)
+        {
+            courseResponse.LarsCode = standardLarsCode;
+            foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
+            {
+                vacanciesItem.StandardLarsCode = standardLarsCode;
+            }
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+            standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
+                { Standards = new List<GetStandardsListItem> { courseResponse } });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.ToList().TrueForAll(c=>c.CourseTitle.Equals(courseResponse.Title) && c.Route.Equals(courseResponse.Route)).Should().BeTrue();
         }
 
         [Test, MoqAutoData]
