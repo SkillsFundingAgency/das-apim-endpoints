@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -9,6 +10,7 @@ namespace SFA.DAS.Vacancies.Application.Services
 {
     public class StandardsService  : IStandardsService
     {
+        private const int CourseCacheExpiryInHours = 4;
         private readonly ICacheStorageService _cacheStorageService;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
 
@@ -30,7 +32,7 @@ namespace SFA.DAS.Vacancies.Application.Services
 
             var apiCourses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
 
-            await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), apiCourses, 4);
+            await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), apiCourses, CourseCacheExpiryInHours);
 
             return apiCourses;
         }
