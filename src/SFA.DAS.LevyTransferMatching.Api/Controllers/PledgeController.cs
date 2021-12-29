@@ -134,14 +134,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     return NotFound();
                 }
 
-                var response = new GetClosePledgeResponse
-                {
-                    ErrorContent = result.ErrorContent,
-                    StatusCode = result.StatusCode
-                };
-
-                return Ok(response);
-               
+                return Ok();
             }
             catch (Exception e)
             {

@@ -39,11 +39,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 
             var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
          
-            var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-            var response = okObjectResult.Value as GetClosePledgeResponse;
-            Assert.IsNotNull(response);
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var statusResult = controllerResponse as StatusCodeResult;
+            Assert.IsNotNull(statusResult);
+            Assert.AreEqual(HttpStatusCode.OK, statusResult.StatusCode);
         }
 
         [Test, MoqAutoData]
