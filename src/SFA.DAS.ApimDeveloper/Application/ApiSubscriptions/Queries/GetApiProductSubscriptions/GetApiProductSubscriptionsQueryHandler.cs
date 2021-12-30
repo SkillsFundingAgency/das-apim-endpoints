@@ -11,17 +11,18 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProdu
     public class GetApiProductSubscriptionsQueryHandler : IRequestHandler<GetApiProductSubscriptionsQuery, GetApiProductSubscriptionsQueryResult>
     {
         private readonly IApimDeveloperApiClient<ApimDeveloperApiConfiguration> _apimDeveloperApiClient;
+        private readonly IApimApiService _apimApiService;
 
-        public GetApiProductSubscriptionsQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient)
+        public GetApiProductSubscriptionsQueryHandler (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient, IApimApiService apimApiService)
         {
             _apimDeveloperApiClient = apimDeveloperApiClient;
+            _apimApiService = apimApiService;
         }
         
         public async Task<GetApiProductSubscriptionsQueryResult> Handle(GetApiProductSubscriptionsQuery request, CancellationToken cancellationToken)
         {
             var productsTask =
-                _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
-                    new GetAvailableApiProductsRequest(request.AccountType));
+                _apimApiService.GetAvailableProducts(request.AccountType);
 
             var subscriptionsTask =
                 _apimDeveloperApiClient.Get<GetApiProductSubscriptionsResponse>(
