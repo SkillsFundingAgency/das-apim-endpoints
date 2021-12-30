@@ -10,11 +10,11 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         private readonly long? _ukprn;
         private readonly string _email;
 
-        public PostVacancyRequest(Guid id, PostVacancyRequestData postVacancyRequestData)
+        public PostVacancyRequest(Guid id, int ukprn, string email, PostVacancyRequestData postVacancyRequestData)
         {
             _id = id;
-            _ukprn = postVacancyRequestData.User.Ukprn;
-            _email = postVacancyRequestData.User.Email;
+            _ukprn = ukprn;
+            _email = email;
             Data = postVacancyRequestData;
         }
 
