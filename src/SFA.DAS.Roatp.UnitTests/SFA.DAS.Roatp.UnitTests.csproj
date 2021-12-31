@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Roatp\SFA.DAS.Roatp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SFA.DAS.SharedOuterApi">
+      <HintPath>..\SFA.DAS.SharedOuterApi\bin\Debug\netcoreapp3.1\SFA.DAS.SharedOuterApi.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

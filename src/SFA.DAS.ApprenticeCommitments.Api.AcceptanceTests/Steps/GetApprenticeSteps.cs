@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using System.Net;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
