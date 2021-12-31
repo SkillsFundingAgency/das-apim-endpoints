@@ -45,6 +45,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
             actual.Name.Should().Be(legalEntities.First().AccountLegalEntityName);
             actual.AccountLegalEntityPublicHashedId.Should().Be(legalEntities.First().AccountLegalEntityPublicHashedId);
+            actual.AccountPublicHashedId.Should().Be(accountIdentifier.AccountPublicHashedId);
         }
         
         [Test, MoqAutoData]
@@ -125,6 +126,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             actual.Name.Should().Be(response.AccountProviderLegalEntities.First().AccountLegalEntityName);
             actual.AccountLegalEntityPublicHashedId.Should().Be(response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId);
+            actual.AccountPublicHashedId.Should().Be(response.AccountProviderLegalEntities.First().AccountPublicHashedId);
         }
         
         [Test, MoqAutoData]
