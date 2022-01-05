@@ -10,9 +10,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries
 {
     public class GetApprenticeQueryHandler : IRequestHandler<GetApprenticeQuery, GetApprenticeResult>
     {
-        private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _apiClient;
+        private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apiClient;
 
-        public GetApprenticeQueryHandler(IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> apiClient)
+        public GetApprenticeQueryHandler(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
