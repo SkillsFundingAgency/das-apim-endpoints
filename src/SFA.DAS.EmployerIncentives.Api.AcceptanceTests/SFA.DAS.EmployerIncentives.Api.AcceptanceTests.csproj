@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
@@ -69,6 +70,10 @@
     <SpecFlowFeatureFiles Update="Features\ApprenticeshipDetails.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ConfirmApprenticeEmploymentDetails.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+     <SpecFlowFeatureFiles Update="Features\EmploymentCheck.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EmploymentCheck.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\UpdateCollectionCalendarPeriod.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
