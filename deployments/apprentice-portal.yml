@@ -5,7 +5,7 @@ variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
 - name: OuterApiObject
-  value: $(ApprenticeCommitmentsOuterApiObject)
+  value: $(ApprenticePortalOuterApiObject)
 
 resources:
   repositories:
@@ -52,7 +52,7 @@ stages:
       Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticePortalOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticePortal.Api.zip
       ApiVersionSetName: $(ApprenticePortalOuterApiVersionSetName)
       ApiPath: $(ApprenticePortalOuterApiPath)
       ApiBaseUrl: $(ApprenticePortalOuterApiBaseUrl)
