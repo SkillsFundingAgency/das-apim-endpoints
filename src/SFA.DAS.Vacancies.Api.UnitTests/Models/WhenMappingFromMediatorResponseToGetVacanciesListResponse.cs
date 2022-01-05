@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using FluentAssertions;
-using SFA.DAS.Vacancies.InnerApi.Responses;
-using StructureMap.Diagnostics;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Models
 {
-    class WhenMappingFromMediatorResponseToGetVacanciesListResponse
+    public class WhenMappingFromMediatorResponseToGetVacanciesListResponse
     {
         [Test, AutoData]
         public void Then_The_Fields_are_mapped(GetVacanciesQueryResult source)
         {
             var actual = (GetVacanciesListResponse) source ;
 
-            actual.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers());
         }
         
         [Test, AutoData]
@@ -30,6 +25,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             foreach (var getVacanciesItem in sourceVacancies)
             {
                 getVacanciesItem.IsEmployerAnonymous = true;
+                getVacanciesItem.VacancyLocationType = "nAtiONal";
             }
             
             //act
@@ -38,10 +34,17 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             //assert
             actual.Vacancies.Should().BeEquivalentTo(sourceVacancies, options => options
                 .ExcludingMissingMembers()
-                .Excluding(item => item.EmployerName));
+                .Excluding(item => item.EmployerName)
+                .Excluding(item => item.CourseTitle)
+                .Excluding(item => item.CourseLevel));
+            actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);
+                actual.Vacancies[i].Course.Title.Should().Be($"{sourceVacancies[i].CourseTitle} (level {sourceVacancies[i].CourseLevel})");
+                actual.Vacancies[i].Course.Level.Should().Be(sourceVacancies[i].CourseLevel);
+                actual.Vacancies[i].Course.Route.Should().Be(sourceVacancies[i].Route);
+                actual.Vacancies[i].Course.LarsCode.Should().Be(sourceVacancies[i].StandardLarsCode);
             }
         }
     }
