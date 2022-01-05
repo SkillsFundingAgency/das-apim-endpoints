@@ -22,7 +22,6 @@ namespace SFA.DAS.Vacancies.Api.Models
 
         public class GetVacanciesListResponseItem
        {
-           public string ApprenticeshipLevel { get; set; }
            public DateTimeOffset ClosingDate { get; set; }    
            public string Description { get; set; }
            public string EmployerName { get; set; }
@@ -32,44 +31,49 @@ namespace SFA.DAS.Vacancies.Api.Models
            public long NumberOfPositions { get; set; }
            public DateTimeOffset PostedDate { get; set; }
            public string ProviderName { get; set; }
-           public int StandardLarsCode { get; set; }
            public DateTimeOffset StartDate { get; set; }
            public string Title { get; set; }
            public int Ukprn { get; set; }
            public long VacancyReference { get; set; }
-           public string Route { get; set; }
-           
-           public string TrainingTitle { get ; set ; }
-
-           public long Id { get ; set ; }
            public string VacancyUrl { get; set; }
 
+           public VacancyCourseItem Course { get; set; }
            public static implicit operator GetVacanciesListResponseItem(GetVacanciesItem source)
            {
                return new GetVacanciesListResponseItem
                {
-                   ApprenticeshipLevel = source.ApprenticeshipLevel,
                    ClosingDate = source.ClosingDate,
                    Description = source.Description,
                    EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                    HoursPerWeek = source.HoursPerWeek,
-                   Id = source.Id,
                    IsDisabilityConfident = source.IsDisabilityConfident,
                    IsNationalVacancy = source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
                    NumberOfPositions = source.NumberOfPositions,
                    PostedDate = source.PostedDate,
                    ProviderName = source.ProviderName,
-                   Route = "",
-                   StandardLarsCode = source.StandardLarsCode,
-                   TrainingTitle = "",
                    StartDate = source.StartDate,
                    Title = source.Title,
                    Ukprn = source.Ukprn,
                    VacancyReference = source.VacancyReference,
-                   VacancyUrl = ""
+                   VacancyUrl = source.VacancyUrl,
+                   Course = new VacancyCourseItem
+                   {
+                       LarsCode = source.StandardLarsCode,
+                       Level = source.CourseLevel,
+                       Route = source.Route,
+                       Title = $"{source.CourseTitle} (level {source.CourseLevel})"
+                   }
                };
            }
        }
+
+        public class VacancyCourseItem
+        {
+            public int LarsCode { get; set; }
+            public string Title { get; set; }
+            public int Level { get; set; }
+            public string Route { get; set; }
+        }
         
     }
 }
