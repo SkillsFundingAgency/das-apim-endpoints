@@ -4,15 +4,17 @@
 
 Scenario: The apprentice exists
 	Given there is an apprentice
-	When the apprentice is requested
-	Then the result should contain the apprentice data
+	When the apprentice's homepage is requested
+	Then the result should contain the apprentice data, but with no apprenticeship data
 
-Scenario: The apprentice exists but no apprenticeships exist
-	Given there is no apprenticeship
-	When the apprentice is requested
+Scenario: The apprentice exists and has multiple apprenticeships 
+	Given there is an apprentice
+	And several apprenticeships
+	When the apprentice's homepage is requested
+	Then the result should have apprentice and first apprenticeship
+
+Scenario: The apprentice does not exists but has multiple apprenticeships 
+	Given there is no apprentice
+	And several apprenticeships
+	When the apprentice's homepage is requested
 	Then the result should be NotFound
-
-#Scenario: There is a server error getting 
-#	Given there is a server error
-#	When the apprentice is requested
-#	Then the result should be the error
