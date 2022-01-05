@@ -1,0 +1,61 @@
+trigger: none
+pr: none
+
+variables:
+- group: Release Management Resources
+- group: RELEASE das-apim-endpoints
+- name: OuterApiObject
+  value: $(ApprenticeCommitmentsOuterApiObject)
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.26
+    endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.5.11
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-apim-endpoints-build
+    project: Digital Apprenticeship Service
+    source: das-apim-endpoints (build)
+    branch: master
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
+
+stages:
+- stage: Deploy_AT
+  dependsOn: []
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: AT
+      SchemaFilePath: $(ApprenticePortalOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticePortal
+      Environment: AT
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticePortalOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeCommitments.Api.zip
+      ApiVersionSetName: $(ApprenticePortalOuterApiVersionSetName)
+      ApiPath: $(ApprenticePortalOuterApiPath)
+      ApiBaseUrl: $(ApprenticePortalOuterApiBaseUrl)
+      ProductId: $(ApprenticePortalProductId)
+      ApplicationIdentifierUri: $(ApprenticePortalOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
