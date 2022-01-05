@@ -46,7 +46,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string FrameworkLarsCode { get; set; }
 
             [JsonProperty("hoursPerWeek")]
-            public long HoursPerWeek { get; set; }
+            public decimal HoursPerWeek { get; set; }
 
             [JsonProperty("isDisabilityConfident")]
             public bool IsDisabilityConfident { get; set; }
@@ -112,7 +112,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public long WageUnit { get; set; }
 
             [JsonProperty("wageType")]
-            public long WageType { get; set; }
+            public int WageType { get; set; }
 
             [JsonProperty("workingWeek")]
             public string WorkingWeek { get; set; }

@@ -30,6 +30,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             foreach (var getVacanciesItem in sourceVacancies)
             {
                 getVacanciesItem.IsEmployerAnonymous = true;
+                getVacanciesItem.VacancyLocationType = "nAtiONal";
             }
             
             //act
@@ -39,6 +40,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Vacancies.Should().BeEquivalentTo(sourceVacancies, options => options
                 .ExcludingMissingMembers()
                 .Excluding(item => item.EmployerName));
+            actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);
