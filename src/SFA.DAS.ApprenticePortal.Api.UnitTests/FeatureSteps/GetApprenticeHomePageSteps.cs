@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.ApprenticePortal.Models;
 using TechTalk.SpecFlow;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
 {
@@ -31,15 +26,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         [Given(@"there is an apprentice")]
         public void GivenThereIsAnApprentice()
         {
-            _context.ApprenticeAccountsInnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath($"/apprentices/{_apprentice.ApprenticeId}")
-                        .UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithBodyAsJson(_apprentice));
+            _context.ApprenticeAccountsInnerApi.WithApprentice(_apprentice);
         }
         
         [Given(@"there is no apprenticeship")]
@@ -55,15 +42,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         [Given(@"several apprenticeships")]
         public void GivenSeveralApprenticeships()
         {
-            _context.ApprenticeCommitmentsInnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath($"/apprentices/{_apprentice.ApprenticeId}/apprenticeships")
-                        .UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithBodyAsJson(_apprenticeshipsResult));
+            _context.ApprenticeCommitmentsInnerApi.WithApprenticeshipsResponseForApprentice(_apprentice, _apprenticeshipsResult);
         }
 
         [When(@"the apprentice's homepage is requested")]

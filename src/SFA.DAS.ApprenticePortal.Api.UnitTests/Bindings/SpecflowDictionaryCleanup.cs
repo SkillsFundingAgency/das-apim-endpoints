@@ -1,8 +1,8 @@
 ﻿using System;
-using SFA.DAS.ApprenticePortal.Api.UnitTests;
+using SFA.DAS.ApprenticePortal.MockApis;
 using TechTalk.SpecFlow;
 
-namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Bindings
+namespace SFA.DAS.ApprenticePortal.Api.UnitTests.Bindings
 {
     [Binding]
     public static class SpecflowDictionaryCleanup

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using WireMock.Server;
 
 namespace SFA.DAS.ApprenticePortal.MockApis
 {
@@ -9,8 +8,8 @@ namespace SFA.DAS.ApprenticePortal.MockApis
         private const int PortInnerApi = 5501;
         private const int PortAccountsApi = 5801;
 
-        private static WireMockServer _fakeApprenticeCommitmentsApi;
-        private static WireMockServer _fakeApprenticeAccountsApi;
+        private static ApprenticeCommitmentsInnerApiMock _fakeApprenticeCommitmentsApi;
+        private static ApprenticeAccountsInnerApiMock _fakeApprenticeAccountsApi;
 
         static void Main(string[] args)
         {
@@ -30,20 +29,19 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
             try
             {
-                if (!args.Contains("!cmad", StringComparer.CurrentCultureIgnoreCase))
-                {
-                    _fakeApprenticeCommitmentsApi = ApprenticeCommitmentsInnerApiBuilder.Create(PortInnerApi)
-                        .WithPing()
-                        .WithExistingApprenticeships()
-                        .Build();
-                }
 
                 if (!args.Contains("!accounts", StringComparer.CurrentCultureIgnoreCase))
                 {
-                    _fakeApprenticeAccountsApi = ApprenticeAccountsInnerApiBuilder.Create(PortAccountsApi)
+                    _fakeApprenticeAccountsApi = new ApprenticeAccountsInnerApiMock(PortAccountsApi)
                         .WithPing()
-                        .WithAnyApprentice()
-                        .Build();
+                        .WithAnyApprentice();
+                }
+
+                if (!args.Contains("!cmad", StringComparer.CurrentCultureIgnoreCase))
+                {
+                    _fakeApprenticeCommitmentsApi = new ApprenticeCommitmentsInnerApiMock(PortInnerApi)
+                        .WithPing()
+                        .WithExistingApprenticeshipsForApprentice(_fakeApprenticeAccountsApi?.AnyApprentice);
                 }
 
                 Console.WriteLine(("Please RETURN to stop server"));
@@ -51,10 +49,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             }
             finally
             {
-                _fakeApprenticeCommitmentsApi?.Stop();
                 _fakeApprenticeCommitmentsApi?.Dispose();
-
-                _fakeApprenticeAccountsApi?.Stop();
                 _fakeApprenticeAccountsApi?.Dispose();
             }
         }

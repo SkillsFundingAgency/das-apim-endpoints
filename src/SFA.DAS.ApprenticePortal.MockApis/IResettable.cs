@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticePortal.Api.UnitTests
+﻿namespace SFA.DAS.ApprenticePortal.MockApis
 {
     public interface IResettable
     {

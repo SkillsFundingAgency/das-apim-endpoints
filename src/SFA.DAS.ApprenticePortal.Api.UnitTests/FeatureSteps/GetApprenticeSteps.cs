@@ -31,15 +31,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         [Given(@"there is an apprentice")]
         public void GivenThereIsAnApprentice()
         {
-            _context.ApprenticeAccountsInnerApi.MockServer
-                .Given(
-                    Request.Create()
-                        .WithPath($"/apprentices/{_apprentice.ApprenticeId}")
-                        .UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithBodyAsJson(_apprentice));
+            _context.ApprenticeAccountsInnerApi.WithApprentice(_apprentice);
         }
         
         [Given(@"there is no apprentice")]

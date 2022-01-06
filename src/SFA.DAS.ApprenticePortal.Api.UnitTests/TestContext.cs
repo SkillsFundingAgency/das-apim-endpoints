@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests;
+﻿using SFA.DAS.ApprenticePortal.MockApis;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests
@@ -10,7 +10,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests
         public TestContext(FeatureContext feature) => _feature = feature;
 
         public ApprenticePortalOuterApi OuterApiClient { get; set; }
-        public MockApi ApprenticeCommitmentsInnerApi => _feature.GetOrAdd<MockApi>();
-        public MockApi ApprenticeAccountsInnerApi => _feature.GetOrAdd<MockApi>();
+        public ApprenticeCommitmentsInnerApiMock ApprenticeCommitmentsInnerApi => _feature.GetOrAdd<ApprenticeCommitmentsInnerApiMock>();
+        public ApprenticeAccountsInnerApiMock ApprenticeAccountsInnerApi => _feature.GetOrAdd<ApprenticeAccountsInnerApiMock>();
     }
 }
