@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;

@@ -20,7 +20,7 @@ namespace SFA.DAS.Vacancies.Api.Models
 
     public class GetTrainingCoursesListResponseItem
     {
-        public int Id { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public string Route { get ; set ; }
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         {
             return new GetTrainingCoursesListResponseItem
             {
-                Id = source.LarsCode,
+                LarsCode = source.LarsCode,
                 Title = $"{source.Title} (level {source.Level})",
                 Route = source.Route
             };
