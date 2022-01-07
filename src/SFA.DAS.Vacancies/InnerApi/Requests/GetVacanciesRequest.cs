@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Vacancies.Models;
 
 namespace SFA.DAS.Vacancies.InnerApi.Requests
 {
@@ -9,15 +10,32 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
         private readonly string _accountLegalEntityPublicHashedId;
         private readonly int? _ukprn;
         private readonly string _accountPublicHashedId;
+        private readonly int? _standardLarsCode;
+        private readonly bool? _nationwideOnly;
+        private readonly double? _lat;
+        private readonly double? _lon;
+        private readonly uint? _distanceInMiles;
+        private readonly string _route;
+        private readonly uint? _postedInLastNumberOfDays;
+        private readonly VacancySort? _sort;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "")
+        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", int? standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, string route = "", uint? postedInLastNumberOfDays = null, VacancySort? sort = null)
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
             _accountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
             _ukprn = ukprn;
             _accountPublicHashedId = accountPublicHashedId;
+            _standardLarsCode = standardLarsCode;
+            _nationwideOnly = nationwideOnly;
+            _lat = lat;
+            _lon = lon;
+            _distanceInMiles = distanceInMiles;
+            _route = route;
+            _postedInLastNumberOfDays = postedInLastNumberOfDays;
+            _sort = sort;
         }
-        public string GetUrl => $"api/Vacancies?pageNumber={_pageNumber}&pageSize={_pageSize}&ukprn={_ukprn}&accountLegalEntityPublicHashedId={_accountLegalEntityPublicHashedId}&accountPublicHashedId={_accountPublicHashedId}";
+
+        public string GetUrl => $"api/Vacancies?pageNumber={_pageNumber}&pageSize={_pageSize}&ukprn={_ukprn}&accountLegalEntityPublicHashedId={_accountLegalEntityPublicHashedId}&accountPublicHashedId={_accountPublicHashedId}&standardLarsCode={_standardLarsCode}&nationwideOnly={_nationwideOnly}&lat={_lat}&lon={_lon}&distanceInMiles={_distanceInMiles}&route={_route}&sort={_sort}&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
     }
 }
