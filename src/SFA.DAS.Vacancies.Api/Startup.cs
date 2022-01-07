@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -70,7 +71,8 @@ namespace SFA.DAS.Vacancies.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true)
+                .AddNewtonsoftJson(options=>options.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             if (_configuration["Environment"] != "DEV")
             {

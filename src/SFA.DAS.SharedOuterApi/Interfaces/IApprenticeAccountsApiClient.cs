@@ -2,6 +2,6 @@
 {
     public interface IApprenticeAccountsApiClient<T> : IGetApiClient<T>
     {
-
+        
     }
 }
