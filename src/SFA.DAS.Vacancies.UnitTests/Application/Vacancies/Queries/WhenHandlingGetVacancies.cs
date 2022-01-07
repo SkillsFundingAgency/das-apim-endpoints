@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -40,6 +43,48 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
 
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service(
+            int standardLarsCode,
+            string findAnApprenticeshipBaseUrl,
+            GetVacanciesQuery query,
+            GetVacanciesResponse apiResponse,
+            GetStandardsListItem courseResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
+            GetVacanciesQueryHandler handler)
+        {
+            vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl; 
+            courseResponse.LarsCode = standardLarsCode;
+            foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
+            {
+                vacanciesItem.StandardLarsCode = standardLarsCode;
+            }
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+            standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
+                { Standards = new List<GetStandardsListItem> { courseResponse } });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.ToList().TrueForAll(c=>
+                c.CourseTitle.Equals(courseResponse.Title) 
+                && c.Route.Equals(courseResponse.Route)
+                && c.CourseLevel.Equals(courseResponse.Level)
+                ).Should().BeTrue();
+
+            foreach (var vacancy in actual.Vacancies)
+            {
+                vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
+            }
+            
         }
 
         [Test, MoqAutoData]
