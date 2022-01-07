@@ -19,17 +19,16 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Product_And_Subscription_Is_Returned_For_The_Account(
             GetApiProductSubscriptionQuery subscriptionQuery,
-            GetAvailableApiProductsResponse apiResponse,
+            GetAvailableApiProductsResponse serviceResponse,
             GetApiProductSubscriptionsResponse apiSubscriptionsResponse,
+            [Frozen] Mock<IApimApiService> apimApiService,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> client,
             GetApiProductSubscriptionQueryHandler handler)
         {
-            apiResponse.Products.First().Id = subscriptionQuery.ProductId;
+            serviceResponse.Products.First().Id = subscriptionQuery.ProductId;
             apiSubscriptionsResponse.Subscriptions.First().Name = subscriptionQuery.ProductId;
-            client.Setup(x =>
-                    x.Get<GetAvailableApiProductsResponse>(
-                        It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith($"?group={subscriptionQuery.AccountType}"))))
-                .ReturnsAsync(apiResponse);
+            apimApiService.Setup(x =>
+                    x.GetAvailableProducts(subscriptionQuery.AccountType)).ReturnsAsync(serviceResponse);
             client.Setup(x =>
                     x.Get<GetApiProductSubscriptionsResponse>(
                         It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{subscriptionQuery.AccountIdentifier}"))))
@@ -37,7 +36,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
 
             var actual = await handler.Handle(subscriptionQuery, CancellationToken.None);
             
-            actual.Product.Should().BeEquivalentTo(apiResponse.Products.First());
+            actual.Product.Should().BeEquivalentTo(serviceResponse.Products.First());
             actual.Subscription.Should().BeEquivalentTo(apiSubscriptionsResponse.Subscriptions.First());
         }
     }

@@ -2,39 +2,24 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Application.TrainingCourses.Queries
 {
     public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
     {
-        private const int CourseCacheDurationInHours = 3;
-        private readonly ICacheStorageService _cacheStorageService;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IStandardsService _standardsService;
 
-        public GetTrainingCoursesQueryHandler (ICacheStorageService cacheStorageService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        public GetTrainingCoursesQueryHandler (IStandardsService standardsService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
         {
-            _cacheStorageService = cacheStorageService;
-            _coursesApiClient = coursesApiClient;
+            
+            _standardsService = standardsService;
+            
         }
         public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
-            var courses =
-                await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
-                    nameof(GetStandardsListResponse));
-
-            if (courses != null)
-            {
-                return new GetTrainingCoursesQueryResult
-                {
-                    TrainingCourses = courses.Standards
-                };
-            }
-            
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
-            await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, CourseCacheDurationInHours);
+            var courses = await _standardsService.GetStandards();
 
             return new GetTrainingCoursesQueryResult
             {
