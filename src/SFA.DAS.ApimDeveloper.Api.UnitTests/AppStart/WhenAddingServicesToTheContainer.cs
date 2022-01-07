@@ -20,6 +20,8 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         [TestCase(typeof(IApimDeveloperApiClient<ApimDeveloperApiConfiguration>))]
+        [TestCase(typeof(IApimApiService))]
+        [TestCase(typeof(ICacheStorageService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();

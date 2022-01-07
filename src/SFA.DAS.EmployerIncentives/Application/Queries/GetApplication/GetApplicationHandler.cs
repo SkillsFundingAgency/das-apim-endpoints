@@ -50,6 +50,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 LegalEntityId = applicationDto.LegalEntityId,
                 SubmittedByEmail = applicationDto.SubmittedByEmail,
                 SubmittedByName = applicationDto.SubmittedByName,
+                NewAgreementRequired = applicationDto.NewAgreementRequired
             };
         }
 
@@ -67,7 +68,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.GetApplication
                 Uln = x.Uln,
                 PlannedStartDate = x.PlannedStartDate,
                 EmploymentStartDate = x.EmploymentStartDate,
-                HasEligibleEmploymentStartDate = x.HasEligibleEmploymentStartDate
+                StartDatesAreEligible = x.StartDatesAreEligible
             });
         }
 
