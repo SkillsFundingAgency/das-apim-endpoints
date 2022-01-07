@@ -146,4 +146,3 @@ stages:
       ProductId: $(ApprenticePortalProductId)
       ApplicationIdentifierUri: $(ApprenticePortalOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-      
