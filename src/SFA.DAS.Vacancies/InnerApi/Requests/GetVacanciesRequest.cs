@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Vacancies.Models;
+﻿using System.Web;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Vacancies.InnerApi.Requests
 {
@@ -17,13 +17,13 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
         private readonly uint? _distanceInMiles;
         private readonly string _route;
         private readonly uint? _postedInLastNumberOfDays;
-        private readonly VacancySort? _sort;
+        private readonly string _sort;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", int? standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, string route = "", uint? postedInLastNumberOfDays = null, VacancySort? sort = null)
+        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", int? standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, string route = "", uint? postedInLastNumberOfDays = null, string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
-            _accountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
+            _accountLegalEntityPublicHashedId = HttpUtility.UrlEncode(accountLegalEntityPublicHashedId);
             _ukprn = ukprn;
             _accountPublicHashedId = accountPublicHashedId;
             _standardLarsCode = standardLarsCode;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
             _lat = lat;
             _lon = lon;
             _distanceInMiles = distanceInMiles;
-            _route = route;
+            _route = HttpUtility.UrlEncode(route);
             _postedInLastNumberOfDays = postedInLastNumberOfDays;
             _sort = sort;
         }

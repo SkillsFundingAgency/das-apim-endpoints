@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Web;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Vacancies.InnerApi.Requests;
@@ -24,9 +25,12 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
             uint? postedInLastNumberOfDays,
             VacancySort? sort)
         {
+            route = $"{route} %£$^ {route}";
+            accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
+            
             var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, route, postedInLastNumberOfDays, sort);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={accountLegalEntityPublicHashedId}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={standardLarsCode}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&route={route}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={standardLarsCode}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&route={HttpUtility.UrlEncode(route)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}");
         }
 
         [Test, AutoData]
