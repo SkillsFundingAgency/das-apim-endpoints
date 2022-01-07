@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
@@ -16,7 +17,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         public double? Lat { get ; set ; }
         public double? Lon { get ; set ; }
         public uint? DistanceInMiles { get ; set ; }
-        public string Route { get ; set ; }
+        public List<string> Routes { get ; set ; }
         public uint? PostedInLastNumberOfDays { get ; set ; }
         public string Sort { get ; set ; }
     }

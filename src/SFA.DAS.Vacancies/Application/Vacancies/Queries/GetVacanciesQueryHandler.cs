@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using MediatR;
 using SFA.DAS.Vacancies.Configuration;
@@ -10,7 +12,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
-
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
@@ -58,10 +59,12 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
+            var categories = _standardsService.MapRoutesToCategories(request.Routes);
+
             var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
-                request.Lat, request.Lon, request.DistanceInMiles, request.Route, request.PostedInLastNumberOfDays, request.Sort));
+                request.Lat, request.Lon, request.DistanceInMiles, categories, request.PostedInLastNumberOfDays, request.Sort));
             var standardsTask = _standardsService.GetStandards();
 
             await Task.WhenAll(vacanciesTask, standardsTask);
