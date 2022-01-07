@@ -8,6 +8,8 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 {
     public abstract class ApiMock : IDisposable, IResettable
     {
+        private bool _disposed = false;
+
         public string BaseAddress { get; }
 
         protected WireMockServer MockServer { get; }
@@ -27,10 +29,23 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             MockServer.Reset();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            MockServer?.Stop();
-            MockServer?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        public virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                MockServer?.Stop();
+                MockServer?.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

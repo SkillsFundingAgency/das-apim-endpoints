@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SFA.DAS.ApprenticePortal.MockApis
 {
-    public class Program
+    public static class Program
     {
         private const int PortInnerApi = 5501;
         private const int PortAccountsApi = 5801;
