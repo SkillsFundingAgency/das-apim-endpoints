@@ -56,11 +56,11 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     AccountIdentifier = account,
                     Lat = request.Lat,
                     Lon = request.Lon,
-                    Route = request.Route?.GetDescription(),
+                    Routes = request.Routes,
                     Sort = request.Sort?.ToString(),
                     DistanceInMiles = request.DistanceInMiles,
                     NationWideOnly = request.NationWideOnly,
-                    StandardLarsCode = request.StandardsLarsCode,
+                    StandardLarsCode = request.StandardLarsCode,
                     PostedInLastNumberOfDays = request.PostedInLastNumberOfDays
                 });
 

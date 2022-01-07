@@ -29,6 +29,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         {
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-product";
+            request.Sort = VacancySort.ExpectedStartDateAsc;
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesQuery>(
@@ -42,7 +43,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.PageSize.Equals(request.PageSize)
                          && c.Lat.Equals(request.Lat)
                          && c.Lon.Equals(request.Lon)
-                         && c.Route.Equals(request.Route.GetDescription())
+                         && c.Routes.Equals(request.Routes)
                          && c.Sort.Equals(request.Sort.ToString())
                          && c.DistanceInMiles.Equals(request.DistanceInMiles)
                          && c.NationWideOnly.Equals(request.NationWideOnly)
