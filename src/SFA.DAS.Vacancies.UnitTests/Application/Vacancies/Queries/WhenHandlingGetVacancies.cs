@@ -34,7 +34,8 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.Route, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
