@@ -32,14 +32,14 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
                 if (!args.Contains("!accounts", StringComparer.CurrentCultureIgnoreCase))
                 {
-                    _fakeApprenticeAccountsApi = new ApprenticeAccountsInnerApiMock(PortAccountsApi)
+                    _fakeApprenticeAccountsApi = new ApprenticeAccountsInnerApiMock(PortAccountsApi, true)
                         .WithPing()
                         .WithAnyApprentice();
                 }
 
                 if (!args.Contains("!cmad", StringComparer.CurrentCultureIgnoreCase))
                 {
-                    _fakeApprenticeCommitmentsApi = new ApprenticeCommitmentsInnerApiMock(PortInnerApi)
+                    _fakeApprenticeCommitmentsApi = new ApprenticeCommitmentsInnerApiMock(PortInnerApi, true)
                         .WithPing()
                         .WithExistingApprenticeshipsForApprentice(_fakeApprenticeAccountsApi?.AnyApprentice);
                 }

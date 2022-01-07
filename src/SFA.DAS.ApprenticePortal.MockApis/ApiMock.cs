@@ -12,9 +12,9 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
         protected WireMockServer MockServer { get; }
 
-        protected ApiMock(int? port = 0)
+        protected ApiMock(int port = 0, bool ssl = false)
         {
-            MockServer = WireMockServer.Start(port, true);
+            MockServer = WireMockServer.Start(port, ssl);
             BaseAddress = MockServer.Urls[0];
         }
 
