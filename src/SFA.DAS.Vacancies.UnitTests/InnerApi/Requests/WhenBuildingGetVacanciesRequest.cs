@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Collections.Generic;
+using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -21,16 +22,15 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
             double? lat,
             double? lon,
             uint? distanceInMiles,
-            string route,
+            List<string> routes,
             uint? postedInLastNumberOfDays,
-            VacancySort? sort)
+            string sort)
         {
-            route = $"{route} %£$^ {route}";
             accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
             
-            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, route, postedInLastNumberOfDays, sort);
+            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, sort);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={standardLarsCode}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&route={HttpUtility.UrlEncode(route)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={standardLarsCode}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}");
         }
 
         [Test, AutoData]
@@ -39,7 +39,7 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
         {
             var actual = new GetVacanciesRequest(pageNumber, pageSize);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn=&accountLegalEntityPublicHashedId=&accountPublicHashedId=&standardLarsCode=&nationwideOnly=&lat=&lon=&distanceInMiles=&route=&sort=&postedInLastNumberOfDays=");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn=&accountLegalEntityPublicHashedId=&accountPublicHashedId=&standardLarsCode=&nationwideOnly=&lat=&lon=&distanceInMiles=&categories=&sort=&postedInLastNumberOfDays=");
         }
     }
 }
