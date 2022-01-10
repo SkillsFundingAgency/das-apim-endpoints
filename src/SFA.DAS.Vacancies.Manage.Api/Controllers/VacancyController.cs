@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Manage.Api.Models;
 using SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy;
+using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.Manage.Api.Controllers
 {
@@ -24,8 +26,17 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// POST apprenticeship vacancy
+        /// </summary>
+        /// <remarks>Creates an apprenticeship vacancy using the specified values</remarks>
+        /// <param name="id">The unique ID of the Apprenticeship advert.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}")]
+        [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
             [FromRoute]Guid id, 
@@ -50,29 +61,45 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                         return new StatusCodeResult((int) HttpStatusCode.Forbidden);
                     case AccountType.Provider when account.Ukprn == null:
                         return new BadRequestObjectResult("Account Identifier is not in the correct format.");
+                }
+
+                var postVacancyRequestData = (PostVacancyRequestData)request;
+                postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
+                var contactDetails = new ContactDetails
+                {
+                    Email = request.SubmitterContactDetails.Email,
+                    Name = request.SubmitterContactDetails.Name,
+                    Phone = request.SubmitterContactDetails.Phone,
+                };
+                switch (account.AccountType)
+                {
                     case AccountType.Provider:
-                        request.User = new VacancyUser
-                        {
-                            Ukprn = account.Ukprn.Value
-                        };
+                        postVacancyRequestData.User.Ukprn = account.Ukprn.Value;
+                        postVacancyRequestData.ProviderContact = contactDetails;
                         break;
                     case AccountType.Employer:
-                        request.EmployerAccountId = account.AccountPublicHashedId;
+                        postVacancyRequestData.EmployerAccountId = account.AccountPublicHashedId;
+                        postVacancyRequestData.EmployerContact = contactDetails;
                         break;
                 }
 
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
-                    PostVacancyRequestData = request,
+                    AccountIdentifier = account,
+                    PostVacancyRequestData = postVacancyRequestData,
                     IsSandbox = isSandbox ?? false
                 });
 
-                return new CreatedResult("", new {response.VacancyReference});
+                return new CreatedResult("", new CreateVacancyResponse { VacancyReference = response.VacancyReference });
             }
             catch (HttpRequestContentException e)
             {
                 return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (SecurityException e)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.Forbidden);
             }
             catch (Exception e)
             {

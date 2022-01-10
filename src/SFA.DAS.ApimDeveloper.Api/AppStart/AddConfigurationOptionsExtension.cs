@@ -18,6 +18,10 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<ApimDeveloperApiConfiguration>(configuration.GetSection(nameof(ApimDeveloperApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApimDeveloperApiConfiguration>>().Value);
+            services.Configure<ApimDeveloperMessagingConfiguration>(configuration.GetSection(nameof(ApimDeveloperMessagingConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApimDeveloperMessagingConfiguration>>().Value);
+            services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
         }
     }
 }

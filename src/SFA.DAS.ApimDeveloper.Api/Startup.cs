@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -13,10 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApimDeveloper.Api.AppStart;
 using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
+using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -24,6 +23,7 @@ namespace SFA.DAS.ApimDeveloper.Api
 {
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.ApimDeveloper";
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
 
@@ -73,7 +73,21 @@ namespace SFA.DAS.ApimDeveloper.Api
                 services.AddHealthChecks()
                      .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
             }
-            
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection(nameof(ApimDeveloperConfiguration))
+                    .Get<ApimDeveloperConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
+            }
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>
@@ -111,6 +125,11 @@ namespace SFA.DAS.ApimDeveloper.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApimDeveloperOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+        
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }

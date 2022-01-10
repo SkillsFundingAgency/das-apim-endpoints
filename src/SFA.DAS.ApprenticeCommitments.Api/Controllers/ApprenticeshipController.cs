@@ -1,7 +1,11 @@
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -11,17 +15,40 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly ResponseReturningApiClient _client;
+        private readonly IMediator _mediator;
+        private readonly ILogger<ApprenticeshipController> _logger;
 
-        public ApprenticeshipController(ResponseReturningApiClient client)
-            => _client = client;
+        public ApprenticeshipController(ResponseReturningApiClient client, IMediator mediator, ILogger<ApprenticeshipController> logger)
+            => (_client, _mediator, _logger) = (client, mediator, logger);
 
         [HttpPost("/apprenticeships")]
-        public Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration request)
-            => _client.Post("apprenticeships", request);
+        public async Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
+        {
+            _logger.LogInformation("POST CreateApprenticeship");
+            _logger.LogInformation("Creating apprenticeship for apprentice {ApprenticeId} from registration {RegistrationId}",
+                request.ApprenticeId, request.RegistrationId);
+
+            try
+            {
+                await _mediator.Send(request);
+                return Ok();
+            }
+            catch (ApiResponseException e)
+            {
+                _logger.LogError(e, "Creating apprenticeship for apprentice {ApprenticeId} from registration {RegistrationId}",
+                    request.ApprenticeId, request.RegistrationId);
+
+                return StatusCode((int)e.Status, e.Error);
+            }
+        }
 
         [HttpGet("/apprenticeships/{id}")]
         public Task<IActionResult> GetApprenticeship(Guid id)
             => _client.Get($"/apprenticeships/{id}");
+
+        [HttpGet("/apprentices/{id}/apprenticeships")]
+        public Task<IActionResult> ListApprenticeApprenticeships(Guid id)
+            => _client.Get($"/apprentices/{id}/apprenticeships");
 
         [HttpGet("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
         public Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)

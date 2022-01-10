@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
         {
             var actual = (GetTrainingCoursesListResponse) source;
 
-            actual.TrainingCourses.Select(c => c.Id).ToList().Should()
+            actual.TrainingCourses.Select(c => c.LarsCode).ToList().Should()
                 .BeEquivalentTo(source.TrainingCourses.Select(c => c.LarsCode).ToList());
             actual.TrainingCourses.Select(c => c.Route).ToList().Should()
                 .BeEquivalentTo(source.TrainingCourses.Select(c => c.Route).ToList());

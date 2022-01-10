@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Interfaces;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
-using AccountDetail = SFA.DAS.Vacancies.InnerApi.Responses.AccountDetail;
-using GetProviderAccountLegalEntitiesResponse = SFA.DAS.Vacancies.InnerApi.Responses.GetProviderAccountLegalEntitiesResponse;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -44,6 +46,48 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         }
 
         [Test, MoqAutoData]
+        public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service(
+            int standardLarsCode,
+            string findAnApprenticeshipBaseUrl,
+            GetVacanciesQuery query,
+            GetVacanciesResponse apiResponse,
+            GetStandardsListItem courseResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
+            GetVacanciesQueryHandler handler)
+        {
+            vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl; 
+            courseResponse.LarsCode = standardLarsCode;
+            foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
+            {
+                vacanciesItem.StandardLarsCode = standardLarsCode;
+            }
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+            standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
+                { Standards = new List<GetStandardsListItem> { courseResponse } });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.ToList().TrueForAll(c=>
+                c.CourseTitle.Equals(courseResponse.Title) 
+                && c.Route.Equals(courseResponse.Route)
+                && c.CourseLevel.Equals(courseResponse.Level)
+                ).Should().BeTrue();
+
+            foreach (var vacancy in actual.Vacancies)
+            {
+                vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
+            }
+            
+        }
+
+        [Test, MoqAutoData]
         public async Task And_The_AccountLegalEntityPublicHashedId_Is_Null_Then_No_LegalEntity_Check_Is_Performed(
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
@@ -66,128 +110,72 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         }
         
         [Test, MoqAutoData]
-        public async Task And_The_AccountLegalEntityPublicHashedId_And_Ukprn_Is_Not_Null_And_AccountPublicHashedId_Is_Null_Then_ProviderRelations_Api_Checked(
+        public async Task And_The_AccountLegalEntityPublicHashedId_And_Ukprn_Is_Not_Null_And_AccountPublicHashedId_Is_Null_Then_Permission_Checked(
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
-            GetProviderAccountLegalEntitiesResponse providerAccountLegalEntitiesResponse,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
-            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            AccountLegalEntityItem accountLegalEntityItem,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
-            query.AccountPublicHashedId = "";
-            providerAccountLegalEntitiesResponse.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId =
-                query.AccountLegalEntityPublicHashedId;
+            query.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
-            providerRelationshipsApiClient
-                .Setup(x => x.Get<GetProviderAccountLegalEntitiesResponse>(
-                    It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={query.Ukprn}&"))))
-                .ReturnsAsync(providerAccountLegalEntitiesResponse);
-
+            accountLegalEntityPermissionService
+                .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(query.AccountIdentifier)),
+                    query.AccountLegalEntityPublicHashedId)).ReturnsAsync(accountLegalEntityItem);
+            
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
-            accountsApi.Verify(x => x.Get<AccountDetail>(It.IsAny<GetAllEmployerAccountLegalEntitiesRequest>()), Times.Never);
         }
         
         [Test, MoqAutoData]
         public void And_The_AccountLegalEntityPublicHashedId_And_Ukprn_Is_Not_Null_And_AccountPublicHashedId_Is_Null_Then_ProviderRelations_Api_Checked_And_If_Not_In_Response_Exception_Thrown(
             GetVacanciesQuery query,
-            GetVacanciesResponse apiResponse, 
             GetProviderAccountLegalEntitiesResponse providerAccountLegalEntitiesResponse,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
-            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
             query.AccountPublicHashedId = "";
-            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
-            apiClient.Setup(x =>
-                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
-                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
-            providerRelationshipsApiClient
-                .Setup(x => x.Get<GetProviderAccountLegalEntitiesResponse>(
-                    It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={query.Ukprn}&"))))
-                .ReturnsAsync(providerAccountLegalEntitiesResponse);
+            query.AccountIdentifier = new AccountIdentifier($"Employer-{query.Ukprn}-Product");
+            accountLegalEntityPermissionService
+                .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(query.AccountIdentifier)),
+                    query.AccountLegalEntityPublicHashedId)).ReturnsAsync((AccountLegalEntityItem)null);
 
             Assert.ThrowsAsync<SecurityException>(() => handler.Handle(query, CancellationToken.None));
             
-            accountsApi.Verify(x => x.Get<AccountDetail>(It.IsAny<GetAllEmployerAccountLegalEntitiesRequest>()), Times.Never);
         }
-        
         [Test, MoqAutoData]
-        public void And_The_AccountIds_And_Ukprn_Is_Not_Null_Then_Accounts_Api_Checked_And_If_Not_In_Response_Exception_Thrown(
+        public async Task And_The_AccountIdentifier_Is_External_Then_HashedIds_Are_Not_Set(
+            Guid externalId,
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
-            AccountDetail accountDetailApiResponse,
-            GetEmployerAccountLegalEntityItem legalEntity,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
-            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            GetProviderAccountLegalEntitiesResponse providerAccountLegalEntitiesResponse,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
+            query.AccountPublicHashedId = "";
+            query.AccountIdentifier = new AccountIdentifier($"External-{externalId}-Product");
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
+                string.Empty, query.Ukprn, string.Empty);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
-            accountsApi
-                .Setup(x => x.Get<AccountDetail>(
-                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{query.AccountPublicHashedId}"))))
-                .ReturnsAsync(accountDetailApiResponse);
-            accountsApi
-                .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
-                    It.IsAny<GetEmployerAccountLegalEntityRequest>()))
-                .ReturnsAsync(legalEntity);
-
-            Assert.ThrowsAsync<SecurityException>(() => handler.Handle(query, CancellationToken.None));
             
-            providerRelationshipsApiClient.Verify(x=>x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>()), Times.Never);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task And_The_AccountIds_And_Ukprn_Is_Not_Null_Then_Accounts_Api_Checked_And_Then_Accounts_Api_Checked(
-            GetVacanciesQuery query,
-            GetVacanciesResponse apiResponse, 
-            AccountDetail accountDetailApiResponse,
-            List<GetEmployerAccountLegalEntityItem> legalEntities,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
-            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            GetVacanciesQueryHandler handler)
-        {
-            legalEntities.First().AccountLegalEntityPublicHashedId =
-                query.AccountLegalEntityPublicHashedId;
-            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId);
-            apiClient.Setup(x =>
-                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
-                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
-            accountsApi
-                .Setup(x => x.Get<AccountDetail>(
-                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{query.AccountPublicHashedId}"))))
-                .ReturnsAsync(accountDetailApiResponse);
-            for (var i = 0; i < accountDetailApiResponse.LegalEntities.Count; i++)
-            {
-                var index = i;
-                accountsApi
-                    .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
-                        It.Is<GetEmployerAccountLegalEntityRequest>(request =>
-                            request.GetUrl.Equals(accountDetailApiResponse.LegalEntities[index].Href))))
-                    .ReturnsAsync(legalEntities[index]);
-            }
-
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
-            providerRelationshipsApiClient.Verify(x=>x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>()), Times.Never);
+            accountLegalEntityPermissionService
+                .Verify(x => x.GetAccountLegalEntity(It.IsAny<AccountIdentifier>(),
+                    query.AccountLegalEntityPublicHashedId), Times.Never);
         }
-
+        
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_AccountLegalEntityPublicHashedId_And_No_Account_Or_Ukprn_Then_Exception_Thrown(
                 GetVacanciesQuery query,

@@ -7,6 +7,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
     public class Program
     {
         private const int PortInnerApi = 5501;
+        private const int PortAccountsApi = 5801;
         private const int PortCommitmentsApi = 5011;
         private const int PortLoginApi = 5001;
         private const int PortRoatpApi = 37951;
@@ -28,7 +29,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         {
             if (args.Contains("--h"))
             {
-                Console.WriteLine("Optional parameters (!inner, !commitments, !login, !roatp, !courses) will exclude that fake API");
+                Console.WriteLine("Optional parameters (!inner, !accounts, !commitments, !login, !roatp, !courses) will exclude that fake API");
                 Console.WriteLine("examples:");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis --h                 <-- shows this page");
                 Console.WriteLine("SFA.DAS.ApprenticeCommitments.MockApis !inner              <-- excludes fake inner api");
@@ -50,6 +51,19 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 if (!args.Contains("!inner", StringComparer.CurrentCultureIgnoreCase))
                 {
                     _fakeInnerApi = ApprenticeCommitmentsInnerApiBuilder.Create(PortInnerApi)
+                        .WithPing()
+                        .WithAnyNewApprenticeship()
+                        .WithRegistrationReminders()
+                        .WithReminderSent()
+                        .WithRegistrationSeen()
+                        .WithExistingApprenticeship()
+                        .WithHowApprenticeshipWillBeDelivered()
+                        .Build();
+                }
+
+                if (!args.Contains("!accounts", StringComparer.CurrentCultureIgnoreCase))
+                {
+                    _fakeInnerApi = ApprenticeAccountsApiBuilder.Create(PortAccountsApi)
                         .WithPing()
                         .WithAnyNewApprenticeship()
                         .WithRegistrationReminders()

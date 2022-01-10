@@ -22,8 +22,13 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             _logger = logger;
         }
         
+        /// <summary>
+        /// GET list of courses. 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("courses")]
+        [ProducesResponseType(typeof(GetTrainingCoursesListResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetTrainingCourses()
         {
             try

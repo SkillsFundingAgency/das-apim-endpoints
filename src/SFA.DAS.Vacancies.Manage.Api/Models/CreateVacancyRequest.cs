@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Newtonsoft.Json;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
@@ -22,15 +23,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Title = source.Title,
                 Description = source.Description,
                 ProgrammeId = source.ProgrammeId,
-                EmployerAccountId = source.EmployerAccountId,
-                User = source.User,
+                User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 EmployerName = source.EmployerName,
                 ShortDescription = source.ShortDescription,
                 NumberOfPositions = source.NumberOfPositions,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
-                LegalEntityName = source.LegalEntityName,
                 EmployerDescription = source.EmployerDescription,
                 TrainingDescription = source.TrainingDescription,
                 Address = source.Address,
@@ -44,91 +43,155 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 ThingsToConsider = source.ThingsToConsider,
                 Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
                 ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
-                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident
+                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl
             };
         }
 
-        [JsonProperty("user")]
-        public VacancyUser User { get ; set ; }
+        /// <summary>
+        /// Contact details to be used if the ESFA needs to get in touch about your advert.
+        /// </summary>
+        [JsonProperty("submitterContactDetails", Required = Required.Always)]
+        public SubmitterContactDetails SubmitterContactDetails { get ; set ; }
 
+        /// <summary>
+        /// The Training Provider and Account Legal Entity where the vacancy is. If creating as a training provider the UKPRN will not be editable.
+        /// </summary>
+        [JsonProperty("contractingParties", Required = Required.Always)]
+        public ContractingParties ContractingParties { get ; set ; }
+
+        /// <summary>
+        /// The name of the vacancy or job role being advertised. Must contain the word apprentice or apprenticeship and be less than 100 characters.
+        /// </summary>
+        /// <example>Apprenticeship in Advanced Baking</example>
         [JsonProperty("title", Required = Required.Always)]
         public string Title { get ; set ; }
 
-        [JsonProperty("description")]
+        /// <summary>
+        /// What activities and duties will the apprentice be undertaking during the apprenticeship. Must not exceed 500 characters
+        /// </summary>
+        [JsonProperty("description", Required = Required.Always)]
         public string Description { get ; set ; }
 
-        [JsonProperty("programmeId")]
+        /// <summary>
+        /// The LARS code associated with the Standard you wish to create the advert for. This can be found from `GET referencedata/courses`
+        /// </summary>
+        /// <example>119</example>
+        [JsonProperty("standardLarsCode")]
         public string ProgrammeId { get ; set ; }
-
-        [JsonProperty("EmployerAccountId")]
-        public string EmployerAccountId { get ; set ; }
-
-        [JsonProperty("employerName")]
+        /// <summary>
+        /// If `EmployerNameOption` is set to `TradingName` then will be used and Trading name in the application updated. If it is set to `Anonymous` then will be used for the anonymous employer name. If it is set to `RegisteredName` then the Account Legal Entity name will be used. Must not exceed 100 characters
+        /// </summary>
+        [JsonProperty("alternativeEmployerName")]
         public string EmployerName { get ; set ; }
+        /// <summary>
+        /// A short description of the apprenticeship.
+        /// </summary>
         [JsonProperty("shortDescription")]
         public string ShortDescription { get ; set ; }
+        /// <summary>
+        /// The number of apprentices that will be recruited into the role. Add as a numerical value, must be at least 1.
+        /// </summary>
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get ; set ; }
-        [JsonProperty("outcomeDescription")]//TODO check this is required
+        /// <summary>
+        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 500 characters
+        /// </summary>
+        [JsonProperty("outcomeDescription")]
         public string OutcomeDescription { get ; set ; }
-        [JsonProperty("accountLegalEntityPublicHashedId")]
-        public string AccountLegalEntityPublicHashedId { get ; set ; }
+        /// <summary>
+        /// The last date for receiving new applications. This must be before  the start date of the apprenticeship. Must be a valid date. Closing date for applications cannot be today or earlier.
+        /// </summary>
         [JsonProperty("closingDate")]
         public DateTime ClosingDate { get ; set ; }
+        /// <summary>
+        /// The planned start date of the apprenticeship. This must be after the closing date. Must be a valid date. Possible apprenticeship start date can't be today or earlier. We advise using a date more than two weeks from now.
+        /// </summary>
         [JsonProperty("startDate")]
         public DateTime StartDate { get ; set ; }
-        [JsonProperty("legalEntityName")]
-        public string LegalEntityName { get ; set ; }
+        /// <summary>
+        /// A brief description about the employer.
+        /// </summary>
         [JsonProperty("employerDescription")]
         public string EmployerDescription { get ; set ; }
+        /// <summary>
+        /// The training the apprentice will undertake and the qualification they will get at the end of the apprenticeship. Add any certifications and levels of qualifications.
+        /// </summary>
         [JsonProperty("trainingDescription")]
         public string TrainingDescription { get ; set ; }
+        /// <summary>
+        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time.
+        /// </summary>
         [JsonProperty("address")]
         public CreateVacancyAddress Address { get; set; }
         [JsonProperty("wage")]
         public CreateVacancyWage Wage { get; set; }
+        /// <summary>
+        /// Select the desired skills and personal qualities you’d like the applicant to have in order for you to consider them. This is available from `GET referencedata/skills`
+        /// </summary>
         [JsonProperty("skills")]
         public List<string> Skills { get ; set ; }
+        /// <summary>
+        /// Select if you do not wish your company name to be listed on the advert. This could mean fewer people view your advert.
+        /// </summary>
         [JsonProperty("employerNameOption")]
         public EmployerNameOption EmployerNameOption { get ; set ; }
+        /// <summary>
+        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 200 characters
+        /// </summary>
         [JsonProperty("anonymousReason")]
         public string AnonymousReason { get ; set ; }
+        /// <summary>
+        /// Qualifications obtained from `GET referendata/qualifications`
+        /// </summary>
         [JsonProperty("qualifications")]
         public List<CreateVacancyQualification> Qualifications { get; set; }
+        /// <summary>
+        /// Information for applicants about how their applications will be managed externally.
+        /// </summary>
         [JsonProperty("applicationInstructions")]
         public string ApplicationInstructions { get ; set ; }
+        /// <summary>
+        /// If they are being managed externally, add the web address of the employer/agency managing the applications.
+        /// </summary>
         [JsonProperty("applicationUrl")]
         public string ApplicationUrl { get ; set ; }
+        /// <summary>
+        /// Select how the applications will be managed.
+        /// </summary>
         [JsonProperty("applicationMethod")]
         public CreateVacancyApplicationMethod ApplicationMethod { get ; set ; }
+        /// <summary>
+        /// Are you registered as a Disability Confident employer?
+        /// </summary>
         [JsonProperty("disabilityConfident")]
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
+        /// <summary>
+        /// Any other information the applicant should be aware of.
+        /// </summary>
         [JsonProperty("thingsToConsider")]
         public string ThingsToConsider { get ; set ; }
-    }
-    
-    public class VacancyUser
-    {
-        public static implicit operator PostVacancyUserData(VacancyUser source)
+        /// <summary>
+        /// You can choose to display website for your organisation. Website address must be a valid URL.
+        /// </summary>
+        [JsonProperty("employerWebsiteUrl")]
+        public string EmployerWebsiteUrl { get; set; }
+        
+        public static PostVacancyUserData Map(SubmitterContactDetails submitterContactDetails, ContractingParties contractingParties)
         {
             return new PostVacancyUserData
             {
-                Email = source.Email,
-                Name = source.Name,
-                Ukprn = source.Ukprn,
-                UserId = source.UserId
+                Email = submitterContactDetails.Email,
+                Name = submitterContactDetails.Name,
+                Ukprn = contractingParties.Ukprn
             };
         }
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        [JsonProperty("email")]
-        public string Email { get; set; }
-        [JsonProperty("ukprn")]
-        public int Ukprn { get; set; }
     }
     
+    
+    /// <summary>
+    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode.
+    /// </summary>
     public class CreateVacancyAddress
     {
         public static implicit operator PostVacancyAddressData(CreateVacancyAddress source)
@@ -142,15 +205,32 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Postcode = source.Postcode
             };
         }
+        /// <summary>
+        /// Address line 1
+        /// </summary>
         [JsonProperty("addressLine1")]
+        [Required]
         public string AddressLine1 { get; set; }
+        /// <summary>
+        /// Address line 2
+        /// </summary>
         [JsonProperty("addressLine2")]
         public string AddressLine2 { get; set; }
+        /// <summary>
+        /// Address line 3
+        /// </summary>
         [JsonProperty("addressLine3")]
         public string AddressLine3 { get; set; }
+        /// <summary>
+        /// Address line 4
+        /// </summary>
         [JsonProperty("addressLine4")]
         public string AddressLine4 { get; set; }
+        /// <summary>
+        /// Postcode
+        /// </summary>
         [JsonProperty("postcode")]
+        [Required]
         public string Postcode { get; set; }
     }
 
@@ -173,18 +253,38 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 WageType = (InnerApi.Requests.WageType)wageType
             };
         }
+        /// <summary>
+        /// Extra information about pay. 250 character limit
+        /// </summary>
         [JsonProperty("wageAdditionalInformation")]
         public string WageAdditionalInformation { get ; set ; }
+        /// <summary>
+        /// If `WageType.FixedWage` then enter the yearly amount.
+        /// </summary>
         [JsonProperty("fixedWageYearlyAmount")]
         public decimal? FixedWageYearlyAmount { get ; set ; }
+        /// <summary>
+        /// The total number of hours per week. This must include the 20% of time the apprentice will spend training, which could be  offsite. Needs to be greater than 16 and less than 48
+        /// </summary>
         [JsonProperty("weeklyHours")]
         public decimal WeeklyHours { get ; set ; }
+        /// <summary>
+        /// Expected duration must be at least 12 months. The minimum duration of each apprenticeship is based on the apprentice working at least 30 hours a week, including any off-the-job training they undertake.
+        /// Extend the minimum duration when the working week is fewer than 30 hours using the following formula:
+        /// 12 x 30/average weekly hours = new minimum duration in months; or 52 x 30/average weekly hours = new minimum duration in weeks
+        /// </summary>
         [JsonProperty("duration")]
         public int Duration { get ; set ; }
+        /// <summary>
+        /// A short description of the pattern of working hours over the week. Start time, end time and working days. You have up to 250 characters
+        /// </summary>
         [JsonProperty("workingWeekDescription")]
         public string WorkingWeekDescription { get ; set ; }
         [JsonProperty("wageType")]
         public WageType WageType { get; set; }
+        /// <summary>
+        /// Used with <see cref="Duration"/> for duration in months or years
+        /// </summary>
         [JsonProperty("durationUnit")]
         public DurationUnit DurationUnit { get; set; }
     }
@@ -203,15 +303,55 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Weighting = (InnerApi.Requests.QualificationWeighting)weighting
             };
         }
-        
+        /// <summary>
+        /// Qualification Type can be obtained from `GET referencedata/qualifications`
+        /// </summary>
         [JsonProperty("qualificationType")]
         public string QualificationType { get; set; }
+        /// <summary>
+        /// Add a subject you would like the applicant to have.
+        /// </summary>
         [JsonProperty("subject")]
         public string Subject { get; set; }
+        /// <summary>
+        /// Enter the grade. GCSEs must be in number format 1-9
+        /// </summary>
         [JsonProperty("grade")]
         public string Grade { get; set; }
+        /// <summary>
+        /// Is the qualification essential or desirable
+        /// </summary>
         [JsonProperty("weighting")]
         public QualificationWeighting Weighting { get; set; }
+    }
+
+    public class SubmitterContactDetails
+    {
+        /// <summary>
+        /// The name of the person creating the advert
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// The email address of the person creating the advert
+        /// </summary>
+        public string Email { get; set; }
+        /// <summary>
+        /// The phone number of the person creating the advert
+        /// </summary>
+        public string Phone { get; set; }
+    }
+
+    public class ContractingParties
+    {
+        /// <summary>
+        /// The UKPRN of the training provider you will be working with for this apprenticeship.
+        /// </summary>
+        public int Ukprn { get; set; }
+        /// <summary>
+        /// The Account Legal Entity public hashed Id of the organisation that you wish to create the vacancy for. This can be obtained from `GET accountlegalentites`
+        /// </summary>
+        [Required]
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
     
     public enum QualificationWeighting
@@ -225,6 +365,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         ThroughExternalApplicationSite
     }
     
+    /// <summary>
+    /// Choose from:
+    /// `WageType.FixedWage` This must be more than the [National Minimum Wage for apprentices](https://www.gov.uk/national-minimum-wage-rates). From 1 April 2021, the National Minimum Wage for apprentices is £4.30 an hour. Based on 16 working hours a week, you'll need to pay a yearly wage of at least £3,577.60.
+    /// `WageType.NationalMinimumWageForApprentices` From 1 April 2021, the National Minimum Wage for apprentices is £4.30 an hour. On the advert, this will be displayed as a yearly wage of £3,577.60.
+    /// `WageType.NationalMinimumWage` From 1 April 2021, the National Minimum Wage is between £4.62 and £8.91 an hour, depending on the candidate's age. On the advert, this will be displayed as a yearly wage of £3,843.84 to £7,413.12.
+    /// </summary>
     public enum WageType
     {
         FixedWage,
