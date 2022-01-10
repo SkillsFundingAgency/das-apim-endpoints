@@ -17,21 +17,21 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiProducts.Queries
     public class WhenHandlingGetApiProductQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_Data_Returned(
+        public async Task Then_The_Service_Is_Called_And_Data_Returned(
             GetApiProductQuery query, 
-            GetAvailableApiProductsResponse apiResponse,
-            [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> apiClient,
+            GetAvailableApiProductsResponse serviceResponse,
+            [Frozen] Mock<IApimApiService> apimApiService,
             GetApiProductQueryHandler handler)
         {
-            apiResponse.Products.First().Name = query.ProductName.ToLower();
-            apiClient.Setup(x =>
-                    x.Get<GetAvailableApiProductsResponse>(
-                        It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith("?group=Documentation"))))
-                .ReturnsAsync(apiResponse);
-
+            //Arrange
+            serviceResponse.Products.First().Name = query.ProductName.ToLower();
+            apimApiService.Setup(x => x.GetAvailableProducts("Documentation")).ReturnsAsync(serviceResponse);
+            
+            //Act
             var actual = await handler.Handle(query, CancellationToken.None);
             
-            actual.Product.Should().BeEquivalentTo(apiResponse.Products.First());
+            //Assert
+            actual.Product.Should().BeEquivalentTo(serviceResponse.Products.First());
         }
     }
 }
