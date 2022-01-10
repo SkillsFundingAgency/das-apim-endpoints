@@ -24,7 +24,7 @@ resources:
   - pipeline: das-apim-endpoints-build
     project: Digital Apprenticeship Service
     source: das-apim-endpoints (build)
-    branch: CS-1289-ApprenticePortalAPIM
+    branch: master
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config

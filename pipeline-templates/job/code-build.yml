@@ -107,7 +107,7 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.Assessors.Api/SFA.DAS.Assessors.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-      
+
   - task: DotNetCoreCLI@2
     displayName: 'Publish Apprentice Commitments Api'
     inputs:
@@ -115,7 +115,7 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.ApprenticeCommitments.Api/SFA.DAS.ApprenticeCommitments.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-  
+
   - task: DotNetCoreCLI@2
     displayName: 'Publish Apprentice Portal Api'
     inputs:
