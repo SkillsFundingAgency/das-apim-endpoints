@@ -29,12 +29,12 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             MockServer.Reset();
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public virtual void Dispose(bool disposing)
+        public void Dispose(bool disposing)
         {
             if (_disposed)
                 return;
