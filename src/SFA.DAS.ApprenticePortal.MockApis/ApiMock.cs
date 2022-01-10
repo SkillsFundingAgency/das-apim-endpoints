@@ -34,7 +34,8 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public void Dispose(bool disposing)
+
+        protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
                 return;
