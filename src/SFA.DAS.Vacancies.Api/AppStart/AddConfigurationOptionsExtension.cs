@@ -12,6 +12,8 @@ namespace SFA.DAS.Vacancies.Api.AppStart
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
+            services.Configure<VacanciesConfiguration>(configuration.GetSection(nameof(VacanciesConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<VacanciesConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));

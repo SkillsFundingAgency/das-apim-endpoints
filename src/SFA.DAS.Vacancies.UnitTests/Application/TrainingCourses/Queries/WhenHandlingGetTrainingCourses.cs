@@ -4,26 +4,24 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.TrainingCourses.Queries
 {
     public class WhenHandlingGetTrainingCourses
     {
         [Test, MoqAutoData]
-        public async Task And_Courses_Cached_Then_Gets_Courses_From_Cache(
+        public async Task And_Courses_Are_Taken_From_Service_And_Returned(
             GetTrainingCoursesQuery query,
             GetStandardsListResponse coursesFromCache,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
+            [Frozen] Mock<IStandardsService> standardsService,
             GetTrainingCoursesQueryHandler handler)
         {
-            mockCacheService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+            standardsService
+                .Setup(service => service.GetStandards())
                 .ReturnsAsync(coursesFromCache);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -31,31 +29,5 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.TrainingCourses.Queries
             result.TrainingCourses.Should().BeEquivalentTo(coursesFromCache.Standards);
         }
 
-        [Test, MoqAutoData]
-        public async Task And_Courses_Not_Cached_Then_Gets_From_Api_And_Stores_In_Cache(
-            GetTrainingCoursesQuery query,
-            GetStandardsListResponse coursesFromApi,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
-            GetTrainingCoursesQueryHandler handler)
-        {
-            var expectedExpirationInHours = 3;
-            mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.IsAny<GetActiveStandardsListRequest>()))
-                .ReturnsAsync(coursesFromApi);
-            mockCacheService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
-                .ReturnsAsync((GetStandardsListResponse)null);
-
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            result.TrainingCourses.Should().BeEquivalentTo(coursesFromApi.Standards);
-            mockCacheService.Verify(service =>
-                service.SaveToCache(
-                    nameof(GetStandardsListResponse),
-                    coursesFromApi,
-                    expectedExpirationInHours));
-        }
     }
 }
