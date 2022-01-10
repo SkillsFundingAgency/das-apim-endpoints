@@ -5,7 +5,7 @@ jobs:
     demands: LATEST_DOTNET_VERSION -equals 3.1
   variables:
   - group: Prod Management Resources
-  - group: ESFA - SonarCloud    
+  - group: ESFA - SonarCloud
   - name: buildConfiguration
     value: release
   workspace:
@@ -43,7 +43,7 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-    
+
   - task: DotNetCoreCLI@2
     displayName: 'Publish Find Epao Api'
     inputs:
@@ -75,7 +75,7 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.Approvals.Api/SFA.DAS.Approvals.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-      
+
   - task: DotNetCoreCLI@2
     displayName: 'Publish Manage Apprenticeships Api'
     inputs:
@@ -138,7 +138,7 @@ jobs:
       command: publish
       publishWebProjects: false
       projects: 'src/SFA.DAS.LevyTransferMatching.Api/SFA.DAS.LevyTransferMatching.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'      
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Vacancies Api'
@@ -163,7 +163,7 @@ jobs:
       publishWebProjects: false
       projects: 'src/SFA.DAS.FindAnApprenticeship.Api/SFA.DAS.FindAnApprenticeship.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-  
+
   - task: DotNetCoreCLI@2
     displayName: 'Publish APIM Developer Api'
     inputs:
@@ -190,7 +190,7 @@ jobs:
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-    inputs:      
+    inputs:
       Contents: |
         azure/**
       TargetFolder: '$(build.artifactstagingdirectory)/publish'

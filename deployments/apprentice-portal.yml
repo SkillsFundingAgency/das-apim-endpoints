@@ -13,7 +13,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.26
+    ref: refs/tags/0.4.29
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -145,4 +145,4 @@ stages:
       ApiBaseUrl: $(ApprenticePortalOuterApiBaseUrl)
       ProductId: $(ApprenticePortalProductId)
       ApplicationIdentifierUri: $(ApprenticePortalOuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
