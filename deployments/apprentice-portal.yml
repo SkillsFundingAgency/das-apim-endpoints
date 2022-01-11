@@ -129,7 +129,7 @@ stages:
   - template: ../pipeline-templates/job/arm-deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
       SchemaFilePath: $(ApprenticePortalOuterApiSchemaFilePath)
 
