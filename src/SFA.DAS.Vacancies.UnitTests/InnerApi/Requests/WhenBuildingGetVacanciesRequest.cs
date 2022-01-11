@@ -39,7 +39,7 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
         {
             var actual = new GetVacanciesRequest(pageNumber, pageSize);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn=&accountLegalEntityPublicHashedId=&accountPublicHashedId=&standardLarsCode=&nationwideOnly=&lat=&lon=&distanceInMiles=&categories=&sort=&postedInLastNumberOfDays=");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}");
         }
     }
 }

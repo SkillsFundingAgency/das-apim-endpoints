@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -32,11 +33,64 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
             _lat = lat;
             _lon = lon;
             _distanceInMiles = distanceInMiles;
-            _categories = categories ?? new List<string>();
+            _categories = categories;
             _postedInLastNumberOfDays = postedInLastNumberOfDays;
             _sort = sort;
         }
 
-        public string GetUrl => $"api/Vacancies?pageNumber={_pageNumber}&pageSize={_pageSize}&ukprn={_ukprn}&accountLegalEntityPublicHashedId={_accountLegalEntityPublicHashedId}&accountPublicHashedId={_accountPublicHashedId}&standardLarsCode={_standardLarsCode}&nationwideOnly={_nationwideOnly}&lat={_lat}&lon={_lon}&distanceInMiles={_distanceInMiles}&categories={string.Join("&categories=", _categories)}&sort={_sort}&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
+        public string GetUrl => BuildGetUrl();
+
+        private string BuildGetUrl()
+        {
+            var url = $"api/Vacancies?pageNumber={_pageNumber}&pageSize={_pageSize}";
+
+            if (_ukprn.HasValue)
+            {
+                url += $"&ukprn={_ukprn}";
+            }
+            if (!string.IsNullOrEmpty(_accountLegalEntityPublicHashedId))
+            {
+                url += $"&accountLegalEntityPublicHashedId={_accountLegalEntityPublicHashedId}";
+            }
+            if (!string.IsNullOrEmpty(_accountPublicHashedId))
+            {
+                url += $"&accountPublicHashedId={_accountPublicHashedId}";
+            }
+            if (_standardLarsCode.HasValue)
+            {
+                url += $"&standardLarsCode={_standardLarsCode}";
+            }
+            if (_nationwideOnly.HasValue)
+            {
+                url += $"&nationwideOnly={_nationwideOnly}";
+            }
+            if (_lat.HasValue)
+            {
+                url += $"&lat={_lat}";
+            }
+            if (_lon.HasValue)
+            {
+                url += $"&lon={_lon}";
+            }
+            if (_distanceInMiles.HasValue)
+            {
+                url += $"&distanceInMiles={_distanceInMiles}";
+            }
+            if (_categories != null && _categories.Any())
+            {
+                url += $"&categories={string.Join("&categories=", _categories)}";
+            }
+            if (!string.IsNullOrEmpty(_sort))
+            {
+                url += $"&sort={_sort}";
+            }
+            if (_postedInLastNumberOfDays.HasValue)
+            {
+                url += $"&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
+            }
+            
+            return url;
+            
+        }
     }
 }
