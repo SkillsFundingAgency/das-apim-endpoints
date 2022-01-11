@@ -44,7 +44,14 @@ namespace SFA.DAS.Vacancies.Application.Services
 
         public List<string> MapRoutesToCategories(IReadOnlyList<string> routes)
         {
+
+            if (routes == null)
+            {
+                return null;
+            }
+
             var categories = new List<string>();
+
 
             if (routes.Contains("Agriculture, environmental and animal care", StringComparer.CurrentCultureIgnoreCase))
             {

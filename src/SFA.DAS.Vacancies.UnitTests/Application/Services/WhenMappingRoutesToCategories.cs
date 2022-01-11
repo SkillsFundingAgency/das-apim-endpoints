@@ -58,5 +58,13 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Services
 
             actual.Should().BeEquivalentTo(expectedList);
         }
+
+        [Test, MoqAutoData]
+        public void Then_If_List_Is_Null_Then_Null_Returned(StandardsService standardsService)
+        {
+            var actual = standardsService.MapRoutesToCategories(null);
+
+            actual.Should().BeNull();
+        }
     }
 }
