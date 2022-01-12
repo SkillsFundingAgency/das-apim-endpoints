@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using MediatR;
@@ -86,7 +85,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             
             return new GetVacanciesQueryResult()
             {
-                Vacancies = vacanciesTask.Result.ApprenticeshipVacancies
+                Vacancies = vacanciesTask.Result.ApprenticeshipVacancies,
+                Total = vacanciesTask.Result.Total,
+                TotalFiltered = vacanciesTask.Result.TotalFound,
+                TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0
             };
         }
     }

@@ -46,7 +46,40 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies);
+            actual.Total.Should().Be(apiResponse.Total);
+            actual.TotalFiltered.Should().Be(apiResponse.TotalFound);
+            actual.TotalPages.Should().Be((int)Math.Ceiling((decimal)apiResponse.TotalFound / query.PageSize));
+        }
 
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Results_From_Zero_Page_Size_Then_Response_Returned(
+            GetVacanciesQuery query,
+            List<string> categories,
+            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            GetVacanciesQueryHandler handler)
+        {
+            query.PageSize = 0;
+            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.Sort);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(new GetVacanciesResponse
+            {
+                Total = 0,
+                ApprenticeshipVacancies = new List<GetVacanciesItem>(),
+                TotalFound = 0
+            });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.Should().BeEmpty();
+            actual.Total.Should().Be(0);
+            actual.TotalFiltered.Should().Be(0);
+            actual.TotalPages.Should().Be(0);
         }
 
         [Test, MoqAutoData]
