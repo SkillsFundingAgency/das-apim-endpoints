@@ -64,7 +64,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                    VacancyUrl = source.VacancyUrl,
                    Course = new VacancyCourseItem
                    {
-                       LarsCode = source.StandardLarsCode,
+                       LarsCode = source.StandardLarsCode.Value,
                        Level = source.CourseLevel,
                        Route = source.Route,
                        Title = $"{source.CourseTitle} (level {source.CourseLevel})"

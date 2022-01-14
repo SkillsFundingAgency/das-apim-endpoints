@@ -83,7 +83,37 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service(
+        public async Task Then_If_The_StandardLarsCode_Is_Null_Then_Not_Returned_In_Response(
+            GetVacanciesQuery query,
+            GetVacanciesResponse apiResponse,
+            GetStandardsListItem courseResponse,
+            List<string> categories,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
+            GetVacanciesQueryHandler handler)
+        {
+            apiResponse.ApprenticeshipVacancies.First().StandardLarsCode = null;
+            
+            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.Sort);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancies.Should().BeEquivalentTo(apiResponse.ApprenticeshipVacancies.Where(c=>c.StandardLarsCode!=null).ToList());
+            actual.Total.Should().Be(apiResponse.Total);
+            actual.TotalFiltered.Should().Be(apiResponse.TotalFound);
+            actual.TotalPages.Should().Be((int)Math.Ceiling((decimal)apiResponse.TotalFound / query.PageSize));
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Route_And_CourseTitle_Are_Taken_From_Standards_Service_And_Ignored_For_Null(
             int standardLarsCode,
             string findAnApprenticeshipBaseUrl,
             GetVacanciesQuery query,
@@ -100,6 +130,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             {
                 vacanciesItem.StandardLarsCode = standardLarsCode;
             }
+            apiResponse.ApprenticeshipVacancies.First().StandardLarsCode = null;
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
