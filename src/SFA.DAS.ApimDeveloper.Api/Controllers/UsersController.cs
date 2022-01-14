@@ -8,6 +8,7 @@ using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.ChangePassword;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.SendEmailToChangePassword;
 using SFA.DAS.ApimDeveloper.Application.Users.Queries.GetUser;
@@ -163,6 +164,31 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Unable to send change password email for userid: [{id}]");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPut]
+        [Route("{id}/change-password")]
+        public async Task<IActionResult> ChangePassword([FromRoute] Guid id, [FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ChangePasswordCommand
+                {
+                    Id = id,
+                    Password = request.Password
+                });
+
+                return NoContent();
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Unable to change password for userid: [{id}]");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
