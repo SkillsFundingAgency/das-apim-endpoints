@@ -6,12 +6,12 @@ using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
 {
-    public class WhenMappingUserApiResponseFromMediator
+    public class WhenMappingAuthenticateUserApiResponseFromMediator
     {
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(AuthenticateUserCommandResult source)
         {
-            var actual = (UserApiResponse)source;
+            var actual = (UserAuthenticationApiResponse)source;
 
             actual.User.Should().BeEquivalentTo(source.User);
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
                 User = null
             };
 
-            var actual = (UserApiResponse)source;
+            var actual = (UserAuthenticationApiResponse)source;
 
             actual.Should().BeNull();
         }

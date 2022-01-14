@@ -3,20 +3,20 @@ using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
 {
-    public class UserApiResponse
+    public class UserAuthenticationApiResponse
     {
-        public UserApiResponseItem User { get; set; }
+        public UserAuthenticationApiResponseItem User { get; set; }
 
-        public static implicit operator UserApiResponse(AuthenticateUserCommandResult source)
+        public static implicit operator UserAuthenticationApiResponse(AuthenticateUserCommandResult source)
         {
             if (source.User == null)
             {
                 return null;
             }
                 
-            return new UserApiResponse
+            return new UserAuthenticationApiResponse
             {
-                User = new UserApiResponseItem
+                User = new UserAuthenticationApiResponseItem
                 {
                     Id = source.User.Id,
                     Authenticated = source.User.Authenticated,
@@ -29,7 +29,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
         }
     }
 
-    public class UserApiResponseItem
+    public class UserAuthenticationApiResponseItem
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

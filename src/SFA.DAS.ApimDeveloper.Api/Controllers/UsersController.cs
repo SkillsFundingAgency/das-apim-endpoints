@@ -90,7 +90,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     Password = request.Password
                 });
 
-                var model = (UserApiResponse)result;
+                var model = (UserAuthenticationApiResponse)result;
 
                 if (model == null)
                 {
