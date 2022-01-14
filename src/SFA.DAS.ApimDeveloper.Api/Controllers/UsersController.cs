@@ -9,6 +9,7 @@ using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
+using SFA.DAS.ApimDeveloper.Application.Users.Queries.GetUser;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
@@ -25,6 +26,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             _mediator = mediator;
             _logger = logger;
         }
+        
         [HttpPost]
         [Route("{id}")]
         public async Task<IActionResult> CreateUser([FromRoute]Guid id, [FromBody]CreateUserRequest request)
@@ -91,6 +93,37 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                 });
 
                 var model = (UserAuthenticationApiResponse)result;
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(model);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unable to get user");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetUser([FromQuery]string email)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUserQuery
+                {
+                    Email = email
+                });
+
+                var model = (UserApiResponse)result;
 
                 if (model == null)
                 {
