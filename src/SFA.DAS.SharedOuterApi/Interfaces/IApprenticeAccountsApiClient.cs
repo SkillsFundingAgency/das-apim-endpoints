@@ -1,4 +1,4 @@
-namespace SFA.DAS.SharedOuterApi.Interfaces
+﻿namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface IApprenticeAccountsApiClient<T> : IGetApiClient<T>
     {
