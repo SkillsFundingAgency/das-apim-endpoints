@@ -31,8 +31,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// GET list of vacancies
         /// </summary>
         /// <remarks>
-        /// Returns list of Vacancies based on your subscription. For employer subscriptions this will automatically filter by your account.
-        /// For providers it will automatically filter by UKPRN. If you provide a `accountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
+        /// Returns list of Vacancies based on your subscription. If `FilterBySubscription` is `true` then for employer subscriptions this will automatically filter by your account.
+        /// If `FilterBySubscription` is `true` then for providers it will automatically filter by UKPRN. If you provide a `AccountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -50,8 +50,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 {
                     PageNumber = request.PageNumber,
                     PageSize = request.PageSize,
-                    Ukprn = account.Ukprn ?? request.Ukprn,
-                    AccountPublicHashedId = account.AccountPublicHashedId,
+                    Ukprn = account.Ukprn != null && request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.Ukprn.Value : request.Ukprn,
+                    AccountPublicHashedId =  request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountPublicHashedId : null,
                     AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
                     AccountIdentifier = account,
                     Lat = request.Lat,

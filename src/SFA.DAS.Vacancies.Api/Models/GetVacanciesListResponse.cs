@@ -11,12 +11,18 @@ namespace SFA.DAS.Vacancies.Api.Models
     public class GetVacanciesListResponse 
     {
         public List<GetVacanciesListResponseItem> Vacancies { get; set; }
+        public long Total { get ; set ; }
+        public long TotalFiltered { get ; set ; }
+        public int TotalPages { get ; set ; }
 
         public static implicit operator GetVacanciesListResponse(GetVacanciesQueryResult source)
         {
             return new GetVacanciesListResponse()
             {
-                Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList()
+                Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList(),
+                Total = source.Total,
+                TotalFiltered = source.TotalFiltered,
+                TotalPages = source.TotalPages
             };
         }
 
@@ -58,7 +64,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                    VacancyUrl = source.VacancyUrl,
                    Course = new VacancyCourseItem
                    {
-                       LarsCode = source.StandardLarsCode,
+                       LarsCode = source.StandardLarsCode.Value,
                        Level = source.CourseLevel,
                        Route = source.Route,
                        Title = $"{source.CourseTitle} (level {source.CourseLevel})"
