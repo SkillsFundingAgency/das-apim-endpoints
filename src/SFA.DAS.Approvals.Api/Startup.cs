@@ -64,9 +64,10 @@ namespace SFA.DAS.Approvals.Api
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
                     .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check")
-                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>("ApprenticeCommitments API health check");
+                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>("ApprenticeCommitments API health check")
+                    .AddCheck<ApprenticeAccountsApiHealthCheck>("ApprenticeAccounts API health check");
             }
-            
+
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>

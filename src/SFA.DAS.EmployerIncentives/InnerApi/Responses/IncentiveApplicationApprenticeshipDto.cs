@@ -11,6 +11,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Responses
         public long Uln { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime? EmploymentStartDate { get; set; }        
-        public bool HasEligibleEmploymentStartDate { get; set; }
+        public bool StartDatesAreEligible { get; set; }
     }
 }
