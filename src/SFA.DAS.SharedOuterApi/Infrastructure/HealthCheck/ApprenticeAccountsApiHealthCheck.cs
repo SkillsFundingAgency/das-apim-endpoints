@@ -16,15 +16,15 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
         private const string HealthCheckResultDescription = "Apprentice Accounts Api check";
 
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apiClient;
-        private readonly ILogger<ApprenticeAccountsApiConfiguration> _logger;
+        private readonly ILogger<ApprenticeAccountsApiHealthCheck> _logger;
 
-        public ApprenticeAccountsApiHealthCheck(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apiClient, ILogger<ApprenticeAccountsApiConfiguration> logger)
+        public ApprenticeAccountsApiHealthCheck(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apiClient, ILogger<ApprenticeAccountsApiHealthCheck> logger)
         {
             _apiClient = apiClient;
             _logger = logger;
         }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             _logger.LogInformation("Pinging ApprenticeAccounts API");
 

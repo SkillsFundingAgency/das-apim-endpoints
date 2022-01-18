@@ -25,7 +25,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             => _client.Get($"registrations/reminders?invitationCutOffTime={invitationCutOffTime}");
 
         [HttpPost("/registrations/{registrationId}/reminder")]
-        public Task<IActionResult> RegistrationReminderSent(Guid registrationId, [FromBody] InvitationReminderSentRequest request)
+        public Task<IActionResult> RegistrationReminderSent(Guid registrationId, [FromBody] InvitationReminderSentData request)
             => _client.Post($"registrations/{registrationId}/reminder", request);
 
         [HttpPost("/registrations/{registrationId}/firstseen")]

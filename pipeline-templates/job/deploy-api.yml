@@ -5,7 +5,7 @@ parameters:
   AppServiceName:
   DeploymentPackagePath:
   ApiVersionSetName:
-  ApiPath: 
+  ApiPath:
   ApiBaseUrl:
   ProductId:
   ApplicationIdentifierUri:
