@@ -3,9 +3,12 @@ using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmploymentCheck.Application.Services;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.EmploymentCheck.Clients;
+using SFA.DAS.EmploymentCheck.Configuration;
+using SFA.DAS.EmploymentCheck.Infrastructure;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,11 +18,12 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.HealthChecks
     {
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-            [Frozen] Mock<IEmploymentCheckService> employmentCheckService,
+            [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
             HealthCheckContext context,
             EmploymentCheckApiHealthCheck healthCheck)
         {
-            employmentCheckService.Setup(x => x.IsHealthy()).ReturnsAsync(true);
+            employmentCheckApiClient.Setup(x => 
+                x.GetResponseCode(It.IsAny<GetPingRequest>())).ReturnsAsync(HttpStatusCode.OK);
             
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
@@ -28,12 +32,13 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.HealthChecks
         
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
-            [Frozen] Mock<IEmploymentCheckService> employmentCheckService,
+            [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
             HealthCheckContext context,
             EmploymentCheckApiHealthCheck healthCheck)
         {
-            employmentCheckService.Setup(x => x.IsHealthy()).ReturnsAsync(false);
-            
+            employmentCheckApiClient.Setup(x =>
+                x.GetResponseCode(It.IsAny<GetPingRequest>())).ReturnsAsync(HttpStatusCode.BadGateway);
+
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
             actual.Status.Should().Be(HealthStatus.Unhealthy);

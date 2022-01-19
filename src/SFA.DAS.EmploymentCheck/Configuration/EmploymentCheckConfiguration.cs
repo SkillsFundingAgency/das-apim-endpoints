@@ -1,8 +1,8 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Configuration
+namespace SFA.DAS.EmploymentCheck.Configuration
 {
-    public class EmploymentCheckApiConfiguration : IInternalApiConfiguration
+    public class EmploymentCheckConfiguration : IInternalApiConfiguration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }

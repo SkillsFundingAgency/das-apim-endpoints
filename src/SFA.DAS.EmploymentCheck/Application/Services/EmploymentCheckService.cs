@@ -1,17 +1,13 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Configuration;
+﻿using SFA.DAS.EmploymentCheck.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmploymentCheck.Application.Services
 {
     public class EmploymentCheckService : IEmploymentCheckService
     {
-        private readonly IInternalApiClient<EmploymentCheckApiConfiguration> _client;
+        private readonly IInternalApiClient<EmploymentCheckConfiguration> _client;
 
-        public EmploymentCheckService(IInternalApiClient<EmploymentCheckApiConfiguration> client)
+        public EmploymentCheckService(IInternalApiClient<EmploymentCheckConfiguration> client)
             => _client = client;
-
-        public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
-
     }
 }
