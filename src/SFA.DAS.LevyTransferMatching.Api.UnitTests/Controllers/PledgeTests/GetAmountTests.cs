@@ -20,16 +20,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
         private GetAmountQueryResult _queryResult;
-        private string _encodedAccountId;
+        private long _accountId;
 
         [SetUp]
         public void SetUp()
         {
-            _encodedAccountId = _fixture.Create<string>();
+            _accountId = _fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
             _queryResult = _fixture.Create<GetAmountQueryResult>();
-            _mediator.Setup(x => x.Send(It.Is<GetAmountQuery>(q => q.EncodedAccountId == _encodedAccountId), It.IsAny<CancellationToken>()))
+            _mediator.Setup(x => x.Send(It.Is<GetAmountQuery>(q => q.AccountId == _accountId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task GetCreate_Returns_GetCreateResponse()
         {
-            var controllerResponse = await _controller.Amount(_encodedAccountId);
+            var controllerResponse = await _controller.Amount(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
             Assert.IsNotNull(okObjectResult);

@@ -1,10 +1,13 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetAmount
 {
@@ -13,8 +16,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
     {
         private GetAmountQueryHandler _handler;
         private Mock<IAccountsService> _accountsService;
+        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private GetAmountQuery _query;
         private Models.Account _account;
+        private GetPledgesResponse _pledges;
         private readonly Fixture _fixture = new Fixture();
 
         [SetUp]
@@ -22,19 +27,29 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             _query = _fixture.Create<GetAmountQuery>();
             _account = _fixture.Create<Models.Account>();
+            _pledges = _fixture.Create<GetPledgesResponse>();
 
             _accountsService = new Mock<IAccountsService>();
-            _accountsService.Setup(x => x.GetAccount(_query.EncodedAccountId))
+            _accountsService.Setup(x => x.GetAccount(_query.AccountId))
                 .ReturnsAsync(_account);
 
-            _handler = new GetAmountQueryHandler(_accountsService.Object);
+            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
+            _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>()))
+                .ReturnsAsync(_pledges);
+
+            _handler = new GetAmountQueryHandler(_accountsService.Object, _levyTransferMatchingService.Object);
         }
 
         [Test]
         public async Task Handle_Result_Has_Correct_RemainingTransferAllowance()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance);
+
+            var currentAmount = 0;
+
+            currentAmount = _pledges.Pledges.Sum(pledge => pledge.Amount);
+
+            Assert.AreEqual(_account.RemainingTransferAllowance - currentAmount, result.RemainingTransferAllowance);
         }
 
         [Test]

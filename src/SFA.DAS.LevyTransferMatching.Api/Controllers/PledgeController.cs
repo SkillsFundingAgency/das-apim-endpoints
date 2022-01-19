@@ -115,11 +115,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/amount")]
-        public async Task<IActionResult> Amount(string accountId)
+        public async Task<IActionResult> Amount(long accountId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetAmountQuery{EncodedAccountId = accountId });
+                var queryResult = await _mediator.Send(new GetAmountQuery{ AccountId = accountId });
+
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
 
                 var response = new GetAmountResponse
                 {
