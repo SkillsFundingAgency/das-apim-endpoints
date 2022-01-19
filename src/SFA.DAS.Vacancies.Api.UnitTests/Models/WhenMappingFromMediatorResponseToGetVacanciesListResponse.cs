@@ -12,9 +12,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_are_mapped(GetVacanciesQueryResult source)
         {
-            var actual = (GetVacanciesListResponse) source ;
+            var actual = (GetVacanciesListResponse) source;
 
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers());
+            actual.Total.Should().Be(source.Total);
+            actual.TotalFiltered.Should().Be(source.TotalFiltered);
+            actual.TotalPages.Should().Be(source.TotalPages);
         }
         
         [Test, AutoData]
