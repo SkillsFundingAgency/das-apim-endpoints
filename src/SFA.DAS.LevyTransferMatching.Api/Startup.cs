@@ -102,7 +102,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             
-            //services.AddNServiceBus();
+            services.AddNServiceBus();
 
             services
                 .AddSwaggerGen(c =>

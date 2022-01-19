@@ -9,6 +9,8 @@ using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration.NLog;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.SharedOuterApi.Configuration;
+using System;
+
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {
     public static class AddNServiceBusExtension
@@ -21,20 +23,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
                 .AddSingleton(p =>
                 {
                     var sp = services.BuildServiceProvider();
+
                     var configuration = sp.GetService<IOptions<NServiceBusConfiguration>>().Value;
 
-                    var hostingEnvironment = p.GetService<IHostingEnvironment>();
+                    //var hostingEnvironment = p.GetService<IHostingEnvironment>();
 
                     var endpointConfiguration = new EndpointConfiguration(EndpointName)
                         .UseErrorQueue($"{EndpointName}-errors")
-                        .UseLicense(configuration.NServiceBusLicense)
+                        .UseInstallers()
                         .UseMessageConventions()
                         .UseNewtonsoftJsonSerializer()
                         .UseNLogFactory();
 
+                    if (!string.IsNullOrEmpty(configuration.NServiceBusLicense))
+                    {
+                        endpointConfiguration.UseLicense(configuration.NServiceBusLicense);
+                    }
+
                     endpointConfiguration.SendOnly();
 
-                    if (hostingEnvironment.IsDevelopment())
+                    //if (hostingEnvironment.IsDevelopment())
+                    //{
+                    //    endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                    //}
+                    if (configuration.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
                     {
                         endpointConfiguration.UseLearningTransport(s => s.AddRouting());
                     }
