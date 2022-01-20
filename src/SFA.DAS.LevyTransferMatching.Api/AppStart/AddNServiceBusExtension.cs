@@ -56,11 +56,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
                         if (hostingEnvironment.IsDevelopment())
                         {
+                            logger.LogInformation("Using learning transport");
                             endpointConfiguration.UseLearningTransport(s => s.AddRouting());
                         }
                         else
                         {
-                            endpointConfiguration.UseAzureServiceBusTransport(configuration.SharedServiceBusEndpointUrl, s => s.AddRouting());
+                            logger.LogInformation($"Using azure service bus transport. NServiceBusConnectionString: {configuration.NServiceBusConnectionString}. SharedServiceBusEndpointUrl: {configuration.SharedServiceBusEndpointUrl}");
+                            endpointConfiguration.UseAzureServiceBusTransport(configuration.NServiceBusConnectionString, s => s.AddRouting());
                         }
 
                         logger.LogInformation("Configured azure service bus transport");
