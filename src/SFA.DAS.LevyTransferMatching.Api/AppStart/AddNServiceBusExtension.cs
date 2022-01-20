@@ -21,55 +21,64 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
         public static IServiceCollection AddNServiceBus(this IServiceCollection services)
         {
-            return services
-                .AddSingleton(p =>
-                {
-                    var sp = services.BuildServiceProvider();
-                    var logger = sp.GetRequiredService<ILogger<PledgeController>>();
-                    logger.LogDebug("Getting config");
-                    var configuration = sp.GetService<IOptions<NServiceBusConfiguration>>().Value;
-                    logger.LogDebug("Successfully loaded config");
+            var sp = services.BuildServiceProvider();
+            var logger = sp.GetRequiredService<ILogger<PledgeController>>();
 
-                    var hostingEnvironment = p.GetService<IHostingEnvironment>();
-                    logger.LogDebug("Got hosting environment");
-
-                    var endpointConfiguration = new EndpointConfiguration(EndpointName)
-                        .UseErrorQueue($"{EndpointName}-errors")
-                        .UseInstallers()
-                        .UseMessageConventions()
-                        .UseNewtonsoftJsonSerializer()
-                        .UseNLogFactory();
-
-                    logger.LogDebug("Got endpoint configuration");
-
-                    if (!string.IsNullOrEmpty(configuration.NServiceBusLicense))
+            try
+            {
+                return services
+                    .AddSingleton(p =>
                     {
-                        endpointConfiguration.UseLicense(configuration.NServiceBusLicense);
-                    }
+                        logger.LogInformation("Getting config");
+                        var configuration = sp.GetService<IOptions<NServiceBusConfiguration>>().Value;
+                        logger.LogInformation("Successfully loaded config");
 
-                    logger.LogDebug("License configured");
+                        var hostingEnvironment = p.GetService<IHostingEnvironment>();
+                        logger.LogInformation("Got hosting environment");
 
-                    endpointConfiguration.SendOnly();
+                        var endpointConfiguration = new EndpointConfiguration(EndpointName)
+                            .UseErrorQueue($"{EndpointName}-errors")
+                            .UseInstallers()
+                            .UseMessageConventions()
+                            .UseNewtonsoftJsonSerializer()
+                            .UseNLogFactory();
 
-                    if (hostingEnvironment.IsDevelopment())
-                    {
-                        endpointConfiguration.UseLearningTransport(s => s.AddRouting());
-                    }
-                    else
-                    {
-                        endpointConfiguration.UseAzureServiceBusTransport(configuration.SharedServiceBusEndpointUrl, s => s.AddRouting());
-                    }
+                        logger.LogInformation("Got endpoint configuration");
 
-                    logger.LogDebug("Configured azure service bus transport");
+                        if (!string.IsNullOrEmpty(configuration.NServiceBusLicense))
+                        {
+                            endpointConfiguration.UseLicense(configuration.NServiceBusLicense);
+                        }
 
-                    var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+                        logger.LogInformation("License configured");
 
-                    logger.LogDebug("Started endpoint");
+                        endpointConfiguration.SendOnly();
 
-                    return endpoint;
-                })
-                .AddSingleton<IMessageSession>(s => s.GetService<IEndpointInstance>())
-                .AddHostedService<NServiceBusHostedService>();
+                        if (hostingEnvironment.IsDevelopment())
+                        {
+                            endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                        }
+                        else
+                        {
+                            endpointConfiguration.UseAzureServiceBusTransport(configuration.SharedServiceBusEndpointUrl, s => s.AddRouting());
+                        }
+
+                        logger.LogInformation("Configured azure service bus transport");
+
+                        var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+                        logger.LogInformation("Started endpoint");
+
+                        return endpoint;
+                    })
+                    .AddSingleton<IMessageSession>(s => s.GetService<IEndpointInstance>())
+                    .AddHostedService<NServiceBusHostedService>();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
         }
     }
 
