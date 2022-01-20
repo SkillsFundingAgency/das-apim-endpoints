@@ -274,7 +274,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmploymentCheck", "Employme
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D9A5DC9C-5C87-4AD1-A451-DDC081FD5DDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmploymentCheck.Api", "SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api.csproj", "{FBA50D9E-8AE8-4108-B720-970F0D16AF0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmploymentCheck.Api", "SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api.csproj", "{FBA50D9E-8AE8-4108-B720-970F0D16AF0B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmploymentCheck.Api.UnitTests", "SFA.DAS.EmploymentCheck.Api.UnitTests\SFA.DAS.EmploymentCheck.Api.UnitTests.csproj", "{72366A67-01B1-44F7-97FE-9FB7FD5DD4BE}"
 EndProject

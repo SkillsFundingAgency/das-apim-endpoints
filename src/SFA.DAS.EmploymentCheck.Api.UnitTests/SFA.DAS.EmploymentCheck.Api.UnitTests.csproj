@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.EmploymentCheck\SFA.DAS.EmploymentCheck.csproj" />
     <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
