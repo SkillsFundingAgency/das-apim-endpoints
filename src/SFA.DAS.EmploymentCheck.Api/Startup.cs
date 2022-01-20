@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,10 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmploymentCheck.Api.AppStart;
 using SFA.DAS.EmploymentCheck.Api.ErrorHandler;
+using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
 using SFA.DAS.EmploymentCheck.Configuration;
 using SFA.DAS.EmploymentCheck.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 
 namespace SFA.DAS.EmploymentCheck.Api
@@ -56,7 +57,7 @@ namespace SFA.DAS.EmploymentCheck.Api
                 .AddCheck<EmploymentCheckApiHealthCheck>(nameof(EmploymentCheckApiHealthCheck.HealthCheckResultDescription))
                 ;
 
-           // services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
+            services.AddMediatR(typeof(RegisterCheckCommand).Assembly);
             services.AddServiceRegistration();
 
             services
