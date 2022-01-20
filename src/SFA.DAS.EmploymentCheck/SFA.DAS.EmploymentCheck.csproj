@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -9,8 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Commands\AddEmploymentCheck\" />
-    <Folder Include="Application\Queries\" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

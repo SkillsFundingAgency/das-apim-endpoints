@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.EmploymentCheck.Clients;
 using SFA.DAS.EmploymentCheck.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -14,9 +14,9 @@ namespace SFA.DAS.EmploymentCheck.Infrastructure
     public class EmploymentCheckApiHealthCheck : IHealthCheck
     {
         public const string HealthCheckResultDescription = "EmploymentCheck Api Health Check";
-        private readonly IEmploymentCheckApiClient<EmploymentCheckConfiguration> _client;
+        private readonly IInternalApiClient<EmploymentCheckConfiguration> _client;
 
-        public EmploymentCheckApiHealthCheck(IEmploymentCheckApiClient<EmploymentCheckConfiguration> client)
+        public EmploymentCheckApiHealthCheck(IInternalApiClient<EmploymentCheckConfiguration> client)
         {
             _client = client;
         }

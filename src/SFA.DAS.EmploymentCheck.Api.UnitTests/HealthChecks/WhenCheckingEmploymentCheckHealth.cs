@@ -3,10 +3,10 @@ using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmploymentCheck.Clients;
 using SFA.DAS.EmploymentCheck.Configuration;
 using SFA.DAS.EmploymentCheck.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
@@ -18,7 +18,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.HealthChecks
     {
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-            [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
+            [Frozen] Mock<IInternalApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
             HealthCheckContext context,
             EmploymentCheckApiHealthCheck healthCheck)
         {
@@ -32,7 +32,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.HealthChecks
         
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
-            [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
+            [Frozen] Mock<IInternalApiClient<EmploymentCheckConfiguration>> employmentCheckApiClient,
             HealthCheckContext context,
             EmploymentCheckApiHealthCheck healthCheck)
         {
