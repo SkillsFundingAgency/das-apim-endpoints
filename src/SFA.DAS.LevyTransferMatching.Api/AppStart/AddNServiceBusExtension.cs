@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NServiceBus;
+using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
@@ -9,6 +11,8 @@ using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration.NLog;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.SharedOuterApi.Configuration;
+using System;
+
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {
     public static class AddNServiceBusExtension
@@ -27,10 +31,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
                     var endpointConfiguration = new EndpointConfiguration(EndpointName)
                         .UseErrorQueue($"{EndpointName}-errors")
-                        .UseLicense(configuration.NServiceBusLicense)
+                        .UseInstallers()
                         .UseMessageConventions()
                         .UseNewtonsoftJsonSerializer()
                         .UseNLogFactory();
+
+                    if (!string.IsNullOrEmpty(configuration.NServiceBusLicense))
+                    {
+                        endpointConfiguration.UseLicense(configuration.NServiceBusLicense);
+                    }
 
                     endpointConfiguration.SendOnly();
 
@@ -40,7 +49,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
                     }
                     else
                     {
-                        endpointConfiguration.UseAzureServiceBusTransport(configuration.SharedServiceBusEndpointUrl, s => s.AddRouting());
+                        endpointConfiguration.UseAzureServiceBusTransport(configuration.NServiceBusConnectionString, s => s.AddRouting());
                     }
 
                     var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();

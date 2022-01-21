@@ -73,7 +73,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string ProviderName { get; set; }
 
             [JsonProperty("standardLarsCode")]
-            public int StandardLarsCode { get; set; }
+            public int? StandardLarsCode { get; set; }
 
             [JsonProperty("startDate")]
             public DateTimeOffset StartDate { get; set; }

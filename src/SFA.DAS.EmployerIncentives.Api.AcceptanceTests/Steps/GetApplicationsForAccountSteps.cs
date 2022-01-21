@@ -80,7 +80,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"this search request finds one submitted application")]
         public void GivenThisSearchRequestFindsOneSubmittedApplication()
         {
-            var submittedApplication = _fixture.Create<ApprenticeApplication>();
+            var submittedApplication = _fixture.Build<ApprenticeApplication>()
+                .With(x => x.FirstPaymentStatus, _fixture.Build<PaymentStatus>()
+                    .Without(x => x.EmploymentCheckPassed).Create())
+                .Create();
             var applications = new List<ApprenticeApplication> { submittedApplication };
             var response = new GetApplicationsResult { ApprenticeApplications = applications, BankDetailsStatus = InnerApi.BankDetailsStatus.InProgress, FirstSubmittedApplicationId = Guid.NewGuid() };
 

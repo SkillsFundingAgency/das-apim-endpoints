@@ -41,7 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
             var isLocalOrDev = _configuration.IsLocalOrDev();
 
             services.AddNLog();
-            services.AddNServiceBus();
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
@@ -102,6 +101,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.AddMediatR(typeof(IAccountsService));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            
+            services.AddNServiceBus();
 
             services
                 .AddSwaggerGen(c =>
