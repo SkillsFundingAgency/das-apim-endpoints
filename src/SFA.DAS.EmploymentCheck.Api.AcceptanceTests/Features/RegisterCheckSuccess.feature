@@ -2,9 +2,9 @@
 @outerApi
 
 Feature: RegisterCheckSuccess
-	In order to register apprentice's employment check
+	In order to confirm the employment for given apprentice in a given time period
 	As an employer incentives service
-	I want to be confirm the employment for given apprentice in a given time period
+	I want to be register apprentice's employment check
 
 Scenario: Employment Check is registered
 	Given an employer has applied for Apprenticeship Incentive for an apprentice

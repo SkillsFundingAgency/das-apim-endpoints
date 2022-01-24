@@ -2,11 +2,11 @@
 @outerApi
 
 Feature: RegisterCheckFailure
-	In order to register apprentice's employment check
+	In order to confirm the employment for given apprentice in a given time period
 	As an employer incentives service
-	I want to be confirm the employment for given apprentice in a given time period
+	I want to be register apprentice's employment check
 
-Scenario: Employment Check failed to register
+Scenario: Employment Check fails to register
 	Given an employer has applied for Apprenticeship Incentive for an apprentice
 	When the Employer Incentives service are checking employment status of the apprentice
 	And the employment check request has failed validation

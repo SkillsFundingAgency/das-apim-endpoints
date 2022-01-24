@@ -18,7 +18,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
     public class WhenCreatingProductSubscription
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Request_Is_Handled_And_Ok_Result_Returned(
+        public async Task Then_The_Request_Is_Handled_And_Created_Result_Returned(
             string accountType,
             string accountIdentifier,
             string productId,
@@ -32,7 +32,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
                 && c.AccountType.Equals(accountType)
                 && c.ProductId.Equals(productId)), CancellationToken.None), Times.Once);
         }
-
+        
         [Test, MoqAutoData]
         public async Task Then_If_Error_Then_Internal_Server_Error_Response(
             string accountType,
@@ -49,7 +49,8 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
-
+        
+        
         [Test, MoqAutoData]
         public async Task Then_If_Validation_Error_Then_Request_Error_Response_Is_Returned(
             string accountType,

@@ -21,14 +21,12 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
         [Given(@"an employer has applied for Apprenticeship Incentive for an apprentice")]
         public void GivenAnEmployerHasAppliedForApprenticeshipIncentiveForAnApprentice()
         {
-            // blank
         }
 
         [When(@"the employment check request has passed validation")]
         [When(@"the employment check request has failed validation")]
         public void WhenTheEmploymentCheckRequestHasPassedValidation()
         {
-            // blank
         }
     }
 }
