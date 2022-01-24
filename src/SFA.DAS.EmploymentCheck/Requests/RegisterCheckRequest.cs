@@ -10,7 +10,7 @@ namespace SFA.DAS.EmploymentCheck.Requests
             Data = data;
         }
 
-        public string PostUrl => "/EmploymentCheck/RegisterCheck";
+        public string PostUrl => "api/EmploymentCheck/RegisterCheck";
         public object Data { get; set; }
     }
 }

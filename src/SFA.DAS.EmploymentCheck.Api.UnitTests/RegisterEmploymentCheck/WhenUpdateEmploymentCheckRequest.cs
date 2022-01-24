@@ -7,7 +7,10 @@ using NUnit.Framework;
 using SFA.DAS.EmploymentCheck.Api.Controllers;
 using SFA.DAS.EmploymentCheck.Api.Models;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +20,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.RegisterEmploymentCheck
     public class WhenRegisterEmploymentCheckRequest
     {
         [Test, MoqAutoData]
-        public async Task Then_RegisterCheck_is_handled(
+        public async Task Then_The_Request_Is_Handled_And_Ok_Result_Returned(
             RegisterCheckRequest request,
             RegisterCheckResponse response,
             [Frozen] Mock<IMediator> mockMediator,
@@ -41,6 +44,37 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.RegisterEmploymentCheck
            
             Assert.IsNotNull(controllerResult);
             controllerResult.Value.Should().Be(response);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Error_Then_Internal_Server_Error_Response_Is_Returned(
+            RegisterCheckRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] EmploymentCheckController controller)
+        {
+            mockMediator.Setup(x => x.Send(It.IsAny<RegisterCheckCommand>(),
+                CancellationToken.None)).ThrowsAsync(new Exception());
+
+            var actual = await controller.RegisterCheck(request) as ObjectResult;
+
+            Assert.IsNotNull(actual);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Validation_Error_Then_Request_Error_Response_Is_Returned(
+            RegisterCheckRequest request,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] EmploymentCheckController controller)
+        {
+            mockMediator.Setup(x => x.Send(It.IsAny<RegisterCheckCommand>(),
+                CancellationToken.None)).ThrowsAsync(new HttpRequestContentException("error message", HttpStatusCode.BadRequest, "error"));
+
+            var actual = await controller.RegisterCheck(request) as ObjectResult;
+
+            Assert.IsNotNull(actual);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            actual.Value.Should().Be("error");
         }
     }
 }

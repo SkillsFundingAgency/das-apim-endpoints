@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmploymentCheck.Api.Models;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmploymentCheck.Api.Controllers
@@ -21,18 +24,29 @@ namespace SFA.DAS.EmploymentCheck.Api.Controllers
         [Route("RegisterCheck")]
         public async Task<IActionResult> RegisterCheck(RegisterCheckRequest request)
         {
-            var response = await _mediator.Send(new RegisterCheckCommand
+            try
             {
-                CorrelationId = request.CorrelationId,
-                CheckType = request.CheckType,
-                Uln = request.Uln,
-                ApprenticeshipAccountId = request.ApprenticeshipAccountId,
-                ApprenticeshipId = request.ApprenticeshipId,
-                MinDate = request.MinDate,
-                MaxDate = request.MaxDate
-            });
+                var response = await _mediator.Send(new RegisterCheckCommand
+                {
+                    CorrelationId = request.CorrelationId,
+                    CheckType = request.CheckType,
+                    Uln = request.Uln,
+                    ApprenticeshipAccountId = request.ApprenticeshipAccountId,
+                    ApprenticeshipId = request.ApprenticeshipId,
+                    MinDate = request.MinDate,
+                    MaxDate = request.MaxDate
+                });
 
-            return new OkObjectResult(response);
+                return Ok(response);
+            }
+            catch (HttpRequestContentException ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.ErrorContent);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex);
+            }
         }
     }
 }

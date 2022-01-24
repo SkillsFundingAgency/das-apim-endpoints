@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.EmploymentCheck.Configuration;
 using SFA.DAS.EmploymentCheck.Requests;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,8 +22,10 @@ namespace SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck
             CancellationToken cancellationToken)
         {
             var response = await _client.PostWithResponseCode<RegisterCheckResponse>(new RegisterCheckRequest(command));
+            
+            if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return response.Body;
 
-            return response.Body;
+            throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
         }
     }
 }

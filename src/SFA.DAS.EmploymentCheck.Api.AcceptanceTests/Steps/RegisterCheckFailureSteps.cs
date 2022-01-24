@@ -12,10 +12,10 @@ using WireMock.RequestBuilders;
 namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
 {
     [Binding]
-    [Scope(Feature = "RegisterCheckSuccess")]
-    public class RegisterCheckSuccessSteps : RegisterCheckStepsBase
+    [Scope(Feature = "RegisterCheckFailure")]
+    public class RegisterCheckFailureSteps : RegisterCheckStepsBase
     {
-        public RegisterCheckSuccessSteps(TestContext context) : base(context) { }
+        public RegisterCheckFailureSteps(TestContext context) : base(context) { }
 
         [When(@"the Employer Incentives service are checking employment status of the apprentice")]
         public async Task WhenTheEmployerIncentivesServiceAreCheckingEmploymentStatusOfTheApprentice()
@@ -31,29 +31,27 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
                 MaxDate = DateTime.Now.AddDays(-90)
             };
 
-            ResponseBody = $"{{\"versionId\":{Fixture.Create<short>()},\"errorType\":null,\"errorMessage\":null}}";
+            ResponseBody = $"{{VersionId:null,ErrorType:{Fixture.Create<string>()},ErrorMessage:{Fixture.Create<string>()}}}";
 
             Context.InnerApi.MockServer
                 .Given(
-                    Request.Create()
-                        .WithPath(Url)
+                    Request.Create().WithPath(Url)
                         .UsingPost()
                 )
                 .RespondWith(
                     WireMock.ResponseBuilders.Response.Create()
                         .WithBody(ResponseBody)
-                        .WithStatusCode((int)HttpStatusCode.OK));
+                        .WithStatusCode((int)HttpStatusCode.BadRequest));
 
             Response = await Context.OuterApiClient.PostAsync(Url, new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
         }
 
-        [Then(@"a new Employment Check request is registered in Employment Check system")]
-        public void ThenANewEmploymentCheckRequestIsRegisteredInEmploymentCheckSystem()
+        [Then(@"an error response is returned by the Employment Check system")]
+        public void ThenAnErrorResponseIsReturnedByTheEmploymentCheckSystem()
         {
             Response.Should().NotBeNull();
-            Response?.EnsureSuccessStatusCode();
+            Response?.IsSuccessStatusCode.Should().BeFalse();
             Response?.Content.ReadAsStringAsync().Result.Should().Be(ResponseBody);
         }
-
     }
 }
