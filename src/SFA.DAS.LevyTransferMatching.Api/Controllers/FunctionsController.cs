@@ -62,7 +62,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new ReceiverApplicationApprovedEmailCommand
+                await _mediator.Send(new ReceiverApplicationApprovedEmailCommand
                 {
                     PledgeId = request.PledgeId,
                     ApplicationId = request.ApplicationId,
