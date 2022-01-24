@@ -34,11 +34,13 @@ namespace SFA.DAS.EmploymentCheck.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddNLog();
-            services.AddOptions();
-            services.AddSingleton(_env);
-            services.Configure<EmploymentCheckConfiguration>(_configuration.GetSection("EmploymentCheckInnerApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmploymentCheckConfiguration>>().Value);
+            services
+                .AddOptions()
+                .AddSingleton(_env)
+                .AddNLog()
+                .Configure<EmploymentCheckConfiguration>(_configuration.GetSection("EmploymentCheckInnerApi"))
+                .AddSingleton(cfg => cfg.GetService<IOptions<EmploymentCheckConfiguration>>().Value)
+            ;
            
             if (!_configuration.IsLocalOrDev())
             {
