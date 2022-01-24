@@ -42,8 +42,8 @@ namespace SFA.DAS.Vacancies.Api.Models
        public string VacancyReference { get; set; }
        public string VacancyUrl { get; set; }
 
-       public VacancyCourseItem Course { get; set; }
-       public VacancyWageItem Wage { get; set; }
+       public GetVacancyCourseItem Course { get; set; }
+       public GetVacancyWageItem Wage { get; set; }
        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
        {
            return new GetVacanciesListResponseItem
@@ -62,33 +62,12 @@ namespace SFA.DAS.Vacancies.Api.Models
                Ukprn = source.Ukprn,
                VacancyReference = source.VacancyReference,
                VacancyUrl = source.VacancyUrl,
-               Course = new VacancyCourseItem
-               {
-                   LarsCode = source.StandardLarsCode ?? 0,
-                   Level = source.CourseLevel,
-                   Route = source.Route,
-                   Title = $"{source.CourseTitle} (level {source.CourseLevel})"
-               }
+               Course = source,
+               Wage = source,
            };
        }
     }
-    public class VacancyCourseItem
-    {
-        public int LarsCode { get; set; }
-        public string Title { get; set; }
-        public int Level { get; set; }
-        public string Route { get; set; }
-    }
 
-    public class VacancyWageItem
-    {
-        public decimal WageAmount { get; set; }
-        public string WageAmountLowerBound { get; set; }
-        public string WageAmountUpperBound { get; set; }
-        public string WageAdditionalInformation { get; set; }
-        public WageType WageType { get; set; }
-        public string WorkingWeekDescription { get; set; }
-    }
     public enum WageType
     {
         ApprenticeshipMinimum = 2,

@@ -20,12 +20,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .ExcludingMissingMembers());
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
-            actual.Wage.WageAmount.Should().Be(source.Vacancy.WageAmount);
-            actual.Wage.WageType.Should().Be((WageType)source.Vacancy.WageType);
-            actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
-            actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
-            actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
-            actual.Wage.WorkingWeekDescription.Should().Be(source.Vacancy.WorkingWeek);
+            
             
         }
 

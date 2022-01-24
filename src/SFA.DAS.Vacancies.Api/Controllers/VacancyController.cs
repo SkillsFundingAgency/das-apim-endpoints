@@ -80,7 +80,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         }
 
         [HttpGet]
-        [Route("vacancyReference")]
+        [Route("{vacancyReference}")]
         [ProducesResponseType(typeof(GetVacancyResponse), (int) HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetVacancy([FromRoute] string vacancyReference)
