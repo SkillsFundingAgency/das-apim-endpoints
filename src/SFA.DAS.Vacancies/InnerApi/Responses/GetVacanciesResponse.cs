@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -132,14 +132,4 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             [JsonIgnore]
             public string VacancyUrl { get ; set ; }
         }
-
-        public partial class Location
-        {
-            [JsonProperty("lon")]
-            public double Lon { get; set; }
-
-            [JsonProperty("lat")]
-            public double Lat { get; set; }
-        }
-    
 }
