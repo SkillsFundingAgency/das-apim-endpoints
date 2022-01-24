@@ -73,7 +73,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public string ProviderName { get; set; }
 
         [JsonProperty("standardLarsCode")]
-        public int StandardLarsCode { get; set; }
+        public int? StandardLarsCode { get; set; }
 
         [JsonProperty("startDate")]
         public DateTime StartDate { get; set; }
@@ -122,6 +122,15 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
 
         [JsonProperty("score")]
         public decimal Score { get; set; }
+        
+        [JsonIgnore]
+        public string CourseTitle { get ; set ; }
+        [JsonIgnore]
+        public string Route { get ; set ; }
+        [JsonIgnore]
+        public int CourseLevel { get ; set ; }
+        [JsonIgnore]
+        public string VacancyUrl { get ; set ; }
     }
 
     public class GetVacancyQualificationResponseItem
