@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string CategoryCode { get; set; }
 
             [JsonProperty("closingDate")]
-            public DateTimeOffset ClosingDate { get; set; }
+            public DateTime ClosingDate { get; set; }
 
             [JsonProperty("description")]
             public string Description { get; set; }
@@ -67,7 +67,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public long NumberOfPositions { get; set; }
 
             [JsonProperty("postedDate")]
-            public DateTimeOffset PostedDate { get; set; }
+            public DateTime PostedDate { get; set; }
 
             [JsonProperty("providerName")]
             public string ProviderName { get; set; }
@@ -76,7 +76,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public int? StandardLarsCode { get; set; }
 
             [JsonProperty("startDate")]
-            public DateTimeOffset StartDate { get; set; }
+            public DateTime StartDate { get; set; }
 
             [JsonProperty("subCategory")]
             public string SubCategory { get; set; }
@@ -94,7 +94,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public string VacancyLocationType { get; set; }
 
             [JsonProperty("vacancyReference")]
-            public long VacancyReference { get; set; }
+            public string VacancyReference { get; set; }
 
             [JsonProperty("wageAmount")]
             public string WageAmount { get; set; }

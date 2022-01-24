@@ -4,6 +4,6 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
     public class GetVacancyQueryResult
     {
-        public GetVacancyResponse Vacancy { get; set; }
+        public GetVacancyApiResponse Vacancy { get; set; }
     }
 }

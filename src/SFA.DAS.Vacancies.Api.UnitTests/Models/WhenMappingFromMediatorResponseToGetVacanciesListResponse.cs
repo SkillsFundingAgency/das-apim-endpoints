@@ -10,7 +10,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacanciesListResponse
     {
         [Test, AutoData]
-        public void Then_The_Fields_are_mapped(GetVacanciesQueryResult source)
+        public void Then_The_Fields_Are_Mapped(GetVacanciesQueryResult source)
         {
             var actual = (GetVacanciesListResponse) source;
 

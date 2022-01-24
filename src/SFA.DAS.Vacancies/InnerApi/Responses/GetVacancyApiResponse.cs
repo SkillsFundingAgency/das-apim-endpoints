@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses
 {
-    public class GetVacancyResponse
+    public class GetVacancyApiResponse
     {
         [JsonProperty("longDescription")]
         public string LongDescription { get; set; }
