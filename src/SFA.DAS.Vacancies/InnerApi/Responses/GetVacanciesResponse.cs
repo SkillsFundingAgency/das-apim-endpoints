@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -13,10 +13,10 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
             public long TotalFound { get; set; }
 
             [JsonProperty("apprenticeshipVacancies")]
-            public IEnumerable<GetVacanciesItem> ApprenticeshipVacancies { get; set; }
+            public IEnumerable<GetVacanciesListItem> ApprenticeshipVacancies { get; set; }
         }
 
-        public class GetVacanciesItem
+        public class GetVacanciesListItem
         {
             [JsonProperty("id")]
             public long Id { get; set; }

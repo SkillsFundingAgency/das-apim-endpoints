@@ -44,7 +44,7 @@ namespace SFA.DAS.Vacancies.Api.Models
            public string VacancyUrl { get; set; }
 
            public VacancyCourseItem Course { get; set; }
-           public static implicit operator GetVacanciesListResponseItem(GetVacanciesItem source)
+           public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
            {
                return new GetVacanciesListResponseItem
                {
