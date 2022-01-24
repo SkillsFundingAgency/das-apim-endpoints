@@ -20,8 +20,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .ExcludingMissingMembers());
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
-            
-            
+            actual.Location.Lat.Should().Be(source.Vacancy.Location.Lat);
+            actual.Location.Lon.Should().Be(source.Vacancy.Location.Lon);
         }
 
         [Test, AutoData]
@@ -36,8 +36,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .ExcludingMissingMembers()
                 .Excluding(item => item.EmployerName)
                 .Excluding(item => item.CourseTitle)
-                .Excluding(item => item.CourseLevel));
+                .Excluding(item => item.CourseLevel)
+                .Excluding(item => item.Location)
+            );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
+            actual.Location.Should().BeNull();
         }
 
         [Test, AutoData]

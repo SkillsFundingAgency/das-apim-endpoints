@@ -18,6 +18,14 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);
+            foreach (var vacancy in actual.Vacancies)
+            {
+                var expectedVacancy =
+                    source.Vacancies.Single(c => c.VacancyReference.Equals(vacancy.VacancyReference));
+                vacancy.Location.Lat.Should().Be(expectedVacancy.Location.Lat);
+                vacancy.Location.Lon.Should().Be(expectedVacancy.Location.Lon);    
+            }
+            
         }
         
         [Test, AutoData]
@@ -39,8 +47,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .ExcludingMissingMembers()
                 .Excluding(item => item.EmployerName)
                 .Excluding(item => item.CourseTitle)
-                .Excluding(item => item.CourseLevel));
+                .Excluding(item => item.CourseLevel)
+                .Excluding(item => item.Location));
             actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
+            actual.Vacancies.TrueForAll(c => c.Location == null).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);

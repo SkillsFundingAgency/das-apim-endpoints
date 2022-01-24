@@ -44,6 +44,7 @@ namespace SFA.DAS.Vacancies.Api.Models
 
        public GetVacancyCourseItem Course { get; set; }
        public GetVacancyWageItem Wage { get; set; }
+       public VacancyLocation Location { get; set; }
        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
        {
            return new GetVacanciesListResponseItem
@@ -64,8 +65,19 @@ namespace SFA.DAS.Vacancies.Api.Models
                VacancyUrl = source.VacancyUrl,
                Course = source,
                Wage = source,
+               Location = !source.IsEmployerAnonymous ? new VacancyLocation
+               {
+                   Lat = source.Location.Lat,
+                   Lon = source.Location.Lon
+               } : null
            };
        }
+    }
+
+    public class VacancyLocation
+    {
+        public double? Lat { get; set; }
+        public double? Lon { get; set; }
     }
 
     public enum WageType

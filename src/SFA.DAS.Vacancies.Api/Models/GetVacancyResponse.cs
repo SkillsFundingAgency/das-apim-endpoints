@@ -41,7 +41,12 @@ namespace SFA.DAS.Vacancies.Api.Models
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
                 Skills = source.Vacancy.Skills,
-                Qualifications = source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList()
+                Qualifications = source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList(),
+                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation
+                {
+                    Lat = source.Vacancy.Location.Lat,
+                    Lon = source.Vacancy.Location.Lon
+                } : null
             };
         }
     }
