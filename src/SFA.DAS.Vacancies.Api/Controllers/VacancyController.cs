@@ -79,6 +79,12 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// GET vacancy by reference number
+        /// </summary>
+        /// <remarks>Returns details of a specific vacancy. If no vacancy found then a 404 response is returned.</remarks>
+        /// <param name="vacancyReference">Vacancy reference in the following format 10001122</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{vacancyReference}")]
         [ProducesResponseType(typeof(GetVacancyResponse), (int) HttpStatusCode.OK)]
