@@ -118,7 +118,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public string WorkingWeek { get; set; }
 
         [JsonProperty("distance")]
-        public decimal Distance { get; set; }
+        public decimal? Distance { get; set; }
 
         [JsonProperty("score")]
         public long Score { get; set; }
