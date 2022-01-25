@@ -36,8 +36,12 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
                 PledgesCount = pledgesTask.Result.TotalPledges,
                 ApplicationsCount = applicationsTask.Result.Applications.Count(),
                 IsTransferReceiver = transferStatusTask.Result.IsTransferReceiver,
-                IsTransferSender = transferStatusTask.Result.IsTransferSender
-            };
+                IsTransferSender = transferStatusTask.Result.IsTransferSender,
+                ActivePledgesTotalAmount = (int)pledgesTask.Result?.Pledges
+                                            .Where(s => s.Status != "Closed")
+                                            .Select(pledge => pledge.Amount)
+                                            .Sum()
+        };
         }
     }
 }
