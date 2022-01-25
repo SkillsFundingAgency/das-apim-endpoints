@@ -20,6 +20,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
         {
             public int Amount { get; set; }
             public int ApplicationId { get; set; }
+            public string UserAction { get; set; }
         }
     }
 }

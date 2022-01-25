@@ -7,5 +7,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }
         public int Amount { get; set; }
+        public string UserAction { get; set; }
     }
 }

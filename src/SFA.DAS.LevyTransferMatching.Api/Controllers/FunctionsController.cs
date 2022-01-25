@@ -9,6 +9,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Extensions;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -35,7 +36,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 {
                     PledgeId = request.PledgeId,
                     Amount = request.Amount,
-                    ApplicationId = request.ApplicationId
+                    ApplicationId = request.ApplicationId,
+                    UserAction = UserAction.ApproveApplication
                 });
 
                 if (!result.StatusCode.IsSuccess())
@@ -116,7 +118,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 {
                     PledgeId = request.PledgeId,
                     Amount = request.Amount,
-                    ApplicationId = request.ApplicationId
+                    ApplicationId = request.ApplicationId,
+                    UserAction = UserAction.DeclineFunding
                 });
 
                 if (result.CreditPledgeSkipped)

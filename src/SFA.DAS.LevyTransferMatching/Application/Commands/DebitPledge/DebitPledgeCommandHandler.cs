@@ -25,7 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge
             var data = new DebitPledgeRequest.DebitPledgeRequestData
             {
                 Amount = request.Amount,
-                ApplicationId = request.ApplicationId
+                ApplicationId = request.ApplicationId,
+                UserAction = request.UserAction
             };
             
             var debitRequest = new DebitPledgeRequest(request.PledgeId, data);
