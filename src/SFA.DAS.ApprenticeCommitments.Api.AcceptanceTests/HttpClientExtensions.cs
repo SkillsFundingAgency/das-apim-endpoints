@@ -1,8 +1,8 @@
-﻿using System.Net;
+﻿using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 {
@@ -12,6 +12,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
         {
             using var response = await client.GetAsync(url);
             return await ProcessResponse<T>(response);
+        }
+
+        public static async Task<HttpResponseMessage> PostJsonAsync(this HttpClient client, string url, string data)
+        {
+            return await client.PostAsync(url, data.GetJsonContent());
         }
 
         public static async Task<HttpResponseMessage> PostValueAsync<T>(this HttpClient client, string url, T data)
@@ -42,5 +47,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
 
         public static StringContent GetStringContent(this object obj)
             => new StringContent(JsonConvert.SerializeObject(obj), Encoding.Default, "application/json");
+
+        public static StringContent GetJsonContent(this string json)
+            => new StringContent(json, Encoding.Default, "application/json");
     }
 }
