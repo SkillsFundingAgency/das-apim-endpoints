@@ -52,6 +52,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -76,6 +77,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
         
         [Test, MoqAutoData]
@@ -116,6 +118,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -160,13 +163,14 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
                         It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
-                                                                     && c.GetUrl.Contains(postcode))))
+                                                                     && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
             
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -192,6 +196,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -214,6 +219,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             result.Name.Should().Be($"{apiLocationResponse.Outcode} {apiLocationResponse.DistrictName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -251,6 +257,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             result.Name.Should().Be($"{apiLocationResponse.LocationName}, {apiLocationResponse.LocalAuthorityName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
 
         [Test, MoqAutoData]
@@ -315,6 +322,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             result.Should().NotBeNull();
             result.Name.Should().Be($"{apiLocationResponse.LocationName}, {apiLocationResponse.LocalAuthorityName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
+            result.Country.Should().Be(apiLocationResponse.Country);
         }
     }
 }
