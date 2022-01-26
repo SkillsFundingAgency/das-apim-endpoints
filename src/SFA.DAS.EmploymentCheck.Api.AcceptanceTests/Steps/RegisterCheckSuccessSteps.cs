@@ -31,7 +31,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
                 MaxDate = DateTime.Now.AddDays(-90)
             };
 
-            ResponseBody = $"{{\"versionId\":{Fixture.Create<short>()},\"errorType\":null,\"errorMessage\":null}}";
+            ExpectedResponseBody = $"{{\"errorType\":null,\"errorMessage\":null}}";
 
             Context.InnerApi.MockServer
                 .Given(
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
                 )
                 .RespondWith(
                     WireMock.ResponseBuilders.Response.Create()
-                        .WithBody(ResponseBody)
+                        .WithBody(ExpectedResponseBody)
                         .WithStatusCode((int)HttpStatusCode.OK));
 
             Response = await Context.OuterApiClient.PostAsync(Url, new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
         {
             Response.Should().NotBeNull();
             Response?.EnsureSuccessStatusCode();
-            Response?.Content.ReadAsStringAsync().Result.Should().Be(ResponseBody);
+            Response?.Content.ReadAsStringAsync().Result.Should().Be(ExpectedResponseBody);
         }
 
     }

@@ -9,7 +9,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
         protected readonly Fixture Fixture;
         protected readonly TestContext Context;
         protected HttpResponseMessage? Response;
-        protected string ResponseBody = "";
+        protected string ExpectedResponseBody = "";
         protected const string Url = "/api/EmploymentCheck/RegisterCheck";
 
         public RegisterCheckStepsBase(TestContext context)

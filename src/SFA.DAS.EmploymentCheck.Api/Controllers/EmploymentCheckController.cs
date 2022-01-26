@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmploymentCheck.Api.Models;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmploymentCheck.Api.Controllers
@@ -42,10 +40,6 @@ namespace SFA.DAS.EmploymentCheck.Api.Controllers
             catch (HttpRequestContentException ex)
             {
                 return StatusCode((int)ex.StatusCode, ex.ErrorContent);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex);
             }
         }
     }
