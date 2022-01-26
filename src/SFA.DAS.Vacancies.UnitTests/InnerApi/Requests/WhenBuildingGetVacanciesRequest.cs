@@ -4,7 +4,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Vacancies.InnerApi.Requests;
-using SFA.DAS.Vacancies.Models;
 
 namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
 {
