@@ -142,14 +142,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData("CV1 1AA")]
+        [MoqInlineAutoData("CV11AA")]
         public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Returned(
+            string postcode,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
             LocationLookupService service)
         {
-            var postcode = "CV1 1AA";
-
             var location = $"{postcode}";
             var lat = 0;
             var lon = 0;
@@ -159,7 +160,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
                         It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
-                                                                     && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
+                                                                     && c.GetUrl.Contains(postcode))))
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
