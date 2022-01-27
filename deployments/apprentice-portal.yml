@@ -146,3 +146,32 @@ stages:
       ProductId: $(ApprenticePortalProductId)
       ApplicationIdentifierUri: $(ApprenticePortalOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(ApprenticePortalOuterApiSchemaFilePath)
+
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticePortal
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(ApprenticePortalOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticePortal.Api.zip
+      ApiVersionSetName: $(ApprenticePortalOuterApiVersionSetName)
+      ApiPath: $(ApprenticePortalOuterApiPath)
+      ApiBaseUrl: $(ApprenticePortalOuterApiBaseUrl)
+      ProductId: $(ApprenticePortalProductId)
+      ApplicationIdentifierUri: $(ApprenticePortalOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
