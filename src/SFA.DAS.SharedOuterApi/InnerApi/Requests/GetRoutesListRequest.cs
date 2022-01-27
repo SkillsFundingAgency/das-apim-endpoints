@@ -4,6 +4,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetRoutesListRequest : IGetApiRequest
     {
-        public string GetUrl { get; }
+        public string GetUrl => "api/courses/routes";
     }
 }

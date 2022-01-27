@@ -30,7 +30,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var actual = await service.GetRoutes();
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse.Routes);
+            actual.Should().BeEquivalentTo(apiResponse);
             cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetRoutesListResponse), apiResponse, 23));
         }
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var actual = await service.GetRoutes();
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse.Routes);
+            actual.Should().BeEquivalentTo(apiResponse);
             apiClient.Verify(x => x.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()), Times.Never);
         }
         
