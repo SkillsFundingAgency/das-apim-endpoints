@@ -4,7 +4,7 @@
 Feature: RegisterCheckSuccess
 	In order to confirm the employment for given apprentice in a given time period
 	As an employer incentives service
-	I want to be register apprentice's employment check
+	I want to be able to register a check for apprentice's employment status
 
 Scenario: Employment Check is registered
 	Given an employer has applied for Apprenticeship Incentive for an apprentice
