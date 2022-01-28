@@ -34,6 +34,10 @@ namespace SFA.DAS.Campaign.Api.Models
 
         public static implicit operator GetLocationResponseItem(LocationItem source)
         {
+            if (source == null)
+            {
+                return null;
+            }
             return new GetLocationResponseItem
             {
                 Country = source.Country,

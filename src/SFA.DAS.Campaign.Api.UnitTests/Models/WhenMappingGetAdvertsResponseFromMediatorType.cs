@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Adverts;
+using SFA.DAS.Campaign.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Models
 {
@@ -52,6 +55,28 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
                 && c.Location == null
                 ).Should().BeTrue();
             
+        }
+
+        [Test, AutoData]
+        public void Then_If_No_Location_Response_Returned_Then_Mapped(List<GetRoutesListItem> routes)
+        {
+            //Arrange
+            var source = new GetAdvertsQueryResult
+            {
+                Location = null,
+                Routes = routes,
+                Vacancies = new List<GetVacanciesListItem>(),
+                TotalFound = 0
+            };
+
+            //Act
+            var actual = (GetAdvertsResponse)source;
+            
+            //Assert
+            actual.TotalFound.Should().Be(0);
+            actual.Routes.Should().BeEquivalentTo(routes.Select(c=>new {Route = c.Name}).ToList());
+            actual.Vacancies.Should().BeEmpty();
+            actual.Location.Should().BeNull();
         }
     }
 }
