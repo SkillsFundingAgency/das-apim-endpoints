@@ -248,7 +248,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 WeeklyHours = source.WeeklyHours,
                 Duration = source.Duration,
                 WorkingWeekDescription = source.WorkingWeekDescription,
-                FixedWageYearlyAmount = source.FixedWageYearlyAmount,
+                FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
                 DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
                 WageType = (InnerApi.Requests.WageType)wageType
             };
