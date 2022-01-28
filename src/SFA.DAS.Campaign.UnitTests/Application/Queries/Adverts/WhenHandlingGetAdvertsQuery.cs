@@ -46,7 +46,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
-            actual.Total.Should().Be(vacanciesResponse.TotalFound);
+            actual.TotalFound.Should().Be(vacanciesResponse.TotalFound);
             actual.Routes.Should().BeEquivalentTo(getRoutesListResponse.Routes);
             actual.Location.Should().BeEquivalentTo(locationItem);
         }
@@ -66,7 +66,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             var actual = await handler.Handle(query, CancellationToken.None);
             
             actual.Routes.Should().BeEquivalentTo(getRoutesListResponse.Routes);
-            actual.Total.Should().Be(0);
+            actual.TotalFound.Should().Be(0);
             actual.Location.Should().BeNull();
             actual.Vacancies.Should().BeEmpty();
         }

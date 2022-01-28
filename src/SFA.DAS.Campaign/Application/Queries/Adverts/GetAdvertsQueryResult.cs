@@ -8,7 +8,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
     public class GetAdvertsQueryResult
     {
         public IEnumerable<GetVacanciesListItem> Vacancies { get ; set ; }
-        public long Total { get ; set ; }
+        public long TotalFound { get ; set ; }
         public IEnumerable<GetRoutesListItem> Routes { get ; set ; }
         public LocationItem Location { get ; set ; }
     }

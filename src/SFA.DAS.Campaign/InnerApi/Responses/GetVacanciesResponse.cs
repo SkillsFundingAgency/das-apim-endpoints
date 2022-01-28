@@ -33,9 +33,6 @@ namespace SFA.DAS.Campaign.InnerApi.Responses
         [JsonProperty("employerName")]
         public string EmployerName { get; set; }
 
-        [JsonProperty("isDisabilityConfident")]
-        public bool IsDisabilityConfident { get; set; }
-
         [JsonProperty("isEmployerAnonymous")]
         public bool IsEmployerAnonymous { get; set; }
         

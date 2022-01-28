@@ -32,7 +32,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                 var result = await _mediator.Send(new GetSectorsQuery());
                 return Ok(new GetSectorsResponse
                 {
-                    Sectors = result.Sectors.Select(c=>(GetSectorResponseItem)c).ToList()
+                    Sectors = result.Sectors.Select(c=>(GetRouteResponseItem)c).ToList()
                 });
             }
             catch (Exception e)

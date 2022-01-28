@@ -13,7 +13,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
         public void Then_The_Fields_Are_Correctly_Mapped(GetRoutesListItem source)
         {
             //Act
-            var actual = (GetSectorResponseItem) source;
+            var actual = (GetRouteResponseItem) source;
             
             //Assert
             actual.Route.Should().Be(source.Name);
