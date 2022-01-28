@@ -22,7 +22,7 @@ using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
-
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -111,6 +111,22 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return new CreatedResult(
                 $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
                 (PledgeIdDto)commandResult.PledgeId);
+        }
+
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/rejectapplications")]
+        public async Task<IActionResult> RejectApplications(long accountId, int pledgeId, [FromBody] ApplicationRejectRequest request)
+        {
+            await _mediator.Send(new RejectApplicationsCommand
+            {
+                PledgeId = pledgeId,
+                AccountId = accountId,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName,
+                ApplicationsToReject = request.ApplicationsToReject
+            });
+
+            return Ok();
         }
 
         [HttpGet]
