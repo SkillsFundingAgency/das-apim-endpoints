@@ -77,7 +77,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         /// The LARS code associated with the Standard you wish to create the advert for. This can be found from `GET referencedata/courses`
         /// </summary>
         /// <example>119</example>
-        [JsonProperty("standardLarsCode")]
+        [JsonProperty("standardLarsCode", Required = Required.Always)]
         public string ProgrammeId { get ; set ; }
         /// <summary>
         /// If `EmployerNameOption` is set to `TradingName` then will be used and Trading name in the application updated. If it is set to `Anonymous` then will be used for the anonymous employer name. If it is set to `RegisteredName` then the Account Legal Entity name will be used. Must not exceed 100 characters
@@ -248,7 +248,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 WeeklyHours = source.WeeklyHours,
                 Duration = source.Duration,
                 WorkingWeekDescription = source.WorkingWeekDescription,
-                FixedWageYearlyAmount = source.FixedWageYearlyAmount,
+                FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
                 DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
                 WageType = (InnerApi.Requests.WageType)wageType
             };

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security;
 using MediatR;
 using SFA.DAS.Vacancies.Configuration;
@@ -10,7 +11,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
-
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
@@ -58,13 +58,23 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
-            var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, request.Ukprn, request.AccountPublicHashedId));
+            var categories = _standardsService.MapRoutesToCategories(request.Routes);
+
+            var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
+                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
+                request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
+                request.Lat, request.Lon, request.DistanceInMiles, categories, request.PostedInLastNumberOfDays, request.Sort));
             var standardsTask = _standardsService.GetStandards();
 
             await Task.WhenAll(vacanciesTask, standardsTask);
 
             foreach (var vacanciesItem in vacanciesTask.Result.ApprenticeshipVacancies)
             {
+                if (vacanciesItem.StandardLarsCode == null)
+                {
+                    continue;
+                }
+                
                 var standard =
                     standardsTask.Result.Standards.FirstOrDefault(
                         c => c.LarsCode.Equals(vacanciesItem.StandardLarsCode));
@@ -80,7 +90,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             
             return new GetVacanciesQueryResult()
             {
-                Vacancies = vacanciesTask.Result.ApprenticeshipVacancies
+                Vacancies = vacanciesTask.Result.ApprenticeshipVacancies.Where(c=>c.StandardLarsCode!=null).ToList(),
+                Total = vacanciesTask.Result.Total,
+                TotalFiltered = vacanciesTask.Result.TotalFound,
+                TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0
             };
         }
     }

@@ -95,7 +95,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             }
             catch (HttpRequestContentException e)
             {
-                return StatusCode((int) e.StatusCode, e.ErrorContent);
+                var content = e.ErrorContent
+                    .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+                    .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
+                
+                return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException e)
             {
