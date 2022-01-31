@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +9,8 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -136,6 +139,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 _logger.LogError(e, $"Error attempting to Credit Pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [Route("get-pending-application-email-data")]
+        [HttpGet]
+        public async Task<IActionResult> GetPendingApplicationEmailData()
+        {
+            var result = await _mediator.Send(new GetPendingApplicationEmailDataQuery());
+
+            return Ok(result);
+        }
+
+        [Route("send-emails")]
+        [HttpPost]
+        public async Task<IActionResult> SendEmails(SendEmailsRequest request)
+        {
+            await _mediator.Send(new SendEmailsCommand()
+            {
+                EmailDataList = request.EmailDataList.Select(x => new SendEmailsCommand.EmailData(x.TemplateName, x.RecipientEmailAddress, x.Tokens)).ToList()
+            });
+
+            return Ok();
         }
     }
 }
