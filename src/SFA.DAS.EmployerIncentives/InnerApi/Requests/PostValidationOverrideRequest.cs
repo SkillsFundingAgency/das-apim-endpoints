@@ -39,7 +39,8 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 
     public class ValidationStep
     {
-        public ValidationType ValidationType { get; set; }
+        public ValidationType ValidationType { get; set; }        
         public DateTime ExpiryDate { get; set; }
+        public bool? Remove { get; set; }
     }
 }

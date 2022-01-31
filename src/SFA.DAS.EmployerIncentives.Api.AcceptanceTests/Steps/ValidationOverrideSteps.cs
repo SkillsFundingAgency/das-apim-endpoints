@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                             ValidationSteps = new List<ValidationStep>(){
                                 _fixture.Build<ValidationStep>()
                                 .With(v => v.ValidationType, ValidationType.IsInLearning)
-                                .With(v => v.ExpiryDate, DateTime.UtcNow.AddDays(10))
+                                .With(v => v.ExpiryDate, DateTime.UtcNow.AddDays(10))                                
                                 .Create()
                             }.ToArray(),
                             ServiceRequest = _fixture.Create<ServiceRequest>()
