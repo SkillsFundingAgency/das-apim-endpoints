@@ -4,9 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Application.Queries.Adverts;
+using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -21,20 +23,23 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
     {
         [Test, MoqAutoData]
         public async Task Then_The_Route_Is_Mapped_To_Categories_And_Postcode_Searched_And_Adverts_Returned(
+            string findAnApprenticeshipBaseUrl,
             GetAdvertsQuery query,
             List<string> categories,
             LocationItem locationItem,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse getRoutesListResponse,
+            [Frozen] Mock<IOptions<CampaignConfiguration>> configuration,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
             GetAdvertsQueryHandler handler)
         {
             //Arrange
+            configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, null, null,
                 locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, categories, null,
-                "DistanceDesc");
+                "DistanceAsc");
             courseService.Setup(x => x.MapRoutesToCategories(It.Is<List<string>>(c=>c.Contains(query.Route)))).Returns(categories);
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))
                 .ReturnsAsync(locationItem);
@@ -49,6 +54,11 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             actual.TotalFound.Should().Be(vacanciesResponse.TotalFound);
             actual.Routes.Should().BeEquivalentTo(getRoutesListResponse.Routes);
             actual.Location.Should().BeEquivalentTo(locationItem);
+            
+            foreach (var vacancy in actual.Vacancies)
+            {
+                vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
+            }
         }
 
         [Test, MoqAutoData]

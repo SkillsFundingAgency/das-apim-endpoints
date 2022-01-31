@@ -53,6 +53,9 @@ namespace SFA.DAS.Campaign.InnerApi.Responses
 
         [JsonProperty("distance")]
         public decimal? Distance { get; set; }
+
+        [JsonIgnore]
+        public string VacancyUrl { get ; set ; }
     }
     
     public class Location

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -15,15 +17,18 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
         private readonly ICourseService _courseService;
         private readonly ILocationLookupService _locationLookupService;
+        private readonly CampaignConfiguration _configuration;
 
         public GetAdvertsQueryHandler (
             IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,  
             ICourseService courseService, 
-            ILocationLookupService locationLookupService)
+            ILocationLookupService locationLookupService,
+            IOptions<CampaignConfiguration> configuration)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
             _courseService = courseService;
             _locationLookupService = locationLookupService;
+            _configuration = configuration.Value;
         }
         
         public async Task<GetAdvertsQueryResult> Handle(GetAdvertsQuery request, CancellationToken cancellationToken)
@@ -46,9 +51,14 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
 
             var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, null, null,
                 locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
-                request.Distance, categories, null, "DistanceDesc");
+                request.Distance, categories, null, "DistanceAsc");
 
             var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
+
+            foreach (var advert in adverts.ApprenticeshipVacancies)
+            {
+                advert.VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}";
+            }
             
             return new GetAdvertsQueryResult
             {

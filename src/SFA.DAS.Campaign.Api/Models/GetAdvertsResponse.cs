@@ -59,6 +59,7 @@ namespace SFA.DAS.Campaign.Api.Models
         public string Category { get ; set ; }
         public string EmployerName { get ; set ; }
         public string VacancyReference { get ; set ; }
+        public string VacancyUrl { get ; set ; }
 
         public static implicit operator GetAdvertResponseItem(GetVacanciesListItem source)
         {
@@ -78,6 +79,7 @@ namespace SFA.DAS.Campaign.Api.Models
                 },
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 VacancyReference = source.VacancyReference,
+                VacancyUrl = source.VacancyUrl
             };
         }
     }

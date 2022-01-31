@@ -12,6 +12,8 @@ namespace SFA.DAS.Campaign.Api.AppStart
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
+            services.Configure<CampaignConfiguration>(configuration.GetSection(nameof(CampaignConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CampaignConfiguration>>().Value);
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
