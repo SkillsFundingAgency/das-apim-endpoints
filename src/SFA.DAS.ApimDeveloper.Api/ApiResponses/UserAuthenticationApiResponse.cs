@@ -1,24 +1,25 @@
-﻿using System;
-using SFA.DAS.ApimDeveloper.Application.Users.Queries.GetUser;
+using System;
+using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
 {
-    public class UserApiResponse
+    public class UserAuthenticationApiResponse
     {
-        public UserApiResponseItem User { get; set; }
-        
-        public static implicit operator UserApiResponse(GetUserQueryResult source)
+        public UserAuthenticationApiResponseItem User { get; set; }
+
+        public static implicit operator UserAuthenticationApiResponse(AuthenticateUserCommandResult source)
         {
             if (source.User == null)
             {
                 return null;
             }
                 
-            return new UserApiResponse
+            return new UserAuthenticationApiResponse
             {
-                User = new UserApiResponseItem
+                User = new UserAuthenticationApiResponseItem
                 {
                     Id = source.User.Id,
+                    Authenticated = source.User.Authenticated,
                     Email = source.User.Email,
                     FirstName = source.User.FirstName,
                     LastName = source.User.LastName,
@@ -27,13 +28,14 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
             };
         }
     }
-    
-    public class UserApiResponseItem
+
+    public class UserAuthenticationApiResponseItem
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string State { get; set; }
         public string Email { get; set; }
+        public bool Authenticated { get; set; }
         public Guid Id { get ; set ; }
     }
 }
