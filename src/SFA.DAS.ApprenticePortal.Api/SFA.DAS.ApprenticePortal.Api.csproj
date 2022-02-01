@@ -27,6 +27,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
     </ItemGroup>
     <ItemGroup>
+        <Content Update="appsettings.development.json">
+          <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
         <Content Update="appsettings.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
