@@ -22,6 +22,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
             Response = await Client.PostValueAsync(url, data);
         }
 
+        public async Task Post(string url, string jsonData)
+        {
+            Response = await Client.PostJsonAsync(url, jsonData);
+        }
+
         public async Task Put<T>(string url, T data)
         {
             Response = await Client.PutValueAsync(url, data);

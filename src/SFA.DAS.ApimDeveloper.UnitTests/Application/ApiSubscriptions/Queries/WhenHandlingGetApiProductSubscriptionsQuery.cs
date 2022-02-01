@@ -18,15 +18,14 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_Data_Returned(
             GetApiProductSubscriptionsQuery query, 
-            GetAvailableApiProductsResponse apiResponse,
+            GetAvailableApiProductsResponse serviceResponse,
             GetApiProductSubscriptionsResponse apiSubscriptionsResponse,
+            [Frozen] Mock<IApimApiService> apimApiService,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> apiClient,
             GetApiProductSubscriptionsQueryHandler handler)
         {
-            apiClient.Setup(x =>
-                x.Get<GetAvailableApiProductsResponse>(
-                    It.Is<GetAvailableApiProductsRequest>(c => c.GetUrl.EndsWith($"?group={query.AccountType}"))))
-                .ReturnsAsync(apiResponse);
+            apimApiService.Setup(x =>
+                x.GetAvailableProducts(query.AccountType)).ReturnsAsync(serviceResponse);
             apiClient.Setup(x =>
                     x.Get<GetApiProductSubscriptionsResponse>(
                         It.Is<GetApiProductSubscriptionsRequest>(c => c.GetUrl.EndsWith($"/{query.AccountIdentifier}"))))
@@ -34,7 +33,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
             
-            actual.Products.Should().BeEquivalentTo(apiResponse.Products);
+            actual.Products.Should().BeEquivalentTo(serviceResponse.Products);
             actual.Subscriptions.Should().BeEquivalentTo(apiSubscriptionsResponse.Subscriptions);
         }
     }

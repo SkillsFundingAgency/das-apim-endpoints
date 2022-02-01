@@ -16,5 +16,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public bool PaymentIsStopped { get; set; }
         public bool WithdrawnByEmployer { get; set; }
         public bool WithdrawnByCompliance { get; set; }
+        public bool? EmploymentCheckPassed { get; set; }
     }
 }

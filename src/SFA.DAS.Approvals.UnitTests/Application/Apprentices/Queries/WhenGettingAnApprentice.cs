@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         public async Task Then_The_Api_Is_Called_With_The_Request_And_The_Apprentice_Is_Returned(
             GetApprenticeQuery query,
             GetApprenticeResponse apiResponse,
-            [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> apiClient,
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
             GetApprenticeQueryHandler handler
             )
         {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_No_Apprentice_Is_Returned(
             GetApprenticeQuery query,
-            [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> apiClient,
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
             GetApprenticeQueryHandler handler
         )
         {

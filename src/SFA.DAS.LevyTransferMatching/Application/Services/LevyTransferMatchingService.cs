@@ -65,6 +65,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.Get<GetAccountResponse>(request);
         }
 
+        public async Task<GetAccountsResponse> GetAccounts(GetAccountsRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetAccountsResponse>(request);
+        }
+
         public async Task CreateAccount(CreateAccountRequest request)
         {
             await _levyTransferMatchingApiClient.PostWithResponseCode<CreateAccountRequest>(request);

@@ -15,6 +15,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApimDeveloper.Api.AppStart;
 using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
+using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -72,7 +73,21 @@ namespace SFA.DAS.ApimDeveloper.Api
                 services.AddHealthChecks()
                      .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
             }
-            
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection(nameof(ApimDeveloperConfiguration))
+                    .Get<ApimDeveloperConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
+            }
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             services.AddSwaggerGen(c =>

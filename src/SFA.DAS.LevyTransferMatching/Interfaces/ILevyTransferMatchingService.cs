@@ -23,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<CreatePledgeResponse> CreatePledge(CreatePledgeRequest pledge);
         Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request);
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
+        Task<GetAccountsResponse> GetAccounts(GetAccountsRequest request);
         Task CreateAccount(CreateAccountRequest request);
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
