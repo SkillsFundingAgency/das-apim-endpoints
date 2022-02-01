@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31727.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api", "SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj", "{C7F2CFDB-D9A6-4815-8CAE-C410D34409D7}"
 EndProject
@@ -270,7 +270,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApprenticePortal", "Apprent
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C6990DD-273D-48F2-8EF3-AFB443BD39E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticePortal.MockApis", "SFA.DAS.ApprenticePortal.MockApis\SFA.DAS.ApprenticePortal.MockApis.csproj", "{A6572924-087F-4EDA-A514-EFAFEA078629}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.MockApis", "SFA.DAS.ApprenticePortal.MockApis\SFA.DAS.ApprenticePortal.MockApis.csproj", "{A6572924-087F-4EDA-A514-EFAFEA078629}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmploymentCheck", "EmploymentCheck", "{B76EA123-7450-4EAE-B929-2BB817EB05D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmploymentCheck", "SFA.DAS.EmploymentCheck\SFA.DAS.EmploymentCheck.csproj", "{DBB1D11F-9510-43A6-A528-A0BEA75623EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmploymentCheck.Api", "SFA.DAS.EmploymentCheck.Api\SFA.DAS.EmploymentCheck.Api.csproj", "{43A30CE0-EB82-4DB5-B58F-236697317354}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{08F93557-14A1-4C5B-AB1A-FB36A27ED5FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmploymentCheck.Api.AcceptanceTests", "SFA.DAS.EmploymentCheck.Api.AcceptanceTests\SFA.DAS.EmploymentCheck.Api.AcceptanceTests.csproj", "{9E43451F-A0F6-4A55-B359-F411F6F10223}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmploymentCheck.Api.UnitTests", "SFA.DAS.EmploymentCheck.Api.UnitTests\SFA.DAS.EmploymentCheck.Api.UnitTests.csproj", "{06570B38-5758-40F4-93AA-CA73FABD0725}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -638,6 +650,22 @@ Global
 		{A6572924-087F-4EDA-A514-EFAFEA078629}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6572924-087F-4EDA-A514-EFAFEA078629}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6572924-087F-4EDA-A514-EFAFEA078629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBB1D11F-9510-43A6-A528-A0BEA75623EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBB1D11F-9510-43A6-A528-A0BEA75623EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBB1D11F-9510-43A6-A528-A0BEA75623EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBB1D11F-9510-43A6-A528-A0BEA75623EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43A30CE0-EB82-4DB5-B58F-236697317354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43A30CE0-EB82-4DB5-B58F-236697317354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43A30CE0-EB82-4DB5-B58F-236697317354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43A30CE0-EB82-4DB5-B58F-236697317354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E43451F-A0F6-4A55-B359-F411F6F10223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E43451F-A0F6-4A55-B359-F411F6F10223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E43451F-A0F6-4A55-B359-F411F6F10223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E43451F-A0F6-4A55-B359-F411F6F10223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06570B38-5758-40F4-93AA-CA73FABD0725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06570B38-5758-40F4-93AA-CA73FABD0725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06570B38-5758-40F4-93AA-CA73FABD0725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06570B38-5758-40F4-93AA-CA73FABD0725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -754,6 +782,11 @@ Global
 		{6D09DE65-6DAE-447D-8B0D-DE05CE646471} = {5C6990DD-273D-48F2-8EF3-AFB443BD39E1}
 		{5C6990DD-273D-48F2-8EF3-AFB443BD39E1} = {242CDD69-8C61-41AF-B8D0-09AC6A7A88F2}
 		{A6572924-087F-4EDA-A514-EFAFEA078629} = {5C6990DD-273D-48F2-8EF3-AFB443BD39E1}
+		{DBB1D11F-9510-43A6-A528-A0BEA75623EC} = {B76EA123-7450-4EAE-B929-2BB817EB05D5}
+		{43A30CE0-EB82-4DB5-B58F-236697317354} = {B76EA123-7450-4EAE-B929-2BB817EB05D5}
+		{08F93557-14A1-4C5B-AB1A-FB36A27ED5FE} = {B76EA123-7450-4EAE-B929-2BB817EB05D5}
+		{9E43451F-A0F6-4A55-B359-F411F6F10223} = {08F93557-14A1-4C5B-AB1A-FB36A27ED5FE}
+		{06570B38-5758-40F4-93AA-CA73FABD0725} = {08F93557-14A1-4C5B-AB1A-FB36A27ED5FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
