@@ -9,7 +9,6 @@ using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Vacancies.Application.Services;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Interfaces;
-using SFA.DAS.Vacancies.Manage.Services;
 using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Api.AppStart

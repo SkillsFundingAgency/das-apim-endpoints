@@ -70,7 +70,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(new GetVacanciesResponse
             {
                 Total = 0,
-                ApprenticeshipVacancies = new List<GetVacanciesItem>(),
+                ApprenticeshipVacancies = new List<GetVacanciesListItem>(),
                 TotalFound = 0
             });
 

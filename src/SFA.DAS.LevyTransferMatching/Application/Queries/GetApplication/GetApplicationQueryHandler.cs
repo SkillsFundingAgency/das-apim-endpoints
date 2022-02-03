@@ -40,6 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 AboutOpportunity = application.Details,
                 BusinessWebsite = application.BusinessWebsite,
                 EmailAddresses = application.EmailAddresses,
+                CreatedOn = application.CreatedOn,
                 EstimatedDurationMonths = application.StandardDuration,
                 MaxFunding = application.StandardMaxFunding,
                 Amount = application.Amount,

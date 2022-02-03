@@ -19,6 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }    
         public string SenderEmployerAccountName { get; set; }
