@@ -148,7 +148,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_ContentException_Bad_Request_Is_Returned(
+        public async Task Then_If_ContentException_Bad_Request_Is_Returned_And_Error_Keys_Mapped(
             Guid id,
             string errorContent,
             CreateVacancyRequest request,
@@ -161,12 +161,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,errorContent));
+                .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,@"{""errors"":[{""field"":""ProgrammeId"",""message"":""Training programme a does not exist.""},{""field"":""employerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}"));
             
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
-            controllerResult.Value.Should().Be(errorContent);
+            controllerResult.Value.Should().Be(@"{""errors"":[{""field"":""standardLarsCode"",""message"":""Training programme a does not exist.""},{""field"":""alternativeEmployerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}");
         }
         
         [Test, MoqAutoData]

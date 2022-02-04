@@ -22,8 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
             {
-                PledgeId = request.PledgeId,
-                AccountId = request.AccountId
+                PledgeId = request.PledgeId
             });
 
             var pledgeResponse = await _levyTransferMatchingService.GetPledge(request.PledgeId);
