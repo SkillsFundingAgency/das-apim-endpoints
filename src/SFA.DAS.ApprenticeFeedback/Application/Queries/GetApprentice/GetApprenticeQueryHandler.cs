@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice
+namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 {
     public class GetApprenticeQueryHandler : IRequestHandler<GetApprenticeQuery, GetApprenticeResult>
     {

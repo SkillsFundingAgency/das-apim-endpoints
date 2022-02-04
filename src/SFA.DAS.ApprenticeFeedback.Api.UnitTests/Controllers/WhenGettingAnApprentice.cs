@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
                 Guid apprenticeId,
                 GetApprenticeResult mediatorResult,
                 [Frozen] Mock<IMediator> mockMediator,
-                [Greedy] ApprenticesController controller)
+                [Greedy] ApprenticeAccountsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -44,7 +44,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task And_NoApprenticeIsReturnedFromMediator_Then_ReturnNotFound(
             Guid apprenticeId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticesController controller)
+            [Greedy] ApprenticeAccountsController controller)
         {
             var controllerResult = await controller.Get(apprenticeId) as NotFoundResult;
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task And_MediatorThrowsException_Then_ReturnBadRequest(
             Guid apprenticeId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticesController controller)
+            [Greedy] ApprenticeAccountsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(

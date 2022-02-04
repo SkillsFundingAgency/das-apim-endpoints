@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetLearner;
 using System;
 using System.Threading.Tasks;
 
@@ -8,22 +8,22 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class ApprenticesController : Controller
+    public class AssessorServiceController : Controller
     {
         private readonly IMediator _mediator;
 
-        public ApprenticesController(IMediator mediator)
+        public AssessorServiceController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("learner/{id}")]
+        public async Task<IActionResult> GetLearner(Guid Id)
         {
             try
             {
-                var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
-               
+                var result = await _mediator.Send(new GetLearnerQuery());
+
                 if (result == null)
                 {
                     return NotFound();
@@ -33,6 +33,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             }
             catch (Exception e)
             {
+                //log error
                 return BadRequest();
             }
         }

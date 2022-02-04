@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice
+namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 {
     public class GetApprenticeResult
     {
