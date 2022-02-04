@@ -12,7 +12,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
             string baseUrl,
             string encodedAccountId)
         {
-            TemplateId = "11750b40-eb1c-4731-ab9c-d6f692743f37";
+            TemplateId = "ReceiverApplicationApproved";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {
