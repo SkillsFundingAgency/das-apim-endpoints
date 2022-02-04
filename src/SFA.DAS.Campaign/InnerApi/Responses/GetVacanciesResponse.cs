@@ -24,6 +24,9 @@ namespace SFA.DAS.Campaign.InnerApi.Responses
         [JsonProperty("category")]
         public string Category { get; set; }
 
+        [JsonProperty("subCategory")]
+        public string SubCategory { get; set; }
+        
         [JsonProperty("closingDate")]
         public DateTime ClosingDate { get; set; }
 

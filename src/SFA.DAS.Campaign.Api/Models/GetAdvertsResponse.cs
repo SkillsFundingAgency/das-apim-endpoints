@@ -60,6 +60,8 @@ namespace SFA.DAS.Campaign.Api.Models
         public string EmployerName { get ; set ; }
         public string VacancyReference { get ; set ; }
         public string VacancyUrl { get ; set ; }
+        public string SubCategory { get ; set ; }
+
 
         public static implicit operator GetAdvertResponseItem(GetVacanciesListItem source)
         {
@@ -72,6 +74,7 @@ namespace SFA.DAS.Campaign.Api.Models
                 StartDate = source.StartDate,
                 PostedDate = source.PostedDate,
                 Category = source.Category,
+                SubCategory = source.SubCategory,
                 Location = source.IsEmployerAnonymous ? null : new VacancyLocation
                 {
                     Lat = source.Location.Lat,
