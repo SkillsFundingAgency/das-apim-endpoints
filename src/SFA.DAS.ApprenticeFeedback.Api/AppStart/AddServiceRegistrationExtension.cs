@@ -19,6 +19,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.AppStart
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
             services.AddTransient<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>, ApprenticeFeedbackApiClient>();
+            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         }
     }
 }
