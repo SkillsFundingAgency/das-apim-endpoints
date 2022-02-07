@@ -33,14 +33,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             
             foreach (var applicationId in request.ApplicationsToReject)
             {
-                // TODO use applicationId from the loop in the call below after decoding the string id to int
-                var apiRequest = new RejectApplicationRequest(request.PledgeId, 3 /*applicationId*/, apiRequestData);
-
+                var id = int.Parse(applicationId.Split("-")[0]);
+                var apiRequest = new RejectApplicationRequest(request.PledgeId, id, apiRequestData);
                 await _levyTransferMatchingService.RejectApplication(apiRequest);
             }
             return Unit.Value;
-
-            // Next: Currently app id is "V5gH6 - Mega corp", get first part and get int id here, or send int IDs to APIM in the first place
         }
     }
 }
