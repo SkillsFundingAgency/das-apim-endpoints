@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static SFA.DAS.LevyTransferMatching.Api.Models.Pledges.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
