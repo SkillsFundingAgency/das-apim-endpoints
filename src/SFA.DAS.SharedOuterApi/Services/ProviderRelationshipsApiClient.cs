@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.Manage.Configuration;
-using SFA.DAS.Vacancies.Manage.Interfaces;
 
-namespace SFA.DAS.Vacancies.Manage.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
     public class ProviderRelationshipsApiClient : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
     {
