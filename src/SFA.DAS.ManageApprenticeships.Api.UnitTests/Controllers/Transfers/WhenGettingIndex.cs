@@ -40,7 +40,6 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.Transfers
 
             Assert.AreEqual(mediatorResult.PledgesCount, getIndexResponse.PledgesCount);
             Assert.AreEqual(mediatorResult.ApplicationsCount, getIndexResponse.ApplicationsCount);
-            Assert.AreEqual(mediatorResult.IsTransferReceiver, getIndexResponse.IsTransferReceiver);
             Assert.AreEqual(mediatorResult.IsTransferSender, getIndexResponse.IsTransferSender);
         }
     }

@@ -35,7 +35,6 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
             {
                 PledgesCount = pledgesTask.Result.TotalPledges,
                 ApplicationsCount = applicationsTask.Result.Applications.Count(),
-                IsTransferReceiver = transferStatusTask.Result.IsTransferReceiver,
                 IsTransferSender = transferStatusTask.Result.IsTransferSender
             };
         }

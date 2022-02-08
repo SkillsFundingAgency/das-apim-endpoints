@@ -49,7 +49,6 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
 
             Assert.AreEqual(getPledgesResponse.TotalPledges, results.PledgesCount);
             Assert.AreEqual(getApplicationsResponse.Applications.Count(), results.ApplicationsCount);
-            Assert.AreEqual(getAccountTransferStatusResponse.IsTransferReceiver, results.IsTransferReceiver);
             Assert.AreEqual(getAccountTransferStatusResponse.IsTransferSender, results.IsTransferSender);
         }
     }
