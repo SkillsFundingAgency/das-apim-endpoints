@@ -48,6 +48,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return response.Body;
         }
 
+        public async Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<ClosePledgeRequest>(request);
+        }
+
         public async Task<GetPledgesResponse> GetPledges(GetPledgesRequest request)
         {
             var response = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>(request);
@@ -58,6 +63,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetAccountResponse>(request);
+        }
+
+        public async Task<GetAccountsResponse> GetAccounts(GetAccountsRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetAccountsResponse>(request);
         }
 
         public async Task CreateAccount(CreateAccountRequest request)

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
@@ -27,7 +28,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
                     Id = x.Id,
                     Amount = x.Amount,
                     RemainingAmount = x.RemainingAmount,
-                    ApplicationCount = x.ApplicationCount
+                    ApplicationCount = x.ApplicationCount,
+                    Status = x.Status
                 })
             };
         }

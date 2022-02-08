@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -48,6 +52,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to Debit Pledge");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Route("application-approved-receiver-notification")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationApprovedReceiverNotification(ApplicationApprovedReceiverNotificationRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ReceiverApplicationApprovedEmailCommand
+                {
+                    PledgeId = request.PledgeId,
+                    ApplicationId = request.ApplicationId,
+                    ReceiverId = request.ReceiverId,
+                    BaseUrl = request.BaseUrl,
+                    ReceiverEncodedAccountId = request.ReceiverEncodedAccountId
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to send receiver notification email");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -136,6 +164,27 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 _logger.LogError(e, $"Error attempting to Credit Pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [Route("get-pending-application-email-data")]
+        [HttpGet]
+        public async Task<IActionResult> GetPendingApplicationEmailData()
+        {
+            var result = await _mediator.Send(new GetPendingApplicationEmailDataQuery());
+
+            return Ok(result);
+        }
+
+        [Route("send-emails")]
+        [HttpPost]
+        public async Task<IActionResult> SendEmails(SendEmailsRequest request)
+        {
+            await _mediator.Send(new SendEmailsCommand()
+            {
+                EmailDataList = request.EmailDataList.Select(x => new SendEmailsCommand.EmailData(x.TemplateName, x.RecipientEmailAddress, x.Tokens)).ToList()
+            });
+
+            return Ok();
         }
     }
 }
