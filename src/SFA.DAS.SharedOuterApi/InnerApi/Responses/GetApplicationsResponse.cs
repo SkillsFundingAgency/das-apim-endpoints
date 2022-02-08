@@ -7,6 +7,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public IEnumerable<Application> Applications { get; set; }
 
+        public string PledgeStatus { get; set; }
+
         public class Application
         {
             public int Id { get; set; }
