@@ -52,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 NumberOfApprentices = application.NumberOfApprentices,
                 Sector = application.Sectors,
                 StartBy = application.StartDate,
-                TypeOfJobRole = application.StandardTitle,
+                TypeOfJobRole = application.StandardRoute,
                 EmployerAccountName = application.EmployerAccountName,                
                 SenderEmployerAccountName = application.SenderEmployerAccountName,
                 Locations = pledgeTask.Result.Locations?.Where(x => application.Locations.Select(y => y.PledgeLocationId).Contains(x.Id)).Select(x => x.Name),
