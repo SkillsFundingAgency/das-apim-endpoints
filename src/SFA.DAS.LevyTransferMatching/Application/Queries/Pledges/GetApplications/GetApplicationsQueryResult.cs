@@ -14,11 +14,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             return new GetApplicationsQueryResult
             {
-                Applications = application.Applications.Select(x => (Application) x)
+                Applications = application.Applications.Select(x => (Application) x),
+                PledgeStatus = application.PledgeStatus
             };
         }
 
         public IEnumerable<Application> Applications { get; set; }
+
+        public string PledgeStatus { get; set; }
 
         public class Application
         {

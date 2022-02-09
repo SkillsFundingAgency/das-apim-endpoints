@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static SFA.DAS.LevyTransferMatching.Api.Models.Pledges.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -21,6 +20,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
             public IEnumerable<string> Sectors { get; set; }
+            public string Status { get; set; }
 
             public static implicit operator Pledge(SharedOuterApi.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
             {
@@ -35,6 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     JobRoles = pledge.JobRoles,
                     Levels = pledge.Levels,
                     Sectors = pledge.Sectors,
+                    Status = pledge.Status,
                 };
             }
         }
