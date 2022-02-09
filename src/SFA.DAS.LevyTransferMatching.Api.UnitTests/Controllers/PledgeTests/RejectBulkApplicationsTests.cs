@@ -26,7 +26,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] PledgeController pledgeController)
         {
-           
             mockMediator
                 .Setup(x => x.Send(
                     It.Is<RejectApplicationsCommand>((x) => (x.PledgeId == pledgeId) && (x.AccountId == accountId)),
@@ -44,6 +43,5 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.IsNotNull(statusResult);
             Assert.AreEqual((int)HttpStatusCode.OK, statusResult.StatusCode);
         }
-
     }
 }

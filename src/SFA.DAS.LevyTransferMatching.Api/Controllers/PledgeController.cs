@@ -23,7 +23,6 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOp
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
 using System.Net;
 using System.Threading.Tasks;
-
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
