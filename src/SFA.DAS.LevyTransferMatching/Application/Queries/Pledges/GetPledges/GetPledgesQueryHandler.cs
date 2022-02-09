@@ -28,7 +28,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
                     Id = x.Id,
                     Amount = x.Amount,
                     RemainingAmount = x.RemainingAmount,
-                    ApplicationCount = x.ApplicationCount
+                    ApplicationCount = x.ApplicationCount,
+                    Status = x.Status
                 })
             };
         }
