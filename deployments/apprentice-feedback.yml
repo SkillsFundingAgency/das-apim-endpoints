@@ -13,12 +13,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.26
+    ref: refs/tags/0.4.34
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.11
+    ref: refs/tags/4.5.14
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-apim-endpoints-build
@@ -128,7 +128,7 @@ stages:
   jobs:
   - template: ../pipeline-templates/job/arm-deploy.yml
     parameters:
-      ServiceConnection:  SFA-DIG-PreProd-ARM
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
       SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
@@ -137,7 +137,7 @@ stages:
     parameters:
       DeploymentName: Deploy_ApprenticeFeedback
       Environment: PP
-      ServiceConnection:  SFA-DIG-PreProd-ARM
+      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
@@ -157,7 +157,7 @@ stages:
 #   jobs:
 #   - template: ../pipeline-templates/job/arm-deploy.yml
 #     parameters:
-#       ServiceConnection:  SFA-DIG-Prod-ARM
+#       ServiceConnection: SFA-DIG-Prod-ARM
 #       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 #       Environment: PROD
 #       SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
@@ -166,7 +166,7 @@ stages:
 #     parameters:
 #       DeploymentName: Deploy_ApprenticeFeedback
 #       Environment: PROD
-#       ServiceConnection:  SFA-DIG-Prod-ARM
+#       ServiceConnection: SFA-DIG-Prod-ARM
 #       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
 #       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
 #       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
@@ -186,7 +186,7 @@ stages:
 #   jobs:
 #   - template: ../pipeline-templates/job/arm-deploy.yml
 #     parameters:
-#       ServiceConnection:  SFA-ASM-ModelOffice-ARM
+#       ServiceConnection: SFA-ASM-ModelOffice-ARM
 #       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 #       Environment: MO
 #       SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
@@ -195,7 +195,7 @@ stages:
 #     parameters:
 #       DeploymentName: Deploy_ApprenticeFeedback
 #       Environment: MO
-#       ServiceConnection:  SFA-ASM-ModelOffice-ARM
+#       ServiceConnection: SFA-ASM-ModelOffice-ARM
 #       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
 #       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
 #       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
@@ -215,7 +215,7 @@ stages:
 #   jobs:
 #   - template: ../pipeline-templates/job/arm-deploy.yml
 #     parameters:
-#       ServiceConnection:  SFA-DAS-DevTest-ARM
+#       ServiceConnection: SFA-DAS-DevTest-ARM
 #       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 #       Environment: DEMO
 #       SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
@@ -224,7 +224,7 @@ stages:
 #     parameters:
 #       DeploymentName: Deploy_ApprenticeFeedback
 #       Environment: DEMO
-#       ServiceConnection:  SSFA-DAS-DevTest-ARM
+#       ServiceConnection: SFA-DAS-DevTest-ARM
 #       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
 #       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
 #       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
