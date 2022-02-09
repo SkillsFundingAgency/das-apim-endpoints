@@ -148,7 +148,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/pledges/{pledgeId}/rejectapplications")]
-        public async Task<IActionResult> RejectApplications(long accountId, int pledgeId, [FromBody] ApplicationRejectRequest request)
+        public async Task<IActionResult> RejectApplications(int accountId, int pledgeId, [FromBody] ApplicationRejectRequest request)
         {
             await _mediator.Send(new RejectApplicationsCommand
             {
