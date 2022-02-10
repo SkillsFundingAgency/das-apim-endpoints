@@ -29,9 +29,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 Standards = standards.Standards.Select(s => (Standard)s)
             };
 
-            var cacheResponse = 
-
-            return Ok(response);
+            return Ok();
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeFeedback.Api.AppStart;
-using SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.ApprenticeFeedback.Api
