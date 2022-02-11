@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
 
-namespace SFA.DAS.Vacancies.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
     public class FindApprenticeshipApiClient : IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>
     {

@@ -7,6 +7,5 @@ namespace SFA.DAS.Vacancies.Interfaces
     public interface IStandardsService
     {
         Task<GetStandardsListResponse> GetStandards();
-        List<string> MapRoutesToCategories(IReadOnlyList<string> routes);
     }
 }
