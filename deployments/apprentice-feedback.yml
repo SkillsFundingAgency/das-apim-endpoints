@@ -205,31 +205,31 @@ stages:
 #       ApplicationIdentifierUri: $(ApprenticeFeedbackOuterApiIdentifierUri)
 #       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
-# - stage: Deploy_DEMO
-#   dependsOn: []
-#   displayName: Deploy to DEMO
-#   variables:
-#   - group: DevTest Management Resources
-#   - group: DEMO DevTest Shared Resources
-#   - group: DEMO das-apim-endpoints
-#   jobs:
-#   - template: ../pipeline-templates/job/arm-deploy.yml
-#     parameters:
-#       ServiceConnection: SFA-DAS-DevTest-ARM
-#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
-#       Environment: DEMO
-#       SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
+- stage: Deploy_DEMO
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: DEMO
+      SchemaFilePath: $(ApprenticeFeedbackOuterApiSchemaFilePath)
 
-#   - template: ../pipeline-templates/job/deploy-api.yml
-#     parameters:
-#       DeploymentName: Deploy_ApprenticeFeedback
-#       Environment: DEMO
-#       ServiceConnection: SFA-DAS-DevTest-ARM
-#       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-#       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
-#       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
-#       ApiPath: $(ApprenticeFeedbackOuterApiPath)
-#       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
-#       ProductId: $(ApprenticeFeedbackProductId)
-#       ApplicationIdentifierUri: $(ApprenticeFeedbackOuterApiIdentifierUri)
-#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_ApprenticeFeedback
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+      ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
+      ApiPath: $(ApprenticeFeedbackOuterApiPath)
+      ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
+      ProductId: $(ApprenticeFeedbackProductId)
+      ApplicationIdentifierUri: $(ApprenticeFeedbackOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
