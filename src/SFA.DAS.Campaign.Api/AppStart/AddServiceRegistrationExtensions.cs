@@ -25,8 +25,12 @@ namespace SFA.DAS.Campaign.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+            services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IContentService, ContentService>();
+            services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
 
             services.AddTransient(typeof(IContentfulApiClient<>), typeof(ContentfulApiClient<>));
 
