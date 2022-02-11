@@ -76,6 +76,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 var applyQueryResult = await _mediator.Send(new GetApplyQuery { OpportunityId = opportunityId });
 
+                if (applyQueryResult == null)
+                {
+                    return NotFound();
+                }
+
                 var response = new GetApplyResponse
                 {
                     Opportunity = applyQueryResult.Opportunity,
