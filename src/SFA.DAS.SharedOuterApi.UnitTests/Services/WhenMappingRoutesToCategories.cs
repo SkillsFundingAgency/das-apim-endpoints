@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Vacancies.Application.Services;
-using SFA.DAS.Vacancies.Models;
 
-namespace SFA.DAS.Vacancies.UnitTests.Application.Services
+namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 {
     public class WhenMappingRoutesToCategories
     {
@@ -31,20 +30,19 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Services
         public void Then_The_Categories_Are_Added_For_Each_Route(
             string route, 
             string expectedCategories,
-            StandardsService standardsService)
+            CourseService courseService)
         {
             var expectedList = expectedCategories.Split(",").Select(c => Convert.ToInt32(c))
                 .Select(x => ((VacancyCategories)x).GetDescription()).ToList();
             
-            var actual = standardsService.MapRoutesToCategories(new List<string>{route});
+            var actual = courseService.MapRoutesToCategories(new List<string>{route});
 
             actual.Should().BeEquivalentTo(expectedList);
         }
 
         [Test]
         [MoqAutoData]
-        public void Then_Only_Distinct_Items_Are_Returned(
-            StandardsService standardsService)
+        public void Then_Only_Distinct_Items_Are_Returned(CourseService courseService)
         {
             var expectedList = new List<string>
             {
@@ -54,17 +52,18 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Services
                 VacancyCategories.ArtsMediaAndPublishing.GetDescription()
             };
             
-            var actual = standardsService.MapRoutesToCategories(new List<string>{"Digital","Catering and hospitality"});
+            var actual = courseService.MapRoutesToCategories(new List<string>{"Digital","Catering and hospitality"});
 
             actual.Should().BeEquivalentTo(expectedList);
         }
 
         [Test, MoqAutoData]
-        public void Then_If_List_Is_Null_Then_Null_Returned(StandardsService standardsService)
+        public void Then_If_List_Is_Null_Then_Null_Returned(CourseService courseService)
         {
-            var actual = standardsService.MapRoutesToCategories(null);
+            var actual = courseService.MapRoutesToCategories(null);
 
             actual.Should().BeNull();
         }
+    
     }
 }
