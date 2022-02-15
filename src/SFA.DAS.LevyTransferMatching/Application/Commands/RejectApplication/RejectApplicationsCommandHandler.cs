@@ -10,12 +10,12 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
 {
-    public class RejectApplicationsHandler : IRequestHandler<RejectApplicationsCommand>
+    public class RejectApplicationsCommandHandler : IRequestHandler<RejectApplicationsCommand>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ILogger<RejectApplicationsHandler> _logger;
+        private readonly ILogger<RejectApplicationsCommandHandler> _logger;
 
-        public RejectApplicationsHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<RejectApplicationsHandler> logger)
+        public RejectApplicationsCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<RejectApplicationsCommandHandler> logger)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _logger = logger;
@@ -33,8 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             
             foreach (var applicationId in request.ApplicationsToReject)
             {
-                var id = int.Parse(applicationId.Split("-")[0]);
-                var apiRequest = new RejectApplicationRequest(request.PledgeId, id, apiRequestData);
+                var apiRequest = new RejectApplicationRequest(request.PledgeId, applicationId, apiRequestData);
                 await _levyTransferMatchingService.RejectApplication(apiRequest);
             }
             return Unit.Value;

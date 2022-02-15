@@ -9,6 +9,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
         public int AccountId { get; set; }     
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
-        public List<string> ApplicationsToReject { get; set; }
+        public List<int> ApplicationsToReject { get; set; }
     }
 }

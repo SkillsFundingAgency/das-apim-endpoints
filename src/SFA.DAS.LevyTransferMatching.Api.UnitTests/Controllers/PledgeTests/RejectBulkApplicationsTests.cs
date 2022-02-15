@@ -22,7 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         public async Task Reject_Applications_Performs_Bulk_Applications_Rejection_With_Status_Ok(
           int accountId,
           int pledgeId,
-          ApplicationRejectRequest applicationRejectRequest,
+          RejectApplicationsRequest applicationRejectRequest,
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] PledgeController pledgeController)
         {
@@ -32,10 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Unit.Value);
 
-            applicationRejectRequest.ApplicationsToReject = new List<string>
-            {
-                "5-S4GT"
-            };
+            applicationRejectRequest.ApplicationsToReject = new List<int> {5};
 
             var controllerResponse = await pledgeController.RejectApplications(accountId, pledgeId, applicationRejectRequest);
 

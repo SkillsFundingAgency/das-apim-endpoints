@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
     [TestFixture]
     public class WhenCallingHandle
     {
-        private RejectApplicationsHandler _handler;
+        private RejectApplicationsCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private readonly Fixture _fixture = new Fixture();
 
@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
         public void Setup()
         {
             _command = _fixture.Create<RejectApplicationsCommand>();
-            _command.ApplicationsToReject = new List<string> {"5-GBGT"};
+            _command.ApplicationsToReject = new List<int> {5};
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
                 .Callback<RejectApplicationRequest>(r => _request = r)
                 .Returns(Task.CompletedTask);
 
-            _handler = new RejectApplicationsHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<RejectApplicationsHandler>>());
+            _handler = new RejectApplicationsCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<RejectApplicationsCommandHandler>>());
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
             var response = await _handler.Handle(_command, CancellationToken.None);
 
             var data = (RejectApplicationRequestData)_request.Data;
-            var applicationID = int.Parse(_command.ApplicationsToReject[0].Split("-")[0]);
+            var applicationID = _command.ApplicationsToReject[0];
             Assert.AreEqual($"/pledges/{_command.PledgeId}/applications/{applicationID}/reject", _request.PostUrl);
             Assert.AreEqual(_command.UserId, data.UserId);
             Assert.AreEqual(_command.UserDisplayName, data.UserDisplayName);
