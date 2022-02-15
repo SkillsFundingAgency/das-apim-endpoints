@@ -29,5 +29,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPost("/approvals/stopped")]
         public Task<IActionResult> StopRegistration([FromBody] StopApprovalCommand request)
             => _client.Post("approvals/stopped", request);
+
+        [HttpGet("/approvals/{commitmentsApprenticeshipId}/registration")]
+        public Task<IActionResult> GetApprovalsRegistration(long commitmentsApprenticeshipId)
+            => _client.Get($"approvals/{commitmentsApprenticeshipId}/registration");
     }
 }
