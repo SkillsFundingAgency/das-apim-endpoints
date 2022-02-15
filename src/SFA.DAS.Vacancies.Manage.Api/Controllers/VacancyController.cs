@@ -35,8 +35,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         [HttpPost]
         [Route("{id}")]
         [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CreateVacancyExampleForbiddenResponse), (int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(CreateVacancyExampleBadRequestResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
             [FromRoute]Guid id, 
@@ -95,7 +95,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             }
             catch (HttpRequestContentException e)
             {
-                return StatusCode((int) e.StatusCode, e.ErrorContent);
+                var content = e.ErrorContent
+                    .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+                    .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
+                
+                return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException e)
             {

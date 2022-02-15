@@ -21,6 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
         public IEnumerable<string> PledgeSectors { get; set; }
@@ -44,6 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AboutOpportunity = result.AboutOpportunity,
                 BusinessWebsite = result.BusinessWebsite,
                 EmailAddresses = result.EmailAddresses,
+                CreatedOn = result.CreatedOn,
                 EstimatedDurationMonths = result.EstimatedDurationMonths,
                 MaxFunding = result.MaxFunding,
                 Amount = result.Amount,

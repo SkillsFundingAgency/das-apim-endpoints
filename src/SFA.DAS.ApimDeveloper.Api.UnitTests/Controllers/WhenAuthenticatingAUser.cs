@@ -33,7 +33,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             var actual = await controller.AuthenticateUser(request) as OkObjectResult;
 
             Assert.IsNotNull(actual);
-            var actualModel = actual.Value as UserApiResponse;
+            var actualModel = actual.Value as UserAuthenticationApiResponse;
             Assert.IsNotNull(actualModel);
             actualModel.User.Should().BeEquivalentTo(mediatorResult.User);
         }
