@@ -81,7 +81,7 @@ namespace SFA.DAS.EmploymentCheck.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerIncentivesOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmploymentCheckOuterApi", Version = "v1" });
             });
         }
 
