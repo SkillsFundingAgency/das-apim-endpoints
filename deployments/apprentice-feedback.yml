@@ -52,7 +52,7 @@ stages:
       Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+      #DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
       ApiPath: $(ApprenticeFeedbackOuterApiPath)
       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
@@ -81,7 +81,7 @@ stages:
       Environment: TEST
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+      #DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
       ApiPath: $(ApprenticeFeedbackOuterApiPath)
       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
@@ -110,7 +110,7 @@ stages:
       Environment: TEST2
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+      #DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
       ApiPath: $(ApprenticeFeedbackOuterApiPath)
       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
@@ -139,7 +139,7 @@ stages:
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+     #DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
       ApiPath: $(ApprenticeFeedbackOuterApiPath)
       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
@@ -226,7 +226,7 @@ stages:
       Environment: DEMO
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(ApprenticeFeedbackOuterApiAppServiceName)
-      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
+      #DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.ApprenticeFeedback.Api.zip
       ApiVersionSetName: $(ApprenticeFeedbackOuterApiVersionSetName)
       ApiPath: $(ApprenticeFeedbackOuterApiPath)
       ApiBaseUrl: $(ApprenticeFeedbackOuterApiBaseUrl)
