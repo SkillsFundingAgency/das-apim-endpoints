@@ -48,6 +48,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return response.Body;
         }
 
+        public async Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<ClosePledgeRequest>(request);
+        }
+
         public async Task<GetPledgesResponse> GetPledges(GetPledgesRequest request)
         {
             var response = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>(request);
@@ -133,6 +138,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request);
+        }
+
+        public async Task<ApiResponse<GenerateCostProjectionRequest>> GenerateCostProjection(GenerateCostProjectionRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<GenerateCostProjectionRequest>(request);
         }
 
         public async Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request)

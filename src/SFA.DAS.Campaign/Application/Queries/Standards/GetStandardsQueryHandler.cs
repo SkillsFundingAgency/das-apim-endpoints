@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -15,12 +14,12 @@ namespace SFA.DAS.Campaign.Application.Queries.Standards
     public class GetStandardsQueryHandler : IRequestHandler<GetStandardsQuery, GetStandardsQueryResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly ICacheStorageService _cacheStorageService;
+        private readonly ICourseService _courseService;
 
-        public GetStandardsQueryHandler (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICacheStorageService cacheStorageService)
+        public GetStandardsQueryHandler (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICourseService courseService)
         {
             _coursesApiClient = coursesApiClient;
-            _cacheStorageService = cacheStorageService;
+            _courseService = courseService;
         }
         public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
         {
@@ -42,14 +41,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Standards
 
         private async Task<int?> GetSectorId(string sector)
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
-
-            if (response == null)
-            {
-                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
-
-                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
-            }
+            var response = await _courseService.GetRoutes();
 
             return response.Routes.FirstOrDefault(c => c.Name.Equals(sector, StringComparison.CurrentCultureIgnoreCase))?.Id;
         }

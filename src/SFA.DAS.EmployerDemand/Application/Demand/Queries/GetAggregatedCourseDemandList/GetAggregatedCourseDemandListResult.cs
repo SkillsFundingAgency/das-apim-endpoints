@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetAggregatedCourseDemandList

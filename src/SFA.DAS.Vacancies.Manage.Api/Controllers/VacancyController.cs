@@ -35,8 +35,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
         [HttpPost]
         [Route("{id}")]
         [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CreateVacancyExampleForbiddenResponse), (int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(CreateVacancyExampleBadRequestResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
             [FromRoute]Guid id, 

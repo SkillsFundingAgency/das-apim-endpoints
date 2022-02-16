@@ -12,6 +12,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public Standard Standard { get; set; }
         public IEnumerable<Application> Applications { get; set; }
 
+        public string PledgeStatus { get; set; }
+
         public class Application
         {
             public int Id { get; set; }
