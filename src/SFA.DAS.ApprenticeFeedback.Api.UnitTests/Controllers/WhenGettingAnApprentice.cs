@@ -46,6 +46,9 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApprenticeController controller)
         {
+            mockMediator.Setup(m => m.Send(It.IsAny<GetApprenticeQuery>(), CancellationToken.None))
+                .ReturnsAsync((GetApprenticeResult)null);
+
             var controllerResult = await controller.Get(apprenticeId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

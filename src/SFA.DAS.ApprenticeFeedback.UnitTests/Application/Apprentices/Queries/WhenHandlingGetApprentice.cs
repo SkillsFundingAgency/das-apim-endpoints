@@ -36,6 +36,9 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
             GetApprenticeQueryHandler handler
         )
         {
+            apiClient.Setup(x => x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync((GetApprenticeResponse)null);
+
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Should().BeNull();
