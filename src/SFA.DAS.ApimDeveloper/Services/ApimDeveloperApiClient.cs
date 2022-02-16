@@ -29,7 +29,7 @@ namespace SFA.DAS.ApimDeveloper.Services
 
         public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.GetWithResponseCode<TResponse>(request);
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)

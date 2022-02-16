@@ -21,6 +21,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public string DistrictName { get; set; }
         [JsonProperty("outcode")]
         public string Outcode { get; set; }
+        [JsonProperty("country")]
+        public string Country { get; set; }
 
         public class Coordinates
         {

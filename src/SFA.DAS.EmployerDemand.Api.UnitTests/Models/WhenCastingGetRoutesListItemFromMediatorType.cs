@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
     public class WhenCastingGetRoutesListItemFromMediatorType
     {
         [Test, AutoData]
-        public void Then_Maps_Correctly(InnerApi.Responses.GetRoutesListItem source)
+        public void Then_Maps_Correctly(SharedOuterApi.InnerApi.Responses.GetRoutesListItem source)
         {
             var result = (GetRoutesListItem) source;
 
