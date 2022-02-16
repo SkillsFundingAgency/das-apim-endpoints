@@ -36,8 +36,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                 {
                     PledgesCount = response.PledgesCount,
                     ApplicationsCount = response.ApplicationsCount,
-                    IsTransferReceiver = response.IsTransferReceiver,
-                    IsTransferSender = response.IsTransferSender
+                    IsTransferReceiver = response.IsTransferReceiver
                 };
 
                 return Ok(model);

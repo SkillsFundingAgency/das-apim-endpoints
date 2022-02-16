@@ -21,6 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<IEnumerable<ReferenceDataItem>> GetJobRoles();
 		Task<GetPledgesResponse> GetPledges(GetPledgesRequest request);
         Task<CreatePledgeResponse> CreatePledge(CreatePledgeRequest pledge);
+        Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request);
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
         Task<GetAccountsResponse> GetAccounts(GetAccountsRequest request);
         Task CreateAccount(CreateAccountRequest request);
@@ -38,5 +39,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task WithdrawApplication(WithdrawApplicationRequest request, CancellationToken cancellationToken = default);
         Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request);
         Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request);
+        Task<ApiResponse<GenerateCostProjectionRequest>> GenerateCostProjection(GenerateCostProjectionRequest request);
     }
 }

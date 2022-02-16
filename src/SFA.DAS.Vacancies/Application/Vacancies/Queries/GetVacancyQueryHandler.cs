@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Options;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;

@@ -30,11 +30,12 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             List<string> categories,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IStandardsService> standardsService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
@@ -56,11 +57,12 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             List<string> categories,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
             query.PageSize = 0;
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
@@ -90,12 +92,13 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             List<string> categories,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacanciesQueryHandler handler)
         {
             apiResponse.ApprenticeshipVacancies.First().StandardLarsCode = null;
             
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(categories);
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
@@ -121,6 +124,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetStandardsListItem courseResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacanciesQueryHandler handler)
         {
@@ -140,7 +144,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
             standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -162,6 +166,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse, 
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApi,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
@@ -171,7 +176,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
@@ -188,6 +193,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesResponse apiResponse, 
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
@@ -196,7 +202,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
@@ -233,6 +239,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesResponse apiResponse, 
             GetProviderAccountLegalEntitiesResponse providerAccountLegalEntitiesResponse,
             [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
@@ -242,7 +249,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 "", query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
-            standardsService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
+            courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
