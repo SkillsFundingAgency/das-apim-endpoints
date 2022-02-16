@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Api.Controllers;
-using SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
                 Guid apprenticeId,
                 GetApprenticeResult mediatorResult,
                 [Frozen] Mock<IMediator> mockMediator,
-                [Greedy] ApprenticeAccountsController controller)
+                [Greedy] ApprenticeController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -44,7 +44,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task And_NoApprenticeIsReturnedFromMediator_Then_ReturnNotFound(
             Guid apprenticeId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticeAccountsController controller)
+            [Greedy] ApprenticeController controller)
         {
             var controllerResult = await controller.Get(apprenticeId) as NotFoundResult;
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task And_MediatorThrowsException_Then_ReturnBadRequest(
             Guid apprenticeId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ApprenticeAccountsController controller)
+            [Greedy] ApprenticeController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(

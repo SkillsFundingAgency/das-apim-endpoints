@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeFeedback.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.QueryHandlers
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
 {
     public class WhenHandlingGetApprentice
     {

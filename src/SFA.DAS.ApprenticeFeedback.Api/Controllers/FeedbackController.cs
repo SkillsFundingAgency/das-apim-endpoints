@@ -21,5 +21,12 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult CreateFeedbackTargets()
+        {
+
+            return Ok();
+        }
     }
 }
