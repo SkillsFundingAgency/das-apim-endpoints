@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 {
-    public class WhenAddingAnApprentice
+    public class WhenPostingCreateApprentice
     {
         private Mock<IMediator> _mockMediator;
 
@@ -30,21 +30,20 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task And_CommandIsProcessedSuccessfully_Then_ReturnCreated(
-            CreateApprentice request)
+        public async Task And_CommandIsProcessedSuccessfully_Then_ReturnCreated(CreateApprentice request)
         {
-            var result = await _controller.AddApprentice(request) as CreatedResult;
+            var result = await _controller.CreateApprentice(request) as CreatedResult;
 
             result.Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
-        public async Task And_CommandThrowsException_Then_ReturnBadRequest(CreateApprentice request)
+        public async Task And_CommandThrowsException_Then_ReturnError(CreateApprentice request)
         {
             _mockMediator.Setup(m => m.Send(It.IsAny<CreateApprenticeCommand>(), It.IsAny<CancellationToken>()))
                 .Throws(new Exception());
 
-            var result = await _controller.AddApprentice(request) as StatusCodeResult;
+            var result = await _controller.CreateApprentice(request) as StatusCodeResult;
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

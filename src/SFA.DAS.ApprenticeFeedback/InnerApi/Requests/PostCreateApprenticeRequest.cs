@@ -3,13 +3,13 @@ using System;
 
 namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
-    public class PostAddApprenticeRequest : IPostApiRequest
+    public class PostCreateApprenticeRequest : IPostApiRequest
     {
         public string PostUrl => "api/add-apprentice";
 
         public object Data { get; set; }
 
-        public PostAddApprenticeRequest(object data)
+        public PostCreateApprenticeRequest(object data)
         {
             Data = data;
         }
@@ -18,9 +18,7 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
     public class AddApprenticeData
     {
         public Guid ApprenticeId { get; set; }
-        public Guid ApprenticeshipId { get; set; }
-        public string Status { get; set; }
-        public string EmailAddress { get; set; }
-        public string FirstName { get; set; }
+        public long ApprenticeshipId { get; set; }
+        public int? Status { get; set; }
     }
 }

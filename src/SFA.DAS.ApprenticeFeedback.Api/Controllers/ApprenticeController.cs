@@ -45,30 +45,21 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddApprentice(CreateApprentice request)
+        public async Task<IActionResult> CreateApprentice(CreateApprentice request)
         {
             try
             {
                 var result = await _mediator.Send(new CreateApprenticeCommand
                 {
                     ApprenticeId = request.ApprenticeId,
-                    ApprenticeshipId = request.ApprenticeshipId,
-                    FirstName = request.FirstName,
-                    EmailAddress = request.EmailAddress,
-                    Status = request.Status
+                    ApprenticeshipId = request.ApprenticeshipId
                 });
 
                 return Created("", result);
             }
-            catch (HttpRequestContentException e)
-            {
-                _logger.LogError(e, $"Error attempting to get create apprentice for ApprenticeId: {request.ApprenticeId}");
-
-                return StatusCode((int)e.StatusCode, e.ErrorContent);
-            }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get create apprentice for ApprenticeId: {request.ApprenticeId}");
+                _logger.LogError(e, $"Error attempting to create apprentice for ApprenticeId: {request.ApprenticeId}");
 
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
