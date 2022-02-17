@@ -12,6 +12,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public string LastName { get; set; }
         public string Email { get; set; }
         public long Uln { get; set; }
+        public DeliveryModelDto DeliveryModel { get; set; }
         public string StandardUId { get; set; }
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
@@ -24,5 +25,11 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public bool HasHadDataLockSuccess { get; set; }
         public DateTime? OriginalStartDate { get; set; }
         public long ProviderId { get; set; }
+    }
+
+    public class DeliveryModelDto
+    {
+        public DeliveryModel Code { get; set; }
+        public string Description => Code.ToString();
     }
 }

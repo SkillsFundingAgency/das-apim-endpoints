@@ -23,6 +23,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public long EmployerAccountLegalEntityId { get; set; }
         public long TrainingProviderId { get; set; }
         public string TrainingProviderName { get; set; }
+        public DeliveryModel DeliveryModel { get; set; }
         public string CourseName { get; set; }
         public int CourseLevel { get; set; }
         public int CourseDuration { get; set; }
