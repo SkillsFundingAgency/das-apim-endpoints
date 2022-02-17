@@ -35,8 +35,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                 var model = new GetIndexResponse
                 {
                     PledgesCount = response.PledgesCount,
-                    ApplicationsCount = response.ApplicationsCount,
-                    IsTransferReceiver = response.IsTransferReceiver
+                    ApplicationsCount = response.ApplicationsCount
                 };
 
                 return Ok(model);
