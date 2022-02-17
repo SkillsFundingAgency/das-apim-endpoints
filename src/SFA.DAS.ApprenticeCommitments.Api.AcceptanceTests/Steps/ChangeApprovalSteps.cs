@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval;
@@ -12,6 +14,7 @@ using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
@@ -44,7 +47,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
-            _approvedApprenticeships = table.CreateSet<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>();
+            _approvedApprenticeships = table.CreateSet(r =>
+                new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
+                {
+                    DeliveryModel = CreateDeliveryModelDto(r["Delivery Model"])
+                });
 
             foreach (var approval in _approvedApprenticeships)
             {
@@ -61,6 +68,17 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                             .WithBody(JsonConvert.SerializeObject(approval))
                                 );
             }
+        }
+
+        private static DeliveryModelDto CreateDeliveryModelDto(string deliveryModel)
+        {
+            if (!Enum.TryParse<DeliveryModel>(deliveryModel, out var code))
+                code = DeliveryModel.Normal;
+
+            return new DeliveryModelDto
+            {
+                Code = code,
+            };
         }
 
         [Given("the following training providers exist")]
@@ -202,6 +220,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.CourseName.Should().Be(name);
             innerApiRequest.CourseLevel.Should().Be(level);
             innerApiRequest.CourseDuration.Should().Be(courseDuration);
+        }
+
+        [Then(@"the delivery model should be ""(.*)""")]
+        public void ThenTheDeliveryModelShouldBe(string deliveryModel)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.DeliveryModel.Should().Be(Enum.Parse<DeliveryModel>(deliveryModel));
         }
 
         [Then(@"the apprentice name should be '(.*)' '(.*)'")]
