@@ -7,9 +7,6 @@ using SFA.DAS.ManageApprenticeships.Api.Controllers;
 using SFA.DAS.ManageApprenticeships.Api.Models.Transfers;
 using SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,7 +37,6 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.Transfers
 
             Assert.AreEqual(mediatorResult.PledgesCount, getIndexResponse.PledgesCount);
             Assert.AreEqual(mediatorResult.ApplicationsCount, getIndexResponse.ApplicationsCount);
-            Assert.AreEqual(mediatorResult.IsTransferReceiver, getIndexResponse.IsTransferReceiver);
         }
     }
 }
