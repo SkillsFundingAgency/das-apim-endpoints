@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
+﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -37,6 +37,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool MatchSector { get; set; }
+        public bool MatchJobRole { get; set; }
+        public bool MatchLevel { get; set; }
+        public bool MatchLocation { get; set; }
+        public int MatchPercentage { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -71,7 +76,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 Locations = result.Locations,
                 AdditionalLocation = result.AdditionalLocation,
                 SpecificLocation = result.SpecificLocation,
-                AutomaticApproval = result.AutomaticApproval
+                AutomaticApproval = result.AutomaticApproval,
+                MatchJobRole = result.MatchJobRole,
+                MatchLevel = result.MatchLevel,
+                MatchLocation = result.MatchLocation,
+                MatchSector = result.MatchSector,
+                MatchPercentage = result.MatchPercentage
             };
         }
     }

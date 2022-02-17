@@ -27,10 +27,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
             public string Status { get; set; }
-            public bool IsLocationMatch { get; set; }
-            public bool IsSectorMatch { get; set; }
-            public bool IsJobRoleMatch { get; set; }
-            public bool IsLevelMatch { get; set; }
+            public bool MatchLocation { get; set; }
+            public bool MatchSector { get; set; }
+            public bool MatchJobRole { get; set; }
+            public bool MatchLevel { get; set; }
+            public int MatchPercentage { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public IEnumerable<string> EmailAddresses { get; set; }
@@ -63,10 +64,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
                     Status = application.Status,
-                    IsLocationMatch = application.IsLocationMatch,
-                    IsSectorMatch = application.IsSectorMatch,
-                    IsJobRoleMatch = application.IsJobRoleMatch,
-                    IsLevelMatch = application.IsLevelMatch,
+                    MatchLocation = application.MatchLocation,
+                    MatchSector = application.MatchSector,
+                    MatchJobRole = application.MatchJobRole,
+                    MatchLevel = application.MatchLevel,
+                    MatchPercentage = application.MatchPercentage,
                     EmailAddresses = application.EmailAddresses,
                     JobRole = application.JobRole,
                     BusinessWebsite = application.BusinessWebsite,

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
+﻿using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications
 {
@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             return new GetApplicationsQueryResult
             {
-                Applications = application.Applications.Select(x => (Application) x),
+                Applications = application.Applications.Select(x => (Application)x),
                 PledgeStatus = application.PledgeStatus
             };
         }
@@ -36,10 +36,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
             public string Status { get; set; }
-            public bool IsLocationMatch { get; set; }
-            public bool IsSectorMatch { get; set; }
-            public bool IsJobRoleMatch { get; set; }
-            public bool IsLevelMatch { get; set; }
+            public bool MatchSector { get; set; }
+            public bool MatchJobRole { get; set; }
+            public bool MatchLevel { get; set; }
+            public bool MatchLocation { get; set; }
+            public int MatchPercentage { get; set; }
             public string EmployerAccountName { get; set; }
             public IEnumerable<GetApplicationResponse.ApplicationLocation> Locations { get; set; }
             public IEnumerable<string> Sectors { get; set; }
@@ -88,13 +89,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                         Id = o.Id,
                         PledgeLocationId = o.PledgeLocationId
                     }),
-                    IsJobRoleMatch = !pledgeResponse.JobRoles.Any() ||
-                                     roles.Any(r => r.Description == application.StandardRoute),
-                    IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels
-                        .Select(x => char.GetNumericValue(x.Last())).Contains(application.StandardLevel),
-                    IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any(),
-                    IsSectorMatch = !pledgeResponse.Sectors.Any() ||
-                                    application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x)),
+                    MatchJobRole = application.MatchJobRole,
+                    MatchLevel = application.MatchLevel,
+                    MatchLocation = application.MatchLocation,
+                    MatchSector = application.MatchSector,
+                    MatchPercentage = application.MatchPercentage,
                     StandardLevel = application.StandardLevel,
                     PledgeLocations = pledgeResponse.Locations,
                     SpecificLocation = application.SpecificLocation,
@@ -133,10 +132,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                         Id = o.Id,
                         PledgeLocationId = o.PledgeLocationId
                     }),
-                    IsJobRoleMatch = x.IsJobRoleMatch,
-                    IsLevelMatch = x.IsLevelMatch,
-                    IsLocationMatch = x.IsLocationMatch,
-                    IsSectorMatch = x.IsSectorMatch,
+                    MatchJobRole = x.MatchJobRole,
+                    MatchLevel = x.MatchLevel,
+                    MatchLocation = x.MatchLocation,
+                    MatchSector = x.MatchSector,
+                    MatchPercentage = x.MatchPercentage,
                     StandardLevel = x.StandardLevel,
                     PledgeLocations = x?.PledgeLocations?.Select(o => new LocationDataItem
                     {
