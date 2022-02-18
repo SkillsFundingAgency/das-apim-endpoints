@@ -7,10 +7,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +22,6 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             GetAccountTransferStatusResponse getAccountTransferStatusResponse,
             GetApplicationsResponse getApplicationsResponse,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             GetIndexQueryHandler getIndexQueryHandler)
         {
             GetIndexQuery getIndexQuery = new GetIndexQuery()
@@ -41,15 +37,10 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
                 .Setup(x => x.Get<GetApplicationsResponse>(It.IsAny<GetApplicationsRequest>()))
                 .ReturnsAsync(getApplicationsResponse);
 
-            commitmentsApiClient
-                .Setup(x => x.Get<GetAccountTransferStatusResponse>(It.IsAny<GetAccountTransferStatusRequest>()))
-                .ReturnsAsync(getAccountTransferStatusResponse);
-
             var results = await getIndexQueryHandler.Handle(getIndexQuery, CancellationToken.None);
 
             Assert.AreEqual(getPledgesResponse.TotalPledges, results.PledgesCount);
             Assert.AreEqual(getApplicationsResponse.Applications.Count(), results.ApplicationsCount);
-            Assert.AreEqual(getAccountTransferStatusResponse.IsTransferReceiver, results.IsTransferReceiver);
         }
     }
 }
