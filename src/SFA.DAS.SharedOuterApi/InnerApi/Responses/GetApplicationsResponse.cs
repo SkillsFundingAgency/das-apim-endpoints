@@ -38,12 +38,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<ApplicationLocation> Locations { get; set; }
             public string JobRole { get; set; }
             public int PledgeRemainingAmount { get; set; }
-            public int MaxFunding { get; set; }
             public string EmployerAccountName { get; set; }
-            public bool IsLocationMatch { get; set; }
-            public bool IsSectorMatch { get; set; }
-            public bool IsJobRoleMatch { get; set; }
-            public bool IsLevelMatch { get; set; }
+            public bool MatchLocation { get; set; }
+            public bool MatchSector { get; set; }
+            public bool MatchJobRole { get; set; }
+            public bool MatchLevel { get; set; }
+            public int MatchPercentage { get; set; }
             public List<GetPledgesResponse.Pledge.LocationDataItem> PledgeLocations { get; set; }
             public string SpecificLocation { get; set; }
             public string AdditionalLocations { get; set; }

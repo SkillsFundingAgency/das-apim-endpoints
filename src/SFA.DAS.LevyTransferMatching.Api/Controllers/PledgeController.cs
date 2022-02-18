@@ -241,11 +241,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
 
-            return Ok(new GetApplicationsResponse
-            {
-                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x),
-                PledgeStatus = queryResult?.PledgeStatus
-            });
+            return Ok((GetApplicationsResponse)queryResult);
         }
         
         [Authorize(Policy = PolicyNames.PledgeAccess)]
