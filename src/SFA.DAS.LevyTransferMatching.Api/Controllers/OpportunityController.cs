@@ -123,7 +123,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 EmailAddresses = request.EmailAddresses,
                 BusinessWebsite = request.BusinessWebsite,
                 UserId = request.UserId,
-                UserDisplayName = request.UserDisplayName
+                UserDisplayName = request.UserDisplayName,
+                MatchJobRole = request.MatchJobRole,
+                MatchLevel = request.MatchLevel,
+                MatchLocation = request.MatchLocation,
+                MatchSector = request.MatchSector,
+                MatchPercentage = request.MatchPercentage
             });
 
             return Created($"/accounts/{accountId}/opportunities/{opportunityId}/apply", (ApplyResponse)result);

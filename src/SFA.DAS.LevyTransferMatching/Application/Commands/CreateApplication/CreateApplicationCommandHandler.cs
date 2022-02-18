@@ -70,7 +70,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 EmailAddresses = request.EmailAddresses,
                 BusinessWebsite = request.BusinessWebsite,
                 UserId = request.UserId,
-                UserDisplayName = request.UserDisplayName
+                UserDisplayName = request.UserDisplayName,
+                MatchJobRole = request.MatchJobRole,
+                MatchLevel = request.MatchLevel,
+                MatchLocation = request.MatchLocation,
+                MatchSector = request.MatchSector,
+                MatchPercentage = request.MatchPercentage
             };
 
             var createApplicationRequest = new CreateApplicationRequest(request.PledgeId, data);
