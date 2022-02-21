@@ -24,6 +24,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApp
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -264,7 +265,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 PledgeStatus = queryResult?.PledgeStatus
             });
         }
-        
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/applications-account-names")]
+        public async Task<IActionResult> ApplicationsAccountNames(int pledgeId)
+        {
+            var queryResult = await _mediator.Send(new GetApplicationsAccountNamesQuery { PledgeId = pledgeId });
+
+            return Ok(new GetApplicationsAccountNamesResponse
+            {
+                Applications = queryResult?.Applications.Select(x => (GetApplicationsAccountNamesResponse.Application)x)
+            });
+        }
+
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]
