@@ -10,6 +10,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {
@@ -37,8 +38,15 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 new PausePaymentsRequest
                 {
                     Action = PausePaymentsAction.Pause,
-                    AccountLegalEntityId = _fixture.Create<long>(),
-                    ULN = _fixture.Create<long>(),
+                    Applications = new List<InnerApi.Requests.Application>()
+                    {
+                        _fixture.Create<InnerApi.Requests.Application>(),
+                        new InnerApi.Requests.Application(){
+                            AccountLegalEntityId = _fixture.Create<long>(),
+                            ULN = _fixture.Create<long>(),
+                        },
+                        _fixture.Create<InnerApi.Requests.Application>()
+                    }.ToArray(),
                     ServiceRequest = _fixture.Create<ServiceRequest>()
                 });
         }
