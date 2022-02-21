@@ -20,7 +20,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             var applicationsTask = _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
             {
-                PledgeId = request.PledgeId
+                PledgeId = request.PledgeId,
+                SortOrder = request.SortOrder,
+                SortDirection = request.SortDirection
             });
 
             var pledgeTask = _levyTransferMatchingService.GetPledge(request.PledgeId);

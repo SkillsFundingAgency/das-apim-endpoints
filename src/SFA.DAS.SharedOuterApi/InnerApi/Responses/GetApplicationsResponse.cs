@@ -26,6 +26,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public IEnumerable<string> Sectors { get; set; }
             public string FirstName { get; set; }

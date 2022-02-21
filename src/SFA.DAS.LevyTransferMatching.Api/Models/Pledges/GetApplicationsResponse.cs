@@ -21,6 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
@@ -62,6 +63,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     StartDate = application.StartDate,
                     TotalAmount = application.TotalAmount,
                     Amount = application.Amount,
+                    CurrentFinancialYearAmount = application.CurrentFinancialYearAmount,
                     HasTrainingProvider = application.HasTrainingProvider,
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
