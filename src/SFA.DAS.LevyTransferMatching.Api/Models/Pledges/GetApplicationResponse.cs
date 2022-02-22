@@ -37,10 +37,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
         public bool AutomaticApproval { get; set; }
-        public bool MatchSector { get; set; }
-        public bool MatchJobRole { get; set; }
-        public bool MatchLevel { get; set; }
-        public bool MatchLocation { get; set; }
+        public bool IsLocationMatch { get; set; }
+        public bool IsSectorMatch { get; set; }
+        public bool IsJobRoleMatch { get; set; }
+        public bool IsLevelMatch { get; set; }
         public int MatchPercentage { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
@@ -77,10 +77,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AdditionalLocation = result.AdditionalLocation,
                 SpecificLocation = result.SpecificLocation,
                 AutomaticApproval = result.AutomaticApproval,
-                MatchJobRole = result.MatchJobRole,
-                MatchLevel = result.MatchLevel,
-                MatchLocation = result.MatchLocation,
-                MatchSector = result.MatchSector,
+                IsJobRoleMatch = result.MatchJobRole,
+                IsLevelMatch = result.MatchLevel,
+                IsLocationMatch = result.MatchLocation,
+                IsSectorMatch = result.MatchSector,
                 MatchPercentage = result.MatchPercentage
             };
         }
