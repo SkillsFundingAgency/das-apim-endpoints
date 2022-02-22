@@ -6,18 +6,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications
 {
-    public class GetApplicationsAccountNamesQueryHandler : IRequestHandler<GetApplicationsAccountNamesQuery, GetApplicationsAccountNamesQueryResult>
+    public class GetRejectApplicationsQueryHandler : IRequestHandler<GetRejectApplicationsQuery, GetRejectApplicationsQueryResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
 
-        public GetApplicationsAccountNamesQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
+        public GetRejectApplicationsQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<GetApplicationsAccountNamesQueryResult> Handle(GetApplicationsAccountNamesQuery request, CancellationToken cancellationToken)
+        public async Task<GetRejectApplicationsQueryResult> Handle(GetRejectApplicationsQuery request, CancellationToken cancellationToken)
         {
             var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest 
             {
@@ -25,9 +25,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 ApplicationStatusFilter = PledgeStatus.Pending 
             });
 
-            return new GetApplicationsAccountNamesQueryResult
+            return new GetRejectApplicationsQueryResult
             {
-                Applications = applicationsResponse?.Applications.Select(x => new GetApplicationsAccountNamesQueryResult.Application
+                Applications = applicationsResponse?.Applications.Select(x => new GetRejectApplicationsQueryResult.Application
                 {
                     Id = x.Id,
                     DasAccountName = x.DasAccountName,

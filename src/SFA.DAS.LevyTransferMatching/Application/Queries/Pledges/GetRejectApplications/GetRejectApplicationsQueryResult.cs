@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications
 {
-    public class GetApplicationsAccountNamesQueryResult
+    public class GetRejectApplicationsQueryResult
     {
         public IEnumerable<Application> Applications { get; set; }
         public class Application

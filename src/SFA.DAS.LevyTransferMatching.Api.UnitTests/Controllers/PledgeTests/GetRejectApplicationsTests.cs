@@ -6,19 +6,19 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
-    public class GetApplicationsAccountNamesTests
+    public class GetRejectApplicationsTests
     {
         private PledgeController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-        private GetApplicationsAccountNamesQueryResult _queryResult;
+        private GetRejectApplicationsQueryResult _queryResult;
         private int _pledgeId;
 
         [SetUp]
@@ -27,8 +27,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             _pledgeId = _fixture.Create<int>();
 
             _mediator = new Mock<IMediator>();
-            _queryResult = _fixture.Create<GetApplicationsAccountNamesQueryResult>();
-            _mediator.Setup(x => x.Send(It.Is<GetApplicationsAccountNamesQuery>(q => q.PledgeId == _pledgeId), It.IsAny<CancellationToken>()))
+            _queryResult = _fixture.Create<GetRejectApplicationsQueryResult>();
+            _mediator.Setup(x => x.Send(It.Is<GetRejectApplicationsQuery>(q => q.PledgeId == _pledgeId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
             _controller = new PledgeController(_mediator.Object, Mock.Of<ILogger<PledgeController>>());
@@ -37,10 +37,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task GetApplicationsAccountNames_Returns_GetApplicationsAccountNamesResponse()
         {
-            var controllerResponse = await _controller.ApplicationsAccountNames(_pledgeId);
+            var controllerResponse = await _controller.RejectApplications(_pledgeId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            var response = okObjectResult.Value as GetApplicationsAccountNamesResponse;
+            var response = okObjectResult.Value as GetRejectApplicationsResponse;
 
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(response);

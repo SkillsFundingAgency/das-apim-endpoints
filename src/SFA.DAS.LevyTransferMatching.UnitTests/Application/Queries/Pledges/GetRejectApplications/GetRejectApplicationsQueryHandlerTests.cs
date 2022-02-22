@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -13,19 +13,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetApplicationsAccountNames
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetRejectApplications
 {
-    public class GetApplicationsAccountNamesQueryHandlerTests
+    public class GetRejectApplicationsQueryHandlerTests
     {
-        private GetApplicationsAccountNamesQueryHandler _handler;
+        private GetRejectApplicationsQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _service;
-        private GetApplicationsAccountNamesQuery _query;
+        private GetRejectApplicationsQuery _query;
         private readonly Fixture _fixture = new Fixture();
 
         [SetUp]
         public void SetUp()
         {
-            _query = _fixture.Create<GetApplicationsAccountNamesQuery>();
+            _query = _fixture.Create<GetRejectApplicationsQuery>();
             _service = new Mock<ILevyTransferMatchingService>();
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId 
                                 && p.ApplicationStatusFilter == PledgeStatus.Pending)))
@@ -45,7 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
                         }
                     }
                 });
-            _handler = new GetApplicationsAccountNamesQueryHandler(_service.Object);
+            _handler = new GetRejectApplicationsQueryHandler(_service.Object);
         }
 
         [Test]

@@ -24,7 +24,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApp
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationsAccountNames;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -268,14 +268,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
-        [Route("accounts/{accountId}/pledges/{pledgeId}/applications-account-names")]
-        public async Task<IActionResult> ApplicationsAccountNames(int pledgeId)
+        [Route("accounts/{accountId}/pledges/{pledgeId}/reject-applications")]
+        public async Task<IActionResult> RejectApplications(int pledgeId)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsAccountNamesQuery { PledgeId = pledgeId });
+            var queryResult = await _mediator.Send(new GetRejectApplicationsQuery { PledgeId = pledgeId });
 
-            return Ok(new GetApplicationsAccountNamesResponse
+            return Ok(new GetRejectApplicationsResponse
             {
-                Applications = queryResult?.Applications.Select(x => (GetApplicationsAccountNamesResponse.Application)x)
+                Applications = queryResult?.Applications.Select(x => (GetRejectApplicationsResponse.Application)x)
             });
         }
 
