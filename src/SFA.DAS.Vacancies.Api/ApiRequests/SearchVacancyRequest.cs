@@ -69,7 +69,7 @@ namespace SFA.DAS.Vacancies.Api
         /// The Id of the standard your are searching for - can be obtained from `GET referencedata/courses`
         /// </summary>
         [FromQuery]
-        public int? StandardLarsCode { get ; set ; }
+        public List<int> StandardLarsCode { get ; set ; }
         /// <summary>
         /// If set to `true` - then filters by the AccountId or UKPRN linked to your subscription.
         /// </summary>
