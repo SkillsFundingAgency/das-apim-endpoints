@@ -162,6 +162,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/reject-applications")]
+        public async Task<IActionResult> RejectApplications(int pledgeId)
+        {
+            var queryResult = await _mediator.Send(new GetRejectApplicationsQuery { PledgeId = pledgeId });
+
+            return Ok(new GetRejectApplicationsResponse
+            {
+                Applications = queryResult?.Applications.Select(x => (GetRejectApplicationsResponse.Application)x)
+            });
+        }
+
         [HttpGet]
         [Route("accounts/{accountId}/pledges/create/amount")]
         public async Task<IActionResult> Amount(string accountId)
@@ -263,19 +276,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             {
                 Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x),
                 PledgeStatus = queryResult?.PledgeStatus
-            });
-        }
-
-        [Authorize(Policy = PolicyNames.PledgeAccess)]
-        [HttpGet]
-        [Route("accounts/{accountId}/pledges/{pledgeId}/reject-applications")]
-        public async Task<IActionResult> RejectApplications(int pledgeId)
-        {
-            var queryResult = await _mediator.Send(new GetRejectApplicationsQuery { PledgeId = pledgeId });
-
-            return Ok(new GetRejectApplicationsResponse
-            {
-                Applications = queryResult?.Applications.Select(x => (GetRejectApplicationsResponse.Application)x)
             });
         }
 
