@@ -68,11 +68,11 @@ namespace SFA.DAS.Vacancies.Api.Models
                Course = source,
                Wage = source,
                Distance = source.Distance,
-               Location = !source.IsEmployerAnonymous ? new VacancyLocation
+               Location = new VacancyLocation
                {
                    Lat = source.Location.Lat,
                    Lon = source.Location.Lon
-               } : null
+               }
            };
        }
     }
