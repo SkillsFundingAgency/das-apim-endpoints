@@ -6,13 +6,13 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests
 {
     public static class MockServers
     {
-        public static MockApi InnerApi { get; set; }
+        public static MockApi? InnerApi { get; set; }
     }
 
 
     public class TestContext : IDisposable
     {
-        public MockApi InnerApi
+        public MockApi? InnerApi
         {
             get => MockServers.InnerApi;
             set
@@ -22,7 +22,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests
             }
         }
 
-        public HttpClient OuterApiClient { get; set; }
+        public HttpClient? OuterApiClient { get; set; }
 
         private bool _isDisposed;
 
