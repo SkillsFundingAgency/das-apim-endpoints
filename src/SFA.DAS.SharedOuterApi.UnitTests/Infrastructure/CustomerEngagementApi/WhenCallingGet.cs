@@ -38,8 +38,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object);
+            //hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             await actual.Get<string>(getTestRequest);
@@ -77,7 +77,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             var response = await actual.Get<TestResponse>(getTestRequest);
@@ -105,7 +105,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             var response = await actual.Get<TestResponse>(getTestRequest);
