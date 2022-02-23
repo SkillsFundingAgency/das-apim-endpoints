@@ -66,7 +66,7 @@ namespace SFA.DAS.Vacancies.Api
         [FromQuery]
         public uint? PostedInLastNumberOfDays { get ; set ; } = null;
         /// <summary>
-        /// The Ids of the standard your are searching for - can be obtained from `GET referencedata/courses`
+        /// The Id or Ids of the standard you are searching for - can be obtained from `GET referencedata/courses`
         /// </summary>
         [FromQuery]
         public List<int> StandardLarsCode { get ; set ; }
