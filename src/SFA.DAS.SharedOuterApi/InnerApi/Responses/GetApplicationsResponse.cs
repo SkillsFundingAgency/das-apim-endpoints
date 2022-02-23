@@ -26,6 +26,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public IEnumerable<string> Sectors { get; set; }
             public string FirstName { get; set; }
@@ -38,7 +39,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<ApplicationLocation> Locations { get; set; }
             public string JobRole { get; set; }
             public int PledgeRemainingAmount { get; set; }
-            public int MaxFunding { get; set; }
             public string EmployerAccountName { get; set; }
             public bool MatchSector { get; set; }
             public bool MatchJobRole { get; set; }
@@ -50,10 +50,18 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public string AdditionalLocations { get; set; }
             public long SenderEmployerAccountId { get; set; }
             public string SenderEmployerAccountName { get; set; }
+            public IEnumerable<CostProjection> CostProjections { get; set; }
+
             public class ApplicationLocation
             {
                 public int Id { get; set; }
                 public int PledgeLocationId { get; set; }
+            }
+
+            public class CostProjection
+            {
+                public string FinancialYear { get; set; }
+                public int Amount { get; set; }
             }
         }
     }

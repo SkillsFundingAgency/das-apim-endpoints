@@ -12,12 +12,10 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
     public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery, GetIndexQueryResult>
     {
         private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
 
-        public GetIndexQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient)
+        public GetIndexQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
         {
             _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
-            _commitmentsApiClient = commitmentsApiClient;
         }
 
         public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
@@ -27,16 +25,13 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
             {
                 AccountId = request.AccountId
             });
-            var transferStatusTask = _commitmentsApiClient.Get<GetAccountTransferStatusResponse>(new GetAccountTransferStatusRequest(request.AccountId));
 
-            await Task.WhenAll(pledgesTask, applicationsTask, transferStatusTask);
+            await Task.WhenAll(pledgesTask, applicationsTask);
 
             return new GetIndexQueryResult
             {
                 PledgesCount = pledgesTask.Result.TotalPledges,
-                ApplicationsCount = applicationsTask.Result.Applications.Count(),
-                IsTransferReceiver = transferStatusTask.Result.IsTransferReceiver,
-                IsTransferSender = transferStatusTask.Result.IsTransferSender
+                ApplicationsCount = applicationsTask.Result.Applications.Count()
             };
         }
     }

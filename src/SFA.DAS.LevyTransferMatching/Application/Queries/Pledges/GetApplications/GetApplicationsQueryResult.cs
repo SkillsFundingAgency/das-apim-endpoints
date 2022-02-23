@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         {
             return new GetApplicationsQueryResult
             {
-                Applications = application.Applications.Select(x => (Application)x),
+                Applications = application.Applications.Select(x => (Application) x),
                 PledgeStatus = application.PledgeStatus
             };
         }
@@ -32,6 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
@@ -57,8 +58,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public List<LocationDataItem> PledgeLocations { get; set; }
             public string AdditionalLocations { get; set; }
             public string SpecificLocation { get; set; }
-            public static Application BuildApplication(GetApplicationsResponse.Application application,
-                IEnumerable<ReferenceDataItem> roles, Pledge pledgeResponse)
+            public static Application BuildApplication(GetApplicationsResponse.Application application, Pledge pledgeResponse)
             {
                 return new Application
                 {
@@ -69,6 +69,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                     StartDate = application.StartDate,
                     Amount = application.Amount,
                     TotalAmount = application.TotalAmount,
+                    CurrentFinancialYearAmount = application.CurrentFinancialYearAmount,
                     HasTrainingProvider = application.HasTrainingProvider,
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
