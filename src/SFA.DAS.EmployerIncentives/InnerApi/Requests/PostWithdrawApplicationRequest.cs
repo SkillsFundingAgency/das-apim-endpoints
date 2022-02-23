@@ -29,11 +29,4 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public long AccountId { get; set; }
         public string EmailAddress { get; set; }
     }
-
-    public class ServiceRequest
-    {
-        public string TaskId { get; set; }
-        public string DecisionReference { get; set; }
-        public DateTime? TaskCreatedDate { get; set; }
-    }    
 }

@@ -27,6 +27,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\BlockAccountLegalEntitiesForPayment.feature.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="Features\ConfirmApprenticeEmploymentDetails.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
@@ -70,6 +73,10 @@
     <SpecFlowFeatureFiles Update="Features\ApprenticeshipDetails.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ConfirmApprenticeEmploymentDetails.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\BlockAccountLegalEntitiesForPayment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BlockAccountLegalEntitiesForPayment.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
      <SpecFlowFeatureFiles Update="Features\EmploymentCheck.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

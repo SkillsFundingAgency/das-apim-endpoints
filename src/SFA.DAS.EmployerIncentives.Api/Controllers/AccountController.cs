@@ -9,8 +9,10 @@ using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -112,6 +114,14 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         public async Task<IActionResult> UpdateVrfCaseStatus(long accountId, long accountLegalEntityId, string vrfCaseStatus)
         {
             await _mediator.Send(new UpdateVendorRegistrationCaseStatusCommand(accountId, accountLegalEntityId, vrfCaseStatus));
+
+            return NoContent();
+        }
+
+        [HttpPatch("/blockedpayments")]
+        public async Task<IActionResult> BlockAccountLegalEntityForPayments(BlockAccountLegalEntityForPaymentsRequest request)
+        {
+            await _mediator.Send(new BlockAccountLegalEntityForPaymentsCommand(request));
 
             return NoContent();
         }
