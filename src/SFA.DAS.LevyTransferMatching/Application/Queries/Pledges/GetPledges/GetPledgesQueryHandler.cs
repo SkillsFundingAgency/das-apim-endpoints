@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
         public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
         {
-            var response = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId));
+            var response = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(null, request.AccountId));
 
             return new GetPledgesQueryResult
             {
