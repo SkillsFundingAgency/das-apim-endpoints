@@ -42,9 +42,13 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
                 .RespondWith(
                     WireMock.ResponseBuilders.Response.Create()
                         .WithBody(ExpectedResponseBody)
-                        .WithStatusCode((int)HttpStatusCode.OK));
+                        .WithStatusCode((int) HttpStatusCode.OK));
 
-            Response = await Context.OuterApiClient?.PostAsync(Url, new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
+            if (Context.OuterApiClient != null)
+            {
+                Response = await Context.OuterApiClient.PostAsync(Url,
+                    new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
+            }
         }
 
         [Then(@"a new Employment Check request is registered in Employment Check system")]
