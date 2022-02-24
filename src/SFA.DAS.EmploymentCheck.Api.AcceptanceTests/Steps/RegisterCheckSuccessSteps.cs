@@ -33,7 +33,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
 
             ExpectedResponseBody = $"{{\"errorType\":null,\"errorMessage\":null}}";
 
-            Context.InnerApi.MockServer
+            Context.InnerApi?.MockServer
                 .Given(
                     Request.Create()
                         .WithPath(Url)
@@ -44,7 +44,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Steps
                         .WithBody(ExpectedResponseBody)
                         .WithStatusCode((int)HttpStatusCode.OK));
 
-            Response = await Context.OuterApiClient.PostAsync(Url, new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
+            Response = await Context.OuterApiClient?.PostAsync(Url, new StringContent(JsonSerializer.Serialize(check), Encoding.UTF8, "application/json"));
         }
 
         [Then(@"a new Employment Check request is registered in Employment Check system")]

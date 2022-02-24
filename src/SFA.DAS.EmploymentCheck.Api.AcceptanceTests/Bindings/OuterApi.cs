@@ -24,7 +24,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Bindings
             var config = new Dictionary<string, string>
             {
                 {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
-                {"EmploymentCheckInnerApi:url", _context.InnerApi.BaseAddress + "/"},
+                {"EmploymentCheckInnerApi:url", _context.InnerApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""}
             };
