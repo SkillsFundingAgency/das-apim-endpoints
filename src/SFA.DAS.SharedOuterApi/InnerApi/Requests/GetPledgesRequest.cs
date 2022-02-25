@@ -9,20 +9,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
     {
         public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null)
         {
-            if (accountId.HasValue)
-            {
-                QuerystringHelper.KeyValues = new Dictionary<string, string>(){
-                    { "accountId", accountId.ToString() }
-                };
-            }
-
-            if (sectors != null && sectors.Any())
-            {
-                QuerystringHelper.ListKey = "sectors";
-                QuerystringHelper.ListValues = sectors;
-            }
-
-            this.GetUrl = $"pledges{QuerystringHelper.GetFormattedQuerystring()}";
+            this.GetUrl = $"pledges{QuerystringHelper.GetFormattedQuerystring("sectors",sectors, new Dictionary<string, string>(){ { "accountId", accountId.ToString() } })}";
         }
 
         public string GetUrl { get; set; }

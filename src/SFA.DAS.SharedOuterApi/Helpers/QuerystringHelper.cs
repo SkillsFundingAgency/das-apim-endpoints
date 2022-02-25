@@ -8,19 +8,18 @@ namespace SFA.DAS.SharedOuterApi.Helpers
 {
     public static class QuerystringHelper
     {
-        public static string ListKey { get; set; }
-        public static IEnumerable<string> ListValues { get; set; }
-        public static IDictionary<string, string> KeyValues { get; set; }
-
-        public static string GetFormattedQuerystring()
+        public static string GetFormattedQuerystring(string ListKey, IEnumerable<string> ListValues, IDictionary<string, string> KeyValues)
         {
             var queryParams = new NameValueCollection();
             if (KeyValues != null && KeyValues.Any())
             {
                 foreach (var item in KeyValues)
-                    queryParams.Add(item.Key, item.Value);
+                {
+                    if (!string.IsNullOrEmpty(item.Value))
+                        queryParams.Add(item.Key, item.Value);
+                }    
             }
-            if (!string.IsNullOrEmpty(ListKey) && ListValues.Any())
+            if (!string.IsNullOrEmpty(ListKey) && ListValues != null && ListValues.Any())
             {
                 foreach (var value in ListValues)
                     queryParams.Add(ListKey, value);
