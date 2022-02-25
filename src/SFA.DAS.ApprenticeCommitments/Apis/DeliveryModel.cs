@@ -2,7 +2,7 @@
 {
     public enum DeliveryModel
     {
-        Normal = 0,
-        Flexible = 1,
+        Regular = 0,
+        PortableFlexiJob = 1,
     }
 }

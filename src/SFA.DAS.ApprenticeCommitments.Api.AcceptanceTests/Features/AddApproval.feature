@@ -6,12 +6,12 @@ Feature: AddApproval
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model |
-	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Normal         |
-	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   |                |
-	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org |                |
-	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | Flexible       |
-	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               |                |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model   |
+	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Regular          |
+	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   | Regular          |
+	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org | Regular          |
+	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | PortableFlexiJob |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               | Regular          |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -67,11 +67,11 @@ Scenario: New apprenticeship has flexible delivery model
 	| Commitments ApprenticeshipId | Employer Account Legal Entity Id | Training Provider Id |
 	| 2                            | 123                              | 1002                 |
 	Then the inner API has received the posted values
-	And the delivery model should be "Flexible"
+	And the delivery model should be "PortableFlexiJob"
 
 Scenario: Old apprenticeship has normal delivery model
 	When the following apprenticeship is posted
 	| Commitments ApprenticeshipId | Employer Account Legal Entity Id | Training Provider Id |
 	| 4                            | 123                              | 1002                 |
 	Then the inner API has received the posted values
-	And the delivery model should be "Normal"
+	And the delivery model should be "Regular"

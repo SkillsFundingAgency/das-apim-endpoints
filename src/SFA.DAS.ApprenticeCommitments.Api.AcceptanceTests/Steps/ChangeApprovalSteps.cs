@@ -47,11 +47,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
-            _approvedApprenticeships = table.CreateSet(r =>
-                new Apis.CommitmentsV2InnerApi.ApprenticeshipResponse
-                {
-                    DeliveryModel = CreateDeliveryModelDto(r["Delivery Model"])
-                });
+            _approvedApprenticeships = table.CreateSet<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>();
 
             foreach (var approval in _approvedApprenticeships)
             {
@@ -68,17 +64,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                             .WithBody(JsonConvert.SerializeObject(approval))
                                 );
             }
-        }
-
-        private static DeliveryModelDto CreateDeliveryModelDto(string deliveryModel)
-        {
-            if (!Enum.TryParse<DeliveryModel>(deliveryModel, out var code))
-                code = DeliveryModel.Normal;
-
-            return new DeliveryModelDto
-            {
-                Code = code,
-            };
         }
 
         [Given("the following training providers exist")]

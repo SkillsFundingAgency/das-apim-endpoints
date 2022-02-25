@@ -61,7 +61,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
                 TrainingProviderId = command.TrainingProviderId,
                 TrainingProviderName = ProviderName(trainingProvider),
-                DeliveryModel = apprentice.DeliveryModel.Code,
+                DeliveryModel = apprentice.DeliveryModel,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
                 CourseDuration = course.TypicalDuration,
