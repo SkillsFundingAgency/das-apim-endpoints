@@ -20,7 +20,7 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
 
         public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
         {
-            var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>(new GetPledgesRequest(null, request.AccountId));
+            var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>(new GetPledgesRequest(request.AccountId));
             var applicationsTask = _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
             {
                 AccountId = request.AccountId

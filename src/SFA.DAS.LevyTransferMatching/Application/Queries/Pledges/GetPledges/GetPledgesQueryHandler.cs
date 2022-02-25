@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
         public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
         {
-            var response = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(null, request.AccountId));
+            var response = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId));
 
             return new GetPledgesQueryResult
             {

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Helpers;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,23 +7,22 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetPledgesRequest : IGetApiRequest
     {
-        public GetPledgesRequest(IEnumerable<string> sectors = null, long? accountId = null)
+        public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null)
         {
-            this.GetUrl = "pledges";
+            if (accountId.HasValue)
+            {
+                QuerystringHelper.KeyValues = new Dictionary<string, string>(){
+                    { "accountId", accountId.ToString() }
+                };
+            }
 
             if (sectors != null && sectors.Any())
             {
-                foreach (var sector in sectors)
-                {
-                    this.GetUrl = this.GetUrl + (sector == sectors.First() ? "?" : "&") + "sectors=" + sector;
-                }
+                QuerystringHelper.ListKey = "sectors";
+                QuerystringHelper.ListValues = sectors;
             }
 
-            if (accountId.HasValue)
-            {
-                this.GetUrl = this.GetUrl + (this.GetUrl.Contains("?") ? "&" : "?") + "accountId=" + accountId;
-            }
-
+            this.GetUrl = $"pledges{QuerystringHelper.GetFormattedQuerystring()}";
         }
 
         public string GetUrl { get; set; }
