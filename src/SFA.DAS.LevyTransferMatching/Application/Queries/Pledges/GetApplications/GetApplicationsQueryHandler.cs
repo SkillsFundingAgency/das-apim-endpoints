@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -10,10 +11,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
     public class GetApplicationsQueryHandler : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
+        private readonly IReferenceDataService _referenceDataService;
 
-        public GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
+        public GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
+            _referenceDataService = referenceDataService;
         }
 
         public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
@@ -26,13 +29,16 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             });
 
             var pledgeTask = _levyTransferMatchingService.GetPledge(request.PledgeId);
-
+            
             await Task.WhenAll(applicationsTask, pledgeTask);
+
+            var roleReferenceData = await _referenceDataService.GetJobRoles();
+            var roles = roleReferenceData.Where(x => pledgeTask.Result.JobRoles.Contains(x.Id));
 
             var result = new List<GetApplicationsQueryResult.Application>();
             foreach (var application in applicationsTask.Result.Applications)
             {
-                result.Add(GetApplicationsQueryResult.Application.BuildApplication(application, pledgeTask.Result));
+                result.Add(GetApplicationsQueryResult.Application.BuildApplication(application, roles, pledgeTask.Result));
             }
 
             return new GetApplicationsQueryResult

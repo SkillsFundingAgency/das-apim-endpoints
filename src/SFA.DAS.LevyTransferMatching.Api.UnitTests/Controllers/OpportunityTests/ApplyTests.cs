@@ -55,11 +55,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
                     command.EmailAddresses.Equals(_request.EmailAddresses) &&
                     command.BusinessWebsite == _request.BusinessWebsite &&
                     command.UserId == _request.UserId &&
-                    command.MatchSector == _request.MatchSector &&
-                    command.MatchJobRole == _request.MatchJobRole &&
-                    command.MatchLevel == _request.MatchLevel &&
-                    command.MatchLocation == _request.MatchLocation &&
-                    command.MatchPercentage == _request.MatchPercentage &&
                     command.UserDisplayName == _request.UserDisplayName
                 ), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_result);
