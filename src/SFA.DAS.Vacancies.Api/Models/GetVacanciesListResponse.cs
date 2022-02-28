@@ -45,7 +45,15 @@ namespace SFA.DAS.Vacancies.Api.Models
        public GetVacancyCourseItem Course { get; set; }
        public GetVacancyWageItem Wage { get; set; }
        public VacancyLocation Location { get; set; }
+       public GetVacancyAddressItem Address { get; set; }
        public decimal? Distance { get ; set ; }
+
+       public string EmployerContactPhone { get ; set ; }
+       public string EmployerContactName { get ; set ; }
+       public string EmployerContactEmail { get ; set ; }
+       public string EmployerWebsiteUrl { get ; set ; }
+       public string ApprenticeshipLevel { get ; set ; }
+       public string ExpectedDuration { get ; set ; }
 
        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
        {
@@ -68,6 +76,13 @@ namespace SFA.DAS.Vacancies.Api.Models
                Course = source,
                Wage = source,
                Distance = source.Distance,
+               Address = source,
+               EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+               EmployerContactEmail = source.EmployerContactEmail,
+               EmployerContactName = source.EmployerContactName,
+               EmployerContactPhone = source.EmployerContactPhone,
+               ApprenticeshipLevel = source.ApprenticeshipLevel,
+               ExpectedDuration = source.ExpectedDuration,
                Location = !source.IsEmployerAnonymous ? new VacancyLocation
                {
                    Lat = source.Location.Lat,
