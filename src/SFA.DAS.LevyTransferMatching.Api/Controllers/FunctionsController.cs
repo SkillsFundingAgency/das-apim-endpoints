@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.BackfillApplicationMatchingCriteria;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
@@ -184,6 +185,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 EmailDataList = request.EmailDataList.Select(x => new SendEmailsCommand.EmailData(x.TemplateName, x.RecipientEmailAddress, x.Tokens)).ToList()
             });
 
+            return Ok();
+        }
+
+        [Route("backfill-application-matching-criteria")]
+        [HttpPost]
+        public async Task<IActionResult> BackfillApplicationCostingProjections()
+        {
+            await _mediator.Send(new BackfillApplicationMatchingCriteriaCommand());
             return Ok();
         }
     }
