@@ -101,6 +101,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
             services.AddMediatR(typeof(IAccountsService));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            
+            services.AddNServiceBus();
 
             services
                 .AddSwaggerGen(c =>

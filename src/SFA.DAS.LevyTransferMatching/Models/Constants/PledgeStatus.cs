@@ -3,5 +3,6 @@
     public static class PledgeStatus
     {
         public static readonly string Closed = "Closed";
+        public static readonly string Pending = "Pending";
     }
 }

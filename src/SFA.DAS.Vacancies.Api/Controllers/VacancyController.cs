@@ -74,9 +74,43 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Error attempting to get vacancies");
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// GET vacancy by reference number
+        /// </summary>
+        /// <remarks>Returns details of a specific vacancy. If no vacancy found then a 404 response is returned.</remarks>
+        /// <param name="vacancyReference">Vacancy reference in the following format 10001122</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{vacancyReference}")]
+        [ProducesResponseType(typeof(GetVacancyResponse), (int) HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetVacancy([FromRoute] string vacancyReference)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetVacancyQuery
+                {
+                    VacancyReference = vacancyReference
+                });
+
+                var response = (GetVacancyResponse)result;
+                if (response == null)
+                {
+                    return NotFound();
+                }
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
                 _logger.LogError(e, "Error attempting to get vacancy");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
+        
     }
 }
