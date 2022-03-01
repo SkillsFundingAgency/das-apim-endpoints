@@ -10,23 +10,15 @@ namespace SFA.DAS.Campaign.Application.Queries.Sectors
 {
     public class GetSectorsQueryHandler : IRequestHandler<GetSectorsQuery, GetSectorsQueryResult>
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly ICacheStorageService _cacheStorageService;
+        private readonly ICourseService _courseService;
 
-        public GetSectorsQueryHandler (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICacheStorageService cacheStorageService)
+        public GetSectorsQueryHandler (ICourseService courseService)
         {
-            _coursesApiClient = coursesApiClient;
-            _cacheStorageService = cacheStorageService;
+            _courseService = courseService;
         }
         public async Task<GetSectorsQueryResult> Handle(GetSectorsQuery request, CancellationToken cancellationToken)
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
-            if (response == null)
-            {
-                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
-
-                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
-            }
+            var response = await _courseService.GetRoutes();
             
             return new GetSectorsQueryResult
             {

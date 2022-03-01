@@ -6,20 +6,6 @@ namespace SFA.DAS.Campaign.Api.Models
 
     public class GetSectorsResponse
     {
-        public IEnumerable<GetSectorResponseItem> Sectors { get; set; }
+        public IEnumerable<GetRouteResponseItem> Sectors { get; set; }
     }
-    
-    public class GetSectorResponseItem
-    {
-        public string Route { get; set; }
-        
-        public static implicit operator GetSectorResponseItem (GetRoutesListItem source)
-        {
-            return new GetSectorResponseItem
-            {
-                Route = source.Name
-            };
-        }
-    }
-    
 }
