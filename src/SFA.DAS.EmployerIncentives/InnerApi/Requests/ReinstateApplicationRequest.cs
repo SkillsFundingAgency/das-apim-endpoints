@@ -2,7 +2,6 @@
 {
     public class ReinstateApplicationRequest
     {
-        public long AccountLegalEntityId { get; set; }
-        public long ULN { get; set; }
+        public Application[] Applications { get; set; }
     }  
 }
