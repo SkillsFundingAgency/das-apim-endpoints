@@ -47,8 +47,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _reinstateRequest = new PostReinstateApplicationRequest(
                 new ReinstateApplicationRequest
                 {
-                    AccountLegalEntityId = _fixture.Create<long>(),
-                    ULN = _fixture.Create<long>()
+                    Applications = new[] { new InnerApi.Requests.Application { AccountLegalEntityId = _fixture.Create<long>(), ULN = _fixture.Create<long>() } }
                 });
         }
 
