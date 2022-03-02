@@ -50,7 +50,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                     }
                 case AccountType.Employer:
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
-                        new GetAllEmployerAccountLegalEntitiesRequest(accountIdentifier.AccountPublicHashedId));
+                        new GetAllEmployerAccountLegalEntitiesRequest(accountIdentifier.AccountHashedId));
 
                     if (resourceListResponse == null)
                     {
@@ -69,7 +69,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                             {
                                 Name = legalEntityResponse.AccountLegalEntityName,
                                 AccountLegalEntityPublicHashedId = legalEntityResponse.AccountLegalEntityPublicHashedId,
-                                AccountPublicHashedId = accountIdentifier.AccountPublicHashedId
+                                AccountHashedId = accountIdentifier.AccountHashedId
                             };
                         }
                     }
