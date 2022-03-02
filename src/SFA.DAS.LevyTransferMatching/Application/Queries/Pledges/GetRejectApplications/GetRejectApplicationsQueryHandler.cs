@@ -31,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectAppl
                 {
                     Id = x.Id,
                     DasAccountName = x.DasAccountName,
-                })
+                }).OrderBy(x => x.DasAccountName).ToList()
             };
         }
     }
