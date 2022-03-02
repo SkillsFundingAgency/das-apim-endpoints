@@ -41,7 +41,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                         {
                             Name = legalEntityItem.AccountLegalEntityName,
                             AccountLegalEntityPublicHashedId = legalEntityItem.AccountLegalEntityPublicHashedId,
-                            AccountPublicHashedId = legalEntityItem.AccountPublicHashedId
+                            AccountHashedId = legalEntityItem.AccountHashedId
                         };
                     }
                     else
