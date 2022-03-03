@@ -10,6 +10,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         public long? AccountId { get; set; }
         public string ApplicationStatusFilter { get; set; }
 
+        public string SortOrder { get; set; }
+        public string SortDirection { get; set; }
+
         public string GetUrl
         {
             get
@@ -29,6 +32,16 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
                 if (ApplicationStatusFilter != null)
                 {
                     queryParameters.Add("applicationStatusFilter", ApplicationStatusFilter);
+                }
+
+                if (!string.IsNullOrWhiteSpace(SortOrder))
+                {
+                    queryParameters.Add("sortOrder", SortOrder);
+                }
+
+                if (!string.IsNullOrWhiteSpace(SortDirection))
+                {
+                    queryParameters.Add("sortDirection", SortDirection);
                 }
 
                 return QueryHelpers.AddQueryString("applications", queryParameters);
