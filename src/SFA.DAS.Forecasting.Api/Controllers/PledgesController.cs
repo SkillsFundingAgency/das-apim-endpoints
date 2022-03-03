@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
-using SFA.DAS.Forecasting.Application.Courses.Queries.GetPledges;
+using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
 
 namespace SFA.DAS.Forecasting.Api.Controllers
 {

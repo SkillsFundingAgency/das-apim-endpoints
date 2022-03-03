@@ -9,7 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Controllers;
 using SFA.DAS.Forecasting.Api.Models;
-using SFA.DAS.Forecasting.Application.Courses.Queries.GetPledges;
+using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
 
 namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
 {

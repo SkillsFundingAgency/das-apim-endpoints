@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Forecasting.Application.Courses.Queries.GetPledges;
+using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
 
 namespace SFA.DAS.Forecasting.Api.Models
 {
