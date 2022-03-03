@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -37,9 +38,34 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         public async Task Then_Pledges_Are_Retrieved()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            
 
-            throw new NotImplementedException();
+            Assert.AreEqual(_apiResponse.Page, result.Page);
+            Assert.AreEqual(_apiResponse.PageSize, result.PageSize);
+            Assert.AreEqual(_apiResponse.TotalPages, result.TotalPages);
+            Assert.AreEqual(_apiResponse.TotalPledges, result.TotalPledges);
+
+
+            Assert.AreEqual(_apiResponse.Pledges.Count(), result.Pledges.Count());
+
+            var i = 0;
+
+            foreach (var pledge in result.Pledges)
+            {
+                var expected = _apiResponse.Pledges.ToArray()[i];
+                Assert.AreEqual(expected.Id, pledge.Id);
+                Assert.AreEqual(expected.AccountId, pledge.AccountId);
+                i++;
+            }
+        }
+
+        [Test]
+        public async Task Then_Paging_Options_Are_Honoured()
+        {
+            await _handler.Handle(_query, CancellationToken.None);
+
+            _apiClient.Verify(x =>
+                x.Get<GetPledgesResponse>(It.Is<GetPledgesRequest>(r =>
+                    r.GetUrl == $"pledges?page{_query.Page}&pageSize={_query.PageSize}")));
         }
     }
 }

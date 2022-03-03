@@ -36,7 +36,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
         [Test]
         public async Task Then_Pledges_Are_Returned_Correctly()
         {
-            var result = await _controller.GetPledges() as ObjectResult;
+            var result = await _controller.GetPledges(0, 100) as ObjectResult;
 
             Assert.IsNotNull(result);
             var response = result.Value as GetPledgesResponse;
@@ -59,6 +59,17 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
             }
         }
 
-        
+        [Test]
+        public async Task Then_Paging_Options_Are_Honoured()
+        {
+            var page = _fixture.Create<int>();
+            var pageSize = _fixture.Create<int>();
+
+            await _controller.GetPledges(page, pageSize);
+
+            _mediator.Verify(x =>
+                x.Send(It.Is<GetPledgesQuery>(q => q.Page == page && q.PageSize == pageSize),
+                    It.IsAny<CancellationToken>()));
+        }
     }
 }
