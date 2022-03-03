@@ -116,13 +116,31 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
 
         [JsonProperty("workingWeek")]
         public string WorkingWeek { get; set; }
+        
+        [JsonProperty("expectedDuration")]
+        public string ExpectedDuration { get; set; }
+        
+        [JsonProperty("employerWebsiteUrl")]
+        public string EmployerWebsiteUrl { get; set; }
 
+        [JsonProperty("employerContactPhone")]
+        public string EmployerContactPhone { get; set; }
+        
+        [JsonProperty("employerContactEmail")]
+        public string EmployerContactEmail { get; set; }
+        
+        [JsonProperty("employerContactName")]
+        public string EmployerContactName { get; set; }
+        
+        [JsonProperty("address")]
+        public Address Address { get; set; }
+        
         [JsonProperty("distance")]
         public decimal? Distance { get; set; }
 
         [JsonProperty("score")]
         public long Score { get; set; }
-
+        
         [JsonIgnore]
         public string CourseTitle { get ; set ; }
         [JsonIgnore]
@@ -131,5 +149,19 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public int CourseLevel { get ; set ; }
         [JsonIgnore]
         public string VacancyUrl { get ; set ; }
+    }
+
+    public class Address
+    {
+        [JsonProperty("addressLine1")]
+        public string AddressLine1 { get; set; }
+        [JsonProperty("addressLine2")]
+        public string AddressLine2 { get; set; }
+        [JsonProperty("addressLine3")]
+        public string AddressLine3 { get; set; }
+        [JsonProperty("addressLine4")]
+        public string AddressLine4 { get; set; }
+        [JsonProperty("postcode")]
+        public string Postcode { get; set; }
     }
 }
