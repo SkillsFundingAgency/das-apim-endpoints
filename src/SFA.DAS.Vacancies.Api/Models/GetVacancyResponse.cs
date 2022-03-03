@@ -10,6 +10,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string TrainingDescription { get ; set ; }
         public string FullDescription { get ; set ; }
         public string OutcomeDescription { get ; set ; }
+        public string EmployerDescription { get; set; }
         public List<string> Skills { get ; set ; }
         public List<GetVacancyQualification> Qualifications { get ; set ; }
 
@@ -37,6 +38,14 @@ namespace SFA.DAS.Vacancies.Api.Models
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Course = source.Vacancy,
                 Wage = source.Vacancy,
+                Address = source.Vacancy,
+                EmployerWebsiteUrl = source.Vacancy.EmployerWebsiteUrl,
+                EmployerContactEmail = source.Vacancy.EmployerContactEmail,
+                EmployerContactName = source.Vacancy.EmployerContactName,
+                EmployerContactPhone = source.Vacancy.EmployerContactPhone,
+                EmployerDescription = source.Vacancy.EmployerDescription,
+                ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
+                ExpectedDuration = source.Vacancy.ExpectedDuration,
                 FullDescription = source.Vacancy.LongDescription,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
