@@ -12,7 +12,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApprenticeshipIncentives;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
+namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ApprenticeshipIncentive
 {
     public class WhenGettingApprenticeshipIncentives
     {

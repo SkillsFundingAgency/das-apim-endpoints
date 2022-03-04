@@ -5,6 +5,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -40,6 +41,13 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             var response = await _client.GetAll<ApprenticeshipIncentiveDto>(new GetApprenticeshipIncentivesRequest(accountId, accountLegalEntityId));
 
             return response.ToArray();
+        }
+
+        public async Task RecalculateEarnings(RecalculateEarningsRequest recalculateEarningsRequest)
+        {
+            var postRequest = new PostRecalculateEarningsRequest(recalculateEarningsRequest);
+
+            await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest);
         }
     }
 }

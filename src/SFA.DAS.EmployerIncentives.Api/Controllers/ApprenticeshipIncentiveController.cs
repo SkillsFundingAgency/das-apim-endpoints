@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Api.Models;
+using SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApprenticeshipIncentives;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -30,6 +32,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             var response = queryResult.ApprenticeshipIncentives.Select(c => (ApprenticeshipIncentiveDto) c).ToArray();
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("/recalculateEarnings")]
+        public async Task<IActionResult> RecalculateEarnings([FromBody] RecalculateEarningsRequest request) 
+        {
+            await _mediator.Send(new RecalculateEarningsCommand(request));
+
+            return NoContent();
         }
     }
 }
