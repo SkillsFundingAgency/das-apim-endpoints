@@ -8,7 +8,7 @@ namespace SFA.DAS.Campaign.ExternalApi
 {
     public class ContentfulApiClient<T> : GetApiClient<T>, IContentfulApiClient<T> where T : IContentfulApiConfiguration
     {
-        public ContentfulApiClient (IHttpClientFactory httpClientFactory, T apiConfiguration, IWebHostEnvironment hostingEnvironment) : base(httpClientFactory, apiConfiguration, hostingEnvironment)
+        public ContentfulApiClient (IHttpClientFactory httpClientFactory, T apiConfiguration) : base(httpClientFactory, apiConfiguration)
         {
         }
         
