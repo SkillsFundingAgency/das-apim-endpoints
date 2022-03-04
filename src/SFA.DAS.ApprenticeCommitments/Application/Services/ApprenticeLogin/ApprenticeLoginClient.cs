@@ -12,9 +12,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
         public ApprenticeLoginClient(
             IHttpClientFactory httpClientFactory,
             ApprenticeLoginConfiguration apiConfiguration,
-            IWebHostEnvironment hostingEnvironment,
             IAzureClientCredentialHelper azureClientCredentialHelper)
-            : base(httpClientFactory, apiConfiguration, hostingEnvironment, azureClientCredentialHelper)
+            : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper)
         {
         }
 

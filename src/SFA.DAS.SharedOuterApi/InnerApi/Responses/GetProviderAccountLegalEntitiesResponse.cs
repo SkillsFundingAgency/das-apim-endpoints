@@ -17,6 +17,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         [JsonProperty("AccountPublicHashedId")]
         public string AccountPublicHashedId { get; set; }
 
+        [JsonProperty("AccountHashedId")]
+        public string AccountHashedId { get; set; }
+
         [JsonProperty("AccountName")]
         public string AccountName { get; set; }
 

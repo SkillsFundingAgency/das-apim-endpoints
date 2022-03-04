@@ -15,8 +15,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
     {
         public ApiClient(
             IHttpClientFactory httpClientFactory,
-            T apiConfiguration,
-            IWebHostEnvironment hostingEnvironment) : base(httpClientFactory, apiConfiguration, hostingEnvironment)
+            T apiConfiguration) : base(httpClientFactory, apiConfiguration)
         {
         }
 
