@@ -51,7 +51,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                 {
                     case AccountType.Employer:
                         var employerQueryResponse = await _mediator.Send(new GetLegalEntitiesForEmployerQuery
-                            {EncodedAccountId = account.AccountPublicHashedId});
+                            {EncodedAccountId = account.AccountHashedId});
                         return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
                     case AccountType.Provider:
                         var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
