@@ -83,11 +83,11 @@ namespace SFA.DAS.Vacancies.Api.Models
                EmployerContactPhone = source.EmployerContactPhone,
                ApprenticeshipLevel = source.ApprenticeshipLevel,
                ExpectedDuration = source.ExpectedDuration,
-               Location = !source.IsEmployerAnonymous ? new VacancyLocation
+               Location = new VacancyLocation
                {
                    Lat = source.Location.Lat,
                    Lon = source.Location.Lon
-               } : null
+               }
            };
        }
     }
