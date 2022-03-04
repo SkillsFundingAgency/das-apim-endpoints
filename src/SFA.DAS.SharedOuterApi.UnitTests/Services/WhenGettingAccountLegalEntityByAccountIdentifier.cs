@@ -29,7 +29,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             legalEntities.First().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
             accountsApi
                 .Setup(x => x.Get<AccountDetail>(
-                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountPublicHashedId}"))))
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountHashedId}"))))
                 .ReturnsAsync(accountDetailApiResponse);
             for (var i = 0; i < accountDetailApiResponse.LegalEntities.Count; i++)
             {
@@ -45,7 +45,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
             actual.Name.Should().Be(legalEntities.First().AccountLegalEntityName);
             actual.AccountLegalEntityPublicHashedId.Should().Be(legalEntities.First().AccountLegalEntityPublicHashedId);
-            actual.AccountPublicHashedId.Should().Be(accountIdentifier.AccountPublicHashedId);
+            actual.AccountHashedId.Should().Be(accountIdentifier.AccountHashedId);
         }
         
         [Test, MoqAutoData]
@@ -59,7 +59,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var accountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             accountsApi
                 .Setup(x => x.Get<AccountDetail>(
-                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountPublicHashedId}"))))
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountHashedId}"))))
                 .ReturnsAsync(accountDetailApiResponse);
             accountsApi
                 .Setup(client => client.Get<GetEmployerAccountLegalEntityItem>(
@@ -83,7 +83,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var accountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             accountsApi
                 .Setup(x => x.Get<AccountDetail>(
-                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountPublicHashedId}"))))
+                    It.Is<GetAllEmployerAccountLegalEntitiesRequest>(c => c.GetUrl.EndsWith($"accounts/{accountIdentifier.AccountHashedId}"))))
                 .ReturnsAsync((AccountDetail)null);
             
             var actual = await service.GetAccountLegalEntity(accountIdentifier, accountLegalEntityPublicHashedId);
@@ -126,7 +126,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             
             actual.Name.Should().Be(response.AccountProviderLegalEntities.First().AccountLegalEntityName);
             actual.AccountLegalEntityPublicHashedId.Should().Be(response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId);
-            actual.AccountPublicHashedId.Should().Be(response.AccountProviderLegalEntities.First().AccountPublicHashedId);
+            actual.AccountHashedId.Should().Be(response.AccountProviderLegalEntities.First().AccountHashedId);
         }
         
         [Test, MoqAutoData]
