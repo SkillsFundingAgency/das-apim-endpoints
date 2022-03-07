@@ -36,7 +36,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_If_The_Employer_Is_Anonymous_Then_Location_Not_Mapped_And_Anon_Employer_Name_Used(GetAdvertsQueryResult source, string anonEmployerName)
+        public void Then_If_The_Employer_Is_Anonymous_Then_Anon_Employer_Name_Used(GetAdvertsQueryResult source, string anonEmployerName)
         {
             //Arrange
             foreach (var vacancy in source.Vacancies)
@@ -51,8 +51,6 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
             //Assert
             actual.Vacancies.ToList().TrueForAll(c => 
                 c.EmployerName.Equals(anonEmployerName)
-                && c.Distance == null 
-                && c.Location == null
                 ).Should().BeTrue();
             
         }

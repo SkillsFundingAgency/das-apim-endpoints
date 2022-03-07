@@ -51,7 +51,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     PageNumber = request.PageNumber,
                     PageSize = request.PageSize,
                     Ukprn = account.Ukprn != null && request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.Ukprn.Value : request.Ukprn,
-                    AccountPublicHashedId =  request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountPublicHashedId : null,
+                    AccountPublicHashedId =  request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountHashedId : null,
                     AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
                     AccountIdentifier = account,
                     Lat = request.Lat,

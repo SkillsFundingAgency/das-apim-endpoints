@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -37,12 +36,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var expectedUrl = $"{config.Url}{getTestRequest.GetUrl}";
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
             //Act
             var actualResult = await actual.GetResponseCode(getTestRequest);
@@ -70,6 +66,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
          {
              //Arrange
              config.Url = "https://test.local";
+             config.Identifier = "";
              var configuration = config;
              var response = new HttpResponseMessage
              {
@@ -80,12 +77,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var expectedUrl = $"{config.Url}{getTestRequest.GetUrl}";
              var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
              var client = new HttpClient(httpMessageHandler.Object);
-             var hostingEnvironment = new Mock<IWebHostEnvironment>();
              var clientFactory = new Mock<IHttpClientFactory>();
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-             
-             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Development");
-             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration,hostingEnvironment.Object, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration, Mock.Of<IAzureClientCredentialHelper>());
 
              //Act
              await actual.GetResponseCode(getTestRequest);
