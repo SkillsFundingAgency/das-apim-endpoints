@@ -65,7 +65,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
 
             _apiClient.Verify(x =>
                 x.Get<GetPledgesResponse>(It.Is<GetPledgesRequest>(r =>
-                    r.GetUrl == $"pledges?page{_query.Page}&pageSize={_query.PageSize}")));
+                    r.GetUrl == $"pledges?page={_query.Page}&pageSize={_query.PageSize}")));
         }
     }
 }
