@@ -81,7 +81,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
                         c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
-                        && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountPublicHashedId)
+                        && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
                         )))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService
@@ -120,7 +120,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
                             && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                             && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                             && ((PostVacancyRequestData)c.Data).EmployerName.Equals(accountLegalEntityItem.Name)
-                            && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountPublicHashedId)
+                            && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
                         )))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService

@@ -70,7 +70,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                         c.Id.Equals(id)
                         && c.AccountIdentifier.AccountType == AccountType.Employer
                         && c.AccountIdentifier.Ukprn == null
-                        && c.AccountIdentifier.AccountPublicHashedId == accountId
+                        && c.AccountIdentifier.AccountHashedId == accountId
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
                         && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Employer)
@@ -102,7 +102,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
                         c.Id.Equals(id)
                         && c.AccountIdentifier.AccountType == AccountType.Provider
                         && c.AccountIdentifier.Ukprn == ukprn
-                        && c.AccountIdentifier.AccountPublicHashedId == null
+                        && c.AccountIdentifier.AccountHashedId == null
                         && c.PostVacancyRequestData.Title.Equals(request.Title)
                         && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
                         && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Provider)

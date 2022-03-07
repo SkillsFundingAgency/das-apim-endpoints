@@ -67,7 +67,7 @@ namespace SFA.DAS.Campaign.Api.Models
         {
             return new GetAdvertResponseItem
             {
-                Distance = source.IsEmployerAnonymous ? null : source.Distance,
+                Distance = source.Distance,
                 Title = source.Title,
                 Description = source.Description,
                 ClosingDate = source.ClosingDate,
@@ -75,7 +75,7 @@ namespace SFA.DAS.Campaign.Api.Models
                 PostedDate = source.PostedDate,
                 Category = source.Category,
                 SubCategory = source.SubCategory,
-                Location = source.IsEmployerAnonymous ? null : new VacancyLocation
+                Location = new VacancyLocation
                 {
                     Lat = source.Location.Lat,
                     Lon = source.Location.Lon
