@@ -34,12 +34,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var getTestRequest = new GetTestRequest(config.Url, id) {BaseUrl = config.Url };
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, getTestRequest.GetUrl);
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object);
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             await actual.Get<string>(getTestRequest);
@@ -72,12 +70,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var getTestRequest = new GetTestRequest(config.Url, id) { BaseUrl = config.Url };
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(httpResponse, getTestRequest.GetUrl);
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             var response = await actual.Get<TestResponse>(getTestRequest);
@@ -100,12 +96,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             var getTestRequest = new GetTestRequest(config.Url, id) { BaseUrl = config.Url };
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(httpResponse, getTestRequest.GetUrl);
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object);
+            var actual = new CustomerEngagementApiClient<TestCustomerEngagementApiConfiguration>(clientFactory.Object, config);
 
             //Act
             var response = await actual.Get<TestResponse>(getTestRequest);
