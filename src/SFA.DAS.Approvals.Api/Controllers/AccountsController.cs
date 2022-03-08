@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountQuery;
+using SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountUsersQuery;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -21,7 +22,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("{accountId}")]
         public async Task<IActionResult> Get(long accountId)
         {
             try
@@ -39,6 +40,29 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting employer account");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{accountId}/users")]
+        public async Task<IActionResult> GetUsers(long accountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAccountUsersQuery { AccountId = accountId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting employer account users");
                 return BadRequest();
             }
         }
