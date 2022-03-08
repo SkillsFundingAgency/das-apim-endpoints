@@ -4,11 +4,13 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
 {
@@ -41,16 +43,17 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         }
 
         [Given(@"the Employment Check Api receives the register employment check request")]
-        public void GivenTheEmployermentCheckApiReceivesTheRegisterEmploymentCheckRequest()
+        public void GivenTheEmploymentCheckApiReceivesTheRegisterEmploymentCheckRequest()
         {
             _context.EmploymentCheckApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"api/EmploymentCheck/RegisterCheck")
+                    Request.Create().WithPath($"/api/EmploymentCheck/RegisterCheck")
                         .UsingPost())
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
-                );
+                        .WithBody(JsonConvert.SerializeObject(new RegisterEmploymentCheckResponse()))
+                ); 
         }
 
         [When(@"the Outer Api receives the register employment check request")]

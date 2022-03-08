@@ -38,7 +38,6 @@ namespace SFA.DAS.EmployerIncentives.Api.AppStart
             services.AddTransient<IAccountsService, AccountsService>();
             services.AddTransient<ICustomerEngagementFinanceService, CustomerEngagementFinanceService>();
             services.AddTransient<IEmploymentCheckService, EmploymentCheckService>();
-            services.AddTransient<IInternalApiClient<EmploymentCheckConfiguration>, InternalApiClient<EmploymentCheckConfiguration>>();
         }
     }
 }
