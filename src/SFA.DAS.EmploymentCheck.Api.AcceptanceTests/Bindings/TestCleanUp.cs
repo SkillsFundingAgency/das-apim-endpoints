@@ -3,12 +3,12 @@
 namespace SFA.DAS.EmploymentCheck.Api.AcceptanceTests.Bindings
 {
     [Binding]
-    public class TestCleanUp
+    public static class TestCleanUp
     {
         [AfterTestRun]
         public static void CleanUp()
         {
-            MockServers.InnerApi.Dispose();
+            MockServers.InnerApi?.Dispose();
             OuterApi.Factory?.Dispose();
             OuterApi.Client?.Dispose();
         }
