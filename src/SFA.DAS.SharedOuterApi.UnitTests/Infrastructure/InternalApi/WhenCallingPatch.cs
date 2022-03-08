@@ -41,7 +41,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
             hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Patch(patchTestRequest);

@@ -117,6 +117,14 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
+    displayName: 'Publish Apprentice Feedback Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.ApprenticeFeedback.Api/SFA.DAS.ApprenticeFeedback.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
     displayName: 'Publish Apprentice Portal Api'
     inputs:
       command: publish
