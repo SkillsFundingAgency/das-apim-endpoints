@@ -2,7 +2,7 @@
 {
     public class ProviderAttribute
     {
-        public int AttributeId { get; set; }
-        public string AttributeName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

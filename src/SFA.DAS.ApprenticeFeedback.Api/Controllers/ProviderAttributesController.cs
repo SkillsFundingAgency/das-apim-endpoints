@@ -22,8 +22,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _logger = logger;
             _mediator = mediator;
         }
-        [HttpGet]
-        [Route("/")] //route?
+
+        [HttpGet("/provider-attributes")]
         public async Task<IActionResult> GetProviderAttributes()
         {
             try
