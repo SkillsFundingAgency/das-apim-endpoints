@@ -280,9 +280,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeFeedback.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeFeedback", "SFA.DAS.ApprenticeFeedback\SFA.DAS.ApprenticeFeedback.csproj", "{6CD02922-76BF-4470-B876-361AECAB6C5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeFeedback.Api.UnitTests", "SFA.DAS.ApprenticeFeedback.Api.UnitTests\SFA.DAS.ApprenticeFeedback.Api.UnitTests.csproj", "{01EF44C1-B9AC-4FD9-A769-52757C91656A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeFeedback.Api.UnitTests", "SFA.DAS.ApprenticeFeedback.Api.UnitTests\SFA.DAS.ApprenticeFeedback.Api.UnitTests.csproj", "{01EF44C1-B9AC-4FD9-A769-52757C91656A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeFeedback.UnitTests", "SFA.DAS.ApprenticeFeedback.UnitTests\SFA.DAS.ApprenticeFeedback.UnitTests.csproj", "{66F0449E-4ADA-48CA-91B0-387AAAD04254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeFeedback.UnitTests", "SFA.DAS.ApprenticeFeedback.UnitTests\SFA.DAS.ApprenticeFeedback.UnitTests.csproj", "{66F0449E-4ADA-48CA-91B0-387AAAD04254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Approvals.FakeApis", "SFA.DAS.Approvals.FakeApis\SFA.DAS.Approvals.FakeApis.csproj", "{5AEDC7D9-A83A-470B-9F13-2F409CF4F538}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -666,6 +668,10 @@ Global
 		{66F0449E-4ADA-48CA-91B0-387AAAD04254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66F0449E-4ADA-48CA-91B0-387AAAD04254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66F0449E-4ADA-48CA-91B0-387AAAD04254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AEDC7D9-A83A-470B-9F13-2F409CF4F538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AEDC7D9-A83A-470B-9F13-2F409CF4F538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AEDC7D9-A83A-470B-9F13-2F409CF4F538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AEDC7D9-A83A-470B-9F13-2F409CF4F538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -787,6 +793,7 @@ Global
 		{6CD02922-76BF-4470-B876-361AECAB6C5F} = {A2389EAB-E5CF-4D5A-9521-FA93A7A23187}
 		{01EF44C1-B9AC-4FD9-A769-52757C91656A} = {CFF1CDF4-2F74-438E-BDC6-CF1319A4E063}
 		{66F0449E-4ADA-48CA-91B0-387AAAD04254} = {CFF1CDF4-2F74-438E-BDC6-CF1319A4E063}
+		{5AEDC7D9-A83A-470B-9F13-2F409CF4F538} = {161FC2A1-D2F7-4EBB-A944-390CDA476701}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE867EC1-D288-4230-BABC-B71825068BA0}
