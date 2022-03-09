@@ -45,6 +45,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(response);
             Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
+            Assert.IsTrue(response.PledgeRemainingAmount >= 0);
+            Assert.IsTrue(response.PledgeTotalAmount >= 0);
         }
     }
 }
