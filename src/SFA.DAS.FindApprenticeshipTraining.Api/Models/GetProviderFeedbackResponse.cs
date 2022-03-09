@@ -53,26 +53,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
     public class GetProviderFeedbackAttributes
     {
-        public List<string> Strengths { get; private set; }
-        public List<string> Weaknesses { get; private set; }
+        public List<StrengthDetail> Strengths { get; private set; }
+        public List<WeaknessDetail> Weaknesses { get; private set; }
 
         public GetProviderFeedbackAttributes Build(List<GetProviderFeedbackAttributeItem> feedbackAttributeItems)
         {
             return new GetProviderFeedbackAttributes
-            {
+            { 
                 Strengths = feedbackAttributeItems
-                    .OrderByDescending(c=>c.Rating)
-                    .ThenByDescending(c=>c.TotalVotes)
-                    .ThenBy(c=>c.AttributeName)
-                    .Where(c=> c.Rating > 0)
-                    .Select(c=>c.AttributeName).Take(3).ToList(),
+                .Where(c => c.Strength > 0)
+                .Select(c => new StrengthDetail { StrengthName = c.AttributeName, StrengthCount = c.Strength }).ToList(),
+
                 Weaknesses = feedbackAttributeItems
-                    .OrderBy(c=>c.Rating)
-                    .ThenByDescending(c=>c.TotalVotes)
-                    .ThenBy(c=>c.AttributeName)
-                    .Where(c=> c.Rating < 0)
-                    .Select(c=>c.AttributeName).Take(3).ToList(),
-            };
+                .Where(c => c.Strength > 0)
+                .Select(c => new WeaknessDetail { WeaknessName = c.AttributeName, WeaknessCount = c.Weakness }).ToList()
+        };
         }
     }
 
@@ -84,4 +79,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         Good = 3,
         Excellent = 4
     }
+
+    public class StrengthDetail
+    {
+        public string StrengthName { get; set; }
+        public int StrengthCount { get; set; }
+    }
+
+    public class WeaknessDetail
+    {
+        public string WeaknessName { get; set; }
+        public int WeaknessCount { get; set; }
+    }
+
+
+
+
 }
