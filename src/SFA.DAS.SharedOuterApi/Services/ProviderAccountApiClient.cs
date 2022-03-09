@@ -11,9 +11,9 @@ namespace SFA.DAS.SharedOuterApi.Services
 {
     public class ProviderAccountApiClient : IProviderAccountApiClient<ProviderAccountApiConfiguration>
     {
-        private readonly IInternalApiClient<CourseDeliveryApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<ProviderAccountApiConfiguration> _apiClient;
 
-        public ProviderAccountApiClient(IInternalApiClient<CourseDeliveryApiConfiguration> apiClient)
+        public ProviderAccountApiClient(IInternalApiClient<ProviderAccountApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
