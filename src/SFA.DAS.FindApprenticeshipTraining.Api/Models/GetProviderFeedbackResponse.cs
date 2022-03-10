@@ -65,9 +65,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 .Select(c => new StrengthDetail { StrengthName = c.AttributeName, StrengthCount = c.Strength }).ToList(),
 
                 Weaknesses = feedbackAttributeItems
-                .Where(c => c.Strength > 0)
+                .Where(c => c.Weakness > 0)
                 .Select(c => new WeaknessDetail { WeaknessName = c.AttributeName, WeaknessCount = c.Weakness }).ToList()
-        };
+            };
         }
     }
 
