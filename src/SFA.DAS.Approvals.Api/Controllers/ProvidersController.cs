@@ -43,5 +43,21 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("{providerId}/courses/{trainingCode}")]
+        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderCoursesDeliveryModelQuery(providerId, trainingCode));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting Provider Courses Delivery Models for Provider {providerId} and course {trainingCode}", providerId, trainingCode);
+                return BadRequest();
+            }
+        }
     }
 }
