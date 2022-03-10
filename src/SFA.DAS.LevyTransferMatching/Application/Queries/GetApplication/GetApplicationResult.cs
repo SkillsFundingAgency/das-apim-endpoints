@@ -37,5 +37,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool MatchSector { get; set; }
+        public bool MatchJobRole { get; set; }
+        public bool MatchLevel { get; set; }
+        public bool MatchLocation { get; set; }
+        public int MatchPercentage { get; set; }
     }
 }
