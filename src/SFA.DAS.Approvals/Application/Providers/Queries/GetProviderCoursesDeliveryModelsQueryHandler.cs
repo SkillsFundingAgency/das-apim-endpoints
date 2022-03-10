@@ -9,17 +9,17 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Providers.Queries
 {
-    public class GetProviderCoursesDeliveryModelQueryHandler : IRequestHandler<GetProviderCoursesDeliveryModelQuery, GetProviderCourseDeliveryModelsResponse>
+    public class GetProviderCoursesDeliveryModelsQueryHandler : IRequestHandler<GetProviderCoursesDeliveryModelQuery, GetProviderCourseDeliveryModelsResponse>
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _apiClient;
 
-        public GetProviderCoursesDeliveryModelQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient)
+        public GetProviderCoursesDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
         public async Task<GetProviderCourseDeliveryModelsResponse> Handle(GetProviderCoursesDeliveryModelQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetProviderCourseDeliveryModelsResponse>(new GetProviderCourseRequest(request.ProviderId, request.TrainingCode));
+            var result = await _apiClient.Get<GetProviderCourseDeliveryModelsResponse>(new GetProviderCoursesDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
 
             if (result == null)
             {
