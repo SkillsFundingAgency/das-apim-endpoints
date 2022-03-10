@@ -51,7 +51,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetProviderUsersQuery());
+                var response = await _mediator.Send(new GetProviderUsersQuery
+                {
+                    Ukprn = ukprn
+                });
+
                 var model = new GetProvidersUsersResponse
                 {
                     Users = response.Users
