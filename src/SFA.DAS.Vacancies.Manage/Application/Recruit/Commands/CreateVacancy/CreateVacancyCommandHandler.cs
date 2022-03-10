@@ -43,7 +43,7 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             
             if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
-                request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountPublicHashedId;
+                request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountHashedId;
             }
 
             if (request.PostVacancyRequestData.EmployerNameOption == EmployerNameOption.RegisteredName)

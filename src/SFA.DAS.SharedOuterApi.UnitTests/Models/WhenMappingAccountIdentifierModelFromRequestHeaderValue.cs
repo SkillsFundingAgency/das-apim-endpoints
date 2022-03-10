@@ -18,7 +18,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 
             actual.AccountType.Should().Be(AccountType.Employer);
             actual.Ukprn.Should().BeNull();
-            actual.AccountPublicHashedId.Should().Be(accountId.ToUpper());
+            actual.AccountHashedId.Should().Be(accountId.ToUpper());
         }
         
         [Test, AutoData]
@@ -30,7 +30,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 
             actual.AccountType.Should().Be(AccountType.Provider);
             actual.Ukprn.Should().Be(ukprn);
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
         }
         
         [Test, AutoData]
@@ -42,7 +42,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 
             actual.AccountType.Should().Be(AccountType.External);
             actual.ExternalId.Should().Be(externalId);
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
         }
         
@@ -55,7 +55,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 
             actual.AccountType.Should().Be(AccountType.Unknown);
             actual.ExternalId.Should().BeEmpty();
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
         }
         [Test, AutoData]
@@ -68,7 +68,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
 
             actual.AccountType.Should().Be(AccountType.Provider);
             actual.Ukprn.Should().BeNull();
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             var actual = new AccountIdentifier(accountIdentifier);
 
             actual.AccountType.Should().Be(AccountType.Unknown);
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
         }
         
@@ -90,7 +90,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             var actual = new AccountIdentifier(null);
 
             actual.AccountType.Should().Be(AccountType.Unknown);
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
         }
         
@@ -103,7 +103,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Models
             var actual = new AccountIdentifier(accountIdentifier);
 
             actual.AccountType.Should().Be(AccountType.Unknown);
-            actual.AccountPublicHashedId.Should().BeNull();
+            actual.AccountHashedId.Should().BeNull();
             actual.Ukprn.Should().BeNull();
         }
     }
