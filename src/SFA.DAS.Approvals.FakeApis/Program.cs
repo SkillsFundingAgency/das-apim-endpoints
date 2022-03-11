@@ -4,7 +4,7 @@ using WireMock.Server;
 
 namespace SFA.DAS.Approvals.FakeApis
 {
-    public class Program
+    public static class Program
     {
         private const int PortProviderCoursesApi = 5603;
         private const int PeterboroughCollege = 10005077;
