@@ -53,20 +53,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
     public class GetProviderFeedbackAttributes
     {
-        public List<StrengthDetail> Strengths { get; private set; }
-        public List<WeaknessDetail> Weaknesses { get; private set; }
+        public List<FeedbackAttributeDetail> FeedbackAttributeDetail { get; private set; }
 
         public GetProviderFeedbackAttributes Build(List<GetProviderFeedbackAttributeItem> feedbackAttributeItems)
         {
             return new GetProviderFeedbackAttributes
-            { 
-                Strengths = feedbackAttributeItems
-                .Where(c => c.Strength > 0)
-                .Select(c => new StrengthDetail { StrengthName = c.AttributeName, StrengthCount = c.Strength }).ToList(),
-
-                Weaknesses = feedbackAttributeItems
-                .Where(c => c.Weakness > 0)
-                .Select(c => new WeaknessDetail { WeaknessName = c.AttributeName, WeaknessCount = c.Weakness }).ToList()
+            {
+                FeedbackAttributeDetail = feedbackAttributeItems
+                    .Where(c => c.TotalVotes > 0)
+                    .Select(c => new FeedbackAttributeDetail { 
+                                AttributeName = c.AttributeName, 
+                                StrengthCount = c.Strength, 
+                                WeaknessCount = c.Weakness}).ToList()
             };
         }
     }
@@ -80,16 +78,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         Excellent = 4
     }
 
-    public class StrengthDetail
+    public class FeedbackAttributeDetail
     {
-        public string StrengthName { get; set; }
+        public string AttributeName { get; set; }
         public int StrengthCount { get; set; }
-    }
-
-    public class WeaknessDetail
-    {
-        public string WeaknessName { get; set; }
         public int WeaknessCount { get; set; }
+
     }
 
 
