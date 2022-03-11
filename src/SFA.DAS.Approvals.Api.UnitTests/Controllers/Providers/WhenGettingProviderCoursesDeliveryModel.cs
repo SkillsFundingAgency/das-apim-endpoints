@@ -54,9 +54,9 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode) as BadRequestResult;
+            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode) as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }
