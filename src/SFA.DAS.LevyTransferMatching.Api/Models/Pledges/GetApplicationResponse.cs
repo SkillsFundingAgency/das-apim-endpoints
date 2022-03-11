@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
+﻿using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -21,6 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
         public IEnumerable<string> PledgeSectors { get; set; }
@@ -36,6 +37,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool IsLocationMatch { get; set; }
+        public bool IsSectorMatch { get; set; }
+        public bool IsJobRoleMatch { get; set; }
+        public bool IsLevelMatch { get; set; }
+        public int MatchPercentage { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -44,6 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 AboutOpportunity = result.AboutOpportunity,
                 BusinessWebsite = result.BusinessWebsite,
                 EmailAddresses = result.EmailAddresses,
+                CreatedOn = result.CreatedOn,
                 EstimatedDurationMonths = result.EstimatedDurationMonths,
                 MaxFunding = result.MaxFunding,
                 Amount = result.Amount,
@@ -69,7 +76,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 Locations = result.Locations,
                 AdditionalLocation = result.AdditionalLocation,
                 SpecificLocation = result.SpecificLocation,
-                AutomaticApproval = result.AutomaticApproval
+                AutomaticApproval = result.AutomaticApproval,
+                IsJobRoleMatch = result.MatchJobRole,
+                IsLevelMatch = result.MatchLevel,
+                IsLocationMatch = result.MatchLocation,
+                IsSectorMatch = result.MatchSector,
+                MatchPercentage = result.MatchPercentage
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
@@ -7,31 +8,43 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
     {
         public int? PledgeId { get; set; }
         public long? AccountId { get; set; }
+        public string ApplicationStatusFilter { get; set; }
+
+        public string SortOrder { get; set; }
+        public string SortDirection { get; set; }
 
         public string GetUrl
         {
             get
             {
-                var sb = new StringBuilder("applications");
+                var queryParameters = new Dictionary<string, string>();
 
                 if (PledgeId.HasValue)
                 {
-                    sb.Append($"?pledgeId={PledgeId}");
+                    queryParameters.Add("pledgeId", PledgeId.Value.ToString());
                 }
 
-                if (!AccountId.HasValue)
+                if (AccountId.HasValue)
                 {
-                    return sb.ToString();
+                    queryParameters.Add("accountId", AccountId.Value.ToString());
                 }
 
-                if (PledgeId.HasValue)
+                if (ApplicationStatusFilter != null)
                 {
-                    sb.Append("&");
+                    queryParameters.Add("applicationStatusFilter", ApplicationStatusFilter);
                 }
 
-                sb.Append($"?accountId={AccountId}");
+                if (!string.IsNullOrWhiteSpace(SortOrder))
+                {
+                    queryParameters.Add("sortOrder", SortOrder);
+                }
 
-                return sb.ToString();
+                if (!string.IsNullOrWhiteSpace(SortDirection))
+                {
+                    queryParameters.Add("sortDirection", SortDirection);
+                }
+
+                return QueryHelpers.AddQueryString("applications", queryParameters);
             }
         }
     }

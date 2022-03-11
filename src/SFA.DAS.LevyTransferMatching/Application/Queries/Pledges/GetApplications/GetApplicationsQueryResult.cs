@@ -10,15 +10,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 {
     public class GetApplicationsQueryResult
     {
-        public static implicit operator GetApplicationsQueryResult(GetApplicationsResponse application)
-        {
-            return new GetApplicationsQueryResult
-            {
-                Applications = application.Applications.Select(x => (Application) x)
-            };
-        }
-
         public IEnumerable<Application> Applications { get; set; }
+
+        public string PledgeStatus { get; set; }
 
         public class Application
         {
@@ -29,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
@@ -37,6 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public bool IsSectorMatch { get; set; }
             public bool IsJobRoleMatch { get; set; }
             public bool IsLevelMatch { get; set; }
+            public int MatchPercentage { get; set; }
             public string EmployerAccountName { get; set; }
             public IEnumerable<GetApplicationResponse.ApplicationLocation> Locations { get; set; }
             public IEnumerable<string> Sectors { get; set; }
@@ -53,8 +49,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             public List<LocationDataItem> PledgeLocations { get; set; }
             public string AdditionalLocations { get; set; }
             public string SpecificLocation { get; set; }
-            public static Application BuildApplication(GetApplicationsResponse.Application application,
-                IEnumerable<ReferenceDataItem> roles, Pledge pledgeResponse)
+            public static Application BuildApplication(GetApplicationsResponse.Application application, Pledge pledgeResponse)
             {
                 return new Application
                 {
@@ -65,6 +60,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                     StartDate = application.StartDate,
                     Amount = application.Amount,
                     TotalAmount = application.TotalAmount,
+                    CurrentFinancialYearAmount = application.CurrentFinancialYearAmount,
                     HasTrainingProvider = application.HasTrainingProvider,
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
@@ -85,13 +81,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                         Id = o.Id,
                         PledgeLocationId = o.PledgeLocationId
                     }),
-                    IsJobRoleMatch = !pledgeResponse.JobRoles.Any() ||
-                                     roles.Any(r => r.Description == application.StandardRoute),
-                    IsLevelMatch = !pledgeResponse.Levels.Any() || pledgeResponse.Levels
-                        .Select(x => char.GetNumericValue(x.Last())).Contains(application.StandardLevel),
-                    IsLocationMatch = !pledgeResponse.Locations.Any() || application.Locations.Any(),
-                    IsSectorMatch = !pledgeResponse.Sectors.Any() ||
-                                    application.Sectors.Any(x => pledgeResponse.Sectors.Contains(x)),
+                    IsJobRoleMatch = application.MatchJobRole,
+                    IsLevelMatch = application.MatchLevel,
+                    IsLocationMatch = application.MatchLocation,
+                    IsSectorMatch = application.MatchSector,
+                    MatchPercentage = application.MatchPercentage,
                     StandardLevel = application.StandardLevel,
                     PledgeLocations = pledgeResponse.Locations,
                     SpecificLocation = application.SpecificLocation,
@@ -130,10 +124,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                         Id = o.Id,
                         PledgeLocationId = o.PledgeLocationId
                     }),
-                    IsJobRoleMatch = x.IsJobRoleMatch,
-                    IsLevelMatch = x.IsLevelMatch,
-                    IsLocationMatch = x.IsLocationMatch,
-                    IsSectorMatch = x.IsSectorMatch,
+                    IsJobRoleMatch = x.MatchJobRole,
+                    IsLevelMatch = x.MatchLevel,
+                    IsLocationMatch = x.MatchLocation,
+                    IsSectorMatch = x.MatchSector,
+                    MatchPercentage = x.MatchPercentage,
                     StandardLevel = x.StandardLevel,
                     PledgeLocations = x?.PledgeLocations?.Select(o => new LocationDataItem
                     {

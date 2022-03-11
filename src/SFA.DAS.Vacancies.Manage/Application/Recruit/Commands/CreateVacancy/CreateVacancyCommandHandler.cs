@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Manage.Configuration;
 using SFA.DAS.Vacancies.Manage.InnerApi.Requests;
 using SFA.DAS.Vacancies.Manage.InnerApi.Responses;
@@ -37,7 +38,18 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             {
                 throw new SecurityException();
             }
+            
             request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
+            
+            if(request.AccountIdentifier.AccountType == AccountType.Provider)
+            {
+                request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountHashedId;
+            }
+
+            if (request.PostVacancyRequestData.EmployerNameOption == EmployerNameOption.RegisteredName)
+            {
+                request.PostVacancyRequestData.EmployerName = accountLegalEntity.Name;
+            }
             
             IPostApiRequest apiRequest;
             if (request.IsSandbox)
@@ -46,7 +58,15 @@ namespace SFA.DAS.Vacancies.Manage.Application.Recruit.Commands.CreateVacancy
             }
             else
             {
-                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData);
+                if (request.AccountIdentifier.AccountType == AccountType.Provider)
+                {
+                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, "", request.PostVacancyRequestData);
+                }
+                else
+                {
+                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, request.PostVacancyRequestData.User.Email, request.PostVacancyRequestData);    
+                }
+                
             }
 
             var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);

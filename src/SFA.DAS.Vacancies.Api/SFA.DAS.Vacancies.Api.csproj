@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>1591</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <Content Remove="nlog.Debug.config" />
@@ -43,6 +45,7 @@
         <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.4" />
     </ItemGroup>
 
 

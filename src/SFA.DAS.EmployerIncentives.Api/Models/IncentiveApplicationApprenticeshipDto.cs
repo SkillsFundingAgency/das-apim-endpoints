@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
 
         public DateTime? EmploymentStartDate { get; set; }
 
-        public bool HasEligibleEmploymentStartDate { get; set; }
+        public bool StartDatesAreEligible { get; set; }
 
         public static implicit operator IncentiveApplicationApprenticeshipDto(IncentiveApplicationApprenticeship source)
         {
@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
                 Uln = source.Uln,
                 PlannedStartDate = source.PlannedStartDate,
                 EmploymentStartDate = source.EmploymentStartDate,
-                HasEligibleEmploymentStartDate = source.HasEligibleEmploymentStartDate
+                StartDatesAreEligible = source.StartDatesAreEligible
             };
         }
     }

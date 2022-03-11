@@ -26,8 +26,17 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// POST apprenticeship vacancy
+        /// </summary>
+        /// <remarks>Creates an apprenticeship vacancy using the specified values</remarks>
+        /// <param name="id">The unique ID of the Apprenticeship advert.</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{id}")]
+        [ProducesResponseType(typeof(CreateVacancyResponse), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(CreateVacancyExampleForbiddenResponse), (int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(CreateVacancyExampleBadRequestResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
             [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
             [FromRoute]Guid id, 
@@ -69,7 +78,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                         postVacancyRequestData.ProviderContact = contactDetails;
                         break;
                     case AccountType.Employer:
-                        postVacancyRequestData.EmployerAccountId = account.AccountPublicHashedId;
+                        postVacancyRequestData.EmployerAccountId = account.AccountHashedId;
                         postVacancyRequestData.EmployerContact = contactDetails;
                         break;
                 }
@@ -82,11 +91,15 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                     IsSandbox = isSandbox ?? false
                 });
 
-                return new CreatedResult("", new { response.VacancyReference });
+                return new CreatedResult("", new CreateVacancyResponse { VacancyReference = response.VacancyReference });
             }
             catch (HttpRequestContentException e)
             {
-                return StatusCode((int) e.StatusCode, e.ErrorContent);
+                var content = e.ErrorContent
+                    .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+                    .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
+                
+                return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException e)
             {

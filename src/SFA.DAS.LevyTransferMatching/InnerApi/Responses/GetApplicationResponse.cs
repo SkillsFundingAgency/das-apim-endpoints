@@ -1,5 +1,4 @@
-﻿using SFA.DAS.LevyTransferMatching.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
@@ -20,8 +19,10 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string BusinessWebsite { get; set; }
-        public string EmployerAccountName { get; set; }
+        public string EmployerAccountName { get; set; }    
+        public string SenderEmployerAccountName { get; set; }
         public int Amount { get; set; }
         public int TotalAmount { get; set; }
         public List<ApplicationLocation> Locations { get; set; }
@@ -33,6 +34,11 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public int AmountUsed { get; set; }
         public int NumberOfApprenticesUsed { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool MatchSector { get; set; }
+        public bool MatchJobRole { get; set; }
+        public bool MatchLevel { get; set; }
+        public bool MatchLocation { get; set; }
+        public int MatchPercentage { get; set; }
         public class ApplicationLocation
         {
             public int Id { get; set; }
