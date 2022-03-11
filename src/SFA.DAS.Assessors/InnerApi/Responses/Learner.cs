@@ -23,5 +23,7 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public long UKPRN { get; set; }
         public string LearnRefNumber { get; set; }
         public short PaymentStatus { get; set; }
+        public long EmployerAccountId { get; set; }
+        public string EmployerName { get; set; }
     }
 }

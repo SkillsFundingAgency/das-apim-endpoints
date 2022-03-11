@@ -40,7 +40,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                         return new AccountLegalEntityItem
                         {
                             Name = legalEntityItem.AccountLegalEntityName,
-                            AccountLegalEntityPublicHashedId = legalEntityItem.AccountLegalEntityPublicHashedId
+                            AccountLegalEntityPublicHashedId = legalEntityItem.AccountLegalEntityPublicHashedId,
+                            AccountHashedId = legalEntityItem.AccountHashedId
                         };
                     }
                     else
@@ -49,7 +50,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                     }
                 case AccountType.Employer:
                     var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
-                        new GetAllEmployerAccountLegalEntitiesRequest(accountIdentifier.AccountPublicHashedId));
+                        new GetAllEmployerAccountLegalEntitiesRequest(accountIdentifier.AccountHashedId));
 
                     if (resourceListResponse == null)
                     {
@@ -67,7 +68,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                             return new AccountLegalEntityItem
                             {
                                 Name = legalEntityResponse.AccountLegalEntityName,
-                                AccountLegalEntityPublicHashedId = legalEntityResponse.AccountLegalEntityPublicHashedId
+                                AccountLegalEntityPublicHashedId = legalEntityResponse.AccountLegalEntityPublicHashedId,
+                                AccountHashedId = accountIdentifier.AccountHashedId
                             };
                         }
                     }

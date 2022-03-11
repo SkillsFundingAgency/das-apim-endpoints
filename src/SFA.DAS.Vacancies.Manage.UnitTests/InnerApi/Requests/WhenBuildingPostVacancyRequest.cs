@@ -9,17 +9,17 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.InnerApi.Requests
     public class WhenBuildingPostVacancyRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(Guid id, PostVacancyRequestData data)
+        public void Then_The_Url_Is_Correctly_Built(Guid id,string email, int ukprn, PostVacancyRequestData data)
         {
-            var actual = new PostVacancyRequest(id, data);
+            var actual = new PostVacancyRequest(id, ukprn, email, data);
 
-            actual.PostUrl.Should().Be($"api/Vacancies/{id}?ukprn={data.User.Ukprn}&userEmail={data.User.Email}");
+            actual.PostUrl.Should().Be($"api/Vacancies/{id}?ukprn={ukprn}&userEmail={email}");
         }
 
         [Test, AutoData]
-        public void Then_The_Request_Data_Is_Sent(Guid id, PostVacancyRequestData data)
+        public void Then_The_Request_Data_Is_Sent(Guid id,string email, int ukprn, PostVacancyRequestData data)
         {
-            var actual = new PostVacancyRequest(id, data);
+            var actual = new PostVacancyRequest(id,ukprn, email, data);
 
             var actualData = actual.Data as PostVacancyRequestData;
             actualData.Should().BeEquivalentTo(data);

@@ -12,17 +12,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
     public abstract class GetApiClient<T> : IGetApiClient<T> where T : IApiConfiguration
     {
         protected readonly HttpClient HttpClient;
-        protected readonly IWebHostEnvironment HostingEnvironment;
         protected readonly T Configuration;
 
         public GetApiClient(
             IHttpClientFactory httpClientFactory,
-            T apiConfiguration,
-            IWebHostEnvironment hostingEnvironment)
+            T apiConfiguration)
         {
             HttpClient = httpClientFactory.CreateClient();
             HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
-            HostingEnvironment = hostingEnvironment;
             Configuration = apiConfiguration;
         }
 

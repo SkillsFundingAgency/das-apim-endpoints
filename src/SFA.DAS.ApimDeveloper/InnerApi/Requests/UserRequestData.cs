@@ -15,6 +15,6 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
         [JsonProperty("confirmEmailLink")]
         public string ConfirmationEmailLink { get; set; }
         [JsonProperty("state")]
-        public int State { get; set; }
+        public int? State { get; set; }
     }
 }

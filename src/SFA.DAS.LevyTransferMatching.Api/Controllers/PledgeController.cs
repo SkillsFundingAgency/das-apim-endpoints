@@ -1,28 +1,30 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Api.Authentication;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using SFA.DAS.LevyTransferMatching.Api.Authentication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApproved;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
-using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApproved;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
+using System;
 using System.Linq;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
-
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -53,7 +55,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Id = x.Id,
                         Amount = x.Amount,
                         RemainingAmount = x.RemainingAmount,
-                        ApplicationCount = x.ApplicationCount
+                        ApplicationCount = x.ApplicationCount,
+                        Status = x.Status
                     })
                 };
 
@@ -111,6 +114,65 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return new CreatedResult(
                 $"/accounts/{accountId}/pledges/{commandResult.PledgeId}",
                 (PledgeIdDto)commandResult.PledgeId);
+        }
+
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/close")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> ClosePledge(int pledgeId, [FromBody] SetClosePledgeRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new ClosePledgeCommand 
+                { 
+                    PledgeId = pledgeId,
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                });
+
+                if(result.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return NotFound();
+                }
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to close a pledge");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/reject-applications")]
+        public async Task<IActionResult> RejectApplications(int accountId, int pledgeId, [FromBody] RejectApplicationsRequest request)
+        {
+            await _mediator.Send(new RejectApplicationsCommand
+            {
+                PledgeId = pledgeId,
+                AccountId = accountId,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName,
+                ApplicationsToReject = request.ApplicationsToReject
+            });
+
+            return Ok();
+        }
+
+        [Authorize(Policy = PolicyNames.PledgeAccess)]
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/{pledgeId}/reject-applications")]
+        public async Task<IActionResult> RejectApplications(int pledgeId)
+        {
+            var queryResult = await _mediator.Send(new GetRejectApplicationsQuery { PledgeId = pledgeId });
+
+            return Ok(new GetRejectApplicationsResponse
+            {
+                Applications = queryResult?.Applications.Select(x => (GetRejectApplicationsResponse.Application)x)
+            });
         }
 
         [HttpGet]
@@ -206,16 +268,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
-        public async Task<IActionResult> PledgeApplications(int pledgeId)
+        public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId, SortOrder= sortOrder, SortDirection = sortDirection });
 
-            return Ok(new GetApplicationsResponse
-            {
-                Applications = queryResult?.Applications.Select(x => (GetApplicationsResponse.Application)x)
-            });
+            return Ok((GetApplicationsResponse)queryResult);
         }
-        
+
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications/{applicationId}")]

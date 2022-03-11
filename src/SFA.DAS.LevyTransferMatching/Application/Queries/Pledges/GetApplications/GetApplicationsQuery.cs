@@ -5,6 +5,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
     public class GetApplicationsQuery : IRequest<GetApplicationsQueryResult>
     {
         public int PledgeId { get; set; }
-        public long AccountId { get; set; }
+        public string SortOrder { get; set; }
+        public string SortDirection { get; set; }
     }
 }

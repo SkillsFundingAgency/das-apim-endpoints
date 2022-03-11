@@ -48,6 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             Assert.That(!result.Pledges.Any(x => x.Amount == 0));
             Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
             Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
+            Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
         }
     }
 }

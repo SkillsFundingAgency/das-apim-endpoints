@@ -20,8 +20,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<string> EmailAddresses { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string BusinessWebsite { get; set; }
         public string EmployerAccountName { get; set; }
+        public string SenderEmployerAccountName { get; set; }
         public IEnumerable<string> Locations { get; set; }
         public string AdditionalLocation { get; set; }
         public string SpecificLocation { get; set; }
@@ -35,5 +37,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
         public List<ReferenceDataItem> AllSectors { get; set; }
         public List<ReferenceDataItem> AllLevels { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool MatchSector { get; set; }
+        public bool MatchJobRole { get; set; }
+        public bool MatchLevel { get; set; }
+        public bool MatchLocation { get; set; }
+        public int MatchPercentage { get; set; }
     }
 }
