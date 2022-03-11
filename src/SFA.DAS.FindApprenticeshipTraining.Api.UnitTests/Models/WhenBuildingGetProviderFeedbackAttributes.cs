@@ -38,8 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Strengths.Should().BeEmpty();
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().BeEmpty();
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().BeEmpty();
         }
 
         [Test, AutoData]
@@ -69,9 +68,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Strengths.Should().BeEmpty();
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().NotBeEmpty();
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().BeEmpty();
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().NotBeEmpty();
         }
 
         [Test, AutoData]
@@ -101,9 +100,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Strengths.Should().NotBeEmpty();
-            response.Feedback.FeedbackAttributes.Strengths.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().BeEmpty();
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().NotBeEmpty();
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().BeEmpty();
         }
         
         [Test, AutoData]
@@ -133,7 +132,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().ContainInOrder(new List<string>{"Yattribute", "Zattribute", "Attribute"});
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().ContainInOrder(new List<string>{"Yattribute", "Zattribute", "Attribute"});
         }
         
         [Test, AutoData]
@@ -157,7 +156,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.Strengths.Should().ContainInOrder(new List<string>{"Seventh Attribute"});
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().ContainInOrder(new List<string>{"Seventh Attribute"});
         }
         
 
@@ -230,8 +229,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.Strengths.Should().ContainInOrder(new List<string>{"Fourth Attribute", "Third Attribute", "First Attribute"});
-            response.Feedback.FeedbackAttributes.Weaknesses.Should().ContainInOrder(new List<string>{"Eighth Attribute", "Ninth Attribute", "Tenth Attribute"});
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().ContainInOrder(new List<string>{"Fourth Attribute", "Third Attribute", "First Attribute"});
+            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().ContainInOrder(new List<string>{"Eighth Attribute", "Ninth Attribute", "Tenth Attribute"});
         }
 
     }
