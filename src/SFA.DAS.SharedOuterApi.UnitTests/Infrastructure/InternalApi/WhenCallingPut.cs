@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -36,12 +35,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var expectedUrl = $"{config.Url}{putTestRequest.PutUrl}";
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, "put");
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
             //Act
             await actual.Put(putTestRequest);

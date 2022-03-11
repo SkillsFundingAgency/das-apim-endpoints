@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -31,18 +30,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Created
             };
-            var deleteTestReequest = new DeleteTestRequest(id);
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.Url}{deleteTestReequest.DeleteUrl}", "delete");
+            var deleteTestRequest = new DeleteTestRequest(id);
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.Url}{deleteTestRequest.DeleteUrl}", "delete");
             var client = new HttpClient(httpMessageHandler.Object);
-            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
             
-            hostingEnvironment.Setup(x => x.EnvironmentName).Returns("Staging");
-            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config,hostingEnvironment.Object, azureClientCredentialHelper.Object);
+            var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
             //Act
-            await actual.Delete(deleteTestReequest);
+            await actual.Delete(deleteTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
@@ -50,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Delete)
-                        && c.RequestUri.AbsoluteUri.Equals($"{config.Url}{deleteTestReequest.DeleteUrl}")
+                        && c.RequestUri.AbsoluteUri.Equals($"{config.Url}{deleteTestRequest.DeleteUrl}")
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
                         && c.Headers.Authorization.Parameter.Equals(authToken)),

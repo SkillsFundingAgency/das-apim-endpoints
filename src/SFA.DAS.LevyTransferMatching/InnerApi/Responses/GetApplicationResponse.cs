@@ -34,6 +34,11 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public int AmountUsed { get; set; }
         public int NumberOfApprenticesUsed { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool MatchSector { get; set; }
+        public bool MatchJobRole { get; set; }
+        public bool MatchLevel { get; set; }
+        public bool MatchLocation { get; set; }
+        public int MatchPercentage { get; set; }
         public class ApplicationLocation
         {
             public int Id { get; set; }
