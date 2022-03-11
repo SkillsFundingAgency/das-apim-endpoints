@@ -41,6 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 PledgeStatus = pledgeTask.Result.Status
             };
         }
-        
+
     }
 }
