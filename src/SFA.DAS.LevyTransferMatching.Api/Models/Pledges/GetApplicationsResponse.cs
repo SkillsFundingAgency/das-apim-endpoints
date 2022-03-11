@@ -72,7 +72,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     IsSectorMatch = application.IsSectorMatch,
                     IsJobRoleMatch = application.IsJobRoleMatch,
                     IsLevelMatch = application.IsLevelMatch,
-                    MatchPercentage = application.MatchPercentage,
                     EmailAddresses = application.EmailAddresses,
                     JobRole = application.JobRole,
                     BusinessWebsite = application.BusinessWebsite,

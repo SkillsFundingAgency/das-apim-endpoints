@@ -46,6 +46,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication
                 Amount = application.Amount,
                 FirstName = application.FirstName,
                 HasTrainingProvider = application.HasTrainingProvider,
+                MatchJobRole = application.MatchJobRole,
+                MatchLocation = application.MatchLocation,
+                MatchLevel = application.MatchLevel,
+                MatchSector = application.MatchSector,
+                MatchPercentage = application.MatchPercentage,
                 LastName = application.LastName,
                 Level = application.StandardLevel,
                 Location = string.Empty, //replaced in TM-169
