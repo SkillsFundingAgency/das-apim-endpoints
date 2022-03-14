@@ -35,7 +35,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.Is<GetVacanciesQuery>(
                         c=>c.Ukprn.Equals(request.Ukprn) 
                          && c.AccountIdentifier.AccountType == AccountType.Employer
-                         && c.AccountIdentifier.AccountPublicHashedId == accountId
+                         && c.AccountIdentifier.AccountHashedId == accountId
                          && c.AccountIdentifier.Ukprn == null
                          && c.PageNumber.Equals(request.PageNumber)
                          && c.AccountPublicHashedId.Equals(accountId)
@@ -78,7 +78,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.Is<GetVacanciesQuery>(
                         c=>c.Ukprn.Equals(request.Ukprn) 
                          && c.AccountIdentifier.AccountType == AccountType.Employer
-                         && c.AccountIdentifier.AccountPublicHashedId == accountId
+                         && c.AccountIdentifier.AccountHashedId == accountId
                          && c.AccountIdentifier.Ukprn == null
                          && c.PageNumber.Equals(request.PageNumber)
                          && c.AccountPublicHashedId == null
@@ -120,7 +120,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.Is<GetVacanciesQuery>(
                         c=>c.Ukprn.Equals(ukprn)
                            && c.AccountIdentifier.AccountType == AccountType.Provider
-                           && c.AccountIdentifier.AccountPublicHashedId == null
+                           && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
                            && c.PageNumber.Equals(request.PageNumber)
                            && c.AccountPublicHashedId == null
@@ -153,7 +153,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.Is<GetVacanciesQuery>(
                         c=>c.Ukprn.Equals(request.Ukprn)
                            && c.AccountIdentifier.AccountType == AccountType.Provider
-                           && c.AccountIdentifier.AccountPublicHashedId == null
+                           && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
                            && c.PageNumber.Equals(request.PageNumber)
                            && c.AccountPublicHashedId == null
