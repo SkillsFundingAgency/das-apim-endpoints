@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests
         {
             var actual = new PostRecalculateEarningsRequest(data);
 
-            actual.PostUrl.Should().Be($"recalculateEarnings");
+            actual.PostUrl.Should().Be($"earningsRecalculations");
             actual.Data.Should().BeEquivalentTo(data);
         }
     }

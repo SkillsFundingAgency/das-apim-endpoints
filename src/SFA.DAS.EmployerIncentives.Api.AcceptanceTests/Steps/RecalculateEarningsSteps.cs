@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         {
             _context.InnerApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/recalculateEarnings")
+                    Request.Create().WithPath($"/earningsRecalculations")
                         .UsingPut())
                 .RespondWith(
                     Response.Create()
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the recalculate earnings request")]
         public async Task WhenTheOuterApiReceivesTheRecalculateEarningsRequest()
         {
-            _response = await _context.OuterApiClient.PostAsync($"/recalculateEarnings", new StringContent(JsonSerializer.Serialize(_request), Encoding.UTF8, "application/json"));
+            _response = await _context.OuterApiClient.PostAsync($"/earningsRecalculations", new StringContent(JsonSerializer.Serialize(_request), Encoding.UTF8, "application/json"));
         }
 
         [Then(@"the respsonde code of NoContent is returned")]

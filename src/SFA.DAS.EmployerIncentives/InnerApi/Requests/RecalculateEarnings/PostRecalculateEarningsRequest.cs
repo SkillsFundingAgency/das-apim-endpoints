@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings
             Data = recalculateEarningsRequest;
         }
 
-        public string PostUrl => "recalculateEarnings";
+        public string PostUrl => "earningsRecalculations";
 
         public object Data { get; set; }
     }

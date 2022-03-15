@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/recalculateEarnings")]
+        [Route("/earningsRecalculations")]
         public async Task<IActionResult> RecalculateEarnings([FromBody] RecalculateEarningsRequest request) 
         {
             await _mediator.Send(new RecalculateEarningsCommand(request));
