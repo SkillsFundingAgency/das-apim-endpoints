@@ -29,5 +29,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
         public string BusinessWebsite { get; set; }
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
+
     }
 }

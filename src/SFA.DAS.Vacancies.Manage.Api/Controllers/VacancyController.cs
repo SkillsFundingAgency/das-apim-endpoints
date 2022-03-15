@@ -78,7 +78,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                         postVacancyRequestData.ProviderContact = contactDetails;
                         break;
                     case AccountType.Employer:
-                        postVacancyRequestData.EmployerAccountId = account.AccountPublicHashedId;
+                        postVacancyRequestData.EmployerAccountId = account.AccountHashedId;
                         postVacancyRequestData.EmployerContact = contactDetails;
                         break;
                 }

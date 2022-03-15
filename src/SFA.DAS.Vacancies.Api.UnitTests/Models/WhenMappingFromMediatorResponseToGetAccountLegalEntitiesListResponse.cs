@@ -18,6 +18,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.AccountId)
                 .Excluding(c=>c.AccountLegalEntityId)
                 .Excluding(c=>c.AccountProviderId)
+                .Excluding(c=>c.AccountHashedId)
             );
         }
 

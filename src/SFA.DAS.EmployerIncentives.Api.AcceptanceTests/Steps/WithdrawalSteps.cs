@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [When(@"the Outer Api receives the Withdrawal request")]
         public async Task WhenTheOuterApiReceivesTheWithdrawalRequest()
         {
-           _response = await  _context.OuterApiClient.PostAsJsonAsync($"withdrawals", _withdrawRequest);
+           _response = await _context.OuterApiClient.PostAsJsonAsync($"withdrawals", _withdrawRequest);
         }
 
         [When(@"the Outer Api receives the Reinstate request")]

@@ -7,7 +7,7 @@ namespace SFA.DAS.SharedOuterApi.Models
     {
         public AccountIdentifier(string accountIdentifier)
         {
-            AccountPublicHashedId = null;
+            AccountHashedId = null;
             Ukprn = null;
             
             var identifierParts = accountIdentifier?.Split('-');
@@ -29,7 +29,7 @@ namespace SFA.DAS.SharedOuterApi.Models
                     Ukprn = providerId;
                     break;
                 case AccountType.Employer:
-                    AccountPublicHashedId = id.ToUpper();
+                    AccountHashedId = id.ToUpper();
                     break;
                 case AccountType.External:
                     if(Guid.TryParse(string.Join("-", identifierParts.Skip(1).Take(identifierParts.Length-2)), out var externalId))
@@ -47,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.Models
         }
 
         public AccountType AccountType { get; }
-        public string AccountPublicHashedId { get; }
+        public string AccountHashedId { get; }
         public int? Ukprn { get; }
         public Guid ExternalId {get;}
     }
