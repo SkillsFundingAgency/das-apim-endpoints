@@ -43,6 +43,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 RemainingAmount = pledgeTask.Result.RemainingAmount
             };
         }
-        
+
     }
 }
