@@ -27,7 +27,12 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
             //Assert
             actual.Routes.Should().BeEquivalentTo(source.Routes.Select(c=>new {Route = c.Name}).ToList());
             actual.TotalFound.Should().Be(source.TotalFound);
-            actual.Location.Should().BeEquivalentTo(source.Location);
+            actual.Location.Should()
+                .BeEquivalentTo(source.Location, options => options
+                    .Excluding(c => c.LocalAuthorityName)
+                    .Excluding(c => c.LocalAuthorityDistrict)
+                    .Excluding(c => c.County)
+                    .Excluding(c => c.Region));
             actual.Vacancies.Should()
                 .BeEquivalentTo(source.Vacancies, options => options
                     .Excluding(c => c.AnonymousEmployerName)
