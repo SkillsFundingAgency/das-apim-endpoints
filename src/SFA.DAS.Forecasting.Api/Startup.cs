@@ -46,7 +46,6 @@ namespace SFA.DAS.Forecasting.Api
             services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
             services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
-            services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
 
             if (!_configuration.IsLocalOrDev())
             {
