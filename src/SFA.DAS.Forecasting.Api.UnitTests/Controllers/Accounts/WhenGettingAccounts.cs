@@ -15,21 +15,21 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Accounts
     [TestFixture]
     public class WhenGettingAccounts
     {
-        private AccountsController _controller;
+        private ApprovalsController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-        private GetAccountsWithCohortsQueryResult _queryResult;
+        private GetAccountIdsQueryResult _queryResult;
 
         [SetUp]
         public void Setup()
         {
             _mediator = new Mock<IMediator>();
 
-            _queryResult = _fixture.Create<GetAccountsWithCohortsQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetAccountsWithCohortsQuery>(), CancellationToken.None))
+            _queryResult = _fixture.Create<GetAccountIdsQueryResult>();
+            _mediator.Setup(x => x.Send(It.IsAny<GetAccountIds>(), CancellationToken.None))
                 .ReturnsAsync(_queryResult);
 
-            _controller = new AccountsController(_mediator.Object, Mock.Of<ILogger<AccountsController>>());
+            _controller = new ApprovalsController(_mediator.Object, Mock.Of<ILogger<ApprovalsController>>());
         }
 
         [Test]

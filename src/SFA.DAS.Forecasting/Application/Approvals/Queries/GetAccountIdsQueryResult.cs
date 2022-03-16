@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Forecasting.Application.Approvals.Queries
 {
-    public class GetAccountsWithCohortsQueryResult
+    public class GetAccountIdsQueryResult
     {
         public List<long> AccountIds { get; set; }
     }

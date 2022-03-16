@@ -10,24 +10,24 @@ namespace SFA.DAS.Forecasting.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AccountsController : Controller
+    public class ApprovalsController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<AccountsController> _logger;
+        private readonly ILogger<ApprovalsController> _logger;
 
-        public AccountsController(IMediator mediator, ILogger<AccountsController> logger)
+        public ApprovalsController(IMediator mediator, ILogger<ApprovalsController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
         [HttpGet]
-        [Route("with-cohorts")]
+        [Route("accountIds")]
         public async Task<IActionResult> GetAccountsWithCohorts()
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetAccountsWithCohortsQuery());
+                var queryResult = await _mediator.Send(new GetAccountIdsQuery());
                 var result = new GetAccountsWithCohortsResponse { AccountIds = queryResult.AccountIds };
                 return Ok(result);
             }

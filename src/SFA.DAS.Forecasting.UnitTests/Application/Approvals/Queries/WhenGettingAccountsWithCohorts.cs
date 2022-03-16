@@ -14,11 +14,11 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
     [TestFixture]
     public class WhenGettingAccountsWithCohorts
     {
-        private GetAccountsWithCohortsQueryHandler _handler;
+        private GetAccountIdsQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
         private GetAccountsWithCohortsResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
-        private GetAccountsWithCohortsQuery _query;
+        private GetAccountIds _query;
 
         [SetUp]
         public void Setup()
@@ -27,9 +27,9 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _apiClient.Setup(x => x.Get<GetAccountsWithCohortsResponse>(It.IsAny<GetAccountsWithCohortsRequest>())).ReturnsAsync(_apiResponse);
 
-            _handler = new GetAccountsWithCohortsQueryHandler(_apiClient.Object);
+            _handler = new GetAccountIdsQueryHandler(_apiClient.Object);
 
-            _query = _fixture.Create<GetAccountsWithCohortsQuery>();
+            _query = _fixture.Create<GetAccountIds>();
         }
 
         [Test]
