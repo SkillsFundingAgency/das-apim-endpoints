@@ -61,6 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             {
                 FeedbackAttributeDetail = feedbackAttributeItems
                     .Where(c => c.TotalVotes > 0)
+                    .OrderByDescending(c => c.TotalVotes)
                     .Select(c => new FeedbackAttributeDetail { 
                                 AttributeName = c.AttributeName, 
                                 StrengthCount = c.Strength, 
