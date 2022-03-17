@@ -68,7 +68,6 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
             _mediator.Verify(x => x.Send(It.Is<GetApprenticeshipsQuery>(q => q.Status == _status), CancellationToken.None));
         }
 
-
         [Test]
         public async Task Then_Paging_Options_Are_Reflected()
         {
