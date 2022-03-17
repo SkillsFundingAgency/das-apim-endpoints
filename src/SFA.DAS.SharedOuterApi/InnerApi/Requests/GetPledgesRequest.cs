@@ -15,15 +15,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
                 filters.Add("accountId", accountId.ToString());
             }
 
-            filters.Add("page", "0");
-            filters.Add("pageSize", int.MaxValue.ToString());
-
             this.GetUrl = $"pledges{filters.ToQueryString()}";
         }
 
         public GetPledgesRequest(int page, int pageSize)
         {
-            GetUrl = $"pledges?page={page}&pageSize={pageSize}";
+            GetUrl = $"pledges";
         }
 
         public string GetUrl { get; set; }
