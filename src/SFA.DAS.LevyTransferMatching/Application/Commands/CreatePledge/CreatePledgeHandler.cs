@@ -42,7 +42,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 locationDataItems.Add(new LocationDataItem
                 {
                     Name = locationInformationResult.Name,
-                    GeoPoint = locationInformationResult.GeoPoint
+                    GeoPoint = locationInformationResult.GeoPoint,
+                    LocalAuthorityName = locationInformationResult.LocalAuthorityName,
+                    LocalAuthorityDistrict = locationInformationResult.LocalAuthorityDistrict,
+                    County = locationInformationResult.County,
+                    Region = locationInformationResult.Region
                 });
             }
 

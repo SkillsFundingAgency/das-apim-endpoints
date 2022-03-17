@@ -30,7 +30,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             
             if (lat != 0 && lon != 0)
             {
-                return new LocationItem(location, new []{ lat, lon}, string.Empty);
+                return new LocationItem(location, new []{ lat, lon}, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
             }
 
             GetLocationsListItem getLocationsListItem  = null;
@@ -76,7 +76,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             }
 
             return getLocationsListItem?.Location != null
-                ? new LocationItem(location, getLocationsListItem.Location.GeoPoint, getLocationsListItem.Country) 
+                ? new LocationItem(location, getLocationsListItem.Location.GeoPoint, getLocationsListItem.Country, getLocationsListItem.LocalAuthorityName, getLocationsListItem.LocalAuthorityDistrict, getLocationsListItem.CountyName, getLocationsListItem.Region) 
                 : null;
         }
     }

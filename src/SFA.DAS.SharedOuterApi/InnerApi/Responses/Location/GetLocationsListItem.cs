@@ -23,6 +23,10 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public string Outcode { get; set; }
         [JsonProperty("country")]
         public string Country { get; set; }
+        [JsonProperty("localAuthorityDistrict")]
+        public string LocalAuthorityDistrict { get; set; }
+        [JsonProperty("region")]
+        public string Region { get; set; }
 
         public class Coordinates
         {
