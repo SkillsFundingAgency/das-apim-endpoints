@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -16,19 +17,23 @@ namespace SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountUsersQuery
         {
             _apiClient = apiClient;
         }
+
         public async Task<GetAccountUsersResult> Handle(GetAccountUsersQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetAccountUsersResponse>(new GetAccountUsersRequest(request.AccountId));
+            var result = await _apiClient.Get<GetAccountUsersResponse>(new GetAccountUsersRequest(request.HashedAccountId));
 
-            return new GetAccountUsersResult
+            if (result == null)
+                return null;
+
+            return new GetAccountUsersResult(request.HashedAccountId, result.Select(x => new TeamMember
             {
-                UserRef = result.UserRef,
-                Name = result.Name,
-                Email = result.Email,
-                Role = result.Role,
-                CanReceiveNotifications = result.CanReceiveNotifications,
-                Status = result.Status
-            };
+                UserRef = x.UserRef,
+                Name = x.Name,
+                Email = x.Email,
+                Role = x.Role,
+                CanReceiveNotifications = x.CanReceiveNotifications,
+                Status = x.Status
+            }));
         }
     }
 }

@@ -22,12 +22,12 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{accountId}")]
-        public async Task<IActionResult> Get(long accountId)
+        [Route("{hashedAccountId}")]
+        public async Task<IActionResult> Get(string hashedAccountId)
         {
             try
             {
-                var result = await _mediator.Send(new GetAccountQuery {AccountId = accountId});
+                var result = await _mediator.Send(new GetAccountQuery {HashedAccountId = hashedAccountId});
               
                 if (result == null)
                 {
@@ -45,12 +45,12 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{accountId}/users")]
-        public async Task<IActionResult> GetUsers(long accountId)
+        [Route("{hashedAccountId}/users")]
+        public async Task<IActionResult> GetUsers(string hashedAccountId)
         {
             try
             {
-                var result = await _mediator.Send(new GetAccountUsersQuery { AccountId = accountId });
+                var result = await _mediator.Send(new GetAccountUsersQuery { HashedAccountId = hashedAccountId });
 
                 if (result == null)
                 {

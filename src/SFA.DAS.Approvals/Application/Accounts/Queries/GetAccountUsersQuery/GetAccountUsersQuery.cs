@@ -4,6 +4,6 @@ namespace SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountUsersQuery
 {
     public class GetAccountUsersQuery : IRequest<GetAccountUsersResult>
     {
-        public long AccountId { get; set; }
+        public string HashedAccountId { get; set; }
     }
 }

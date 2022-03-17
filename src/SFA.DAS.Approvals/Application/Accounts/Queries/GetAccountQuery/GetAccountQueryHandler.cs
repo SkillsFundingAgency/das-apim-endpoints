@@ -16,9 +16,13 @@ namespace SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountQuery
         {
             _apiClient = apiClient;
         }
+
         public async Task<GetAccountResult> Handle(GetAccountQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId));
+            var result = await _apiClient.Get<GetAccountResponse>(new GetAccountRequest(request.HashedAccountId));
+
+            if (result == null)
+                return null;
 
             return new GetAccountResult
             {

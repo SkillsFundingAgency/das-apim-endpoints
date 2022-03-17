@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Accounts.Queries
             GetAccountUsersQueryHandler handler
         )
         {
-            apiClient.Setup(x => x.Get<GetAccountUsersResponse>(It.Is<GetAccountUsersRequest>(x => x.AccountId == query.AccountId))).ReturnsAsync(apiResponse);
+            apiClient.Setup(x => x.Get<GetAccountUsersResponse>(It.Is<GetAccountUsersRequest>(x => x.HashedAccountId == query.HashedAccountId))).ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 

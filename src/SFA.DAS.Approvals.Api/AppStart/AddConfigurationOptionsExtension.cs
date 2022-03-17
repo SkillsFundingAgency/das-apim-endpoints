@@ -15,6 +15,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
+            services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<AssessorsApiConfiguration>(configuration.GetSection(nameof(AssessorsApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AssessorsApiConfiguration>>().Value);
             services.Configure<ApprenticeCommitmentsApiConfiguration>(configuration.GetSection(nameof(ApprenticeCommitmentsApiConfiguration)));

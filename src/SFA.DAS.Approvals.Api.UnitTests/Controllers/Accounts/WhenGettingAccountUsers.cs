@@ -18,18 +18,18 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_AccountUsers_From_Mediator(
-            long accountId,
+            string hashedAccountId,
             GetAccountUsersResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAccountUsersQuery>(x => x.AccountId == accountId),
+                    It.Is<GetAccountUsersQuery>(x => x.HashedAccountId == hashedAccountId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetUsers(accountId) as ObjectResult;
+            var controllerResult = await controller.GetUsers(hashedAccountId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.OK);
@@ -40,18 +40,18 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
 
         [Test, MoqAutoData]
         public async Task And_Then_No_AccountUsers_Are_Returned_From_Mediator(
-            long accountId,
+            string hashedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
-            var controllerResult = await controller.GetUsers(accountId) as NotFoundResult;
+            var controllerResult = await controller.GetUsers(hashedAccountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            long accountId,
+            string hashedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
@@ -61,7 +61,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetUsers(accountId) as BadRequestResult;
+            var controllerResult = await controller.GetUsers(hashedAccountId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

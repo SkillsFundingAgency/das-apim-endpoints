@@ -4,13 +4,13 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class GetAccountRequest : IGetApiRequest
     {
-        public long AccountId { get; }
+        public string HashedAccountId { get; }
 
-        public GetAccountRequest(long accountId)
+        public GetAccountRequest(string hashedAccountId)
         {
-            AccountId = accountId;
+            HashedAccountId = hashedAccountId;
         }
 
-        public string GetUrl => $"api/accounts/internal/{AccountId}";
+        public string GetUrl => $"api/accounts/{HashedAccountId}";
     }
 }

@@ -12,11 +12,11 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var fixture = new Fixture();
 
             //Arrange Act
-            var id = fixture.Create<int>();
+            var id = fixture.Create<string>();
             var actual = new GetAccountUsersRequest(id);
 
             //Assert
-            Assert.AreEqual($"api/accounts/internal/{id}/users", actual.GetUrl);
+            Assert.AreEqual($"api/accounts/{id}/users", actual.GetUrl);
         }
     }
 }
