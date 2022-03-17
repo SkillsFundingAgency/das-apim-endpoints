@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -56,16 +55,6 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
                 Assert.AreEqual(expected.AccountId, pledge.AccountId);
                 i++;
             }
-        }
-
-        [Test]
-        public async Task Then_Paging_Options_Are_Honoured()
-        {
-            await _handler.Handle(_query, CancellationToken.None);
-
-            _apiClient.Verify(x =>
-                x.Get<GetPledgesResponse>(It.Is<GetPledgesRequest>(r =>
-                    r.GetUrl == $"pledges?page={_query.Page}&pageSize={_query.PageSize}")));
         }
     }
 }
