@@ -4,6 +4,7 @@ using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Approvals.Queries;
+using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
 using SFA.DAS.Forecasting.InnerApi.Requests;
 using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -18,7 +19,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
         private GetAccountsWithCohortsResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
-        private GetAccountIds _query;
+        private GetAccountIdsQuery _query;
 
         [SetUp]
         public void Setup()
@@ -29,7 +30,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
 
             _handler = new GetAccountIdsQueryHandler(_apiClient.Object);
 
-            _query = _fixture.Create<GetAccountIds>();
+            _query = _fixture.Create<GetAccountIdsQuery>();
         }
 
         [Test]

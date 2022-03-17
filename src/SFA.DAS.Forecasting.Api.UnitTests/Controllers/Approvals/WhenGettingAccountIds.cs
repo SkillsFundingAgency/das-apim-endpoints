@@ -8,12 +8,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Controllers;
 using SFA.DAS.Forecasting.Api.Models;
-using SFA.DAS.Forecasting.Application.Approvals.Queries;
+using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
 
-namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Accounts
+namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
 {
     [TestFixture]
-    public class WhenGettingAccounts
+    public class WhenGettingAccountIds
     {
         private ApprovalsController _controller;
         private Mock<IMediator> _mediator;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Accounts
             _mediator = new Mock<IMediator>();
 
             _queryResult = _fixture.Create<GetAccountIdsQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetAccountIds>(), CancellationToken.None))
+            _mediator.Setup(x => x.Send(It.IsAny<GetAccountIdsQuery>(), CancellationToken.None))
                 .ReturnsAsync(_queryResult);
 
             _controller = new ApprovalsController(_mediator.Object, Mock.Of<ILogger<ApprovalsController>>());

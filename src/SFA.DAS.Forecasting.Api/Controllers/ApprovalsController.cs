@@ -5,6 +5,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Approvals.Queries;
+using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
+using SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships;
 
 namespace SFA.DAS.Forecasting.Api.Controllers
 {
@@ -36,7 +38,30 @@ namespace SFA.DAS.Forecasting.Api.Controllers
                 _logger.LogError(e, "Exception occurred getting accounts with cohorts");
                 throw;
             }
+        }
 
+        [HttpGet]
+        [Route("apprenticeships")]
+        public async Task<IActionResult> GetApprenticeships(long accountId, string status, int pageNumber, int pageItemCount)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetApprenticeshipsQuery
+                {
+                    AccountId = accountId,
+                    Status = status,
+                    PageNumber = pageNumber,
+                    PageItemCount = pageItemCount
+                });
+
+                var result = (GetApprenticeshipsResponse) queryResult;
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception occurred getting accounts with cohorts");
+                throw;
+            }
         }
     }
 }
