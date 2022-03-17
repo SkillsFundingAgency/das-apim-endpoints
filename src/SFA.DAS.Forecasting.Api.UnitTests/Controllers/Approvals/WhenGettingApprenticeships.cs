@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
@@ -51,7 +52,8 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
             var response = result.Value as GetApprenticeshipsResponse;
             Assert.IsNotNull(response);
 
-            CompareHelper.AreEqualIgnoringTypes(_queryResult, response);
+            Assert.AreEqual(_queryResult.TotalApprenticeshipsFound, response.TotalApprenticeshipsFound);
+            CompareHelper.AreEqualIgnoringTypes(_queryResult.Apprenticeships.ToList(), response.Apprenticeships.ToList());
         }
 
         [Test]
