@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprentice;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -16,32 +16,32 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 {
-    public class WhenHandlingCreateApprentice
+    public class WhenHandlingCreateFeedbackTarget
     {
         private Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> _mockApiClient;
-        private CreateApprenticeCommandHandler _handler;
+        private CreateFeedbackTargetCommandHandler _handler;
 
         [SetUp]
         public void Arrange()
         {
             _mockApiClient = new Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>>();
            
-            _handler = new CreateApprenticeCommandHandler(_mockApiClient.Object);
+            _handler = new CreateFeedbackTargetCommandHandler(_mockApiClient.Object);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestIsSent(CreateApprenticeCommand command,
+        public async Task Then_PostRequestIsSent(CreateFeedbackTargetCommand command,
             string errorContent)
         {
             var response = new ApiResponse<object>(null, HttpStatusCode.Created, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateFeedbackTargetRequest>()))
                 .ReturnsAsync(response);
 
             await _handler.Handle(command, CancellationToken.None);
 
             _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>()));
-        } 
+        }
 
         [Test]
         [MoqInlineAutoData(HttpStatusCode.BadRequest)]
@@ -49,12 +49,12 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         [MoqInlineAutoData(HttpStatusCode.NotFound)]
         public void And_ApiDoesNotReturnSuccess_Then_ThrowApiResponseException(
             HttpStatusCode statusCode,
-            CreateApprenticeCommand command,
+            CreateFeedbackTargetCommand command,
             string errorContent)
         {
             var response = new ApiResponse<object>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateFeedbackTargetRequest>()))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

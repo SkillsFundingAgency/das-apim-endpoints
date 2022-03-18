@@ -6,31 +6,30 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprentice
+namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTarget
 {
-    public class CreateApprenticeCommandHandler : IRequestHandler<CreateApprenticeCommand>
+    public class CreateFeedbackTargetCommandHandler : IRequestHandler<CreateFeedbackTargetCommand, CreateFeedbackTargetResponse>
     {
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _feedbackApiClient;
 
-        public CreateApprenticeCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> feedbackApiClient)
+        public CreateFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> feedbackApiClient)
         {
             _feedbackApiClient = feedbackApiClient;
         }
 
-        public async Task<Unit> Handle(CreateApprenticeCommand command, CancellationToken cancellationToken)
+        public async Task<CreateFeedbackTargetResponse> Handle(CreateFeedbackTargetCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostCreateApprenticeRequest(new AddApprenticeData
+            var request = new CreateFeedbackTargetRequest(new CreateFeedbackTargetData
             {
                 ApprenticeId = command.ApprenticeId,
                 ApprenticeshipId = command.ApprenticeshipId,
-                Status = null
+                CommitmentApprenticeshipId = command.CommitmentsApprenticeshipId
             });
 
             var response = await _feedbackApiClient.PostWithResponseCode<object>(request);
 
             response.EnsureSuccessStatusCode();
-
-            return Unit.Value;
+            return new CreateFeedbackTargetResponse();
         }
     }
 }
