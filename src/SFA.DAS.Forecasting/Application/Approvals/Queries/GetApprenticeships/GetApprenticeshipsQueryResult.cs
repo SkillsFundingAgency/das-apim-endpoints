@@ -12,7 +12,7 @@ namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships
         public class Apprenticeship
         {
             public long Id { get; set; }
-            public long TransferSenderId { get; set; }
+            public long? TransferSenderId { get; set; }
             public string Uln { get; set; }
             public long ProviderId { get; set; }
             public string ProviderName { get; set; }

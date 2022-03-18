@@ -14,7 +14,7 @@ namespace SFA.DAS.Forecasting.Api.Models
         public class Apprenticeship
         {
             public long Id { get; set; }
-            public long TransferSenderId { get; set; }
+            public long? TransferSenderId { get; set; }
             public string Uln { get; set; }
             public long ProviderId { get; set; }
             public string ProviderName { get; set; }
