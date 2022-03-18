@@ -26,7 +26,7 @@ namespace SFA.DAS.EmploymentCheck.Api.AppStart
             serviceCollection.AddLogging((options) =>
             {
                 options.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
-                options.SetMinimumLevel(LogLevel.Trace);
+                options.SetMinimumLevel(LogLevel.Information);
                 options.AddNLog(new NLogProviderOptions
                 {
                     CaptureMessageTemplates = true,
