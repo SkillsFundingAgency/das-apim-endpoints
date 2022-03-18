@@ -3,19 +3,19 @@ using System;
 
 namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
-    public class CreateFeedbackTargetRequest : IPostApiRequest
+    public class CreateApprenticeFeedbackTargetRequest : IPostApiRequest
     {
-        public string PostUrl => "api/add-apprentice";
+        public string PostUrl => "api/apprenticefeedbacktarget";
 
         public object Data { get; set; }
 
-        public CreateFeedbackTargetRequest(CreateFeedbackTargetData data)
+        public CreateApprenticeFeedbackTargetRequest(CreateApprenticeFeedbackTargetData data)
         {
             Data = data;
         }
     }
 
-    public class CreateFeedbackTargetData
+    public class CreateApprenticeFeedbackTargetData
     {
         // Apprentice Accounts Id
         public Guid ApprenticeId { get; set; }

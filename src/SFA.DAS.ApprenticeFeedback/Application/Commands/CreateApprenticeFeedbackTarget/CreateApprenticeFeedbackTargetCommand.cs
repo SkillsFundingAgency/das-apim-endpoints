@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using System;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTarget
+namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedbackTarget
 {
-    public class CreateFeedbackTargetCommand : IRequest<CreateFeedbackTargetResponse>
+    public class CreateApprenticeFeedbackTargetCommand : IRequest<CreateApprenticeFeedbackTargetResponse>
     {
         public Guid ApprenticeId { get; set; }
         public long ApprenticeshipId { get; set; }

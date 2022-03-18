@@ -6,20 +6,20 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTarget
+namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedbackTarget
 {
-    public class CreateFeedbackTargetCommandHandler : IRequestHandler<CreateFeedbackTargetCommand, CreateFeedbackTargetResponse>
+    public class CreateApprenticeFeedbackTargetCommandHandler : IRequestHandler<CreateApprenticeFeedbackTargetCommand, CreateApprenticeFeedbackTargetResponse>
     {
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _feedbackApiClient;
 
-        public CreateFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> feedbackApiClient)
+        public CreateApprenticeFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> feedbackApiClient)
         {
             _feedbackApiClient = feedbackApiClient;
         }
 
-        public async Task<CreateFeedbackTargetResponse> Handle(CreateFeedbackTargetCommand command, CancellationToken cancellationToken)
+        public async Task<CreateApprenticeFeedbackTargetResponse> Handle(CreateApprenticeFeedbackTargetCommand command, CancellationToken cancellationToken)
         {
-            var request = new CreateFeedbackTargetRequest(new CreateFeedbackTargetData
+            var request = new CreateApprenticeFeedbackTargetRequest(new CreateApprenticeFeedbackTargetData
             {
                 ApprenticeId = command.ApprenticeId,
                 ApprenticeshipId = command.ApprenticeshipId,
@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTarget
             var response = await _feedbackApiClient.PostWithResponseCode<object>(request);
 
             response.EnsureSuccessStatusCode();
-            return new CreateFeedbackTargetResponse();
+            return new CreateApprenticeFeedbackTargetResponse();
         }
     }
 }
