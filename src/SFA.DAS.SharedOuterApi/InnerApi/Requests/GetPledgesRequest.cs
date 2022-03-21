@@ -2,6 +2,8 @@
 using System.Collections.Specialized;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {

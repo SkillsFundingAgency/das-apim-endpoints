@@ -15,15 +15,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         public InternalApiClient(
             IHttpClientFactory httpClientFactory,
             T apiConfiguration,
-            IWebHostEnvironment hostingEnvironment,
-            IAzureClientCredentialHelper azureClientCredentialHelper) : base(httpClientFactory, apiConfiguration, hostingEnvironment)
+            IAzureClientCredentialHelper azureClientCredentialHelper) : base(httpClientFactory, apiConfiguration)
         {
             _azureClientCredentialHelper = azureClientCredentialHelper;
         }
 
         protected override async Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            if (!HostingEnvironment.IsDevelopment())
+            if (!string.IsNullOrEmpty(Configuration.Identifier))
             {
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(Configuration.Identifier);
                 httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);

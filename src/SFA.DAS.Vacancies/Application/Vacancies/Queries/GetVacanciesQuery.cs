@@ -12,7 +12,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         public string AccountPublicHashedId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public AccountIdentifier AccountIdentifier { get ; set ; }
-        public int? StandardLarsCode { get ; set ; }
+        public List<int> StandardLarsCode { get ; set ; }
         public bool? NationWideOnly { get ; set ; }
         public double? Lat { get ; set ; }
         public double? Lon { get ; set ; }
