@@ -38,7 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Should().BeEmpty();
+            response.Feedback.FeedbackAttributes.Should().BeEmpty();
         }
 
         [Test, AutoData]
@@ -68,9 +68,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Sum(x => x.StrengthCount).Should().Be(0);
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Sum(x => x.WeaknessCount).Should().Be(39);
+            response.Feedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(0);
+            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.Feedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(39);
         }
 
         [Test, AutoData]
@@ -100,9 +100,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Sum(x => x.WeaknessCount).Should().Be(0);
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Sum(x => x.StrengthCount).Should().Be(39);
+            response.Feedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(0);
+            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.Feedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(39);
         }
 
         [Test, AutoData]
@@ -132,7 +132,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.AttributeName).Should().ContainInOrder(new List<string>{"Yattribute", "Zattribute", "Attribute"});
+            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName).Should().ContainInOrder(new List<string>{"Yattribute", "Zattribute", "Attribute"});
         }
         
         [Test, AutoData]
@@ -204,7 +204,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.AttributeName)
+            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName)
                 .Should().ContainInOrder(
                 new List<string>{
                     "First Attribute",
