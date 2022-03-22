@@ -73,7 +73,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var ratingResponse = GetOverallRatingResponse(ratingAverage);
 
             var feedbackAttrItems = feedbackAttributeItems
-                .Where(c => c.Strength !=0 && c.Weakness !=0)
+                .Where(c => c.Strength + c.Weakness !=0)
                 .Select(c => new FeedbackAttributeDetail
                 {
                     AttributeName = c.AttributeName,
