@@ -2,8 +2,6 @@
 using System.Collections.Specialized;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
@@ -20,7 +18,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             this.GetUrl = $"pledges{filters.ToQueryString()}";
         }
 
-        public GetPledgesRequest(int page, int pageSize)
+        public GetPledgesRequest()
         {
             GetUrl = $"pledges";
         }

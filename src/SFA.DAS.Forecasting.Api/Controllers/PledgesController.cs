@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
+using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
 
 namespace SFA.DAS.Forecasting.Api.Controllers
@@ -28,5 +29,15 @@ namespace SFA.DAS.Forecasting.Api.Controllers
             var result = (GetPledgesResponse) queryResult;
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("accountIds")]
+        public async Task<IActionResult> GetAccountsWithPledges()
+        {
+            var queryResult = await _mediator.Send(new GetAccountsWithPledgesQuery());
+            var result = (GetAccountsWithPledgesResponse)queryResult;
+            return Ok(result);
+        }
+
     }
 }
