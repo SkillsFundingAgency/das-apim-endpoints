@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         private readonly string _accountLegalEntityPublicHashedId;
         private readonly int? _ukprn;
         private readonly string _accountPublicHashedId;
-        private readonly int? _standardLarsCode;
+        private readonly List<int> _standardLarsCode;
         private readonly bool? _nationwideOnly;
         private readonly double? _lat;
         private readonly double? _lon;
@@ -21,7 +21,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         private readonly uint? _postedInLastNumberOfDays;
         private readonly string _sort;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", int? standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, string sort = "")
+        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
@@ -56,9 +56,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 url += $"&accountPublicHashedId={_accountPublicHashedId}";
             }
-            if (_standardLarsCode.HasValue)
+            if (_standardLarsCode != null && _standardLarsCode.Any())
             {
-                url += $"&standardLarsCode={_standardLarsCode}";
+                url += $"&standardLarsCode={string.Join("&standardLarsCode=", _standardLarsCode)}";
             }
             if (_nationwideOnly.HasValue)
             {
@@ -88,7 +88,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 url += $"&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
             }
-            
+
+
             return url;
             
         }
