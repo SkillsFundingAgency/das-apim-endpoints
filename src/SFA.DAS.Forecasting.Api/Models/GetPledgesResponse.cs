@@ -7,10 +7,6 @@ namespace SFA.DAS.Forecasting.Api.Models
     public class GetPledgesResponse
     {
         public IEnumerable<Pledge> Pledges { get; set; }
-        public int TotalPledges { get; set; }
-        public int Page { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
 
         public class Pledge
         {
@@ -22,10 +18,6 @@ namespace SFA.DAS.Forecasting.Api.Models
         {
             return new GetPledgesResponse
             {
-                Page = source.Page,
-                PageSize = source.PageSize,
-                TotalPages = source.TotalPages,
-                TotalPledges = source.TotalPledges,
                 Pledges = source.Pledges.Select(p => new Pledge
                 {
                     Id = p.Id,

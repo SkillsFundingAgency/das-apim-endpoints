@@ -20,29 +20,26 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         private GetPledgesResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
         private GetPledgesQuery _query;
+        private long _accountId;
 
         [SetUp]
         public void Setup()
         {
+            _accountId = _fixture.Create<long>();
+
             _apiResponse = _fixture.Create<GetPledgesResponse>();
             _apiClient = new Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>>();
-            _apiClient.Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_apiResponse);
+            _apiClient.Setup(x => x.Get<GetPledgesResponse>(It.Is<GetPledgesRequest>(r => r.AccountId == _accountId))).ReturnsAsync(_apiResponse);
 
             _handler = new GetPledgesQueryHandler(_apiClient.Object);
 
-            _query = _fixture.Create<GetPledgesQuery>();
+            _query = new GetPledgesQuery { AccountId = _accountId };
         }
 
         [Test]
         public async Task Then_Pledges_Are_Retrieved()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-
-            Assert.AreEqual(_apiResponse.Page, result.Page);
-            Assert.AreEqual(_apiResponse.PageSize, result.PageSize);
-            Assert.AreEqual(_apiResponse.TotalPages, result.TotalPages);
-            Assert.AreEqual(_apiResponse.TotalPledges, result.TotalPledges);
-
 
             Assert.AreEqual(_apiResponse.Pledges.Count(), result.Pledges.Count());
 

@@ -9,6 +9,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
     {
         public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null)
         {
+            AccountId = accountId;
+
             var filters = sectors != null ? sectors.ToNameValueCollection("sectors") : new NameValueCollection();
             if (accountId.HasValue)
             {
@@ -18,11 +20,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             this.GetUrl = $"pledges{filters.ToQueryString()}";
         }
 
-        public GetPledgesRequest()
-        {
-            GetUrl = $"pledges";
-        }
-
         public string GetUrl { get; set; }
+        public long? AccountId { get; }
     }
 }
