@@ -22,9 +22,9 @@ namespace SFA.DAS.Forecasting.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetApplications(int page, int pageSize)
+        public async Task<IActionResult> GetApplications(int pledgeId)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { Page = page, PageSize = pageSize });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId });
             var result = (GetApplicationsResponse)queryResult;
             return Ok(result);
         }

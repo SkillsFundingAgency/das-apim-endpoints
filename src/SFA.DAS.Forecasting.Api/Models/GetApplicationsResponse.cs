@@ -8,10 +8,6 @@ namespace SFA.DAS.Forecasting.Api.Models
     public class GetApplicationsResponse
     {
         public IEnumerable<Application> Applications { get; set; }
-        public int TotalApplications { get; set; }
-        public int Page { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
 
         public class Application
         {
@@ -32,10 +28,6 @@ namespace SFA.DAS.Forecasting.Api.Models
         {
             return new GetApplicationsResponse
             {
-                PageSize = source.PageSize,
-                Page = source.Page,
-                TotalPages = source.TotalPages,
-                TotalApplications = source.TotalApplications,
                 Applications = source.Applications.Select(a => new Application
                 {
                     Id = a.Id,

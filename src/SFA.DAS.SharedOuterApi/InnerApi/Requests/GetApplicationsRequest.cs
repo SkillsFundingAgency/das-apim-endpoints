@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         public string SortOrder { get; set; }
         public string SortDirection { get; set; }
 
-        public int Page { get; set; }
+        public int Page { get; set; } = 1;
         public int PageSize { get; set; } = int.MaxValue;
 
         public string GetUrl

@@ -20,14 +20,17 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Applications
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
         private GetApplicationsQueryResult _queryResult;
+        private int _pledgeId;
 
         [SetUp]
         public void Setup()
         {
+            _pledgeId = _fixture.Create<int>();
+
             _mediator = new Mock<IMediator>();
 
             _queryResult = _fixture.Create<GetApplicationsQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetApplicationsQuery>(), CancellationToken.None))
+            _mediator.Setup(x => x.Send(It.Is<GetApplicationsQuery>(q => q.PledgeId == _pledgeId), CancellationToken.None))
                 .ReturnsAsync(_queryResult);
 
             _controller = new ApplicationsController(_mediator.Object, Mock.Of<ILogger<ApplicationsController>>());
@@ -36,15 +39,11 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Applications
         [Test]
         public async Task Then_Applications_Are_Returned_Correctly()
         {
-            var result = await _controller.GetApplications(0, 100) as ObjectResult;
+            var result = await _controller.GetApplications(_pledgeId) as ObjectResult;
 
             Assert.IsNotNull(result);
             var response = result.Value as GetApplicationsResponse;
             Assert.IsNotNull(response);
-            Assert.AreEqual(_queryResult.Page, response.Page);
-            Assert.AreEqual(_queryResult.PageSize, response.PageSize);
-            Assert.AreEqual(_queryResult.TotalPages, response.TotalPages);
-            Assert.AreEqual(_queryResult.TotalApplications, response.TotalApplications);
 
             Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
 
@@ -66,19 +65,6 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Applications
                 Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
                 i++;
             }
-        }
-
-        [Test]
-        public async Task Then_Paging_Options_Are_Honoured()
-        {
-            var page = _fixture.Create<int>();
-            var pageSize = _fixture.Create<int>();
-
-            await _controller.GetApplications(page, pageSize);
-
-            _mediator.Verify(x =>
-                x.Send(It.Is<GetApplicationsQuery>(q => q.Page == page && q.PageSize == pageSize),
-                    It.IsAny<CancellationToken>()));
         }
     }
 }

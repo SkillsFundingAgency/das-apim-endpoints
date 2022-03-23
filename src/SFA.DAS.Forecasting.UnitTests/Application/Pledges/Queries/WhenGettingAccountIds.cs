@@ -24,7 +24,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         [SetUp]
         public void Setup()
         {
-            _apiResponse = _fixture.Build<GetPledgesResponse>().Create<GetPledgesResponse>();
+            _apiResponse = _fixture.Create<GetPledgesResponse>();
             _apiClient = new Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>>();
             _apiClient.Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_apiResponse);
 
