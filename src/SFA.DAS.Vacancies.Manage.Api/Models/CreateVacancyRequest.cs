@@ -95,7 +95,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("numberOfPositions", Required = Required.Always)]
         public int NumberOfPositions { get ; set ; }
         /// <summary>
-        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 500 characters
+        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 4000 characters
         /// </summary>
         [JsonProperty("outcomeDescription", Required = Required.Always)]
         public string OutcomeDescription { get ; set ; }
