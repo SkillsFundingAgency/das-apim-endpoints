@@ -22,7 +22,7 @@ namespace SFA.DAS.SharedOuterApi.Extensions
             return response;
         }
 
-        private static bool IsSuccessStatusCode(HttpStatusCode statusCode)
+        public static bool IsSuccessStatusCode(HttpStatusCode statusCode)
             => (int)statusCode >= 200 && (int)statusCode <= 299;
     }
 }
