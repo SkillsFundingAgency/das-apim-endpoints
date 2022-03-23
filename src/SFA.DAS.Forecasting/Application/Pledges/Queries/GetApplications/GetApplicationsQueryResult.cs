@@ -5,11 +5,6 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
 {
     public class GetApplicationsQueryResult
     {
-        public int TotalApplications { get; set; }
-        public int Page { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
-
         public IEnumerable<Application> Applications { get; set; }
 
         public class Application
@@ -25,6 +20,7 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
             public DateTime StartDate { get; set; }
             public int NumberOfApprentices { get; set; }
             public int NumberOfApprenticesUsed { get; set; }
+            public string Status { get; set; }
         }
     }
 }

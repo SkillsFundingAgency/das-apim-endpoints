@@ -22,6 +22,7 @@ namespace SFA.DAS.Forecasting.Api.Models
             public DateTime StartDate { get; set; }
             public int NumberOfApprentices { get; set; }
             public int NumberOfApprenticesUsed { get; set; }
+            public string Status { get; set; }
         }
 
         public static implicit operator GetApplicationsResponse(GetApplicationsQueryResult source)
@@ -40,7 +41,8 @@ namespace SFA.DAS.Forecasting.Api.Models
                     StandardMaxFunding = a.StandardMaxFunding,
                     StartDate = a.StartDate,
                     NumberOfApprentices = a.NumberOfApprentices,
-                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed
+                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed,
+                    Status = a.Status
                 })
             };
         }

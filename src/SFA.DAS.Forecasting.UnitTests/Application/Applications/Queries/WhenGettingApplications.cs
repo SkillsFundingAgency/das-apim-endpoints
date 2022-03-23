@@ -33,9 +33,12 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
             _query = _fixture.Create<GetApplicationsQuery>();
         }
 
-        [Test]
-        public async Task Then_Applications_Are_Retrieved()
+        [TestCase("Approved")]
+        [TestCase("Accepted")]
+        public async Task Then_Applications_Are_Retrieved(string status)
         {
+            _apiResponse.Applications.ToList().ForEach(a => a.Status = status);
+
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_apiResponse.Applications.Count(), result.Applications.Count());
 
@@ -56,8 +59,17 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
                 Assert.AreEqual(expected.StartDate, application.StartDate);
                 Assert.AreEqual(expected.NumberOfApprentices, application.NumberOfApprentices);
                 Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
+                Assert.AreEqual(expected.Status, application.Status);
                 i++;
             }
+        }
+
+        [Test]
+        public async Task Then_Applications__Not_Approved_Or_Accepted_Are_Not_Retrieved()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(0, result.Applications.Count());
+            
         }
     }
 }

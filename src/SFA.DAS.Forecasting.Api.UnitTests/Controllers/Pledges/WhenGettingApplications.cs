@@ -63,6 +63,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Applications
                 Assert.AreEqual(expected.StartDate, application.StartDate);
                 Assert.AreEqual(expected.NumberOfApprentices, application.NumberOfApprentices);
                 Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
+                Assert.AreEqual(expected.Status, application.Status);
                 i++;
             }
         }

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Forecasting.Application.Pledges.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -25,8 +26,9 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
 
             return new GetApplicationsQueryResult
             {
-                Page = response.Page,
-                Applications = response.Applications.Select(a => new GetApplicationsQueryResult.Application
+                Applications = response.Applications
+                    .Where(a => a.Status == ApplicationStatus.Accepted || a.Status == ApplicationStatus.Approved)
+                    .Select(a => new GetApplicationsQueryResult.Application
                 {
                     Id = a.Id,
                     PledgeId = a.PledgeId,
@@ -38,7 +40,8 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
                     StandardMaxFunding = a.StandardMaxFunding,
                     StartDate = a.StartDate,
                     NumberOfApprentices = a.NumberOfApprentices,
-                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed
+                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed,
+                    Status = a.Status
                 })
             };
         }
