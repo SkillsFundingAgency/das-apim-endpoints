@@ -24,7 +24,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         [SetUp]
         public void Setup()
         {
-            _apiResponse = _fixture.Create<GetPledgesResponse>();
+            _apiResponse = _fixture.Build<GetPledgesResponse>().Create<GetPledgesResponse>();
             _apiClient = new Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>>();
             _apiClient.Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_apiResponse);
 
@@ -37,7 +37,16 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         public async Task Then_AccountIds_Are_Retrieved()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            CollectionAssert.AreEquivalent(_apiResponse.Pledges.Select(x => x.AccountId).Distinct(), result.AccountIds);
+            var expected = _apiResponse.Pledges.Select(x => x.AccountId).Distinct();
+            CollectionAssert.AreEquivalent(expected, result.AccountIds);
+        }
+
+        [Test]
+        public async Task Then_AccountIds_With_No_Pledges_With_Applications_Are_Not_Retrieved()
+        {
+            _apiResponse.Pledges.ToList().ForEach(x => x.ApplicationCount = 0);
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(0, result.AccountIds.Count);
         }
     }
 }

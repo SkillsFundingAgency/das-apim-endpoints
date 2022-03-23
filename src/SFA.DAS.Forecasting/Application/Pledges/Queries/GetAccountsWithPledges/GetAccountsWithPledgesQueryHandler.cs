@@ -24,7 +24,11 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges
 
             return new GetAccountsWithPledgesQueryResult
             {
-                AccountIds = response.Pledges.Select(x => x.AccountId).Distinct().ToList()
+                AccountIds = response.Pledges
+                    .Where(p => p.ApplicationCount > 0)
+                    .Select(x => x.AccountId)
+                    .Distinct()
+                    .ToList()
             };
         }
     }
