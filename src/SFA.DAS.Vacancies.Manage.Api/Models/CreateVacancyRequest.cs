@@ -137,7 +137,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("employerNameOption")]
         public EmployerNameOption EmployerNameOption { get ; set ; }
         /// <summary>
-        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 200 characters
+        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 4000 characters
         /// </summary>
         [JsonProperty("anonymousReason")]
         public string AnonymousReason { get ; set ; }
