@@ -1,23 +1,30 @@
-﻿using SFA.DAS.EmployerIncentives.Configuration;
+﻿using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
+using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentCheck;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
     public class EmploymentCheckService : IEmploymentCheckService
     {
-        private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
+        private readonly IInternalApiClient<EmploymentCheckConfiguration> _client;
 
-        public EmploymentCheckService(IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> client)
+        public EmploymentCheckService(IInternalApiClient<EmploymentCheckConfiguration> client)
         {
             _client = client;
         }
 
-        public async Task Update(UpdateRequest updateRequest)
+        public async Task<RegisterEmploymentCheckResponse> Register(RegisterEmploymentCheckRequest request)
         {
-            var request = new UpdateEmploymentCheckRequest { Data = updateRequest };
-            await _client.Put(request);
+            var response = await _client.PostWithResponseCode<RegisterEmploymentCheckResponse>(request);
+
+            if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return response.Body;
+
+            throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
         }
     }
 }
