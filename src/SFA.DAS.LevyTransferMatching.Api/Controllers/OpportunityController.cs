@@ -18,6 +18,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetMoreDetail
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicationDetails;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
+using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -35,11 +36,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("opportunities")]
-        public async Task<IActionResult> GetIndex()
+        public async Task<IActionResult> GetIndex([FromQuery] IEnumerable<string> sectors = null)
         {
             try
             {
-                var result = await _mediator.Send(new GetIndexQuery());
+                var result = await _mediator.Send(new GetIndexQuery() { Sectors = sectors });
 
                 var response = new GetIndexResponse
                 {
