@@ -29,5 +29,21 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
 
             actual.DeliveryModels.Should().BeEquivalentTo(apiResponse.DeliveryModels);
         }
+
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Api_Is_Called_And_When_No_Response_Returned_We_Create_Default(
+            GetProviderCoursesDeliveryModelQuery query,
+            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
+            GetProviderCoursesDeliveryModelsQueryHandler handler
+        )
+        {
+            apiClient.Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>())).ReturnsAsync((GetProviderCourseDeliveryModelsResponse)null);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new [] {"Regular"} });
+        }
     }
+
 }
