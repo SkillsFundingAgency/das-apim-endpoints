@@ -127,8 +127,6 @@ namespace SFA.DAS.Approvals.Api.LocalDev
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var errorContent = "";
-
             if (IsNot200RangeResponseCode(response.StatusCode))
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
@@ -146,7 +144,7 @@ namespace SFA.DAS.Approvals.Api.LocalDev
             }
 
             var responseBody = JsonConvert.DeserializeObject<TResponse>(json);
-            var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
+            var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, string.Empty);
             return postWithResponseCode;
         }
 
@@ -155,10 +153,9 @@ namespace SFA.DAS.Approvals.Api.LocalDev
             if (string.IsNullOrWhiteSpace(content))
             {
                 _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
-                return new DomainException(new List<DomainError>());
             }
 
-            var errors = new DomainException(JsonConvert.DeserializeObject<List<DomainError>>(content));
+            var errors = new DomainApimException(content);
             return errors;
         }
 
@@ -167,10 +164,9 @@ namespace SFA.DAS.Approvals.Api.LocalDev
             if (string.IsNullOrWhiteSpace(content))
             {
                 _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
-                return new BulkUploadDomainException(new List<BulkUploadValidationError>());
             }
 
-            var errors = new BulkUploadDomainException(JsonConvert.DeserializeObject<BulkUploadErrorResponse>(content).DomainErrors?.ToList());
+            var errors = new BulkUploadApimDomainException(content);
             return errors;
         }
 
