@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetGeocode
+namespace SFA.DAS.Recruit.Application.Queries.GetGeoPoint
 {
     public class GetGeoPointQuery : IRequest<GetGeoPointQueryResult>
     {

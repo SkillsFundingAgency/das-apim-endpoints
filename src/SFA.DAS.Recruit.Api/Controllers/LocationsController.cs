@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Application.Queries.GetAddresses;
-using SFA.DAS.Recruit.Application.Queries.GetGeocode;
 using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Queries.GetGeoPoint;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {

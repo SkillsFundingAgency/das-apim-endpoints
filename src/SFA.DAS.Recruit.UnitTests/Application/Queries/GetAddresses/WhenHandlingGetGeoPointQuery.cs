@@ -2,13 +2,13 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Recruit.Application.Queries.GetGeocode;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Queries.GetGeoPoint;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetAddresses
 {
