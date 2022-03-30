@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace SFA.DAS.Approvals.Api.ErrorHandling
+namespace SFA.DAS.Approvals.ErrorHandling
 {
     public class RestHttpClientException : Exception
     {

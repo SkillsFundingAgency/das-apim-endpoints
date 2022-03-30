@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
+using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -53,14 +54,15 @@ namespace SFA.DAS.Approvals.Api
             }
 
             services.AddMediatR(typeof(GetStandardsQuery).Assembly);
-            services.AddServiceRegistration();
+            services.AddServiceRegistration(_configuration);
 
-            if (_configuration.IsLocalOrDev())
-            {
-                //var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IInternalApiClient<CommitmentsV2ApiConfiguration>));
-                //if (serviceDescriptor != null) services.Remove(serviceDescriptor);
-                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalDev.LocalDevApiClient>();
-            }
+            //if (_configuration.IsLocalOrDev() && _configuration["UseLocalDevCommitmentApiClient"] == "true")
+            //{
+            //    var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IInternalApiClient<CommitmentsV2ApiConfiguration>));
+            //    if (serviceDescriptor != null) services.Remove(serviceDescriptor);
+                
+            //    services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
+            //}
 
 
             services
