@@ -12,12 +12,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Roatp.Api.AppStart;
-using SFA.DAS.Roatp.Application.Charities.Queries;
+using SFA.DAS.Roatp.Apply.Api.AppStart;
+using SFA.DAS.Roatp.Apply.Application.Charities.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.Roatp.Api
+namespace SFA.DAS.Roatp.Apply.Api
 {
     public class Startup
     {
@@ -74,7 +74,7 @@ namespace SFA.DAS.Roatp.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpOuterApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpApplyOuterApi", Version = "v1" });
             });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)

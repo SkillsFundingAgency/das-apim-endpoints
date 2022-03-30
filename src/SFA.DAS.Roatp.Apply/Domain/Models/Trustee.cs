@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.Roatp.Domain.Models
+namespace SFA.DAS.Roatp.Apply.Domain.Models
 {
     public class Trustee
     {
@@ -8,7 +8,7 @@ namespace SFA.DAS.Roatp.Domain.Models
         public string Name { get; set; }
 
         public static implicit operator Trustee(CharityTrustee trustee) =>
-            new Trustee() 
+            new Trustee()
             {
                 Id = trustee.TrusteeId.ToString(),
                 Name = trustee.Name,

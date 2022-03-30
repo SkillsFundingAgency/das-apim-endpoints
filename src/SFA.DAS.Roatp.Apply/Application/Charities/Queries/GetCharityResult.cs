@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Roatp.Domain.Models;
+﻿using SFA.DAS.Roatp.Apply.Domain.Models;
 
-namespace SFA.DAS.Roatp.Application.Charities.Queries
+namespace SFA.DAS.Roatp.Apply.Application.Charities.Queries
 {
     public class GetCharityResult
     {
