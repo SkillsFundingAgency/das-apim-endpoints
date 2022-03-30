@@ -12,12 +12,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Roatp.Api.AppStart;
-using SFA.DAS.Roatp.Application.Charities.Queries;
+using SFA.DAS.Roatp.Apply.Api.AppStart;
+using SFA.DAS.Roatp.Apply.Application.Charities.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.Roatp.Api
+namespace SFA.DAS.Roatp.Apply.Api
 {
     public class Startup
     {

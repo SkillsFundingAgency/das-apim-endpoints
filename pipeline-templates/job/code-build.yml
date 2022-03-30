@@ -181,11 +181,11 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Publish RoATP Api'
+    displayName: 'Publish RoATP Apply Api'
     inputs:
       command: publish
       publishWebProjects: false
-      projects: 'src/SFA.DAS.Roatp.Api/SFA.DAS.Roatp.Api.csproj'
+      projects: 'src/SFA.DAS.Roatp.Apply.Api/SFA.DAS.Roatp.Apply.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2

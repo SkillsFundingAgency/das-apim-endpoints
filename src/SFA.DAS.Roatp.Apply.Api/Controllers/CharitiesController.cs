@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.Application.Charities.Queries;
+using SFA.DAS.Roatp.Apply.Application.Charities.Queries;
 
-namespace SFA.DAS.Roatp.Api.Controllers
+namespace SFA.DAS.Roatp.Apply.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

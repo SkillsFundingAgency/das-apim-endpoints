@@ -1,9 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
-using SFA.DAS.Roatp.Domain.Models;
+using SFA.DAS.Roatp.Apply.Domain.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.Roatp.UnitTests.Domain.Models
+namespace SFA.DAS.Roatp.Apply.UnitTests.Domain.Models
 {
     [TestFixture]
     public class TrusteeTests

@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Roatp.Api.Controllers;
-using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.Roatp.Domain.Models;
+using SFA.DAS.Roatp.Apply.Application.Charities.Queries;
+using SFA.DAS.Roatp.Apply.Api.Controllers;
+using SFA.DAS.Roatp.Apply.Domain.Models;
 
-namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
+namespace SFA.DAS.Roatp.Apply.Api.UnitTests.Controllers
 {
     [TestFixture]
     public class CharitiesControllerTests

@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Roatp.Application.Charities.Queries
+namespace SFA.DAS.Roatp.Apply.Application.Charities.Queries
 {
     public class GetCharityQueryHandler : IRequestHandler<GetCharityQuery, GetCharityResult>
     {

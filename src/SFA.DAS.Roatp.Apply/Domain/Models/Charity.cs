@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.Roatp.Domain.Models
+namespace SFA.DAS.Roatp.Apply.Domain.Models
 {
     public class Charity
     {
@@ -17,7 +17,7 @@ namespace SFA.DAS.Roatp.Domain.Models
         public List<Trustee> Trustees { get; set; }
 
         public static implicit operator Charity(GetCharityResponse charityResponse)
-            => new Charity() 
+            => new Charity()
             {
                 CharityNumber = charityResponse.Id.ToString(),
                 RegistrationDate = charityResponse.RegistrationDate,

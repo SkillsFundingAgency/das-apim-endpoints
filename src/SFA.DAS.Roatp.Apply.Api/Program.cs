@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
 
-namespace SFA.DAS.Roatp.Api
+namespace SFA.DAS.Roatp.Apply.Api
 {
     public static class Program
     {
@@ -19,6 +19,6 @@ namespace SFA.DAS.Roatp.Api
                         .UseStartup<Startup>()
                         .UseNLog();
                 });
-            
+
     }
 }
