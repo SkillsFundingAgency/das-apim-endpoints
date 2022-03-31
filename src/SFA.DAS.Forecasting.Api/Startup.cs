@@ -18,6 +18,8 @@ using SFA.DAS.Forecasting.Api.AppStart;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Forecasting.Api
 {
@@ -40,6 +42,10 @@ namespace SFA.DAS.Forecasting.Api
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            services.Configure<LevyTransferMatchingApiConfiguration>(_configuration.GetSection("LevyTransferMatchingApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
+            services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
