@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
@@ -13,12 +12,10 @@ namespace SFA.DAS.Forecasting.Api.Controllers
     public class PledgesController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<PledgesController> _logger;
 
-        public PledgesController(IMediator mediator, ILogger<PledgesController> logger)
+        public PledgesController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -38,6 +35,5 @@ namespace SFA.DAS.Forecasting.Api.Controllers
             var result = (GetAccountsWithPledgesResponse)queryResult;
             return Ok(result);
         }
-
     }
 }
