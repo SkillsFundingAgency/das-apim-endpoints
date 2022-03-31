@@ -11,6 +11,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public IEnumerable<Application> Applications { get; set; }
 
         public string PledgeStatus { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public int PledgeTotalAmount { get; set; }
 
         public class Application
         {
@@ -54,6 +56,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             return new GetApplicationsResponse
             {
                 PledgeStatus = v.PledgeStatus,
+                PledgeRemainingAmount = v.RemainingAmount,
+                PledgeTotalAmount = v.TotalAmount,
                 Applications = v.Applications.Select(application => new Application
                 {
                     Id = application.Id,
