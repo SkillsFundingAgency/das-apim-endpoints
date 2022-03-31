@@ -13,6 +13,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         public IEnumerable<Application> Applications { get; set; }
 
         public string PledgeStatus { get; set; }
+        public int RemainingAmount { get; set; }
+        public int TotalAmount { get; set; }
 
         public class Application
         {
