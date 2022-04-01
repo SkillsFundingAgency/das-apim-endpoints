@@ -25,11 +25,9 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
+            services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
             if (UseLocalDevCommitmentsApiClient(configuration))
             {
-                //var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IInternalApiClient<CommitmentsV2ApiConfiguration>));
-                //if (serviceDescriptor != null) services.Remove(serviceDescriptor);
-
                 services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
             }
             else
