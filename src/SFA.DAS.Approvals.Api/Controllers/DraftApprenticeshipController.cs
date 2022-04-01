@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetDraftApprenticeshipsQuery { CohortId = cohortId });
+                var result = await _mediator.Send(new GetDraftApprenticeshipsQuery (cohortId));
                 if (result == null)
                 {
                     return NotFound();

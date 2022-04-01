@@ -30,14 +30,10 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new ValidateBulkUploadRecordsCommand
                 {
                     ProviderId = request.ProviderId,
-                    CsvRecords = request.CsvRecords.ToList(),
+                    CsvRecords = request.CsvRecords?.ToList(),
                     UserInfo = request.UserInfo
                 });
 
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 

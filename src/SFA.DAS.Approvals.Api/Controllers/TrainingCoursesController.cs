@@ -70,11 +70,17 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("standards/{courseCode}")]
-        public async Task<IActionResult> GetStandardCourse(string courseCode)
+        public async Task<IActionResult> GetStandard(string courseCode)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetStandardCourseDetailsQuery(courseCode));
+                var queryResult = await _mediator.Send(new GetStandardQuery(courseCode));
+
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
+
                 var model = (GetStandardResponse)queryResult;
                 return Ok(model);
             }
