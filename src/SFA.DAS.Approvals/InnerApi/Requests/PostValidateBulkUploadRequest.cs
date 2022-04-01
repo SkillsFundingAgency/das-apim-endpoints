@@ -6,7 +6,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public string PostUrl => $"api/{ProviderId}/bulkupload/validate";
 
-        public PostValidateBulkUploadRequest(long providerId, BulkUploadAddDraftApprenticeshipsRequest data)
+        public PostValidateBulkUploadRequest(long providerId, BulkUploadValidateApiRequest data)
         {
             ProviderId = providerId;
             Data = data;

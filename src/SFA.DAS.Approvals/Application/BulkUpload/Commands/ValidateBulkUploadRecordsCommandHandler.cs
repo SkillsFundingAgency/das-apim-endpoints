@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
         public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand request, CancellationToken cancellationToken)
         {
             await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(request.ProviderId,
-                new BulkUploadAddDraftApprenticeshipsRequest 
+                new BulkUploadValidateApiRequest 
                 { 
                      CsvRecords = request.CsvRecords,
                      ProviderId = request.ProviderId,

@@ -40,5 +40,43 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("AddAndApprove")]
+        public async Task<IActionResult> AddAndApprove(BulkUploadAddAndApproveDraftApprenticeshipsRequest request)
+        {
+            var result = await _mediator.Send(
+                new BulkUploadAddAndApproveDraftApprenticeshipsCommand
+                {
+                    ProviderId = request.ProviderId,
+                    BulkUploadAddAndApproveDraftApprenticeships = request.BulkUploadAddAndApproveDraftApprenticeships?.ToList(),
+                    UserInfo = request.UserInfo
+                });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("Add")]
+        public async Task<IActionResult> AddDraftapprenticeships(BulkUploadAddDraftApprenticeshipsRequest request)
+        {
+            var result = await _mediator.Send(
+                new BulkUploadAddDraftApprenticeshipsCommand
+                {
+                    ProviderId = request.ProviderId,
+                    BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
+                    UserInfo = request.UserInfo
+                });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
     }
 }
