@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
                 List<TeamMember> users = await _accountsService.GetAccountUsers(employerAccountId);
                 users = users.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
-                users.Add(new TeamMember());
+
                 foreach (var user in users)
                 {
                     emailDataList.Add(new GetPledgeOptionsEmailDataQueryResult.EmailData
