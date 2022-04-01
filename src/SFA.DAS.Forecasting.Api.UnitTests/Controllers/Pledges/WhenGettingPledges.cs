@@ -33,7 +33,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
             _mediator.Setup(x => x.Send(It.Is<GetPledgesQuery>(q => q.AccountId == _accountId), CancellationToken.None))
                 .ReturnsAsync(_queryResult);
 
-            _controller = new PledgesController(_mediator.Object, Mock.Of<ILogger<PledgesController>>());
+            _controller = new PledgesController(_mediator.Object);
         }
 
         [Test]
