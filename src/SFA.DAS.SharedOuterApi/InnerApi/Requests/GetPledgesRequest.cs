@@ -1,4 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Extensions;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,7 +20,13 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 filters.Add("pledgeStatusFilter", PledgeStatusFilter);
             }
+
             this.GetUrl = $"pledges{filters.ToQueryString()}";
+        }
+
+        public GetPledgesRequest(int page, int pageSize)
+        {
+            GetUrl = $"pledges";
         }
 
         public string GetUrl { get; set; }
