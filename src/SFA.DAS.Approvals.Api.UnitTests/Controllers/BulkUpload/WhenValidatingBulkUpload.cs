@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<ValidateBulkUploadRecordsCommand>(x => x.ProviderId == request.ProviderId && x.UserInfo == request.UserInfo),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
             var controllerResult = await controller.Validate(request) as ObjectResult;
 
