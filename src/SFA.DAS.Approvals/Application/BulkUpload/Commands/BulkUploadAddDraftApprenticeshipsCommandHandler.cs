@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadAddDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddDraftApprenticeshipsCommand, GetBulkUploadAddDraftApprenticeshipsResponse>
+    public class BulkUploadAddDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddDraftApprenticeshipsCommand, GetBulkUploadAddDraftApprenticeshipsResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 
@@ -16,7 +19,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             _apiClient = apiClient;
         }
 
-        public async Task<GetBulkUploadAddDraftApprenticeshipsResponse> Handle(BulkUploadAddDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
+        public async Task<GetBulkUploadAddDraftApprenticeshipsResult> Handle(BulkUploadAddDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
         {
            var result = await _apiClient.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>(
                 new PostAddDraftApprenticeshipsRequest(request.ProviderId,
@@ -26,7 +29,13 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                      ProviderId = request.ProviderId,
                      UserInfo = request.UserInfo
                  }));
-            return result.Body;
+            
+            result.EnsureSuccessStatusCode();
+
+            return new GetBulkUploadAddDraftApprenticeshipsResult
+            {
+                BulkUploadAddDraftApprenticeshipsResponse = result.Body.BulkUploadAddDraftApprenticeshipsResponse.Select(x => (BulkUploadAddDraftApprenticeshipsResult)x)
+            };
         }
     }
 }

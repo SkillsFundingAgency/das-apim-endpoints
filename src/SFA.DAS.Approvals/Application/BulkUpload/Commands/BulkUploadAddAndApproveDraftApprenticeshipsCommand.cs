@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadAddAndApproveDraftApprenticeshipsCommand : IRequest<BulkUploadAddAndApproveDraftApprenticeshipsResponse>
+    public class BulkUploadAddAndApproveDraftApprenticeshipsCommand : IRequest<BulkUploadAddAndApproveDraftApprenticeshipsResult>
     {
         public BulkUploadAddAndApproveDraftApprenticeshipsCommand()
         {

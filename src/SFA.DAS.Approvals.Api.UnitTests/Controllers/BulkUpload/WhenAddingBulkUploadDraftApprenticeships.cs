@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
         [Test, MoqAutoData]
         public async Task Then_Adding_Apprentices_From_Mediator(
                    BulkUploadAddDraftApprenticeshipsRequest request,
-                   GetBulkUploadAddDraftApprenticeshipsResponse response,
+                   GetBulkUploadAddDraftApprenticeshipsResult response,
                    [Frozen] Mock<IMediator> mockMediator,
                    [Greedy] BulkUploadController controller)
         {

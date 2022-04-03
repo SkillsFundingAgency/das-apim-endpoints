@@ -1,13 +1,16 @@
 ﻿using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddAndApproveDraftApprenticeshipsCommand, BulkUploadAddAndApproveDraftApprenticeshipsResponse>
+    public class BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddAndApproveDraftApprenticeshipsCommand, BulkUploadAddAndApproveDraftApprenticeshipsResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 
@@ -16,7 +19,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             _apiClient = apiClient;
         }
 
-        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResponse> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
+        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
         {
            var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
                 new PostAddAndApproveDraftApprenticeshipsRequest(request.ProviderId,
@@ -26,7 +29,13 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                      ProviderId = request.ProviderId,
                      UserInfo = request.UserInfo
                  }));
-            return result.Body;
+
+            result.EnsureSuccessStatusCode();
+
+            return new BulkUploadAddAndApproveDraftApprenticeshipsResult
+            {
+                BulkUploadAddAndApproveDraftApprenticeshipResponse = result.Body.BulkUploadAddAndApproveDraftApprenticeshipResponse.Select(x => (BulkUploadAddDraftApprenticeshipsResult)x)
+            };
         }
     }
 }

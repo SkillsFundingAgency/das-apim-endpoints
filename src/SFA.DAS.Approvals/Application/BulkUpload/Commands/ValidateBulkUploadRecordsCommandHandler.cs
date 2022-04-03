@@ -16,14 +16,15 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             _apiClient = apiClient;
         }
 
-        public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand command, CancellationToken cancellationToken)
         {
-            await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(request.ProviderId,
+            // If any errors this call will throw a bulkupload domain exception, which is handled through middleware.
+           await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(command.ProviderId,
                 new BulkUploadValidateApiRequest 
                 { 
-                     CsvRecords = request.CsvRecords,
-                     ProviderId = request.ProviderId,
-                     UserInfo = request.UserInfo
+                     CsvRecords = command.CsvRecords,
+                     ProviderId = command.ProviderId,
+                     UserInfo = command.UserInfo
                 }));
             return Unit.Value;
         }

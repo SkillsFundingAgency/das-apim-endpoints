@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
+﻿namespace SFA.DAS.Approvals.InnerApi.Responses
 {
     public class BulkUploadAddDraftApprenticeshipsResponse
     {
