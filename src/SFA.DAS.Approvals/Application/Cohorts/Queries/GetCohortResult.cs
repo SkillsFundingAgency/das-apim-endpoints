@@ -24,5 +24,32 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries
         public long CohortId { get; set; }
         public string LatestMessageCreatedByEmployer { get; set; }
         public bool ApprenticeEmailIsRequired { get; set; }
+
+        public static implicit operator GetCohortResult(InnerApi.Responses.GetCohortResponse result)
+        {
+            return new GetCohortResult
+            {
+                IsLinkedToChangeOfPartyRequest = result.IsLinkedToChangeOfPartyRequest,
+                TransferApprovalStatus = (Shared.Enums.TransferApprovalStatus?)result.TransferApprovalStatus,
+                ChangeOfPartyRequestId = result.ChangeOfPartyRequestId,
+                LevyStatus = (Shared.Enums.ApprenticeshipEmployerType)result.LevyStatus,
+                IsCompleteForProvider = result.IsCompleteForProvider,
+                IsCompleteForEmployer = result.IsCompleteForEmployer,
+                IsApprovedByProvider = result.IsApprovedByProvider,
+                IsApprovedByEmployer = result.IsApprovedByEmployer,
+                LastAction = (Shared.Enums.LastAction)result.LastAction,
+                LatestMessageCreatedByProvider = result.LatestMessageCreatedByProvider,
+                WithParty = (Shared.Enums.Party)result.WithParty,
+                PledgeApplicationId = result.PledgeApplicationId,
+                TransferSenderId = result.TransferSenderId,
+                IsFundedByTransfer = result.IsFundedByTransfer,
+                ProviderName = result.ProviderName,
+                LegalEntityName = result.LegalEntityName,
+                AccountLegalEntityId = result.AccountLegalEntityId,
+                CohortId = result.CohortId,
+                LatestMessageCreatedByEmployer = result.LatestMessageCreatedByEmployer,
+                ApprenticeEmailIsRequired = result.ApprenticeEmailIsRequired
+            };
+        }
     }
 }
