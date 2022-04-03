@@ -29,6 +29,26 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries
         public string CourseName { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public DateTime? OriginalStartDate { get; set; }
+
+        public static implicit operator DraftApprenticeship(InnerApi.Responses.DraftApprenticeship x)
+        {
+            return new DraftApprenticeship
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                DateOfBirth = x.DateOfBirth,
+                Cost = x.Cost,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Uln = x.Uln,
+                CourseCode = x.CourseCode,
+                CourseName = x.CourseName,
+                DeliveryModel = (DeliveryModel)x.DeliveryModel,
+                OriginalStartDate = x.OriginalStartDate,
+            };
+        }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

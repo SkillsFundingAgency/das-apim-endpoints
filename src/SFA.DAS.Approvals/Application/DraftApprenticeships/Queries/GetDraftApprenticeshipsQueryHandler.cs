@@ -24,27 +24,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries
 
             if (response == null)
                 return null;
-            
+
             return new GetDraftApprenticeshipsResult
             {
-                 DraftApprenticeships = response.DraftApprenticeships.Select(x => 
-                 new DraftApprenticeship 
-                 { 
-                     Id = x.Id,
-                     FirstName = x.FirstName,
-                     LastName = x.LastName,
-                     Email = x.Email,
-                     DateOfBirth = x.DateOfBirth,
-                     Cost = x.Cost,
-                     StartDate = x.StartDate,
-                     EndDate = x.EndDate,
-                     Uln = x.Uln,
-                     CourseCode = x.CourseCode,
-                     CourseName = x.CourseName,
-                     DeliveryModel = (DeliveryModel) x.DeliveryModel,
-                     OriginalStartDate = x.OriginalStartDate,
-                 }).ToList()
-
+                DraftApprenticeships = response.DraftApprenticeships.Select(x => (DraftApprenticeship)x).ToList()
             };
         }
     }
