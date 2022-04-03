@@ -4,12 +4,12 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class GetAccountLegalEntityRequest : IGetApiRequest
     {
-        public long _accountLegalEntityId;
-        public string GetUrl => $"api/AccountLegalEntity/{_accountLegalEntityId}";
+        public long AccountLegalEntityId { get; set; }
+        public string GetUrl => $"api/AccountLegalEntity/{AccountLegalEntityId}";
 
         public GetAccountLegalEntityRequest(long accountLegalEntityId)
         {
-            _accountLegalEntityId = accountLegalEntityId;
+            AccountLegalEntityId = accountLegalEntityId;
         }
     }
 }

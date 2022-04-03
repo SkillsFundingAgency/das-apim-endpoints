@@ -24,14 +24,7 @@ namespace SFA.DAS.Approvals.Application.AccountLegalEntity
             if (result == null)
                 return null;
 
-            return new GetAccountLegalEntityQueryResult
-            {
-                AccountId = result.AccountId,
-                MaLegalEntityId = result.MaLegalEntityId,
-                AccountName = result.AccountName,
-                LegalEntityName = result.LegalEntityName,
-                LevyStatus = (Shared.Enums.ApprenticeshipEmployerType) result.LevyStatus
-            };
+            return (GetAccountLegalEntityQueryResult)result;
         }
     }
 }

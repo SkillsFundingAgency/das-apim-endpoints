@@ -9,5 +9,18 @@ namespace SFA.DAS.Approvals.Application.AccountLegalEntity
         public string AccountName { get; set; }
         public string LegalEntityName { get; set; }
         public ApprenticeshipEmployerType LevyStatus { get; set; }
+
+
+        public static implicit operator GetAccountLegalEntityQueryResult(InnerApi.Responses.GetAccountLegalEntityResponse result)
+        {
+            return new GetAccountLegalEntityQueryResult
+            {
+                AccountId = result.AccountId,
+                MaLegalEntityId = result.MaLegalEntityId,
+                AccountName = result.AccountName,
+                LegalEntityName = result.LegalEntityName,
+                LevyStatus = (Shared.Enums.ApprenticeshipEmployerType)result.LevyStatus
+            };
+        }
     }
 }
