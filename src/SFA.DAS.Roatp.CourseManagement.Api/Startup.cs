@@ -49,7 +49,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
 
             services.AddHealthChecks();
 
-
             services
                 .AddMvc(o =>
                 {
@@ -97,13 +96,13 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=charities}/{action=index}/{id}");
+                    pattern: "api/{controller=standards}/{action=index}");
             });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RoatpOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RoatpCourseManagementOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
