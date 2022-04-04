@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Providers.Queries;
+using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -41,6 +42,31 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting all providers");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{ukprn}/users")]
+        public async Task<IActionResult> GetUsers(long ukprn)
+        {
+            try
+            {
+                var response = await _mediator.Send(new GetProviderUsersQuery
+                {
+                    Ukprn = ukprn
+                });
+
+                var model = new GetProvidersUsersResponse
+                {
+                    Users = response.Users
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting all provider users");
                 return BadRequest();
             }
         }

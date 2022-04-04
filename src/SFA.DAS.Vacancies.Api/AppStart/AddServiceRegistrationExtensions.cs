@@ -28,6 +28,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
             services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
             services.AddTransient<IStandardsService, StandardsService>();
             services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
         }
     }
 }

@@ -27,6 +27,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderCoursesApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>().Value);
         }
     }
 }

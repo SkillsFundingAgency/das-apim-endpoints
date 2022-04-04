@@ -50,12 +50,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
                 queryParameters.Add("page", Page.ToString());
                 queryParameters.Add("pageSize", PageSize.ToString());
 
-
-                if (!string.IsNullOrWhiteSpace(SortDirection))
-                {
-                    queryParameters.Add("sortDirection", SortDirection);
-                }
-
                 return QueryHelpers.AddQueryString("applications", queryParameters);
             }
         }

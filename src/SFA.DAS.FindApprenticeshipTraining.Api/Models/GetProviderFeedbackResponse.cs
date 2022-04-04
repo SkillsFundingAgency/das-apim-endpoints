@@ -9,8 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalEmployerResponses { get ; set ; }
         public int TotalFeedbackRating { get ; set ; }
         public IEnumerable<GetProviderFeedbackItem> FeedbackDetail { get ; set ; }
-        
-        public GetProviderFeedbackAttributes FeedbackAttributes { get; set; }
+        public IEnumerable<FeedbackAttributeDetail> FeedbackAttributes { get; set; }
     }
 
     public class GetProviderFeedbackItem
@@ -51,31 +50,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         }
     }
 
-    public class GetProviderFeedbackAttributes
-    {
-        public List<string> Strengths { get; private set; }
-        public List<string> Weaknesses { get; private set; }
-
-        public GetProviderFeedbackAttributes Build(List<GetProviderFeedbackAttributeItem> feedbackAttributeItems)
-        {
-            return new GetProviderFeedbackAttributes
-            {
-                Strengths = feedbackAttributeItems
-                    .OrderByDescending(c=>c.Rating)
-                    .ThenByDescending(c=>c.TotalVotes)
-                    .ThenBy(c=>c.AttributeName)
-                    .Where(c=> c.Rating > 0)
-                    .Select(c=>c.AttributeName).Take(3).ToList(),
-                Weaknesses = feedbackAttributeItems
-                    .OrderBy(c=>c.Rating)
-                    .ThenByDescending(c=>c.TotalVotes)
-                    .ThenBy(c=>c.AttributeName)
-                    .Where(c=> c.Rating < 0)
-                    .Select(c=>c.AttributeName).Take(3).ToList(),
-            };
-        }
-    }
-
     public enum FeedbackRatingType
     {
         NotYetReviewed = 0,
@@ -84,4 +58,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         Good = 3,
         Excellent = 4
     }
+
+    public class FeedbackAttributeDetail
+    {
+        public string AttributeName { get; set; }        
+        public int Weakness { get; set; }
+        public int Strength { get; set; }
+
+    }
+
 }
