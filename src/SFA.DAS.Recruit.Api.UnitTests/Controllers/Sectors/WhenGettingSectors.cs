@@ -39,6 +39,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Sectors
             foreach (var sector in model.Sectors)
             {
                 mediatorResult.Sectors.Should().Contain(c => c.Name.Equals(sector.Route));
+                mediatorResult.Sectors.Should().Contain(c => c.Id.Equals(sector.Id));
             }
         }
 

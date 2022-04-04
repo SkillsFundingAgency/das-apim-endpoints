@@ -16,6 +16,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Models
             
             //Assert
             actual.Route.Should().Be(source.Name);
+            actual.Id.Should().Be(source.Id);
         }
     }
 }
