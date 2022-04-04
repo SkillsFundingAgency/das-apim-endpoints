@@ -17,12 +17,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             _apiClient = apiClient;
         }
-
-        public Task Delete(IDeleteApiRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
+                
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -30,12 +25,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.GetAll<TResponse>(request);
         }
 
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.GetPaged<TResponse>(request);
         }
 
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
@@ -48,16 +43,32 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.GetWithResponseCode<TResponse>(request);
         }
 
-        public Task Patch<TData>(IPatchApiRequest<TData> request)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.PostWithResponseCode<TResponse>(request);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new NotImplementedException();
+            return _apiClient.PatchWithResponseCode(request);
         }
 
+        public Task Put(IPutApiRequest request)
+        {
+            return _apiClient.Put(request);
+        }
+
+        public Task Put<TData>(IPutApiRequest<TData> request)
+        {
+            return _apiClient.Put(request);
+        }
+        public Task Delete(IDeleteApiRequest request)
+        {
+            return _apiClient.Delete(request);
+        }
+
+        
+        // Methods Now Obsolete.
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             throw new NotImplementedException();
@@ -68,17 +79,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Put(IPutApiRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Put<TData>(IPutApiRequest<TData> request)
+        public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             throw new NotImplementedException();
         }
