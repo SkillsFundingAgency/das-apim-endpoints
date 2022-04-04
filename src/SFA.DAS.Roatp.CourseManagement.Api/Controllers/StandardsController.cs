@@ -3,9 +3,10 @@
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/")]
     public class StandardsController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Index()
         {
             return new OkObjectResult("Not implemented");
