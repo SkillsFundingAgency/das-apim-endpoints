@@ -30,7 +30,12 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             {
                 var result = await _mediator.Send(new GetProviderAttributesQuery());
 
-                return Ok(result);
+                if(result.ProviderAttributes?.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result.ProviderAttributes);
             }
             catch (Exception e)
             {
