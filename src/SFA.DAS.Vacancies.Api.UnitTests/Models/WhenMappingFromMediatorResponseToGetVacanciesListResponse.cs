@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         {
             var actual = (GetVacanciesListResponse) source;
 
-            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers());
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers().Excluding(c=>c.EmployerName));
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);

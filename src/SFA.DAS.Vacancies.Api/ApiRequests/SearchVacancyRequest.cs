@@ -44,7 +44,7 @@ namespace SFA.DAS.Vacancies.Api
         /// `DistanceDesc` From furthest to closest away apprenticeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
         /// `DistanceAsc` From closest to furthest away apprenticeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
         /// `ExpectedStartDateDesc` Ordering by apprenticeship adverts that are closest to starting
-        /// `ExpectedStartDateAsx` Ordering by apprenticeship adverts that are further in the future to starting
+        /// `ExpectedStartDateAsc` Ordering by apprenticeship adverts that are further in the future to starting
         /// </summary>
         [FromQuery]
         public VacancySort? Sort { get ; set ; } = null;
