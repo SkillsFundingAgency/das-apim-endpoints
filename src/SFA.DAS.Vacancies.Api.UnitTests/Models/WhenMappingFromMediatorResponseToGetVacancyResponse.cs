@@ -43,7 +43,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.IsPositiveAboutDisability)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
-            actual.WorkingWeekDescription.Should().Be(source.Vacancy.WorkingWeek);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
             actual.Location.Lat.Should().Be(source.Vacancy.Location.Lat);
             actual.Location.Lon.Should().Be(source.Vacancy.Location.Lon);
