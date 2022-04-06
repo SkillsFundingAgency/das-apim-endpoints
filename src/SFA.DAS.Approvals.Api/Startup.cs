@@ -56,15 +56,6 @@ namespace SFA.DAS.Approvals.Api
             services.AddMediatR(typeof(GetStandardsQuery).Assembly);
             services.AddServiceRegistration(_configuration);
 
-            //if (_configuration.IsLocalOrDev() && _configuration["UseLocalDevCommitmentApiClient"] == "true")
-            //{
-            //    var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IInternalApiClient<CommitmentsV2ApiConfiguration>));
-            //    if (serviceDescriptor != null) services.Remove(serviceDescriptor);
-                
-            //    services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
-            //}
-
-
             services
                 .AddMvc(o =>
                 {
@@ -80,7 +71,8 @@ namespace SFA.DAS.Approvals.Api
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
                     .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check")
                     .AddCheck<ApprenticeCommitmentsApiHealthCheck>("ApprenticeCommitments API health check")
-                    .AddCheck<ApprenticeAccountsApiHealthCheck>("ApprenticeAccounts API health check");
+                    .AddCheck<ApprenticeAccountsApiHealthCheck>("ApprenticeAccounts API health check")
+                    .AddCheck<ProviderCoursesApiHealthCheck>("ProviderCourses API health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

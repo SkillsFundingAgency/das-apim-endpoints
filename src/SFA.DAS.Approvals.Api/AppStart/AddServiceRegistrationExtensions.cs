@@ -13,11 +13,26 @@ namespace SFA.DAS.Approvals.Api.AppStart
 {
     public static class AddServiceRegistrationExtensions
     {
+        private static void AddCommitmentApiInternalClient(IServiceCollection services, IConfiguration configuration)
+        {
+            bool useLocalDevClient =
+                    configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
+
+            if (useLocalDevClient)
+            {
+                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
+            }
+            else
+            {
+                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, CommitmentsApiInternalApiClient>();
+            }
+        }
+      
+
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration )
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
@@ -26,20 +41,9 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
             services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
-            if (UseLocalDevCommitmentsApiClient(configuration))
-            {
-                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
-            }
-            else
-            {
-                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, CommitmentsApiInternalApiClient>();
-            }
+            services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
+            AddCommitmentApiInternalClient(services, configuration);
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
-        }
-
-        private static bool UseLocalDevCommitmentsApiClient(IConfiguration configuration)
-        {
-            return configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
         }
     }
 }
