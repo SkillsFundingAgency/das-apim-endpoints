@@ -4,15 +4,14 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class PostValidateBulkUploadRequest : IPostApiRequest
     {
-        public string PostUrl => $"api/{ProviderId}/bulkupload/validate";
+        private readonly long _providerId;
+        public object Data { get; set; }
+        public string PostUrl => $"api/{_providerId}/bulkupload/validate";
 
         public PostValidateBulkUploadRequest(long providerId, BulkUploadValidateApiRequest data)
         {
-            ProviderId = providerId;
+            _providerId = providerId;
             Data = data;
         }
-
-        public long ProviderId { get; }
-        public object Data { get ; set ; }
     }
 }

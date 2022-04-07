@@ -108,8 +108,6 @@ namespace SFA.DAS.Approvals.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprovalsOuterApi");
                 c.RoutePrefix = string.Empty;
             });
-
-            
         }
     }
 }

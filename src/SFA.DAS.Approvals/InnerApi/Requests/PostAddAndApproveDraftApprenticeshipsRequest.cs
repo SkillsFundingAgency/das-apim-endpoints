@@ -4,15 +4,15 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class PostAddAndApproveDraftApprenticeshipsRequest : IPostApiRequest
     {
-        public string PostUrl => $"api/{ProviderId}/bulkupload/AddAndApprove";
+        private readonly long _providerId;
+        public object Data { get; set; }
+
+        public string PostUrl => $"api/{_providerId}/bulkupload/AddAndApprove";
 
         public PostAddAndApproveDraftApprenticeshipsRequest(long providerId, BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
         {
-            ProviderId = providerId;
+            _providerId = providerId;
             Data = data;
         }
-
-        public long ProviderId { get; }
-        public object Data { get; set; }
     }
 }
