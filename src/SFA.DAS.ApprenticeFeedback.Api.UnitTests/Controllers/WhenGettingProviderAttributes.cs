@@ -30,7 +30,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult);
+            actual.Value.Should().BeEquivalentTo(queryResult.ProviderAttributes);
         }
 
         [Test, MoqAutoData]
