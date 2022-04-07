@@ -4,7 +4,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class GetCohortRequest : IGetApiRequest
     {
-        public long CohortId { get; set; }
+        public readonly long CohortId;
         public string GetUrl => $"api/cohorts/{CohortId}";
 
         public GetCohortRequest(long cohortId)

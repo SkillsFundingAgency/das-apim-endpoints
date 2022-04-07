@@ -4,12 +4,12 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class GetDraftApprenticeshipsRequest : IGetApiRequest
     {
-        private readonly long _cohortId;
-        public string GetUrl => $"api/cohorts/{_cohortId}/draft-apprenticeships";
+        public readonly long CohortId;
+        public string GetUrl => $"api/cohorts/{CohortId}/draft-apprenticeships";
 
         public GetDraftApprenticeshipsRequest(long cohortId)
         {
-            _cohortId = cohortId;
+            CohortId = cohortId;
         }
     }
 }
