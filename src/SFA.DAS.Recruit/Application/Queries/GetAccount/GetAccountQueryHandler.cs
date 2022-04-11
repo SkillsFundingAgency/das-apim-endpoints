@@ -20,6 +20,11 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAccount
         {
             var result = await _apiClient.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
 
+            if (result == null)
+            {
+                return new GetAccountQueryResult();
+            }
+            
             return new GetAccountQueryResult
             {
                 AccountId = result.AccountId,

@@ -14,7 +14,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
             var actual = new GetAccountsByUserRequest(userId);
             
             //Assert
-            actual.GetUrl.Should().Be($"api/user/{userId}/accounts");
+            actual.GetAllUrl.Should().Be($"api/user/{userId}/accounts");
         }
     }
 }

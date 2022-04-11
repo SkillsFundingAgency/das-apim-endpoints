@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests
 {
-    public class GetAccountsByUserRequest : IGetApiRequest
+    public class GetAccountsByUserRequest : IGetAllApiRequest
     {
         private readonly string _userId;
 
@@ -11,6 +11,6 @@ namespace SFA.DAS.Recruit.InnerApi.Requests
             _userId = userId;
         }
 
-        public string GetUrl => $"api/user/{_userId}/accounts";
+        public string GetAllUrl => $"api/user/{_userId}/accounts";
     }
 }

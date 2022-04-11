@@ -35,5 +35,24 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetAccount
             //Assert
             actual.Should().BeEquivalentTo(apiResponse);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_NotFound_Response_Then_Null_Returned(
+            GetAccountQuery query,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountApiClient,
+            GetAccountQueryHandler handler)
+        {
+            //Arrange
+            accountApiClient.Setup(x =>
+                    x.Get<GetAccountByIdResponse>(
+                        It.IsAny<GetAccountByIdRequest>()))
+                .ReturnsAsync((GetAccountByIdResponse)null);
+            
+            //Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+            
+            //Assert
+            actual.Should().BeNull();
+        }
     }
 }
