@@ -14,6 +14,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             AccountId = accountId;
         }
 
-        public string GetUrl => $"forecasting-api/accounts/{AccountId}/accountprojection/detail";
+        public string GetUrl => $"accounts/{AccountId}/accountprojection/detail";
     }
 }

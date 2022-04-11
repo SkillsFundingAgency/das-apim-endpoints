@@ -9,7 +9,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
         public long ApprovedPledgeApplications { get; set; }
         public long AcceptedPledgeApplications { get; set; }
         public long TransferConnections { get; set; }
-        public long Commitments { get; set; }
         public long PledgeOriginatedCommitments { get; set; }
+        public DateTime ProjectionStartDate { get; set; }
+        public int NumberOfMonths { get; set; }
     }
 }
