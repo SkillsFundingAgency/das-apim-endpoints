@@ -8,6 +8,7 @@ using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,19 +18,19 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Provider_Attributes_From_The_Api(
-            GetProviderAttributesResponse providerAttributesResponse,
+            List<ProviderAttribute> providerAttributesResponse,
             GetProviderAttributesQuery query,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockProviderAttributesApiClient,
             GetProviderAttributesQueryHandler handler)
         {
             mockProviderAttributesApiClient
-                .Setup(client => client.Get<GetProviderAttributesResponse>(
+                .Setup(client => client.Get<List<ProviderAttribute>>(
                     It.IsAny<GetProviderAttributesRequest>()))
                 .ReturnsAsync(providerAttributesResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.ProviderAttributes.Should().BeEquivalentTo(providerAttributesResponse.ProviderAttributes);
+            actual.ProviderAttributes.Should().BeEquivalentTo(providerAttributesResponse);
         }
     }
 }
