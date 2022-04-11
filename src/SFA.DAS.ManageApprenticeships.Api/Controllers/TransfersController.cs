@@ -63,8 +63,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                 {
                     TransferConnections = response.TransferConnections,
                     AcceptedPledgeApplications = response.AcceptedPledgeApplications,
-                    ApprovedPledgeApplications = response.ApprovedPledgeApplications,
-                    Commitments = response.Commitments,
+                    ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
                     PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
                 };
 

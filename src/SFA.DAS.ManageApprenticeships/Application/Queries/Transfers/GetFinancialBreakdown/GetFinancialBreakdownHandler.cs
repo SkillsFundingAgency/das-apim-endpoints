@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown
 {
@@ -23,8 +24,10 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId));
 
 
+            var getValue = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments);
             return new GetFinancialBreakdownResult
             {
+                AcceptedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
                 ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate
             };
         }
