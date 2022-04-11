@@ -52,7 +52,8 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetAccount
             var actual = await handler.Handle(query, CancellationToken.None);
             
             //Assert
-            actual.Should().BeNull();
+            actual.AccountId.Should().BeNull();
+            actual.HashedAccountId.Should().BeNull();
         }
     }
 }
