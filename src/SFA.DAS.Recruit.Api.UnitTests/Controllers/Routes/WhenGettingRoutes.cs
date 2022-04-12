@@ -10,51 +10,51 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.Sectors;
+using SFA.DAS.Recruit.Application.Queries.Routes;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Sectors
+namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Routes
 {
-    public class WhenGettingSectors
+    public class WhenGettingRoutes
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Sectors_From_Mediator(
-            GetSectorsQueryResult mediatorResult,
+        public async Task Then_Gets_Routes_From_Mediator(
+            GetRoutesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]SectorsController controller)
+            [Greedy]RoutesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetSectorsQuery>(),
+                    It.IsAny<GetRoutesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetSectors() as ObjectResult;
+            var controllerResult = await controller.GetRoutes() as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetSectorsResponse;
+            var model = controllerResult.Value as GetRoutesResponse;
             Assert.IsNotNull(model);
 
-            foreach (var sector in model.Sectors)
+            foreach (var sector in model.Routes)
             {
-                mediatorResult.Sectors.Should().Contain(c => c.Name.Equals(sector.Route));
-                mediatorResult.Sectors.Should().Contain(c => c.Id.Equals(sector.Id));
+                mediatorResult.Routes.Should().Contain(c => c.Name.Equals(sector.Route));
+                mediatorResult.Routes.Should().Contain(c => c.Id.Equals(sector.Id));
             }
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_InternalServerError(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]SectorsController controller)
+            [Greedy]RoutesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetSectorsQuery>(),
+                    It.IsAny<GetRoutesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetSectors() as StatusCodeResult;
+            var controllerResult = await controller.GetRoutes() as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

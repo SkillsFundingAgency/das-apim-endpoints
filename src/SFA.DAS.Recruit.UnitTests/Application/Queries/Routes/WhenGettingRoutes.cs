@@ -4,21 +4,21 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Recruit.Application.Queries.Sectors;
+using SFA.DAS.Recruit.Application.Queries.Routes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Recruit.UnitTests.Application.Queries.Sectors
+namespace SFA.DAS.Recruit.UnitTests.Application.Queries.Routes
 {
-    public class WhenGettingSectors
+    public class WhenGettingRoutes
     {
         [Test, MoqAutoData]
         public async Task Then_The_Service_Called_And_Data_Returned(
-            GetSectorsQuery query,
+            GetRoutesQuery query,
             GetRoutesListResponse response,
             [Frozen] Mock<ICourseService> service,
-            GetSectorsQueryHandler handler)
+            GetRoutesQueryHandler handler)
         {
             //Arrange
             service.Setup(x => x.GetRoutes())
@@ -28,7 +28,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.Sectors
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Sectors.Should().BeEquivalentTo(response.Routes);
+            actual.Routes.Should().BeEquivalentTo(response.Routes);
         }
     }
 }

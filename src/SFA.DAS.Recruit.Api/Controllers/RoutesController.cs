@@ -6,18 +6,18 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.Sectors;
+using SFA.DAS.Recruit.Application.Queries.Routes;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class SectorsController : ControllerBase
+    public class RoutesController : ControllerBase
     {
-        private readonly ILogger<SectorsController> _logger;
+        private readonly ILogger<RoutesController> _logger;
         private readonly IMediator _mediator;
 
-        public SectorsController (ILogger<SectorsController> logger, IMediator mediator)
+        public RoutesController (ILogger<RoutesController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -25,19 +25,19 @@ namespace SFA.DAS.Recruit.Api.Controllers
         
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetSectors()
+        public async Task<IActionResult> GetRoutes()
         {
             try
             {
-                var result = await _mediator.Send(new GetSectorsQuery());
-                return Ok(new GetSectorsResponse
+                var result = await _mediator.Send(new GetRoutesQuery());
+                return Ok(new GetRoutesResponse
                 {
-                    Sectors = result.Sectors.Select(c=>(GetRouteResponseItem)c).ToList()
+                    Routes = result.Routes.Select(c=>(GetRouteResponseItem)c).ToList()
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError(e,"Error getting list of sectors");
+                _logger.LogError(e,"Error getting list of routes");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
