@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetPledgesRequest();
 
-            Assert.AreEqual(
+            Assert.AreSame(
                 $"pledges",
                 actual.GetUrl);
         }
