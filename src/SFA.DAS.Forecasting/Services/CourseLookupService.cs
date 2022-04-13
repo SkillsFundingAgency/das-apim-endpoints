@@ -47,7 +47,7 @@ namespace SFA.DAS.Forecasting.Services
             await Task.WhenAll(standardsResponseTask, frameworksResponseTask);
 
             var standardCourses = standardsResponseTask.Result.Standards.Select(x => new Course
-                { Id = x.StandardUId, Level = x.Level, Title = x.Title }).ToList();
+                { Id = x.LarsCode.ToString(), Level = x.Level, Title = x.Title }).ToList();
 
             var frameworkCourses = frameworksResponseTask.Result.Frameworks.Select(x => new Course
                 { Id = x.Id, Title = x.Title, Level = x.Level }).ToList();
