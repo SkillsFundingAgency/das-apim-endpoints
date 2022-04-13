@@ -9,12 +9,12 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProviderController : ControllerBase
+    public class ProvidersController : ControllerBase
     {
-        private readonly ILogger<ProviderController> _logger;
+        private readonly ILogger<ProvidersController> _logger;
         private readonly IMediator _mediator;
 
-        public ProviderController(ILogger<ProviderController> logger, IMediator mediator)
+        public ProvidersController(ILogger<ProvidersController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

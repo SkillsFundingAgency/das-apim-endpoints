@@ -101,7 +101,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Provider}/{action=index}/{id}");
+                    pattern: "api/{controller=Providers}/{action=index}/{id}");
 
         });
 
