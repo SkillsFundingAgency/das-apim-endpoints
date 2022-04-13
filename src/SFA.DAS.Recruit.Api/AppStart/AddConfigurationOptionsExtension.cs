@@ -20,6 +20,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+            services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<RecruitConfiguration>(configuration.GetSection(nameof(RecruitConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitConfiguration>>().Value);
         }
