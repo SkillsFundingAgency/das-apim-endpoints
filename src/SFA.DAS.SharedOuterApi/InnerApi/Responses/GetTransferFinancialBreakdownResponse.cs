@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         }
         public class FundsDetails
         {
-            public long Commitments { get; set; }
+            public decimal Commitments { get; set; }
             public long ApprovedPledgeApplications { get; set; }
             public long AcceptedPledgeApplications { get; set; }
             public long PledgeOriginatedCommitments { get; set; }

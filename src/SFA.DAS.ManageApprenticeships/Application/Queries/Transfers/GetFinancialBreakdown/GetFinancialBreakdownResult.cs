@@ -12,5 +12,6 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
         public long PledgeOriginatedCommitments { get; set; }
         public DateTime ProjectionStartDate { get; set; }
         public int NumberOfMonths { get; set; }
+        public decimal Commitments { get; set; }
     }
 }

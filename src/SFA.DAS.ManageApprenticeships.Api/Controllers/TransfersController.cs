@@ -65,6 +65,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                     AcceptedPledgeApplications = response.AcceptedPledgeApplications,
                     ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
                     PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
+                    Commitments = response.Commitments
                 };
 
                 return Ok(model);

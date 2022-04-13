@@ -23,12 +23,11 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
             var transferFinancialBreakdownTask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId));
 
-
-            var getValue = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments);
             return new GetFinancialBreakdownResult
             {
                 AcceptedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
-                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate
+                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate,
+                Commitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments)
             };
         }
     }
