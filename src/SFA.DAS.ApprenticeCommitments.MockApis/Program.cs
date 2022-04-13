@@ -65,12 +65,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeInnerApi = ApprenticeAccountsApiBuilder.Create(PortAccountsApi)
                         .WithPing()
-                        .WithAnyNewApprenticeship()
-                        .WithRegistrationReminders()
-                        .WithReminderSent()
-                        .WithRegistrationSeen()
-                        .WithExistingApprenticeship()
-                        .WithHowApprenticeshipWillBeDelivered()
+                        .WithAnyApprentice()
                         .Build();
                 }
 
