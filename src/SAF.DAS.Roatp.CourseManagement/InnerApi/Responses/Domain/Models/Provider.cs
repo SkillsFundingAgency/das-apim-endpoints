@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
+namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models
 {
     public class Provider
     {
