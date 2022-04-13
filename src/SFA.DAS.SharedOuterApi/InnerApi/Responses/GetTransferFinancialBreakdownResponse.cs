@@ -15,20 +15,20 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         {
             public int Month { get; set; }
             public int Year { get; set; }
-            public long FundsIn { get; set; }
+            public decimal FundsIn { get; set; }
             public FundsDetails FundsOut { get; set; }
         }
         public class FundsDetails
         {
             [JsonProperty("approved-pledge-applications")]
-            public long ApprovedPledgeApplications { get; set; }
+            public decimal ApprovedPledgeApplications { get; set; }
             [JsonProperty("accepted-pledge-applications")]
-            public long AcceptedPledgeApplications { get; set; }
+            public decimal AcceptedPledgeApplications { get; set; }
             [JsonProperty("pledge-originated-commitments")]
-            public long PledgeOriginatedCommitments { get; set; }            
-            public long Commitments { get; set; }            
+            public decimal PledgeOriginatedCommitments { get; set; }            
+            public decimal Commitments { get; set; }            
             [JsonProperty("transfer-connections")]
-            public long TransferConnections { get; set; }
+            public decimal TransferConnections { get; set; }
 
         }
     }
