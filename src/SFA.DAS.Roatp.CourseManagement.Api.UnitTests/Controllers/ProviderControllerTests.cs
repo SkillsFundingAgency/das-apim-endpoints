@@ -20,7 +20,7 @@ namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
         [TestCase(-1, 400)]
         [TestCase(Validukprn, 200)]
         [TestCase(Invalidukprn, 404)]
-        public async Task GetCharity_ReturnsAppropriateResponse(int Ukprn, int expectedStatusCode)
+        public async Task GetProvider_ReturnsAppropriateResponse(int Ukprn, int expectedStatusCode)
         {
             var mediatorMock = new Mock<IMediator>();
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Invalidukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(null));
