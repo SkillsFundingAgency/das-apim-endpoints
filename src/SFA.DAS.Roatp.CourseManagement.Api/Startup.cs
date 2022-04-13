@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Roatp.CourseManagement.Api.AppStart;
+using SFA.DAS.Roatp.CourseManagement.Application.Provider;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api
@@ -32,7 +35,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-
+            services.AddConfigurationOptions(_configuration);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -48,6 +51,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             }
 
             services.AddHealthChecks();
+            services.AddMediatR(typeof(GetProviderQueryHandler).Assembly);
+            services.AddServiceRegistration();
 
             services
                 .AddMvc(o =>
@@ -96,8 +101,9 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=standards}/{action=index}");
-            });
+                    pattern: "api/{controller=Provider}/{action=index}/{id}");
+
+        });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
