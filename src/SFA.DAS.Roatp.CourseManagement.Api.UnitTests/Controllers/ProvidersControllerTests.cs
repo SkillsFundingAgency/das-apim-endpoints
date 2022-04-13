@@ -12,7 +12,7 @@ using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models;
 namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
 {
     [TestFixture]
-    public class ProviderControllerTests
+    public class ProvidersControllerTests
     {
         const int Validukprn = 101;
         const int Invalidukprn = 999;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Invalidukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(null));
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Validukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(new Provider()));
 
-            var subject = new ProviderController(Mock.Of<ILogger<ProviderController>>(), mediatorMock.Object);
+            var subject = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
 
             var response = await subject.GetProvider(Ukprn);
 
