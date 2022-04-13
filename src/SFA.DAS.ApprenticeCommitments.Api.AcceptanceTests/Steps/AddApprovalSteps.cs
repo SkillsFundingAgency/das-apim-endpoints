@@ -188,6 +188,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
             innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
             innerApiRequest.PlannedStartDate.Should().Be(expectedCommitment.StartDate);
+            innerApiRequest.EmploymentEndDate.Should().Be(expectedCommitment.EmploymentEndDate);
         }
 
         [Then("the Training Provider Name should be '(.*)'")]
