@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmploymentCh
         public async Task Then_The_Api_Is_Called_To_Update_the_emplpyer_check_status(
             UpdateRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
-            EmploymentCheckService service)
+            IncentivesEmploymentCheckService service)
         {
             await service.Update(request);
 

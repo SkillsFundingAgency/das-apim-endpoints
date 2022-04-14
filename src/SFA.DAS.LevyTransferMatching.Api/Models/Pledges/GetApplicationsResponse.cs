@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetApplicationsResponse
     {
-        public Standard Standard { get; set; }
         public IEnumerable<Application> Applications { get; set; }
 
         public string PledgeStatus { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public int PledgeTotalAmount { get; set; }
 
         public class Application
         {
@@ -23,6 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
@@ -31,6 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public bool IsSectorMatch { get; set; }
             public bool IsJobRoleMatch { get; set; }
             public bool IsLevelMatch { get; set; }
+            public int MatchPercentage { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public IEnumerable<string> EmailAddresses { get; set; }
@@ -47,10 +49,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public string SpecificLocation { get; set; }
             public int NumberOfApprentices { get; set; }
             public IEnumerable<string> Sectors { get; set; }
+        }
 
-            public static implicit operator Application(GetApplicationsQueryResult.Application application)
+        public static explicit operator GetApplicationsResponse(GetApplicationsQueryResult v)
+        {
+            return new GetApplicationsResponse
             {
-                return new Application
+                PledgeStatus = v.PledgeStatus,
+                PledgeRemainingAmount = v.RemainingAmount,
+                PledgeTotalAmount = v.TotalAmount,
+                Applications = v.Applications.Select(application => new Application
                 {
                     Id = application.Id,
                     DasAccountName = application.DasAccountName,
@@ -59,6 +67,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     StartDate = application.StartDate,
                     TotalAmount = application.TotalAmount,
                     Amount = application.Amount,
+                    CurrentFinancialYearAmount = application.CurrentFinancialYearAmount,
                     HasTrainingProvider = application.HasTrainingProvider,
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
@@ -87,8 +96,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                     AdditionalLocations = application.AdditionalLocations,
                     NumberOfApprentices = application.NumberOfApprentices,
                     Sectors = application.Sectors
-                };
-            }
+                    })
+            };
         }
     }
 }

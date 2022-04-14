@@ -39,6 +39,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task WithdrawApplication(WithdrawApplicationRequest request, CancellationToken cancellationToken = default);
         Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request);
         Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request);
-        Task<ApiResponse<GenerateCostProjectionRequest>> GenerateCostProjection(GenerateCostProjectionRequest request);
+        Task<ApiResponse<GenerateMatchingCriteriaRequest>> GenerateMatchingCriteria(GenerateMatchingCriteriaRequest request);
     }
 }

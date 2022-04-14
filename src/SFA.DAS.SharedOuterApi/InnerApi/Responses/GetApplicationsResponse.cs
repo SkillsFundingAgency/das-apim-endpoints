@@ -7,11 +7,15 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public IEnumerable<Application> Applications { get; set; }
 
-        public string PledgeStatus { get; set; }
+        public int TotalApplications { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int Page { get; set; }
 
         public class Application
         {
             public int Id { get; set; }
+            public long EmployerAccountId { get; set; }
             public string DasAccountName { get; set; }
             public int PledgeId { get; set; }
             public string Details { get; set; }
@@ -23,9 +27,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public string StandardRoute { get; set; }
 
             public int NumberOfApprentices { get; set; }
+            public int NumberOfApprenticesUsed { get; set; }
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }
+            public int CurrentFinancialYearAmount { get; set; }
             public bool HasTrainingProvider { get; set; }
             public IEnumerable<string> Sectors { get; set; }
             public string FirstName { get; set; }
@@ -38,12 +44,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public IEnumerable<ApplicationLocation> Locations { get; set; }
             public string JobRole { get; set; }
             public int PledgeRemainingAmount { get; set; }
-            public int MaxFunding { get; set; }
             public string EmployerAccountName { get; set; }
-            public bool IsLocationMatch { get; set; }
-            public bool IsSectorMatch { get; set; }
-            public bool IsJobRoleMatch { get; set; }
-            public bool IsLevelMatch { get; set; }
+            public bool MatchLocation { get; set; }
+            public bool MatchSector { get; set; }
+            public bool MatchJobRole { get; set; }
+            public bool MatchLevel { get; set; }
+            public int MatchPercentage { get; set; }
             public List<GetPledgesResponse.Pledge.LocationDataItem> PledgeLocations { get; set; }
             public string SpecificLocation { get; set; }
             public string AdditionalLocations { get; set; }

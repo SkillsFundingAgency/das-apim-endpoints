@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         {
             var actual = (GetVacanciesListResponse) source;
 
-            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers());
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers().Excluding(c=>c.EmployerName));
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);
@@ -50,7 +50,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.CourseLevel)
                 .Excluding(item => item.Location));
             actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
-            actual.Vacancies.TrueForAll(c => c.Location == null).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);
@@ -58,6 +57,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 actual.Vacancies[i].Course.Level.Should().Be(sourceVacancies[i].CourseLevel);
                 actual.Vacancies[i].Course.Route.Should().Be(sourceVacancies[i].Route);
                 actual.Vacancies[i].Course.LarsCode.Should().Be(sourceVacancies[i].StandardLarsCode);
+                actual.Vacancies[i].Location.Lat.Should().Be(sourceVacancies[i].Location.Lat);
+                actual.Vacancies[i].Location.Lon.Should().Be(sourceVacancies[i].Location.Lon); 
             }
         }
     }

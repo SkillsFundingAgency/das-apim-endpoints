@@ -117,6 +117,14 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
+    displayName: 'Publish Apprentice Feedback Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.ApprenticeFeedback.Api/SFA.DAS.ApprenticeFeedback.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
     displayName: 'Publish Apprentice Portal Api'
     inputs:
       command: publish
@@ -186,6 +194,22 @@ jobs:
       command: publish
       publishWebProjects: false
       projects: 'src/SFA.DAS.EmployerContactForms.Api/SFA.DAS.EmployerContactForms.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Employment Check Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.EmploymentCheck.Api/SFA.DAS.EmploymentCheck.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Roatp Course Management Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/SFA.DAS.Roatp.CourseManagement.Api/SFA.DAS.Roatp.CourseManagement.Api.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: CopyFiles@2

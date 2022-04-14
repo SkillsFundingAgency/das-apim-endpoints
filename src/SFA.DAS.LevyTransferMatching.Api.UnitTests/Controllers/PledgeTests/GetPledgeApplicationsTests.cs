@@ -37,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         [Test]
         public async Task GetApplications_Returns_GetApplicationsResponse()
         {
-            var controllerResponse = await _controller.PledgeApplications(_pledgeId);
+            var controllerResponse = await _controller.PledgeApplications(_pledgeId, string.Empty, string.Empty);
 
             var okObjectResult = controllerResponse as OkObjectResult;
             var response = okObjectResult.Value as GetApplicationsResponse;
@@ -45,6 +45,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(response);
             Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
+            Assert.AreEqual(response.PledgeRemainingAmount, _queryResult.RemainingAmount);
+            Assert.AreEqual(response.PledgeTotalAmount, _queryResult.TotalAmount);
         }
     }
 }

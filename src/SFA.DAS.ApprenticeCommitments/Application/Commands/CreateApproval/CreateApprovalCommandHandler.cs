@@ -61,11 +61,13 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 EmployerAccountLegalEntityId = command.EmployerAccountLegalEntityId,
                 TrainingProviderId = command.TrainingProviderId,
                 TrainingProviderName = ProviderName(trainingProvider),
+                DeliveryModel = apprentice.DeliveryModel,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
+                EmploymentEndDate = apprentice.EmploymentEndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 

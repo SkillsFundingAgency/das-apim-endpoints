@@ -15,6 +15,12 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         [JsonProperty("trainingDescription")]
         public string TrainingDescription { get; set; }
 
+        [JsonProperty("employerDescription")]
+        public string EmployerDescription { get; set; }
+        
+        [JsonProperty("thingsToConsider")]
+        public string ThingsToConsider { get; set; }
+        
         [JsonProperty("skills")]
         public List<string> Skills { get; set; }
 

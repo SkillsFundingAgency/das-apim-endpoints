@@ -10,8 +10,10 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string TrainingDescription { get ; set ; }
         public string FullDescription { get ; set ; }
         public string OutcomeDescription { get ; set ; }
+        public string EmployerDescription { get; set; }
         public List<string> Skills { get ; set ; }
         public List<GetVacancyQualification> Qualifications { get ; set ; }
+        public string ThingsToConsider { get; set; }
 
         public static implicit operator GetVacancyResponse(GetVacancyQueryResult source)
         {
@@ -37,9 +39,18 @@ namespace SFA.DAS.Vacancies.Api.Models
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Course = source.Vacancy,
                 Wage = source.Vacancy,
+                Address = source.Vacancy,
+                EmployerWebsiteUrl = source.Vacancy.EmployerWebsiteUrl,
+                EmployerContactEmail = source.Vacancy.EmployerContactEmail,
+                EmployerContactName = source.Vacancy.EmployerContactName,
+                EmployerContactPhone = source.Vacancy.EmployerContactPhone,
+                EmployerDescription = source.Vacancy.EmployerDescription,
+                ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
+                ExpectedDuration = source.Vacancy.ExpectedDuration,
                 FullDescription = source.Vacancy.LongDescription,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
+                ThingsToConsider = source.Vacancy.ThingsToConsider,
                 Skills = source.Vacancy.Skills,
                 Qualifications = source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList(),
                 Distance = source.Vacancy.Distance,
