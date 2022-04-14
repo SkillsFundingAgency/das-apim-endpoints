@@ -14,6 +14,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             AccountId = accountId;
         }
 
-        public string GetUrl => $"accounts/{AccountId}/accountprojection/detail";
+        public string GetUrl => $"accounts/{AccountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.Now.Year}-04-06";
     }
 }
