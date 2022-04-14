@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.AppStart
             services.Configure<ApprenticeFeedbackApiConfiguration>(configuration.GetSection("ApprenticeFeedbackInnerApi"));
             services.Configure<CoursesApiConfiguration>(configuration.GetSection("CoursesApi"));
             services.Configure<TrainingProviderApiConfiguration>(configuration.GetSection("TrainingProviderApi"));
-
+            
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<AssessorsApiConfiguration>>().Value);
