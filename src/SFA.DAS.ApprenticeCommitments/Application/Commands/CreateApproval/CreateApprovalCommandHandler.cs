@@ -67,6 +67,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,
+                EmploymentEndDate = apprentice.EmploymentEndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
             });
 
