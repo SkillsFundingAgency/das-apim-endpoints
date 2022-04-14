@@ -16,7 +16,6 @@ namespace SFA.DAS.Roatp.UnitTests.Domain.Models
             var response = new GetProviderResponse()
             { 
                 Id = 1234,
-                ExternalId = Guid.NewGuid(),
                 Ukprn = 12345,
                 LegalName = "Test",
                 TradingName = "Test",
@@ -26,14 +25,14 @@ namespace SFA.DAS.Roatp.UnitTests.Domain.Models
                 MarketingInfo = "Test",
                 EmployerSatisfaction = (decimal?)1.1,
                 LearnerSatisfaction = (decimal?)1.2,
+                IsImported = true,
+                HasConfirmedLocations = true,
                 HasConfirmedDetails = true,
-                ConfirmedDetailsOn = DateTime.Now,
             };
 
             Provider provider = response;
 
             Assert.AreEqual(response.Id, provider.Id);
-            Assert.AreEqual(response.ExternalId, provider.ExternalId);
             Assert.AreEqual(response.Ukprn, provider.Ukprn);
             Assert.AreEqual(response.LegalName, provider.LegalName);
             Assert.AreEqual(response.TradingName, provider.TradingName);
@@ -43,8 +42,9 @@ namespace SFA.DAS.Roatp.UnitTests.Domain.Models
             Assert.AreEqual(response.MarketingInfo, provider.MarketingInfo);
             Assert.AreEqual(response.EmployerSatisfaction, provider.EmployerSatisfaction);
             Assert.AreEqual(response.LearnerSatisfaction, provider.LearnerSatisfaction);
+            Assert.AreEqual(response.IsImported, provider.IsImported);
+            Assert.AreEqual(response.HasConfirmedLocations, provider.HasConfirmedLocations);
             Assert.AreEqual(response.HasConfirmedDetails, provider.HasConfirmedDetails);
-            Assert.AreEqual(response.ConfirmedDetailsOn, provider.ConfirmedDetailsOn);
 
         }
     }

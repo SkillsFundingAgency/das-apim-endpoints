@@ -5,7 +5,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models
     public class Provider
     {
         public int Id { get; set; }
-        public Guid ExternalId { get; set; }
         public int Ukprn { get; set; }
         public string LegalName { get; set; }
         public string TradingName { get; set; }
@@ -15,14 +14,14 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models
         public string MarketingInfo { get; set; }
         public decimal? EmployerSatisfaction { get; set; }
         public decimal? LearnerSatisfaction { get; set; }
-        public bool? HasConfirmedDetails { get; set; }
-        public DateTime? ConfirmedDetailsOn { get; set; }
+        public bool IsImported { get; set; } = false;
+        public bool? HasConfirmedLocations { get; set; } //Required if imported
+        public bool? HasConfirmedDetails { get; set; } //Required if imported
 
         public static implicit operator Provider(GetProviderResponse provideResponse)
             => new Provider()
             {
                 Id = provideResponse.Id,
-                ExternalId = provideResponse.ExternalId,
                 Ukprn = provideResponse.Ukprn,
                 LegalName = provideResponse.LegalName,
                 TradingName = provideResponse.TradingName,
@@ -32,8 +31,9 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models
                 MarketingInfo = provideResponse.MarketingInfo,
                 EmployerSatisfaction = provideResponse.EmployerSatisfaction,
                 LearnerSatisfaction = provideResponse.LearnerSatisfaction,
+                IsImported = provideResponse.IsImported,
+                HasConfirmedLocations = provideResponse.HasConfirmedLocations,
                 HasConfirmedDetails = provideResponse.HasConfirmedDetails,
-                ConfirmedDetailsOn = provideResponse.ConfirmedDetailsOn,
             };
     }
 }
