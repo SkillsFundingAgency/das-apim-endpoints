@@ -2,8 +2,6 @@
 using System.Collections.Specialized;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
@@ -16,9 +14,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 filters.Add("accountId", accountId.ToString());
             }
-            if(PledgeStatusFilter != null && PledgeStatusFilter != "")
+            if(pledgeStatusFilter != null && pledgeStatusFilter != "")
             {
-                filters.Add("pledgeStatusFilter", PledgeStatusFilter);
+                filters.Add("pledgeStatusFilter", pledgeStatusFilter);
             }
 
             this.GetUrl = $"pledges{filters.ToQueryString()}";
@@ -30,6 +28,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         }
 
         public string GetUrl { get; set; }
-        public string PledgeStatusFilter { get; set; }
     }
 }

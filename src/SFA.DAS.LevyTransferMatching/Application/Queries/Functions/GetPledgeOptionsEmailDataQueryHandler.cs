@@ -1,6 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
@@ -8,7 +6,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,9 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
         public async Task<GetPledgeOptionsEmailDataQueryResult> Handle(GetPledgeOptionsEmailDataQuery request, CancellationToken cancellationToken)
         {
-            var getEmployerAccountsResponse = await _levyTransferMatchingService.GetAccounts(new GetAccountsRequest());
-
-            var emailDataList = await GetEmailDataFromAccountsResponse(getEmployerAccountsResponse);
+            var emailDataList = await GetEmailDataFromAccountsResponse();
 
             return new GetPledgeOptionsEmailDataQueryResult
             {
@@ -37,11 +32,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             };
         }
 
-        public async Task<List<GetPledgeOptionsEmailDataQueryResult.EmailData>> GetEmailDataFromAccountsResponse(GetAccountsResponse getAccountsResponse)
+        public async Task<List<GetPledgeOptionsEmailDataQueryResult.EmailData>> GetEmailDataFromAccountsResponse()
         {
             var emailDataList = new List<GetPledgeOptionsEmailDataQueryResult.EmailData>();
 
-            var getPledgesResponse = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest { PledgeStatusFilter = PledgeStatus.Active });
+            var getPledgesResponse = await _levyTransferMatchingService.GetPledges(new GetPledgesRequest(pledgeStatusFilter: PledgeStatus.Active));
             var employerAccountIds = getPledgesResponse.Pledges.Select(x => x.AccountId).Distinct();
 
             foreach (var employerAccountId in employerAccountIds)
