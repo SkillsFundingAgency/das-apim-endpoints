@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
 using SFA.DAS.Roatp.CourseManagement.Application.Provider;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 
 namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
         {
             var mediatorMock = new Mock<IMediator>();
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Invalidukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(null));
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Validukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(new Provider()));
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q.Ukprn == Validukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult(new GetProviderResponse()));
 
             var subject = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
 
