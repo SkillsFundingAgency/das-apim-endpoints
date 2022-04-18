@@ -19,7 +19,8 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses.Domain.Models
         public bool? HasConfirmedDetails { get; set; } //Required if imported
 
         public static implicit operator Provider(GetProviderResponse provideResponse)
-            => new Provider()
+            => provideResponse == null ? null : 
+            new Provider()
             {
                 Id = provideResponse.Id,
                 Ukprn = provideResponse.Ukprn,
