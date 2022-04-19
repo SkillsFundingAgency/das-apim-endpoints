@@ -62,6 +62,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
+                EmploymentEndDate = apprenticeship.EmploymentEndDate
             });
 
             return default;
