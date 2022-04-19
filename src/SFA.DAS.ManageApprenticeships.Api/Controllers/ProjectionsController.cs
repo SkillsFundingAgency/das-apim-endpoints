@@ -1,12 +1,10 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ManageApprenticeships.Api.Models;
-using SFA.DAS.ManageApprenticeships.Api.Models.Transfers;
 using SFA.DAS.ManageApprenticeships.Application.Queries.GetAccountProjectionSummary;
-using SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ManageApprenticeships.Api.Controllers
 {
