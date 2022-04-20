@@ -31,7 +31,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
                 AcceptedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
                 PledgeOriginatedCommitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),
                 FundsIn = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsIn),
-                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate
+                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate,
+                NumberOfMonths = transferFinancialBreakdownTask.NumberOfMonths
             };
         }
     }
