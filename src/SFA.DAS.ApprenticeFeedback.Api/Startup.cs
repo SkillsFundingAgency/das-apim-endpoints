@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             {
                 options.LowercaseUrls = true;
                 options.LowercaseQueryStrings = true;
-            }).AddMvc();
+            }).AddMvc().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
