@@ -22,6 +22,7 @@ namespace SFA.DAS.Forecasting.Api.Models
             public string LastName { get; set; }
             public string CourseCode { get; set; }
             public string CourseName { get; set; }
+            public int CourseLevel { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
             public decimal? Cost { get; set; }
@@ -44,6 +45,7 @@ namespace SFA.DAS.Forecasting.Api.Models
                     LastName = a.LastName,
                     CourseCode = a.CourseCode,
                     CourseName = a.CourseName,
+                    CourseLevel = a.CourseLevel,
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
                     Cost = a.Cost,
