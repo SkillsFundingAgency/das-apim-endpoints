@@ -57,8 +57,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
             }
 
             // 2. Filter out statuses we don't need to process.
-            var validStatuses = new[] { ApprenticeFeedbackTarget.FeedbackTargetStatus.Active, ApprenticeFeedbackTarget.FeedbackTargetStatus.NotYetActive };
-            apprenticeFeedbackTargets = apprenticeFeedbackTargets.Where(s => validStatuses.Contains(s.Status));
+            //var validStatuses = new[] { ApprenticeFeedbackTarget.FeedbackTargetStatus.Active, ApprenticeFeedbackTarget.FeedbackTargetStatus.NotYetActive, ApprenticeFeedbackTarget.FeedbackTargetStatus.Complete };
+            //apprenticeFeedbackTargets = apprenticeFeedbackTargets.Where(s => validStatuses.Contains(s.Status));
 
             // 3. Setup Learner aggregate object holder to contain information from external systems to supply to Inner Api.
             var learnerAggregate = new List<ApprenticeLearnerAggregate>();
