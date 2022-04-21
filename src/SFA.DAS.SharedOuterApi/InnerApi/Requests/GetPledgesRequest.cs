@@ -7,7 +7,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetPledgesRequest : IGetApiRequest
     {
-        public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null)
+        public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null, string pledgeStatusFilter = null)
         {
             AccountId = accountId;
 
@@ -15,6 +15,10 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             if (accountId.HasValue)
             {
                 filters.Add("accountId", accountId.ToString());
+            }
+            if(pledgeStatusFilter != null && pledgeStatusFilter != "")
+            {
+                filters.Add("pledgeStatusFilter", pledgeStatusFilter);
             }
 
             this.GetUrl = $"pledges{filters.ToQueryString()}";

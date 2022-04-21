@@ -57,9 +57,6 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         [JsonProperty("isPositiveAboutDisability")]
         public bool IsPositiveAboutDisability { get; set; }
 
-        [JsonProperty("isRecruitVacancy")]
-        public bool IsRecruitVacancy { get; set; }
-
         [JsonProperty("location")]
         public Location Location { get; set; }
 
