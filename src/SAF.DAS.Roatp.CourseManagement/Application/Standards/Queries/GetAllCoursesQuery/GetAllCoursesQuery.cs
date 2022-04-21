@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Roatp.CourseManagement.Queries.GetCourseQuery
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery
 {
     public class GetAllCoursesQuery : IRequest<List<GetAllCoursesResult>>
     {

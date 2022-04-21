@@ -9,7 +9,7 @@ using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Roatp.CourseManagement.Queries.GetCourseQuery
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery
 {
     public class GetAllCoursesQueryHandler : IRequestHandler<GetAllCoursesQuery, List<GetAllCoursesResult>>
     {
