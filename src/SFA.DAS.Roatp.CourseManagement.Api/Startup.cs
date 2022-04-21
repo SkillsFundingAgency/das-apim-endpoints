@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.CourseManagement.Api.AppStart;
+using SFA.DAS.Roatp.CourseManagement.Queries.GetCourseQuery;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api
@@ -48,7 +49,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-
+            services.AddMediatR(GetType().Assembly, typeof(GetAllCoursesQueryHandler).Assembly);
             services.AddHealthChecks();
             services.AddServiceRegistration();
 
