@@ -195,5 +195,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             await _mediator.Send(new RecalculateApplicationCostProjectionsCommand());
             return Ok();
         }
+
+        [Route("get-pledge-options-email-data")]
+        [HttpGet]
+        public async Task<IActionResult> GetPledgeOptionsEmailData()
+        {
+            var result = await _mediator.Send(new GetPledgeOptionsEmailDataQuery());
+
+            return Ok(result);
+        }
     }
 }
