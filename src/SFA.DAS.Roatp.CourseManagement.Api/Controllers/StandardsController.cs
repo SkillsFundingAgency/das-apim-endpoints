@@ -30,24 +30,24 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-            _logger.LogInformation("Get provider for ukprn number {ukprn}", ukprn);
+            _logger.LogInformation("Get Standards for ukprn number {ukprn}", ukprn);
             try
             {
                 var result = await _mediator.Send(new GetAllCoursesQuery(ukprn));
 
                 if (result == null)
                 {
-                    _logger.LogInformation("provider not found for ukprn number {ukprn}", ukprn);
+                    _logger.LogInformation("Standards data not found for ukprn number {ukprn}", ukprn);
                     return NotFound();
                 }
 
-                _logger.LogInformation("provider found for ukprn number {ukprn}", ukprn);
+                _logger.LogInformation("Standards data found for ukprn number {ukprn}", ukprn);
                 return Ok(result);
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error occurred trying to retrieve provider for ukprn number {ukprn}");
+                _logger.LogError(ex, $"Error occurred trying to retrieve Standards data for ukprn number {ukprn}");
                 return BadRequest();
             }
         }
