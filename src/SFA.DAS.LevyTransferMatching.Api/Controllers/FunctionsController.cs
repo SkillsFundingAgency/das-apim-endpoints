@@ -188,11 +188,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
-        [Route("backfill-application-matching-criteria")]
+        [Route("recalculate-application-cost-projections")]
         [HttpPost]
-        public async Task<IActionResult> BackfillApplicationCostingProjections()
+        public async Task<IActionResult> RecalculateApplicationCostProjections()
         {
-            await _mediator.Send(new BackfillApplicationMatchingCriteriaCommand());
+            await _mediator.Send(new RecalculateApplicationCostProjectionsCommand());
             return Ok();
         }
     }
