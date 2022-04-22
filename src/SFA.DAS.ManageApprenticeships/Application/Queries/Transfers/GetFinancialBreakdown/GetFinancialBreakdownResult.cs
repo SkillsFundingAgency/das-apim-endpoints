@@ -14,5 +14,6 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
         public DateTime ProjectionStartDate { get; set; }
         public decimal FundsIn { get; set; }
         public int NumberOfMonths { get; set; }
+        public decimal AmountPledged { get; set; }
     }
 }

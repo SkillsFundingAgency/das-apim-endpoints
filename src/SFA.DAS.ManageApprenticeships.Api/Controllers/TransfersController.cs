@@ -69,6 +69,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                     FundsIn = response.FundsIn,
                     ProjectionStartDate = response.ProjectionStartDate,
                     NumberOfMonths = response.NumberOfMonths,
+                    AmountPledged = response.AmountPledged
                 };
 
                 return Ok(model);

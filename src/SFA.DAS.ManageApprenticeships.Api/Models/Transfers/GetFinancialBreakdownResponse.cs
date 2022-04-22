@@ -11,7 +11,8 @@ namespace SFA.DAS.ManageApprenticeships.Api.Models.Transfers
         public decimal TransferConnections { get; set; }
         public decimal FundsIn { get; set; }
         public DateTime ProjectionStartDate { get; set; }
-        public int NumberOfMonths { get; set; }
+        public int NumberOfMonths { get; set; } 
+        public decimal AmountPledged { get; set; }
     }
 
 }

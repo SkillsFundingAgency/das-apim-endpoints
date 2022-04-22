@@ -1,7 +1,9 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown;
+using SFA.DAS.ManageApprenticeships.Models.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -9,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +23,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
         public async Task And_AccountId_Specified_Then_Projection_Returned(
            long accountId,
            [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
+           [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingApiConfiguration,
            GetFinancialBreakdownHandler getFinancialBreakdownHandler)
         {
             GetFinancialBreakdownQuery getFinancialBreakdownQuery = new GetFinancialBreakdownQuery()
@@ -48,11 +51,14 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
                 breakdownDetails
             };
 
+            var getPledgesResponse = new Fixture().Create<GetPledgesResponse>();
+
             var getTransferFinancialBreakdownResponse = new GetTransferFinancialBreakdownResponse()
             {
                 Breakdown = breakDownList,
                 AccountId = accountId,
                 NumberOfMonths = 12,
+                AmountPledged = 20,
                 ProjectionStartDate = DateTime.Now
             };
 
@@ -60,10 +66,15 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
                 .Setup(x => x.Get<GetTransferFinancialBreakdownResponse>(It.IsAny<GetTransferFinancialBreakdownRequest>()))
                 .ReturnsAsync(getTransferFinancialBreakdownResponse);
 
-            
+            levyTransferMatchingApiConfiguration
+                .Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>()))
+                .ReturnsAsync(getPledgesResponse);
+
+
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
             Assert.AreEqual(getTransferFinancialBreakdownResponse.NumberOfMonths, results.NumberOfMonths);
+            Assert.AreEqual(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), results.AmountPledged);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.ProjectionStartDate, results.ProjectionStartDate);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.TransferConnections, results.TransferConnections);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.AcceptedPledgeApplications, results.AcceptedPledgeApplications);
