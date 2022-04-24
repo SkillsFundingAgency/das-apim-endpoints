@@ -23,7 +23,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
            [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
            GetFinancialBreakdownHandler getFinancialBreakdownHandler)
         {
-            GetFinancialBreakdownQuery getFinancialBreakdownQuery = new GetFinancialBreakdownQuery()
+            var getFinancialBreakdownQuery = new GetFinancialBreakdownQuery()
             {
                 AccountId = accountId,
             };
@@ -63,8 +63,6 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.NumberOfMonths, results.NumberOfMonths);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.ProjectionStartDate, results.ProjectionStartDate);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.TransferConnections, results.TransferConnections);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.AcceptedPledgeApplications, results.AcceptedPledgeApplications);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.ApprovedPledgeApplications, results.ApprovedPledgeApplications);

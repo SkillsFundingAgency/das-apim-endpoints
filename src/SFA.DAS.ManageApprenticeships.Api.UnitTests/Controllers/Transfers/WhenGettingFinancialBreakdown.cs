@@ -35,12 +35,10 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.Transfers
             Assert.IsNotNull(value);
             Assert.IsNotNull(getFinancialBreakdownResponse);
 
-            Assert.AreEqual(mediatorResult.NumberOfMonths, getFinancialBreakdownResponse.NumberOfMonths);
             Assert.AreEqual(mediatorResult.Commitments, getFinancialBreakdownResponse.Commitments);
             Assert.AreEqual(mediatorResult.AcceptedPledgeApplications, getFinancialBreakdownResponse.AcceptedPledgeApplications);
             Assert.AreEqual(mediatorResult.ApprovedPledgeApplications, getFinancialBreakdownResponse.ApprovedPledgeApplications);
             Assert.AreEqual(mediatorResult.TransferConnections, getFinancialBreakdownResponse.TransferConnections);
-            Assert.AreEqual(mediatorResult.ProjectionStartDate, getFinancialBreakdownResponse.ProjectionStartDate);
         }
     }
 }
