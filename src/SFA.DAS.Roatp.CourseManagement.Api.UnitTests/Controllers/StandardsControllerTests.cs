@@ -26,7 +26,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 
             var subject = new StandardsController(Mock.Of<ILogger<StandardsController>>(), mediatorMock.Object);
 
-            var response = await subject.GetAllCourses(ukprn);
+            var response = await subject.GetAllStandards(ukprn);
 
             var statusCodeResult = response as IStatusCodeActionResult;
 

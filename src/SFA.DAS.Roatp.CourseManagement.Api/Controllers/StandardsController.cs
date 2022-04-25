@@ -22,7 +22,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn}")]
-        public async Task<IActionResult> GetAllCourses(int ukprn)
+        public async Task<IActionResult> GetAllStandards(int ukprn)
         {
             if (ukprn <= 0)
             {
