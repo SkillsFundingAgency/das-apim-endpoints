@@ -7,9 +7,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +18,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
         [Test, MoqAutoData]
         public async Task And_AccountId_Specified_Then_Projection_Returned(
            long accountId,
+           GetTransferFinancialBreakdownResponse getTransferFinancialBreakdownResponse,
            [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
            GetFinancialBreakdownHandler getFinancialBreakdownHandler)
         {
@@ -28,45 +27,18 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
                 AccountId = accountId,
             };
 
-            var fundOut = new GetTransferFinancialBreakdownResponse.FundsDetails()
-            {
-                TransferConnections = 200,
-                AcceptedPledgeApplications = 200,
-                ApprovedPledgeApplications = 200,
-                Commitments = 200,
-                PledgeOriginatedCommitments = 200
-            };
-
-            var breakdownDetails = new GetTransferFinancialBreakdownResponse.BreakdownDetails()
-            {
-                FundsIn = 200,
-                FundsOut = fundOut
-            };
-
-            var breakDownList = new List<GetTransferFinancialBreakdownResponse.BreakdownDetails>
-            {
-                breakdownDetails
-            };
-
-            var getTransferFinancialBreakdownResponse = new GetTransferFinancialBreakdownResponse()
-            {
-                Breakdown = breakDownList,
-                AccountId = accountId,
-                NumberOfMonths = 12,
-                ProjectionStartDate = DateTime.Now
-            };
-
             forecastingApiConfiguration
                 .Setup(x => x.Get<GetTransferFinancialBreakdownResponse>(It.IsAny<GetTransferFinancialBreakdownRequest>()))
                 .ReturnsAsync(getTransferFinancialBreakdownResponse);
-
             
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.TransferConnections, results.TransferConnections);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.AcceptedPledgeApplications, results.AcceptedPledgeApplications);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.ApprovedPledgeApplications, results.ApprovedPledgeApplications);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown[0].FundsOut.PledgeOriginatedCommitments, results.PledgeOriginatedCommitments);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), results.TransferConnections);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), results.AcceptedPledgeApplications);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), results.ApprovedPledgeApplications);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), results.PledgeOriginatedCommitments);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), results.Commitments);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsIn), results.FundsIn);            
         }
     }
 }

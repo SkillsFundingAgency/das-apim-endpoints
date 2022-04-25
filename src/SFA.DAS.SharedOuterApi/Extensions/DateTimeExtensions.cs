@@ -6,9 +6,9 @@ namespace SFA.DAS.SharedOuterApi.Extensions
 {
     public static class DateTimeExtensions
     {
-        public static string ToFinancialYear(this DateTime dateTime)
+        public static DateTime StartOfFinancialYear(this DateTime dateTime)
         {
-            return ((dateTime.Month >= 4) ? dateTime.ToString("yyyy"): dateTime.AddYears(-1).ToString("yyyy"));
+            return dateTime.Month >= 4 ? new DateTime(dateTime.Year, 4, 6) : new DateTime(dateTime.AddYears(-1).Year, 4, 6);
         }
     }
 }
