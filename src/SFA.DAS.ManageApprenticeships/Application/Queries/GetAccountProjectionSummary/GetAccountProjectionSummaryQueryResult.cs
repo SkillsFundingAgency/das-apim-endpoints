@@ -7,7 +7,7 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.GetAccountProjection
     public class GetAccountProjectionSummaryQueryResult
     {
         public long AccountId { get; set; }
-        public DateTime ProjectionGenerationDate { get; set; }
+        public DateTime? ProjectionGenerationDate { get; set; }
         public int NumberOfMonths { get; set; }
         public decimal FundsIn { get; set; }
         public decimal FundsOut { get; set; }

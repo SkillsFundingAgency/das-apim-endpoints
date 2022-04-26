@@ -20,7 +20,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Models
             return new GetAccountProjectionSummaryResponse
             {
                 AccountId = source.AccountId,
-                ProjectionGenerationDate = source.ProjectionGenerationDate,
+                ProjectionGenerationDate = source.ProjectionGenerationDate.GetValueOrDefault(),
                 NumberOfMonths = source.NumberOfMonths,
                 FundsIn = source.FundsIn,
                 FundsOut = source.FundsOut,

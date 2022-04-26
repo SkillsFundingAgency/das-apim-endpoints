@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ManageApprenticeships.InnerApi.Requests;
@@ -26,12 +27,12 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.GetAccountProjection
 
             return new GetAccountProjectionSummaryQueryResult
             {
-                AccountId = projectionCalcTask.Result.AccountId,
-                FundsIn = projectionCalcTask.Result.FundsIn,
-                FundsOut = projectionCalcTask.Result.FundsOut,
-                NumberOfMonths = projectionCalcTask.Result.NumberOfMonths,
-                ProjectionGenerationDate = projectionCalcTask.Result.ProjectionGenerationDate,
-                ExpiryAmounts = expiringFundsTask.Result.ExpiryAmounts
+                AccountId = request.AccountId,
+                FundsIn = projectionCalcTask.Result?.FundsIn ?? 0,
+                FundsOut = projectionCalcTask.Result?.FundsOut ?? 0,
+                NumberOfMonths = projectionCalcTask.Result?.NumberOfMonths ?? 0,
+                ProjectionGenerationDate = projectionCalcTask.Result?.ProjectionGenerationDate,
+                ExpiryAmounts = expiringFundsTask.Result?.ExpiryAmounts ?? new List<GetExpiringFundsListItem>()
             };
         }
     }
