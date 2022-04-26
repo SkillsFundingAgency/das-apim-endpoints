@@ -110,10 +110,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
                 var updateApprenticeFeedbackTargetRequest = new UpdateApprenticeFeedbackTargetRequest(
                     new UpdateApprenticeFeedbackTargetRequestData
                     {
-                        ApprenticeshipId = aggregate.FeedbackTarget.ApprenticeshipId,
-                        ApprenticeId = aggregate.FeedbackTarget.Id,
+                        ApprenticeFeedbackTargetId = aggregate.FeedbackTarget.Id,
                         ActiveApprenticeshipsCount = aggregate.LearnerCountForProvider,
-                        LearnerData = (LearnerData)aggregate.Learner,
+                        Learner = (LearnerData)aggregate.Learner,
                     });
 
                 var response = await _apprenticeFeedbackApiClient.PostWithResponseCode<ApprenticeFeedbackTarget>(updateApprenticeFeedbackTargetRequest);
@@ -130,6 +129,12 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
             // 7. Transform from the latest aggregate 
             // If there is more than one apprenticeship for one Ukprn then the latest valid apprenticeship should be taken
             // As part of the return values back from Apim.
+            
+            // Api call to inner feedback api, get me providers that can be fed back on
+            // for the apprentice
+
+            // Passes in the Apprentice Guid
+            
 
             var trainingProviders = new List<TrainingProvider>();
             _logger.LogDebug($"End GetApprenticeshipTrainingProviderQueryHandler for ApprenticeId:{request.ApprenticeId}");
