@@ -13,15 +13,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
     public class BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddAndApproveDraftApprenticeshipsCommand, BulkUploadAddAndApproveDraftApprenticeshipsResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
+        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;
 
-        public BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        public BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IReservationApiClient<ReservationApiConfiguration> reservationApiClient)
         {
             _apiClient = apiClient;
+            _reservationApiClient = reservationApiClient;
         }
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
         {
-           var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
+            var reservationRequests = request.BulkUploadAddAndApproveDraftApprenticeships.Select(x => (BulkCreateReservations)x).ToList();
+            var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(new PostBulkCreateReservationRequest(request.ProviderId, reservationRequests));
+
+            var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
                 new PostAddAndApproveDraftApprenticeshipsRequest(request.ProviderId,
                  new BulkUploadAddAndApproveDraftApprenticeshipsRequest
                  {

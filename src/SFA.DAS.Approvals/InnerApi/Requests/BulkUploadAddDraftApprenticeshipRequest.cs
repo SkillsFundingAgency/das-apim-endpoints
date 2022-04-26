@@ -28,5 +28,40 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public string AgreementId { get; set; }
         public long? LegalEntityId { get; set; }
         public int? Cost { get; }
+        public long? TransferSenderId { get; set; }
+
+        public static implicit operator ReservationRequest(BulkUploadAddDraftApprenticeshipRequest response)
+        {
+            var legalEntityId = response.LegalEntityId.HasValue ? response.LegalEntityId.Value : 0;
+            var userId = !string.IsNullOrWhiteSpace(response.UserId) ? Guid.Parse(response.UserId) : Guid.Empty;
+            return new ReservationRequest
+            {
+                CourseId = response.CourseCode,
+                AccountLegalEntityId = legalEntityId,
+                ProviderId = (uint)response.ProviderId,
+                RowNumber = response.RowNumber,
+                Id = Guid.NewGuid(),
+                StartDate = response.StartDate,
+                TransferSenderAccountId = response.TransferSenderId,
+                UserId = userId
+            };
+        }
+
+        public static implicit operator BulkCreateReservations(BulkUploadAddDraftApprenticeshipRequest response)
+        {
+            var legalEntityId = response.LegalEntityId.HasValue ? response.LegalEntityId.Value : 0;
+            var userId = !string.IsNullOrWhiteSpace(response.UserId) ? Guid.Parse(response.UserId) : Guid.Empty;
+            return new BulkCreateReservations
+            {
+                CourseId = response.CourseCode,
+                AccountLegalEntityId = legalEntityId,
+                ProviderId = (uint)response.ProviderId,
+                RowNumber = response.RowNumber,
+                Id = Guid.NewGuid(),
+                StartDate = response.StartDate,
+                TransferSenderAccountId = response.TransferSenderId,
+                UserId = userId
+            };
+        }
     }
 }
