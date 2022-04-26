@@ -14,7 +14,7 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public string ContactUsEmail { get; set; }
         public string ContactUsPageUrl { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
-        public bool IsImported { get; set; } = false;
+        public bool IsImported { get; set; }
         public bool? IsConfirmed { get; set; } //required if imported
         public bool? HasNationalDeliveryOption { get; set; }
         public bool? HasHundredPercentEmployerDeliveryOption { get; set; }
