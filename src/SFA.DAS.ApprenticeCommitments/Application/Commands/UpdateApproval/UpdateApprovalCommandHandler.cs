@@ -55,12 +55,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
                 EmployerAccountLegalEntityId = apprenticeship.AccountLegalEntityId,
                 TrainingProviderId = apprenticeship.ProviderId,
                 TrainingProviderName = IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
+                DeliveryModel = apprenticeship.DeliveryModel,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
+                EmploymentEndDate = apprenticeship.EmploymentEndDate
             });
 
             return default;

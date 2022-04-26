@@ -38,7 +38,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
             return new GetApplicationsQueryResult
             {
                 Applications = result,
-                PledgeStatus = pledgeTask.Result.Status
+                PledgeStatus = pledgeTask.Result.Status,
+                TotalAmount = pledgeTask.Result.Amount,
+                RemainingAmount = pledgeTask.Result.RemainingAmount
             };
         }
 

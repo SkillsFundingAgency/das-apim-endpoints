@@ -147,34 +147,34 @@ stages:
       ApplicationIdentifierUri: $(EmploymentCheckOuterApiIdentifierUri)
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
-# - stage: Deploy_PROD
-#   dependsOn: []
-#   displayName: Deploy to PROD
-#   variables:
-#   - group: PROD Management Resources
-#   - group: PROD Shared Resources
-#   - group: PROD das-apim-endpoints
-#   jobs:
-#   - template: ../pipeline-templates/job/arm-deploy.yml
-#     parameters:
-#       ServiceConnection: SFA-DIG-Prod-ARM
-#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
-#       Environment: PROD
-#       SchemaFilePath: $(EmploymentCheckOuterApiSchemaFilePath)
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+   - group: PROD Management Resources
+   - group: PROD Shared Resources
+   - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(EmploymentCheckOuterApiSchemaFilePath)
 
-#   - template: ../pipeline-templates/job/deploy-api.yml
-#     parameters:
-#       DeploymentName: Deploy_EmploymentCheck
-#       Environment: PROD
-#       ServiceConnection: SFA-DIG-Prod-ARM
-#       AppServiceName: $(EmploymentCheckOuterApiAppServiceName)
-#       DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmploymentCheck.Api.zip
-#       ApiVersionSetName: $(EmploymentCheckOuterApiVersionSetName)
-#       ApiPath: $(EmploymentCheckOuterApiPath)
-#       ApiBaseUrl: $(EmploymentCheckOuterApiBaseUrl)
-#       ProductId: $(EmploymentCheckProductId)
-#       ApplicationIdentifierUri: $(EmploymentCheckOuterApiIdentifierUri)
-#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+  - template: ../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmploymentCheck
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EmploymentCheckOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/SFA.DAS.EmploymentCheck.Api.zip
+      ApiVersionSetName: $(EmploymentCheckOuterApiVersionSetName)
+      ApiPath: $(EmploymentCheckOuterApiPath)
+      ApiBaseUrl: $(EmploymentCheckOuterApiBaseUrl)
+      ProductId: $(EmploymentCheckProductId)
+      ApplicationIdentifierUri: $(EmploymentCheckOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
   dependsOn: []

@@ -1,5 +1,7 @@
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.ApprenticeCommitments.Apis;
+using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.Matchers;
@@ -185,6 +188,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.EmployerAccountLegalEntityId.Should().Be(_request.EmployerAccountLegalEntityId);
             innerApiRequest.TrainingProviderId.Should().Be(_request.TrainingProviderId);
             innerApiRequest.PlannedStartDate.Should().Be(expectedCommitment.StartDate);
+            innerApiRequest.EmploymentEndDate.Should().Be(expectedCommitment.EmploymentEndDate);
         }
 
         [Then("the Training Provider Name should be '(.*)'")]
@@ -211,6 +215,18 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.CourseName.Should().Be(name);
             innerApiRequest.CourseLevel.Should().Be(level);
             innerApiRequest.CourseDuration.Should().Be(courseDuration);
+        }
+
+        [Then(@"the delivery model should be ""(.*)""")]
+        public void ThenTheDeliveryModelShouldBe(string deliveryModel)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.DeliveryModel.Should().Be(Enum.Parse<DeliveryModel>(deliveryModel));
         }
 
         [Then("the inner API should return these errors")]

@@ -31,6 +31,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Features\RecalculateEarnings.feature.cs">
+    <Compile Update="Features\EmploymentCheck.feature.cs">
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Features\UpdateCollectionCalendarPeriod.feature.cs">
@@ -77,6 +78,7 @@
      <SpecFlowFeatureFiles Update="Features\EmploymentCheck.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EmploymentCheck.feature.cs</LastGenOutput>
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
      <SpecFlowFeatureFiles Update="Features\RecalculateEarnings.feature">
        <Generator>SpecFlowSingleFileGenerator</Generator>
