@@ -48,7 +48,8 @@ namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
                     Cost = a.Cost,
-                    PledgeApplicationId = a.PledgeApplicationId
+                    PledgeApplicationId = a.PledgeApplicationId,
+                    HasHadDataLockSuccess = a.HasHadDataLockSuccess
                 })
             };
         }

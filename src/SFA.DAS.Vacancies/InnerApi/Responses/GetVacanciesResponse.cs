@@ -106,7 +106,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public string WageText { get; set; }
 
         [JsonProperty("wageUnit")]
-        public long WageUnit { get; set; }
+        public int WageUnit { get; set; }
 
         [JsonProperty("wageType")]
         public int WageType { get; set; }
