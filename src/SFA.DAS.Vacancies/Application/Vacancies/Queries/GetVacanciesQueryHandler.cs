@@ -21,19 +21,16 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
         private readonly IStandardsService _standardsService;
-        private readonly ICourseService _courseService;
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
         public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, 
             IAccountLegalEntityPermissionService accountLegalEntityPermissionService, 
             IStandardsService standardsService,
-            ICourseService courseService,
             IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
             _standardsService = standardsService;
-            _courseService = courseService;
             _vacanciesConfiguration = vacanciesConfiguration.Value;
         }
 
@@ -63,12 +60,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
-            var categories = _courseService.MapRoutesToCategories(request.Routes);
-
             var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
-                request.Lat, request.Lon, request.DistanceInMiles, categories, request.PostedInLastNumberOfDays, request.Sort));
+                request.Lat, request.Lon, request.DistanceInMiles, request.PostedInLastNumberOfDays, request.Sort));
             var standardsTask = _standardsService.GetStandards();
 
             await Task.WhenAll(vacanciesTask, standardsTask);
@@ -92,10 +87,19 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference}";
             }
+
+            var vacancies = vacanciesTask.Result
+                .ApprenticeshipVacancies.Where(c => c.StandardLarsCode != null)
+                .ToList();
+            
+            if (request.Routes.Any())
+            {
+                vacancies = vacancies.Where(x => request.Routes.Contains(x.Route)).ToList();
+            }
             
             return new GetVacanciesQueryResult()
             {
-                Vacancies = vacanciesTask.Result.ApprenticeshipVacancies.Where(c=>c.StandardLarsCode!=null).ToList(),
+                Vacancies = vacancies,
                 Total = vacanciesTask.Result.Total,
                 TotalFiltered = vacanciesTask.Result.TotalFound,
                 TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0
