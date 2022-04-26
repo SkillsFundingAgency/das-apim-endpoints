@@ -97,8 +97,11 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
                 //    _logger.LogError($"Error Retrieving active apprenticeships count for Ukprn: {ukprn}, Content: {activeLearnersResponse.ErrorContent}");
                 //    continue;
                 //}
-                
+
                 //learnerAggregate.Where(s => s.FeedbackTarget.Ukprn == ukprn).ToList().ForEach(s => s.LearnerCountForProvider = activeLearnersResponse.Body);
+                
+                // Temporary hardcode of active learner count to bypass this api call as it may not even be needed
+                learnerAggregate.Where(s => s.FeedbackTarget.Ukprn == ukprn).ToList().ForEach(s => s.LearnerCountForProvider = 99);
             }
 
             // 6. Send Update Call to Inner Api with latest information to process and update the feedback target.
