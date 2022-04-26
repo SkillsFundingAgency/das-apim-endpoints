@@ -17,11 +17,10 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         private readonly double? _lat;
         private readonly double? _lon;
         private readonly uint? _distanceInMiles;
-        private readonly List<string> _categories;
         private readonly uint? _postedInLastNumberOfDays;
         private readonly string _sort;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, string sort = "")
+        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, uint? postedInLastNumberOfDays = null, string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
@@ -33,7 +32,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             _lat = lat;
             _lon = lon;
             _distanceInMiles = distanceInMiles;
-            _categories = categories;
             _postedInLastNumberOfDays = postedInLastNumberOfDays;
             _sort = sort;
         }
@@ -75,10 +73,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             if (_distanceInMiles.HasValue)
             {
                 url += $"&distanceInMiles={_distanceInMiles}";
-            }
-            if (_categories != null && _categories.Any())
-            {
-                url += $"&categories={string.Join("&categories=", _categories)}";
             }
             if (!string.IsNullOrEmpty(_sort))
             {
