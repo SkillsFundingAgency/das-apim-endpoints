@@ -15,6 +15,7 @@ using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using System;
+using System.Globalization;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
@@ -217,6 +218,23 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 logs.First().RequestMessage.Body);
 
             innerApiRequest.DeliveryModel.Should().Be(Enum.Parse<DeliveryModel>(deliveryModel));
+        }
+
+        [Then(@"the employment end date should be ""(.*)""")]
+        public void ThenTheEmploymentEndDateShouldBe(string employmentEndDate)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            DateTime? expecteDate = null;
+            if (!string.IsNullOrWhiteSpace(employmentEndDate))
+            {
+                expecteDate = DateTime.ParseExact(employmentEndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            }
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.EmploymentEndDate.Should().Be(expecteDate);
         }
 
         [Then(@"the apprentice name should be '(.*)' '(.*)'")]
