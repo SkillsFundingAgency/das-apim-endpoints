@@ -36,7 +36,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error getting transfers");
+                _logger.LogError(e, "Error getting projections");
                 return BadRequest();
             }
         }
