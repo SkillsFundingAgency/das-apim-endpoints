@@ -132,14 +132,15 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
             // 7. Transform from the latest aggregate 
             // If there is more than one apprenticeship for one Ukprn then the latest valid apprenticeship should be taken
             // As part of the return values back from Apim.
-            
+
             // Api call to inner feedback api, get me providers that can be fed back on
             // for the apprentice
 
             // Passes in the Apprentice Guid
-            
 
-            var trainingProviders = new List<TrainingProvider>();
+            var trainingProviders = await _apprenticeFeedbackApiClient.
+              GetAll<TrainingProvider>(new GetAllTrainingProvidersForApprenticeRequest { ApprenticeId = request.ApprenticeId });
+
             _logger.LogDebug($"End GetApprenticeshipTrainingProviderQueryHandler for ApprenticeId:{request.ApprenticeId}");
             return new GetApprenticeTrainingProvidersResult
             {
