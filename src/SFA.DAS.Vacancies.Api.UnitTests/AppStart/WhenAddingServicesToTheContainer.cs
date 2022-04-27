@@ -10,8 +10,6 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Api.AppStart;
-using SFA.DAS.Vacancies.Configuration;
-using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
 {
@@ -24,7 +22,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
         [TestCase(typeof(IAccountLegalEntityPermissionService))]
-        [TestCase(typeof(IStandardsService))]
         [TestCase(typeof(ICourseService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {

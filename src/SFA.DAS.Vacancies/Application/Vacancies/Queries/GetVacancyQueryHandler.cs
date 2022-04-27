@@ -8,18 +8,17 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
-using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
     public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, GetVacancyQueryResult>
     {
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
-        private readonly IStandardsService _standardsService;
+        private readonly ICourseService _standardsService;
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
         public GetVacancyQueryHandler (IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, 
-            IStandardsService standardsService,
+            ICourseService standardsService,
             IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
@@ -32,7 +31,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                  _findApprenticeshipApiClient.Get<GetVacancyApiResponse>(
                     new GetVacancyRequest(request.VacancyReference));
 
-            var standardsTask = _standardsService.GetStandards();
+            var standardsTask = _standardsService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             await Task.WhenAll(vacancyResponseTask, standardsTask);
 
