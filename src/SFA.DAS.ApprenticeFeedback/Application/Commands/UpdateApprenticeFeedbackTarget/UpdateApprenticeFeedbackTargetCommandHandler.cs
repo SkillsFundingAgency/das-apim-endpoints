@@ -40,13 +40,19 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             // 1.a If none, we do nothing, but potential for in future to make it smarter.
             if (apprenticeFeedbackTargets?.Count() == 0)
             {
-                _logger.LogWarning($"No ApprenticeFeedbackTargets found for ApprenticeId: {command.ApprenticeId}");
+                var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: { command.ApprenticeId}";
+                _logger.LogWarning(responseMessage);
+
                 // No feedback targets for the signed in apprentice id
                 // QF-349 ticket - https://skillsfundingagency.atlassian.net/browse/QF-349
                 // Raised to potentially query apprentice commitments / account api 
                 // For now we should return an error to allow the UX to show a relevant page.
 
-                return new UpdateApprenticeFeedbackTargetResponse();
+                return new UpdateApprenticeFeedbackTargetResponse
+                {
+                    Success = false,
+                    Message = responseMessage
+                };
             }
 
             // 2. Setup Learner aggregate object holder to contain information from external systems to supply to Inner Api.
@@ -95,7 +101,10 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 }
             }
 
-            return new UpdateApprenticeFeedbackTargetResponse();
+            return new UpdateApprenticeFeedbackTargetResponse
+            {
+                Success = true
+            };
         }
     }
 }

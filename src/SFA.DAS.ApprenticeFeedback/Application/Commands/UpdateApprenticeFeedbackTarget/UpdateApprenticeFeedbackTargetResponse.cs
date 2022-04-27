@@ -6,5 +6,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
 {
     public class UpdateApprenticeFeedbackTargetResponse
     {
+        public bool Success { get; set; }
+        public string Message { get; set; }
     }
 }
