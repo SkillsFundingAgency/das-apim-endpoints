@@ -68,7 +68,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string Title { get ; set ; }
 
         /// <summary>
-        /// What activities and duties will the apprentice be undertaking during the apprenticeship. Must not exceed 500 characters
+        /// What activities and duties will the apprentice be undertaking during the apprenticeship. Must not exceed 4000 characters
         /// </summary>
         [JsonProperty("description", Required = Required.Always)]
         public string Description { get ; set ; }
@@ -85,7 +85,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("alternativeEmployerName")]
         public string EmployerName { get ; set ; }
         /// <summary>
-        /// A short description of the apprenticeship.
+        /// A short description of the apprenticeship. Must not exceed 350 characters
         /// </summary>
         [JsonProperty("shortDescription", Required = Required.Always)]
         public string ShortDescription { get ; set ; }
@@ -95,7 +95,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("numberOfPositions", Required = Required.Always)]
         public int NumberOfPositions { get ; set ; }
         /// <summary>
-        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 500 characters
+        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 4000 characters
         /// </summary>
         [JsonProperty("outcomeDescription", Required = Required.Always)]
         public string OutcomeDescription { get ; set ; }
@@ -110,12 +110,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("startDate", Required = Required.Always)]
         public DateTime StartDate { get ; set ; }
         /// <summary>
-        /// A brief description about the employer.
+        /// A brief description about the employer. Must not exceed 4000 characters 
         /// </summary>
         [JsonProperty("employerDescription", Required = Required.Always)]
         public string EmployerDescription { get ; set ; }
         /// <summary>
-        /// The training the apprentice will undertake and the qualification they will get at the end of the apprenticeship. Add any certifications and levels of qualifications.
+        /// The training the apprentice will undertake and the qualification they will get at the end of the apprenticeship. Add any certifications and levels of qualifications. Must not exceed 4000 characters. 
         /// </summary>
         [JsonProperty("trainingDescription", Required = Required.Always)]
         public string TrainingDescription { get ; set ; }
@@ -137,7 +137,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("employerNameOption")]
         public EmployerNameOption EmployerNameOption { get ; set ; }
         /// <summary>
-        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 200 characters
+        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 4000 characters
         /// </summary>
         [JsonProperty("anonymousReason")]
         public string AnonymousReason { get ; set ; }
@@ -167,7 +167,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("disabilityConfident", Required = Required.Always)]
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
         /// <summary>
-        /// Any other information the applicant should be aware of.
+        /// Any other information the applicant should be aware of. Must not exceed 4000 characters 
         /// </summary>
         [JsonProperty("thingsToConsider")]
         public string ThingsToConsider { get ; set ; }
