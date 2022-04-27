@@ -138,14 +138,11 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
 
             // Passes in the Apprentice Guid
 
-            var trainingProviders = await _apprenticeFeedbackApiClient.
-              GetAll<TrainingProvider>(new GetAllTrainingProvidersForApprenticeRequest { ApprenticeId = request.ApprenticeId });
+            var result = await _apprenticeFeedbackApiClient.
+              Get<GetApprenticeTrainingProvidersResult>(new GetAllTrainingProvidersForApprenticeRequest { ApprenticeId = request.ApprenticeId });
 
             _logger.LogDebug($"End GetApprenticeshipTrainingProviderQueryHandler for ApprenticeId:{request.ApprenticeId}");
-            return new GetApprenticeTrainingProvidersResult
-            {
-                TrainingProviders = trainingProviders
-            };
+            return result;
         }
     }
 }

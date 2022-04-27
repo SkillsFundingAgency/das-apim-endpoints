@@ -3,9 +3,9 @@ using System;
 
 namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
-    public class GetAllTrainingProvidersForApprenticeRequest : IGetAllApiRequest
+    public class GetAllTrainingProvidersForApprenticeRequest : IGetApiRequest
     {
         public Guid ApprenticeId { get; set; }
-        public string GetAllUrl => $"api/providers/{ApprenticeId}";
+        public string GetUrl => $"api/providers/{ApprenticeId}";
     }
 }
