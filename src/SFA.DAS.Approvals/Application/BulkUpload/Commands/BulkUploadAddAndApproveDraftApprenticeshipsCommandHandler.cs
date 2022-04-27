@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
         {
             ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult = await GetReservations(command);
+            MergeReservationWithDraftApprenticeships(command.BulkUploadAddAndApproveDraftApprenticeships, reservationResult);
 
             var dataToSend = new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
@@ -43,6 +45,11 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadAddAndApproveDraftApprenticeshipResponse = result.Body.BulkUploadAddAndApproveDraftApprenticeshipResponse.Select(x => (BulkUploadAddDraftApprenticeshipsResult)x)
             };
+        }
+
+        private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeships, ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult)
+        {
+            reservationResult.Body.BulkCreateResults.ForEach(x => bulkUploadAddDraftApprenticeships.First(y => y.Uln == x.ULN).ReservationId = x.ReservationId);
         }
 
         private async Task<ApiResponse<BulkCreateReservationsWithNonLevyResult>> GetReservations(BulkUploadAddAndApproveDraftApprenticeshipsCommand command)

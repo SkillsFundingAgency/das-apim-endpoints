@@ -23,6 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
        BulkUploadAddAndApproveDraftApprenticeshipsCommand command,
        BulkUploadAddAndApproveDraftApprenticeshipsResponse response,
        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
+       [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
        BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler handler
        )
         {
@@ -32,6 +33,15 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
                 (It.Is<PostAddAndApproveDraftApprenticeshipsRequest>(
                     x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).BulkUploadAddAndApproveDraftApprenticeships == command.BulkUploadAddAndApproveDraftApprenticeships
                 ))).ReturnsAsync(apiResponse);
+
+            var result = new BulkCreateReservationsWithNonLevyResult();
+            foreach (var draftApprenticeship in command.BulkUploadAddAndApproveDraftApprenticeships)
+            {
+                result.BulkCreateResults.Add(new BulkCreateReservationResult { ReservationId = System.Guid.NewGuid(), ULN = draftApprenticeship.Uln });
+            }
+
+            var reservationApiResponse = new ApiResponse<BulkCreateReservationsWithNonLevyResult>(result, System.Net.HttpStatusCode.OK, "");
+            reservationApiClient.Setup(x => x.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(It.IsAny<PostBulkCreateReservationRequest>())).ReturnsAsync(() => reservationApiResponse);
 
             var actual = await handler.Handle(command, CancellationToken.None);
             Assert.IsNotNull(actual);
