@@ -23,6 +23,8 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.GetAccount
             [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> mockApiClient,
             GetAccountProjectionSummaryQueryHandler handler)
         {
+            projectionCalcApiResponse.AccountId = query.AccountId;
+
             mockApiClient
                 .Setup(client => client.Get<GetProjectionCalculationResponse>(It.Is<GetProjectionCalculationRequest>(x => x.GetUrl.Contains(query.AccountId.ToString()))))
                 .ReturnsAsync(projectionCalcApiResponse);
