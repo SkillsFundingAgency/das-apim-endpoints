@@ -6,7 +6,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
 {
     public interface ICourseService
     {
-        List<string> MapRoutesToCategories(IReadOnlyList<string> routes);
         Task<GetRoutesListResponse> GetRoutes();
         Task<T> GetActiveStandards<T>(string cacheItemName);
     }
