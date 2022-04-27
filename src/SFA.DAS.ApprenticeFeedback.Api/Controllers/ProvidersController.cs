@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         }
 
         [HttpGet("{apprenticeId}")]
-        public async Task<ActionResult<GetApprenticeTrainingProvidersResult>> CreateFeedbackTarget([FromRoute] GetApprenticeTrainingProvidersQuery request)
+        public async Task<ActionResult<GetApprenticeTrainingProvidersResult>> GetApprenticeTrainingProviders([FromRoute] GetApprenticeTrainingProvidersQuery request)
             => await _mediator.Send(request);
 
     }
