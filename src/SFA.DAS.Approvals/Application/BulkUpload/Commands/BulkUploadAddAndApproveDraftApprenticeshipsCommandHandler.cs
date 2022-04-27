@@ -4,6 +4,7 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,19 +22,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             _reservationApiClient = reservationApiClient;
         }
 
-        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand request, CancellationToken cancellationToken)
+        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
         {
-            var reservationRequests = request.BulkUploadAddAndApproveDraftApprenticeships.Select(x => (BulkCreateReservations)x).ToList();
-            var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(new PostBulkCreateReservationRequest(request.ProviderId, reservationRequests));
+            ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult = await GetReservations(command);
+
+            var dataToSend = new BulkUploadAddAndApproveDraftApprenticeshipsRequest
+            {
+                BulkUploadAddAndApproveDraftApprenticeships = command.BulkUploadAddAndApproveDraftApprenticeships,
+                ProviderId = command.ProviderId,
+                UserInfo = command.UserInfo,
+                BulkReservationValidationResults = new BulkReservationValidationResults { ValidationErrors = reservationResult.Body.ValidationErrors }
+            };
 
             var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
-                new PostAddAndApproveDraftApprenticeshipsRequest(request.ProviderId,
-                 new BulkUploadAddAndApproveDraftApprenticeshipsRequest
-                 {
-                     BulkUploadAddAndApproveDraftApprenticeships = request.BulkUploadAddAndApproveDraftApprenticeships,
-                     ProviderId = request.ProviderId,
-                     UserInfo = request.UserInfo
-                 }));
+                new PostAddAndApproveDraftApprenticeshipsRequest(command.ProviderId, dataToSend));
 
             result.EnsureSuccessStatusCode();
 
@@ -41,6 +43,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadAddAndApproveDraftApprenticeshipResponse = result.Body.BulkUploadAddAndApproveDraftApprenticeshipResponse.Select(x => (BulkUploadAddDraftApprenticeshipsResult)x)
             };
+        }
+
+        private async Task<ApiResponse<BulkCreateReservationsWithNonLevyResult>> GetReservations(BulkUploadAddAndApproveDraftApprenticeshipsCommand command)
+        {
+            var reservationRequests = command.BulkUploadAddAndApproveDraftApprenticeships.Select(x =>
+            {
+                var result = (BulkCreateReservations)x;
+                System.Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
+                result.UserId = parsedUserId;
+                return result;
+            }).ToList();
+
+            var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
+            return reservationResult;
         }
     }
 }

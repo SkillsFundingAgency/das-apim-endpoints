@@ -22,7 +22,14 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
         public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand command, CancellationToken cancellationToken)
         {
-            var reservationRequests = command.CsvRecords.Select(x => (ReservationRequest)x).ToList();
+            var reservationRequests = command.CsvRecords.Select(x => 
+            { 
+                var result = (ReservationRequest)x;
+                System.Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
+                result.UserId = parsedUserId;
+                return result;
+            }).ToList();
+            
             var reservationValidationResult = await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(new PostValidateReservationRequest(command.ProviderId, reservationRequests));
        
             // If any errors this call will throw a bulkupload domain exception, which is handled through middleware.
@@ -32,7 +39,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                      CsvRecords = command.CsvRecords,
                      ProviderId = command.ProviderId,
                      UserInfo = command.UserInfo,
-                     ReservationValidationResults = reservationValidationResult.Body
+                     BulkReservationValidationResults = reservationValidationResult.Body
                  }));
             return Unit.Value;
         }

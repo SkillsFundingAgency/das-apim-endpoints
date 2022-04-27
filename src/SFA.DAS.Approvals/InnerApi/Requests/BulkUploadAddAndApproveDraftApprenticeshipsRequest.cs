@@ -7,6 +7,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public long ProviderId { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> BulkUploadAddAndApproveDraftApprenticeships { get; set; }
-        public BulkCreateReservationsWithNonLevyResult ReservationsWithValidation;
+        public BulkReservationValidationResults BulkReservationValidationResults { get; set; }
     }
 }

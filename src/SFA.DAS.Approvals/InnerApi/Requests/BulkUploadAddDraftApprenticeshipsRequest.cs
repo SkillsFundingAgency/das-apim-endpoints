@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.Approvals.InnerApi.Responses;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
@@ -6,5 +7,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public long ProviderId { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> BulkUploadDraftApprenticeships { get; set; }
+        public BulkReservationValidationResults BulkReservationValidationResults { get; set; }
     }
 }

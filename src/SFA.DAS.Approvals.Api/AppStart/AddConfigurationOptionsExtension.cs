@@ -33,6 +33,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
             services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>().Value);
+            services.Configure<ReservationApiConfiguration>(configuration.GetSection(nameof(ReservationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ReservationApiConfiguration>>().Value);
 
         }
     }

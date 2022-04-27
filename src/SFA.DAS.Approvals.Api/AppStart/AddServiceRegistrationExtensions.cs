@@ -45,6 +45,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
             AddCommitmentApiInternalClient(services, configuration);
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+            services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
         }
     }
 }
