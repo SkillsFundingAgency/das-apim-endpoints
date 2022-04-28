@@ -58,15 +58,14 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
-            var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
+            var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+            
+            var vacanciesTask = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
-                request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
+                request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode ?? standards.Standards.Where(c=>request.Routes.Contains(c.Route)).Select(x=>x.LarsCode).ToList(), request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.PostedInLastNumberOfDays, request.Sort));
-            var standardsTask = _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
-            await Task.WhenAll(vacanciesTask, standardsTask);
-
-            foreach (var vacanciesItem in vacanciesTask.Result.ApprenticeshipVacancies)
+            foreach (var vacanciesItem in vacanciesTask.ApprenticeshipVacancies)
             {
                 if (vacanciesItem.StandardLarsCode == null)
                 {
@@ -74,7 +73,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
                 
                 var standard =
-                    standardsTask.Result.Standards.FirstOrDefault(
+                    standards.Standards.FirstOrDefault(
                         c => c.LarsCode.Equals(vacanciesItem.StandardLarsCode));
                 if (standard != null)
                 {
@@ -86,21 +85,16 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference}";
             }
 
-            var vacancies = vacanciesTask.Result
+            var vacancies = vacanciesTask
                 .ApprenticeshipVacancies.Where(c => c.StandardLarsCode != null)
                 .ToList();
             
-            if (request.Routes != null && request.Routes.Any())
-            {
-                vacancies = vacancies.Where(x => request.Routes.Contains(x.Route)).ToList();
-            }
-            
-            return new GetVacanciesQueryResult()
+            return new GetVacanciesQueryResult
             {
                 Vacancies = vacancies,
-                Total = vacanciesTask.Result.Total,
-                TotalFiltered = vacanciesTask.Result.TotalFound,
-                TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0
+                Total = vacanciesTask.Total,
+                TotalFiltered = vacanciesTask.TotalFound,
+                TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.TotalFound / request.PageSize) : 0
             };
         }
     }
