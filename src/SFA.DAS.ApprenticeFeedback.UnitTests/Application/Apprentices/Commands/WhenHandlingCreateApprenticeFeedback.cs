@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
             {
                 command.ApprenticeFeedbackTargetId,
                 command.OverallRating,
-                command.ContactConsent,
+                command.AllowContact,
                 command.FeedbackAttributes
             });
         }
