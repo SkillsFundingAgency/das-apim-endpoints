@@ -44,12 +44,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
             _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>()));
             (submittedRequest.Data).Should().BeEquivalentTo(new
             {
-                command.ApprenticeId,
-                command.ProviderName,
-                command.Ukprn,
-                command.LarsCode,
-                command.StandardUId,
-                command.StandardReference,
+                command.ApprenticeFeedbackTargetId,
                 command.OverallRating,
                 command.ContactConsent,
                 command.FeedbackAttributes

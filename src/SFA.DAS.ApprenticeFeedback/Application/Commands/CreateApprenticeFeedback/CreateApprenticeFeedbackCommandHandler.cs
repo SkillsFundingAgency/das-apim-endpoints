@@ -22,14 +22,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedba
         {
             var request = new CreateApprenticeFeedbackRequest(new CreateApprenticeFeedbackData
             {
-                ApprenticeId = command.ApprenticeId,
-                StandardUId = command.StandardUId,
-                Ukprn = command.Ukprn,
-                LarsCode = command.LarsCode,
-                StandardReference = command.StandardReference,
-                ProviderName = command.ProviderName,
+                ApprenticeFeedbackTargetId = command.ApprenticeFeedbackTargetId,
                 OverallRating = command.OverallRating,
-                ContactConsent = command.ContactConsent,
+                AllowContact = command.AllowContact,
                 FeedbackAttributes = command.FeedbackAttributes.Select(s => (FeedbackAttribute)s).ToList()
             });
 
