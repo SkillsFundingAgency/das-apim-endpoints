@@ -37,9 +37,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             var apprenticeFeedbackTargets = await _apprenticeFeedbackApiClient.
                 GetAll<ApprenticeFeedbackTarget>(new GetAllApprenticeFeedbackTargetsRequest { ApprenticeId = command.ApprenticeId });
 
+
             // 1.a If none, we do nothing, but potential for in future to make it smarter.
-            if (apprenticeFeedbackTargets == null
-                || apprenticeFeedbackTargets.Count() == 0)
+            if (apprenticeFeedbackTargets?.Any() == false)
             {
                 var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: { command.ApprenticeId}";
                 _logger.LogWarning(responseMessage);
