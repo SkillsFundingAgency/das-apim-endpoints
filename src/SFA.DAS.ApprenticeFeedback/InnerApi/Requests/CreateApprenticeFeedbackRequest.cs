@@ -20,15 +20,10 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 
     public class CreateApprenticeFeedbackData
     {
-        public Guid ApprenticeId { get; set; }
-        public long Ukprn { get; set; }
+        public Guid ApprenticeFeedbackTargetId { get; set; }
         public OverallRating OverallRating { get; set; }
-        public string ProviderName { get; set; }
-        public int LarsCode { get; set; }
-        public string StandardUId { get; set; }
-        public string StandardReference { get; set; }
+        public bool AllowContact { get; set; }
         public List<FeedbackAttribute> FeedbackAttributes { get; set; }
-        public bool ContactConsent { get; set; }
     }
 
     public class FeedbackAttribute
