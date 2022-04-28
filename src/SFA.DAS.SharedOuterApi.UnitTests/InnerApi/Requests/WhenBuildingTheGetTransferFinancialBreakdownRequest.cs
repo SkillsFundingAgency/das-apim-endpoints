@@ -14,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             var actual = new GetTransferFinancialBreakdownRequest(accountId: accountId);
 
             Assert.AreEqual(
-                $"accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.UtcNow.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}",
+                $"api/accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.UtcNow.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}",
                 actual.GetUrl);
         }
     }
