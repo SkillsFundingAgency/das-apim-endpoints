@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System;
 
@@ -13,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             var actual = new GetTransferFinancialBreakdownRequest(accountId: accountId);
 
             Assert.AreEqual(
-                $"accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.Now.Year}-04-06",
+                $"accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.UtcNow.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}",
                 actual.GetUrl);
         }
     }
