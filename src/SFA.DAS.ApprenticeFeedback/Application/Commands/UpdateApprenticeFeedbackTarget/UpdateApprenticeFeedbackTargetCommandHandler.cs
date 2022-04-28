@@ -38,7 +38,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 GetAll<ApprenticeFeedbackTarget>(new GetAllApprenticeFeedbackTargetsRequest { ApprenticeId = command.ApprenticeId });
 
             // 1.a If none, we do nothing, but potential for in future to make it smarter.
-            if (apprenticeFeedbackTargets?.Count() == 0)
+            if (apprenticeFeedbackTargets == null
+                || apprenticeFeedbackTargets.Count() == 0)
             {
                 var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: { command.ApprenticeId}";
                 _logger.LogWarning(responseMessage);
@@ -97,7 +98,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     _logger.LogError($"Error Updating the apprentice feedback target with Id: {aggregate.ApprenticeFeedbackTargetId} for apprenticeId: {command.ApprenticeId}, Content: {response.ErrorContent}");
-                    continue;
                 }
             }
 
