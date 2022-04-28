@@ -32,6 +32,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
                 .BeEquivalentTo(source.Vacancies, options => options
                     .Excluding(c => c.AnonymousEmployerName)
                     .Excluding(c => c.IsEmployerAnonymous)
+                    .Excluding(c => c.StandardLarsCode)
                     );
         }
 
