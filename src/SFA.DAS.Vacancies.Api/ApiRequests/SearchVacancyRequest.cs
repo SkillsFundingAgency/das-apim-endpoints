@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.Vacancies.Api
@@ -25,7 +26,11 @@ namespace SFA.DAS.Vacancies.Api
         /// </summary>
         [FromQuery]
         public int? Ukprn { get; set; } = null;
+        /// <summary>
+        /// You can supply a maximum of 5 routes to be filtered by, these can be obtained from `GET referencedata/courses/routes`. If there are `StandardLarsCode` values supplied the route filtering will be ignored.
+        /// </summary>
         [FromQuery]
+        [MaxLength(5, ErrorMessage = "Exceeded maximum of 5 routes to be filtered by")]
         public List<string> Routes { get; set; } = null;
         /// <summary>
         /// Latitude to search from, must be supplied with `Longitude` and `DistanceInMiles`
@@ -66,7 +71,7 @@ namespace SFA.DAS.Vacancies.Api
         [FromQuery]
         public uint? PostedInLastNumberOfDays { get ; set ; } = null;
         /// <summary>
-        /// The Id or Ids of the standard you are searching for - can be obtained from `GET referencedata/courses`
+        /// The Id or Ids of the standard you are searching for - can be obtained from `GET referencedata/courses`. If supplied will cause any route filtering to be ignored
         /// </summary>
         [FromQuery]
         public List<int> StandardLarsCode { get ; set ; }
