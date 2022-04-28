@@ -32,7 +32,8 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
         {
-            query.Routes = new List<string>();
+            query.Routes = null;
+            query.StandardLarsCode = null;
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
@@ -189,7 +190,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                 vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
             }
         }
-
+        
         [Test, MoqAutoData]
         public async Task Then_If_There_Are_Standards_And_Routes_Then_Only_Standards_Filtered(string findAnApprenticeshipBaseUrl,
             GetVacanciesQuery query,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using MediatR;
@@ -59,10 +60,23 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             }
 
             var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+
+            List<int> requestStandardLarsCode = null;
+            if (request.StandardLarsCode != null)
+            {
+                requestStandardLarsCode = request.StandardLarsCode;
+            } 
+            else if (request.Routes != null)
+            {
+                requestStandardLarsCode = standards
+                    .Standards.Where(c => request.Routes.Contains(c.Route))
+                    .Select(x => x.LarsCode)
+                    .ToList();
+            }
             
             var vacanciesTask = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
-                request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode ?? standards.Standards.Where(c=>request.Routes.Contains(c.Route)).Select(x=>x.LarsCode).ToList(), request.NationWideOnly, 
+                request.Ukprn, request.AccountPublicHashedId, requestStandardLarsCode, request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.PostedInLastNumberOfDays, request.Sort));
 
             foreach (var vacanciesItem in vacanciesTask.ApprenticeshipVacancies)
