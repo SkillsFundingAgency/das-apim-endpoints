@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             _apprentice = _fixture.Create<Apprentice>();
         }
 
-        public ApprenticeAccountsApiBuilder WithAnyNewApprenticeship()
+        public ApprenticeAccountsApiBuilder WithAnyApprentice()
         {
             _server
                 .Given(
@@ -45,8 +45,25 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
-        public static ApprenticeCommitmentsInnerApiBuilder Create(int port)
-            => new ApprenticeCommitmentsInnerApiBuilder(port);
+        public ApprenticeAccountsApiBuilder WithPing()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath($"/ping")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                );
+
+            return this;
+        }
+
+
+        public static ApprenticeAccountsApiBuilder Create(int port)
+            => new ApprenticeAccountsApiBuilder(port);
 
         public WireMockServer Build()
         {

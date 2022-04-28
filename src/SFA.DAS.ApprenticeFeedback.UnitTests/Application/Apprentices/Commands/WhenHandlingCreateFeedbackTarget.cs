@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 {
-    public class WhenHandlingCreateFeedbackTarget
+    public class WhenHandlingCreateApprenticeFeedbackTarget
     {
         private Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> _mockApiClient;
         private CreateApprenticeFeedbackTargetCommandHandler _handler;
