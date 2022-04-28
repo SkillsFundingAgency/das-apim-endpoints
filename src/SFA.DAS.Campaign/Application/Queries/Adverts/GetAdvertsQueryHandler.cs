@@ -34,9 +34,11 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
         public async Task<GetAdvertsQueryResult> Handle(GetAdvertsQuery request, CancellationToken cancellationToken)
         {
             var routesTask = _courseService.GetRoutes();
+            var standardsTask =
+                _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
             var locationTask = _locationLookupService.GetLocationInformation(request.Postcode, 0, 0);
 
-            await Task.WhenAll(routesTask, locationTask);
+            await Task.WhenAll(routesTask, locationTask, standardsTask);
 
             if (locationTask.Result == null)
             {
@@ -47,11 +49,10 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 };
             }
 
-            var categories = _courseService.MapRoutesToCategories(new List<string> { request.Route });
-
-            var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, null, null,
+            var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
+                standardsTask.Result.Standards.Where(c=>c.Route.Equals(request.Route)).Select(c=>c.LarsCode).ToList(), null,
                 locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
-                request.Distance, categories, null, "DistanceAsc");
+                request.Distance, null, "DistanceAsc");
 
             var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
 
