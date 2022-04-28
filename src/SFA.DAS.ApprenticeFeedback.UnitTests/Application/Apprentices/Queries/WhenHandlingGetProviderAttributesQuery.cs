@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
             GetProviderAttributesQueryHandler handler)
         {
             mockProviderAttributesApiClient
-                .Setup(client => client.Get<IEnumerable<ProviderAttribute>>(
+                .Setup(client => client.Get<List<ProviderAttribute>>(
                 It.IsAny<GetProviderAttributesRequest>()))
                 .ReturnsAsync(providerAttributesResponse);
 
