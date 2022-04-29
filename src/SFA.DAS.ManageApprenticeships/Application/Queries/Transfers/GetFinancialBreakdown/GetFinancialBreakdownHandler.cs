@@ -6,33 +6,42 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using SFA.DAS.ManageApprenticeships.Models.Constants;
 
 namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown
 {
     public class GetFinancialBreakdownHandler : IRequestHandler<GetFinancialBreakdownQuery, GetFinancialBreakdownResult>
     {
         readonly IForecastingApiClient<ForecastingApiConfiguration> _forecastingApiClient;
+        readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
 
-        public GetFinancialBreakdownHandler(IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient)
+        public GetFinancialBreakdownHandler(IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
         {
             _forecastingApiClient = forecastingApiClient;
+            _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
         }
 
         public async Task<GetFinancialBreakdownResult> Handle(GetFinancialBreakdownQuery request, CancellationToken cancellationToken)
         {
-            var transferFinancialBreakdownTask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+            var transferFinancialBreakdownTask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId));
-                        
+            
+            var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>
+                                                        (new GetPledgesRequest(request.AccountId));
+
+            await Task.WhenAll(transferFinancialBreakdownTask, pledgesTask);
+
             return new GetFinancialBreakdownResult
             {
-                Commitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments),
-                ApprovedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
-                TransferConnections = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections),
-                AcceptedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
-                PledgeOriginatedCommitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),
-                FundsIn = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsIn),
-                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate,
-                NumberOfMonths = transferFinancialBreakdownTask.NumberOfMonths
+                Commitments = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsOut.Commitments),
+                ApprovedPledgeApplications = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
+                TransferConnections = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsOut.TransferConnections),
+                AcceptedPledgeApplications = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
+                PledgeOriginatedCommitments = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),
+                FundsIn = transferFinancialBreakdownTask.Result.Breakdown.Sum(x => x.FundsIn),
+                ProjectionStartDate = transferFinancialBreakdownTask.Result.ProjectionStartDate,
+                NumberOfMonths = transferFinancialBreakdownTask.Result.NumberOfMonths,
+                AmountPledged = pledgesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount)
             };
         }
     }
