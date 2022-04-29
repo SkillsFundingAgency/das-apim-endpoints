@@ -8,10 +8,6 @@ namespace SFA.DAS.Forecasting.Api.Models
     public class GetApplicationsResponse
     {
         public IEnumerable<Application> Applications { get; set; }
-        public int TotalApplications { get; set; }
-        public int Page { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
 
         public class Application
         {
@@ -26,16 +22,13 @@ namespace SFA.DAS.Forecasting.Api.Models
             public DateTime StartDate { get; set; }
             public int NumberOfApprentices { get; set; }
             public int NumberOfApprenticesUsed { get; set; }
+            public string Status { get; set; }
         }
 
         public static implicit operator GetApplicationsResponse(GetApplicationsQueryResult source)
         {
             return new GetApplicationsResponse
             {
-                PageSize = source.PageSize,
-                Page = source.Page,
-                TotalPages = source.TotalPages,
-                TotalApplications = source.TotalApplications,
                 Applications = source.Applications.Select(a => new Application
                 {
                     Id = a.Id,
@@ -48,7 +41,8 @@ namespace SFA.DAS.Forecasting.Api.Models
                     StandardMaxFunding = a.StandardMaxFunding,
                     StartDate = a.StartDate,
                     NumberOfApprentices = a.NumberOfApprentices,
-                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed
+                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed,
+                    Status = a.Status
                 })
             };
         }
