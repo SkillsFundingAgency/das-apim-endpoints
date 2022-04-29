@@ -37,9 +37,9 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             GetAdvertsQueryHandler handler)
         {
             //Arrange
-            query.Route = standards.Standards.First().Route;
+            query.Route = standards.Standards.First().Route.ToLower();
             configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
-            var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, standards.Standards.Where(c=>c.Route.Equals(query.Route)).Select(c=>c.LarsCode).ToList(), null,
+            var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, new List<int>{ standards.Standards.First().LarsCode}, null,
                 locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, null,
                 "DistanceAsc");
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))

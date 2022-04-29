@@ -169,11 +169,11 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             query.StandardLarsCode = null;
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl; 
-            courseResponse.Route = query.Routes.First();
+            courseResponse.Route = query.Routes.First().ToUpper();
             courses.Add(courseResponse);
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, courses.Where(c=>query.Routes.Contains(c.Route)).Select(c=>c.LarsCode).ToList(), 
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, new List<int>{courseResponse.LarsCode}, 
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles,  query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>

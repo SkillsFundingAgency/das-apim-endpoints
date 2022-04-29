@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -50,7 +51,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
             }
 
             var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
-                standardsTask.Result.Standards.Where(c=>c.Route.Equals(request.Route)).Select(c=>c.LarsCode).ToList(), null,
+                standardsTask.Result.Standards.Where(c=>c.Route.Equals(request.Route, StringComparison.CurrentCultureIgnoreCase)).Select(c=>c.LarsCode).ToList(), null,
                 locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
                 request.Distance, null, "DistanceAsc");
 

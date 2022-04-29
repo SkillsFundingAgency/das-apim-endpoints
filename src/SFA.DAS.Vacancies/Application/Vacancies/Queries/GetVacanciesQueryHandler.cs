@@ -69,7 +69,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             else if (request.Routes != null)
             {
                 requestStandardLarsCode = standards
-                    .Standards.Where(c => request.Routes.Contains(c.Route))
+                    .Standards.Where(c => request.Routes.Contains(c.Route, StringComparer.CurrentCultureIgnoreCase))
                     .Select(x => x.LarsCode)
                     .ToList();
             }
