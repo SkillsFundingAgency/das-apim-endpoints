@@ -3,6 +3,8 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,12 +24,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
         public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand command, CancellationToken cancellationToken)
         {
-            var reservationRequests = command.CsvRecords.Select(x => 
-            { 
-                var result = (ReservationRequest)x;
-                System.Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
-                result.UserId = parsedUserId;
-                return result;
+            var reservationRequests = command.CsvRecords.Select(response => 
+            {
+                Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
+                return new ReservationRequest
+                {
+                    CourseId = response.CourseCode,
+                    AccountLegalEntityId = response.LegalEntityId ?? 0,
+                    ProviderId = (uint?)response.ProviderId,
+                    RowNumber = response.RowNumber,
+                    Id = Guid.NewGuid(),
+                    StartDate = GetStartDate(response.StartDateAsString),
+                    TransferSenderAccountId = response.TransferSenderId
+                };
+
             }).ToList();
             
             var reservationValidationResult = await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(new PostValidateReservationRequest(command.ProviderId, reservationRequests));
@@ -42,6 +52,17 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                      BulkReservationValidationResults = reservationValidationResult.Body
                  }));
             return Unit.Value;
+        }
+
+        public static DateTime? GetStartDate(string date, string format = "yyyy-MM-dd")
+        {
+            if (!string.IsNullOrWhiteSpace(date) &&
+                DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime outDateTime))
+            {
+                return new DateTime(outDateTime.Year, outDateTime.Month, 1);
+            }
+
+            return null;
         }
     }
 }

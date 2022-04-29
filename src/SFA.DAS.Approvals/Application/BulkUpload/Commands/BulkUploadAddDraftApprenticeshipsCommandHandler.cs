@@ -5,7 +5,9 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,14 +58,33 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
         {
             var reservationRequests = command.BulkUploadAddDraftApprenticeships.Select(x =>
             {
-                var result = (BulkCreateReservations)x;
-                System.Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
-                result.UserId = parsedUserId;
-                return result;
+                Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
+                return new BulkCreateReservations
+                {
+                    CourseId = x.CourseCode,
+                    AccountLegalEntityId = x.LegalEntityId ?? 0,
+                    ProviderId = (uint?)x.ProviderId,
+                    RowNumber = x.RowNumber,
+                    Id = Guid.NewGuid(),
+                    StartDate = GetStartDate(x.StartDateAsString),
+                    TransferSenderAccountId = x.TransferSenderId,
+                    ULN = x.Uln
+                };
             }).ToList();
 
             var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
             return reservationResult;
+        }
+
+        public static DateTime? GetStartDate(string date, string format = "yyyy-MM-dd")
+        {
+            if (!string.IsNullOrWhiteSpace(date) &&
+                DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime outDateTime))
+            {
+                return new DateTime(outDateTime.Year, outDateTime.Month, 1);
+            }
+
+            return null;
         }
     }
 }
