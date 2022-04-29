@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SAF.DAS.Roatp.CourseManagement\SFA.DAS.Roatp.CourseManagement.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Roatp.CourseManagement\SFA.DAS.Roatp.CourseManagement.csproj" />
   </ItemGroup>
 
 </Project>
