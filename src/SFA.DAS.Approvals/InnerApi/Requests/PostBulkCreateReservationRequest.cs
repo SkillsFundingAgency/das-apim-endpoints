@@ -11,7 +11,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 
         public PostBulkCreateReservationRequest(long providerId, List<BulkCreateReservations> listOfReservations )
         {
-            var reservationsToCreate = new BulkCreateReservationsWithNonLevyRequest();
+            var reservationsToCreate = new BulkCreateReservationsRequest();
             reservationsToCreate.Reservations = listOfReservations;
 
             ProviderId = providerId;
