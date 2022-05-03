@@ -71,7 +71,8 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                     CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend,
                     NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,
                     NumberOfMonths = response.NumberOfMonths,
-                    YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend
+                    YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend,
+                    AmountPledged = response.AmountPledged
                 };
 
                 return Ok(model);

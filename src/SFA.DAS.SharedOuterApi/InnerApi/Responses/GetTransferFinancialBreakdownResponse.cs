@@ -10,6 +10,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public long AccountId { get; set; }
         public DateTime ProjectionStartDate { get; set; }
         public int NumberOfMonths { get; set; }
+        public decimal AmountPledged { get; set; }
         public List<BreakdownDetails> Breakdown { get; set; }
         public class BreakdownDetails
         {

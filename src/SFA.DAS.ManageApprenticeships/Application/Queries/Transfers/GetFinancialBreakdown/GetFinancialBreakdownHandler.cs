@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using SFA.DAS.ManageApprenticeships.Models.Constants;
 using System;
 
 namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown
@@ -13,10 +14,12 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
     public class GetFinancialBreakdownHandler : IRequestHandler<GetFinancialBreakdownQuery, GetFinancialBreakdownResult>
     {
         readonly IForecastingApiClient<ForecastingApiConfiguration> _forecastingApiClient;
+        readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
 
-        public GetFinancialBreakdownHandler(IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient)
+        public GetFinancialBreakdownHandler(IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
         {
             _forecastingApiClient = forecastingApiClient;
+            _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
         }
 
         public async Task<GetFinancialBreakdownResult> Handle(GetFinancialBreakdownQuery request, CancellationToken cancellationToken)
@@ -29,7 +32,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
 
             var yearAfterNextYearBreakdowntask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(2)));
-
+            var pledgesTask = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>
+                                                        (new GetPledgesRequest(request.AccountId));
             return new GetFinancialBreakdownResult
             {
                 Commitments = breakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments),
@@ -51,7 +55,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
                 YearAfterNextYearEstimatedCommittedSpend = (yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                 yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
                 yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
-                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections))
+                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
+                AmountPledged = pledgesTask.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount)
             };
         }
     }

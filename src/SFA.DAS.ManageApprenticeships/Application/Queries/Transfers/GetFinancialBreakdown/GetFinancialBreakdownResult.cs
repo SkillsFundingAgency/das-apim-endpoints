@@ -17,5 +17,6 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
         public decimal CurrentYearEstimatedCommittedSpend { get; set; }
         public decimal NextYearEstimatedCommittedSpend { get; set; }
         public decimal YearAfterNextYearEstimatedCommittedSpend { get; set; }
+        public decimal AmountPledged { get; set; }
     }
 }
