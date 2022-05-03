@@ -38,7 +38,10 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), results.ApprovedPledgeApplications);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), results.PledgeOriginatedCommitments);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), results.Commitments);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsIn), results.FundsIn);            
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsIn), results.FundsIn);
+            Assert.AreEqual((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) 
+                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)), results.CurrentYearEstimatedCommittedSpend);
         }
     }
 }

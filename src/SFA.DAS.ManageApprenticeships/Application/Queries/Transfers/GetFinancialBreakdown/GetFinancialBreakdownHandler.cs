@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown
 {
@@ -20,19 +21,36 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
 
         public async Task<GetFinancialBreakdownResult> Handle(GetFinancialBreakdownQuery request, CancellationToken cancellationToken)
         {
-            var transferFinancialBreakdownTask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
-                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId));
-                        
+            var breakdownTask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow));
+
+            var nextYearBreakdowntask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(1)));
+
+            var yearAfterNextYearBreakdowntask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(2)));
+
             return new GetFinancialBreakdownResult
             {
-                Commitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments),
-                ApprovedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
-                TransferConnections = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections),
-                AcceptedPledgeApplications = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
-                PledgeOriginatedCommitments = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),
-                FundsIn = transferFinancialBreakdownTask.Breakdown.Sum(x => x.FundsIn),
-                ProjectionStartDate = transferFinancialBreakdownTask.ProjectionStartDate,
-                NumberOfMonths = transferFinancialBreakdownTask.NumberOfMonths
+                Commitments = breakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments),
+                ApprovedPledgeApplications = breakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
+                TransferConnections = breakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections),
+                AcceptedPledgeApplications = breakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
+                PledgeOriginatedCommitments = breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),                
+                FundsIn = breakdownTask.Breakdown.Sum(x => x.FundsIn),
+                ProjectionStartDate = breakdownTask.ProjectionStartDate,
+                NumberOfMonths = breakdownTask.NumberOfMonths,
+                CurrentYearEstimatedCommittedSpend = (breakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                breakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
+                breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)),
+                NextYearEstimatedCommittedSpend = (nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
+                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
+                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
+                YearAfterNextYearEstimatedCommittedSpend = (yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
+                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
+                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections))
             };
         }
     }
