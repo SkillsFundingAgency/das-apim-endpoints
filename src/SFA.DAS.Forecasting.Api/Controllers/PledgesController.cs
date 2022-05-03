@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
+using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
 
 namespace SFA.DAS.Forecasting.Api.Controllers
@@ -12,20 +12,27 @@ namespace SFA.DAS.Forecasting.Api.Controllers
     public class PledgesController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<PledgesController> _logger;
 
-        public PledgesController(IMediator mediator, ILogger<PledgesController> logger)
+        public PledgesController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetPledges(int page, int pageSize)
+        public async Task<IActionResult> GetPledges(long accountId)
         {
-            var queryResult = await _mediator.Send(new GetPledgesQuery{ Page = page, PageSize = pageSize});
+            var queryResult = await _mediator.Send(new GetPledgesQuery{ AccountId = accountId });
             var result = (GetPledgesResponse) queryResult;
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("accountIds")]
+        public async Task<IActionResult> GetAccountsWithPledges()
+        {
+            var queryResult = await _mediator.Send(new GetAccountsWithPledgesQuery());
+            var result = (GetAccountsWithPledgesResponse)queryResult;
             return Ok(result);
         }
     }
