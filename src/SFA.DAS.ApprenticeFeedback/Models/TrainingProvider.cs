@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.Models
 {
@@ -12,16 +13,5 @@ namespace SFA.DAS.ApprenticeFeedback.Models
         public TimeSpan? TimeWindow { get; set; }
         public DateTime? SignificantDate { get; set; }
         public FeedbackEligibility FeedbackEligibility { get; set; }
-    }
-
-    public enum FeedbackEligibility
-    {
-        Allow,
-        Deny_TooSoon,
-        Deny_TooLateAfterPassing,
-        Deny_TooLateAfterWithdrawing,
-        Deny_HasGivenFeedbackRecently,
-        Deny_HasGivenFinalFeedback,
-        Deny_NotEnoughActiveApprentices,
     }
 }
