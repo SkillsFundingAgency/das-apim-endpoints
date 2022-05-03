@@ -42,7 +42,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
                 NumberOfMonths = breakdownTask.NumberOfMonths,
                 CurrentYearEstimatedCommittedSpend = (breakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                 breakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
-                breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)),
+                breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)+ 
+                breakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
                 NextYearEstimatedCommittedSpend = (nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                 nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
                 nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
