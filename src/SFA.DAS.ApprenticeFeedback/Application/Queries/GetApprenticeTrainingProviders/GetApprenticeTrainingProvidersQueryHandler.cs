@@ -26,7 +26,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeTrainingPr
             var result = await _apprenticeFeedbackApiClient.
                Get<GetApprenticeTrainingProvidersResult>(new GetAllTrainingProvidersForApprenticeRequest { ApprenticeId = request.ApprenticeId });
 
-            _logger.LogDebug($"End GetApprenticeshipTrainingProviderQueryHandler for ApprenticeId:{request.ApprenticeId}");
+            _logger.LogDebug($"End GetApprenticeshipTrainingProvidersQueryHandler for ApprenticeId:{request.ApprenticeId}");
             return result;
         }
     }
