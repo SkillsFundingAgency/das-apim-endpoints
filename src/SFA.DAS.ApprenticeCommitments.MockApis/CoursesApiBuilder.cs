@@ -64,5 +64,24 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             return this;
         }
+
+        public CoursesApiBuilder WithCoursesForStandardUIds()
+        {
+            var course = _fixture.Build<Apis.Courses.StandardResponse>()
+                .Create();
+
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath($"/api/courses/standards/ST*")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(course)
+                );
+
+            return this;
+        }
     }
 }
