@@ -50,14 +50,34 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 };
             }
 
-            var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
-                standardsTask.Result.Standards.Where(c=>c.Route.Equals(request.Route, StringComparison.CurrentCultureIgnoreCase)).Select(c=>c.LarsCode).ToList(), null,
-                locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
-                request.Distance, null, "DistanceAsc");
 
-            var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
+            var standardLarsCode = standardsTask.Result.Standards.Where(c=>c.Route.Equals(request.Route, StringComparison.CurrentCultureIgnoreCase)).Select(c=>c.LarsCode).ToList();
 
-            foreach (var advert in adverts.ApprenticeshipVacancies)
+            var apprenticeshipVacancies = new List<GetVacanciesListItem>(); 
+               
+            var skip = 0;
+            var total = 0L;
+            while (true)
+            {
+                var standards = standardLarsCode.Skip(skip).Take(20).ToList();
+
+                if (standards.Count == 0)
+                {
+                    break;
+                }
+                
+                var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
+                    standardLarsCode, null,
+                    locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
+                    request.Distance, null, "DistanceAsc");
+
+                var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
+                total = adverts.TotalFound;
+                apprenticeshipVacancies.AddRange(adverts.ApprenticeshipVacancies.ToList());
+                skip += 20;
+            }
+
+            foreach (var advert in apprenticeshipVacancies)
             {
                 advert.VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}";
             }
@@ -66,8 +86,8 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
             {
                 Location = locationTask.Result,
                 Routes = routesTask.Result.Routes,
-                TotalFound = adverts.TotalFound,
-                Vacancies = adverts.ApprenticeshipVacancies
+                TotalFound = total,
+                Vacancies = apprenticeshipVacancies.OrderBy(c=>c.Distance).Take(20)
             };
         }
     }
