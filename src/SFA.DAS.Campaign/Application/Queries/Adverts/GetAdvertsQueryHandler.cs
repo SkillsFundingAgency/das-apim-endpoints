@@ -56,10 +56,11 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
             var apprenticeshipVacancies = new List<GetVacanciesListItem>(); 
                
             var skip = 0;
+            var take = 15;
             var total = 0L;
             while (true)
             {
-                var standards = standardLarsCode.Skip(skip).Take(20).ToList();
+                var standards = standardLarsCode.Skip(skip).Take(take).ToList();
 
                 if (standards.Count == 0)
                 {
@@ -67,14 +68,14 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 }
                 
                 var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
-                    standardLarsCode, null,
+                    standards, null,
                     locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
-                    request.Distance, null, "DistanceAsc");
+                    request.Distance, null, null, "DistanceAsc");
 
                 var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
                 total = adverts.TotalFound;
                 apprenticeshipVacancies.AddRange(adverts.ApprenticeshipVacancies.ToList());
-                skip += 20;
+                skip += take;
             }
 
             foreach (var advert in apprenticeshipVacancies)
