@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     public class WithdrawalSteps
     {
         private readonly TestContext _context;
-        private PostWithdrawApplicationRequest _request;
+        private PostWithdrawApplicationRequest _withdrawRequest;
+        private PostReinstateApplicationRequest _reinstateRequest;
         private HttpResponseMessage _response;
         private HttpStatusCode _innerResponseStatusCode;
         private readonly Fixture _fixture;
@@ -30,13 +31,23 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"the caller wants to Withdraw an apprenticeship application")]
         public void GivenTheCallerWantsToWithdrawAnApprenticeshipApplication()
         {
-            _request = new PostWithdrawApplicationRequest(
+            _withdrawRequest = new PostWithdrawApplicationRequest(
                 new WithdrawRequest
                 {
                     WithdrawalType = WithdrawalType.Employer,
                     AccountLegalEntityId = _fixture.Create<long>(),
                     ULN = _fixture.Create<long>(),
                     ServiceRequest = _fixture.Create<ServiceRequest>()
+                });
+        }
+
+        [Given(@"the caller wants to Reinstate an apprenticeship application")]
+        public void GivenTheCallerWantsToReinstateAnApprenticeshipApplication()
+        {
+            _reinstateRequest = new PostReinstateApplicationRequest(
+                new ReinstateApplicationRequest
+                {
+                    Applications = new[] { new InnerApi.Requests.Application { AccountLegalEntityId = _fixture.Create<long>(), ULN = _fixture.Create<long>() } }
                 });
         }
 
@@ -55,10 +66,31 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
+        [Given(@"the Employer Incentives Api receives the Reinstate request")]
+        public void GivenTheEmployerIncentivesApiShouldReceiveTheReinstateRequest()
+        {
+            _innerResponseStatusCode = HttpStatusCode.Accepted;
+
+            _context.InnerApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/withdrawal-reinstatements")
+                        .UsingPost())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)_innerResponseStatusCode)
+                );
+        }
+
         [When(@"the Outer Api receives the Withdrawal request")]
         public async Task WhenTheOuterApiReceivesTheWithdrawalRequest()
         {
-           _response = await _context.OuterApiClient.PostAsJsonAsync($"withdrawals", _request);
+           _response = await _context.OuterApiClient.PostAsJsonAsync($"withdrawals", _withdrawRequest);
+        }
+
+        [When(@"the Outer Api receives the Reinstate request")]
+        public async Task WhenTheOuterApiReceivesTheReinstateRequest()
+        {
+            _response = await _context.OuterApiClient.PostAsJsonAsync($"withdrawal-reinstatements", _reinstateRequest);
         }
 
         [Then(@"the response of Accepted is returned")]
