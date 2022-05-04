@@ -56,7 +56,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             }
             if (_standardLarsCode != null && _standardLarsCode.Any())
             {
-                url += $"&standardLarsCode={string.Join("&standardLarsCode=", _standardLarsCode)}";
+                url += $"&larsCode={string.Join("&larsCode=", _standardLarsCode)}";
             }
             if (_nationwideOnly.HasValue)
             {
