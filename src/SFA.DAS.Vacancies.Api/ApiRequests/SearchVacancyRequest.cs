@@ -27,10 +27,10 @@ namespace SFA.DAS.Vacancies.Api
         [FromQuery]
         public int? Ukprn { get; set; } = null;
         /// <summary>
-        /// You can supply a maximum of 3 routes to be filtered by, these can be obtained from `GET referencedata/courses/routes`. If there are `StandardLarsCode` values supplied the route filtering will be ignored.
+        /// You can supply a maximum of 2 routes to be filtered by, these can be obtained from `GET referencedata/courses/routes`. If there are `StandardLarsCode` values supplied the route filtering will be ignored.
         /// </summary>
         [FromQuery]
-        [MaxLength(3, ErrorMessage = "Exceeded maximum of 3 routes to be filtered by")]
+        [MaxLength(2, ErrorMessage = "Exceeded maximum of 2 routes to be filtered by")]
         public List<string> Routes { get; set; } = null;
         /// <summary>
         /// Latitude to search from, must be supplied with `Longitude` and `DistanceInMiles`
