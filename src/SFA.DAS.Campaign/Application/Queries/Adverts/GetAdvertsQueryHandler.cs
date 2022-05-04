@@ -57,7 +57,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                
             var skip = 0;
             var take = 15;
-            var total = 0L;
+            
             while (true)
             {
                 var standards = standardLarsCode.Skip(skip).Take(take).ToList();
@@ -73,7 +73,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                     request.Distance, null, null, "DistanceAsc");
 
                 var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
-                total = adverts.TotalFound;
+                
                 apprenticeshipVacancies.AddRange(adverts.ApprenticeshipVacancies.ToList());
                 skip += take;
             }
@@ -87,7 +87,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
             {
                 Location = locationTask.Result,
                 Routes = routesTask.Result.Routes,
-                TotalFound = total,
+                TotalFound = apprenticeshipVacancies.Count,
                 Vacancies = apprenticeshipVacancies.OrderBy(c=>c.Distance).Take(20)
             };
         }

@@ -52,7 +52,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
-            actual.TotalFound.Should().Be(vacanciesResponse.TotalFound);
+            actual.TotalFound.Should().Be(vacanciesResponse.ApprenticeshipVacancies.Count());
             actual.Routes.Should().BeEquivalentTo(getRoutesListResponse.Routes);
             actual.Location.Should().BeEquivalentTo(locationItem);
             
