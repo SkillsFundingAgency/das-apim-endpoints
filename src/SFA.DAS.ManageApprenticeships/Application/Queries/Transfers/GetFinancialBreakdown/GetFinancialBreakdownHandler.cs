@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ManageApprenticeships.Models.Constants;
 using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinancialBreakdown
 {
@@ -24,40 +25,41 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetFinanci
 
         public async Task<GetFinancialBreakdownResult> Handle(GetFinancialBreakdownQuery request, CancellationToken cancellationToken)
         {
-            var breakdownTask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+            var breakdownTask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow));
 
-            var nextYearBreakdowntask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+            var nextYearBreakdowntask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(1)));
 
-            var yearAfterNextYearBreakdowntask = await _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+            var yearAfterNextYearBreakdowntask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(2)));
-            var pledgesTask = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>
+
+            var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>
                                                         (new GetPledgesRequest(request.AccountId));
+
+            await Task.WhenAll(breakdownTask, nextYearBreakdowntask, yearAfterNextYearBreakdowntask, pledgesTask);
+
             return new GetFinancialBreakdownResult
             {
-                Commitments = breakdownTask.Breakdown.Sum(x => x.FundsOut.Commitments),
-                ApprovedPledgeApplications = breakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
-                TransferConnections = breakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections),
-                AcceptedPledgeApplications = breakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
-                PledgeOriginatedCommitments = breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),                
-                FundsIn = breakdownTask.Breakdown.Sum(x => x.FundsIn),
-                ProjectionStartDate = breakdownTask.ProjectionStartDate,
-                NumberOfMonths = breakdownTask.NumberOfMonths,
-                CurrentYearEstimatedCommittedSpend = (breakdownTask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                breakdownTask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
-                breakdownTask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)+ 
-                breakdownTask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
-                NextYearEstimatedCommittedSpend = (nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
-                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
-                nextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
-                YearAfterNextYearEstimatedCommittedSpend = (yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
-                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
-                yearAfterNextYearBreakdowntask.Breakdown.Sum(x => x.FundsOut.TransferConnections)),
-                AmountPledged = pledgesTask.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount)
+                Commitments = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.Commitments),
+                ApprovedPledgeApplications = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications),
+                TransferConnections = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.TransferConnections),
+                AcceptedPledgeApplications = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
+                PledgeOriginatedCommitments = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),                
+                ProjectionStartDate = breakdownTask.Result.ProjectionStartDate,
+                CurrentYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(breakdownTask.Result.Breakdown),
+                NextYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(nextYearBreakdowntask.Result.Breakdown),
+                YearAfterNextYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(yearAfterNextYearBreakdowntask.Result.Breakdown),
+                AmountPledged = pledgesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount)
             };
+        }
+
+        private decimal CalculateEstimatedCommittedSpend(List<GetTransferFinancialBreakdownResponse.BreakdownDetails> breakdown)
+        {
+            return breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                   breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
+                   breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
+                   breakdown.Sum(x => x.FundsOut.TransferConnections);
         }
     }
 }

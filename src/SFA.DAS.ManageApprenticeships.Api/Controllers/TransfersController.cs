@@ -66,11 +66,9 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                     ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
                     PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
                     Commitments = response.Commitments,
-                    ProjectionStartDate = response.ProjectionStartDate,
-                    FundsIn = response.FundsIn,
+                    ProjectionStartDate = response.ProjectionStartDate,                    
                     CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend,
-                    NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,
-                    NumberOfMonths = response.NumberOfMonths,
+                    NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,                    
                     YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend,
                     AmountPledged = response.AmountPledged
                 };

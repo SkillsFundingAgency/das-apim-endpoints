@@ -37,8 +37,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             };
 
             var breakdownDetails = new GetTransferFinancialBreakdownResponse.BreakdownDetails()
-            {
-                FundsIn = 200,
+            {                
                 FundsOut = fundOut
             };
 
@@ -57,8 +56,7 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
             var getTransferFinancialBreakdownResponse = new GetTransferFinancialBreakdownResponse()
             {
                 Breakdown = breakDownList,
-                AccountId = accountId,
-                NumberOfMonths = 12,
+                AccountId = accountId,                
                 AmountPledged = 20,
                 ProjectionStartDate = DateTime.Now
             };
@@ -73,15 +71,13 @@ namespace SFA.DAS.ManageApprenticeships.UnitTests.Application.Queries.Transfers.
 
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.NumberOfMonths, results.NumberOfMonths);
             Assert.AreEqual(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), results.AmountPledged);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.ProjectionStartDate, results.ProjectionStartDate);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), results.TransferConnections);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), results.AcceptedPledgeApplications);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), results.ApprovedPledgeApplications);
             Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), results.PledgeOriginatedCommitments);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), results.Commitments);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsIn), results.FundsIn);
+            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), results.Commitments);            
             Assert.AreEqual((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                 getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) 
                 + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
