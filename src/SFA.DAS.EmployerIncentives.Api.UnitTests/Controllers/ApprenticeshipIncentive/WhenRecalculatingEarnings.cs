@@ -12,9 +12,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetApprenticeshipIncentives;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ApprenticeshipIncentive
 {
@@ -38,6 +39,26 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ApprenticeshipInc
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.NoContent);
+        }
+
+        [Test]
+        public async Task Then_a_bad_request_response_is_returned_if_the_inner_api_call_is_not_successful()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var mediator = new Mock<IMediator>();
+            var exception = new HttpRequestContentException("API error", HttpStatusCode.BadRequest, "Invalid request");
+            mediator.Setup(x => x.Send(It.IsAny<RecalculateEarningsCommand>(), It.IsAny<CancellationToken>())).Throws(exception);
+            
+            var controller = new ApprenticeshipIncentiveController(mediator.Object);
+            var request = fixture.Create<RecalculateEarningsRequest>();
+
+            // Act
+            var result = await controller.RecalculateEarnings(request) as BadRequestObjectResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.Should().Be(exception.ErrorContent);
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -47,7 +49,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             var postRequest = new PostRecalculateEarningsRequest(recalculateEarningsRequest);
 
-            await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest);
+            var response = await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest);
+
+            if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
+
+            throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
+
         }
     }
 }

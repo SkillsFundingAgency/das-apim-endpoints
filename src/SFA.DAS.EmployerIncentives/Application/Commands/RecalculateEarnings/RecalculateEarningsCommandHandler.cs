@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings
         }
 
         public async Task<Unit> Handle(RecalculateEarningsCommand request, CancellationToken cancellationToken)
-        {
+        {            
             await _service.RecalculateEarnings(request.RecalculateEarningsRequest);
 
             return Unit.Value;

@@ -6,6 +6,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApprenticeshipIncentives;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -38,9 +39,16 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/earningsRecalculations")]
         public async Task<IActionResult> RecalculateEarnings([FromBody] RecalculateEarningsRequest request) 
         {
-            await _mediator.Send(new RecalculateEarningsCommand(request));
+            try
+            {
+                await _mediator.Send(new RecalculateEarningsCommand(request));
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (HttpRequestContentException requestException) 
+            {
+                return BadRequest(requestException.ErrorContent);
+            }
         }
     }
 }
