@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 AllJobRoles = allJobRolesTask.Result,
                 AllLevels = allLevelsTask.Result,
                 AllSectors = allSectorsTask.Result,
-                Amount = application.Amount,
+                Amount = application.TotalAmount,
                 TotalAmount = application.TotalAmount,
                 EmployerAccountName = application.EmployerAccountName,
                 PledgeEmployerAccountName = pledgeTask.Result.DasAccountName,
