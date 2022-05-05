@@ -73,6 +73,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
                 Assert.AreEqual(expected.EndDate , apprenticeship.EndDate);
                 Assert.AreEqual(expected.Cost, apprenticeship.Cost);
                 Assert.AreEqual(expected.PledgeApplicationId , apprenticeship.PledgeApplicationId);
+                Assert.AreEqual(expected.HasHadDataLockSuccess, apprenticeship.HasHadDataLockSuccess);
                 Assert.AreEqual(_courseList.First().Level, apprenticeship.CourseLevel);
                 i++;
             }
