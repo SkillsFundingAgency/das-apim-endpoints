@@ -9,12 +9,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetTransferFinancialBreakdownRequest
     {
         [Test, AutoData]
-        public void And_When_AccountId_Supplied_Then_The_GetUrl_Is_Correctly_Built(long accountId)
+        public void And_When_AccountId_Supplied_Then_The_GetUrl_Is_Correctly_Built(long accountId, DateTime startDate)
         {
-            var actual = new GetTransferFinancialBreakdownRequest(accountId: accountId);
+            var actual = new GetTransferFinancialBreakdownRequest(accountId: accountId, startDate: startDate);
 
             Assert.AreEqual(
-                $"api/accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.UtcNow.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}",
+                $"api/accounts/{accountId}/accountprojection/detail?numberOfMonths=12&startDate={startDate.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}",
                 actual.GetUrl);
         }
     }
