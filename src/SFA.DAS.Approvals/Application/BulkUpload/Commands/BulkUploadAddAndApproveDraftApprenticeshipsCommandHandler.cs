@@ -63,6 +63,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             }).ToList();
 
             var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
+            reservationResult.EnsureSuccessStatusCode();
             return reservationResult;
         }
     }
