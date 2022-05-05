@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfterAcceptance
 {
-    public class WithdrawApplicationAfterAcceptanceCommandHandler : IRequestHandler<WithdrawApplicationAfterAcceptanceCommand, WithdrawApplicationAfterAcceptanceCommandResult>
+    public class WithdrawApplicationAfterAcceptanceCommandHandler : IRequestHandler<WithdrawApplicationAfterAcceptanceCommand>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
 
@@ -15,21 +15,19 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationA
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<WithdrawApplicationAfterAcceptanceCommandResult> Handle(WithdrawApplicationAfterAcceptanceCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(WithdrawApplicationAfterAcceptanceCommand request, CancellationToken cancellationToken)
         {
-            var apiRequest = new WithdrawApplicationAfterAcceptanceRequest(request.AccountId, request.ApplicationId, new WithdrawApplicationAfterAcceptanceRequestData
+            var apiRequest = new WithdrawApplicationRequest(request.ApplicationId, request.AccountId, new WithdrawApplicationRequestData
             {
+                ApplicationId = request.ApplicationId,
+                AccountId = request.AccountId,
                 UserId = request.UserId,
                 UserDisplayName = request.UserDisplayName
             });
 
-            var response = await _levyTransferMatchingService.WithdrawApplicationAfterAcceptance(apiRequest, cancellationToken);
+            await _levyTransferMatchingService.WithdrawApplication(apiRequest, cancellationToken);
 
-            return new WithdrawApplicationAfterAcceptanceCommandResult
-            {
-                StatusCode = response.StatusCode,
-                ErrorContent = response.ErrorContent
-            };
+            return Unit.Value;
         }
     }
 }

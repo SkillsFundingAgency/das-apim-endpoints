@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfterAcceptance;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
@@ -18,24 +19,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
         [Test, MoqAutoData]
         public async Task And_Result_Exists_Then_Returns_Ok_And_Result(
            WithdrawApplicationAfterAcceptanceRequest request,
-           long accountId,
+           int accountId,
            int applicationId,
-           WithdrawApplicationAfterAcceptanceCommandResult result,
            [Frozen] Mock<IMediator> mockMediator,
            [Greedy] ApplicationsController applicationController)
         {
-            result.StatusCode = System.Net.HttpStatusCode.OK;
-
-            mockMediator
-                .Setup(x => x.Send(It.Is<WithdrawApplicationAfterAcceptanceCommand>(y => y.UserId == request.UserId &&
-                                                                                        y.UserDisplayName == y.UserDisplayName &&
-                                                                                        y.AccountId == accountId &&
-                                                                                        y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
-                                                                                    .ReturnsAsync(result);
-
             var controllerResult = await applicationController.WithdrawApplicationAfterAcceptance(request, accountId, applicationId);
             var okObjectResult = controllerResult as OkResult;
 
+            mockMediator.Verify(x => 
+                x.Send(It.Is<WithdrawApplicationAfterAcceptanceCommand>(x => x.AccountId == accountId && 
+                x.ApplicationId == applicationId &&
+                x.UserId == request.UserId &&
+                x.UserDisplayName == request.UserDisplayName), It.IsAny<CancellationToken>()));
             Assert.IsNotNull(controllerResult);
             Assert.IsNotNull(okObjectResult);
         }

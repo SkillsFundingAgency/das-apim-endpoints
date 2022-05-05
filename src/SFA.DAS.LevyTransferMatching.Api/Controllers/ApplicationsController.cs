@@ -212,7 +212,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [Route("/accounts/{accountId}/applications/{applicationId}/withdrawal-confirmation")]
         public async Task<IActionResult> WithdrawApplicationAfterAcceptance([FromBody] WithdrawApplicationAfterAcceptanceRequest request, long accountId, int applicationId)
@@ -227,10 +226,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     UserDisplayName = request.UserDisplayName
                 });
 
-                if (result.StatusCode == HttpStatusCode.OK)
-                    return Ok();
-
-                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                return Ok();
             }
             catch (Exception e)
             {
