@@ -31,8 +31,23 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// GET list of vacancies
         /// </summary>
         /// <remarks>
-        /// Returns list of Vacancies based on your subscription. If `FilterBySubscription` is `true` then for employer subscriptions this will automatically filter by your account.
-        /// If `FilterBySubscription` is `true` then for providers it will automatically filter by UKPRN. If you provide a `AccountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
+        /// ### Returns list of Vacancies based on your subscription. ###
+        /// - If `FilterBySubscription` is `true` then for employer subscriptions this will automatically filter by your account.
+        /// - If `FilterBySubscription` is `true` then for providers it will automatically filter by UKPRN.
+        /// - If you provide a `AccountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
+        /// ### Examples ###
+        /// Get all of a subscription's vacancies sorted by age descending (oldest first):
+        /// ```
+        /// /vacancy?Sort=AgeDesc&amp;FilterBySubscription=true
+        /// ```
+        /// Get all vacancies within a 20 mile radius of Coventry (52.408056, -1.510556), sorted by distance (closest first) for standards 123 and 345:
+        /// ```
+        /// /vacancy?Lat=52.408056&amp;Lon=-1.510556&amp;Sort=DistanceAsc&amp;DistanceInMiles=20&amp;StandardLarsCode=123&amp;StandardLarsCode=345
+        /// ```
+        /// Get all nationwide vacancies for route 'example' posted within the last 30 days, page 5, size 10:
+        /// ```
+        /// /vacancy?PageNumber=5&PageSize=10&Routes=example&NationWideOnly=true&PostedInLastNumberOfDays=30
+        /// ```
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
