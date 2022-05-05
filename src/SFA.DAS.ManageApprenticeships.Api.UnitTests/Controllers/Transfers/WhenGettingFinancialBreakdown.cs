@@ -15,7 +15,7 @@ namespace SFA.DAS.ManageApprenticeships.Api.UnitTests.Controllers.Transfers
     public class WhenGettingFinancialBreakdown
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Index_From_Mediator(
+        public async Task Then_Gets_Financial_Breakdown_From_Mediator(
            long accountId,
            GetFinancialBreakdownResult mediatorResult,
            [Frozen] Mock<IMediator> mockMediator,
