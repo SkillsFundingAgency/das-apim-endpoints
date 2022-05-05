@@ -6,12 +6,12 @@ Feature: ChangeApproval
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email | Delivery Model   |
-	| 1  | Alexa      | Armstrong | 2000-01-01    | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   | Regular          |
-	| 2  | Zachary    | Zimmerman | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | PortableFlexiJob |
-	| 3  | Gary       | Oldman    | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | Regular          |
-	| 4  | Zachary    | Zimmerman | 2004-04-19    | Zoology                 | 9002        | 1002       | 8002                 | Google        |       | Regular          |
-	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    | 1002       | 8002                 | Google        | d@d   | Regular          |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email | Delivery Model   | Employment End Date |
+	| 1  | Alexa      | Armstrong | 2000-01-01    | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   | Regular          |                     |
+	| 2  | Zachary    | Zimmerman | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | PortableFlexiJob | 2022-02-09          |
+	| 3  | Gary       | Oldman    | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | Regular          |                     |
+	| 4  | Zachary    | Zimmerman | 2004-04-19    | Zoology                 | 9002        | 1002       | 8002                 | Google        |       | Regular          |                     |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    | 1002       | 8002                 | Google        | d@d   | Regular          |                     |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -33,6 +33,7 @@ Scenario: Apprenticeship update is recieved and is valid
 	And the Training Provider should be 'My Only Name'
 	And the course should be `Artificial Intelligence` level 1 courseDuration 12
 	And the delivery model should be "Regular"
+	And the employment end date should be ""
 
 Scenario: Apprenticeship update is recieved and is valid and there is a trading name for provider
 	When the following apprenticeship update is posted
@@ -46,6 +47,7 @@ Scenario: Apprenticeship update is recieved and is valid and there is a trading 
 	And the apprentice name should be 'Zachary' 'Zimmerman'
 	And the apprentice date of Birth should be '2000-12-28'
 	And the delivery model should be "PortableFlexiJob"
+	And the employment end date should be "2022-02-09"
 
 Scenario: Old apprenticeship update is recieved
 	When the following apprenticeship update is posted
