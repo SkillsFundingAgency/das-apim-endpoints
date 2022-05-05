@@ -6,11 +6,14 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetTransferFinancialBreakdownRequest : IGetApiRequest
     {
-        public long AccountId { get; }        
-        public GetTransferFinancialBreakdownRequest(long accountId)
+        private DateTime _startDate;
+        public long AccountId { get; }
+        
+        public GetTransferFinancialBreakdownRequest(long accountId, DateTime startDate)
         {
             AccountId = accountId;
+            _startDate = startDate;
         }
-        public string GetUrl => $"api/accounts/{AccountId}/accountprojection/detail?numberOfMonths=12&startDate={DateTime.UtcNow.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}";
+        public string GetUrl => $"api/accounts/{AccountId}/accountprojection/detail?numberOfMonths=12&startDate={_startDate.StartOfAprilOfFinancialYear().ToString("yyyy-MM-dd")}";
     }
 }

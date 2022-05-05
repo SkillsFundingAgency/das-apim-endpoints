@@ -8,15 +8,13 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     public class GetTransferFinancialBreakdownResponse
     {
         public long AccountId { get; set; }
-        public DateTime ProjectionStartDate { get; set; }
-        public int NumberOfMonths { get; set; }
+        public DateTime ProjectionStartDate { get; set; }        
         public decimal AmountPledged { get; set; }
         public List<BreakdownDetails> Breakdown { get; set; }
         public class BreakdownDetails
         {
             public int Month { get; set; }
-            public int Year { get; set; }
-            public decimal FundsIn { get; set; }
+            public int Year { get; set; }            
             public FundsDetails FundsOut { get; set; }
         }
         public class FundsDetails
