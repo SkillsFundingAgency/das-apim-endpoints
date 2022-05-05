@@ -46,7 +46,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// ```
         /// Get all nationwide vacancies for route 'example' posted within the last 30 days, page 5, size 10:
         /// ```
-        /// /vacancy?PageNumber=5&PageSize=10&Routes=example&NationWideOnly=true&PostedInLastNumberOfDays=30
+        /// /vacancy?PageNumber=5&amp;PageSize=10&amp;Routes=example&amp;NationWideOnly=true&amp;PostedInLastNumberOfDays=30
         /// ```
         /// </remarks>
         /// <param name="request"></param>
