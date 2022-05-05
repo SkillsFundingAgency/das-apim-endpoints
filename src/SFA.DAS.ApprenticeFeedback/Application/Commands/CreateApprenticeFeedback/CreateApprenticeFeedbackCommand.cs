@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeFeedback.Domain;
 using System;
 using System.Collections.Generic;
+using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedback
 {

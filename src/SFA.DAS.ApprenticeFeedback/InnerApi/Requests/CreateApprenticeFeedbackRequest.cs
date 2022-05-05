@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedback;
-using SFA.DAS.ApprenticeFeedback.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
+using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
