@@ -13,6 +13,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 {
     public class CourseService : ICourseService
     {
+        private const int CourseCacheExpiryInHours = 4;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ICacheStorageService _cacheStorageService;
 
@@ -34,7 +35,25 @@ namespace SFA.DAS.SharedOuterApi.Services
 
             return response;
         }
-        
+
+        public async Task<T> GetActiveStandards<T>(string cacheItemName)
+        {
+            var cachedCourses =
+                await _cacheStorageService.RetrieveFromCache<T>(
+                    cacheItemName);
+
+            if (cachedCourses != null)
+            {
+                return cachedCourses;
+            }
+
+            var apiCourses = await _coursesApiClient.Get<T>(new GetActiveStandardsListRequest());
+
+            await _cacheStorageService.SaveToCache(cacheItemName, apiCourses, CourseCacheExpiryInHours);
+
+            return apiCourses;
+        }
+
         public List<string> MapRoutesToCategories(IReadOnlyList<string> routes)
         {
 
@@ -202,7 +221,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                 });
             }
             return categories.Distinct().ToList(); 
-        }   
+        }
     }
     
     public enum VacancyCategories

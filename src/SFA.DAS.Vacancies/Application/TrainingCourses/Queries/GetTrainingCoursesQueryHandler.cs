@@ -1,25 +1,22 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Vacancies.Interfaces;
+using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Application.TrainingCourses.Queries
 {
     public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
     {
-        private readonly IStandardsService _standardsService;
+        private readonly ICourseService _standardsService;
 
-        public GetTrainingCoursesQueryHandler (IStandardsService standardsService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        public GetTrainingCoursesQueryHandler (ICourseService standardsService)
         {
-            
             _standardsService = standardsService;
-            
         }
         public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _standardsService.GetStandards();
+            var courses = await _standardsService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             return new GetTrainingCoursesQueryResult
             {
