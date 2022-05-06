@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create().WithPath($"/earningsRecalculations")
-                        .UsingPut())
+                        .UsingPost())
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.NoContent)
