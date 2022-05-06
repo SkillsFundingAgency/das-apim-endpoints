@@ -39,6 +39,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 options.LowercaseQueryStrings = true;
             }).AddMvc().AddNewtonsoftJson();
 
+            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeFeedbackOuterApi", Version = "v1" });
