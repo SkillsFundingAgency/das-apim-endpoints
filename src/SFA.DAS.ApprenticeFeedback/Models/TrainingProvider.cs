@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.Models
