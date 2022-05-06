@@ -8,5 +8,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     {
         List<string> MapRoutesToCategories(IReadOnlyList<string> routes);
         Task<GetRoutesListResponse> GetRoutes();
+        Task<T> GetActiveStandards<T>(string cacheItemName);
     }
 }
