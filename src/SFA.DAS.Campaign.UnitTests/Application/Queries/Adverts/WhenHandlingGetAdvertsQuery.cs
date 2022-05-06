@@ -22,13 +22,14 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
     public class WhenHandlingGetAdvertsQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Route_Is_Mapped_To_Categories_And_Postcode_Searched_And_Adverts_Returned(
+        public async Task Then_The_Routes_Are_Filtered_And_Postcode_Searched_And_Adverts_Returned(
             string findAnApprenticeshipBaseUrl,
             GetAdvertsQuery query,
             List<string> categories,
             LocationItem locationItem,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse getRoutesListResponse,
+            GetStandardsListResponse standards,
             [Frozen] Mock<IOptions<CampaignConfiguration>> configuration,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -36,22 +37,22 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             GetAdvertsQueryHandler handler)
         {
             //Arrange
+            query.Route = standards.Standards.First().Route.ToLower();
             configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
-            var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, null, null,
-                locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, categories, null,
-                "DistanceAsc");
-            courseService.Setup(x => x.MapRoutesToCategories(It.Is<List<string>>(c=>c.Contains(query.Route)))).Returns(categories);
+            var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, new List<int>{ standards.Standards.First().LarsCode}, null,
+                locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, null, null, "DistanceAsc");
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))
                 .ReturnsAsync(locationItem);
             faaApiClient
                 .Setup(x => x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedAdvertUrl.GetUrl)))).ReturnsAsync(vacanciesResponse);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+            courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(standards);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
-            actual.TotalFound.Should().Be(vacanciesResponse.TotalFound);
+            actual.TotalFound.Should().Be(vacanciesResponse.ApprenticeshipVacancies.Count());
             actual.Routes.Should().BeEquivalentTo(getRoutesListResponse.Routes);
             actual.Location.Should().BeEquivalentTo(locationItem);
             
