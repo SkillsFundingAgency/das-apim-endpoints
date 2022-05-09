@@ -4,6 +4,7 @@ using SFA.DAS.EmployerIncentives.Application.Commands.WithdrawApplication;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.Application.Commands.ReinstateApplication;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -22,6 +23,15 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest request)
         {
             await _mediator.Send(new WithdrawCommand(request), CancellationToken.None);
+
+            return Accepted();
+        }
+
+        [HttpPost]
+        [Route("/withdrawal-reinstatements")]
+        public async Task<IActionResult> ReinstateApplication([FromBody] ReinstateApplicationRequest request)
+        {
+            await _mediator.Send(new ReinstateApplicationCommand(request), CancellationToken.None);
 
             return Accepted();
         }

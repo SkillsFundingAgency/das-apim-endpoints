@@ -22,10 +22,12 @@ namespace SFA.DAS.Forecasting.Api.Models
             public string LastName { get; set; }
             public string CourseCode { get; set; }
             public string CourseName { get; set; }
+            public int CourseLevel { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
             public decimal? Cost { get; set; }
             public int? PledgeApplicationId { get; set; }
+            public bool HasHadDataLockSuccess { get; set; }
         }
 
         public static implicit operator GetApprenticeshipsResponse(GetApprenticeshipsQueryResult source)
@@ -44,10 +46,12 @@ namespace SFA.DAS.Forecasting.Api.Models
                     LastName = a.LastName,
                     CourseCode = a.CourseCode,
                     CourseName = a.CourseName,
+                    CourseLevel = a.CourseLevel,
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
                     Cost = a.Cost,
-                    PledgeApplicationId = a.PledgeApplicationId
+                    PledgeApplicationId = a.PledgeApplicationId,
+                    HasHadDataLockSuccess = a.HasHadDataLockSuccess
                 })
             };
         }

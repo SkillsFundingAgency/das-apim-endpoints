@@ -10,6 +10,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string WageAdditionalInformation { get; set; }
         public WageType WageType { get; set; }
         public string WorkingWeekDescription { get; set; }
+        public WageUnit WageUnit { get; set; }
 
         public static implicit operator GetVacancyWageItem(GetVacanciesListItem source)
         {
@@ -20,8 +21,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 WageAdditionalInformation = source.WageText,
                 WorkingWeekDescription = source.WorkingWeek,
                 WageAmountLowerBound = source.WageAmountLowerBound,
-                WageAmountUpperBound = source.WageAmountUpperBound
-
+                WageAmountUpperBound = source.WageAmountUpperBound,
+                WageUnit = (WageUnit)source.WageUnit
             };
         }
     }

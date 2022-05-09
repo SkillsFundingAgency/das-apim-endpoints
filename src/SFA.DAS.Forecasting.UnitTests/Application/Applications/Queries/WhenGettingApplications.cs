@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -34,17 +33,13 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
             _query = _fixture.Create<GetApplicationsQuery>();
         }
 
-        [Test]
-        public async Task Then_Applications_Are_Retrieved()
+        [TestCase("Approved")]
+        [TestCase("Accepted")]
+        public async Task Then_Applications_Are_Retrieved(string status)
         {
+            _apiResponse.Applications.ToList().ForEach(a => a.Status = status);
+
             var result = await _handler.Handle(_query, CancellationToken.None);
-
-            Assert.AreEqual(_apiResponse.Page, result.Page);
-            Assert.AreEqual(_apiResponse.PageSize, result.PageSize);
-            Assert.AreEqual(_apiResponse.TotalPages, result.TotalPages);
-            Assert.AreEqual(_apiResponse.TotalApplications, result.TotalApplications);
-
-
             Assert.AreEqual(_apiResponse.Applications.Count(), result.Applications.Count());
 
             var i = 0;
@@ -64,18 +59,17 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
                 Assert.AreEqual(expected.StartDate, application.StartDate);
                 Assert.AreEqual(expected.NumberOfApprentices, application.NumberOfApprentices);
                 Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
+                Assert.AreEqual(expected.Status, application.Status);
                 i++;
             }
         }
 
         [Test]
-        public async Task Then_Paging_Options_Are_Honoured()
+        public async Task Then_Applications__Not_Approved_Or_Accepted_Are_Not_Retrieved()
         {
-            await _handler.Handle(_query, CancellationToken.None);
-
-            _apiClient.Verify(x =>
-                x.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
-                    r.GetUrl == $"applications?page={_query.Page}&pageSize={_query.PageSize}")));
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(0, result.Applications.Count());
+            
         }
     }
 }
