@@ -5,6 +5,9 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {
@@ -40,6 +43,18 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             var response = await _client.GetAll<ApprenticeshipIncentiveDto>(new GetApprenticeshipIncentivesRequest(accountId, accountLegalEntityId));
 
             return response.ToArray();
+        }
+
+        public async Task RecalculateEarnings(RecalculateEarningsRequest recalculateEarningsRequest)
+        {
+            var postRequest = new PostRecalculateEarningsRequest(recalculateEarningsRequest);
+
+            var response = await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest);
+
+            if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
+
+            throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
+
         }
     }
 }
