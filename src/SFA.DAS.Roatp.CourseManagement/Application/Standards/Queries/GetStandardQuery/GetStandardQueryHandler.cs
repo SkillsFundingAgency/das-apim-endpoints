@@ -43,7 +43,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStanda
                     Level = standard.Level,
                     StandardUId = standard.StandardUId,
                     Title = standard.Title,
-                    Version = standard.Version
+                    Version = standard.Version,
+                    Route = standard.Route
                 };
 
                 return result;
