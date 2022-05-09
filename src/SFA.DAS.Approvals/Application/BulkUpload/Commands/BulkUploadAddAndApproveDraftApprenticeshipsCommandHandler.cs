@@ -35,8 +35,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadAddAndApproveDraftApprenticeships = command.BulkUploadAddAndApproveDraftApprenticeships,
                 ProviderId = command.ProviderId,
-                UserInfo = command.UserInfo,
-                BulkReservationValidationResults = new BulkReservationValidationResults { ValidationErrors = reservationResult.Body.ValidationErrors }
+                UserInfo = command.UserInfo
             };
 
             var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
