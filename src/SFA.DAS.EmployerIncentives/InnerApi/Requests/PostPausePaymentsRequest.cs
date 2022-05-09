@@ -25,10 +25,4 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         public Application[] Applications { get; set; }
         public ServiceRequest ServiceRequest { get; set; }       
     }
-
-    public class Application
-    {
-        public long AccountLegalEntityId { get; set; }
-        public long ULN { get; set; }
-    }
 }
