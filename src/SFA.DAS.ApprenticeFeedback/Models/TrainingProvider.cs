@@ -5,6 +5,7 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class TrainingProvider
     {
+        public Guid ApprenticeFeedbackTargetId { get; set; }
         public string ProviderName { get; set; }
         public long Ukprn { get; set; }
         public DateTime? LastFeedbackSubmittedDate { get; set; }
