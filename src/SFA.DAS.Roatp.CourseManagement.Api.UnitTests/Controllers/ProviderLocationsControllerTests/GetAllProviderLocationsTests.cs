@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries;
+using SFA.DAS.Roatp.CourseManagement.Application.Locations.Queries;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;

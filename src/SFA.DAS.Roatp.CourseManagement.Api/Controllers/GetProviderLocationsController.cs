@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries;
+using SFA.DAS.Roatp.CourseManagement.Application.Locations.Queries;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
