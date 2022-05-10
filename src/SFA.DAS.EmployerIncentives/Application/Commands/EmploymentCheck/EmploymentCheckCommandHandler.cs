@@ -8,16 +8,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck
 {
     public class EmploymentCheckCommandCommandHandler : IRequestHandler<EmploymentCheckCommand>
     {
-        private readonly IEmploymentCheckService _employmentCheckService;
+        private readonly IIncentivesEmploymentCheckService _incentivesEmploymentCheckService;
 
-        public EmploymentCheckCommandCommandHandler(IEmploymentCheckService employmentCheckService)
+        public EmploymentCheckCommandCommandHandler(IIncentivesEmploymentCheckService incentivesEmploymentCheckService)
         {
-            _employmentCheckService = employmentCheckService;
+            _incentivesEmploymentCheckService = incentivesEmploymentCheckService;
         }
 
         public async Task<Unit> Handle(EmploymentCheckCommand request, CancellationToken cancellationToken)
         {
-            await _employmentCheckService.Update(new UpdateRequest 
+            await _incentivesEmploymentCheckService.Update(new UpdateRequest 
             {
                  CorrelationId = request.CorrelationId,
                  Result = request.Result,

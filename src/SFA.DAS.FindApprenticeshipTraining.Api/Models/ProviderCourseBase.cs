@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         protected GetProviderFeedbackResponse ProviderFeedbackResponse(
             IEnumerable<GetFeedbackRatingItem> getFeedbackRatingItems,
-            IEnumerable<GetFeedbackAttributeItem> getFeedbackAttributeItems)
+            IEnumerable<GetFeedbackAttributeItem> feedbackAttributeItems)
         {
             if (getFeedbackRatingItems == null)
             {
@@ -71,13 +71,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var ratingAverage = Math.Round((double)ratingScore / totalRatings,1 );
 
             var ratingResponse = GetOverallRatingResponse(ratingAverage);
-            
+
+            var feedbackAttrItems = feedbackAttributeItems
+                .Where(c => c.Strength + c.Weakness !=0)
+                .Select(c => new FeedbackAttributeDetail
+                {
+                    AttributeName = c.AttributeName,
+                    Strength = c.Strength,
+                    Weakness = c.Weakness
+                }).ToList();
+
             return new GetProviderFeedbackResponse
             {
                 TotalFeedbackRating = ratingResponse,
                 TotalEmployerResponses = totalRatings,
-                FeedbackDetail = feedbackRatingItems.Select(c=>(GetProviderFeedbackItem)c).ToList(),
-                FeedbackAttributes = new GetProviderFeedbackAttributes().Build(getFeedbackAttributeItems.Select(c=>(GetProviderFeedbackAttributeItem)c).ToList())
+                FeedbackDetail = feedbackRatingItems.Select(c => (GetProviderFeedbackItem)c).ToList(),
+                FeedbackAttributes = feedbackAttrItems,
             };
         }
         

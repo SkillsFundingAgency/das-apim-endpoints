@@ -12,7 +12,8 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Bindings
             MockServers.AccountsApi?.Dispose();
             MockServers.CommitmentsV2InnerApi?.Dispose();
             MockServers.FinanceApi?.Dispose();
-            
+            MockServers.EmploymentCheckApi?.Dispose();
+
             OuterApi.Factory?.Dispose();
             OuterApi.Client?.Dispose();
 

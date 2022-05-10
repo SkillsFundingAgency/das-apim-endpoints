@@ -10,6 +10,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
         public static MockApi AccountsApi { get; set; }
         public static MockApi CommitmentsV2InnerApi { get; set; }
         public static MockApi FinanceApi { get; set; }
+        public static MockApi EmploymentCheckApi { get; set; }
     }
 
 
@@ -54,6 +55,16 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
             }
         }
 
+        public MockApi EmploymentCheckApi
+        {
+            get => MockServers.EmploymentCheckApi;
+            set
+            {
+                MockServers.EmploymentCheckApi = value;
+                CleanUpOuterApi();
+            }
+        }
+
         public HttpClient OuterApiClient { get; set; }
 
         private bool _isDisposed;
@@ -74,6 +85,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests
                 CommitmentsV2InnerApi?.Reset();
                 FinanceApi?.Reset();
                 AccountsApi?.Reset();
+                EmploymentCheckApi?.Reset();
             }
 
             _isDisposed = true;
