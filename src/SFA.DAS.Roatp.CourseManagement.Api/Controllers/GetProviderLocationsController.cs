@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
     [ApiController]
-    public class LocationsController : ControllerBase
+    public class GetProviderLocationsController : ControllerBase
     {
-        private readonly ILogger<LocationsController> _logger;
+        private readonly ILogger<GetProviderLocationsController> _logger;
         private readonly IMediator _mediator;
 
-        public LocationsController(ILogger<LocationsController> logger, IMediator mediator)
+        public GetProviderLocationsController(ILogger<GetProviderLocationsController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -20,11 +20,17 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/locations")]
-        public async Task<IActionResult> GetAllLocations([FromRoute] int ukprn)
+        public async Task<IActionResult> GetAllProviderLocations([FromRoute] int ukprn)
         {
             _logger.LogInformation("Request received for all locations for ukprn: {ukprn}", ukprn);
             var query = new GetAllProviderLocationsQuery(ukprn);
             var result = await _mediator.Send(query);
+            if (result.ProviderLocations == null)
+            {
+                _logger.LogInformation("Invalid ukprn: {ukprn}", ukprn);
+                return BadRequest();
+            }
+            _logger.LogInformation($"Found {result.ProviderLocations.Count} locations for ukprn: {ukprn}");
             return Ok(result.ProviderLocations);
         }
     }
