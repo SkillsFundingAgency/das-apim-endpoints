@@ -121,7 +121,6 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
                 var target = feedbackApiResponse.Single(s => s.Id == data.ApprenticeFeedbackTargetId);
 
                 target.Should().NotBeNull();
-                data.ActiveApprenticeshipsCount.Should().Be(99);
                 data.Learner.Should().BeEquivalentTo(new
                 {
                     learnerResponse.Ukprn,
