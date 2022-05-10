@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -12,12 +11,10 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries
     public class GetAllProviderLocationsQueryHandler : IRequestHandler<GetAllProviderLocationsQuery, GetAllProviderLocationsQueryResult>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
-        private readonly ILogger<GetAllProviderLocationsQueryHandler> _logger;
 
-        public GetAllProviderLocationsQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ILogger<GetAllProviderLocationsQueryHandler> logger)
+        public GetAllProviderLocationsQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient)
         {
             _courseManagementApiClient = courseManagementApiClient;
-            _logger = logger;
         }
 
         public async Task<GetAllProviderLocationsQueryResult> Handle(GetAllProviderLocationsQuery request, CancellationToken cancellationToken)
