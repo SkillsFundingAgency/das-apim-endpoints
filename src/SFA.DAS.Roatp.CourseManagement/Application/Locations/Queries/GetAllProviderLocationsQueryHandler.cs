@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries
+namespace SFA.DAS.Roatp.CourseManagement.Application.Locations.Queries
 {
     public class GetAllProviderLocationsQueryHandler : IRequestHandler<GetAllProviderLocationsQuery, GetAllProviderLocationsQueryResult>
     {

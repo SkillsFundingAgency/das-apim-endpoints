@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries
+namespace SFA.DAS.Roatp.CourseManagement.Application.Locations.Queries
 {
     public class GetAllProviderLocationsQuery : IGetApiRequest, IRequest<GetAllProviderLocationsQueryResult>
     {

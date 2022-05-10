@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Locations.Queries;
+using SFA.DAS.Roatp.CourseManagement.Application.Locations.Queries;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
