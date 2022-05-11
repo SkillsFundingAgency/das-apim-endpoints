@@ -88,8 +88,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                     new UpdateApprenticeFeedbackTargetRequestData
                     {
                         ApprenticeFeedbackTargetId = aggregate.ApprenticeFeedbackTargetId,
-                        // Hard Coded until we know what we're doing with this, hopefully it can be deleted
-                        ActiveApprenticeshipsCount = 99,
                         Learner = (LearnerData)aggregate.Learner,
                     });
 

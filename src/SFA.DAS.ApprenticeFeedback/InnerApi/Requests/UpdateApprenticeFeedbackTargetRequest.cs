@@ -19,7 +19,6 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
     public class UpdateApprenticeFeedbackTargetRequestData
     {
         public Guid ApprenticeFeedbackTargetId { get; internal set; }
-        public int ActiveApprenticeshipsCount { get; set; }
         public LearnerData Learner { get; set; }
     }
 
