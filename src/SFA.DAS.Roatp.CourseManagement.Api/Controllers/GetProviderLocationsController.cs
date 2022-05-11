@@ -19,7 +19,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("providers/{ukprn}/locations")]
+        [Route("providers/{ukprn}/ProviderLocations")]
         public async Task<IActionResult> GetAllProviderLocations([FromRoute] int ukprn)
         {
             _logger.LogInformation("Request received for all locations for ukprn: {ukprn}", ukprn);
