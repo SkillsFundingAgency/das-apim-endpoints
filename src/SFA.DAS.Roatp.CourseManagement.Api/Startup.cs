@@ -13,6 +13,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.CourseManagement.Api.AppStart;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
 using SFA.DAS.SharedOuterApi.AppStart;
 
@@ -46,6 +47,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
+            services.AddMediatR(GetType().Assembly, typeof(GetProviderCourseQueryHandler).Assembly);
             services.AddMediatR(GetType().Assembly, typeof(GetAllCoursesQueryHandler).Assembly);
             services.AddMediatR(GetType().Assembly, typeof(GetStandardQueryHandler).Assembly);
             services.AddHealthChecks();
