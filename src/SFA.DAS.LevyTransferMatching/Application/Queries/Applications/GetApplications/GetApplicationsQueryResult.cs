@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                     PledgeId = source.PledgeId,
                     Details = source.Details,
                     NumberOfApprentices = source.NumberOfApprentices,
-                    Amount = source.Amount,
+                    Amount = source.TotalAmount,
                     TotalAmount = source.TotalAmount,
                     CreatedOn = source.CreatedOn,
                     IsNamePublic = source.IsNamePublic,
