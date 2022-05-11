@@ -31,7 +31,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStanda
                     await _coursesApiClient.Get<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
                 if (standard == null)
                 {
-                    _logger.LogInformation("Standar data not found for Lars Code: {LarsCode}", request.LarsCode);
+                    _logger.LogInformation("Standard data not found for Lars Code: {LarsCode}", request.LarsCode);
                     return null;
                 }
 
