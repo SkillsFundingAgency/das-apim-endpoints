@@ -7,9 +7,7 @@
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-       
         public string Version { get; set; }
-
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
     }
