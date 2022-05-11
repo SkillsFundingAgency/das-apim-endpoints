@@ -1,0 +1,73 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery
+{
+    public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery,GetProviderCourseResult>
+    {
+        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
+        private readonly ILogger<GetProviderCourseQueryHandler> _logger;
+
+        public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,ILogger<GetProviderCourseQueryHandler> logger)
+        {
+            _coursesApiClient = coursesApiClient;
+            _courseManagementApiClient = courseManagementApiClient;
+            _logger = logger;
+        }
+
+        public async Task<GetProviderCourseResult> Handle(GetProviderCourseQuery request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
+
+            GetStandardResponse standard;
+            try
+            {
+                standard = await _coursesApiClient.Get<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
+                if (standard == null)
+                {
+                    _logger.LogInformation("Standard data not found for Lars Code: {LarsCode}", request.LarsCode);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred trying to retrieve standard for LarsCode {request.LarsCode}");
+                throw;
+            }
+
+            try
+            {
+                var course = await _courseManagementApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
+                if (course == null)
+                {
+                    _logger.LogInformation("Provider course details not found for ukprn: {ukprn} LarsCode: {larsCode}", request.Ukprn, request.LarsCode);
+                    return null;
+                }
+
+                return new GetProviderCourseResult
+                {
+                    LarsCode = course.LarsCode,
+                    IfateReferenceNumber = standard.IfateReferenceNumber,
+                    CourseName = standard.Title,
+                    Level = standard.Level,
+                    Version = standard.Version,
+                    RegulatorName = standard.ApprovalBody,
+                    Sector = standard.Route
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred trying to retrieve provider course for Ukprn {request.Ukprn}, LarsCode {request.LarsCode}");
+                throw;
+            }
+        }
+    }
+}

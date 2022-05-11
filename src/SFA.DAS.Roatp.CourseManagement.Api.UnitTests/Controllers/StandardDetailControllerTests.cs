@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -10,33 +9,63 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 {
     [TestFixture]
-    public class StandardDetailControllerTests
+    public class ProviderCourseControllerTests
     {
         const int ValidLarsCode = 101;
-        [TestCase(0, 400)]
-        [TestCase(-1, 400)]
-        [TestCase(ValidLarsCode, 200)]
-        [Test]
-        public async Task GetStandardDetail_ReturnsExpectedState(int larsCode, int expectedStatusCode)
+        private const int ValidUkprn = 10000001;
+        [TestCase(ValidUkprn,0, 400)]
+        [TestCase(ValidUkprn, -1, 400)]
+        [TestCase(0, 1, 400)]
+        [TestCase(-1, 1, 400)]
+        [TestCase(ValidUkprn, ValidLarsCode, 200)]
+        public async Task GetProviderCourse_ReturnsExpectedState(int ukprn,int larsCode, int expectedStatusCode)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.Is<GetStandardQuery>(q => q.LarsCode == larsCode), It.IsAny<CancellationToken>())).ReturnsAsync(new GetStandardResult {LarsCode = ValidLarsCode});
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseQuery>(q => q.LarsCode == larsCode && q.Ukprn==ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderCourseResult { LarsCode = ValidLarsCode});
 
+            var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
 
-            var controller = new StandardDetailController(Mock.Of<ILogger<StandardDetailController>>(), mediatorMock.Object);
-
-            var response = await controller.GetStandardDetail(larsCode);
+            var response = await controller.GetProviderCourse(ukprn, larsCode);
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
             Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
+        }
+
+        [Test]
+        public async Task GetProviderCourse_NullResultReturnsNotFound()
+        {
+            var mediatorMock = new Mock<IMediator>();
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync( (GetProviderCourseResult) null);
+
+            var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
+
+            var response = await controller.GetProviderCourse(ValidUkprn, ValidLarsCode);
+
+            var statusCodeResult = response as IStatusCodeActionResult;
+
+            Assert.AreEqual(404, statusCodeResult.StatusCode.GetValueOrDefault());
+        }
+
+        [Test]
+        public async Task GetProviderCourse_ExceptionReturnsBadRequest()
+        {
+            var mediatorMock = new Mock<IMediator>();
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderCourseQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(It.IsAny<Exception>());
+
+            var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
+
+            var response = await controller.GetProviderCourse(ValidUkprn, ValidLarsCode);
+
+            var statusCodeResult = response as IStatusCodeActionResult;
+
+            Assert.AreEqual(400, statusCodeResult.StatusCode.GetValueOrDefault());
         }
     }
 }
