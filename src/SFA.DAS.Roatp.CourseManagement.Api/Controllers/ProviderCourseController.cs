@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
@@ -46,7 +45,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                     _logger.LogInformation("Provider Course not found for ukprn {ukprn} and lars code {larsCode}", ukprn, larsCode);
                     return NotFound();
                 }
-               
 
                 return Ok(providerCourseResult);
             }
@@ -55,9 +53,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 _logger.LogError(ex, $"Error occurred trying to retrieve Provider Course for ukprn {ukprn} and lars code {larsCode}",ukprn,larsCode);
                 return BadRequest();
             }
-
-           
-
         }
     }
 }
