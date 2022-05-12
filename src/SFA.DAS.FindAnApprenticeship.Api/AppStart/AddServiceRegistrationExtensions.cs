@@ -17,7 +17,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
 
+            services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }

@@ -14,6 +14,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddOptions();
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+            services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<FindAnApprenticeshipConfiguration>(configuration.GetSection(nameof(FindAnApprenticeshipConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindAnApprenticeshipConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));

@@ -17,6 +17,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
+using SFA.DAS.FindAnApprenticeship.Configuration;
 
 namespace SFA.DAS.FindAnApprenticeship.Api
 {
@@ -70,6 +71,21 @@ namespace SFA.DAS.FindAnApprenticeship.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<LocationsApiHealthCheck>("Locations API health check");
+            }
+            
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection("FindApprenticeshipTrainingConfiguration")
+                    .Get<FindAnApprenticeshipConfiguration>();
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
