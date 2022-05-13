@@ -36,11 +36,13 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-        
-            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
-
-            if (providerCourseResult == null)
+            try
             {
+        
+                var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
+
+                if (providerCourseResult == null)
+                {
                 _logger.LogError($"Provider Course not found for ukprn {ukprn} and lars code {larsCode}");
                 return NotFound();
             }

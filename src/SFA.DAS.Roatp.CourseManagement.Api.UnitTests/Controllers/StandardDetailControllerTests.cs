@@ -1,13 +1,16 @@
-﻿using System.Threading;
+﻿using System;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
-
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 {
@@ -48,6 +51,21 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
             var statusCodeResult = response as IStatusCodeActionResult;
 
             Assert.AreEqual(404, statusCodeResult.StatusCode.GetValueOrDefault());
+        }
+
+        [Test]
+        public async Task GetProviderCourse_ExceptionReturnsBadRequest()
+        {
+            var mediatorMock = new Mock<IMediator>();
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderCourseQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(It.IsAny<Exception>());
+
+            var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
+
+            var response = await controller.GetProviderCourse(ValidUkprn, ValidLarsCode);
+
+            var statusCodeResult = response as IStatusCodeActionResult;
+
+            Assert.AreEqual(400, statusCodeResult.StatusCode.GetValueOrDefault());
         }
     }
 }
