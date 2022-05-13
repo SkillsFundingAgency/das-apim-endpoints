@@ -32,9 +32,9 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         public async Task Then_PostRequestIsSent(CreateApprenticeFeedbackTargetCommand command,
             string errorContent)
         {
-            var response = new ApiResponse<object>(null, HttpStatusCode.Created, errorContent);
+            var response = new ApiResponse<CreateApprenticeFeedbackTargetResponse>(null, HttpStatusCode.Created, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateApprenticeFeedbackTargetRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateApprenticeFeedbackTargetResponse>(It.IsAny<CreateApprenticeFeedbackTargetRequest>()))
                 .ReturnsAsync(response);
 
             await _handler.Handle(command, CancellationToken.None);
