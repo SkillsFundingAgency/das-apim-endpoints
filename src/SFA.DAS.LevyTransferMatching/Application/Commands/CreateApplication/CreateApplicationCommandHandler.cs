@@ -60,7 +60,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 NumberOfApprentices = request.NumberOfApprentices,
                 StartDate = request.StartDate,
                 HasTrainingProvider = request.HasTrainingProvider,
-                Amount = request.Amount,
                 Sectors = request.Sectors,
                 Locations = request.Locations,
                 AdditionalLocation = request.AdditionalLocation,
