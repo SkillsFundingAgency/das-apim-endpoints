@@ -26,10 +26,10 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedba
                 CommitmentApprenticeshipId = command.CommitmentsApprenticeshipId
             });
 
-            var response = await _feedbackApiClient.PostWithResponseCode<object>(request);
+            var response = await _feedbackApiClient.PostWithResponseCode<CreateApprenticeFeedbackTargetResponse>(request);
 
             response.EnsureSuccessStatusCode();
-            return new CreateApprenticeFeedbackTargetResponse();
+            return response.Body;
         }
     }
 }

@@ -28,10 +28,10 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedba
                 FeedbackAttributes = command.FeedbackAttributes.Select(s => (FeedbackAttribute)s).ToList()
             });
 
-            var response = await _feedbackApiClient.PostWithResponseCode<object>(request);
+            var response = await _feedbackApiClient.PostWithResponseCode<CreateApprenticeFeedbackResponse>(request);
 
             response.EnsureSuccessStatusCode();
-            return new CreateApprenticeFeedbackResponse();
+            return response.Body;
         }
     }
 }
