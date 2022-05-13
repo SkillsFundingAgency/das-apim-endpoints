@@ -26,33 +26,27 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         {
             if (ukprn <= 9999999)
             {
-                _logger.LogInformation("Invalid ukprn {ukprn}", ukprn);
+                _logger.LogWarning("Invalid ukprn {ukprn}", ukprn);
                 return BadRequest();
             }
 
             if (larsCode <= 0)
             {
-                _logger.LogInformation("Invalid lars code {larsCode}", larsCode);
+                _logger.LogWarning("Invalid lars code {larsCode}", larsCode);
                 return BadRequest();
             }
 
-            try
-            {
-                var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
+        
+            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
 
-                if (providerCourseResult == null)
-                {
-                    _logger.LogInformation("Provider Course not found for ukprn {ukprn} and lars code {larsCode}", ukprn, larsCode);
-                    return NotFound();
-                }
-
-                return Ok(providerCourseResult);
-            }
-            catch (Exception ex)
+            if (providerCourseResult == null)
             {
-                _logger.LogError(ex, $"Error occurred trying to retrieve Provider Course for ukprn {ukprn} and lars code {larsCode}",ukprn,larsCode);
-                return BadRequest();
+                _logger.LogError($"Provider Course not found for ukprn {ukprn} and lars code {larsCode}");
+                return NotFound();
             }
+
+            return Ok(providerCourseResult);
+            
         }
     }
 }
