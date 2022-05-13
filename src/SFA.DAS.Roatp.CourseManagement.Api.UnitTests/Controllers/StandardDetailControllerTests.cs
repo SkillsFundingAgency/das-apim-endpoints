@@ -52,20 +52,5 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 
             Assert.AreEqual(404, statusCodeResult.StatusCode.GetValueOrDefault());
         }
-
-        [Test]
-        public async Task GetProviderCourse_ExceptionReturnsBadRequest()
-        {
-            var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderCourseQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(It.IsAny<Exception>());
-
-            var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
-
-            var response = await controller.GetProviderCourse(ValidUkprn, ValidLarsCode);
-
-            var statusCodeResult = response as IStatusCodeActionResult;
-
-            Assert.AreEqual(400, statusCodeResult.StatusCode.GetValueOrDefault());
-        }
     }
 }
