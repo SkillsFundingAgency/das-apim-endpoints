@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllStandardsQuery;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
@@ -48,6 +49,33 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error occurred trying to retrieve Standards data for ukprn number {ukprn}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("lookup/standards")]
+        public async Task<IActionResult> GetAllStandards()
+        {
+
+            _logger.LogInformation("Get all active standards");
+            try
+            {
+                var result = await _mediator.Send(new GetAllStandardsQuery());
+
+                if (result == null)
+                {
+                    _logger.LogInformation("Active standards not gathered");
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Active standards gathered");
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred trying to retrieve active standards");
                 return BadRequest();
             }
         }
