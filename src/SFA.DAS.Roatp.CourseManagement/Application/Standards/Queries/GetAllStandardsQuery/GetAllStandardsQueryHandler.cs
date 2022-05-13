@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
@@ -25,7 +22,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllSta
             _coursesApiClient = coursesApiClient;
             _logger = logger;
         }
-
 
         public async Task<GetAllStandardsResult> Handle(GetAllStandardsQuery request, CancellationToken cancellationToken)
         {
@@ -54,7 +50,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllSta
                      .ToList();
 
                  return new GetAllStandardsResult { Standards = standardResults };
-
              }
              catch (Exception ex)
              {
