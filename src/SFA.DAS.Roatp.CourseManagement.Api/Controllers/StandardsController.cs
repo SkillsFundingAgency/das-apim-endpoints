@@ -57,7 +57,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         [Route("lookup/standards")]
         public async Task<IActionResult> GetAllStandards()
         {
-
             _logger.LogInformation("Get all active standards");
             try
             {
