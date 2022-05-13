@@ -1,17 +1,19 @@
 ﻿using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class CommitmentsV2ApiClient : ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>
+    public class ReservationApiClient :IReservationApiClient<ReservationApiConfiguration>
     {
-        private readonly IInternalApiClient<CommitmentsV2ApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<ReservationApiConfiguration> _apiClient;
 
-        public CommitmentsV2ApiClient(IInternalApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        public ReservationApiClient(IInternalApiClient<ReservationApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
