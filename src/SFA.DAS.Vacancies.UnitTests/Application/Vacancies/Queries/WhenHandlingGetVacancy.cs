@@ -13,7 +13,6 @@ using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
-using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -26,14 +25,14 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetStandardsListItem courseResponse,
             string findAnApprenticeshipBaseUrl,
             List<string> categories,
-            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> standardsService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacancyQueryHandler handler)
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             courseResponse.LarsCode = apiApiResponse.StandardLarsCode.Value;
-            standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
+            standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });
             
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
@@ -58,14 +57,14 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetStandardsListItem courseResponse,
             string findAnApprenticeshipBaseUrl,
             List<string> categories,
-            [Frozen] Mock<IStandardsService> standardsService,
+            [Frozen] Mock<ICourseService> standardsService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacancyQueryHandler handler)
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             apiApiResponse.StandardLarsCode = null;
-            standardsService.Setup(x => x.GetStandards()).ReturnsAsync(new GetStandardsListResponse
+            standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });
             
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
@@ -85,7 +84,6 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetStandardsListItem courseResponse,
             string findAnApprenticeshipBaseUrl,
             List<string> categories,
-            [Frozen] Mock<IStandardsService> standardsService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
             GetVacancyQueryHandler handler)

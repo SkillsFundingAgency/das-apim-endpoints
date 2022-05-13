@@ -56,6 +56,8 @@ namespace SFA.DAS.Campaign.InnerApi.Responses
 
         [JsonProperty("distance")]
         public decimal? Distance { get; set; }
+        [JsonProperty("standardLarsCode")]
+        public int? StandardLarsCode { get; set; }
 
         [JsonIgnore]
         public string VacancyUrl { get ; set ; }
