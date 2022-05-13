@@ -1,0 +1,424 @@
+{
+	"info": {
+		"_postman_id": "990eea68-9e9f-42c7-b485-ed9080f72593",
+		"name": "Apprentice Feedback - Outer API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Apprentice - Get Apprentice By Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"m_activeAvailableCount\", jsonData.totalFiltered);\r",
+							"pm.environment.set(\"m_larsCode\", jsonData.standards[0].larsCode);\r",
+							"pm.environment.set(\"m_title\", jsonData.standards[0].title);\r",
+							"pm.environment.set(\"m_level\", jsonData.standards[0].level);\r",
+							"pm.environment.set(\"m_route\", jsonData.standards[0].route);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{outer-api-base-url}}/apprentice/{{apprenticeId}}",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"apprentice",
+						"{{apprenticeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApprenticeFeedback - Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"apprenticeFeedbackTargetId\": \"{{feedbackTargetId}}\",\r\n  \"overallRating\": 1,\r\n  \"feedbackAttributes\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"Organising well-structured training\",\r\n      \"status\": 1\r\n    }\r\n  ],\r\n  \"allowContact\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{outer-api-base-url}}/ApprenticeFeedback",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"ApprenticeFeedback"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApprenticeFeedbackTarget - Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"  pm.response.to.have.status(200);  \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains apprentice feedback target Id\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  const guidRegex = /^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$/gi;\r",
+							"\r",
+							"  pm.expect(responseJson.apprenticeFeedbackTargetId).to.match(guidRegex);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Store feedback target Id for use in update\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"\r",
+							"  pm.environment.set(\"feedbackTargetId\", responseJson.apprenticeFeedbackTargetId);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"apprenticeId\": \"{{apprenticeId}}\",\r\n  \"apprenticeshipId\": {{apprenticeshipId}},\r\n  \"confirmationId\": 0,\r\n  \"confirmedOn\": \"2022-05-13\",\r\n  \"commitmentsApprenticeshipId\": 0,\r\n  \"commitmentsApprovedOn\": \"2022-05-13\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{outer-api-base-url}}/ApprenticeFeedbackTarget",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"ApprenticeFeedbackTarget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Provider - Get All For Apprentice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response includes config values\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"  pm.expect(responseJson.recentDenyPeriodDays).to.be.above(0);\r",
+							"  pm.expect(responseJson.initialDenyPeriodDays).to.be.above(0);\r",
+							"  pm.expect(responseJson.finalAllowedPeriodDays).to.be.above(0);\r",
+							"  pm.expect(responseJson.minimumActiveApprenticeshipCount).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test('Response includes array of training providers', () => \r",
+							"    pm.expect(pm.response.json().trainingProviders).to.be.an('array').but.not.an('object')\r",
+							");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{outer-api-base-url}}/provider/{{apprenticeId}}",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"provider",
+						"{{apprenticeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Provider - Get Provider For Apprentice and Ukprn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{outer-api-base-url}}/provider/{{apprenticeId}}/{{ukprn}}",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"provider",
+						"{{apprenticeId}}",
+						"{{ukprn}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProviderAttributes - Get All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test('Array of attributes returned', () => \r",
+							"    pm.expect(pm.response.json()).to.be.an('array').but.not.an('object')\r",
+							");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept-encoding": true,
+					"connection": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{outer-api-base-url}}/provider-attributes",
+					"host": [
+						"{{outer-api-base-url}}"
+					],
+					"path": [
+						"provider-attributes"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apim-base-url",
+			"value": "http://localhost:5018"
+		}
+	]
+}
