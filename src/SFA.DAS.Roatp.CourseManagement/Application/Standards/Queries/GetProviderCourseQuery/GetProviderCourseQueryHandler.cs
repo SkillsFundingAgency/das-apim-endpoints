@@ -60,7 +60,11 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                     Level = standard.Level,
                     Version = standard.Version,
                     RegulatorName = standard.ApprovalBody,
-                    Sector = standard.Route
+                    Sector = standard.Route,
+                    StandardInfoUrl = course.StandardInfoUrl,
+                    ContactUsPhoneNumber = course.ContactUsPhoneNumber,
+                    ContactUsEmail = course.ContactUsEmail,
+                    ContactUsPageUrl = course.ContactUsPageUrl
                 };
             }
             catch (Exception ex)
