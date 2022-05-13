@@ -38,7 +38,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
             try
             {
-        
                 var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
 
                 if (providerCourseResult == null)
@@ -48,7 +47,12 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
             }
 
             return Ok(providerCourseResult);
-            
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred trying to retrieve Provider Course for ukprn {ukprn} and lars code {larsCode}", ukprn, larsCode);
+                return BadRequest();
+            }
         }
     }
 }
