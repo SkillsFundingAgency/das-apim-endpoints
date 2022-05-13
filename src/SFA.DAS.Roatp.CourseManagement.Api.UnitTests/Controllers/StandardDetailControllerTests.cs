@@ -1,16 +1,13 @@
-﻿using System;
-using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardQuery;
+
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 {
