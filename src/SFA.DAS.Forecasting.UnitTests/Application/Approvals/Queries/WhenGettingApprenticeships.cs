@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -7,6 +8,8 @@ using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships;
 using SFA.DAS.Forecasting.InnerApi.Requests;
 using SFA.DAS.Forecasting.InnerApi.Responses;
+using SFA.DAS.Forecasting.Models.Courses;
+using SFA.DAS.Forecasting.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -20,6 +23,8 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
         private GetApprenticeshipsResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
         private GetApprenticeshipsQuery _query;
+        private Mock<ICourseLookupService> _courseLookupService;
+        private List<Course> _courseList;
 
         [SetUp]
         public void Setup()
@@ -30,7 +35,12 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
             _apiClient.Setup(x => x.Get<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _handler = new GetApprenticeshipsQueryHandler(_apiClient.Object);
+            _courseList = _fixture.Create<List<Course>>();
+            _courseLookupService = new Mock<ICourseLookupService>();
+            _courseLookupService.Setup(x => x.GetAllCourses()).ReturnsAsync(_courseList);
+            _apiResponse.Apprenticeships.ForEach(x => x.CourseCode = _courseList.First().Id);
+
+            _handler = new GetApprenticeshipsQueryHandler(_apiClient.Object, _courseLookupService.Object);
 
             _query = _fixture.Create<GetApprenticeshipsQuery>();
         }
@@ -63,6 +73,8 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
                 Assert.AreEqual(expected.EndDate , apprenticeship.EndDate);
                 Assert.AreEqual(expected.Cost, apprenticeship.Cost);
                 Assert.AreEqual(expected.PledgeApplicationId , apprenticeship.PledgeApplicationId);
+                Assert.AreEqual(expected.HasHadDataLockSuccess, apprenticeship.HasHadDataLockSuccess);
+                Assert.AreEqual(_courseList.First().Level, apprenticeship.CourseLevel);
                 i++;
             }
         }

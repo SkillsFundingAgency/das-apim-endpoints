@@ -52,6 +52,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             if(IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
+                HandleException(response, json);
             }
             else
             {
@@ -61,6 +62,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
             
             return postWithResponseCode;
+        }
+
+        public virtual string HandleException(HttpResponseMessage response, string json)
+        {
+            return json;
         }
 
         [Obsolete("Use PostWithResponseCode")]

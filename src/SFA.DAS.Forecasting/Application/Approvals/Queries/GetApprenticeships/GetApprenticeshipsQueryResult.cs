@@ -20,10 +20,12 @@ namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships
             public string LastName { get; set; }
             public string CourseCode { get; set; }
             public string CourseName { get; set; }
+            public int CourseLevel { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
             public decimal? Cost { get; set; }
             public int? PledgeApplicationId { get; set; }
+            public bool HasHadDataLockSuccess { get; set; }
         }
     }
 }

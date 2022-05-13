@@ -13,6 +13,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         public void Then_The_Fields_Are_Mapped(GetVacancyQueryResult source)
         {
             source.Vacancy.WageType = 3;
+            source.Vacancy.WageUnit = 1;
             
             var actual = (GetVacancyResponse)source;
             
@@ -29,6 +30,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.WageText)
                 .Excluding(c=>c.WageType)
                 .Excluding(c=>c.WageAmount)
+                .Excluding(c=>c.WageUnit)
                 .Excluding(c=>c.Id)
                 .Excluding(c=>c.AnonymousEmployerName)
                 .Excluding(c=>c.Category)
@@ -37,13 +39,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.SubCategory)
                 .Excluding(c=>c.SubCategoryCode)
                 .Excluding(c=>c.VacancyLocationType)
-                .Excluding(c=>c.WageUnit)
                 .Excluding(c=>c.WorkingWeek)
                 .Excluding(c=>c.Score)
                 .Excluding(c=>c.IsPositiveAboutDisability)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
-            actual.WorkingWeekDescription.Should().Be(source.Vacancy.WorkingWeek);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
             actual.Location.Lat.Should().Be(source.Vacancy.Location.Lat);
             actual.Location.Lon.Should().Be(source.Vacancy.Location.Lon);
@@ -53,6 +53,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Course.LarsCode.Should().Be(source.Vacancy.StandardLarsCode);
             actual.Wage.WageAmount.Should().Be(source.Vacancy.WageAmount);
             actual.Wage.WageType.Should().Be(source.Vacancy.WageType);
+            actual.Wage.WageUnit.Should().Be(source.Vacancy.WageUnit);
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
             actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
             actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);

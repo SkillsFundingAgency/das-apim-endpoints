@@ -20,15 +20,11 @@ namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges
 
         public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
         {
-            var apiRequest = new GetPledgesRequest(request.Page, request.PageSize);
+            var apiRequest = new GetPledgesRequest(request.AccountId);
             var response = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>(apiRequest);
 
             return new GetPledgesQueryResult
             {
-                Page = response.Page,
-                PageSize = response.PageSize,
-                TotalPages = response.TotalPages,
-                TotalPledges = response.TotalPledges,
                 Pledges = response.Pledges.Select(p => new GetPledgesQueryResult.Pledge
                 {
                     Id = p.Id,

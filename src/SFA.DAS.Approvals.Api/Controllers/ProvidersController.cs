@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
@@ -67,6 +68,23 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 _logger.LogError(e, "Error getting all provider users");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{providerId}/courses/{trainingCode}")]
+        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderCoursesDeliveryModelQuery(providerId, trainingCode));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting Provider Courses Delivery Models for Provider {providerId} and course {trainingCode}", providerId, trainingCode);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
             }
         }
     }
