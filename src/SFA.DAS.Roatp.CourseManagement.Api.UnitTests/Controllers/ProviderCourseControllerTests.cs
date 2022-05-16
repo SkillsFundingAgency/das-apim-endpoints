@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse;
 
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
@@ -36,7 +37,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetProviderCourse_NullResultReturnsNotFound()
+        public async Task GetProviderCourse_Null_ResultReturnsNotFound()
         {
             var mediatorMock = new Mock<IMediator>();
             mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync( (GetProviderCourseResult) null);

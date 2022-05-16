@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery
+﻿namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse
 {
     public class GetProviderCourseResult
     {
