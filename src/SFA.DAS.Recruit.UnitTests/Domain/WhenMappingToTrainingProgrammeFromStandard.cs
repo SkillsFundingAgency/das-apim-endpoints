@@ -30,6 +30,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             actual.FrameworkCode.Should().Be(0);
             actual.SectorCode.Should().Be(source.SectorCode);
             actual.Ssa1.Should().Be(0);
+            actual.Route.Should().Be(source.Route);
         }
     }
 }

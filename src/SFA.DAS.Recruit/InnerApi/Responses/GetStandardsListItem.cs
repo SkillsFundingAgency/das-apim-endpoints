@@ -9,5 +9,6 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public int SectorCode { get;set; }
+        public string Route { get; set; }
     }
 }

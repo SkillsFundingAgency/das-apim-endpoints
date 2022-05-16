@@ -17,6 +17,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public int Ssa1 { get ; set ; }
         public int FrameworkCode { get ; set ; }
         public int SectorCode { get ; set ; }
+        public string Route { get; set; }
 
         public static implicit operator GetTrainingProgrammeResponse(TrainingProgramme source)
         {
@@ -33,7 +34,8 @@ namespace SFA.DAS.Recruit.Api.Models
                 EducationLevelNumber = source.EducationLevelNumber,
                 SectorCode = source.SectorCode,
                 FrameworkCode = source.FrameworkCode,
-                Ssa1 = source.Ssa1
+                Ssa1 = source.Ssa1,
+                Route = source.Route
             };
         }
     }
