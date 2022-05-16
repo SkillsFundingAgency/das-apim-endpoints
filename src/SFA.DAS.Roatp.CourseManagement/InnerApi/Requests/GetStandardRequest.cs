@@ -4,12 +4,12 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
     public class GetStandardRequest : IGetApiRequest
     {
-        public string GetUrl => $"api/courses/Standards/{StandardCode}";
-        public int StandardCode { get; }
+        public string GetUrl => $"api/courses/Standards/{LarsCode}";
+        public int LarsCode { get; }
 
-        public GetStandardRequest(int standardCode)
+        public GetStandardRequest(int larsCode)
         {
-            StandardCode = standardCode;
+            LarsCode = larsCode;
         }
     }
 }

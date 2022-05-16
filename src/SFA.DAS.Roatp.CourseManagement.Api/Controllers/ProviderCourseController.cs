@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourseQuery;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
@@ -36,23 +36,17 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-            try
-            {
-                var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
+        
+            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
 
-                if (providerCourseResult == null)
-                {
+            if (providerCourseResult == null)
+            {
                 _logger.LogError($"Provider Course not found for ukprn {ukprn} and lars code {larsCode}");
                 return NotFound();
             }
 
             return Ok(providerCourseResult);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred trying to retrieve Provider Course for ukprn {ukprn} and lars code {larsCode}", ukprn, larsCode);
-                return BadRequest();
-            }
+            
         }
     }
 }
