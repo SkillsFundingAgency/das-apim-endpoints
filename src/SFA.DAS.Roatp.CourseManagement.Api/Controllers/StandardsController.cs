@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllStandards;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
@@ -48,6 +50,32 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error occurred trying to retrieve Standards data for ukprn number {ukprn}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("lookup/standards")]
+        public async Task<IActionResult> GetAllStandards()
+        {
+            _logger.LogInformation("Get all active standards");
+            try
+            {
+                var result = await _mediator.Send(new GetAllStandardsQuery());
+
+                if (result.StatusCode != HttpStatusCode.OK)
+                {
+                    _logger.LogError($"Active standards not gathered, status code {result.StatusCode}, Error content:[{result.ErrorContent}]");
+                    return StatusCode((int)result.StatusCode, result.ErrorContent);
+                }
+
+                _logger.LogInformation("Active standards gathered");
+                return Ok(result.Body);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred trying to retrieve active standards");
                 return BadRequest();
             }
         }
