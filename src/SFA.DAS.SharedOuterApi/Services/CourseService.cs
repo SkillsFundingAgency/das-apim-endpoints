@@ -54,6 +54,24 @@ namespace SFA.DAS.SharedOuterApi.Services
             return apiCourses;
         }
 
+        public async Task<T> GetAllFrameworks<T>(string cacheItemName)
+        {
+            var cachedCourses =
+                await _cacheStorageService.RetrieveFromCache<T>(
+                    cacheItemName);
+
+            if (cachedCourses != null)
+            {
+                return cachedCourses;
+            }
+
+            var apiCourses = await _coursesApiClient.Get<T>(new GetAllFrameworksRequest());
+
+            await _cacheStorageService.SaveToCache(cacheItemName, apiCourses, CourseCacheExpiryInHours);
+
+            return apiCourses;
+        }
+
         public List<string> MapRoutesToCategories(IReadOnlyList<string> routes)
         {
 
