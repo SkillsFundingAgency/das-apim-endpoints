@@ -13,7 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
         {
             var actual = (GetCoursesResponse) source;
 
-            actual.Courses.Should().BeEquivalentTo(source.Standards);
+            actual.TrainingProgrammes.Should().BeEquivalentTo(source.TrainingProgrammes);
         }
     }
 }

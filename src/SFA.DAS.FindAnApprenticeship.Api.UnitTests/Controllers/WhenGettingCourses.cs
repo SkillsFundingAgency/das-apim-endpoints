@@ -30,7 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCoursesResponse;
-            model.Courses.Should().BeEquivalentTo(mediatorResult.Standards);
+            model.TrainingProgrammes.Should().BeEquivalentTo(mediatorResult.TrainingProgrammes);
 
         }
 
