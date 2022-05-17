@@ -36,7 +36,8 @@ namespace SFA.DAS.ManageApprenticeships.Api.Controllers
                 var model = new GetIndexResponse
                 {
                     PledgesCount = response.PledgesCount,
-                    ApplicationsCount = response.ApplicationsCount
+                    ApplicationsCount = response.ApplicationsCount,
+                    ActivePledgesTotalAmount = response.ActivePledgesTotalAmount
                 };
 
                 return Ok(model);

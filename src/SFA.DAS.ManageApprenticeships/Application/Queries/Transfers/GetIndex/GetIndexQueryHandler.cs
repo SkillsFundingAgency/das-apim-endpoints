@@ -33,7 +33,8 @@ namespace SFA.DAS.ManageApprenticeships.Application.Queries.Transfers.GetIndex
             return new GetIndexQueryResult
             {
                 PledgesCount = pledgesTask.Result.TotalPledges,
-                ApplicationsCount = applicationsTask.Result.Applications.Count()
+                ApplicationsCount = applicationsTask.Result.Applications.Count(),
+                ActivePledgesTotalAmount = pledgesTask.Result.Pledges.Where(x => x.Status == "Active").Sum(x => x.Amount)
             };
         }
     }
