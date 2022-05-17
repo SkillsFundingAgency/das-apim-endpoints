@@ -27,9 +27,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         public async Task GetStandards_ReturnsAppropriateResponse(int ukprn, int expectedStatusCode)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock
-                .Setup(m => m.Send(It.Is<GetAllCoursesQuery>(q => q.Ukprn == ValidUkprn),
-                    It.IsAny<CancellationToken>())).ReturnsAsync(new List<GetAllCoursesResult>());
+            mediatorMock.Setup(m => m.Send(It.Is<GetAllCoursesQuery>(q => q.Ukprn == ValidUkprn), It.IsAny<CancellationToken>())).ReturnsAsync(new List<GetAllCoursesResult>());
 
 
             var subject = new StandardsController(Mock.Of<ILogger<StandardsController>>(), mediatorMock.Object);
@@ -66,15 +64,21 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
             Assert.AreEqual((int)HttpStatusCode.OK, statusCodeResult.StatusCode.GetValueOrDefault());
         }
 
-        [Test]
-        public async Task GetAllStandards_Exception_ReturnsAppropriateResponse()
+        [TestCase(HttpStatusCode.BadRequest)]
+        [TestCase(HttpStatusCode.NotFound)]
+        [TestCase(HttpStatusCode.InternalServerError)]
+        [TestCase(HttpStatusCode.ServiceUnavailable)]
+        [TestCase(HttpStatusCode.Gone)]
+        [TestCase(HttpStatusCode.PermanentRedirect)]
+        [TestCase(HttpStatusCode.BadGateway)]
+        public async Task GetAllStandards_NonOkResponse_ReturnsErrorResponse(HttpStatusCode statusCode)
         {
             var errorMessage = "Error in retrieval";
             var mediatorMock = new Mock<IMediator>();
             var getAllStandardsResponse = new GetAllStandardsResponse { Standards = null };
 
             var apiResponse =
-                new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, HttpStatusCode.BadRequest,
+                new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, statusCode,
                     errorMessage);
 
             mediatorMock.Setup(m => m.Send(It.IsAny<GetAllStandardsQuery>(), It.IsAny<CancellationToken>()))
@@ -86,7 +90,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.AreEqual((int)statusCode, statusCodeResult.StatusCode.GetValueOrDefault());
             Assert.AreEqual(errorMessage, ((ObjectResult)statusCodeResult).Value);
         }
     }

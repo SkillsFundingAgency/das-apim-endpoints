@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -25,7 +24,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllSta
         public async Task<ApiResponse<GetAllStandardsResponse>> Handle(GetAllStandardsQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all standards request received");
-           
             return await _coursesApiClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest());
         }
     }

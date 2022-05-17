@@ -59,7 +59,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         public async Task<IActionResult> GetAllStandards()
         {
             _logger.LogInformation("Get all active standards");
-         
             var result = await _mediator.Send(new GetAllStandardsQuery());
 
             if (result.StatusCode != HttpStatusCode.OK)
