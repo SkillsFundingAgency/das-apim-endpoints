@@ -18,6 +18,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+            services.AddTransient<IRoatpServiceApiClient<RoatpApiConfiguration>, RoatpServiceApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         }
 
@@ -28,6 +29,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+            services.Configure<RoatpApiConfiguration>(configuration.GetSection(nameof(RoatpApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpApiConfiguration>>().Value);
         }
     }
 }
