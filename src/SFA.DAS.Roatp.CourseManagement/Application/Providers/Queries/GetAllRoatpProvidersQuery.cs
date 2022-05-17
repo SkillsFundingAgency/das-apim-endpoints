@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Roatp.CourseManagement.Application.Providers.Queries
 {

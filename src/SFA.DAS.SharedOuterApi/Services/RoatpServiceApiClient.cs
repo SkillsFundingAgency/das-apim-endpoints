@@ -6,11 +6,11 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class RoatpServiceApiClient : IRoatpServiceApiClient<RoatpApiConfiguration>
+    public class RoatpServiceApiClient : IRoatpServiceApiClient<RoatpConfiguration>
     {
-        private readonly IInternalApiClient<RoatpApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<RoatpConfiguration> _apiClient;
 
-        public RoatpServiceApiClient(IInternalApiClient<RoatpApiConfiguration> apiClient)
+        public RoatpServiceApiClient(IInternalApiClient<RoatpConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
