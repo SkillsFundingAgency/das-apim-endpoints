@@ -39,7 +39,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
             Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
         }
 
-
         [Test]
         public async Task GetAllStandards_ReturnsAppropriateResponse()
         {
