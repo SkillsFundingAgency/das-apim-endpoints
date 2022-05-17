@@ -25,18 +25,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllSta
         public async Task<ApiResponse<GetAllStandardsResponse>> Handle(GetAllStandardsQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all standards request received");
-            try
-            {
-                var apiResponse =
-                    await _coursesApiClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest());
-
-                return apiResponse;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred trying to retrieve standards");
-                throw;
-            }
+           
+            return await _coursesApiClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest());
         }
     }
 }

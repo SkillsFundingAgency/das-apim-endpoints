@@ -59,25 +59,17 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         public async Task<IActionResult> GetAllStandards()
         {
             _logger.LogInformation("Get all active standards");
-            try
+         
+            var result = await _mediator.Send(new GetAllStandardsQuery());
+
+            if (result.StatusCode != HttpStatusCode.OK)
             {
-                var result = await _mediator.Send(new GetAllStandardsQuery());
-
-                if (result.StatusCode != HttpStatusCode.OK)
-                {
-                    _logger.LogError($"Active standards not gathered, status code {result.StatusCode}, Error content:[{result.ErrorContent}]");
-                    return StatusCode((int)result.StatusCode, result.ErrorContent);
-                }
-
-                _logger.LogInformation("Active standards gathered");
-                return Ok(result.Body);
-
+                _logger.LogError($"Active standards not gathered, status code {result.StatusCode}, Error content:[{result.ErrorContent}]");
+                return StatusCode((int)result.StatusCode, result.ErrorContent);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred trying to retrieve active standards");
-                return BadRequest();
-            }
+
+            _logger.LogInformation("Active standards gathered");
+            return Ok(result.Body);
         }
     }
 }
