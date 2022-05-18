@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration
+namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.RegisteredProvider
 {
     public class Feedback
     {

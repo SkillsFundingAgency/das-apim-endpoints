@@ -2,14 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Models.RegisteredProvider;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Roatp.CourseManagement.Application.RegisteredProviders.Queries
 {
 
-    public class GetRegisteredProvidersQueryHandler : IRequestHandler<GetRegisteredProvidersQuery, GetRegisteredProvidersQueryResult>
+    public class GetRegisteredProvidersQueryHandler : IRequestHandler<GetRegisteredProvidersQuery, ApiResponse<List<RegisteredProviderModel>>>
     {
         private readonly IRoatpServiceApiClient<RoatpConfiguration> _apiClient;
 
@@ -19,10 +20,10 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.RegisteredProviders.Queries
         }
 
 
-        public async Task<GetRegisteredProvidersQueryResult> Handle(GetRegisteredProvidersQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<RegisteredProviderModel>>> Handle(GetRegisteredProvidersQuery request, CancellationToken cancellationToken)
+
         {
-            var response = await _apiClient.GetWithResponseCode<List<RegisteredProviderModel>>(request);
-            return new GetRegisteredProvidersQueryResult { Providers = response.Body };
+            return await _apiClient.GetWithResponseCode<List<RegisteredProviderModel>>(request);
         }
     }
 }

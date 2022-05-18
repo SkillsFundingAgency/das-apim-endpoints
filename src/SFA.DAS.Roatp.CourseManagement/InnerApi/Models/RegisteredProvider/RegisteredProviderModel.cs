@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration
+namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.RegisteredProvider
 {
     public class RegisteredProviderModel
     {

@@ -13,7 +13,6 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.CourseManagement.Api.AppStart;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api
