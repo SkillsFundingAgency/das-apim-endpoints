@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration
 {
-    public class ProviderRegistrationModel
+    public class RegisteredProviderModel
     {
         public int ukprn { get; set; }
         public int StatusId { get; set; }

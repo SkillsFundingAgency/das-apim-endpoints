@@ -2,18 +2,18 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Providers.Queries;
+using SFA.DAS.Roatp.CourseManagement.Application.RegisteredProviders.Queries;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
 
         [ApiController]
-        public class GetRoatpProvidersController : ControllerBase
+        public class RegisteredProviderController : ControllerBase
         {
-            private readonly ILogger<GetRoatpProvidersController> _logger;
+            private readonly ILogger<RegisteredProviderController> _logger;
             private readonly IMediator _mediator;
 
-            public GetRoatpProvidersController(ILogger<GetRoatpProvidersController> logger, IMediator mediator)
+            public RegisteredProviderController(ILogger<RegisteredProviderController> logger, IMediator mediator)
             {
                 _logger = logger;
                 _mediator = mediator;
@@ -21,10 +21,10 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
             [HttpGet]
             [Route("providers")]
-            public async Task<IActionResult> GetAllProviders()
+            public async Task<IActionResult> GetRegisteredProviders()
             {
                 _logger.LogInformation("Request received for all locations from roatp");
-                var query = new GetAllRoatpProvidersQuery();
+                var query = new GetRegisteredProvidersQuery();
                 var result = await _mediator.Send(query);
                 if (result.Providers == null)
                 {
