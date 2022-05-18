@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models
+﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration
 {
     public class ProviderAttribute
     {

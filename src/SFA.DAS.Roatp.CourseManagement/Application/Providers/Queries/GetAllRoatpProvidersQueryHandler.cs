@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Models.ProviderRegistration;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -21,7 +22,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Providers.Queries
 
         public async Task<GetAllRoatpProvidersQueryResult> Handle(GetAllRoatpProvidersQuery request, CancellationToken cancellationToken)
         {
-            var response = await _apiClient.GetWithResponseCode<List<RoatpProviderModel>>(request);
+            var response = await _apiClient.GetWithResponseCode<List<ProviderRegistrationModel>>(request);
             return new GetAllRoatpProvidersQueryResult { Providers = response.Body };
         }
     }
