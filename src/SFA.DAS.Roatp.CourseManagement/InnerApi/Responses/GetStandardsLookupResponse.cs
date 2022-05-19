@@ -4,6 +4,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
 {
     public class GetStandardsLookupResponse
     {
-        public List<GetStandardLookupResponse> Standards { get; set; }
+        public List<GetStandardResponse> Standards { get; set; }
     }
 }

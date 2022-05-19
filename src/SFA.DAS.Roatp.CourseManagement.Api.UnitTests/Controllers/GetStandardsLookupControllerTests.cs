@@ -23,7 +23,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         {
             var mediatorMock = new Mock<IMediator>();
             var getAllStandardsResponse = new GetStandardsLookupResponse
-            { Standards = new List<GetStandardLookupResponse> { new GetStandardLookupResponse { LarsCode = 235 } } };
+            { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = 235 } } };
 
             var apiResponse = new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
 

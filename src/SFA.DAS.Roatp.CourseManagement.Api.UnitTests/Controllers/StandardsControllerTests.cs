@@ -15,7 +15,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
     public class StandardsControllerTests
     {
         const int ValidUkprn = 101;
-
         [TestCase(0, 400)]
         [TestCase(-1, 400)]
         [TestCase(ValidUkprn, 200)]
