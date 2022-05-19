@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,8 +20,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{ukprn}/Course/{larsCode}")]
-        public async Task<IActionResult> GetProviderCourse(int ukprn,int larsCode)
+        [Route("{ukprn}/Course/{larsCode}/providerCourseLocation/{providerCourseId}")]
+        public async Task<IActionResult> GetProviderCourse(int ukprn,int larsCode, int providerCourseId)
         {
             if (ukprn <= 9999999)
             {
@@ -36,8 +35,13 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-        
-            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
+            if (providerCourseId <= 0)
+            {
+                _logger.LogWarning("Invalid provider CourseId {providerCourseId}", providerCourseId);
+                return BadRequest();
+            }
+
+            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode, providerCourseId));
 
             if (providerCourseResult == null)
             {
@@ -46,7 +50,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
             }
 
             return Ok(providerCourseResult);
-            
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
+﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseResponse
     {

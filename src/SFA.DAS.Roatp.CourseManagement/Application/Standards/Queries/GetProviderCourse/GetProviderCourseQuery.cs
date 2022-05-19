@@ -6,11 +6,13 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
     {
         public int Ukprn { get; }
         public int LarsCode { get; }
-        
-        public GetProviderCourseQuery(int ukprn,  int larsCode)
+        public int ProviderCourseId { get; }
+
+        public GetProviderCourseQuery(int ukprn,  int larsCode, int providerCourseId)
         {
             Ukprn = ukprn;
             LarsCode = larsCode;
+            ProviderCourseId = providerCourseId;
         }
     }
 }
