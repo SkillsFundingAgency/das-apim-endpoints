@@ -38,59 +38,5 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
 
             Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
         }
-
-        [Test]
-        public async Task GetAllStandards_ReturnsAppropriateResponse()
-        {
-            var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetAllStandardsResponse
-                { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = 235 } } };
-
-            var apiResponse = new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
-
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetAllStandardsQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(apiResponse);
-
-            var subject = new StandardsController(Mock.Of<ILogger<StandardsController>>(), mediatorMock.Object);
-
-            var response = await subject.GetAllStandards();
-
-            var statusCodeResult = response as IStatusCodeActionResult;
-
-            var okResult = response as OkObjectResult;
-            var actualResponse = okResult.Value;
-            Assert.AreSame(getAllStandardsResponse, actualResponse);
-            Assert.AreEqual((int)HttpStatusCode.OK, statusCodeResult.StatusCode.GetValueOrDefault());
-        }
-
-        [TestCase(HttpStatusCode.BadRequest)]
-        [TestCase(HttpStatusCode.NotFound)]
-        [TestCase(HttpStatusCode.InternalServerError)]
-        [TestCase(HttpStatusCode.ServiceUnavailable)]
-        [TestCase(HttpStatusCode.Gone)]
-        [TestCase(HttpStatusCode.PermanentRedirect)]
-        [TestCase(HttpStatusCode.BadGateway)]
-        public async Task GetAllStandards_NonOkResponse_ReturnsErrorResponse(HttpStatusCode statusCode)
-        {
-            var errorMessage = "Error in retrieval";
-            var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetAllStandardsResponse { Standards = null };
-
-            var apiResponse =
-                new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, statusCode,
-                    errorMessage);
-
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetAllStandardsQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(apiResponse);
-
-            var subject = new StandardsController(Mock.Of<ILogger<StandardsController>>(), mediatorMock.Object);
-
-            var response = await subject.GetAllStandards();
-
-            var statusCodeResult = response as IStatusCodeActionResult;
-
-            Assert.AreEqual((int)statusCode, statusCodeResult.StatusCode.GetValueOrDefault());
-            Assert.AreEqual(errorMessage, ((ObjectResult)statusCodeResult).Value);
-        }
     }
 }
