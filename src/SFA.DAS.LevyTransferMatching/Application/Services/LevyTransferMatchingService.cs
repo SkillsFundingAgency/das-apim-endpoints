@@ -140,9 +140,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request);
         }
 
-        public async Task<ApiResponse<GenerateMatchingCriteriaRequest>> GenerateMatchingCriteria(GenerateMatchingCriteriaRequest request)
+        public async Task<ApiResponse<RecalculateApplicationCostProjectionRequest>> RecalculateApplicationCostProjection(RecalculateApplicationCostProjectionRequest request)
         {
-            return await _levyTransferMatchingApiClient.PostWithResponseCode<GenerateMatchingCriteriaRequest>(request);
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<RecalculateApplicationCostProjectionRequest>(request);
         }
 
         public async Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request)

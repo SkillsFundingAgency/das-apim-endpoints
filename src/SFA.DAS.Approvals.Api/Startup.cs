@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,13 +8,18 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
+using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Api
 {
@@ -48,8 +54,8 @@ namespace SFA.DAS.Approvals.Api
             }
 
             services.AddMediatR(typeof(GetStandardsQuery).Assembly);
-            services.AddServiceRegistration();
-            
+            services.AddServiceRegistration(_configuration);
+
             services
                 .AddMvc(o =>
                 {
@@ -78,7 +84,7 @@ namespace SFA.DAS.Approvals.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -88,6 +94,7 @@ namespace SFA.DAS.Approvals.Api
             app.UseAuthentication();
             
             app.UseRouting();
+            app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

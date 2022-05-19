@@ -78,7 +78,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
             Assert.AreEqual(_command.NumberOfApprentices, createdApplication.NumberOfApprentices);
             Assert.AreEqual(_command.StartDate, createdApplication.StartDate);
             Assert.AreEqual(_command.HasTrainingProvider, createdApplication.HasTrainingProvider);
-            Assert.AreEqual(_command.Amount, createdApplication.Amount);
             CollectionAssert.AreEqual(_command.Sectors, createdApplication.Sectors);
             CollectionAssert.AreEqual(_command.Locations, createdApplication.Locations);
             Assert.AreEqual(_command.AdditionalLocation, createdApplication.AdditionalLocation);
