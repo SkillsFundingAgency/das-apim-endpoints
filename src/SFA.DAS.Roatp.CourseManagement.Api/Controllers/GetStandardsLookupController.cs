@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllStandards;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardsLookup;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
@@ -23,7 +23,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         public async Task<IActionResult> GetAllStandards()
         {
             _logger.LogInformation("Get all active standards");
-            var result = await _mediator.Send(new GetAllStandardsQuery());
+            var result = await _mediator.Send(new GetStandardsLookupQuery());
 
             if (result.StatusCode != HttpStatusCode.OK)
             {

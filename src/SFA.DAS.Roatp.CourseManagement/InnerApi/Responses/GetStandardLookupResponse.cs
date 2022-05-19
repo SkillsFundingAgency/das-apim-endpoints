@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
 {
-    public class GetStandardResponse
+    public class GetStandardLookupResponse
     {
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }

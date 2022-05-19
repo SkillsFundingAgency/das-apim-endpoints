@@ -27,7 +27,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
         {
             _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
 
-            var standard = await _coursesApiClient.Get<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
+            var standard = await _coursesApiClient.Get<GetStandardLookupResponse>(new GetStandardRequest(request.LarsCode));
             if (standard == null)
             {
                 _logger.LogError($"Standard data not found for Lars Code: {request.LarsCode}");

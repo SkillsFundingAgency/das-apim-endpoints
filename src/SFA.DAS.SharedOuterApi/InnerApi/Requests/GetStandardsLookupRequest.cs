@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public class GetAllStandardsRequest : IGetApiRequest
+    public class GetStandardsLookupRequest : IGetApiRequest
     {
         public string GetUrl => "api/courses/standards?filter=None";
     }

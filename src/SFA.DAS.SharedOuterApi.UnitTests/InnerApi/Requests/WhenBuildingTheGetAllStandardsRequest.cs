@@ -10,7 +10,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed()
         {
             //Act
-            var actual = new GetAllStandardsRequest();
+            var actual = new GetStandardsLookupRequest();
 
             //Assert
             Assert.AreEqual("api/courses/standards?filter=None", actual.GetUrl);

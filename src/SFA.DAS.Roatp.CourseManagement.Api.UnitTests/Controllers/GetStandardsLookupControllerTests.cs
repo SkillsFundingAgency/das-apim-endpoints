@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllStandards;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -22,12 +22,12 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         public async Task GetAllStandards_ReturnsAppropriateResponse()
         {
             var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetAllStandardsResponse
-            { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = 235 } } };
+            var getAllStandardsResponse = new GetStandardsLookupResponse
+            { Standards = new List<GetStandardLookupResponse> { new GetStandardLookupResponse { LarsCode = 235 } } };
 
-            var apiResponse = new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
+            var apiResponse = new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
 
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetAllStandardsQuery>(), It.IsAny<CancellationToken>()))
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
             var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);
@@ -53,13 +53,13 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         {
             var errorMessage = "Error in retrieval";
             var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetAllStandardsResponse { Standards = null };
+            var getAllStandardsResponse = new GetStandardsLookupResponse { Standards = null };
 
             var apiResponse =
-                new ApiResponse<GetAllStandardsResponse>(getAllStandardsResponse, statusCode,
+                new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, statusCode,
                     errorMessage);
 
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetAllStandardsQuery>(), It.IsAny<CancellationToken>()))
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
             var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);

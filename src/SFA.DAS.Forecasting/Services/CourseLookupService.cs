@@ -41,7 +41,7 @@ namespace SFA.DAS.Forecasting.Services
 
         private async Task<List<Course>> GetAllCoursesFromApi()
         {
-            var standardsResponseTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetAllStandardsRequest());
+            var standardsResponseTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsLookupRequest());
             var frameworksResponseTask = _coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
 
             await Task.WhenAll(standardsResponseTask, frameworksResponseTask);
