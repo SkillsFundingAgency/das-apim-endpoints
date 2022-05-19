@@ -21,11 +21,9 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.RegisteredProviders.Queries
             _logger = logger;
         }
 
-
         public async Task<ApiResponse<List<RegisteredProviderModel>>> Handle(GetRegisteredProvidersQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all registered providers");
-
             return await _apiClient.GetWithResponseCode<List<RegisteredProviderModel>>(request);
         }
     }
