@@ -14,5 +14,9 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public string Version { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
+        public string StandardInfoUrl { get; set; }
+        public string ContactUsPhoneNumber { get; set; }
+        public string ContactUsEmail { get; set; }
+        public string ContactUsPageUrl { get; set; }
     }
 }
