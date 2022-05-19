@@ -9,6 +9,5 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.RegisteredProviders.Queries
     public class GetRegisteredProvidersQuery : IGetApiRequest, IRequest<ApiResponse<List<RegisteredProviderModel>>>
     {
         public string GetUrl => $"v1/fat-data-export";
-        
     }
 }
