@@ -20,8 +20,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{ukprn}/Course/{larsCode}/providerCourseLocation/{providerCourseId}")]
-        public async Task<IActionResult> GetProviderCourse(int ukprn,int larsCode, int providerCourseId)
+        [Route("{ukprn}/Course/{larsCode}")]
+        public async Task<IActionResult> GetProviderCourse(int ukprn, int larsCode)
         {
             if (ukprn <= 9999999)
             {
@@ -35,13 +35,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-            if (providerCourseId <= 0)
-            {
-                _logger.LogWarning("Invalid provider CourseId {providerCourseId}", providerCourseId);
-                return BadRequest();
-            }
-
-            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode, providerCourseId));
+            var providerCourseResult = await _mediator.Send(new GetProviderCourseQuery(ukprn, larsCode));
 
             if (providerCourseResult == null)
             {

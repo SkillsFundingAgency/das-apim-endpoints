@@ -2,6 +2,7 @@
 {
     public class GetProviderCourseResponse
     {
+        public int ProviderCourseId { get; set; }
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
         public int LarsCode { get; set; }

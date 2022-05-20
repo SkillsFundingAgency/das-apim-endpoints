@@ -25,7 +25,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
             _logger = logger;
         }
 
-        public async Task<GetProviderCourseResult> Handle(GetProviderCourse.GetProviderCourseQuery request, CancellationToken cancellationToken)
+        public async Task<GetProviderCourseResult> Handle(GetProviderCourseQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
 
@@ -44,10 +44,10 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                 return null;
             }
 
-            var providerCourseLocations = await _courseManagementApiClient.Get<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.ProviderCourseId));
+            var providerCourseLocations = await _courseManagementApiClient.Get<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(course.ProviderCourseId));
             if (!providerCourseLocations.Any())
             {
-                _logger.LogError($"Provider course locations not found for ukprn: {request.Ukprn} ProviderCourseId: {request.ProviderCourseId}");
+                _logger.LogError($"Provider course locations not found for ukprn: {request.Ukprn} ProviderCourseId: {course.ProviderCourseId}");
                 return null;
             }
 
