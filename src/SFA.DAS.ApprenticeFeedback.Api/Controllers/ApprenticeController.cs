@@ -1,12 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApprenticeFeedback.Api.ApiRequests;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
@@ -30,7 +26,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
-               
+
                 if (result == null)
                 {
                     return NotFound();
@@ -41,27 +37,6 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             catch (Exception e)
             {
                 return BadRequest();
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateApprentice(CreateApprentice request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new CreateApprenticeCommand
-                {
-                    ApprenticeId = request.ApprenticeId,
-                    ApprenticeshipId = request.ApprenticeshipId
-                });
-
-                return Created("", result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to create apprentice for ApprenticeId: {request.ApprenticeId}");
-
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }
