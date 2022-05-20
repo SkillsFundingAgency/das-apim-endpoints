@@ -22,11 +22,12 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         [TestCase(ValidUkprn, -1, 0, 400)]
         [TestCase(0, 1, 0, 400)]
         [TestCase(-1, 1, 0, 400)]
+        [TestCase(ValidUkprn, ValidLarsCode, 0, 400)]
         [TestCase(ValidUkprn, ValidLarsCode, ValidProviderCourseId, 200)]
         public async Task GetProviderCourse_ReturnsExpectedState(int ukprn,int larsCode, int providerCourseId, int expectedStatusCode)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseQuery>(q => q.LarsCode == larsCode && q.Ukprn==ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderCourseResult { LarsCode = ValidLarsCode});
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseQuery>(q => q.LarsCode == larsCode && q.Ukprn==ukprn && q.ProviderCourseId == providerCourseId), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderCourseResult { LarsCode = ValidLarsCode});
 
             var controller = new ProviderCourseController(Mock.Of<ILogger<ProviderCourseController>>(), mediatorMock.Object);
 
