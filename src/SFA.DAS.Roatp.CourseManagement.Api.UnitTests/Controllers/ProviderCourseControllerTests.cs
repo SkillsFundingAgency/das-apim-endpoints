@@ -21,7 +21,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers
         [TestCase(ValidUkprn, -1, 400)]
         [TestCase(0, 1, 400)]
         [TestCase(-1, 1, 400)]
-        [TestCase(ValidUkprn, ValidLarsCode, 400)]
         [TestCase(ValidUkprn, ValidLarsCode, 200)]
         public async Task GetProviderCourse_ReturnsExpectedState(int ukprn,int larsCode, int expectedStatusCode)
         {
