@@ -25,6 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
             public string Details { get; set; }
             public int NumberOfApprentices { get; set; }
             public int Amount { get; set; }
+            public int TotalAmount { get; set; }
             public DateTime CreatedOn { get; set; }
             public bool IsNamePublic { get; set; }
             public string Status { get; set; }
@@ -39,6 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                     Details = application.Details,
                     NumberOfApprentices = application.NumberOfApprentices,
                     Amount = application.Amount,
+                    TotalAmount = application.TotalAmount,
                     CreatedOn = application.CreatedOn,
                     IsNamePublic = application.IsNamePublic,
                     Status = application.Status
