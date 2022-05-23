@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 {
@@ -12,5 +14,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
         public bool TermsOfUseAccepted { get; set; }
         public bool IsPrivateBetaUser { get; set; }
         public bool ReacceptTermsOfUseRequired { get; set; }
+        public List<ApprenticePreferences> ApprenticePreferences { get; set; }
     }
 }

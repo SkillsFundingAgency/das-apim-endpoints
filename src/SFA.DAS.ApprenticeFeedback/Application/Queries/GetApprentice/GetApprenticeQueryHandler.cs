@@ -34,6 +34,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 IsPrivateBetaUser = result.IsPrivateBetaUser,
                 TermsOfUseAccepted = result.TermsOfUseAccepted,
                 ReacceptTermsOfUseRequired = result.ReacceptTermsOfUseRequired,
+                ApprenticePreferences = result.ApprenticePreferences
             };
         }
     }
