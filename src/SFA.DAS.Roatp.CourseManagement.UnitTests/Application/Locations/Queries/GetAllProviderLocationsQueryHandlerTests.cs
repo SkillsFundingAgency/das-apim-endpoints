@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Locations.Queries
+namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Locations.Queries
 {
     [TestFixture]
     public class GetAllProviderLocationsQueryHandlerTests
