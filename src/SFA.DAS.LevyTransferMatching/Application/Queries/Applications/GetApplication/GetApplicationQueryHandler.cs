@@ -41,8 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
 
             await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask, cohortTask);
 
-            var IsWithdrawableAfterAcceptance = cohortTask.Result.Cohorts.Any(x => x.PledgeApplicationId.HasValue &&
-                                                    x.PledgeApplicationId == request.ApplicationId) &&
+            var IsWithdrawableAfterAcceptance = !cohortTask.Result.Cohorts.Any(x => x.PledgeApplicationId.HasValue && x.PledgeApplicationId == request.ApplicationId) &&
                                                     application.NumberOfApprenticesUsed == 0;
 
             return new GetApplicationResult
