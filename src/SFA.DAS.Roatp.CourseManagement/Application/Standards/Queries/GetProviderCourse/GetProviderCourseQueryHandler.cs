@@ -44,7 +44,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                 return null;
             }
 
-            var providerCourseLocations = await _courseManagementApiClient.Get<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(course.ProviderCourseId));
+            var providerCourseLocations = await _courseManagementApiClient.Get<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
             if (!providerCourseLocations.Any())
             {
                 _logger.LogError($"Provider course locations not found for ukprn: {request.Ukprn} ProviderCourseId: {course.ProviderCourseId}");

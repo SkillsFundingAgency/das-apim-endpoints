@@ -4,12 +4,14 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
     class GetProviderCourseLocationsRequest : IGetApiRequest
     {
-        public string GetUrl => $"providerCourseLocations/{ProviderCourseId}";
-        public int ProviderCourseId { get; }
+        public string GetUrl => $"provider/{Ukprn}/courses/{LarsCode}/locations";
+        public int Ukprn { get; }
+        public int LarsCode { get; }
 
-        public GetProviderCourseLocationsRequest(int providerCourseId)
+        public GetProviderCourseLocationsRequest(int ukprn, int larsCode)
         {
-            ProviderCourseId = providerCourseId;
+            Ukprn = ukprn;
+            LarsCode = larsCode;
         }
     }
 }
