@@ -20,7 +20,6 @@ resources:
     name: SkillsFundingAgency/das-platform-automation
     ref: refs/tags/4.5.11
     endpoint: SkillsFundingAgency
-    branch: id-update-app-role
   pipelines:
   - pipeline: das-apim-endpoints-build
     project: Digital Apprenticeship Service
