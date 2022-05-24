@@ -28,7 +28,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                _logger.LogError($"Active standards not gathered, status code {response.StatusCode}, Error content:[{response.ErrorContent}]");
+                _logger.LogError($"registered providers not gathered, status code {response.StatusCode}, Error content:[{response.ErrorContent}]");
                 return StatusCode((int)response.StatusCode, response.ErrorContent);
             }
 
