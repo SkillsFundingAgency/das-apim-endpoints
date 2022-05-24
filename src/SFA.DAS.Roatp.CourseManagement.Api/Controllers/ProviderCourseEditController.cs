@@ -20,7 +20,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larscode}/update-contact-details")]
+        [Route("providers/{ukprn}/courses/{larsCode}/update-contact-details")]
         public async Task<IActionResult> UpdateProviderCourseContactDetails(int ukprn, int larsCode, UpdateContactDetailsCommand command)
         {
             _logger.LogInformation("Outer API: Request to update course contact details for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
