@@ -1,11 +1,11 @@
-﻿using MediatR;
-using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetGeocode
+namespace SFA.DAS.Recruit.Application.Queries.GetGeoPoint
 {
     public class GetGeoPointQueryHandler : IRequestHandler<GetGeoPointQuery, GetGeoPointQueryResult>
     {
