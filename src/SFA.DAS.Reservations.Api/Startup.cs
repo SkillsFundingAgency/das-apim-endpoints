@@ -54,6 +54,8 @@ namespace SFA.DAS.Reservations.Api
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<LevyTransferMatchingApiConfiguration>(_configuration.GetSection("LevyTransferMatchingApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
+            services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection("CommitmentsV2ApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
 
             services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
             services.AddServiceRegistration();
@@ -71,7 +73,8 @@ namespace SFA.DAS.Reservations.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check");
+                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check")
+                    .AddCheck<CommitmentsV2HealthCheck>("CommitmentsV2 API health check");
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

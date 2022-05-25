@@ -9,5 +9,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public bool TermsOfUseAccepted { get; set; }
+        public bool IsPrivateBetaUser { get; set; }
+        public bool ReacceptTermsOfUseRequired { get; set; }
+
     }
 }

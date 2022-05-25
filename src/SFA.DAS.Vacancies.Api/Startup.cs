@@ -105,7 +105,9 @@ namespace SFA.DAS.Vacancies.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Display advert API", Version = "v1", Description = "Display recruitment adverts from Find an apprenticeship. \n\n **Note.** It is not recommended to use The Display Advert API directly from a browser and as such we have not enabled CORS for this API.  Instead, we recommend you call the API intermittently to retrieve the latest vacancies, store those vacancies in your own data store, and then change your website to read those vacancies from your own data store."});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Display advert API", Version = "v1", Description = @"
+### Display recruitment adverts from Find an apprenticeship. ### 
+**Note.** It is not recommended to use The Display Advert API directly from a browser and as such we have not enabled CORS for this API.  Instead, we recommend you call the API intermittently to retrieve the latest vacancies, store those vacancies in your own data store, and then change your website to read those vacancies from your own data store."});
                 var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
                 c.IncludeXmlComments(filePath);
             });

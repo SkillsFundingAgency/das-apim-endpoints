@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.CourseManagement.Api.AppStart;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api
@@ -48,7 +46,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-
+            services.AddMediatR(GetType().Assembly, typeof(GetAllCoursesQueryHandler).Assembly);
             services.AddHealthChecks();
             services.AddServiceRegistration();
 
@@ -74,7 +72,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())

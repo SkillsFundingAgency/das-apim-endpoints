@@ -11,6 +11,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             AccountId = accountId;
         }
 
-        public string GetUrl => $"/api/accounts/{AccountId}/transfer-status";
+        public string GetUrl => $"api/accounts/{AccountId}/transfer-status";
     }
 }
