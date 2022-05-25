@@ -8,5 +8,6 @@ namespace SFA.DAS.ApprenticePortal.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool TermsOfUseAccepted { get; set; }
+        public bool IsPrivateBetaUser { get; set; }
     }
 }
