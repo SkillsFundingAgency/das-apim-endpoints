@@ -60,7 +60,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                     LocationType = location.LocationType,
                     HasBlockReleaseDeliveryOption = location.HasBlockReleaseDeliveryOption,
                     HasDayReleaseDeliveryOption = location.HasDayReleaseDeliveryOption,
-                    OffersPortableFlexiJob = location.OffersPortableFlexiJob
+                    OffersPortableFlexiJob = location.OffersPortableFlexiJob,
+                    RegionName  = location.RegionName
                 };
                 locations.Add(providerCourseLocationModel);
             }

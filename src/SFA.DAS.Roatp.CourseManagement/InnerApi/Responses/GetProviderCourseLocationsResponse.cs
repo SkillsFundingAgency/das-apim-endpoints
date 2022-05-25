@@ -16,5 +16,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public bool IsImported { get; set; }
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }
+        public string RegionName { get; set; }
     }
 }

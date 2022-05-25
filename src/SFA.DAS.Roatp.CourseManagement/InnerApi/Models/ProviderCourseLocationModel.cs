@@ -7,5 +7,6 @@
         public bool? OffersPortableFlexiJob { get; set; }
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }
+        public string RegionName { get; set; }
     }
 }
