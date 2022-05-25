@@ -21,7 +21,11 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
         {
             var result = await _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
 
-            if (result == null)
+            var apprenticePreferences =
+                await _apiClient.Get<GetApprenticePreferencesResponse>(
+                    new GetApprenticePreferencesRequest(request.ApprenticeId));
+
+            if (result == null || apprenticePreferences.ApprenticePreferences.Count == 0)
                 return null;
 
             return new GetApprenticeResult
@@ -34,7 +38,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 IsPrivateBetaUser = result.IsPrivateBetaUser,
                 TermsOfUseAccepted = result.TermsOfUseAccepted,
                 ReacceptTermsOfUseRequired = result.ReacceptTermsOfUseRequired,
-                ApprenticePreferences = result.ApprenticePreferences
+                ApprenticePreferences = apprenticePreferences.ApprenticePreferences
             };
         }
     }
