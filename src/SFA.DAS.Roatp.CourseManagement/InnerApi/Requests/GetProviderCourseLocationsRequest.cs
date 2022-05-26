@@ -4,7 +4,7 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
     class GetProviderCourseLocationsRequest : IGetApiRequest
     {
-        public string GetUrl => $"provider/{Ukprn}/courses/{LarsCode}/locations";
+        public string GetUrl => $"providers/{Ukprn}/courses/{LarsCode}/locations";
         public int Ukprn { get; }
         public int LarsCode { get; }
 
