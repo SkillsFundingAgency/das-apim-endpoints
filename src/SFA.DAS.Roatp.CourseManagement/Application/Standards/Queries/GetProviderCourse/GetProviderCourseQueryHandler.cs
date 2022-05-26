@@ -35,9 +35,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                 _logger.LogError($"Standard data not found for Lars Code: {request.LarsCode}");
                 return null;
             }
-       
-
-             var course = await _courseManagementApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
+            
+            var course = await _courseManagementApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
             if (course == null)
             {
                 _logger.LogError($"Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}" );

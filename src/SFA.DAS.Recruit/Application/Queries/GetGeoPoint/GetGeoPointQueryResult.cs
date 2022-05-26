@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Recruit.InnerApi.Responses;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetGeocode
+namespace SFA.DAS.Recruit.Application.Queries.GetGeoPoint
 {
     public class GetGeoPointQueryResult
     {
