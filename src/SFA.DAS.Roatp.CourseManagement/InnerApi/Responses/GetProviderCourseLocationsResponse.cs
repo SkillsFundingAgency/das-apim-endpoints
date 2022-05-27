@@ -12,7 +12,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public decimal Radius { get; set; }
         public bool? HasDayReleaseDeliveryOption { get; set; }
         public bool? HasBlockReleaseDeliveryOption { get; set; }
-        public bool? OffersPortableFlexiJob { get; set; }
         public bool IsImported { get; set; }
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }

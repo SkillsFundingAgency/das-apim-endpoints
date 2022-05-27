@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +9,7 @@ using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse
@@ -29,41 +31,36 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
         {
             _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
 
-            var standard = await _coursesApiClient.Get<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
-            if (standard == null)
+            var standardResponse = await _coursesApiClient.GetWithResponseCode<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
+            if (standardResponse.StatusCode != HttpStatusCode.OK)
             {
-                _logger.LogError($"Standard data not found for Lars Code: {request.LarsCode}");
-                return null;
+                var errorMessage =
+                    $"Response status code does not indicate success: {(int)standardResponse.StatusCode} - Standard data not found for Lars Code: {request.LarsCode}";
+                _logger.LogError(errorMessage);
+                throw new HttpRequestContentException(errorMessage, standardResponse.StatusCode, standardResponse.ErrorContent);
             }
-            
-            var course = await _courseManagementApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
-            if (course == null)
+            var standard = standardResponse.Body;
+            var courseResponse = await _courseManagementApiClient.GetWithResponseCode<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
+            if (courseResponse.StatusCode != HttpStatusCode.OK)
             {
-                _logger.LogError($"Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}" );
-                return null;
+                var errorMessage =
+                   $"Response status code does not indicate success: {(int)courseResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
+                _logger.LogError(errorMessage);
+                throw new HttpRequestContentException(errorMessage, courseResponse.StatusCode, courseResponse.ErrorContent);
             }
-
-            var providerCourseLocations = await _courseManagementApiClient.Get<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
-            if (!providerCourseLocations.Any())
+            var course = courseResponse.Body;
+            var providerCourseLocationsResponse = await _courseManagementApiClient.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
+            if (providerCourseLocationsResponse.StatusCode != HttpStatusCode.OK)
             {
-                _logger.LogError($"Provider course locations not found for ukprn: {request.Ukprn} ProviderCourseId: {course.ProviderCourseId}");
-                return null;
+                var errorMessage =
+                   $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
+                _logger.LogError(errorMessage);
+                throw new HttpRequestContentException(errorMessage, providerCourseLocationsResponse.StatusCode, providerCourseLocationsResponse.ErrorContent);
             }
+            var providerCourseLocations = providerCourseLocationsResponse.Body;
 
             List<ProviderCourseLocationModel> locations = new List<ProviderCourseLocationModel>();
-            foreach (var location in providerCourseLocations)
-            {
-                var providerCourseLocationModel = new ProviderCourseLocationModel
-                {
-                    LocationName = location.LocationName,
-                    LocationType = location.LocationType,
-                    HasBlockReleaseDeliveryOption = location.HasBlockReleaseDeliveryOption,
-                    HasDayReleaseDeliveryOption = location.HasDayReleaseDeliveryOption,
-                    OffersPortableFlexiJob = location.OffersPortableFlexiJob,
-                    RegionName  = location.RegionName
-                };
-                locations.Add(providerCourseLocationModel);
-            }
+            locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
             return new GetProviderCourseResult
             {
                 LarsCode = course.LarsCode,
