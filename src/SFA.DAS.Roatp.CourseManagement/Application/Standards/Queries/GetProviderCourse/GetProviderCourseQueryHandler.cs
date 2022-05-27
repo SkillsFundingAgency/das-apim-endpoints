@@ -59,8 +59,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
             }
             var providerCourseLocations = providerCourseLocationsResponse.Body;
 
-            List<ProviderCourseLocationModel> locations = new List<ProviderCourseLocationModel>();
-            locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
+            var locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
             return new GetProviderCourseResult
             {
                 LarsCode = course.LarsCode,
