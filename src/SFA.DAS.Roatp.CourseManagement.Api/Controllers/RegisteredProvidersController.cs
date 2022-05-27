@@ -20,7 +20,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("registered-providers")]
+        [Route("lookup/registered-providers")]
         public async Task<IActionResult> GetRegisteredProviders()
         {
             _logger.LogInformation("Request received for all registered providers from roatp-service");
