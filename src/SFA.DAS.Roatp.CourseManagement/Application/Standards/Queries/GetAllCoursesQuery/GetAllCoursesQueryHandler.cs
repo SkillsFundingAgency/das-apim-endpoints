@@ -41,7 +41,9 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCou
                         CourseName = c.CourseName,
                         Level = c.Level,
                         IsImported = c.IsImported,
-                        LarsCode = c.LarsCode
+                        LarsCode = c.LarsCode,
+                        ApprovalBody = c.ApprovalBody,
+                        Version = c.Version
                     };
                     results.Add(course);
                 }
