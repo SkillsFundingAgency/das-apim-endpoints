@@ -59,7 +59,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body);
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateVacancyRequest>()),
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateTraineeshipVacancyRequest>()),
                 Times.Never);
         }
 
@@ -124,7 +124,7 @@ namespace SFA.DAS.Vacancies.Manage.UnitTests.Application.Recruit.Commands
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body);
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostVacancyRequest>()),
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostTraineeshipVacancyRequest>()),
                 Times.Never);
         }
 
