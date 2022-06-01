@@ -35,7 +35,6 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Standards.Queries
                    .Excluding(c => c.ContactUsPhoneNumber)
                    .Excluding(c => c.ContactUsEmail)
                    .Excluding(c => c.ContactUsPageUrl)
-                   .Excluding(c => c.IsApprovedByRegulator)
                    .Excluding(c => c.IsConfirmed)
                    .Excluding(c => c.HasNationalDeliveryOption)
                    .Excluding(c => c.DeliveryModels)

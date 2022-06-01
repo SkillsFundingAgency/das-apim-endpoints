@@ -43,7 +43,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCou
                         IsImported = c.IsImported,
                         LarsCode = c.LarsCode,
                         ApprovalBody = c.ApprovalBody,
-                        Version = c.Version
+                        Version = c.Version,
+                        IsApprovedByRegulator = c.IsApprovedByRegulator
                     };
                     results.Add(course);
                 }
