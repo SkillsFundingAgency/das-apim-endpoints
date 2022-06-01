@@ -53,7 +53,8 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
                 StandardInfoUrl = course.StandardInfoUrl,
                 ContactUsPhoneNumber = course.ContactUsPhoneNumber,
                 ContactUsEmail = course.ContactUsEmail,
-                ContactUsPageUrl = course.ContactUsPageUrl
+                ContactUsPageUrl = course.ContactUsPageUrl,
+                IsApprovedByRegulator = course.IsApprovedByRegulator
             };
         }
     }
