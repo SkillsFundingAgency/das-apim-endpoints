@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +8,8 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
 {
@@ -23,13 +23,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
             GetProviderCoursesDeliveryModelsQueryHandler handler
         )
         {
-            apiClient.Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>())).ReturnsAsync(apiResponse);
+            apiClient
+                .Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>()))
+                .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.DeliveryModels.Should().BeEquivalentTo(apiResponse.DeliveryModels);
         }
-
 
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_And_When_No_Response_Returned_We_Create_Default(
@@ -38,12 +39,45 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
             GetProviderCoursesDeliveryModelsQueryHandler handler
         )
         {
-            apiClient.Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>())).ReturnsAsync((GetProviderCourseDeliveryModelsResponse)null);
+            apiClient
+                .Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>()))
+                .ReturnsAsync((GetProviderCourseDeliveryModelsResponse)null);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(new { DeliveryModels = new [] {"Regular"} });
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Api_Is_Called_And_When_Null_Response_Returned_We_Create_Default(
+            GetProviderCoursesDeliveryModelQuery query,
+            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
+            GetProviderCoursesDeliveryModelsQueryHandler handler
+        )
+        {
+            apiClient
+                .Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>()))
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsResponse { DeliveryModels = null });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Api_Is_Called_And_When_Empty_Response_Returned_We_Create_Default(
+            GetProviderCoursesDeliveryModelQuery query,
+            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
+            GetProviderCoursesDeliveryModelsQueryHandler handler
+        )
+        {
+            apiClient
+                .Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>()))
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsResponse { DeliveryModels = new string[0] });
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
         }
     }
-
 }

@@ -15,6 +15,8 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Responses
         public string ProviderName { get; set; }
         public string StandardUId { get; set; }
         public string StandardName { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
         public enum FeedbackTargetStatus
         {
             Unknown = 0,
