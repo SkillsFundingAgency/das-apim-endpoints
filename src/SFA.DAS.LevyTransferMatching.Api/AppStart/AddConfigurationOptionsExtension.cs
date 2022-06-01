@@ -23,6 +23,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
+
+            services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
         }
     }
 }
