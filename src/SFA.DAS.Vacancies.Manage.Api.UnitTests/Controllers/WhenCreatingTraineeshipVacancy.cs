@@ -83,7 +83,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_The_Account_Is_Employer_For_The_AccountIdentifier_Then_BadRequest_Returned(
+        public async Task Then_If_The_Account_Is_Employer_For_The_AccountIdentifier_Then_Forbidden_Returned(
             Guid id,
             CreateTraineeshipVacancyRequest request,
             [Greedy] VacancyController controller)
@@ -91,10 +91,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-Product";
 
-            var controllerResult = await controller.CreateTraineeshipVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
+            var controllerResult = await controller.CreateTraineeshipVacancy(accountIdentifier, id, request) as StatusCodeResult; 
 
-            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-            controllerResult.Value.Should().BeEquivalentTo("Employer API keys are not allowed");
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         }
 
         [Test, MoqAutoData]
@@ -144,11 +143,11 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Controllers
             var controllerResult = await controller.CreateTraineeshipVacancy(accountIdentifier, id, request) as ObjectResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-            controllerResult.Value.Should().Be(@"{""errors"":[{""field"":""standardLarsCode"",""message"":""Training programme a does not exist.""},{""field"":""alternativeEmployerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}");
+            controllerResult.Value.Should().Be(@"{""errors"":[{""field"":""RouteId"",""message"":""Training programme a does not exist.""},{""field"":""alternativeEmployerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}");
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_SecurityException_Bad_Request_Is_Returned(
+        public async Task Then_If_SecurityException_Then_Forbidden_Returned(
              int ukprn,
             Guid id,
             string errorContent,

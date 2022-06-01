@@ -6,7 +6,7 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
     public class PostValidateTraineeshipVacancyRequest : IPostApiRequest
     {
         private readonly Guid _id;
-        private readonly long? _ukprn;
+        private readonly int _ukprn;
         private readonly string _email;
 
         public PostValidateTraineeshipVacancyRequest(Guid id, PostTraineeshipVacancyRequestData postVacancyRequestData)

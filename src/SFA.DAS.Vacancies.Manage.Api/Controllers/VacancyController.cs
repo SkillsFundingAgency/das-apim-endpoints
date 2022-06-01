@@ -148,11 +148,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
                     case AccountType.Provider when account.Ukprn == null:
                         return new BadRequestObjectResult("Account Identifier is not in the correct format.");
                     case AccountType.Employer:
-                        return new BadRequestObjectResult("Employer API keys are not allowed");
+                        return new StatusCodeResult((int)HttpStatusCode.Forbidden);
                 }
 
                 var postVacancyRequestData = (PostTraineeshipVacancyRequestData)request;
                 postVacancyRequestData.User.Ukprn = account.Ukprn.Value;
+                postVacancyRequestData.EmployerAccountId = account.AccountHashedId;
 
                 var response = await _mediator.Send(new CreateTraineeshipVacancyCommand
                 {
@@ -167,7 +168,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Controllers
             catch (HttpRequestContentException e)
             {
                 var content = e.ErrorContent
-                    .Replace("RouteId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
                     .Replace(@"EmployerName""", @"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
 
                 return StatusCode((int)e.StatusCode, content);

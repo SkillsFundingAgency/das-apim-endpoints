@@ -9,7 +9,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
     public class WhenMappingCreateTraineeshipVacancyRequestToMediatorCommand
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped_For_Employer(CreateTraineeshipVacancyRequest source)
+        public void Then_The_Fields_Are_Correctly_Mapped_For_Providers(CreateTraineeshipVacancyRequest source)
         {
             var actual = (PostTraineeshipVacancyRequestData)source;
 

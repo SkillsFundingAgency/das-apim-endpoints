@@ -90,12 +90,12 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         [JsonProperty("wageType")]
         public WageType WageType { get; set; }
         [JsonProperty("durationUnit")]
-        public DurationUnit DurationUnit { get; set; }
+        public TraineeshipDurationUnit DurationUnit { get; set; }
     }
     public enum TraineeshipDurationUnit
     {
-        Month,
-        Year
+        Week,
+        Month
     }
 
     public enum TraineeshipEmployerNameOption

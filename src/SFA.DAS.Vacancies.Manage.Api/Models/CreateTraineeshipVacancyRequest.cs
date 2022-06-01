@@ -21,7 +21,6 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 Title = source.Title,
                 Description = source.Description,
                 RouteId = source.RouteId,
-                EmployerAccountId = source.EmployerAccountId,
                 LegalEntityName = source.LegalEntityName,
                 User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 EmployerName = source.EmployerName,
@@ -56,23 +55,20 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public TraineeshipContractingParties ContractingParties { get; set; }
 
         /// <summary>
-        /// The name of the vacancy or job role being advertised. Must contain the word apprentice or apprenticeship and be less than 100 characters.
+        /// The name of the vacancy or job role being advertised. Must contain the word trainee or traineeship and be less than 100 characters.
         /// </summary>
-        /// <example>Apprenticeship in Advanced Baking</example>
+        /// <example>Traineeship in Advanced Baking</example>
         [JsonProperty("title", Required = Required.Always)]
         public string Title { get; set; }
 
         /// <summary>
-        /// What activities and duties will the apprentice be undertaking during the apprenticeship. Must not exceed 4000 characters
+        /// What activities and duties will the trainee be undertaking during the traineeship. Must not exceed 4000 characters
         /// </summary>
         [JsonProperty("description", Required = Required.Always)]
         public string Description { get; set; }
 
         [JsonProperty("routeId", Required = Required.Always)]
         public int RouteId { get; set; }
-
-        [JsonProperty("employerAccountId", Required = Required.Always)]
-        public string EmployerAccountId { get; set; }
 
         [JsonProperty("legalEntityName", Required = Required.Always)]
         public string LegalEntityName { get; set; }
@@ -82,27 +78,27 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("alternativeEmployerName")]
         public string EmployerName { get; set; }
         /// <summary>
-        /// A short description of the apprenticeship. Must not exceed 350 characters
+        /// A short description of the traineeship. Must not exceed 350 characters
         /// </summary>
         [JsonProperty("shortDescription", Required = Required.Always)]
         public string ShortDescription { get; set; }
         /// <summary>
-        /// The number of apprentices that will be recruited into the role. Add as a numerical value, must be at least 1.
+        /// The number of trainees that will be recruited into the role. Add as a numerical value, must be at least 1.
         /// </summary>
         [JsonProperty("numberOfPositions", Required = Required.Always)]
         public int NumberOfPositions { get; set; }
         /// <summary>
-        /// What an apprentice can expect in terms of career progression after the apprenticeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 4000 characters
+        /// What a trainee can expect in terms of career progression after the traineeship ends. You may want to mention specific routes they could take once qualified. Must not exceed 4000 characters
         /// </summary>
         [JsonProperty("outcomeDescription", Required = Required.Always)]
         public string OutcomeDescription { get; set; }
         /// <summary>
-        /// The last date for receiving new applications. This must be before  the start date of the apprenticeship. Must be a valid date. Closing date for applications cannot be today or earlier.
+        /// The last date for receiving new applications. This must be before  the start date of the traineeship. Must be a valid date. Closing date for applications cannot be today or earlier.
         /// </summary>
         [JsonProperty("closingDate", Required = Required.Always)]
         public DateTime ClosingDate { get; set; }
         /// <summary>
-        /// The planned start date of the apprenticeship. This must be after the closing date. Must be a valid date. Possible apprenticeship start date can't be today or earlier. We advise using a date more than two weeks from now.
+        /// The planned start date of the traineeship. This must be after the closing date. Must be a valid date. Possible traineeship start date can't be today or earlier. We advise using a date more than two weeks from now.
         /// </summary>
         [JsonProperty("startDate", Required = Required.Always)]
         public DateTime StartDate { get; set; }
@@ -112,12 +108,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         [JsonProperty("employerDescription", Required = Required.Always)]
         public string EmployerDescription { get; set; }
         /// <summary>
-        /// The training the apprentice will undertake and the qualification they will get at the end of the apprenticeship. Add any certifications and levels of qualifications. Must not exceed 4000 characters. 
+        /// The training the trainee will undertake and the qualification they will get at the end of the traineeship. Add any certifications and levels of qualifications. Must not exceed 4000 characters. 
         /// </summary>
         [JsonProperty("trainingDescription", Required = Required.Always)]
         public string TrainingDescription { get; set; }
         /// <summary>
-        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time.
+        /// Where the traineeship will be based, this could be a different location to the organisation address. Use the place the trainee will spend most of their time.
         /// </summary>
         [JsonProperty("address")]
         public CreateTraineeshipVacancyAddress Address { get; set; }
@@ -162,7 +158,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
 
 
     /// <summary>
-    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode.
+    /// Address for the traineeship advert. Must contain address line 1 and a valid postcode.
     /// </summary>
     public class CreateTraineeshipVacancyAddress
     {
@@ -210,24 +206,24 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
     {
         public static implicit operator PostCreateTraineeshipVacancyWageData(CreateTraineeshipVacancyWage source)
         {
-            Enum.TryParse(typeof(InnerApi.Requests.DurationUnit), source.DurationUnit.ToString(), true,
+            Enum.TryParse(typeof(InnerApi.Requests.TraineeshipDurationUnit), source.DurationUnit.ToString(), true,
                 out var durationUnit);
             return new PostCreateTraineeshipVacancyWageData
             {
                 WeeklyHours = source.WeeklyHours,
                 Duration = source.Duration,
                 WorkingWeekDescription = source.WorkingWeekDescription,
-                DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
+                DurationUnit = (InnerApi.Requests.TraineeshipDurationUnit)durationUnit,
             };
         }
 
         /// <summary>
-        /// The total number of hours per week. This must include the 20% of time the apprentice will spend training, which could be offsite. Needs to be greater than 16 and less than 48.
+        /// The total number of hours per week. This must include the 20% of time the trainee will spend training, which could be offsite. Needs to be greater than 16 and less than 48.
         /// </summary>
         [JsonProperty("weeklyHours", Required = Required.Always)]
         public decimal WeeklyHours { get; set; }
         /// <summary>
-        /// Expected duration must be at least 12 months. The minimum duration of each apprenticeship is based on the apprentice working at least 30 hours a week, including any off-the-job training they undertake.
+        /// Expected duration must be at least 12 months. The minimum duration of each traineeship is based on the trainee working at least 30 hours a week, including any off-the-job training they undertake.
         /// Extend the minimum duration when the working week is fewer than 30 hours using the following formula:
         /// 12 x 30/average weekly hours = new minimum duration in months; or 52 x 30/average weekly hours = new minimum duration in weeks
         /// </summary>
@@ -240,7 +236,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string WorkingWeekDescription { get; set; }
 
         /// <summary>
-        /// Used with <see cref="Duration"/> for duration in months or years
+        /// Used with <see cref="Duration"/> for duration in weeks or months
         /// </summary>
         [JsonProperty("durationUnit", Required = Required.Always)]
         public TraineeshipDurationUnit DurationUnit { get; set; }
@@ -265,7 +261,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
     public class TraineeshipContractingParties
     {
         /// <summary>
-        /// The UKPRN of the training provider you will be working with for this apprenticeship.
+        /// The UKPRN of the training provider you will be working with for this traineeship.
         /// </summary>
         [JsonProperty("ukprn")]
         public int Ukprn { get; set; }
@@ -278,8 +274,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
 
     public enum TraineeshipDurationUnit
     {
-        Month,
-        Year
+        Week,
+        Month
     }
 
     public enum TraineeshipEmployerNameOption
