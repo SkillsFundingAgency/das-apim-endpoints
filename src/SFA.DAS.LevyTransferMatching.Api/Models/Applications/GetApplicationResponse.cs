@@ -33,6 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
         public int AmountUsed { get; set; }
         public int NumberOfApprenticesUsed { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool IsWithdrawableAfterAcceptance { get; set; }
 
         public static implicit operator GetApplicationResponse(GetApplicationResult result)
         {
@@ -63,7 +64,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 SenderEmployerAccountId = result.SenderEmployerAccountId,
                 AmountUsed = result.AmountUsed,
                 NumberOfApprenticesUsed = result.NumberOfApprenticesUsed,
-                AutomaticApproval = result.AutomaticApproval
+                AutomaticApproval = result.AutomaticApproval,
+                IsWithdrawableAfterAcceptance = result.IsWithdrawableAfterAcceptance
             };
         }
     }
