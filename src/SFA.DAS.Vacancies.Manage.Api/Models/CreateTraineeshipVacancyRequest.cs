@@ -32,7 +32,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
                 EmployerDescription = source.EmployerDescription,
                 TrainingDescription = source.TrainingDescription,
                 Address = source.Address,
-                Wage = source.Wage,
+                Wage = source.DurationAndWorkingHours,
                 Skills = source.Skills,
                 OutcomeDescription = source.OutcomeDescription,
                 EmployerNameOption = (InnerApi.Requests.TraineeshipEmployerNameOption)employerNameOption,
@@ -57,7 +57,7 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         /// <summary>
         /// The name of the vacancy or job role being advertised. Must contain the word trainee or traineeship and be less than 100 characters.
         /// </summary>
-        /// <example>Traineeship in Advanced Baking</example>
+        /// <example>Traineeship in Construction</example>
         [JsonProperty("title", Required = Required.Always)]
         public string Title { get; set; }
 
@@ -66,7 +66,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         /// </summary>
         [JsonProperty("description", Required = Required.Always)]
         public string Description { get; set; }
-
+        /// <summary>
+        /// The route Id of the traineeship. Can be taken from `GET referencedata/routes`
+        /// </summary>
         [JsonProperty("routeId", Required = Required.Always)]
         public int RouteId { get; set; }
 
@@ -117,8 +119,8 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         /// </summary>
         [JsonProperty("address")]
         public CreateTraineeshipVacancyAddress Address { get; set; }
-        [JsonProperty("wage", Required = Required.Always)]
-        public CreateTraineeshipVacancyWage Wage { get; set; }
+        [JsonProperty("durationAndWorkingHours", Required = Required.Always)]
+        public CreateTraineeshipDurationAndWorkingHours DurationAndWorkingHours { get; set; }
         /// <summary>
         /// Add the desired skills and personal qualities you’d like the applicant to have in order for you to consider them. There is a selection available from `GET referencedata/skills` or you can add your own. You must include at least one desired skill
         /// </summary>
@@ -202,9 +204,9 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         public string Postcode { get; set; }
     }
 
-    public class CreateTraineeshipVacancyWage
+    public class CreateTraineeshipDurationAndWorkingHours
     {
-        public static implicit operator PostCreateTraineeshipVacancyWageData(CreateTraineeshipVacancyWage source)
+        public static implicit operator PostCreateTraineeshipVacancyWageData(CreateTraineeshipDurationAndWorkingHours source)
         {
             Enum.TryParse(typeof(InnerApi.Requests.TraineeshipDurationUnit), source.DurationUnit.ToString(), true,
                 out var durationUnit);
@@ -218,14 +220,12 @@ namespace SFA.DAS.Vacancies.Manage.Api.Models
         }
 
         /// <summary>
-        /// The total number of hours per week. This must include the 20% of time the trainee will spend training, which could be offsite. Needs to be greater than 16 and less than 48.
+        /// The total number of hours per week.
         /// </summary>
         [JsonProperty("weeklyHours", Required = Required.Always)]
         public decimal WeeklyHours { get; set; }
         /// <summary>
-        /// Expected duration must be at least 12 months. The minimum duration of each traineeship is based on the trainee working at least 30 hours a week, including any off-the-job training they undertake.
-        /// Extend the minimum duration when the working week is fewer than 30 hours using the following formula:
-        /// 12 x 30/average weekly hours = new minimum duration in months; or 52 x 30/average weekly hours = new minimum duration in weeks
+        /// Expected duration must be at least 6 weeks and up to 12 months.
         /// </summary>
         [JsonProperty("duration", Required = Required.Always)]
         public int Duration { get; set; }

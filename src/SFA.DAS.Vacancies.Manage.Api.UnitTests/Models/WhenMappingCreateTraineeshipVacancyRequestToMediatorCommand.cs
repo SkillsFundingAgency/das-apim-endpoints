@@ -16,12 +16,13 @@ namespace SFA.DAS.Vacancies.Manage.Api.UnitTests.Models
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c => c.SubmitterContactDetails)
                 .Excluding(c => c.ContractingParties)
+                .Excluding(c => c.DurationAndWorkingHours)
             );
             actual.AccountLegalEntityPublicHashedId.Should().Be(source.ContractingParties.AccountLegalEntityPublicHashedId);
             actual.User.Ukprn.Should().Be(source.ContractingParties.Ukprn);
             actual.User.Email.Should().Be(source.SubmitterContactDetails.Email);
             actual.User.Name.Should().Be(source.SubmitterContactDetails.Name);
-
+            actual.Wage.Should().BeEquivalentTo(source.DurationAndWorkingHours);
         }
     }
 }
