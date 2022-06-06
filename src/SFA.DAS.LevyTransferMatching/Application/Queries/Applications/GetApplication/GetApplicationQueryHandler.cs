@@ -3,7 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.CommitmentsV2;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses.CommitmentsV2;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication
 {
@@ -11,11 +15,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IReferenceDataService _referenceDataService;
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
 
-        public GetApplicationQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService)
+        public GetApplicationQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _referenceDataService = referenceDataService;
+            _commitmentsV2ApiClient = commitmentsV2ApiClient;
         }
 
         public async Task<GetApplicationResult> Handle(GetApplicationQuery request, CancellationToken cancellationToken)
@@ -31,9 +37,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
             var allLevelsTask = _referenceDataService.GetLevels();
             var allSectorsTask = _referenceDataService.GetSectors();
             var pledgeTask = _levyTransferMatchingService.GetPledge(application.PledgeId);
+            var cohortTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
 
-            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask);
-            
+            await Task.WhenAll(allJobRolesTask, allLevelsTask, allSectorsTask, pledgeTask, cohortTask);
+
+            var IsWithdrawableAfterAcceptance = !cohortTask.Result.Cohorts.Any(x => x.PledgeApplicationId.HasValue && x.PledgeApplicationId == request.ApplicationId) &&
+                                                    application.NumberOfApprenticesUsed == 0;
+
             return new GetApplicationResult
             {
                 StandardTitle = application.StandardTitle,
@@ -61,7 +71,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                 SenderEmployerAccountId = application.SenderEmployerAccountId,
                 AmountUsed = application.AmountUsed,
                 NumberOfApprenticesUsed = application.NumberOfApprenticesUsed,
-                AutomaticApproval = application.AutomaticApproval
+                AutomaticApproval = application.AutomaticApproval,
+                IsWithdrawableAfterAcceptance = IsWithdrawableAfterAcceptance
             };
         }
     }

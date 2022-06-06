@@ -6,7 +6,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
+using SFA.DAS.LevyTransferMatching.InnerApi.Requests.CommitmentsV2;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
+using SFA.DAS.LevyTransferMatching.InnerApi.Responses.CommitmentsV2;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -30,8 +32,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             GetApplicationQuery getApplicationQuery,
             GetApplicationResponse getApplicationResponse,
             GetStandardsListItem getStandardsListItem,
+            GetCohortsResponse getCohortsResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiClient,
             GetApplicationQueryHandler getApplicationQueryHandler)
         {
             mockLevyTransferMatchingService
@@ -41,6 +45,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             mockCoursesApiClient
                 .Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(y => y.GetUrl.Contains(getApplicationResponse.StandardId))))
                 .ReturnsAsync(getStandardsListItem);
+
+            mockCommitmentsV2ApiClient
+                .Setup(x => x.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(y => y.GetUrl.Contains(getApplicationQuery.AccountId.ToString()))))
+                .ReturnsAsync(getCohortsResponse);
             
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
