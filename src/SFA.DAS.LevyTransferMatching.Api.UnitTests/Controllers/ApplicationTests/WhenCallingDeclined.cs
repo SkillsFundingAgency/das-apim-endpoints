@@ -36,6 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
 
         [Test, MoqAutoData]
         public async Task And_Result_Doesnt_Exist_Then_Returns_NotFound(
+            long accountId,
             int applicationId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationsController applicationController)
@@ -44,7 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 .Setup(x => x.Send(It.Is<GetDeclinedQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetDeclinedResult)null);
 
-            var controllerResult = await applicationController.Application(applicationId);
+            var controllerResult = await applicationController.Application(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);

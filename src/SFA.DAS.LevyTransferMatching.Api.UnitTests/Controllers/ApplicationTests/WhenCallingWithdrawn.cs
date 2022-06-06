@@ -44,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 .Setup(x => x.Send(It.Is<GetWithdrawnQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetWithdrawnQueryResult)null);
 
-            var controllerResult = await applicationController.Application(applicationId);
+            var controllerResult = await applicationController.Withdrawn(applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);

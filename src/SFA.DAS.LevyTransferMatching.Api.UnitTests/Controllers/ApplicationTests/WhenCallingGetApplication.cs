@@ -16,6 +16,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
     {
         [Test, MoqAutoData]
         public async Task And_Application_Exists_Then_Returns_Ok_And_Application(
+            long accountId,
             int applicationId,
             GetApplicationResult getApplicationResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -25,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getApplicationResult);
 
-            var controllerResult = await applicationController.Application(applicationId);
+            var controllerResult = await applicationController.Application(accountId, applicationId);
             var okObjectResult = controllerResult as OkObjectResult;
             var getApplicationResponse = okObjectResult.Value as GetApplicationResponse;
 
@@ -36,6 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
 
         [Test, MoqAutoData]
         public async Task And_Application_Doesnt_Exist_Then_Returns_NotFound(
+            long accountId,
             int applicationId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationsController applicationController)
@@ -44,7 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GetApplicationResult)null);
 
-            var controllerResult = await applicationController.Application(applicationId);
+            var controllerResult = await applicationController.Application(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.IsNotNull(controllerResult);
