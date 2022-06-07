@@ -68,7 +68,7 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Standards.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ThrowsException(
+        public void Handle_CallsInnerApi_ThrowsException(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             GetAllCoursesQuery query,
             GetAllCoursesQueryHandler sut)
