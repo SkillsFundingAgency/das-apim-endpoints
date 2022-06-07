@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
     public class ProviderCourseController : ControllerBase
     {
         private readonly ILogger<ProviderCourseController> _logger;
@@ -20,7 +19,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{ukprn}/Course/{larsCode}")]
+        [Route("providers/{ukprn}/courses/{larsCode}")]
         public async Task<IActionResult> GetProviderCourse(int ukprn, int larsCode)
         {
             if (ukprn <= 9999999)
