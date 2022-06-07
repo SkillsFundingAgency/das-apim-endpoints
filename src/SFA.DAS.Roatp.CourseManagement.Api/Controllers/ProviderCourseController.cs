@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCourse;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 {
