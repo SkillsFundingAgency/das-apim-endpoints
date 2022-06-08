@@ -35,7 +35,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 LastName = result.LastName,
                 DateOfBirth = result.DateOfBirth,
                 Email = result.Email,
-                IsPrivateBetaUser = result.IsPrivateBetaUser,
                 TermsOfUseAccepted = result.TermsOfUseAccepted,
                 ReacceptTermsOfUseRequired = result.ReacceptTermsOfUseRequired,
                 ApprenticePreferences = apprenticePreferences.ApprenticePreferences

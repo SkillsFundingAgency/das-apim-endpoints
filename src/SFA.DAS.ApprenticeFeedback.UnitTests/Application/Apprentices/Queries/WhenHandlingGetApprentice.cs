@@ -33,7 +33,6 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
             actual.LastName.Should().Be(apprenticeResponse.LastName);
             actual.DateOfBirth.Should().Be(apprenticeResponse.DateOfBirth);
             actual.Email.Should().Be(apprenticeResponse.Email);
-            actual.IsPrivateBetaUser.Should().Be(apprenticeResponse.IsPrivateBetaUser);
             actual.TermsOfUseAccepted.Should().Be(apprenticeResponse.TermsOfUseAccepted);
             actual.ReacceptTermsOfUseRequired.Should().Be(apprenticeResponse.ReacceptTermsOfUseRequired);
             actual.ApprenticePreferences.Should().BeEquivalentTo(apprenticePreferencesResponse.ApprenticePreferences);
