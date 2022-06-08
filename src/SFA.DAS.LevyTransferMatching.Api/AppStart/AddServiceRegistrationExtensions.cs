@@ -35,6 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
         }
     }
 }

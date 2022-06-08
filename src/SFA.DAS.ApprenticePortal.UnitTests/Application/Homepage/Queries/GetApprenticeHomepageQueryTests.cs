@@ -24,8 +24,7 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
 
         private Guid apprenticeId = Guid.NewGuid();
         private string firstName = "testFirstName", lastName = "testLastName", courseName = "course1", employerName = "employer1";
-        private bool isPrivateBetaUser = true;
-
+        
         [Test, MoqAutoData]
         public async Task TestGetApprenticeHomepageQuery(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> accountsApiClient,
@@ -56,7 +55,6 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
             Assert.AreEqual(result.apprenticeHomepage.Apprentice.LastName, lastName);
             Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.CourseName, courseName);
             Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.EmployerName, employerName);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.IsPrivateBetaUser, isPrivateBetaUser);
         }
 
         [Test, MoqAutoData]
@@ -96,7 +94,6 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
                 .With(p => p.ApprenticeId, apprenticeId)
                 .With(p => p.FirstName, firstName)
                 .With(p => p.LastName, lastName)
-                .With(p => p.IsPrivateBetaUser, isPrivateBetaUser)
                 .Create();
         }
 
