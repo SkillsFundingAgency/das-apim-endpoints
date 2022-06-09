@@ -14,7 +14,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Standards.Queries
+namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Queries
 {
     [TestFixture]
     public class GetAllCoursesQueryHandlerTests
@@ -68,7 +68,7 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Standards.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ThrowsException(
+        public void Handle_CallsInnerApi_ThrowsException(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             GetAllCoursesQuery query,
             GetAllCoursesQueryHandler sut)
