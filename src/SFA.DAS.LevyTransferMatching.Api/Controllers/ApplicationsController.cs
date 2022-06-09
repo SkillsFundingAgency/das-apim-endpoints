@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationAcceptance;
+using SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetDeclined;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithdrawalConfirmation;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithdrawn;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
@@ -47,12 +49,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Application(int applicationId)
+        public async Task<IActionResult> Application(long accountId, int applicationId)
         {
             try
             {
                 var result = await _mediator.Send(new GetApplicationQuery()
                 {
+                    AccountId = accountId,
                     ApplicationId = applicationId,
                 });
 
@@ -175,6 +178,59 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get {nameof(Withdrawn)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [Route("/accounts/{accountId}/applications/{applicationId}/withdrawal-confirmation")]
+        public async Task<IActionResult> GetWithdrawalConfirmation(long accountId, int applicationId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetWithdrawalConfirmationQuery()
+                {
+                    ApplicationId = applicationId
+                });
+
+                if (result != null)
+                {
+                    return Ok((GetWithdrawalConfirmationResponse)result);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get {nameof(GetWithdrawalConfirmation)} result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [Route("/accounts/{accountId}/applications/{applicationId}/withdrawal-confirmation")]
+        public async Task<IActionResult> WithdrawApplicationAfterAcceptance([FromBody] WithdrawApplicationAfterAcceptanceRequest request, long accountId, int applicationId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new WithdrawApplicationAfterAcceptanceCommand
+                {
+                    AccountId = accountId,
+                    ApplicationId = applicationId,
+                    UserId = request.UserId,
+                    UserDisplayName = request.UserDisplayName
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to withdraw application after acceptance");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

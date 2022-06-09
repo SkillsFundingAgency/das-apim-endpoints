@@ -6,11 +6,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
-using SFA.DAS.LevyTransferMatching.Application.Commands.BackfillApplicationMatchingCriteria;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Extensions;
@@ -188,11 +189,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
-        [Route("backfill-application-matching-criteria")]
+        [Route("recalculate-application-cost-projections")]
         [HttpPost]
-        public async Task<IActionResult> BackfillApplicationCostingProjections()
+        public async Task<IActionResult> RecalculateApplicationCostProjections()
         {
-            await _mediator.Send(new BackfillApplicationMatchingCriteriaCommand());
+            await _mediator.Send(new RecalculateApplicationCostProjectionsCommand());
             return Ok();
         }
 
@@ -203,6 +204,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             var result = await _mediator.Send(new GetPledgeOptionsEmailDataQuery());
 
             return Ok(result);
+        }
+
+        [Route("application-withdrawn-after-acceptance")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationWithdrawnAfterAcceptance(ApplicationWithdrawnAfterAcceptanceRequest request)
+        {
+            await _mediator.Send(new ApplicationWithdrawnAfterAcceptanceCommand
+            {
+                ApplicationId = request.ApplicationId,
+                PledgeId = request.PledgeId,
+                Amount = request.Amount
+            });
+
+            return Ok();
         }
     }
 }
