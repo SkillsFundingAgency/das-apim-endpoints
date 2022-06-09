@@ -19,6 +19,8 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public bool? HasNationalDeliveryOption { get; set; }
         public bool? HasHundredPercentEmployerDeliveryOption { get; set; }
         public List<DeliveryModel> DeliveryModels { get; set; } = new List<DeliveryModel>();
+        public string Version { get; set; }
+        public string ApprovalBody { get; set; }
     }
     public enum DeliveryModel
     {
