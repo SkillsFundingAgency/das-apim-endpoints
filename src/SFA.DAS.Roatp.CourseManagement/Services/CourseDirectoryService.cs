@@ -21,7 +21,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Services
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var response = await _httpClient.GetAsync(new Uri("api/bulk/providers", UriKind.Relative));
+            var response = await _httpClient.GetAsync("");
             _logger.LogInformation($"It took {stopWatch.Elapsed.TotalMilliseconds} milliseconds to get back a response from course directory");
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
