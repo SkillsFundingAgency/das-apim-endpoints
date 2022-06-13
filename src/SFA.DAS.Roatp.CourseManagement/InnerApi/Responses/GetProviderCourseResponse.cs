@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
+﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseResponse
     {
+        public int ProviderCourseId { get; set; }
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
         public int LarsCode { get; set; }
