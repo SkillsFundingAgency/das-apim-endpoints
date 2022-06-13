@@ -7,7 +7,7 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
     {
         public int Ukprn { get; }
         public int LarsCode { get; }
-        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/update-confirm-regulated-standard";
+        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/update-approved-by-regulator";
 
         public UpdateConfirmRegulatedStandardRequest(UpdateConfirmRegulatedStandardCommand data)
         {

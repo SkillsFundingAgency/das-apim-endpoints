@@ -37,7 +37,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larsCode}/update-confirm-regulated-standard")]
+        [Route("providers/{ukprn}/courses/{larsCode}/update-approved-by-regulator")]
         public async Task<IActionResult> UpdateProviderCourseConfirmRegulatedStandard(int ukprn, int larsCode, UpdateConfirmRegulatedStandardCommand command)
         {
             _logger.LogInformation("Outer API: Request to update confirm regulated standard for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
