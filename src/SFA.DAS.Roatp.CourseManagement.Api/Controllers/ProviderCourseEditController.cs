@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateConfirmRegulatedStandard;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using System.Net;
 using System.Threading.Tasks;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
 
         [HttpPost]
         [Route("providers/{ukprn}/courses/{larsCode}/update-approved-by-regulator")]
-        public async Task<IActionResult> UpdateProviderCourseConfirmRegulatedStandard(int ukprn, int larsCode, UpdateConfirmRegulatedStandardCommand command)
+        public async Task<IActionResult> UpdateProviderCourseApprovedByRegulator(int ukprn, int larsCode, UpdateApprovedByRegulatorCommand command)
         {
             _logger.LogInformation("Outer API: Request to update confirm regulated standard for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             command.Ukprn = ukprn;

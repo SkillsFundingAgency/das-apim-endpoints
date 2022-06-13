@@ -1,18 +1,18 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateConfirmRegulatedStandard;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Requests
 {
     [TestFixture]
-    public class UpdateConfirmRegulatedStandardRequestTests
+    public class UpdateApprovedByRegulatorRequestTests
     {
         [Test, AutoData]
-        public void Constructor_ConstructsRequest(UpdateConfirmRegulatedStandardCommand data)
+        public void Constructor_ConstructsRequest(UpdateApprovedByRegulatorCommand data)
         {
-            var request = new UpdateConfirmRegulatedStandardRequest(data);
+            var request = new UpdateApprovedByRegulatorRequest(data);
 
             request.Data.Should().Be(data);
             request.Ukprn.Should().Be(data.Ukprn);
