@@ -70,18 +70,17 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 
             foreach (var vacanciesItem in vacanciesTask.Result.TraineeshipVacancies)
             {
-                //if (vacanciesItem.RouteId == null)
-                //{
-                //    continue;
-                //}
+                if (vacanciesItem.RouteId == null)
+                {
+                    continue;
+                }
 
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindATraineeshipBaseUrl}/traineeship/reference/{vacanciesItem.VacancyReference}";
             }
 
             return new GetTraineeshipVacanciesQueryResult()
             {
-                //Vacancies = vacanciesTask.Result.TraineeshipVacancies.Where(c => c.RouteId != null).ToList(),
-                Vacancies = vacanciesTask.Result.TraineeshipVacancies,
+                Vacancies = vacanciesTask.Result.TraineeshipVacancies.Where(c => c.RouteId != null).ToList(),
                 Total = vacanciesTask.Result.Total,
                 TotalFiltered = vacanciesTask.Result.TotalFound,
                 TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0

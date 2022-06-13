@@ -40,7 +40,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public string EmployerName { get; set; }
 
         [JsonProperty("hoursPerWeek")]
-        public decimal? HoursPerWeek { get; set; }
+        public decimal HoursPerWeek { get; set; }
 
         [JsonProperty("isDisabilityConfident")]
         public bool IsDisabilityConfident { get; set; }
