@@ -126,6 +126,106 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
-        
+
+
+        /// <summary>
+        /// GET list of vacancies
+        /// </summary>
+        /// <remarks>
+        /// ### Returns list of Vacancies based on your subscription. ###
+        /// - If `FilterBySubscription` is `true` then for employer subscriptions this will automatically filter by your account.
+        /// - If `FilterBySubscription` is `true` then for providers it will automatically filter by UKPRN.
+        /// - If you provide a `AccountLegalEntityPublicHashedId` it must come from `GET accountslegalentities` or a forbidden result will be returned.
+        /// ### Examples ###
+        /// Get all of a subscription's vacancies sorted by age descending (oldest first):
+        /// ```
+        /// /vacancy?Sort=AgeDesc&amp;FilterBySubscription=true
+        /// ```
+        /// Get all vacancies within a 20 mile radius of Coventry (52.408056, -1.510556), sorted by distance (closest first) for standards 123 and 345:
+        /// ```
+        /// /vacancy?Lat=52.408056&amp;Lon=-1.510556&amp;Sort=DistanceAsc&amp;DistanceInMiles=20&amp;RouteId=123&amp;RouteId=345
+        /// ```
+        /// Get all nationwide vacancies for route 'example' posted within the last 30 days, page 5, size 10:
+        /// ```
+        /// /vacancy?PageNumber=5&amp;PageSize=10&amp;Routes=example&amp;NationWideOnly=true&amp;PostedInLastNumberOfDays=30
+        /// ```
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("TraineeshipVacancies")]
+        [ProducesResponseType(typeof(GetTraineeshipVacanciesListResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> GetTraineeshipVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromQuery] SearchTraineeshipVacancyRequest request)
+        {
+            try
+            {
+                var account = new AccountIdentifier(accountIdentifier);
+
+                var queryResponse = await _mediator.Send(new GetTraineeshipVacanciesQuery
+                {
+                    PageNumber = request.PageNumber,
+                    PageSize = request.PageSize,
+                    Ukprn = account.Ukprn != null && request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.Ukprn.Value : request.Ukprn,
+                    AccountPublicHashedId = request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountHashedId : null,
+                    AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
+                    AccountIdentifier = account,
+                    Lat = request.Lat,
+                    Lon = request.Lon,
+                    Routes = request.Routes,
+                    Sort = request.Sort?.ToString(),
+                    DistanceInMiles = request.DistanceInMiles,
+                    NationWideOnly = request.NationWideOnly,
+                    RouteId = request.RouteId,
+                    PostedInLastNumberOfDays = request.PostedInLastNumberOfDays
+                });
+
+                return Ok((GetTraineeshipVacanciesListResponse)queryResponse);
+
+            }
+            catch (SecurityException e)
+            {
+                _logger.LogInformation($"Unable to get vacancies - {request.AccountLegalEntityPublicHashedId} is not associated with subscription {accountIdentifier}.");
+                return new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get vacancies");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// GET vacancy by reference number
+        /// </summary>
+        /// <remarks>Returns details of a specific vacancy. If no vacancy found then a 404 response is returned.</remarks>
+        /// <param name="vacancyReference">Vacancy reference in the following format 10001122</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("TraineeshipVacancies/{vacancyReference}")]
+        [ProducesResponseType(typeof(GetTraineeshipVacancyResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetTraineeshipVacancy([FromRoute] string vacancyReference)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetTraineeshipVacancyQuery
+                {
+                    VacancyReference = vacancyReference
+                });
+
+                var response = (GetTraineeshipVacancyResponse)result;
+                if (response == null)
+                {
+                    return NotFound();
+                }
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get vacancy");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

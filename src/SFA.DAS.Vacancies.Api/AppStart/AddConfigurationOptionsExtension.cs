@@ -20,6 +20,8 @@ namespace SFA.DAS.Vacancies.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<FindApprenticeshipApiConfiguration>(configuration.GetSection(nameof(FindApprenticeshipApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipApiConfiguration>>().Value);
+            services.Configure<FindTraineeshipApiConfiguration>(configuration.GetSection(nameof(FindTraineeshipApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FindTraineeshipApiConfiguration>>().Value);
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection("ProviderRelationshipsApi"));

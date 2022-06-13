@@ -4,5 +4,7 @@ namespace SFA.DAS.Vacancies.Configuration
     {
         public string ApimEndpointsRedisConnectionString { get ; set ; }
         public string FindAnApprenticeshipBaseUrl { get; set; }
+        public string FindATraineeshipBaseUrl { get; set; }
+
     }
 }
