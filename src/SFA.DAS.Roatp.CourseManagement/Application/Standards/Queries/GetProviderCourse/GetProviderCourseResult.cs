@@ -17,5 +17,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProvid
         public string ContactUsEmail { get; set; }
         public string ContactUsPageUrl { get; set; }
         public List<ProviderCourseLocationModel> ProviderCourseLocations { get; set; } = new List<ProviderCourseLocationModel>();
+        public bool? IsApprovedByRegulator { get; set; }
     }
 }
