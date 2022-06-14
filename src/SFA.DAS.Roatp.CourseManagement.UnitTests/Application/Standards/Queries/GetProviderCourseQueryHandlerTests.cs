@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -11,26 +9,38 @@ using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetProviderCo
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Queries
 {
     [TestFixture]
-    public class GetProviderCourseQueryHandlerTests
+     public class GetProviderCourseQueryHandlerTests
     {
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsResults(
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
-            GetStandardResponse standard,
-            GetProviderCourseResponse course,
+        [Test, RecursiveMoqAutoData]
+        public async Task Handle_CallsInnerApi_ReturnsValidResponse(
+            GetStandardResponse apiResponseStandard,
+            GetProviderCourseResponse apiResponseProviderCourse,
+            List<GetProviderCourseLocationsResponse> apiResponseProviderCourseLocation,
             GetProviderCourseQuery query,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMockCourse,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             GetProviderCourseQueryHandler sut)
         {
-            coursesApiClient.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync(standard);
+            apiClientMockCourse.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(c =>  
+                        c.GetUrl.Equals(new GetStandardRequest(query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<GetStandardResponse>(apiResponseStandard, HttpStatusCode.OK, ""));
 
-            courseManagementApiClient.Setup(c => c.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(course);
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetProviderCourseResponse>(It.Is<GetProviderCourseRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseRequest(query.Ukprn, query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(apiResponseProviderCourse, HttpStatusCode.OK, ""));
+
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(It.Is<GetProviderCourseLocationsRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(apiResponseProviderCourseLocation, HttpStatusCode.OK, ""));
 
             var result = await sut.Handle(query, new CancellationToken());
 
@@ -38,32 +48,73 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Queries
   
         }
 
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsEmptyData(
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            GetProviderCourseQuery query,
-            GetProviderCourseQueryHandler sut)
+        [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApi_ReturnsExceptionWhenStandardGetsBadRequest(
+           GetProviderCourseQuery query,
+           [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMockCourse,
+           GetProviderCourseQueryHandler sut)
         {
-            coursesApiClient.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync((GetStandardResponse)null);
-
-            var result = await sut.Handle(query, new CancellationToken());
-        
-            result.Should().BeNull();
+            apiClientMockCourse.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(c =>
+                        c.GetUrl.Equals(new GetStandardRequest(query.LarsCode).GetUrl))))
+                        .ReturnsAsync(new ApiResponse<GetStandardResponse>(new GetStandardResponse(), HttpStatusCode.BadRequest, "Error"));
+            
+            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
         }
 
+        [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApi_ReturnsExceptionWhenStandardGetsInternalServerError(
+           GetProviderCourseQuery query,
+           [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMockCourse,
+           GetProviderCourseQueryHandler sut)
+        {
+            apiClientMockCourse.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(c =>
+                        c.GetUrl.Equals(new GetStandardRequest(query.LarsCode).GetUrl))))
+                        .ReturnsAsync(new ApiResponse<GetStandardResponse>(new GetStandardResponse(), HttpStatusCode.InternalServerError, "Error"));
 
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsEmptyData(
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
+            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApi_ReturnsExceptionWhenProviderCourseGetsBadRequest(
+            GetStandardResponse apiResponseStandard,
             GetProviderCourseQuery query,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMockCourse,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             GetProviderCourseQueryHandler sut)
         {
-            coursesApiClient.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync((GetStandardResponse)null);
-            courseManagementApiClient.Setup(c => c.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync((GetProviderCourseResponse)null);
-            var result = await sut.Handle(query, new CancellationToken());
+            apiClientMockCourse.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(c =>
+                        c.GetUrl.Equals(new GetStandardRequest(query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<GetStandardResponse>(apiResponseStandard, HttpStatusCode.OK, ""));
 
-            result.Should().BeNull();
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetProviderCourseResponse>(It.Is<GetProviderCourseRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseRequest(query.Ukprn, query.LarsCode).GetUrl))))
+                       .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, "Error"));
+
+            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApi_ReturnsExceptionWhenProviderCourseLocationsGetsBadRequest(
+            GetStandardResponse apiResponseStandard,
+            GetProviderCourseResponse apiResponseProviderCourse,
+            GetProviderCourseQuery query,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMockCourse,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            GetProviderCourseQueryHandler sut)
+        {
+            apiClientMockCourse.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(c =>
+                        c.GetUrl.Equals(new GetStandardRequest(query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<GetStandardResponse>(apiResponseStandard, HttpStatusCode.OK, ""));
+
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetProviderCourseResponse>(It.Is<GetProviderCourseRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseRequest(query.Ukprn, query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(apiResponseProviderCourse, HttpStatusCode.OK, ""));
+
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(It.Is<GetProviderCourseLocationsRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl))))
+                        .ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(new List<GetProviderCourseLocationsResponse> { }, HttpStatusCode.BadRequest, "Error"));
+
+            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
         }
     }
 }
