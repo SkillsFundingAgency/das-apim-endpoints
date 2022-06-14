@@ -7,6 +7,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateAp
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-        public bool? IsApprovedByRegulator { get; set; }
+        public bool IsApprovedByRegulator { get; set; }
     }
 }
