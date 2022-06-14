@@ -43,11 +43,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.PageSize.Equals(request.PageSize)
                          && c.Lat.Equals(request.Lat)
                          && c.Lon.Equals(request.Lon)
-                         && c.Routes.Equals(request.Routes)
                          && c.Sort.Equals(request.Sort.ToString())
                          && c.DistanceInMiles.Equals(request.DistanceInMiles)
                          && c.NationWideOnly.Equals(request.NationWideOnly)
-                         && c.RouteId.Equals(request.RouteId)
+                         && c.RouteIds.Equals(request.RouteIds)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
                          ),
                     It.IsAny<CancellationToken>()))
@@ -86,11 +85,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.PageSize.Equals(request.PageSize)
                          && c.Lat.Equals(request.Lat)
                          && c.Lon.Equals(request.Lon)
-                         && c.Routes.Equals(request.Routes)
                          && c.Sort.Equals(request.Sort.ToString())
                          && c.DistanceInMiles.Equals(request.DistanceInMiles)
                          && c.NationWideOnly.Equals(request.NationWideOnly)
-                         && c.RouteId.Equals(request.RouteId)
+                         && c.RouteIds.Equals(request.RouteIds)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
                          ),
                     It.IsAny<CancellationToken>()))
@@ -171,7 +169,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             model.Should().BeEquivalentTo((GetTraineeshipVacanciesListResponse)mediatorResult);
         }
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task And_Exception_Then_Returns_InternalServerError(
             string accountId,
             SearchTraineeshipVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,

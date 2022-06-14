@@ -59,7 +59,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 
             var vacanciesTask = _findTraineeshipApiClient.Get<GetTraineeshipVacanciesResponse>(new GetTraineeshipVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId,
-                request.Ukprn, request.AccountPublicHashedId, request.RouteId, request.NationWideOnly,
+                request.Ukprn, request.AccountPublicHashedId, request.RouteIds, request.NationWideOnly,
                 request.Lat, request.Lon, request.DistanceInMiles, request.PostedInLastNumberOfDays, request.Sort));
 
             await Task.WhenAll(vacanciesTask);

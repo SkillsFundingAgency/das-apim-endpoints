@@ -53,9 +53,9 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        [ProducesResponseType(typeof(GetVacanciesListResponse), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(GetVacanciesListResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromQuery]SearchVacancyRequest request)
+        public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromQuery] SearchVacancyRequest request)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     PageNumber = request.PageNumber,
                     PageSize = request.PageSize,
                     Ukprn = account.Ukprn != null && request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.Ukprn.Value : request.Ukprn,
-                    AccountPublicHashedId =  request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountHashedId : null,
+                    AccountPublicHashedId = request.FilterBySubscription.HasValue && request.FilterBySubscription.Value ? account.AccountHashedId : null,
                     AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
                     AccountIdentifier = account,
                     Lat = request.Lat,
@@ -85,12 +85,12 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             catch (SecurityException e)
             {
                 _logger.LogInformation($"Unable to get vacancies - {request.AccountLegalEntityPublicHashedId} is not associated with subscription {accountIdentifier}.");
-                return new StatusCodeResult((int) HttpStatusCode.Forbidden);
+                return new StatusCodeResult((int)HttpStatusCode.Forbidden);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get vacancies");
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -102,7 +102,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{vacancyReference}")]
-        [ProducesResponseType(typeof(GetVacancyResponse), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(GetVacancyResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetVacancy([FromRoute] string vacancyReference)
         {
@@ -123,13 +123,13 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to get vacancy");
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
 
         /// <summary>
-        /// GET list of vacancies
+        /// GET list of traineeship vacancies
         /// </summary>
         /// <remarks>
         /// ### Returns list of Vacancies based on your subscription. ###
@@ -172,11 +172,10 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     AccountIdentifier = account,
                     Lat = request.Lat,
                     Lon = request.Lon,
-                    Routes = request.Routes,
                     Sort = request.Sort?.ToString(),
                     DistanceInMiles = request.DistanceInMiles,
                     NationWideOnly = request.NationWideOnly,
-                    RouteId = request.RouteId,
+                    RouteIds = request.RouteIds,
                     PostedInLastNumberOfDays = request.PostedInLastNumberOfDays
                 });
 
@@ -196,7 +195,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         }
 
         /// <summary>
-        /// GET vacancy by reference number
+        /// GET traineeship vacancy by reference number
         /// </summary>
         /// <remarks>Returns details of a specific vacancy. If no vacancy found then a 404 response is returned.</remarks>
         /// <param name="vacancyReference">Vacancy reference in the following format 10001122</param>

@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetTraineeshipVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteId,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteIds,
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetTraineeshipVacanciesResponse>(It.Is<GetTraineeshipVacanciesRequest>(c =>
@@ -54,11 +54,10 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             [Frozen] Mock<IFindTraineeshipApiClient<FindTraineeshipApiConfiguration>> apiClient,
             GetTraineeshipVacanciesQueryHandler handler)
         {
-            query.Routes = null;
             query.PageSize = 0;
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetTraineeshipVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteId,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteIds,
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetTraineeshipVacanciesResponse>(It.Is<GetTraineeshipVacanciesRequest>(c =>
@@ -86,10 +85,9 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             [Frozen] Mock<IFindTraineeshipApiClient<FindTraineeshipApiConfiguration>> apiClient,
             GetTraineeshipVacanciesQueryHandler handler)
         {
-            query.Routes = null;
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetTraineeshipVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteId,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteIds,
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetTraineeshipVacanciesResponse>(It.Is<GetTraineeshipVacanciesRequest>(c =>
@@ -111,10 +109,9 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             [Frozen] Mock<IFindTraineeshipApiClient<FindTraineeshipApiConfiguration>> apiClient,
             GetTraineeshipVacanciesQueryHandler handler)
         {
-            query.Routes = null;
             query.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             var expectedGetRequest = new GetTraineeshipVacanciesRequest(query.PageNumber, query.PageSize,
-                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteId,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.RouteIds,
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetTraineeshipVacanciesResponse>(It.Is<GetTraineeshipVacanciesRequest>(c =>
@@ -156,11 +153,10 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             [Frozen] Mock<IFindTraineeshipApiClient<FindTraineeshipApiConfiguration>> apiClient,
             GetTraineeshipVacanciesQueryHandler handler)
         {
-            query.Routes = new List<string>();
             query.AccountPublicHashedId = "";
             query.AccountIdentifier = new AccountIdentifier($"External-{externalId}-Product");
             var expectedGetRequest = new GetTraineeshipVacanciesRequest(query.PageNumber, query.PageSize,
-                "", query.Ukprn, query.AccountPublicHashedId, query.RouteId,
+                "", query.Ukprn, query.AccountPublicHashedId, query.RouteIds,
                 query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.PostedInLastNumberOfDays, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetTraineeshipVacanciesResponse>(It.Is<GetTraineeshipVacanciesRequest>(c =>

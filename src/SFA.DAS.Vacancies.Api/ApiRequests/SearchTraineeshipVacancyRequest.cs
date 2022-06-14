@@ -27,54 +27,48 @@ namespace SFA.DAS.Vacancies.Api
         [FromQuery]
         public int? Ukprn { get; set; } = null;
         /// <summary>
-        /// You can supply a maximum of 2 routes to be filtered by, these can be obtained from `GET referencedata/courses/routes`. If there are `RouteId` values supplied the route filtering will be ignored.
-        /// </summary>
-        [FromQuery]
-        [MaxLength(2, ErrorMessage = "Exceeded maximum of 2 routes to be filtered by")]
-        public List<string> Routes { get; set; } = null;
-        /// <summary>
         /// Latitude to search from, must be supplied with `Longitude` and `DistanceInMiles`
         /// </summary>
         [FromQuery]
-        public double? Lat { get ; set ; } = null;
+        public double? Lat { get; set; } = null;
         /// <summary>
         /// Longitude to search from, must be supplied with `Latitude` and `DistanceInMiles`
         /// </summary>
         [FromQuery]
-        public double? Lon { get ; set ; } = null;
+        public double? Lon { get; set; } = null;
         /// <summary>
         /// If not supplied, defaults to `VacancySort.AgeDesc`
-        /// `AgeDesc` From newest to oldest apprenticeship adverts
-        /// `AgeAsc` From oldest to newest apprenticeship adverts
-        /// `DistanceDesc` From furthest to closest away apprenticeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
-        /// `DistanceAsc` From closest to furthest away apprenticeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
-        /// `ExpectedStartDateDesc` Ordering by apprenticeship adverts that are closest to starting
-        /// `ExpectedStartDateAsc` Ordering by apprenticeship adverts that are further in the future to starting
+        /// `AgeDesc` From newest to oldest traineeship adverts
+        /// `AgeAsc` From oldest to newest traineeship adverts
+        /// `DistanceDesc` From furthest to closest away traineeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
+        /// `DistanceAsc` From closest to furthest away traineeship adverts - can only be used if `Lat`, `Lon` and `DistanceInMiles` supplied
+        /// `ExpectedStartDateDesc` Ordering by traineeship adverts that are closest to starting
+        /// `ExpectedStartDateAsc` Ordering by traineeship adverts that are further in the future to starting
         /// </summary>
         [FromQuery]
-        public VacancySort? Sort { get ; set ; } = null;
+        public VacancySort? Sort { get; set; } = null;
         /// <summary>
-        /// To be used with `Lat` and `Lon` to provide apprenticeship adverts that fall into that radius
+        /// To be used with `Lat` and `Lon` to provide traineeship adverts that fall into that radius
         /// </summary>
         [FromQuery]
-        public uint? DistanceInMiles { get ; set ; } = null;
+        public uint? DistanceInMiles { get; set; } = null;
         /// <summary>
         /// If not set returns all
-        /// If `true` returns Nation Wide apprenticeship adverts only
-        /// If `false` returns non Nation Wide apprenticeship adverts only
+        /// If `true` returns Nation Wide traineeship adverts only
+        /// If `false` returns non Nation Wide traineeship adverts only
         /// </summary>
         [FromQuery]
-        public bool? NationWideOnly { get ; set ; } = null;
+        public bool? NationWideOnly { get; set; } = null;
         /// <summary>
-        /// 
+        /// Traineeship adverts Posted In Last Number Of Days you wish to get.
         /// </summary>
         [FromQuery]
-        public uint? PostedInLastNumberOfDays { get ; set ; } = null;
+        public uint? PostedInLastNumberOfDays { get; set; } = null;
         /// <summary>
         /// The Id or Ids of the standard you are searching for - can be obtained from `GET referencedata/courses`. If supplied will cause any route filtering to be ignored
         /// </summary>
         [FromQuery]
-        public List<int> RouteId { get ; set ; }
+        public List<int> RouteIds { get; set; }
         /// <summary>
         /// If set to `true` - then filters by the AccountId or UKPRN linked to your subscription.
         /// </summary>
