@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.InnerApi.Requests;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
@@ -22,8 +23,8 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly ICourseService _courseService;
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
-        public GetTraineeshipVacanciesQueryHandler(IFindTraineeshipApiClient<FindTraineeshipApiConfiguration> findTraineeshipApiClient, 
-            IAccountLegalEntityPermissionService accountLegalEntityPermissionService, 
+        public GetTraineeshipVacanciesQueryHandler(IFindTraineeshipApiClient<FindTraineeshipApiConfiguration> findTraineeshipApiClient,
+            IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
             ICourseService courseService,
             IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
@@ -46,24 +47,24 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                         request.AccountPublicHashedId = string.Empty;
                         break;
                     default:
-                    {
-                        var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
-                                request.AccountLegalEntityPublicHashedId);
-                        
-                        if (accountLegalEntity == null)
                         {
-                            throw new SecurityException();
+                            var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
+                                    request.AccountLegalEntityPublicHashedId);
+
+                            if (accountLegalEntity == null)
+                            {
+                                throw new SecurityException();
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
 
             var categories = _courseService.MapRoutesToCategories(request.Routes);
 
             var vacanciesTask = _findTraineeshipApiClient.Get<GetTraineeshipVacanciesResponse>(new GetTraineeshipVacanciesRequest(
-                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
-                request.Ukprn, request.AccountPublicHashedId, request.RouteId, request.NationWideOnly, 
+                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId,
+                request.Ukprn, request.AccountPublicHashedId, request.RouteId, request.NationWideOnly,
                 request.Lat, request.Lon, request.DistanceInMiles, categories, request.PostedInLastNumberOfDays, request.Sort));
 
             await Task.WhenAll(vacanciesTask);

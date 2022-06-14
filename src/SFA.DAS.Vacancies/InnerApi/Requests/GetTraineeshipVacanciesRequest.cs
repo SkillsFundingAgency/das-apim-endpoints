@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.Vacancies.InnerApi.Requests
 {
     public class GetTraineeshipVacanciesRequest : IGetApiRequest
     {

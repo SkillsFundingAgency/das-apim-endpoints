@@ -1,10 +1,10 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Configuration
+namespace SFA.DAS.Vacancies.Configuration
 {
     public class FindTraineeshipApiConfiguration : IInternalApiConfiguration
     {
-    public string Url { get; set; }
-    public string Identifier { get; set; }
+        public string Url { get; set; }
+        public string Identifier { get; set; }
     }
 }
