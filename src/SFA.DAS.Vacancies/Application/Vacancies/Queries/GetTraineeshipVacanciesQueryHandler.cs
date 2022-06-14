@@ -20,17 +20,14 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
     {
         private readonly IFindTraineeshipApiClient<FindTraineeshipApiConfiguration> _findTraineeshipApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
-        private readonly ICourseService _courseService;
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
         public GetTraineeshipVacanciesQueryHandler(IFindTraineeshipApiClient<FindTraineeshipApiConfiguration> findTraineeshipApiClient,
             IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
-            ICourseService courseService,
             IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
             _findTraineeshipApiClient = findTraineeshipApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
-            _courseService = courseService;
             _vacanciesConfiguration = vacanciesConfiguration.Value;
         }
 
@@ -60,28 +57,21 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
-            var categories = _courseService.MapRoutesToCategories(request.Routes);
-
             var vacanciesTask = _findTraineeshipApiClient.Get<GetTraineeshipVacanciesResponse>(new GetTraineeshipVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId,
                 request.Ukprn, request.AccountPublicHashedId, request.RouteId, request.NationWideOnly,
-                request.Lat, request.Lon, request.DistanceInMiles, categories, request.PostedInLastNumberOfDays, request.Sort));
+                request.Lat, request.Lon, request.DistanceInMiles, request.PostedInLastNumberOfDays, request.Sort));
 
             await Task.WhenAll(vacanciesTask);
 
             foreach (var vacanciesItem in vacanciesTask.Result.TraineeshipVacancies)
             {
-                if (vacanciesItem.RouteId == null)
-                {
-                    continue;
-                }
-
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindATraineeshipBaseUrl}/traineeship/reference/{vacanciesItem.VacancyReference}";
             }
 
             return new GetTraineeshipVacanciesQueryResult()
             {
-                Vacancies = vacanciesTask.Result.TraineeshipVacancies.Where(c => c.RouteId != null).ToList(),
+                Vacancies = vacanciesTask.Result.TraineeshipVacancies,
                 Total = vacanciesTask.Result.Total,
                 TotalFiltered = vacanciesTask.Result.TotalFound,
                 TotalPages = request.PageSize != 0 ? (int)Math.Ceiling((decimal)vacanciesTask.Result.TotalFound / request.PageSize) : 0

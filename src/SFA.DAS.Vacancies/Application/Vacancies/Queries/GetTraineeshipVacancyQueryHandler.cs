@@ -17,7 +17,6 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
         public GetTraineeshipVacancyQueryHandler(IFindTraineeshipApiClient<FindTraineeshipApiConfiguration> findTraineeshipApiClient, 
-            ICourseService standardsService,
             IOptions<VacanciesConfiguration> vacanciesConfiguration)
         {
             _findTraineeshipApiClient = findTraineeshipApiClient;

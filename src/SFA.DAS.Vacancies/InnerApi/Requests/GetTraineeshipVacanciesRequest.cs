@@ -17,11 +17,10 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
         private readonly double? _lat;
         private readonly double? _lon;
         private readonly uint? _distanceInMiles;
-        private readonly List<string> _categories;
         private readonly uint? _postedInLastNumberOfDays;
         private readonly string _sort;
 
-        public GetTraineeshipVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> RouteId = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, string sort = "")
+        public GetTraineeshipVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> RouteId = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, uint? postedInLastNumberOfDays = null, string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
@@ -33,7 +32,6 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
             _lat = lat;
             _lon = lon;
             _distanceInMiles = distanceInMiles;
-            _categories = categories;
             _postedInLastNumberOfDays = postedInLastNumberOfDays;
             _sort = sort;
         }
@@ -76,10 +74,6 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
             {
                 url += $"&distanceInMiles={_distanceInMiles}";
             }
-            if (_categories != null && _categories.Any())
-            {
-                url += $"&categories={string.Join("&categories=", _categories)}";
-            }
             if (!string.IsNullOrEmpty(_sort))
             {
                 url += $"&sort={_sort}";
@@ -91,7 +85,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
 
 
             return url;
-            
+
         }
     }
 }

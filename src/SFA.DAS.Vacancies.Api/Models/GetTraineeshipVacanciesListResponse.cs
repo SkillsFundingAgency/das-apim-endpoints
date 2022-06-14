@@ -32,7 +32,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public DateTime ClosingDate { get; set; }
         public string Description { get; set; }
         public string EmployerName { get; set; }
-        public decimal? HoursPerWeek { get; set; }
+        public decimal HoursPerWeek { get; set; }
         public bool IsDisabilityConfident { get; set; }
         public bool IsNationalVacancy { get; set; }
         public long NumberOfPositions { get; set; }
