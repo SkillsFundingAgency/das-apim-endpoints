@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Requests
