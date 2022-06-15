@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
-            shortlistItem.ProviderDetails.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
+            shortlistItem.ProviderDetails.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
                 new GetEmployerFeedbackRatingItem
                 {

@@ -20,7 +20,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 0
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    }
                         
                 },
                 new GetTrainingCourseProviderListItem
@@ -29,7 +33,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -37,7 +45,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -45,7 +57,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 2
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 2
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -53,7 +69,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 1
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 1
+                    }
                 }
             };
             
@@ -77,7 +97,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -85,7 +109,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -94,7 +122,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 }
             };
 
@@ -115,7 +147,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -124,7 +160,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -133,7 +173,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -142,7 +186,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -151,7 +199,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -160,7 +212,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 }
             };
 
@@ -183,7 +239,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -192,7 +252,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -201,7 +265,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -210,7 +278,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -219,7 +291,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -228,7 +304,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -237,7 +317,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+
+                    }
                 }
             };
 
@@ -257,6 +341,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 1,
                     OverallAchievementRate = 52.6m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -272,6 +357,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -287,6 +373,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -302,6 +389,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -317,6 +405,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 7,
                     OverallAchievementRate = 81.8m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -332,6 +421,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 6,
                     OverallAchievementRate = 82.8m,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -347,6 +437,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     ProviderId = 5,
                     OverallAchievementRate = null,
                     EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -377,7 +468,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
-                    } 
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -386,7 +481,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
-                    }  
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
@@ -395,7 +494,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
-                    }  
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    }
                 }
             };
             
@@ -420,6 +523,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
                     },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 100,
+                    },
                     OverallCohort = 100
                 },
                 new GetTrainingCourseProviderListItem
@@ -431,6 +539,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 1000
                     },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 1000,
+                    },
                     OverallCohort = 100
                 },
                 new GetTrainingCourseProviderListItem
@@ -441,6 +554,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 10
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 10
                     },
                     OverallCohort = 100
                 }
@@ -467,6 +585,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
                     },
+
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 100,
+                    },
                     OverallCohort = 100
                 },
                 new GetTrainingCourseProviderListItem
@@ -478,6 +602,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
                     },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 100,
+                    },
                     OverallCohort = 100
                 },
                 new GetTrainingCourseProviderListItem
@@ -488,6 +617,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 100,
                     },
                     OverallCohort = 100
                 }
