@@ -27,20 +27,20 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.AppStart
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
             var serviceCollection = new ServiceCollection();
-            
+
             var configuration = GenerateConfiguration();
             serviceCollection.AddSingleton(hostEnvironment.Object);
             serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
             serviceCollection.AddConfigurationOptions(configuration);
             serviceCollection.AddDistributedMemoryCache();
             serviceCollection.AddServiceRegistration();
-            
+
             var provider = serviceCollection.BuildServiceProvider();
 
             var type = provider.GetService(toResolve);
             Assert.IsNotNull(type);
         }
-        
+
         private static IConfigurationRoot GenerateConfiguration()
         {
             var configSource = new MemoryConfigurationSource
