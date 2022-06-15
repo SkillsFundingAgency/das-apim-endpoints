@@ -9,6 +9,9 @@ trigger:
 
 variables:
 - group: Release Management Resources
+- group: RELEASE das-apim-endpoints
+- name: OuterApiObject
+  value: $(EmployerIncentivesOuterApiObject)
 
 resources:
   repositories:
@@ -18,50 +21,228 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/heads/build-wd
     endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/5.0.2
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
 
 stages:
 - stage: Build
   jobs:
-    - job: CodeBuild
-      pool:
-        name: DAS - Continuous Integration Agents
-      variables:
-      - group: ESFA - SonarCloud
-      - name: buildConfiguration
-        value: release
-      workspace:
-        clean: all
-      steps:
-      - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
-    
-      - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
-        parameters:
-          SonarCloud: true
-          SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_EmployerIncentives
-          TargetProjects: 'src/EmployerIncentives/**/*.csproj'
-          UnitTestProjects: 'src/EmployerIncentives/**/*UnitTests.csproj'
-          AcceptanceTestProjects: 'src/EmployerIncentives/**/*.AcceptanceTests.csproj'
-          RunAcceptanceTests: true
-    
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish Employer Incentives Api'
-        inputs:
-          command: publish
-          publishWebProjects: false
-          projects: 'src/EmployerIncentives/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-    
-      - task: CopyFiles@2
-        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-        inputs:
-          Contents: |
-            azure/**
-          TargetFolder: '$(build.artifactstagingdirectory)/publish'
-          OverWrite: true
-    
-      - task: PublishPipelineArtifact@1
-        displayName: 'Publish Artifact'
-        inputs:
-          targetPath: '$(build.artifactstagingdirectory)/publish'
-          artifactName: 'ApimEndpointsArtifacts'
-    
+  - template: ../../pipeline-templates/job/code-build.yml
+    parameters:
+      SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_EmployerIncentives
+      TargetProjects: 'src/EmployerIncentives/**/*.csproj'
+      UnitTestProjects:  'src/EmployerIncentives/**/*UnitTests.csproj'
+      AcceptanceTestProjects: 'src/EmployerIncentives/**/*AcceptanceTests.csproj'
+      PublishProject: 'src/EmployerIncentives/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
+
+      
+- stage: Deploy_AT
+  dependsOn: []
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: AT
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: AT
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+- stage: Deploy_TEST
+  dependsOn: []
+  displayName: Deploy to TEST
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  - group: TEST das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: TEST
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: TEST
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+- stage: Deploy_TEST2
+  dependsOn: []
+  displayName: Deploy to TEST2
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST2 DevTest Shared Resources
+  - group: TEST2 das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: TEST2
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: TEST2
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+
+- stage: Deploy_PP
+  dependsOn: []
+  displayName: Deploy to PP
+  variables:
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PP
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: PP
+      ServiceConnection: SFA-DIG-PreProd-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_PROD
+  dependsOn: []
+  displayName: Deploy to PROD
+  variables:
+  - group: PROD Management Resources
+  - group: PROD Shared Resources
+  - group: PROD das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: PROD
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_MO
+  dependsOn: []
+  displayName: Deploy to MO
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      Environment: MO
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+
+- stage: Deploy_DEMO
+  dependsOn: []
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-apim-endpoints
+  jobs:
+  - template: ../../pipeline-templates/job/arm-deploy.yml
+    parameters:
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      Environment: DEMO
+      SchemaFilePath: $(EmployerIncentivesOuterApiSchemaFilePath)
+
+  - template: ../../pipeline-templates/job/deploy-api.yml
+    parameters:
+      DeploymentName: Deploy_EmployerIncentives
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
+      AppServiceName: $(EmployerIncentivesOuterApiAppServiceName)
+      DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.EmployerIncentives.Api.zip
+      ApiVersionSetName: $(EmployerIncentivesOuterApiVersionSetName)
+      ApiPath: $(EmployerIncentivesOuterApiPath)
+      ApiBaseUrl: $(EmployerIncentivesOuterApiBaseUrl)
+      ProductId: $(EmployerIncentivesProductId)
+      ApplicationIdentifierUri: $(EmployerIncentivesOuterApiIdentifierUri)
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
