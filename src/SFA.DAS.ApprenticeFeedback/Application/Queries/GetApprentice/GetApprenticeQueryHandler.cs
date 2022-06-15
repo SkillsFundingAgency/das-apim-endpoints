@@ -19,25 +19,26 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 
         public async Task<GetApprenticeResult> Handle(GetApprenticeQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
+            var result =  _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
 
-            var apprenticePreferences =
-                await _apiClient.Get<GetApprenticePreferencesResponse>(
+            var apprenticePreferences = _apiClient.Get<GetApprenticePreferencesResponse>(
                     new GetApprenticePreferencesRequest(request.ApprenticeId));
 
-            if (result == null || apprenticePreferences.ApprenticePreferences.Count == 0)
+            await Task.WhenAll(result, apprenticePreferences);
+
+            if (result == null || apprenticePreferences.Result.ApprenticePreferences.Count == 0)
                 return null;
 
             return new GetApprenticeResult
             {
-                ApprenticeId = result.ApprenticeId,
-                FirstName = result.FirstName,
-                LastName = result.LastName,
-                DateOfBirth = result.DateOfBirth,
-                Email = result.Email,
-                TermsOfUseAccepted = result.TermsOfUseAccepted,
-                ReacceptTermsOfUseRequired = result.ReacceptTermsOfUseRequired,
-                ApprenticePreferences = apprenticePreferences.ApprenticePreferences
+                ApprenticeId = result.Result.ApprenticeId,
+                FirstName = result.Result.FirstName,
+                LastName = result.Result.LastName,
+                DateOfBirth = result.Result.DateOfBirth,
+                Email = result.Result.Email,
+                TermsOfUseAccepted = result.Result.TermsOfUseAccepted,
+                ReacceptTermsOfUseRequired = result.Result.ReacceptTermsOfUseRequired,
+                ApprenticePreferences = apprenticePreferences.Result.ApprenticePreferences
             };
         }
     }
