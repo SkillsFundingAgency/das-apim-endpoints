@@ -16,7 +16,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests
         [FromQuery]
         public List<DeliveryModeType> DeliveryModes { get; set; } = null;
         [FromQuery]
-        public List<FeedbackRatingType> ProviderRatings { get; set; } = null;
+        public List<EmployerFeedbackRatingType> EmployerFeedbackRatings { get; set; } = null;
+        [FromQuery]
+        public List<ApprenticeFeedbackRatingType> ApprenticeFeedbackRatings { get; set; } = null;
         [FromQuery] 
         public ProviderCourseSortOrder.SortOrder SortOrder { get; set; } = ProviderCourseSortOrder.SortOrder.Distance;
         [FromQuery]

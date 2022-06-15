@@ -104,7 +104,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 return BadRequest();
             }
         }
-        
+
         [HttpGet]
         [Route("{id}/providers")]
         public async Task<IActionResult> GetProviders(int id, [FromQuery]GetCourseProvidersRequest request)
@@ -121,7 +121,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ShortlistUserId = request.ShortlistUserId
                 });
                 var mappedProviders = result.Providers
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.ProviderRatings, result.Location?.GeoPoint != null))
+                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.EmployerFeedbackRatings, request.ApprenticeFeedbackRatings, result.Location?.GeoPoint != null))
                     .Where(x=>x!=null)
                     .OrderByProviderScore(request.DeliveryModes)
                     .ToList();

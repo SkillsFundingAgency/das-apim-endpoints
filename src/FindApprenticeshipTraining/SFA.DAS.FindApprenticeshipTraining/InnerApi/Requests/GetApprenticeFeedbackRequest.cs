@@ -1,0 +1,16 @@
+using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
+{
+    public class GetApprenticeFeedbackRequest : IGetApiRequest
+    {
+        private readonly long _ukprn;
+        public GetApprenticeFeedbackRequest (long ukprn)
+        {
+            _ukprn = ukprn;
+        }
+        
+        //TBC what the URL is.
+        public string GetUrl => $"api/apprenticefeedback/{_ukprn}";
+    }
+}

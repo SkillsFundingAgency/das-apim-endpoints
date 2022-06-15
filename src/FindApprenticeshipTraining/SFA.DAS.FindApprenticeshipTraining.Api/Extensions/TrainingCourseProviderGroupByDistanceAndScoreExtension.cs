@@ -48,7 +48,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .ThenBy(c=>GetDeliveryModeDistance(c.DeliveryModes))
                 .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)
-                .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
+                .ThenByDescending(c=>c.EmployerFeedback.TotalEmployerResponses)
+                .ThenByDescending(c=>c.ApprenticeFeedback.TotalApprenticeResponses)
                 .ThenBy(c=>c.Name);
         }
 

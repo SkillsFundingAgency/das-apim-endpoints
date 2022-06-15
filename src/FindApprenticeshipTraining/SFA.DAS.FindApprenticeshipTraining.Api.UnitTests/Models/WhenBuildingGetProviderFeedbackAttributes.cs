@@ -14,21 +14,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_Returns_Empty_Feedback_Attribute_Lists_If_Totals_Are_Zero(GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.FeedbackAttributes = new List<GetFeedbackAttributeItem>
+            source.FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>
             {
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "First Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Second Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Third Attribute",
                     Strength = 0,
@@ -36,29 +36,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Should().BeEmpty();
+            response.EmployerFeedback.FeedbackAttributes.Should().BeEmpty();
         }
 
         [Test, AutoData]
         public void Then_No_Strengths_Returns_Zero_Count(GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.FeedbackAttributes = new List<GetFeedbackAttributeItem>
+            source.FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>
             {
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "First Attribute",
                     Strength = 0,
                     Weakness = 12
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Second Attribute",
                     Strength = 0,
                     Weakness = 13
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Third Attribute",
                     Strength = 0,
@@ -66,31 +66,31 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(0);
-            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(39);
+            response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(0);
+            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(39);
         }
 
         [Test, AutoData]
         public void Then_No_Weaknesses_Returns_Zero_Count(GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.FeedbackAttributes = new List<GetFeedbackAttributeItem>
+            source.FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>
             {
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "First Attribute",
                     Strength = 12,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Second Attribute",
                     Strength = 13,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Third Attribute",
                     Strength = 14,
@@ -98,74 +98,74 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(0);
-            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
-            response.Feedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(39);
+            response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(0);
+            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(39);
         }
 
        
         [Test, AutoData]
         public void Then_Returns_All_Available_Feedback_Attribute_Strengths_And_Weaknesses_Where_Strengths_Weaknesses_Greater_Than_Zero(GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.FeedbackAttributes = new List<GetFeedbackAttributeItem>
+            source.FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>
             {
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "First Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Second Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Third Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Fourth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Fifth Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Sixth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Seventh Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Eighth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Ninth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
-                new GetFeedbackAttributeItem
+                new GetEmployerFeedbackAttributeItem
                 {
                     AttributeName = "Tenth Attribute",
                     Strength = 1,
@@ -173,9 +173,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(),new List<EmployerFeedbackRatingType>(), true);
             
-            response.Feedback.FeedbackAttributes.Select(x => x.AttributeName)
+            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName)
                 .Should().ContainInOrder(
                 new List<string>{
                     "First Attribute",

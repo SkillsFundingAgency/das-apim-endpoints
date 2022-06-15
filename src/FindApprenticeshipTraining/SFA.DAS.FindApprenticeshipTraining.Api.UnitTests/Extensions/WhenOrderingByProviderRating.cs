@@ -17,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 0
                     } 
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
                     } 
@@ -34,7 +34,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3
                     } 
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 2,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 2
                     } 
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 5,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 1
                     } 
@@ -74,7 +74,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 1,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -82,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -91,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -112,7 +112,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallAchievementRate = 72.6m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -121,7 +121,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -130,7 +130,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -139,7 +139,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -148,7 +148,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 6,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -157,7 +157,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 5,
                     OverallAchievementRate = null,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -180,7 +180,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallAchievementRate = 52.6m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -189,7 +189,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -198,7 +198,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -207,7 +207,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -216,7 +216,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 7,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -225,7 +225,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 6,
                     OverallAchievementRate = 82.8m,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -234,7 +234,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 5,
                     OverallAchievementRate = null,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         
                     } 
@@ -256,7 +256,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallAchievementRate = 52.6m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -271,7 +271,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -286,7 +286,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -301,7 +301,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -316,7 +316,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 7,
                     OverallAchievementRate = 81.8m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -331,7 +331,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 6,
                     OverallAchievementRate = 82.8m,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -346,7 +346,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 5,
                     OverallAchievementRate = null,
-                    Feedback = new GetProviderFeedbackResponse(),
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
                     HasLocation = true,
                     DeliveryModes = new List<GetDeliveryType>
                     {
@@ -374,7 +374,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallCohort = 100,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
                     } 
@@ -383,7 +383,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     OverallCohort = 1000,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
                     }  
@@ -392,7 +392,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     OverallCohort = 10,
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 4
                     }  
@@ -415,7 +415,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     Name = "test 1",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
@@ -426,7 +426,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     Name = "test 2",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 1000
@@ -437,7 +437,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     Name = "test 3",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 10
@@ -462,7 +462,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     Name = "Third",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
@@ -473,7 +473,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 4,
                     Name = "Second",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
@@ -484,7 +484,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 3,
                     Name = "First",
-                    Feedback = new GetProviderFeedbackResponse
+                    EmployerFeedback = new GetEmployerFeedbackResponse
                     {
                         TotalFeedbackRating = 3,
                         TotalEmployerResponses = 100
