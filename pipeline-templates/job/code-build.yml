@@ -35,14 +35,6 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: DotNetCoreCLI@2
-    displayName: 'Publish Employer Incentives Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
     displayName: 'Publish Find Epao Api'
     inputs:
       command: publish
