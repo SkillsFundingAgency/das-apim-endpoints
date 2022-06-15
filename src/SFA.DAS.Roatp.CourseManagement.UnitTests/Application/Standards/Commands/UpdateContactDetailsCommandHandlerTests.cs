@@ -5,6 +5,7 @@ using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContac
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -33,6 +34,18 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             await sut.Handle(command, cancellationToken);
 
             apiClientMock.Verify(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public void Handle_CallsApiClient_ReturnException(
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            UpdateContactDetailsCommandHandler sut,
+            UpdateContactDetailsCommand command,
+            CancellationToken cancellationToken)
+        {
+            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
         }
     }
 }
