@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -12,6 +13,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Queries
@@ -22,9 +24,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
         public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
             GetShortlistForUserQuery query,
             GetShortlistForUserResponse apiResponse,
+            IEnumerable<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
             GetStandardsListResponse cachedCourses,
             List<GetStandardsListItem> standards,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
+            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
             [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
             GetShortlistForUserQueryHandler handler)
         {
@@ -42,6 +46,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
             mockCachedCoursesService
                 .Setup(service => service.GetCourses())
                 .ReturnsAsync(cachedCourses);
+            mockApprenticeFeedbackClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(new PostApprenticeFeedbackRequest
+                {
+                    Data = new PostApprenticeFeedbackRequestData
+                    {
+                        Ukprns = apiResponse.Shortlist.Select(s => s.ProviderDetails.Ukprn)
+                    }
+                })).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+
 
             var result = await handler.Handle(query, CancellationToken.None);
 

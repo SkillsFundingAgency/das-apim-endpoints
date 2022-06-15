@@ -43,9 +43,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
             var apprenticeFeedbackRatings =
                 await _apprenticeFeedbackApiClient.
                 PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(
-                    new PostApprenticeFeedbackRatingRequest
+                    new PostApprenticeFeedbackRequest
                     {
-                        Data = new PostApprenticeFeedbackRatingRequestData { Ukprns = ukprns }
+                        Data = new PostApprenticeFeedbackRequestData { Ukprns = ukprns }
                     });
 
             foreach (var item in shortlist)

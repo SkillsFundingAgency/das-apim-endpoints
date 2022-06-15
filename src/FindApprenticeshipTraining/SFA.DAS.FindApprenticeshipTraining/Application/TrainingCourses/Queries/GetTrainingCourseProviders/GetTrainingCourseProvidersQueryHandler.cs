@@ -63,9 +63,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 var apprenticeFeedbackRatings =
                     await _apprenticeFeedbackApiClient.
                     PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(
-                        new PostApprenticeFeedbackRatingRequest
+                        new PostApprenticeFeedbackRequest
                         {
-                            Data = new PostApprenticeFeedbackRatingRequestData { Ukprns = ukprns }
+                            Data = new PostApprenticeFeedbackRequestData { Ukprns = ukprns }
                         });
 
                 foreach(var ratingResponse in apprenticeFeedbackRatings.Body)

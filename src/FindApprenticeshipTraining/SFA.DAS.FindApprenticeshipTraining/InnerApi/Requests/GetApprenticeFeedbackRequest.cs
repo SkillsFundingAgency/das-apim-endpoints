@@ -10,7 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _ukprn = ukprn;
         }
         
-        //TBC what the URL is.
         public string GetUrl => $"api/apprenticefeedback/{_ukprn}";
     }
 }
