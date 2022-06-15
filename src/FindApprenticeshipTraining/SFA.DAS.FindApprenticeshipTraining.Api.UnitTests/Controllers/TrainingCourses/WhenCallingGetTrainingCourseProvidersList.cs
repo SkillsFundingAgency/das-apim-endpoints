@@ -55,8 +55,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     options => options.Excluding(c=>c.Ukprn)
                         .Excluding(c=>c.AchievementRates)
                         .Excluding(c=>c.DeliveryTypes)
-                        .Excluding(c=>c.FeedbackAttributes)
-                        .Excluding(c=>c.FeedbackRatings)
+                        .Excluding(c=>c.EmployerFeedback)
+                        .Excluding(c=>c.ApprenticeFeedback)
                     );
             model.Total.Should().Be(mediatorResult.Total);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
@@ -125,7 +125,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 EmployerFeedbackRatingType.Good
             };
             request.DeliveryModes = null;
-            provider1.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
+            provider1.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
                 new GetEmployerFeedbackRatingItem
                 {
@@ -133,7 +133,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     FeedbackCount = 1,
                 }
             };
-            provider2.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
+            provider2.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
                 new GetEmployerFeedbackRatingItem
                 {
@@ -141,7 +141,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     FeedbackCount = 1,
                 }
             };
-            provider3.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
+            provider3.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
                 new GetEmployerFeedbackRatingItem
                 {
