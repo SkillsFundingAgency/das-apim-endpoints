@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - src/ManageApprenticeships
+    - src/Shared*
+
+variables:
+- group: Release Management Resources
+- group: RELEASE das-apim-endpoints
+- name: OuterApiObject
+  value: $(ManageApprenticeshipsOuterApiObject)
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.61
+    endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/5.0.2
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
+
+stages:
+- template: ../../pipeline-templates/stage/outerapi-pipeline.yml
+  parameters:
+    OuterApiName: ManageApprenticeships
