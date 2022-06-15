@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class PostApprenticeFeedbackRatingRequest : IPostApiRequest
+    public class PostApprenticeFeedbackRequest : IPostApiRequest
     {
-        public string PostUrl => $"api/apprenticefeedback/ratings";
+        public string PostUrl => $"api/apprenticefeedback/batch";
         public object Data { get; set; }
     }
 
-    public class PostApprenticeFeedbackRatingRequestData
+    public class PostApprenticeFeedbackRequestData
     {
         public IEnumerable<int> Ukprns { get; set; }
     }

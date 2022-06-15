@@ -1,14 +1,8 @@
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
@@ -17,6 +11,11 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
@@ -27,9 +26,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
+            IEnumerable<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
             [Frozen] Mock<IShortlistService> shortlistService,
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
             GetTrainingCourseProvidersQueryHandler handler)
@@ -38,6 +39,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Location = "";
             query.Lat = 0;
             query.Lon = 0;
+            
+            var provider = apiResponse.Providers.First();
+            var appFeedback = apprenticeFeedbackResponse.First();
+            appFeedback.Ukprn = provider.Ukprn;
+            provider.ApprenticeFeedback = appFeedback;
+            
             mockApiClient
                 .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
                     c.GetUrl.Contains(query.Id.ToString()) 
@@ -52,7 +59,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockLocationLookup
                 .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem) null);
-            
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(new PostApprenticeFeedbackRequest
+                {
+                    Data = new PostApprenticeFeedbackRequestData
+                    {
+                        Ukprns = apiResponse.Providers.Select(s => s.Ukprn)
+                    }
+                })).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
@@ -68,16 +83,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             string authorityName,
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
+            IEnumerable<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
             GetStandardsListItem apiCourseResponse,
             LocationItem locationServiceResponse,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
+            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
             GetTrainingCourseProvidersQueryHandler handler)
         {
             query.Location = $"{locationName}, {authorityName} ";
             query.Lat = 0;
             query.Lon = 0;
+
+            var provider = apiResponse.Providers.First();
+            var appFeedback = apprenticeFeedbackResponse.First();
+            appFeedback.Ukprn = provider.Ukprn;
+            provider.ApprenticeFeedback = appFeedback;
 
             mockLocationLookupService
                 .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
@@ -93,7 +115,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
-            
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(new PostApprenticeFeedbackRequest
+                {
+                    Data = new PostApprenticeFeedbackRequestData
+                    {
+                        Ukprns = apiResponse.Providers.Select(s => s.Ukprn)
+                    }
+                })).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
