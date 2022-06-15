@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {

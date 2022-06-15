@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Services
 {
