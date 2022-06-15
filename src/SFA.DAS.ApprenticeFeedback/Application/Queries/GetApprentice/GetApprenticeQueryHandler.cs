@@ -26,7 +26,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 
             await Task.WhenAll(result, apprenticePreferences);
 
-            if (result == null || apprenticePreferences.Result.ApprenticePreferences.Count == 0)
+            if (result.Result == null)
                 return null;
 
             return new GetApprenticeResult
