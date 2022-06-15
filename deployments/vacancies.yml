@@ -39,7 +39,7 @@ stages:
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -68,7 +68,7 @@ stages:
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -97,7 +97,7 @@ stages:
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -126,7 +126,7 @@ stages:
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -155,7 +155,7 @@ stages:
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -184,7 +184,7 @@ stages:
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -213,7 +213,7 @@ stages:
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/arm-deploy.yml
+  - template: ../pipeline-templates/job/arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS

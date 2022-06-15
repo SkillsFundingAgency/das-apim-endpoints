@@ -33,7 +33,7 @@ stages:
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       Environment: AT
@@ -46,7 +46,7 @@ stages:
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       Environment: TEST
@@ -59,7 +59,7 @@ stages:
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       Environment: TEST2
@@ -72,7 +72,7 @@ stages:
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
       Environment: PP
@@ -85,7 +85,7 @@ stages:
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
       Environment: PROD
@@ -98,7 +98,7 @@ stages:
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       Environment: MO
@@ -111,7 +111,7 @@ stages:
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
   jobs:
-  - template: ../pipeline-templates/job/shared-arm-deploy.yml
+  - template: ../pipeline-templates/job/shared-arm-deploy-old.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       Environment: DEMO
