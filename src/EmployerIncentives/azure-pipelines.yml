@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - src/EmployerIncentives
+    - src/SFA.DAS.Shared*
+
+variables:
+- group: Release Management Resources
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/heads/build-wd
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+    - job: CodeBuild
+      pool:
+        name: DAS - Continuous Integration Agents
+      variables:
+      - group: ESFA - SonarCloud
+      - name: buildConfiguration
+        value: release
+      workspace:
+        clean: all
+      steps:
+      - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+    
+      - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+        parameters:
+          SonarCloud: true
+          SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_EmployerIncentives
+          TargetProjects: 'src/EmployerIncentives/**/*.csproj'
+          UnitTestProjects: 'src/EmployerIncentives/**/*UnitTests.csproj'
+          AcceptanceTestProjects: 'src/EmployerIncentives/**/*.AcceptanceTests.csproj'
+          RunAcceptanceTests: true
+    
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish Employer Incentives Api'
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: 'src/EmployerIncentives/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+    
+      - task: CopyFiles@2
+        displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+        inputs:
+          Contents: |
+            azure/**
+          TargetFolder: '$(build.artifactstagingdirectory)/publish'
+          OverWrite: true
+    
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Artifact'
+        inputs:
+          targetPath: '$(build.artifactstagingdirectory)/publish'
+          artifactName: 'ApimEndpointsArtifacts'
+    
