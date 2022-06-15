@@ -282,15 +282,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmploymentCheck.Api
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RoatpCourseManagement", "RoatpCourseManagement", "{EE0283A3-AF30-4034-80BB-1AD5EF241B46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.CourseManagement.Api", "SFA.DAS.Roatp.CourseManagement.Api\SFA.DAS.Roatp.CourseManagement.Api.csproj", "{93941B2A-A8CA-4522-872E-D8B18F269367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.Api", "SFA.DAS.RoatpCourseManagement.Api\SFA.DAS.RoatpCourseManagement.Api.csproj", "{93941B2A-A8CA-4522-872E-D8B18F269367}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C3539A14-04B7-4811-B58E-34549BF357FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.CourseManagement.UnitTests", "SFA.DAS.Roatp.CourseManagement.UnitTests\SFA.DAS.Roatp.CourseManagement.UnitTests.csproj", "{4BF02610-8D06-4DF7-8D4D-245834483833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.UnitTests", "SFA.DAS.RoatpCourseManagement.UnitTests\SFA.DAS.RoatpCourseManagement.UnitTests.csproj", "{4BF02610-8D06-4DF7-8D4D-245834483833}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.CourseManagement", "SFA.DAS.Roatp.CourseManagement\SFA.DAS.Roatp.CourseManagement.csproj", "{77622928-3B49-4869-ACB8-28B3A0CB1949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement", "SFA.DAS.RoatpCourseManagement\SFA.DAS.RoatpCourseManagement.csproj", "{77622928-3B49-4869-ACB8-28B3A0CB1949}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.CourseManagement.Api.UnitTests", "SFA.DAS.Roatp.CourseManagement.Api.UnitTests\SFA.DAS.Roatp.CourseManagement.Api.UnitTests.csproj", "{2732F882-0185-4A78-9F37-63BF3BE72B62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.Api.UnitTests", "SFA.DAS.RoatpCourseManagement.Api.UnitTests\SFA.DAS.RoatpCourseManagement.Api.UnitTests.csproj", "{2732F882-0185-4A78-9F37-63BF3BE72B62}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.FakeApis", "SFA.DAS.Approvals.FakeApis\SFA.DAS.Approvals.FakeApis.csproj", "{FD369B50-A8A7-483B-8E03-45DFDFC10A2E}"
 EndProject
