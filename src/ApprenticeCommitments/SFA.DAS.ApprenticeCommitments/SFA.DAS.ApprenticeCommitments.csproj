@@ -5,17 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Models\EmployerIncentives\**" />
-      <EmbeddedResource Remove="Models\EmployerIncentives\**" />
-      <None Remove="Models\EmployerIncentives\**" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="9.5.0" />
       <PackageReference Include="MediatR" Version="6.0.0" />
+      <PackageReference Include="Scrutor" Version="3.3.0" />
       <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.283" />
     </ItemGroup>
 

@@ -5,9 +5,25 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Content Update="nlog.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TransformOnBuild>true</TransformOnBuild>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="nlog.Debug.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+        <None Include="nlog.Release.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="MediatR" Version="6.0.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-        <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.16.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
@@ -21,16 +37,11 @@
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.2.1" />
     </ItemGroup>
+
+
     <ItemGroup>
-        <Content Update="appsettings.json">
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-        <Content Update="appsettings.Development.json">
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\SFA.DAS.EmployerIncentives\SFA.DAS.EmployerIncentives.csproj" />
+      <ProjectReference Include="..\SFA.DAS.Assessors\SFA.DAS.Assessors.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
+
 </Project>
