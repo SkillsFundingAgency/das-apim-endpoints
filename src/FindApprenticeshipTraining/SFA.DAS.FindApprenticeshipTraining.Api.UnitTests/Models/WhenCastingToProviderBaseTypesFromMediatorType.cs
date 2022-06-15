@@ -57,7 +57,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             source.AchievementRates = null;
             source.DeliveryTypes = new List<GetDeliveryTypeItem>();
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
             response.Name.Should().Be(source.Name);
             response.ProviderId.Should().Be(source.Ukprn);
@@ -91,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
             response.DeliveryModes.Count.Should().Be(3);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease)?.DistanceInMiles.Should().Be(3.1m);
@@ -125,7 +125,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
             response.DeliveryModes.Count.Should().Be(1);
             response.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == deliveryModeType)?.DistanceInMiles.Should().Be(2.5m);
@@ -139,7 +139,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             item.DeliveryModes = "100PercentEmployer";
             source.DeliveryTypes = new List<GetDeliveryTypeItem>{item};
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
             
             response.DeliveryModes.First().Should().BeEquivalentTo(item, options => options.Excluding(c=>c.DeliveryModes).Excluding(c=>c.DistanceInMiles));
             response.DeliveryModes.First().DeliveryModeType.Should().Be(DeliveryModeType.Workplace);
@@ -151,185 +151,185 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.FeedbackRatings = null;
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(0);
-            response.Feedback.TotalFeedbackRating.Should().Be(0);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(0);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(0);
         }
 
         [Test, AutoData]
         public void Then_Maps_FeedbackDetail(GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 92,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 29,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 7,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.FeedbackDetail.Should().BeEquivalentTo(source.FeedbackRatings);
+            response.EmployerFeedback.FeedbackDetail.Should().BeEquivalentTo(source.FeedbackRatings);
         }
 
         [Test, AutoData]
         public void Then_Maps_Feedback_Rating_To_A_Score(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 92,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 29,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 7,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(129);
-            response.Feedback.TotalFeedbackRating.Should().Be(3);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(129);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
         }
 
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_One_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
                 
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
                     FeedbackCount = 7,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 2,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(9);
-            response.Feedback.TotalFeedbackRating.Should().Be(1);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(9);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(1);
         }
         
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Two_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 4,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(5);
-            response.Feedback.TotalFeedbackRating.Should().Be(2);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(5);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(2);
         }
         
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Three_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 4,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 2,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(6);
-            response.Feedback.TotalFeedbackRating.Should().Be(3);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(6);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
         }
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Four_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 1,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(2);
-            response.Feedback.TotalFeedbackRating.Should().Be(4);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(2);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(4);
         }
         
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Four_If_Max(GetProvidersListItem source, string sectorSubjectArea )
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 6,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
-            response.Feedback.TotalEmployerResponses.Should().Be(6);
-            response.Feedback.TotalFeedbackRating.Should().Be(4);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(6);
+            response.EmployerFeedback.TotalFeedbackRating.Should().Be(4);
         }
 
         [Test, AutoData]
@@ -338,7 +338,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var deliveryTypeItem = new GetDeliveryTypeItem{DeliveryModes = "NotFound"};
             source.DeliveryTypes = new List<GetDeliveryTypeItem>{deliveryTypeItem};
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), true);
 
             response.DeliveryModes.First().DeliveryModeType.Should().Be(DeliveryModeType.NotFound);
             response.DeliveryModes.First().Address1.Should().BeNullOrEmpty();
@@ -375,7 +375,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
             {
                 DeliveryModeType.DayRelease
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.DeliveryModes.Count.Should().Be(3);
             response.DeliveryModes.Should().Contain(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
@@ -398,7 +398,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             {
                 DeliveryModeType.DayRelease,
                 DeliveryModeType.BlockRelease
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.Should().NotBeNull();
         }
@@ -419,7 +419,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             {
                 DeliveryModeType.DayRelease,
                 DeliveryModeType.Workplace
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.DeliveryModes.Count.Should().Be(2);
         }
@@ -440,7 +440,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1, new List<DeliveryModeType>
             {
                 DeliveryModeType.DayRelease
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.Should().BeNull();
         }
@@ -463,7 +463,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             {
                 DeliveryModeType.Workplace,
                 DeliveryModeType.National
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.Should().BeNull();
         }
@@ -486,7 +486,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             {
                 DeliveryModeType.Workplace,
                 DeliveryModeType.National
-            }, new List<FeedbackRatingType>(), true);
+            }, new List<EmployerFeedbackRatingType>(), true);
 
             response.Should().NotBeNull();
         }
@@ -494,21 +494,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_If_There_Are_Ratings_To_Filter_Then_Matches_On_Values(string sectorSubjectArea, GetProvidersListItem source)
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 1,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>{FeedbackRatingType.Poor}, true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>{EmployerFeedbackRatingType.Poor}, true);
 
             response.Should().BeNull();
 
@@ -518,21 +518,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_If_There_Are_Multiple_Ratings_To_Filter_Then_Matches_On_Values(string sectorSubjectArea, GetProvidersListItem source)
         {
-            source.FeedbackRatings = new List<GetFeedbackRatingItem>
+            source.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 1,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 1,
                 }
             };
             
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<FeedbackRatingType>{FeedbackRatingType.Poor,FeedbackRatingType.Excellent}, true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea,1,new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>{EmployerFeedbackRatingType.Poor,EmployerFeedbackRatingType.Excellent}, true);
 
             response.Should().NotBeNull();
             response.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());

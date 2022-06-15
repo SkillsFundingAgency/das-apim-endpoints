@@ -1,5 +1,4 @@
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -23,8 +22,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
             var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, sectorSubjectArea, level);
             var deliveryModes = FilterDeliveryModes(source.ProviderStandard.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(source.ProviderStandard.FeedbackRatings, source.ProviderStandard.FeedbackAttributes);
-            
+            var employerFeedbackResponse = EmployerFeedbackResponse(source.ProviderStandard.EmployerFeedback);
+            var apprenticeFeedbackResponse = ApprenticeFeedbackResponse(source.ProviderStandard.ApprenticeFeedback);
+                        
             return new GetProviderCourseItem
             {
                 ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress,hasLocation),
@@ -40,7 +40,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 NationalOverallAchievementRate = nationalRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
-                Feedback = getFeedbackResponse,
+                EmployerFeedback = employerFeedbackResponse,
+                ApprenticeFeedback = apprenticeFeedbackResponse,
                 ShortlistId = source.ProviderStandard.ShortlistId
             };
         }
@@ -49,7 +50,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
             var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(shortlistItem.ProviderDetails.FeedbackRatings, shortlistItem.ProviderDetails.FeedbackAttributes);
+            var getEmployerFeedbackResponse = EmployerFeedbackResponse(shortlistItem.ProviderDetails.EmployerFeedback);
+            var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(shortlistItem.ProviderDetails.ApprenticeFeedback);
             
             return new GetProviderCourseItem
             {
@@ -63,7 +65,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 DeliveryModes = deliveryModes,
-                Feedback = getFeedbackResponse,
+                EmployerFeedback = getEmployerFeedbackResponse,
+                ApprenticeFeedback = getApprenticeFeedbackResponse
             };
         }
     }

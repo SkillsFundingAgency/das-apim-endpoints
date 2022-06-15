@@ -13,24 +13,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetTrainingCourseProviderResult providerStandardItem)
         {
-            providerStandardItem.ProviderStandard.FeedbackRatings = new List<GetFeedbackRatingItem>
+            providerStandardItem.ProviderStandard.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 92,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 29,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 7,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
                     FeedbackCount = 1,
@@ -43,8 +43,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.StandardInfoUrl);
             actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
             actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
-            actual.Feedback.TotalEmployerResponses.Should().Be(129);
-            actual.Feedback.TotalFeedbackRating.Should().Be(3);
+            actual.EmployerFeedback.TotalEmployerResponses.Should().Be(129);
+            actual.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
             actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
         }
         [Test, AutoData]
