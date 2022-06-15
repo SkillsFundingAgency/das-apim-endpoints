@@ -137,15 +137,15 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         /// ### Examples ###
         /// Get all of a subscription's vacancies sorted by age descending (oldest first):
         /// ```
-        /// /vacancy?Sort=AgeDesc&amp;FilterBySubscription=true
+        /// /vacancy/traineeshipvacancies?Sort=AgeDesc&amp;FilterBySubscription=true
         /// ```
         /// Get all vacancies within a 20 mile radius of Coventry (52.408056, -1.510556), sorted by distance (closest first) for standards 123 and 345:
         /// ```
-        /// /vacancy?Lat=52.408056&amp;Lon=-1.510556&amp;Sort=DistanceAsc&amp;DistanceInMiles=20&amp;RouteId=123&amp;RouteId=345
+        /// /vacancy/traineeshipvacancies?Lat=52.408056&amp;Lon=-1.510556&amp;Sort=DistanceAsc&amp;DistanceInMiles=20&amp;RouteId=123&amp;RouteId=345
         /// ```
         /// Get all nationwide vacancies for route 'example' posted within the last 30 days, page 5, size 10:
         /// ```
-        /// /vacancy?PageNumber=5&amp;PageSize=10&amp;Routes=example&amp;NationWideOnly=true&amp;PostedInLastNumberOfDays=30
+        /// /vacancy/traineeshipvacancies?PageNumber=5&amp;PageSize=10&amp;Routes=example&amp;NationWideOnly=true&amp;PostedInLastNumberOfDays=30
         /// ```
         /// </remarks>
         /// <param name="request"></param>
