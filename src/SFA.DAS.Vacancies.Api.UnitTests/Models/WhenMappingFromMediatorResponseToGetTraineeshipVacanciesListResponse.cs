@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using FluentAssertions;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Models
 {
@@ -12,9 +12,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetTraineeshipVacanciesQueryResult source)
         {
-            var actual = (GetTraineeshipVacanciesListResponse) source;
+            var actual = (GetTraineeshipVacanciesListResponse)source;
 
-            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers().Excluding(c=>c.EmployerName));
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers().Excluding(c => c.EmployerName));
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);
@@ -23,11 +23,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 var expectedVacancy =
                     source.Vacancies.Single(c => c.VacancyReference.Equals(vacancy.VacancyReference));
                 vacancy.Location.Lat.Should().Be(expectedVacancy.Location.Lat);
-                vacancy.Location.Lon.Should().Be(expectedVacancy.Location.Lon);    
+                vacancy.Location.Lon.Should().Be(expectedVacancy.Location.Lon);
             }
-            
+
         }
-        
+
         [Test, AutoData]
         public void And_IsEmployerAnonymous_Then_Anon_Values_Used(GetTraineeshipVacanciesQueryResult source)
         {
@@ -38,9 +38,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 getVacanciesItem.IsEmployerAnonymous = true;
                 getVacanciesItem.VacancyLocationType = "nAtiONal";
             }
-            
+
             //act
-            var actual = (GetTraineeshipVacanciesListResponse) source ;
+            var actual = (GetTraineeshipVacanciesListResponse)source;
 
             //assert
             actual.Vacancies.Should().BeEquivalentTo(sourceVacancies, options => options
@@ -52,7 +52,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             {
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);
                 actual.Vacancies[i].Location.Lat.Should().Be(sourceVacancies[i].Location.Lat);
-                actual.Vacancies[i].Location.Lon.Should().Be(sourceVacancies[i].Location.Lon); 
+                actual.Vacancies[i].Location.Lon.Should().Be(sourceVacancies[i].Location.Lon);
             }
         }
     }

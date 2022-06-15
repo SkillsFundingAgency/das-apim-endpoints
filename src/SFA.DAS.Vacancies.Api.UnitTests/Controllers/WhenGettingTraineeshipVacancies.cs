@@ -33,7 +33,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetTraineeshipVacanciesQuery>(
-                        c=>c.Ukprn.Equals(request.Ukprn) 
+                        c => c.Ukprn.Equals(request.Ukprn)
                          && c.AccountIdentifier.AccountType == AccountType.Employer
                          && c.AccountIdentifier.AccountHashedId == accountId
                          && c.AccountIdentifier.Ukprn == null
@@ -60,7 +60,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             Assert.IsNotNull(model);
             model.Should().BeEquivalentTo((GetTraineeshipVacanciesListResponse)mediatorResult);
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Employer_With_No_AccountId_Filter_When_FilterBySubscription_Is_False(
             SearchTraineeshipVacancyRequest request,
@@ -75,7 +75,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetTraineeshipVacanciesQuery>(
-                        c=>c.Ukprn.Equals(request.Ukprn) 
+                        c => c.Ukprn.Equals(request.Ukprn)
                          && c.AccountIdentifier.AccountType == AccountType.Employer
                          && c.AccountIdentifier.AccountHashedId == accountId
                          && c.AccountIdentifier.Ukprn == null
@@ -102,7 +102,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             Assert.IsNotNull(model);
             model.Should().BeEquivalentTo((GetTraineeshipVacanciesListResponse)mediatorResult);
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Provider_Then_Ukprn_Set_From_Header(
             SearchTraineeshipVacancyRequest request,
@@ -116,7 +116,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetTraineeshipVacanciesQuery>(
-                        c=>c.Ukprn.Equals(ukprn)
+                        c => c.Ukprn.Equals(ukprn)
                            && c.AccountIdentifier.AccountType == AccountType.Provider
                            && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
@@ -149,7 +149,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetTraineeshipVacanciesQuery>(
-                        c=>c.Ukprn.Equals(request.Ukprn)
+                        c => c.Ukprn.Equals(request.Ukprn)
                            && c.AccountIdentifier.AccountType == AccountType.Provider
                            && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
@@ -182,11 +182,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetTraineeshipVacancies(accountIdentifier,request) as StatusCodeResult;
+            var controllerResult = await controller.GetTraineeshipVacancies(accountIdentifier, request) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
-        
+
         [Test, MoqAutoData]
         public async Task And_SecurityException_Then_Returns_Forbidden(
             string accountId,
@@ -201,7 +201,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new SecurityException());
 
-            var controllerResult = await controller.GetTraineeshipVacancies(accountIdentifier,request) as StatusCodeResult;
+            var controllerResult = await controller.GetTraineeshipVacancies(accountIdentifier, request) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
         }

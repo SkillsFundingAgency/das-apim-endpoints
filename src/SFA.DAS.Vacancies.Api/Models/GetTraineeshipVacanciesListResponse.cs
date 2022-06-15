@@ -95,13 +95,13 @@ namespace SFA.DAS.Vacancies.Api.Models
                 },
                 RouteId = source.RouteId,
                 RouteName = source.RouteName,
-                IsEmployerAnonymous= source.IsEmployerAnonymous,
-                IsPositiveAboutDisability=source.IsPositiveAboutDisability,
-                WorkingWeek=source.WorkingWeek,
-                Score=source.Score,
-                EmployerDescription=source.EmployerDescription,
-                Category=source.Category,
-                CategoryCode=source.CategoryCode
+                IsEmployerAnonymous = source.IsEmployerAnonymous,
+                IsPositiveAboutDisability = source.IsPositiveAboutDisability,
+                WorkingWeek = source.WorkingWeek,
+                Score = source.Score,
+                EmployerDescription = source.EmployerDescription,
+                Category = source.Category,
+                CategoryCode = source.CategoryCode
             };
         }
     }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
 namespace SFA.DAS.Vacancies.Api.Models

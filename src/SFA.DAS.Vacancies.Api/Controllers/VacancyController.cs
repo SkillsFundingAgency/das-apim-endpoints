@@ -1,12 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
-using Microsoft.OpenApi.Extensions;
-using SFA.DAS.SharedOuterApi.Extensions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;

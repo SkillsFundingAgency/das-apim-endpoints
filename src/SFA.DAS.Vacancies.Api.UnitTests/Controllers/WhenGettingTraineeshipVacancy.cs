@@ -24,12 +24,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
-            mockMediator.Setup(x => x.Send(It.Is<GetTraineeshipVacancyQuery>(c => 
+            mockMediator.Setup(x => x.Send(It.Is<GetTraineeshipVacancyQuery>(c =>
                     c.VacancyReference.Equals(vacancyReference)),
                 CancellationToken.None)).ReturnsAsync(queryResult);
-            
+
             var controllerResult = await controller.GetTraineeshipVacancy(vacancyReference) as ObjectResult;
-            
+
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTraineeshipVacancyResponse;
@@ -45,12 +45,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Greedy] VacancyController controller)
         {
             queryResult.Vacancy = null;
-            mockMediator.Setup(x => x.Send(It.Is<GetTraineeshipVacancyQuery>(c => 
+            mockMediator.Setup(x => x.Send(It.Is<GetTraineeshipVacancyQuery>(c =>
                     c.VacancyReference.Equals(vacancyReference)),
                 CancellationToken.None)).ReturnsAsync(queryResult);
-            
+
             var controllerResult = await controller.GetTraineeshipVacancy(vacancyReference) as NotFoundResult;
-            
+
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
@@ -64,9 +64,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetTraineeshipVacancyQuery>(),
                 CancellationToken.None)).ThrowsAsync(new Exception());
-            
+
             var controllerResult = await controller.GetVacancy(vacancyReference) as StatusCodeResult;
-            
+
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

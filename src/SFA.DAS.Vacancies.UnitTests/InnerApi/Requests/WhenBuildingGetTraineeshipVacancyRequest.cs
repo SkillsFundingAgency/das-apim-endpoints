@@ -12,7 +12,7 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
         {
             //Act
             var actual = new GetTraineeshipVacancyRequest(vacancyReference);
-            
+
             //Assert
             actual.GetUrl.Should().Be($"api/Vacancies/{vacancyReference}");
         }

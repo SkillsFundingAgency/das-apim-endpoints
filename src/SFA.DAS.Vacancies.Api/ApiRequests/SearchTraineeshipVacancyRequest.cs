@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.Vacancies.Api
@@ -60,7 +59,7 @@ namespace SFA.DAS.Vacancies.Api
         [FromQuery]
         public bool? NationWideOnly { get; set; } = null;
         /// <summary>
-        /// Traineeship adverts Posted In Last Number Of Days you wish to get..
+        /// Traineeship adverts Posted In Last Number Of Days you wish to get.
         /// </summary>
         [FromQuery]
         public uint? PostedInLastNumberOfDays { get; set; } = null;

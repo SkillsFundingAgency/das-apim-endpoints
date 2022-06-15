@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
-using MediatR;
-using SFA.DAS.Vacancies.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Options;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
+using SFA.DAS.Vacancies.InnerApi.Responses;
 using SFA.DAS.Vacancies.Interfaces;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries

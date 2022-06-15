@@ -13,7 +13,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         {
             return new GetTrainingCoursesListResponse
             {
-                TrainingCourses = source.TrainingCourses.Select(c=>(GetTrainingCoursesListResponseItem)c).ToList()
+                TrainingCourses = source.TrainingCourses.Select(c => (GetTrainingCoursesListResponseItem)c).ToList()
             };
         }
     }
@@ -22,7 +22,7 @@ namespace SFA.DAS.Vacancies.Api.Models
     {
         public int LarsCode { get; set; }
         public string Title { get; set; }
-        public string Route { get ; set ; }
+        public string Route { get; set; }
 
 
         public static implicit operator GetTrainingCoursesListResponseItem(GetStandardsListItem source)
