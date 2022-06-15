@@ -22,8 +22,11 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             UpdateContactDetailsCommandHandler sut,
             UpdateContactDetailsCommand command,
             CancellationToken cancellationToken,
+            GetProviderCourseRequest getRequest,
             UpdateContactDetailsRequest request)
         {
+            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseRequest>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseRequest>(getRequest, HttpStatusCode.NoContent, string.Empty));
+
             apiClientMock.Setup(a => a.PostWithResponseCode<UpdateContactDetailsRequest>(It.IsAny<UpdateContactDetailsRequest>())).ReturnsAsync(new ApiResponse<UpdateContactDetailsRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
             await sut.Handle(command, cancellationToken);

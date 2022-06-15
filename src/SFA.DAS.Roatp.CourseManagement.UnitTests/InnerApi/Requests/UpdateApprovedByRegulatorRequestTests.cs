@@ -17,7 +17,7 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Requests
             request.Data.Should().Be(data);
             request.Ukprn.Should().Be(data.Ukprn);
             request.LarsCode.Should().Be(data.LarsCode);
-            request.PostUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}/update-approved-by-regulator");
+            request.PostUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}/");
         }
     }
 }

@@ -22,8 +22,11 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             UpdateApprovedByRegulatorCommandHandler sut,
             UpdateApprovedByRegulatorCommand command,
             CancellationToken cancellationToken,
+            GetProviderCourseRequest getRequest,
             UpdateApprovedByRegulatorRequest request)
         {
+            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseRequest>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseRequest>(getRequest, HttpStatusCode.NoContent, string.Empty));
+
             apiClientMock.Setup(a => a.PostWithResponseCode<UpdateApprovedByRegulatorRequest>(It.IsAny<UpdateApprovedByRegulatorRequest>())).ReturnsAsync(new ApiResponse<UpdateApprovedByRegulatorRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
             await sut.Handle(command, cancellationToken);
