@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
-    public class UpdateProviderCourse
+    public class ProviderCourseUpdateModel
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }

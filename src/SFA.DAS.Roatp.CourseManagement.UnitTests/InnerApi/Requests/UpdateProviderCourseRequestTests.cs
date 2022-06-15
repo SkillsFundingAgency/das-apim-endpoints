@@ -10,7 +10,7 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Requests
     public class UpdateProviderCourseRequestTests
     {
         [Test, AutoData]
-        public void Constructor_ConstructsRequest(UpdateProviderCourse data)
+        public void Constructor_ConstructsRequest(ProviderCourseUpdateModel data)
         {
             var request = new UpdateProviderCourseRequest(data);
 

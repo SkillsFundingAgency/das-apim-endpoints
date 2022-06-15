@@ -32,7 +32,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateCo
                 throw new HttpRequestContentException(errorMessage, providerCourseResponse.StatusCode, providerCourseResponse.ErrorContent);
             }
             var providerCourse = providerCourseResponse.Body;
-            var updateProviderCourse = new UpdateProviderCourse
+            var updateProviderCourse = new ProviderCourseUpdateModel
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,

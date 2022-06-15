@@ -9,7 +9,7 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
         public string UserId { get; set; }
         public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/";
 
-        public UpdateProviderCourseRequest(UpdateProviderCourse data)
+        public UpdateProviderCourseRequest(ProviderCourseUpdateModel data)
         {
             Ukprn = data.Ukprn;
             LarsCode = data.LarsCode;
