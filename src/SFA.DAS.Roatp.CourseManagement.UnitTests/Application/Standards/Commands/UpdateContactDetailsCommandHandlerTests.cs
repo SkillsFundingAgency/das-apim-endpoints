@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -22,16 +23,16 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             UpdateContactDetailsCommandHandler sut,
             UpdateContactDetailsCommand command,
             CancellationToken cancellationToken,
-            GetProviderCourseRequest getRequest,
-            UpdateContactDetailsRequest request)
+            UpdateProviderCourseRequest request,
+            GetProviderCourseResponse apiResponse)
         {
-            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseRequest>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseRequest>(getRequest, HttpStatusCode.NoContent, string.Empty));
+            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
-            apiClientMock.Setup(a => a.PostWithResponseCode<UpdateContactDetailsRequest>(It.IsAny<UpdateContactDetailsRequest>())).ReturnsAsync(new ApiResponse<UpdateContactDetailsRequest>(request, HttpStatusCode.NoContent, string.Empty));
+            apiClientMock.Setup(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>())).ReturnsAsync(new ApiResponse<UpdateProviderCourseRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
             await sut.Handle(command, cancellationToken);
 
-            apiClientMock.Verify(a => a.PostWithResponseCode<UpdateContactDetailsRequest>(It.IsAny<UpdateContactDetailsRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
         }
     }
 }

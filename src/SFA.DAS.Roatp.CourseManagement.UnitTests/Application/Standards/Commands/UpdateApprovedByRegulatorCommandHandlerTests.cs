@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -22,16 +23,16 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             UpdateApprovedByRegulatorCommandHandler sut,
             UpdateApprovedByRegulatorCommand command,
             CancellationToken cancellationToken,
-            GetProviderCourseRequest getRequest,
-            UpdateApprovedByRegulatorRequest request)
+            UpdateProviderCourseRequest request,
+            GetProviderCourseResponse apiResponse)
         {
-            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseRequest>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseRequest>(getRequest, HttpStatusCode.NoContent, string.Empty));
+            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
-            apiClientMock.Setup(a => a.PostWithResponseCode<UpdateApprovedByRegulatorRequest>(It.IsAny<UpdateApprovedByRegulatorRequest>())).ReturnsAsync(new ApiResponse<UpdateApprovedByRegulatorRequest>(request, HttpStatusCode.NoContent, string.Empty));
+            apiClientMock.Setup(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>())).ReturnsAsync(new ApiResponse<UpdateProviderCourseRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
             await sut.Handle(command, cancellationToken);
 
-            apiClientMock.Verify(a => a.PostWithResponseCode<UpdateApprovedByRegulatorRequest>(It.IsAny<UpdateApprovedByRegulatorRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
         }
     }
 }
