@@ -10,6 +10,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         {
             LegalEntityId = legalEntityId;
         }
-        public string GetUrl => $"applications/{LegalEntityId}";
+        public string GetUrl => $"agencies/{LegalEntityId}";
     }
 }
