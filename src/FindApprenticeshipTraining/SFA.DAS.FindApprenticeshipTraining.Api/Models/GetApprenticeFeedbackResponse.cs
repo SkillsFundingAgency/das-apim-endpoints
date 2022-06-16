@@ -8,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalApprenticeResponses { get ; set ; }
         public int TotalFeedbackRating { get ; set ; }
         public IEnumerable<GetApprenticeFeedbackItem> FeedbackDetail { get ; set ; }
-        public IEnumerable<ApprenticeFeedbackAttributeDetail> FeedbackAttributes { get; set; }
+        public IEnumerable<GetApprenticeFeedbackAttributeItem> FeedbackAttributes { get; set; }
     }
 
     public class GetApprenticeFeedbackItem
@@ -42,6 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return new GetApprenticeFeedbackAttributeItem
             {
                 Name = source.Name,
+                Category = source.Category,
                 Agree = source.Agree,
                 Disagree = source.Disagree,
                 Rating = source.Agree - source.Disagree,
@@ -58,14 +59,4 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         Good = 3,
         Excellent = 4
     }
-
-    public class ApprenticeFeedbackAttributeDetail
-    {
-        public string Name { get; set; }        
-        public string Category { get; set; }
-        public int Disagree { get; set; }
-        public int Agree { get; set; }
-
-    }
-
 }
