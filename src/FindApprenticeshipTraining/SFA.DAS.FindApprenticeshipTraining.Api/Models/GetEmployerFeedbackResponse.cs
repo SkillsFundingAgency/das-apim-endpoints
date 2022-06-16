@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalEmployerResponses { get ; set ; }
         public int TotalFeedbackRating { get ; set ; }
         public IEnumerable<GetEmployerFeedbackItem> FeedbackDetail { get ; set ; }
-        public IEnumerable<EmployerFeedbackAttributeDetail> FeedbackAttributes { get; set; }
+        public IEnumerable<GetEmployerFeedbackAttributeItem> FeedbackAttributes { get; set; }
     }
 
     public class GetEmployerFeedbackItem
@@ -58,13 +58,4 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         Good = 3,
         Excellent = 4
     }
-
-    public class EmployerFeedbackAttributeDetail
-    {
-        public string AttributeName { get; set; }        
-        public int Weakness { get; set; }
-        public int Strength { get; set; }
-
-    }
-
 }

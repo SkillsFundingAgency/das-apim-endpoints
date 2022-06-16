@@ -58,7 +58,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 return new GetEmployerFeedbackResponse
                 {
                     TotalEmployerResponses = 0,
-                    TotalFeedbackRating = 0
+                    TotalFeedbackRating = 0,
+                    FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>(),
+                    FeedbackDetail = new List<GetEmployerFeedbackItem>()
                 };
             }
 
@@ -73,12 +75,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             var feedbackAttrItems = employerFeedback.FeedbackAttributes
                 .Where(c => c.Strength + c.Weakness != 0)
-                .Select(c => new EmployerFeedbackAttributeDetail
-                {
-                    AttributeName = c.AttributeName,
-                    Strength = c.Strength,
-                    Weakness = c.Weakness
-                }).ToList();
+                .Select(c => (GetEmployerFeedbackAttributeItem)c).ToList();
 
             return new GetEmployerFeedbackResponse
             {
@@ -96,7 +93,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 return new GetApprenticeFeedbackResponse
                 {
                     TotalApprenticeResponses = 0,
-                    TotalFeedbackRating = 0
+                    TotalFeedbackRating = 0,
+                    FeedbackAttributes = new List<GetApprenticeFeedbackAttributeItem>(),
+                    FeedbackDetail = new List<GetApprenticeFeedbackItem>()
                 };
             }
 
@@ -111,13 +110,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             var feedbackAttrItems = apprenticeFeedback.ProviderAttribute
                 .Where(c => c.Agree + c.Disagree != 0)
-                .Select(c => new ApprenticeFeedbackAttributeDetail
-                {
-                    Name = c.Name,
-                    Agree = c.Agree,
-                    Disagree = c.Disagree,
-                    Category = c.Category
-                }).ToList();
+                .Select(c => (GetApprenticeFeedbackAttributeItem)c).ToList();
 
             return new GetApprenticeFeedbackResponse
             {
