@@ -79,6 +79,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 }
             }
             
+            if(providerTask.Result != null)
+            {
+                providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result;
+            }
+
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask,
                 new CacheHelper.SaveToCache { Levels = false, Sectors = false, Standards = saveToCache });
 
@@ -89,7 +94,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseProviderResult
             {
                 ProviderStandard = providerTask.Result,
-                ApprenticeFeedback = apprenticeFeedbackTask.Result,
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
