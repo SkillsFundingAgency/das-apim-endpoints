@@ -53,7 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         protected GetEmployerFeedbackResponse EmployerFeedbackResponse(InnerApi.Responses.GetEmployerFeedbackItem employerFeedback)
         {
-            if (employerFeedback.FeedbackRatings == null)
+            if (employerFeedback?.FeedbackRatings == null)
             {
                 return new GetEmployerFeedbackResponse
                 {
@@ -91,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
         {
-            if (apprenticeFeedback.ProviderRating == null)
+            if (apprenticeFeedback?.ProviderRating == null)
             {
                 return new GetApprenticeFeedbackResponse
                 {
