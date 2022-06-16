@@ -231,18 +231,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
-                    FeedbackCount = 7,
+                    FeedbackCount = 8,
                 },
                 new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
-                    FeedbackCount = 2,
+                    FeedbackCount = 6,
                 }
             };
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), new List<ApprenticeFeedbackRatingType>(), true);
 
-            response.EmployerFeedback.TotalEmployerResponses.Should().Be(9);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(14);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(1);
         }
 
@@ -259,13 +259,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
-                    FeedbackCount = 1,
+                    FeedbackCount = 3,
                 }
             };
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), new List<ApprenticeFeedbackRatingType>(), true);
 
-            response.EmployerFeedback.TotalEmployerResponses.Should().Be(5);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(7);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(2);
         }
 
@@ -282,13 +282,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
-                    FeedbackCount = 2,
+                    FeedbackCount = 4,
                 }
             };
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<EmployerFeedbackRatingType>(), new List<ApprenticeFeedbackRatingType>(), true);
 
-            response.EmployerFeedback.TotalEmployerResponses.Should().Be(6);
+            response.EmployerFeedback.TotalEmployerResponses.Should().Be(8);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
         }
         [Test, AutoData]

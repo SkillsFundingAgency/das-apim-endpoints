@@ -5,7 +5,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
     public class PostApprenticeFeedbackRequest : IPostApiRequest
     {
-        public string PostUrl => $"api/apprenticefeedback/batch";
+        public string PostUrl => $"api/apprenticefeedbackresult/request";
         public object Data { get; set; }
     }
 

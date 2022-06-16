@@ -5,18 +5,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
     public class GetApprenticeFeedbackResponse
     {
         public long Ukprn { get; set; }
-        public IEnumerable<GetApprenticeFeedbackAttributeItem> FeedbackAttributes { get; set; }
-        public IEnumerable<GetApprenticeFeedbackRatingItem> FeedbackRatings { get; set; }
+        public IEnumerable<GetApprenticeFeedbackRatingItem> ProviderRating { get; set; }
+        public IEnumerable<GetApprenticeFeedbackAttributeItem> ProviderAttribute { get; set; }
     }
 
-    public class GetApprenticeFeedbackAttributeItem : FeedbackAttributeItemBase
+    public class GetApprenticeFeedbackAttributeItem
     {
-        public string AttributeCategory { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
         public int Agree { get; set; }
         public int Disagree { get; set; }
     }
 
-    public class GetApprenticeFeedbackRatingItem : FeedbackRatingItemBase
+    public class GetApprenticeFeedbackRatingItem
     {
+        public string Rating { get; set; }
+        public int Count { get; set; }
     }
 }
