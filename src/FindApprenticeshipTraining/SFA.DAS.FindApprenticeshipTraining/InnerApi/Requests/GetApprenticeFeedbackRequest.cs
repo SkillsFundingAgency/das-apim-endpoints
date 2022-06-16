@@ -10,6 +10,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _ukprn = ukprn;
         }
         
-        public string GetUrl => $"api/apprenticefeedback/{_ukprn}";
+        public string GetUrl => $"api/apprenticefeedbackresult/{_ukprn}";
     }
 }

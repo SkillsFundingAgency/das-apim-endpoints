@@ -13,15 +13,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
     public class GetApprenticeFeedbackItem
     {
-        public string FeedbackName { get; set; }
-        public int FeedbackCount { get;set; }
+        public string Rating { get; set; }
+        public int Count { get;set; }
 
         public static implicit operator GetApprenticeFeedbackItem(GetApprenticeFeedbackRatingItem source)
         {
             return new GetApprenticeFeedbackItem
             {
-                FeedbackCount = source.FeedbackCount,
-                FeedbackName = source.FeedbackName
+                Count = source.Count,
+                Rating = source.Rating
             };
         }
     }
@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public int Agree { get ; set ; }
 
-        public string AttributeName { get ; set ; }
+        public string Name { get ; set ; }
         public string Category { get; set; }
         public int TotalVotes { get ; set ; }
         public int Rating { get ; set ; }
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetApprenticeFeedbackAttributeItem
             {
-                AttributeName = source.AttributeName,
+                Name = source.Name,
                 Agree = source.Agree,
                 Disagree = source.Disagree,
                 Rating = source.Agree - source.Disagree,
@@ -61,8 +61,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
     public class ApprenticeFeedbackAttributeDetail
     {
-        public string AttributeName { get; set; }        
-        public string AttributeCategory { get; set; }
+        public string Name { get; set; }        
+        public string Category { get; set; }
         public int Disagree { get; set; }
         public int Agree { get; set; }
 

@@ -7,16 +7,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class ProviderCourseBase
     {
-        public int ProviderId { get ; set ; }
-        public string Name { get ; set ; }
+        public int ProviderId { get; set; }
+        public string Name { get; set; }
         public string TradingName { get; set; }
-        public Guid? ShortlistId { get ; set ; }
-        public List<GetDeliveryType> DeliveryModes { get ; set ; }
+        public Guid? ShortlistId { get; set; }
+        public List<GetDeliveryType> DeliveryModes { get; set; }
         public int? OverallCohort { get; set; }
-        public decimal? OverallAchievementRate { get ; set ; }
-        public GetEmployerFeedbackResponse EmployerFeedback { get ; set ; }
+        public decimal? OverallAchievementRate { get; set; }
+        public GetEmployerFeedbackResponse EmployerFeedback { get; set; }
         public GetApprenticeFeedbackResponse ApprenticeFeedback { get; set; }
-        public bool HasLocation { get ; set ; }
+        public bool HasLocation { get; set; }
         private string MapLevel(int level)
         {
             if (level == 2)
@@ -38,14 +38,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             if (list == null)
                 return null;
-            
+
             var result = list.Where(c =>
                 c.SectorSubjectArea.Equals(subjectArea, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
             if (result.Count == 0)
                 return null;
-            
-            var item = result.FirstOrDefault(c => c.Level.Equals(MapLevel(level))) 
+
+            var item = result.FirstOrDefault(c => c.Level.Equals(MapLevel(level)))
                        ?? result.FirstOrDefault(c => c.Level.Equals("AllLevels"));
 
             return item;
@@ -65,14 +65,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var feedbackRatingItems = employerFeedback.FeedbackRatings.ToList();
             var totalRatings = feedbackRatingItems.Sum(c => c.FeedbackCount);
 
-            var ratingScore = GetRatingScore(feedbackRatingItems);
+            var ratingScore = GetRatingScore(feedbackRatingItems.Select(s => (Rating: s.FeedbackName, Score: s.FeedbackCount)));
 
-            var ratingAverage = Math.Round((double)ratingScore / totalRatings,1 );
+            var ratingAverage = Math.Round((double)ratingScore / totalRatings, 1);
 
             var ratingResponse = GetOverallRatingResponse(ratingAverage);
 
             var feedbackAttrItems = employerFeedback.FeedbackAttributes
-                .Where(c => c.Strength + c.Weakness !=0)
+                .Where(c => c.Strength + c.Weakness != 0)
                 .Select(c => new EmployerFeedbackAttributeDetail
                 {
                     AttributeName = c.AttributeName,
@@ -91,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
         {
-            if (apprenticeFeedback.FeedbackRatings == null)
+            if (apprenticeFeedback.ProviderRating == null)
             {
                 return new GetApprenticeFeedbackResponse
                 {
@@ -100,23 +100,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 };
             }
 
-            var feedbackRatingItems = apprenticeFeedback.FeedbackRatings.ToList();
-            var totalRatings = feedbackRatingItems.Sum(c => c.FeedbackCount);
+            var feedbackRatingItems = apprenticeFeedback.ProviderRating.ToList();
+            var totalRatings = feedbackRatingItems.Sum(c => c.Count);
 
-            var ratingScore = GetRatingScore(feedbackRatingItems);
+            var ratingScore = GetRatingScore(feedbackRatingItems.Select(s => (s.Rating, s.Count)));
 
             var ratingAverage = Math.Round((double)ratingScore / totalRatings, 1);
 
             var ratingResponse = GetOverallRatingResponse(ratingAverage);
 
-            var feedbackAttrItems = apprenticeFeedback.FeedbackAttributes
+            var feedbackAttrItems = apprenticeFeedback.ProviderAttribute
                 .Where(c => c.Agree + c.Disagree != 0)
                 .Select(c => new ApprenticeFeedbackAttributeDetail
                 {
-                    AttributeName = c.AttributeName,
+                    Name = c.Name,
                     Agree = c.Agree,
                     Disagree = c.Disagree,
-                    AttributeCategory = c.AttributeCategory
+                    Category = c.Category
                 }).ToList();
 
             return new GetApprenticeFeedbackResponse
@@ -174,8 +174,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                     break;
                 }
             }
-            return filterDeliveryModes; 
-                
+            return filterDeliveryModes;
+
         }
 
         private DeliveryModeType MapDeliveryType(string deliveryType)
@@ -211,24 +211,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
 
-        private static int GetRatingScore(IEnumerable<FeedbackRatingItemBase> feedbackRatingItems)
+        private static int GetRatingScore(IEnumerable<(string Rating, int Count)> feedbackRatingItems)
         {
             var ratingScore = 0;
             foreach (var feedbackRatingItem in feedbackRatingItems)
             {
-                switch (feedbackRatingItem.FeedbackName.ToLower())
+                switch (feedbackRatingItem.Rating.ToLower())
                 {
                     case "very poor":
-                        ratingScore += feedbackRatingItem.FeedbackCount * 1;
+                        ratingScore += feedbackRatingItem.Count * 1;
                         break;
                     case "poor":
-                        ratingScore += feedbackRatingItem.FeedbackCount * 2;
+                        ratingScore += feedbackRatingItem.Count * 2;
                         break;
                     case "good":
-                        ratingScore += feedbackRatingItem.FeedbackCount * 3;
+                        ratingScore += feedbackRatingItem.Count * 3;
                         break;
                     case "excellent":
-                        ratingScore += feedbackRatingItem.FeedbackCount * 4;
+                        ratingScore += feedbackRatingItem.Count * 4;
                         break;
                 }
             }
@@ -239,19 +239,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         private static int GetOverallRatingResponse(double ratingAverage)
         {
             var ratingResponse = 0;
-            if (ratingAverage >= 1 && ratingAverage < 1.3)
+            if (ratingAverage >= 1 && ratingAverage < 1.5)
             {
                 ratingResponse = 1;
             }
-            else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
+            else if (ratingAverage >= 1.5 && ratingAverage < 2.5)
             {
                 ratingResponse = 2;
             }
-            else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
+            else if (ratingAverage >= 2.5 && ratingAverage < 3.5)
             {
                 ratingResponse = 3;
             }
-            else if (ratingAverage >= 3.3 && ratingAverage <= 4)
+            else if (ratingAverage >= 3.5 && ratingAverage <= 4)
             {
                 ratingResponse = 4;
             }
