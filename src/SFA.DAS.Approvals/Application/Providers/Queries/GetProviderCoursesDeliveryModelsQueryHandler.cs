@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.Application.Fjaa.Constants;
 
 namespace SFA.DAS.Approvals.Application.Providers.Queries
 {
@@ -53,7 +54,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
 
             bool agencyExists = agency != null ? true : false;
 
-            result.DeliveryModels = AssignDeliveryModels(result.DeliveryModels.ToList(), agencyExists);
+            result.DeliveryModels = (IEnumerable<string>)this.AssignDeliveryModels(result.DeliveryModels.ToList(), agencyExists);
 
             if (result == null)
             {
@@ -78,12 +79,12 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
 
         private Task<List<string>> AssignDeliveryModels(List<string> models, bool agencyExists)
         {
-            bool portable = models.Contains("PortableFlexiJob") ? true : false;
+            bool portable = models.Contains(DeliveryModelStringTypes.PortableFlexiJob) ? true : false;
 
-            if (agencyExists && !portable) { models.Remove("PortableFlexiJob"); }
-            if (agencyExists && portable) { models.Remove("PortableFlexiJob"); }
-            if (!agencyExists && portable) { models.Remove("FlexiJobAgency"); }
-            if (!agencyExists && !portable) { models.Remove("PortableFlexiJob"); models.Remove("FlexiJobAgency"); }
+            if (agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); }
+            if (agencyExists && portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); }
+            if (!agencyExists && portable) { models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
+            if (!agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
 
             return Task.FromResult(models);
         }

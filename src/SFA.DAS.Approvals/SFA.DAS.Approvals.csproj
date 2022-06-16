@@ -12,4 +12,10 @@
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Application\Fjaa\Constants\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Application\Fjaa\Constants\" />
+    </ItemGroup>
 </Project>
