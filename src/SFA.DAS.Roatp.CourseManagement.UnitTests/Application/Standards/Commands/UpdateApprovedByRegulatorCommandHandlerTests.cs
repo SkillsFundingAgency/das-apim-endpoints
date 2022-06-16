@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
             UpdateProviderCourseRequest request,
             GetProviderCourseResponse apiResponse)
         {
-            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
 
             apiClientMock.Setup(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>())).ReturnsAsync(new ApiResponse<UpdateProviderCourseRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
@@ -43,9 +44,9 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Command
            UpdateApprovedByRegulatorCommand command,
            CancellationToken cancellationToken)
         {
-            apiClientMock.Setup(a => a.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(null, HttpStatusCode.NotFound, string.Empty));
+            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ThrowsAsync(new Exception());
 
-            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
+            Assert.ThrowsAsync<Exception>(() => sut.Handle(command, cancellationToken));
         }
     }
 }
