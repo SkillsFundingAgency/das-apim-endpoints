@@ -9,6 +9,17 @@
       <Content Remove="nlog.Release.config" />
     </ItemGroup>
 
+  <ItemGroup>
+    <None Include="nlog.Debug.config">
+      <DependentUpon>nlog.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+    </None>
+    <None Include="nlog.Release.config">
+      <DependentUpon>nlog.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+    </None>
+  </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="9.5.0" />
         <PackageReference Include="MediatR" Version="6.0.0" />
