@@ -29,5 +29,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public int CourseDuration { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
     }
 }

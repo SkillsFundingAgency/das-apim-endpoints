@@ -67,5 +67,28 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("standards/{courseCode}")]
+        public async Task<IActionResult> GetStandard(string courseCode)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetStandardQuery(courseCode));
+
+                if (queryResult == null)
+                {
+                    return NotFound();
+                }
+
+                var model = (GetStandardResponse)queryResult;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get list of standards");
+                return BadRequest();
+            }
+        }
     }
 }

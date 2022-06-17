@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
 
         private Guid apprenticeId = Guid.NewGuid();
         private string firstName = "testFirstName", lastName = "testLastName", courseName = "course1", employerName = "employer1";
-
+        
         [Test, MoqAutoData]
         public async Task TestGetApprenticeHomepageQuery(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> accountsApiClient,

@@ -30,7 +30,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 FirstName = result.FirstName,
                 LastName = result.LastName,
                 DateOfBirth = result.DateOfBirth,
-                Email = result.Email
+                Email = result.Email,
+                TermsOfUseAccepted = result.TermsOfUseAccepted,
+                ReacceptTermsOfUseRequired = result.ReacceptTermsOfUseRequired,
             };
         }
     }

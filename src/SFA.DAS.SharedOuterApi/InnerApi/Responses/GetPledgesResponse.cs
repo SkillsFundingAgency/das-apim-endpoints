@@ -7,6 +7,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public IEnumerable<Pledge> Pledges { get; set; }
         public int TotalPledges { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int Page { get; set; }
 
         public class Pledge
         {

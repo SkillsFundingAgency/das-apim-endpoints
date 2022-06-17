@@ -7,11 +7,15 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public IEnumerable<Application> Applications { get; set; }
 
-        public string PledgeStatus { get; set; }
+        public int TotalApplications { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int Page { get; set; }
 
         public class Application
         {
             public int Id { get; set; }
+            public long EmployerAccountId { get; set; }
             public string DasAccountName { get; set; }
             public int PledgeId { get; set; }
             public string Details { get; set; }
@@ -23,6 +27,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public string StandardRoute { get; set; }
 
             public int NumberOfApprentices { get; set; }
+            public int NumberOfApprenticesUsed { get; set; }
             public DateTime StartDate { get; set; }
             public int Amount { get; set; }
             public int TotalAmount { get; set; }

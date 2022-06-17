@@ -33,5 +33,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
         public int AmountUsed { get; set; }
         public int NumberOfApprenticesUsed { get; set; }
         public bool AutomaticApproval { get; set; }
+        public bool IsWithdrawableAfterAcceptance { get; set; }
     }
 }
