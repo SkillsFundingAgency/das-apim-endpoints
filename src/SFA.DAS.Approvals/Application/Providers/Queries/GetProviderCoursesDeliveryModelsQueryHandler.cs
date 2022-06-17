@@ -52,10 +52,6 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", request.LegalEntityId);
             var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest(request.LegalEntityId));
 
-            bool agencyExists = agency != null ? true : false;
-
-            result.DeliveryModels = (IEnumerable<string>)this.AssignDeliveryModels(result.DeliveryModels.ToList(), agencyExists);
-
             if (result == null)
             {
                 _logger.LogInformation("No information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
@@ -73,6 +69,9 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
                 _logger.LogInformation("Empty information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
                 return DefaultDeliveryModels;
             }
+
+            bool agencyExists = agency != null ? true : false;
+            result.DeliveryModels = (IEnumerable<string>)this.AssignDeliveryModels(result.DeliveryModels.ToList(), agencyExists);
 
             return result;
         }
