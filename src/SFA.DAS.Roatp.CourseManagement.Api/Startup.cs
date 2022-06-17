@@ -48,7 +48,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api
             }
             services.AddMediatR(GetType().Assembly, typeof(GetAllCoursesQueryHandler).Assembly);
             services.AddHealthChecks();
-            services.AddServiceRegistration();
+            services.AddServiceRegistration(_configuration);
 
             services
                 .AddMvc(o =>

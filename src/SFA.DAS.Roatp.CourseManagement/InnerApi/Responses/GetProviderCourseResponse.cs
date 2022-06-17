@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
+﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseResponse
     {
+        public int ProviderCourseId { get; set; }
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
         public int LarsCode { get; set; }
@@ -18,5 +15,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Responses
         public string ContactUsPhoneNumber { get; set; }
         public string ContactUsEmail { get; set; }
         public string ContactUsPageUrl { get; set; }
+        public bool? IsApprovedByRegulator { get; set; }
     }
 }
