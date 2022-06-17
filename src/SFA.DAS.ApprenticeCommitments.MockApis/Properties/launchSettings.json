@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SFA.DAS.ApprenticeCommitments.MockApis": {
-      "commandName": "Project",
-      "commandLineArgs": "!inner !commitments !accounts !login"
-    }
-  }
-}
