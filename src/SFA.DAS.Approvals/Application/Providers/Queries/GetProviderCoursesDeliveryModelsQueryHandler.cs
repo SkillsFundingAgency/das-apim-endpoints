@@ -70,13 +70,15 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
                 return DefaultDeliveryModels;
             }
 
-            bool agencyExists = agency != null ? true : false;
-            result.DeliveryModels = (IEnumerable<string>)this.AssignDeliveryModels(result.DeliveryModels.ToList(), agencyExists);
+            if (result.DeliveryModels != null)
+            {
+                result.DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels.ToList(), agency != null);
+            }
 
             return result;
         }
 
-        private Task<List<string>> AssignDeliveryModels(List<string> models, bool agencyExists)
+        private List<string> AssignDeliveryModels(List<string> models, bool agencyExists)
         {
             bool portable = models.Contains(DeliveryModelStringTypes.PortableFlexiJob) ? true : false;
 
@@ -85,7 +87,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             if (!agencyExists && portable) { models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
             if (!agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
 
-            return Task.FromResult(models);
+            return models;
         }
     }
 }
