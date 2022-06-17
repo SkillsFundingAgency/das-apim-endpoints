@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
 {
@@ -66,6 +67,8 @@ namespace SFA.DAS.Vacancies.Manage.InnerApi.Requests
         public ContactDetails ProviderContact { get; set; }
         [JsonProperty("ownerType")]
         public OwnerType OwnerType { get ; set ; }
+        [JsonProperty("accountType")]
+        public AccountType AccountType { get; set; }
     }
     
     public class PostVacancyUserData
