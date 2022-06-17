@@ -1,4 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -10,13 +13,11 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Queries
 {
+    [TestFixture]
      public class GetProviderCourseQueryHandlerTests
     {
         [Test, RecursiveMoqAutoData]
@@ -42,7 +43,9 @@ namespace SFA.DAS.Roatp.CourseManagement.UnitTests.Application.Standards.Queries
                         ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(apiResponseProviderCourseLocation, HttpStatusCode.OK, ""));
 
             var result = await sut.Handle(query, new CancellationToken());
+
             result.Should().NotBeNull();
+  
         }
 
         [Test, RecursiveMoqAutoData]
