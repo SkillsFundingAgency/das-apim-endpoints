@@ -119,10 +119,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy]TrainingCoursesController controller)
         {
-            request.EmployerFeedbackRatings = new List<EmployerFeedbackRatingType>
+            request.EmployerProviderRatings = new List<FeedbackRatingType>
             {
-                EmployerFeedbackRatingType.Excellent,
-                EmployerFeedbackRatingType.Good
+                FeedbackRatingType.Excellent,
+                FeedbackRatingType.Good
             };
             request.DeliveryModes = null;
             provider1.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>

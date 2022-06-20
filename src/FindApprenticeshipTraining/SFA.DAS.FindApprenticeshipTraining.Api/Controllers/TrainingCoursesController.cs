@@ -121,7 +121,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ShortlistUserId = request.ShortlistUserId
                 });
                 var mappedProviders = result.Providers
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.EmployerFeedbackRatings, request.ApprenticeFeedbackRatings, result.Location?.GeoPoint != null))
+                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.EmployerProviderRatings, request.ApprenticeProviderRatings, result.Location?.GeoPoint != null))
                     .Where(x=>x!=null)
                     .OrderByProviderScore(request.DeliveryModes)
                     .ToList();
