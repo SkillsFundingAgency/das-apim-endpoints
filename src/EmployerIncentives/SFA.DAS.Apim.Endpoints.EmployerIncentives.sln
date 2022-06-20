@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerIncentives.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F945DB72-7A6C-469A-843D-9FC3829DD8F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{709DAA71-9D77-4F6C-8D8B-3B8FE60008D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{709DAA71-9D77-4F6C-8D8B-3B8FE60008D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{BB5998EF-CC68-4D3A-A8FB-B11169AA6F08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{BB5998EF-CC68-4D3A-A8FB-B11169AA6F08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
