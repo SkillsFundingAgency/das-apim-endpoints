@@ -17,6 +17,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _apiClient;
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
+        private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly ILogger<GetProviderCoursesDeliveryModelsQueryHandler> _logger;
 
         private static GetProviderCourseDeliveryModelsResponse DefaultDeliveryModels => new GetProviderCourseDeliveryModelsResponse
@@ -24,11 +25,12 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             DeliveryModels = new List<string> { "Regular" }
         };
 
-        public GetProviderCoursesDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ILogger<GetProviderCoursesDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient)
+        public GetProviderCoursesDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ILogger<GetProviderCoursesDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
             _logger = logger;
+            _accountsApiClient = accountsApiClient;
         }
 
         public async Task<GetProviderCourseDeliveryModelsResponse> Handle(GetProviderCoursesDeliveryModelQuery request, CancellationToken cancellationToken)
@@ -49,9 +51,6 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             _logger.LogInformation("Requesting DeliveryModels for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
             var result = await _apiClient.Get<GetProviderCourseDeliveryModelsResponse>(new GetProviderCoursesDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
 
-            _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", request.LegalEntityId);
-            var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest(request.LegalEntityId));
-
             if (result == null)
             {
                 _logger.LogInformation("No information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
@@ -70,8 +69,14 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
                 return DefaultDeliveryModels;
             }
 
-            if (result.DeliveryModels != null)
+            _logger.LogInformation("Requesting ale from AccountsApiClient {LegalEntityId}", request.AccountLegalEntityId.ToString());
+            var ale = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
+
+            if (ale != null)
             {
+                _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", ale.MaLegalEntityId);
+                var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)ale.MaLegalEntityId));
+
                 result.DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels.ToList(), agency != null);
             }
 

@@ -7,13 +7,15 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
     {
         public long ProviderId { get; }
         public string TrainingCode { get; }
-        public int LegalEntityId { get; }
+        public long AccountLegalEntityId { get; }
+        public string EncodedAccountId { get; }
 
-        public GetProviderCoursesDeliveryModelQuery(long providerId, string trainingCode, int legalEntityId)
+        public GetProviderCoursesDeliveryModelQuery(long providerId, string trainingCode, string encodedAccountId, long accountLegalEntityId)
         {
             ProviderId = providerId;
             TrainingCode = trainingCode;
-            LegalEntityId = legalEntityId;
+            EncodedAccountId = encodedAccountId;
+            AccountLegalEntityId = accountLegalEntityId;
         }
     }
 }

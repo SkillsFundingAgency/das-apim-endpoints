@@ -23,6 +23,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
             GetProviderCourseDeliveryModelsResponse mediatorResponse,
             int providerId,
             string trainingCode,
+            string encodedAccountId,
+            long accountLegalEntityId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {
@@ -32,7 +34,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResponse);
 
-            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode) as ObjectResult;
+            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode, encodedAccountId, accountLegalEntityId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -45,6 +47,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
         public async Task And_Exception_Then_Returns_Bad_Request(
             int providerId,
             string trainingCode,
+            string encodedAccountId,
+            long accountLegalEntityId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {
@@ -54,7 +58,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode) as StatusCodeResult;
+            var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode, encodedAccountId, accountLegalEntityId) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
