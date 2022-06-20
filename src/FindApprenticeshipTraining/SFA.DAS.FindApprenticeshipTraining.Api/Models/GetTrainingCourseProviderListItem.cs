@@ -8,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     public class GetTrainingCourseProviderListItem : ProviderCourseBase
     {
         public GetTrainingCourseProviderListItem Map(   GetProvidersListItem source, string sectorSubjectArea,
-            int level, List<DeliveryModeType> deliveryModes, List<EmployerFeedbackRatingType> employerFeedbackRatings, List<ApprenticeFeedbackRatingType> apprenticeFeedbackRatings, bool hasLocation)
+            int level, List<DeliveryModeType> deliveryModes, List<FeedbackRatingType> employerFeedbackRatings, List<FeedbackRatingType> apprenticeFeedbackRatings, bool hasLocation)
         {
             var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
             var getDeliveryTypes = FilterDeliveryModes(source.DeliveryTypes);
@@ -34,7 +34,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             if (employerFeedbackRatings != null && employerFeedbackRatings.Any())
             {
-                if (!employerFeedbackRatings.Contains((EmployerFeedbackRatingType)getEmployerFeedbackResponse.TotalFeedbackRating))
+                if (!employerFeedbackRatings.Contains((FeedbackRatingType)getEmployerFeedbackResponse.TotalFeedbackRating))
                 {
                     return null;
                 }
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             if(apprenticeFeedbackRatings != null && apprenticeFeedbackRatings.Any())
             {
-                if(!apprenticeFeedbackRatings.Contains((ApprenticeFeedbackRatingType)getApprenticeFeedbackResponse.TotalFeedbackRating))
+                if(!apprenticeFeedbackRatings.Contains((FeedbackRatingType)getApprenticeFeedbackResponse.TotalFeedbackRating))
                 {
                     return null;
                 }
