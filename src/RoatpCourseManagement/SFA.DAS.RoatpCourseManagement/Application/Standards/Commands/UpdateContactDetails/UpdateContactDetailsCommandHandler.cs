@@ -1,10 +1,6 @@
 ﻿using MediatR;
-<<<<<<< HEAD:src/RoatpCourseManagement/SFA.DAS.Roatp.CourseManagement/Application/Standards/Commands/UpdateContactDetails/UpdateContactDetailsCommandHandler.cs
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
-=======
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
->>>>>>> 06c8c044 (More separated pipelines, rename RoatpCourseManagement for alignment, clear up -old bits):src/RoatpCourseManagement/SFA.DAS.RoatpCourseManagement/Application/Standards/Commands/UpdateContactDetails/UpdateContactDetailsCommandHandler.cs
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;

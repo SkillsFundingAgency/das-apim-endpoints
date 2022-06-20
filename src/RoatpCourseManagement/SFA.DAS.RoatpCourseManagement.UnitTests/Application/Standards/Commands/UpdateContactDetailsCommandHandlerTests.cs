@@ -1,14 +1,9 @@
 ﻿using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-<<<<<<< HEAD:src/RoatpCourseManagement/SFA.DAS.Roatp.CourseManagement.UnitTests/Application/Standards/Commands/UpdateContactDetailsCommandHandlerTests.cs
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
-=======
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
->>>>>>> 06c8c044 (More separated pipelines, rename RoatpCourseManagement for alignment, clear up -old bits):src/RoatpCourseManagement/SFA.DAS.RoatpCourseManagement.UnitTests/Application/Standards/Commands/UpdateContactDetailsCommandHandlerTests.cs
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;

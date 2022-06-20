@@ -4,14 +4,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.Api.Controllers;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
+using SFA.DAS.RoatpCourseManagement.Api.Controllers;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Roatp.CourseManagement.Api.UnitTests.Controllers.ProviderCourseEditControllerTests
+namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourseEditControllerTests
 {
     [TestFixture]
     public class UpdateProviderCourseApprovedByRegulatorTests

@@ -1,13 +1,14 @@
 ﻿using MediatR;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
 {
     public class UpdateApprovedByRegulatorCommandHandler : IRequestHandler<UpdateApprovedByRegulatorCommand, HttpStatusCode>
     {

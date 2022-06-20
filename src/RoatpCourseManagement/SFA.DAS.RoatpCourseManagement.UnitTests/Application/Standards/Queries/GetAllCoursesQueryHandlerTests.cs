@@ -7,14 +7,14 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Responses;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Roatp.CourseManagement.UnitTests.InnerApi.Standards.Queries
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
 {
     [TestFixture]
     public class GetAllCoursesQueryHandlerTests

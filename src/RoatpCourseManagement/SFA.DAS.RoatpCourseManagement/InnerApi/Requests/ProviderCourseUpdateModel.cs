@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
+﻿namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class ProviderCourseUpdateModel
     {

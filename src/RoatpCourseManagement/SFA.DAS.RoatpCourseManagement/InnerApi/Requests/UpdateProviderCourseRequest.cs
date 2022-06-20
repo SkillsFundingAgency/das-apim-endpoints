@@ -1,9 +1,5 @@
-<<<<<<< HEAD:src/RoatpCourseManagement/SFA.DAS.RoatpCourseManagement/InnerApi/Requests/UpdateProviderCourseRequest.cs
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-=======
-﻿using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
+﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
->>>>>>> 06c8c044 (More separated pipelines, rename RoatpCourseManagement for alignment, clear up -old bits):src/RoatpCourseManagement/SFA.DAS.RoatpCourseManagement/InnerApi/Requests/UpdateContactDetailsRequest.cs
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {

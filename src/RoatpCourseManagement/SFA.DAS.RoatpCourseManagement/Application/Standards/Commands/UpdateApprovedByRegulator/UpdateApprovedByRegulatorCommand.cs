@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Net;
 
-namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
 {
     public class UpdateApprovedByRegulatorCommand : IRequest<HttpStatusCode>
     {

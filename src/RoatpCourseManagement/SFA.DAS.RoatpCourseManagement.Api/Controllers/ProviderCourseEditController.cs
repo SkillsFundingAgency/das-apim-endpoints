@@ -1,12 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-<<<<<<< HEAD:src/RoatpCourseManagement/SFA.DAS.Roatp.CourseManagement.Api/Controllers/ProviderCourseEditController.cs
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails;
-=======
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
->>>>>>> 06c8c044 (More separated pipelines, rename RoatpCourseManagement for alignment, clear up -old bits):src/RoatpCourseManagement/SFA.DAS.RoatpCourseManagement.Api/Controllers/ProviderCourseEditController.cs
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using System.Net;
 using System.Threading.Tasks;
 
