@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations", "SFA.DAS.Reservations.csproj", "{10377CF2-5573-4528-8B2F-CAAC4A480CB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations", "SFA.DAS.Reservations\SFA.DAS.Reservations.csproj", "{10377CF2-5573-4528-8B2F-CAAC4A480CB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.Api", "..\SFA.DAS.Reservations.Api\SFA.DAS.Reservations.Api.csproj", "{3FE07C9F-724C-48E6-AA56-C0877C522EB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.Api", "SFA.DAS.Reservations.Api\SFA.DAS.Reservations.Api.csproj", "{3FE07C9F-724C-48E6-AA56-C0877C522EB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.Api.UnitTests", "..\SFA.DAS.Reservations.Api.UnitTests\SFA.DAS.Reservations.Api.UnitTests.csproj", "{715D166A-5538-4303-9AED-2647C32141CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.Api.UnitTests", "SFA.DAS.Reservations.Api.UnitTests\SFA.DAS.Reservations.Api.UnitTests.csproj", "{715D166A-5538-4303-9AED-2647C32141CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.UnitTests", "..\SFA.DAS.Reservations.UnitTests\SFA.DAS.Reservations.UnitTests.csproj", "{F70DE72A-77B6-4AF9-9D31-54CE6A77EF6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Reservations.UnitTests", "SFA.DAS.Reservations.UnitTests\SFA.DAS.Reservations.UnitTests.csproj", "{F70DE72A-77B6-4AF9-9D31-54CE6A77EF6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{88CF832E-B33A-4FFA-9274-2A4A1D4ED6A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{88CF832E-B33A-4FFA-9274-2A4A1D4ED6A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

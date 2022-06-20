@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{24CE452C-E77D-46EB-BBB8-723C8EB7DACA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{24CE452C-E77D-46EB-BBB8-723C8EB7DACA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship", "SFA.DAS.FindAnApprenticeship.csproj", "{AA237679-263D-4B28-90BC-389C79E04E14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship", "SFA.DAS.FindAnApprenticeship\zSFA.DAS.FindAnApprenticeship.csproj", "{AA237679-263D-4B28-90BC-389C79E04E14}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.Api", "..\SFA.DAS.FindAnApprenticeship.Api\SFA.DAS.FindAnApprenticeship.Api.csproj", "{F5D3B96C-D1BD-4768-A1FC-55041786E4DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.Api", "SFA.DAS.FindAnApprenticeship.Api\SFA.DAS.FindAnApprenticeship.Api.csproj", "{F5D3B96C-D1BD-4768-A1FC-55041786E4DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.Api.UnitTests", "..\SFA.DAS.FindAnApprenticeship.Api.UnitTests\SFA.DAS.FindAnApprenticeship.Api.UnitTests.csproj", "{D0E431CC-F587-45B7-AC86-CF0DE937B197}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.Api.UnitTests", "SFA.DAS.FindAnApprenticeship.Api.UnitTests\SFA.DAS.FindAnApprenticeship.Api.UnitTests.csproj", "{D0E431CC-F587-45B7-AC86-CF0DE937B197}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.UnitTests", "..\SFA.DAS.FindAnApprenticeship.UnitTests\SFA.DAS.FindAnApprenticeship.UnitTests.csproj", "{FCF85AAB-0453-43C8-9B67-3F70E245C4F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindAnApprenticeship.UnitTests", "SFA.DAS.FindAnApprenticeship.UnitTests\SFA.DAS.FindAnApprenticeship.UnitTests.csproj", "{FCF85AAB-0453-43C8-9B67-3F70E245C4F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

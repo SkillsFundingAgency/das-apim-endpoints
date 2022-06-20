@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{5D2DE4A6-C238-470F-A805-4434F5316471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{5D2DE4A6-C238-470F-A805-4434F5316471}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal", "SFA.DAS.ApprenticePortal.csproj", "{DDB632D5-98AE-4469-8DCD-217FFC86E1DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal", "SFA.DAS.ApprenticePortal\SFA.DAS.ApprenticePortal.csproj", "{DDB632D5-98AE-4469-8DCD-217FFC86E1DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.Api", "..\SFA.DAS.ApprenticePortal.Api\SFA.DAS.ApprenticePortal.Api.csproj", "{0F6F4F88-A5E0-41BD-B82F-1F3C633D1819}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.Api", "SFA.DAS.ApprenticePortal.Api\SFA.DAS.ApprenticePortal.Api.csproj", "{0F6F4F88-A5E0-41BD-B82F-1F3C633D1819}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.Api.UnitTests", "..\SFA.DAS.ApprenticePortal.Api.UnitTests\SFA.DAS.ApprenticePortal.Api.UnitTests.csproj", "{88966F31-F6F5-4494-8D58-F6A73C137AFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.Api.UnitTests", "SFA.DAS.ApprenticePortal.Api.UnitTests\SFA.DAS.ApprenticePortal.Api.UnitTests.csproj", "{88966F31-F6F5-4494-8D58-F6A73C137AFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.MockApis", "..\SFA.DAS.ApprenticePortal.MockApis\SFA.DAS.ApprenticePortal.MockApis.csproj", "{87A707BC-083D-407A-837A-B28542AE4F31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.MockApis", "SFA.DAS.ApprenticePortal.MockApis\SFA.DAS.ApprenticePortal.MockApis.csproj", "{87A707BC-083D-407A-837A-B28542AE4F31}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.UnitTests", "..\SFA.DAS.ApprenticePortal.UnitTests\SFA.DAS.ApprenticePortal.UnitTests.csproj", "{16F8E585-3C55-4FBA-ABBB-75477644F6BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticePortal.UnitTests", "SFA.DAS.ApprenticePortal.UnitTests\SFA.DAS.ApprenticePortal.UnitTests.csproj", "{16F8E585-3C55-4FBA-ABBB-75477644F6BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

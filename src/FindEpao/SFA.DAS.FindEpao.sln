@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A9E13D40-EAED-4097-9E68-2C47148A77E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A9E13D40-EAED-4097-9E68-2C47148A77E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao", "SFA.DAS.FindEpao.csproj", "{62D2106A-1087-4D10-9932-3AE2CFB36BD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao", "SFA.DAS.FindEpao\SFA.DAS.FindEpao.csproj", "{62D2106A-1087-4D10-9932-3AE2CFB36BD1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.Api", "..\SFA.DAS.FindEpao.Api\SFA.DAS.FindEpao.Api.csproj", "{AB9E745F-503C-428C-A1C7-47D9C4153E75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.Api", "SFA.DAS.FindEpao.Api\SFA.DAS.FindEpao.Api.csproj", "{AB9E745F-503C-428C-A1C7-47D9C4153E75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.Api.UnitTests", "..\SFA.DAS.FindEpao.Api.UnitTests\SFA.DAS.FindEpao.Api.UnitTests.csproj", "{07FE14BE-D945-44E4-BFAE-DB104A70A93A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.Api.UnitTests", "SFA.DAS.FindEpao.Api.UnitTests\SFA.DAS.FindEpao.Api.UnitTests.csproj", "{07FE14BE-D945-44E4-BFAE-DB104A70A93A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.UnitTests", "..\SFA.DAS.FindEpao.UnitTests\SFA.DAS.FindEpao.UnitTests.csproj", "{F42B3E06-60C6-465F-B5B3-CFA92BF7BA18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindEpao.UnitTests", "SFA.DAS.FindEpao.UnitTests\SFA.DAS.FindEpao.UnitTests.csproj", "{F42B3E06-60C6-465F-B5B3-CFA92BF7BA18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

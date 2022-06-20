@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining", "SFA.DAS.FindApprenticeshipTraining.csproj", "{877213D8-B4F1-4ED9-B844-5D65AE4DA3BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining", "SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj", "{877213D8-B4F1-4ED9-B844-5D65AE4DA3BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api", "..\SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj", "{D308E652-AD08-4BA5-AD13-1E3A88EEA417}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api", "SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj", "{D308E652-AD08-4BA5-AD13-1E3A88EEA417}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api.UnitTests", "..\SFA.DAS.FindApprenticeshipTraining.Api.UnitTests\SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.csproj", "{DA237FBC-58EA-4447-AA34-E09B4C1D44BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.Api.UnitTests", "SFA.DAS.FindApprenticeshipTraining.Api.UnitTests\SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.csproj", "{DA237FBC-58EA-4447-AA34-E09B4C1D44BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.UnitTests", "..\SFA.DAS.FindApprenticeshipTraining.UnitTests\SFA.DAS.FindApprenticeshipTraining.UnitTests.csproj", "{C2358131-86C5-472D-9CD3-D8ED1B72F2FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.FindApprenticeshipTraining.UnitTests", "SFA.DAS.FindApprenticeshipTraining.UnitTests\SFA.DAS.FindApprenticeshipTraining.UnitTests.csproj", "{C2358131-86C5-472D-9CD3-D8ED1B72F2FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{F67896F0-1B2F-47CF-AE4B-DCFE4D4C57C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{F67896F0-1B2F-47CF-AE4B-DCFE4D4C57C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
