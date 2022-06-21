@@ -26,8 +26,8 @@ jobs:
             Location: $(ResourceGroupLocation)
             ServiceConnection: ${{ parameters.ServiceConnection }}
             SubscriptionId: $(SubscriptionId)
-            TemplatePath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.json
-            ParametersPath: $(Pipeline.Workspace)/das-apim-endpoints-build/ApimEndpointsArtifacts/azure/template.parameters.json
+            TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+            ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
             IsMultiRepoCheckout: true
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
