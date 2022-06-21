@@ -7,17 +7,17 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateContactDetails
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
 {
-    public class UpdateContactDetailsCommandHandler : IRequestHandler<UpdateContactDetailsCommand, HttpStatusCode>
+    public class UpdateApprovedByRegulatorCommandHandler : IRequestHandler<UpdateApprovedByRegulatorCommand, HttpStatusCode>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
-        public UpdateContactDetailsCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
+        public UpdateApprovedByRegulatorCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
         {
             _innerApiClient = innerApiClient;
         }
 
-        public async Task<HttpStatusCode> Handle(UpdateContactDetailsCommand command, CancellationToken cancellationToken)
+        public async Task<HttpStatusCode> Handle(UpdateApprovedByRegulatorCommand command, CancellationToken cancellationToken)
         {
             var providerCourse = await _innerApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(command.Ukprn, command.LarsCode));
             var updateProviderCourse = new ProviderCourseUpdateModel
@@ -25,14 +25,12 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateCo
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
-                ContactUsEmail = command.ContactUsEmail,
-                ContactUsPhoneNumber = command.ContactUsPhoneNumber,
-                ContactUsPageUrl = command.ContactUsPageUrl,
-                StandardInfoUrl = command.StandardInfoUrl,
-                IsApprovedByRegulator = providerCourse.IsApprovedByRegulator
+                ContactUsEmail = providerCourse.ContactUsEmail,
+                ContactUsPhoneNumber = providerCourse.ContactUsPhoneNumber,
+                ContactUsPageUrl = providerCourse.ContactUsPageUrl,
+                StandardInfoUrl = providerCourse.StandardInfoUrl,
+                IsApprovedByRegulator = command.IsApprovedByRegulator
             };
-
-
             var request = new UpdateProviderCourseRequest(updateProviderCourse);
             var response = await _innerApiClient.PostWithResponseCode<UpdateProviderCourseRequest>(request);
             return response.StatusCode;
