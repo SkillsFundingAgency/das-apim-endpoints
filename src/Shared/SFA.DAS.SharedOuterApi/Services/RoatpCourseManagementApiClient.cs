@@ -38,9 +38,9 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.PostWithResponseCode<TResponse>(request);
         }
 
-        public Task Delete(IDeleteApiRequest request)
+        public async Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            await _apiClient.Delete(request);
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
