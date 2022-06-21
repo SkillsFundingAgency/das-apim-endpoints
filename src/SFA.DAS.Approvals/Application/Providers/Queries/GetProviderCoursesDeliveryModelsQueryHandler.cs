@@ -77,7 +77,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
                 _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", ale.MaLegalEntityId);
                 var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)ale.MaLegalEntityId));
 
-                result.DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels.ToList(), agency != null);
+                result.DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels, agency != null);
             }
 
             return result;

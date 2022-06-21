@@ -73,7 +73,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
         {
             apiClient
                 .Setup(x => x.Get<GetProviderCourseDeliveryModelsResponse>(It.IsAny<GetProviderCoursesDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsResponse { DeliveryModels = new string[0] });
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsResponse { DeliveryModels = new System.Collections.Generic.List<string>() });
 
             var actual = await handler.Handle(query, CancellationToken.None);
 

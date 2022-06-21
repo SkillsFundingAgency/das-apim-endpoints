@@ -73,11 +73,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("{providerId}/courses/{trainingCode}")]
-        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode, [FromQuery] string encodedAccountId, [FromQuery] long accountLegalEntityId)
+        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode, [FromQuery] long accountLegalEntityId = 0)
         {
             try
             {
-                var result = await _mediator.Send(new GetProviderCoursesDeliveryModelQuery(providerId, trainingCode, encodedAccountId, accountLegalEntityId));
+                var result = await _mediator.Send(new GetProviderCoursesDeliveryModelQuery(providerId, trainingCode, accountLegalEntityId));
                 return Ok(result);
             }
             catch (Exception e)

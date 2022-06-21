@@ -4,6 +4,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
 {
     public class GetProviderCourseDeliveryModelsResponse
     {
-        public IEnumerable<string> DeliveryModels { get; set; }
+        public List<string> DeliveryModels { get; set; }
     }
 }
