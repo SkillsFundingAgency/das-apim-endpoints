@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
-using SFA.DAS.ApprenticeFeedback.Application.Queries.GetProviderAttributes;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetAttributes;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
+    //Needs to be renamed to /Attributes and corresponding endpoint in 
+    //AppFeedback Web when both projects are next changed
     [ApiController]
     [Route("[controller]/")]
     public class ProviderAttributesController : ControllerBase
@@ -28,14 +30,14 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetProviderAttributesQuery());
+                var result = await _mediator.Send(new GetAttributesQuery());
 
-                if(result.ProviderAttributes?.Count == 0)
+                if(result.Attributes?.Count == 0)
                 {
                     return NotFound();
                 }
 
-                return Ok(result.ProviderAttributes);
+                return Ok(result.Attributes);
             }
             catch (Exception e)
             {
