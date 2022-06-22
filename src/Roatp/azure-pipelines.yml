@@ -1,9 +1,23 @@
 trigger:
+  batch: true
   branches:
     include:
       - "master"
   paths:
     include:
+    - azure
+    - pipeline-templates
+    - src/Roatp
+    - src/Shared*
+
+pr:
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
     - src/Roatp
     - src/Shared*
 
