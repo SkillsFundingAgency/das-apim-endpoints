@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Approvals.Application.Fjaa.Constants
+﻿namespace SFA.DAS.Approvals.Application.DeliveryModels.Constants
 {
 	public static class DeliveryModelStringTypes
 	{

@@ -13,11 +13,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Application\Fjaa\Constants\" />
       <None Remove="Application\GetProviderCoursesDeliveryModels\" />
+      <None Remove="Application\DeliveryModels\Queries\" />
+      <None Remove="Application\DeliveryModels\Constants\" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Application\Fjaa\Constants\" />
       <Folder Include="Application\GetProviderCoursesDeliveryModels\" />
+      <Folder Include="Application\DeliveryModels\Queries\" />
+      <Folder Include="Application\DeliveryModels\Constants\" />
     </ItemGroup>
 </Project>
