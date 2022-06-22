@@ -4,9 +4,9 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class GetAgencyRequest : IGetApiRequest
     {
-        public int LegalEntityId { get; }
+        public long LegalEntityId { get; }
 
-        public GetAgencyRequest(int legalEntityId)
+        public GetAgencyRequest(long legalEntityId)
         {
             LegalEntityId = legalEntityId;
         }

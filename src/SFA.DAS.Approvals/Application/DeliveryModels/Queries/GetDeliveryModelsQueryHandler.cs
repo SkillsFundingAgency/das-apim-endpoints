@@ -39,7 +39,7 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
         {
             try
             {
-                return await GetValidProviderCoursesDeliveryModels(request);
+                return await GetValidDeliveryModels(request);
             }
             catch (Exception e)
             {
@@ -48,7 +48,7 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
             }
         }
 
-        private async Task<GetDeliveryModelsQueryResult> GetValidProviderCoursesDeliveryModels(GetDeliveryModelsQuery request)
+        private async Task<GetDeliveryModelsQueryResult> GetValidDeliveryModels(GetDeliveryModelsQuery request)
         {
             _logger.LogInformation("Requesting DeliveryModels for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
             var result = await _apiClient.Get<GetDeliveryModelsQueryResult>(new GetDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
