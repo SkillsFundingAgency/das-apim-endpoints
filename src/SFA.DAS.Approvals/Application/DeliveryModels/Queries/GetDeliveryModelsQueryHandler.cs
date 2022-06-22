@@ -70,12 +70,12 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
             }
 
             _logger.LogInformation("Requesting ale from AccountsApiClient {LegalEntityId}", request.AccountLegalEntityId.ToString());
-            var ale = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
+            var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
 
-            if (ale != null)
+            if (accountLegalEntity != null)
             {
-                _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", ale.MaLegalEntityId);
-                var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)ale.MaLegalEntityId));
+                _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", accountLegalEntity.MaLegalEntityId);
+                var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)accountLegalEntity.MaLegalEntityId));
 
                 return new GetDeliveryModelsQueryResult() { DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels, agency != null) };
             }
