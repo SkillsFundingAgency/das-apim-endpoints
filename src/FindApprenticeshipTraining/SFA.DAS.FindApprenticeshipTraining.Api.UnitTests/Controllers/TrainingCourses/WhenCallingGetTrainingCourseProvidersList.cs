@@ -108,7 +108,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
         }
 
         [Test, MoqAutoData]
-        public async Task Then_FeedbackRating_Filter_Is_Applied(
+        public async Task Then_EmployerFeedbackRating_Filter_Is_Applied(
             int id,
             GetCourseProvidersRequest request,
             string location,
@@ -158,6 +158,66 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
             
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
+            Assert.IsNotNull(model);
+            model.TrainingCourseProviders.Count().Should().Be(2);
+            model.Total.Should().Be(mediatorResult.Total);
+            model.TotalFiltered.Should().Be(model.TrainingCourseProviders.Count());
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_ApprenticeFeedbackRating_Filter_Is_Applied(
+            int id,
+            GetCourseProvidersRequest request,
+            string location,
+            GetProvidersListItem provider1,
+            GetProvidersListItem provider2,
+            GetProvidersListItem provider3,
+            GetTrainingCourseProvidersResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] TrainingCoursesController controller)
+        {
+            request.ApprenticeProviderRatings = new List<FeedbackRatingType>
+            {
+                FeedbackRatingType.Excellent,
+                FeedbackRatingType.Good
+            };
+            request.DeliveryModes = null;
+            provider1.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
+            {
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Excellent",
+                    Count = 1,
+                }
+            };
+            provider2.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
+            {
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Poor",
+                    Count = 1,
+                }
+            };
+            provider3.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
+            {
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Good",
+                    Count = 1,
+                }
+            };
+            mediatorResult.Providers = new List<GetProvidersListItem> { provider1, provider2, provider3 };
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseProvidersQuery>(c => c.Id.Equals(id)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
+
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;

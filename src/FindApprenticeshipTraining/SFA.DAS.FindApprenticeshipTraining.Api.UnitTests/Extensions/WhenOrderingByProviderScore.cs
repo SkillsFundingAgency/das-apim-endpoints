@@ -7,10 +7,10 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
 {
-    public class WhenOrderingByProviderRating
+    public class WhenOrderingByProviderScore
     {
         [Test]
-        public void Then_The_FeedbackRating_Is_Used_To_Order()
+        public void Then_The_EmployerFeedbackRating_Is_Used_To_Order()
         {
             var list = new List<GetTrainingCourseProviderListItem>
             {
@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 4
+                        TotalFeedbackRating = 0
                     }
                 },
                 new GetTrainingCourseProviderListItem
@@ -48,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3
+                        TotalFeedbackRating = 0
                     }
                 },
                 new GetTrainingCourseProviderListItem
@@ -60,7 +60,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 2
+                        TotalFeedbackRating = 0
                     }
                 },
                 new GetTrainingCourseProviderListItem
@@ -72,11 +72,88 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 1
+                        TotalFeedbackRating = 0
                     }
                 }
             };
             
+            list = list.OrderByProviderScore().ToList();
+
+            list.First().ProviderId.Should().Be(4);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(3);
+            list.Skip(2).Take(1).First().ProviderId.Should().Be(1);
+            list.Skip(3).Take(1).First().ProviderId.Should().Be(2);
+            list.Last().ProviderId.Should().Be(5);
+        }
+
+        [Test]
+        public void Then_The_ApprenticeFeedbackRating_Is_Used_To_Order()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    }
+
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 4
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 2,
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 2
+                    }
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 5,
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 0
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 1
+                    }
+                }
+            };
+
             list = list.OrderByProviderScore().ToList();
 
             list.First().ProviderId.Should().Be(4);
@@ -94,39 +171,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 1,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
-
-                    }
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
-
-                    }
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
-
-                    }
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
                 }
             };
 
@@ -144,79 +203,49 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallAchievementRate = 72.6m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 6,
                     OverallAchievementRate = 81.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 5,
                     OverallAchievementRate = null,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 }
             };
 
@@ -236,92 +265,57 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                 {
                     ProviderId = 1,
                     OverallAchievementRate = 52.6m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 4,
                     OverallAchievementRate = 81.6m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 3,
                     OverallAchievementRate = 84.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 2,
                     OverallAchievementRate = 81.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 7,
                     OverallAchievementRate = 81.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 6,
                     OverallAchievementRate = 82.8m,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 },
                 new GetTrainingCourseProviderListItem
                 {
                     ProviderId = 5,
                     OverallAchievementRate = null,
-                    EmployerFeedback = new GetEmployerFeedbackResponse
-                    {
-                        
-                    },
-                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
-                    {
+                    EmployerFeedback = new GetEmployerFeedbackResponse(),
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse(),
 
-                    }
                 }
             };
 
@@ -471,7 +465,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 4
+                        TotalFeedbackRating = 2
                     }
                 },
                 new GetTrainingCourseProviderListItem
@@ -484,7 +478,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 4
+                        TotalFeedbackRating = 2
                     }
                 },
                 new GetTrainingCourseProviderListItem
@@ -497,7 +491,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 4
+                        TotalFeedbackRating = 2
                     }
                 }
             };
@@ -525,8 +519,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 100,
+                        TotalFeedbackRating = 0,
+                        TotalApprenticeResponses = 0,
                     },
                     OverallCohort = 100
                 },
@@ -541,8 +535,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 1000,
+                        TotalFeedbackRating = 0,
+                        TotalApprenticeResponses = 0,
                     },
                     OverallCohort = 100
                 },
@@ -557,8 +551,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 10
+                        TotalFeedbackRating = 0,
+                        TotalApprenticeResponses = 0
                     },
                     OverallCohort = 100
                 }
@@ -570,7 +564,70 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
             list.Skip(1).Take(1).First().ProviderId.Should().Be(1);
             list.Last().ProviderId.Should().Be(3);
         }
-        
+
+        [Test]
+        public void Then_If_The_Feedback_Scores_And_Cohorts_And_EmployerRating_Are_The_Same_Ordered_By_Total_Apprentice_Responses_Size()
+        {
+            var list = new List<GetTrainingCourseProviderListItem>
+            {
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 1,
+                    Name = "test 1",
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 2,
+                        TotalEmployerResponses = 10
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 100,
+                    },
+                    OverallCohort = 100
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 4,
+                    Name = "test 2",
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 2,
+                        TotalEmployerResponses = 10
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 1000,
+                    },
+                    OverallCohort = 100
+                },
+                new GetTrainingCourseProviderListItem
+                {
+                    ProviderId = 3,
+                    Name = "test 3",
+                    EmployerFeedback = new GetEmployerFeedbackResponse
+                    {
+                        TotalFeedbackRating = 2,
+                        TotalEmployerResponses = 10
+                    },
+                    ApprenticeFeedback = new GetApprenticeFeedbackResponse
+                    {
+                        TotalFeedbackRating = 3,
+                        TotalApprenticeResponses = 10
+                    },
+                    OverallCohort = 100
+                }
+            };
+
+            list = list.OrderByProviderScore().ToList();
+
+            list.First().ProviderId.Should().Be(4);
+            list.Skip(1).Take(1).First().ProviderId.Should().Be(1);
+            list.Last().ProviderId.Should().Be(3);
+        }
+
+
         [Test]
         public void Then_If_All_Score_Same_With_No_Location_Then_Order_By_Name()
         {
@@ -588,8 +645,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
 
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 100,
+                        TotalFeedbackRating = 2,
+                        TotalApprenticeResponses = 50,
                     },
                     OverallCohort = 100
                 },
@@ -604,8 +661,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 100,
+                        TotalFeedbackRating = 2,
+                        TotalApprenticeResponses = 50,
                     },
                     OverallCohort = 100
                 },
@@ -620,8 +677,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Extensions
                     },
                     ApprenticeFeedback = new GetApprenticeFeedbackResponse
                     {
-                        TotalFeedbackRating = 3,
-                        TotalApprenticeResponses = 100,
+                        TotalFeedbackRating = 2,
+                        TotalApprenticeResponses = 50,
                     },
                     OverallCohort = 100
                 }

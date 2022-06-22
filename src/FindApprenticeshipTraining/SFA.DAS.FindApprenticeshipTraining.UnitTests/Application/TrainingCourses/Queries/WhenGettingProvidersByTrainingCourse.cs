@@ -39,42 +39,46 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Location = "";
             query.Lat = 0;
             query.Lon = 0;
-            
-            var provider = apiResponse.Providers.First();
-            var appFeedback = apprenticeFeedbackResponse.First();
-            appFeedback.Ukprn = provider.Ukprn;
-            provider.ApprenticeFeedback = appFeedback;
-            
+
+            var providerUkprns = apiResponse.Providers.Select(s => s.Ukprn);
+            for (var i = 0; i < apprenticeFeedbackResponse.Count(); i++)
+            {
+                apprenticeFeedbackResponse.ToArray()[i].Ukprn = providerUkprns.ToArray()[i];
+            }
+
             mockApiClient
-                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
-                    c.GetUrl.Contains(query.Id.ToString()) 
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
+                    c.GetUrl.Contains(query.Id.ToString())
                     && c.GetUrl.Contains($"sectorSubjectArea={apiCourseResponse.SectorSubjectAreaTier2Description}&level={apiCourseResponse.Level}")
                 )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
             mockLocationLookup
                 .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
-                .ReturnsAsync((LocationItem) null);
+                .ReturnsAsync((LocationItem)null);
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(new PostApprenticeFeedbackRequest
-                {
-                    Data = new PostApprenticeFeedbackRequestData
-                    {
-                        Ukprns = apiResponse.Providers.Select(s => s.Ukprn)
-                    }
-                })).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(It.Is<PostApprenticeFeedbackRequest>
+                (t =>
+                    ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Providers.Select(s => s.Ukprn)).Count() == 0 &&
+                    apiResponse.Providers.Select(s => s.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
+                ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers, options => options.Excluding(s => s.ApprenticeFeedback));
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
             result.Location.Should().BeNull();
+
+            foreach (var provider in result.Providers)
+            {
+                provider.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse.First(s => s.Ukprn == provider.Ukprn));
+            }
         }
 
         [Test, MoqAutoData]
@@ -96,16 +100,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Lat = 0;
             query.Lon = 0;
 
-            var provider = apiResponse.Providers.First();
-            var appFeedback = apprenticeFeedbackResponse.First();
-            appFeedback.Ukprn = provider.Ukprn;
-            provider.ApprenticeFeedback = appFeedback;
+            var providerUkprns = apiResponse.Providers.Select(s => s.Ukprn);
+            for (var i = 0; i < apprenticeFeedbackResponse.Count(); i++)
+            {
+                apprenticeFeedbackResponse.ToArray()[i].Ukprn = providerUkprns.ToArray()[i];
+            }
 
             mockLocationLookupService
                 .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationServiceResponse);
             mockApiClient
-                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c=>
+                .Setup(client => client.Get<GetProvidersListResponse>(It.Is<GetProvidersByCourseRequest>(c =>
                     c.GetUrl.Contains(query.Id.ToString())
                     && c.GetUrl.Contains(locationServiceResponse.GeoPoint.First().ToString())
                     && c.GetUrl.Contains(locationServiceResponse.GeoPoint.Last().ToString())
@@ -113,24 +118,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 )))
                 .ReturnsAsync(apiResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c=>c.GetUrl.Contains(query.Id.ToString()))))
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(new PostApprenticeFeedbackRequest
-                {
-                    Data = new PostApprenticeFeedbackRequestData
-                    {
-                        Ukprns = apiResponse.Providers.Select(s => s.Ukprn)
-                    }
-                })).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+                    .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(It.Is<PostApprenticeFeedbackRequest>
+                    (t =>
+                        ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Providers.Select(s => s.Ukprn)).Count() == 0 &&
+                        apiResponse.Providers.Select(s => s.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
+                    ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            result.Providers.Should().BeEquivalentTo(apiResponse.Providers, options => options.Excluding(s => s.ApprenticeFeedback));
             result.Total.Should().Be(apiResponse.TotalResults);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             result.Location.Name.Should().Be(locationServiceResponse.Name);
             result.Location.GeoPoint.Should().BeEquivalentTo(locationServiceResponse.GeoPoint);
+
+            foreach (var provider in result.Providers)
+            {
+                provider.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse.First(s => s.Ukprn == provider.Ukprn));
+            }
         }
     }
 }

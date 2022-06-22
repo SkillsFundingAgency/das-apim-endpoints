@@ -36,6 +36,30 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
+            shortlistItem.ProviderDetails.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
+            {
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Good",
+                    Count = 92,
+                },
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Excellent",
+                    Count = 29,
+                },
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Poor",
+                    Count = 7,
+                },
+                new GetApprenticeFeedbackRatingItem
+                {
+                    Rating = "Very Poor",
+                    Count = 1,
+                }
+            };
+
             var actual =new GetProviderCourseItem().Map(shortlistItem);
             
             actual.Should().BeEquivalentTo(shortlistItem.Course, options => options.ExcludingMissingMembers());
@@ -44,6 +68,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.ProviderAddress.Should().BeEquivalentTo(shortlistItem.ProviderDetails.ProviderAddress);
             actual.EmployerFeedback.TotalEmployerResponses.Should().Be(129);
             actual.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
+            actual.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(129);
+            actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
         }
 
         [Test, AutoData]
