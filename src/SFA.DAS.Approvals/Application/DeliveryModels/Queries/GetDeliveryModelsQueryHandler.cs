@@ -87,8 +87,8 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
         {
             bool portable = models.Contains(DeliveryModelStringTypes.PortableFlexiJob) ? true : false;
 
-            if (agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); }
-            if (agencyExists && portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); }
+            if (agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Add(DeliveryModelStringTypes.FlexiJobAgency); }
+            if (agencyExists && portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Add(DeliveryModelStringTypes.FlexiJobAgency); }
             if (!agencyExists && portable) { models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
             if (!agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
 
