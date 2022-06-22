@@ -51,52 +51,38 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
         private async Task<GetDeliveryModelsQueryResult> GetValidDeliveryModels(GetDeliveryModelsQuery request)
         {
             _logger.LogInformation("Requesting DeliveryModels for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
-            var result = await _apiClient.Get<GetDeliveryModelsQueryResult>(new GetDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
+            var result = await _apiClient.Get<GetDeliveryModelsResponse>(new GetDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
 
-            if (result == null)
+            var isOnRegister = await IsLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
+
+            if (isOnRegister)
             {
-                _logger.LogInformation("No information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
-                return DefaultDeliveryModels;
-            }
-
-            if (result.DeliveryModels == null)
-            {
-                _logger.LogInformation("Null information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
-                return DefaultDeliveryModels;
-            }
-
-            if (result.DeliveryModels.Count() == 0)
-            {
-                _logger.LogInformation("Empty information found for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
-                return DefaultDeliveryModels;
-            }
-
-            _logger.LogInformation("Requesting ale from AccountsApiClient {LegalEntityId}", request.AccountLegalEntityId.ToString());
-            var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
-
-            if (accountLegalEntity != null)
-            {
-                _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", accountLegalEntity.MaLegalEntityId);
-
-                var isOnRegister = await IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
-
-                if (isOnRegister)
+                if (result.DeliveryModels.Contains(DeliveryModelStringTypes.PortableFlexiJob))
                 {
-                    if (result.DeliveryModels.Contains(DeliveryModelStringTypes.PortableFlexiJob))
-                    {
-                        result.DeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
-                    }
-
-                    result.DeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+                    result.DeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
                 }
+
+                result.DeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+
+                return new GetDeliveryModelsQueryResult() { DeliveryModels = result.DeliveryModels };
             }
 
-            return result;
+            if (result == null || result?.DeliveryModels == null || result?.DeliveryModels.Count() == 0)
+            {
+                _logger.LogInformation("No information found for Provider {ProviderId} and Course {TrainingCode}", request.ProviderId, request.TrainingCode);
+                return DefaultDeliveryModels;
+            }
+
+            return new GetDeliveryModelsQueryResult() { DeliveryModels = result.DeliveryModels };
         }
 
-        private async Task<bool> IsLegalEntityOnFjaaRegister(long legalEntityId)
+        private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(legalEntityId));
+            _logger.LogInformation("Requesting ale from AccountsApiClient {LegalEntityId}", accountLegalEntityId);
+            var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+
+            _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", accountLegalEntity.MaLegalEntityId);
+            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
 
             if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
             {

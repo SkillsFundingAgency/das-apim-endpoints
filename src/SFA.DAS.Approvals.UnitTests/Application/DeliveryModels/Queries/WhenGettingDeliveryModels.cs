@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { DeliveryModelStringTypes.Regular } });
         }
 
         [Test, MoqAutoData]
@@ -63,7 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
+            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { DeliveryModelStringTypes.Regular } });
         }
 
         [Test, MoqAutoData]
