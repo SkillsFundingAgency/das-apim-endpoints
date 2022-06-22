@@ -27,6 +27,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -50,6 +53,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -73,6 +79,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -96,6 +105,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -119,6 +131,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -142,6 +157,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
@@ -165,6 +183,9 @@ stages:
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
