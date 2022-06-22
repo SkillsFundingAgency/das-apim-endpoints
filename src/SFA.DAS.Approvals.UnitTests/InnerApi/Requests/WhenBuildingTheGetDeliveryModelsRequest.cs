@@ -5,7 +5,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingTheGetProviderCoursesDeliveryModelsRequest
+    public class WhenBuildingTheGetDeliveryModelsRequest
     {
         [Test, MoqAutoData]
         public void Then_The_Url_Is_Correctly_Constructed(

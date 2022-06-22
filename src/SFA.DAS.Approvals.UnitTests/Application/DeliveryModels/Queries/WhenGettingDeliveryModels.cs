@@ -11,10 +11,11 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
 
-namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
+namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
 {
-    public class WhenGettingProviderCoursesDeliveryModels
+    public class WhenGettingDeliveryModels
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_DeliveryModels_Returned(
@@ -30,7 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.DeliveryModels.Should().BeEquivalentTo(apiResponse.DeliveryModels);
+            actual.DeliveryModels.Should().BeEquivalentTo(new string[] { DeliveryModelStringTypes.Regular });
         }
 
         [Test, MoqAutoData]
@@ -74,11 +75,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
         {
             apiClient
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = new System.Collections.Generic.List<string>() });
+                .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular } });
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(new { DeliveryModels = new[] { "Regular" } });
+            actual.DeliveryModels.Should().BeEquivalentTo(new string[] { DeliveryModelStringTypes.Regular } );
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,6 +10,7 @@ using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
@@ -22,7 +24,7 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
 
         private static GetDeliveryModelsQueryResult DefaultDeliveryModels => new GetDeliveryModelsQueryResult
         {
-            DeliveryModels = new List<string> { "Regular" }
+            DeliveryModels = new List<string> { DeliveryModelStringTypes.Regular }
         };
 
         public GetDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ILogger<GetDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
@@ -75,24 +77,35 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
             if (accountLegalEntity != null)
             {
                 _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", accountLegalEntity.MaLegalEntityId);
-                var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)accountLegalEntity.MaLegalEntityId));
 
-                return new GetDeliveryModelsQueryResult() { DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels, agency != null) };
+                var isOnRegister = await IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
+
+                if (isOnRegister)
+                {
+                    if (result.DeliveryModels.Contains(DeliveryModelStringTypes.PortableFlexiJob))
+                    {
+                        result.DeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
+                    }
+
+                    result.DeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+                }
             }
 
-            return new GetDeliveryModelsQueryResult() { DeliveryModels = result.DeliveryModels };
+            return result;
         }
 
-        private List<string> AssignDeliveryModels(List<string> models, bool agencyExists)
+        private async Task<bool> IsLegalEntityOnFjaaRegister(long legalEntityId)
         {
-            bool portable = models.Contains(DeliveryModelStringTypes.PortableFlexiJob) ? true : false;
+            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(legalEntityId));
 
-            if (agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Add(DeliveryModelStringTypes.FlexiJobAgency); }
-            if (agencyExists && portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Add(DeliveryModelStringTypes.FlexiJobAgency); }
-            if (!agencyExists && portable) { models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
-            if (!agencyExists && !portable) { models.Remove(DeliveryModelStringTypes.PortableFlexiJob); models.Remove(DeliveryModelStringTypes.FlexiJobAgency); }
+            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
+            {
+                return false;
+            }
 
-            return models;
+            agencyRequest.EnsureSuccessStatusCode();
+
+            return true;
         }
     }
 }
