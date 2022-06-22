@@ -1,9 +1,24 @@
 trigger:
+  batch: true
   branches:
     include:
       - "master"
   paths:
     include:
+    - azure
+    - pipeline-templates
+    - src/FindAnApprenticeship
+    - src/Shared*
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
     - src/FindAnApprenticeship
     - src/Shared*
 
