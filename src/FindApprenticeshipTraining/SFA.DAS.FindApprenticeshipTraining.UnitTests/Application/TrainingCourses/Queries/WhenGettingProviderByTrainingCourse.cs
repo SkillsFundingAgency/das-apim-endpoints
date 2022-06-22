@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
@@ -26,10 +27,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
-            GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
@@ -39,12 +39,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
                 .ReturnsAsync(shortlistItemCount);
-            ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, appfeedbackResponse, mockCoursesApiClient, mockApiClient, mockApprenticeFeedbackApiClient);
+            ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, apprenticeFeedbackResponse, mockCoursesApiClient, mockApiClient, mockApprenticeFeedbackApiClient);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.ProviderStandard.Should().BeEquivalentTo(apiResponse, options => options.Excluding(s => s.ApprenticeFeedback));
-            result.ProviderStandard.ApprenticeFeedback.Should().BeEquivalentTo(appfeedbackResponse);
+            result.ProviderStandard.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse);
             result.Course.Should().BeEquivalentTo(apiCourseResponse);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
             mockApiClient.Verify(x => x.Get<GetProviderStandardItem>(It.IsAny<GetProviderByCourseAndUkPrnRequest>()), Times.Once);
@@ -59,7 +59,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
@@ -68,7 +68,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Lat = 0;
             query.Lon = 0;
             query.Location = string.Empty;
-            ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, appfeedbackResponse, mockCoursesApiClient, mockApiClient, mockApprenticeFeedbackApiClient);
+            ArrangeClients(query, apiResponse, apiCourseResponse, apiAchievementRateResponse, allCoursesApiResponse, ukprnsCountResponse, apprenticeFeedbackResponse, mockCoursesApiClient, mockApiClient, mockApprenticeFeedbackApiClient);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -84,7 +84,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetStandardsListResponse allCoursesApiResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
@@ -118,8 +118,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(x => x.Get<GetUkprnsForStandardAndLocationResponse>(
                     It.Is<GetUkprnsForStandardAndLocationRequest>(c => c.GetUrl.Contains(query.CourseId.ToString()))))
                 .ReturnsAsync(ukprnsCountResponse);
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -135,7 +138,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
@@ -182,8 +185,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
 
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -199,7 +205,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
-            GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
             GetApprenticeFeedbackResponse appfeedbackResponse,
@@ -254,7 +259,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetProviderStandardItem apiResponse,
             GetStandardsListItem apiCourseResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
-            GetProviderAdditionalStandardsItem apiAdditionalStandardsResponse,
             GetStandardsListResponse allCoursesApiResponse,
             List<GetStandardsListItem> allStandards,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
@@ -291,7 +295,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             LocationItem locationLookupResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
@@ -336,8 +340,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
 
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -357,7 +364,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             LocationItem locationLookupResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
@@ -405,8 +412,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -426,7 +437,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             LocationItem locationLookupResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
@@ -480,8 +491,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -501,7 +516,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             LocationItem locationLookupResponse,
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
@@ -554,8 +569,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                         c.GetUrl.Contains(apiCourseResponse.SectorSubjectAreaTier2Description)
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
-            mockApprenticeFeedbackApiClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackApiClient
+                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -569,7 +588,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetOverallAchievementRateResponse apiAchievementRateResponse,
             GetStandardsListResponse allCoursesApiResponse,
             GetUkprnsForStandardAndLocationResponse ukprnsCountResponse,
-            GetApprenticeFeedbackResponse appfeedbackResponse,
+            GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
             Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient)
@@ -612,8 +631,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 )))
                 .ReturnsAsync(apiAchievementRateResponse);
 
-            mockApprenticeFeedbackClient.Setup(client => client.Get<GetApprenticeFeedbackResponse>(It.Is<GetApprenticeFeedbackRequest>(x => x.GetUrl.Contains(query.ProviderId.ToString()))))
-                .ReturnsAsync(appfeedbackResponse);
+            apprenticeFeedbackResponse.Ukprn = query.ProviderId;
+            mockApprenticeFeedbackClient
+                            .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
+                                (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId))))
+                            .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
         }
     }
 }
