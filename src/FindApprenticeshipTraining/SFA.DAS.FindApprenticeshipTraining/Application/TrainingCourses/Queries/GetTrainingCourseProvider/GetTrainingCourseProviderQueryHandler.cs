@@ -52,7 +52,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
             var overallAchievementRatesTask = _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
                 new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
-            var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.Get<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackRequest(request.ProviderId));
+
+            var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(
+                new PostApprenticeFeedbackRequest { Data = new PostApprenticeFeedbackRequestData { Ukprns = new List<int> { request.ProviderId } } });
 
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
@@ -79,9 +81,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 }
             }
             
-            if(providerTask.Result != null)
+            if(providerTask.Result != null && apprenticeFeedbackTask.Result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result;
+                providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body.FirstOrDefault();
             }
 
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask,

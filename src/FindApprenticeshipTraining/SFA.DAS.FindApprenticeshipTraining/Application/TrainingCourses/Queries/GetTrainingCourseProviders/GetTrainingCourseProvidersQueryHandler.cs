@@ -68,9 +68,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                             Data = new PostApprenticeFeedbackRequestData { Ukprns = ukprns }
                         });
 
-                foreach(var ratingResponse in apprenticeFeedbackRatings.Body)
+                if (apprenticeFeedbackRatings.StatusCode == HttpStatusCode.OK)
                 {
-                    providers.Providers.First(s => s.Ukprn == ratingResponse.Ukprn).ApprenticeFeedback = ratingResponse;
+                    foreach (var ratingResponse in apprenticeFeedbackRatings.Body)
+                    {
+                        providers.Providers.First(s => s.Ukprn == ratingResponse.Ukprn).ApprenticeFeedback = ratingResponse;
+                    }
                 }
             }
 

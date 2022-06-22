@@ -54,7 +54,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
                     coursesTask.Result.Standards.FirstOrDefault(listItem =>
                         listItem.LarsCode == item.CourseId);
 
-                item.ProviderDetails.ApprenticeFeedback = apprenticeFeedbackRatings.Body.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
+                if (apprenticeFeedbackRatings.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    item.ProviderDetails.ApprenticeFeedback = apprenticeFeedbackRatings.Body.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
+                }
             }
 
             return new GetShortlistForUserResult
