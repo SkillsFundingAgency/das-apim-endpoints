@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{033D9A3C-001F-458C-8421-3A016FE6BD74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms", "SFA.DAS.EmployerContactForms\SFA.DAS.EmployerContactForms.csproj", "{96D5CF53-D93A-4B60-A8E3-71BB4A84E9F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms.Api", "SFA.DAS.EmployerContactForms.Api\SFA.DAS.EmployerContactForms.Api.csproj", "{0BD1D8F8-106F-4FD0-B89A-EDB0B1E9F410}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms.Api.UnitTests", "SFA.DAS.EmployerContactForms.Api.UnitTests\SFA.DAS.EmployerContactForms.Api.UnitTests.csproj", "{5AFCDBF1-729B-4503-8050-BD0CDD49AD85}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerContactForms.UnitTests", "SFA.DAS.EmployerContactForms.UnitTests\SFA.DAS.EmployerContactForms.UnitTests.csproj", "{573618C9-BE27-49AC-894C-AB84B7B6D3D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{033D9A3C-001F-458C-8421-3A016FE6BD74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033D9A3C-001F-458C-8421-3A016FE6BD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033D9A3C-001F-458C-8421-3A016FE6BD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033D9A3C-001F-458C-8421-3A016FE6BD74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96D5CF53-D93A-4B60-A8E3-71BB4A84E9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96D5CF53-D93A-4B60-A8E3-71BB4A84E9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96D5CF53-D93A-4B60-A8E3-71BB4A84E9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96D5CF53-D93A-4B60-A8E3-71BB4A84E9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD1D8F8-106F-4FD0-B89A-EDB0B1E9F410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD1D8F8-106F-4FD0-B89A-EDB0B1E9F410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD1D8F8-106F-4FD0-B89A-EDB0B1E9F410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD1D8F8-106F-4FD0-B89A-EDB0B1E9F410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AFCDBF1-729B-4503-8050-BD0CDD49AD85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AFCDBF1-729B-4503-8050-BD0CDD49AD85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AFCDBF1-729B-4503-8050-BD0CDD49AD85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AFCDBF1-729B-4503-8050-BD0CDD49AD85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{573618C9-BE27-49AC-894C-AB84B7B6D3D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{573618C9-BE27-49AC-894C-AB84B7B6D3D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{573618C9-BE27-49AC-894C-AB84B7B6D3D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{573618C9-BE27-49AC-894C-AB84B7B6D3D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6028374-B3C5-4C4E-A42B-3FE74A199289}
+	EndGlobalSection
+EndGlobal
