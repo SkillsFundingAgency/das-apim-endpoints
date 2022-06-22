@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
+namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public enum FeedbackRatingType
     {
