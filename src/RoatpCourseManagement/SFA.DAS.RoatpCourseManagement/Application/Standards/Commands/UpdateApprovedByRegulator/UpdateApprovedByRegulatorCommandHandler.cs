@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
 {
-    public class UpdateApprovedByRegulatorCommandHandler : IRequestHandler<UpdateApprovedByRegulatorCommand, HttpStatusCode>
+    public class UpdateApprovedByRegulatorCommandHandler : IRequestHandler<UpdateApprovedByRegulatorCommand, Unit>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
         public UpdateApprovedByRegulatorCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
             _innerApiClient = innerApiClient;
         }
 
-        public async Task<HttpStatusCode> Handle(UpdateApprovedByRegulatorCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateApprovedByRegulatorCommand command, CancellationToken cancellationToken)
         {
             var providerCourse = await _innerApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(command.Ukprn, command.LarsCode));
             var updateProviderCourse = new ProviderCourseUpdateModel
@@ -33,8 +33,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
                 IsApprovedByRegulator = command.IsApprovedByRegulator
             };
             var request = new UpdateProviderCourseRequest(updateProviderCourse);
-            var response = await _innerApiClient.PostWithResponseCode<UpdateProviderCourseRequest>(request);
-            return response.StatusCode;
+            await _innerApiClient.Put(request);
+            return Unit.Value;
         }
     }
 }
