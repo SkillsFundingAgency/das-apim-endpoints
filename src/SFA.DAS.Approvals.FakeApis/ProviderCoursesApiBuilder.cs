@@ -49,7 +49,7 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithCoursesDeliveryModels(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetProviderCourseDeliveryModelsResponse>()
+            var course = _fixture.Build<GetDeliveryModelsResponse>()
                 .With(a => a.DeliveryModels, new List<string> { "Regular", "PortableFlexiJob" })
                 .Create();
 
@@ -69,7 +69,7 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithCoursesDeliveryRegularModel(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetProviderCourseDeliveryModelsResponse>()
+            var course = _fixture.Build<GetDeliveryModelsResponse>()
                 .With(a => a.DeliveryModels, new List<string> { "Regular" })
                 .Create();
 

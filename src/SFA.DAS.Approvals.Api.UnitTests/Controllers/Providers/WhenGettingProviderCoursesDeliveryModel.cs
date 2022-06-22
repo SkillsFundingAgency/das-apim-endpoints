@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Application.Providers.Queries;
+using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using GetProvidersListResponse = SFA.DAS.Approvals.Api.Models.GetProvidersListResponse;
@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_ProviderCourseDeliveryModel_From_Mediator(
-            GetProviderCourseDeliveryModelsResponse mediatorResponse,
+            GetDeliveryModelsQueryResult mediatorResponse,
             int providerId,
             string trainingCode,
             string encodedAccountId,
@@ -30,7 +30,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetProviderCoursesDeliveryModelQuery>(p=>p.ProviderId == providerId && p.TrainingCode == trainingCode),
+                    It.Is<GetDeliveryModelsQuery>(p=>p.ProviderId == providerId && p.TrainingCode == trainingCode),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResponse);
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetProviderCourseDeliveryModelsResponse;
+            var model = controllerResult.Value as GetDeliveryModelsResponse;
             Assert.IsNotNull(model);
             model.Should().BeEquivalentTo(mediatorResponse);
         }
@@ -54,7 +54,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetProviderCoursesDeliveryModelQuery>(),
+                    It.IsAny<GetDeliveryModelsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 

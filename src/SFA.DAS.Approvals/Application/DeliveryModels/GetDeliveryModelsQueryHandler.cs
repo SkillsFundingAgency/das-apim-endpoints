@@ -1,31 +1,31 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Fjaa.Constants;
+using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Providers.Queries
+namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
 {
-    public class GetProviderCoursesDeliveryModelsQueryHandler : IRequestHandler<GetProviderCoursesDeliveryModelQuery, GetProviderCourseDeliveryModelsResponse>
+    public class GetDeliveryModelsQueryHandler : IRequestHandler<GetDeliveryModelsQuery, GetDeliveryModelsQueryResult>
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _apiClient;
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-        private readonly ILogger<GetProviderCoursesDeliveryModelsQueryHandler> _logger;
+        private readonly ILogger<GetDeliveryModelsQueryHandler> _logger;
 
-        private static GetProviderCourseDeliveryModelsResponse DefaultDeliveryModels => new GetProviderCourseDeliveryModelsResponse
+        private static GetDeliveryModelsQueryResult DefaultDeliveryModels => new GetDeliveryModelsQueryResult
         {
             DeliveryModels = new List<string> { "Regular" }
         };
 
-        public GetProviderCoursesDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ILogger<GetProviderCoursesDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public GetDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ILogger<GetDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             _accountsApiClient = accountsApiClient;
         }
 
-        public async Task<GetProviderCourseDeliveryModelsResponse> Handle(GetProviderCoursesDeliveryModelQuery request, CancellationToken cancellationToken)
+        public async Task<GetDeliveryModelsQueryResult> Handle(GetDeliveryModelsQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -46,10 +46,10 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
             }
         }
 
-        private async Task<GetProviderCourseDeliveryModelsResponse> GetValidProviderCoursesDeliveryModels(GetProviderCoursesDeliveryModelQuery request)
+        private async Task<GetDeliveryModelsQueryResult> GetValidProviderCoursesDeliveryModels(GetDeliveryModelsQuery request)
         {
             _logger.LogInformation("Requesting DeliveryModels for Provider {ProviderId} and Course { TrainingCode}", request.ProviderId, request.TrainingCode);
-            var result = await _apiClient.Get<GetProviderCourseDeliveryModelsResponse>(new GetProviderCoursesDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
+            var result = await _apiClient.Get<GetDeliveryModelsQueryResult>(new GetDeliveryModelsRequest(request.ProviderId, request.TrainingCode));
 
             if (result == null)
             {
@@ -77,10 +77,10 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
                 _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", ale.MaLegalEntityId);
                 var agency = await _fjaaClient.Get<GetAgencyResponse>(new GetAgencyRequest((int)ale.MaLegalEntityId));
 
-                result.DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels, agency != null);
+                return new GetDeliveryModelsQueryResult() { DeliveryModels = this.AssignDeliveryModels(result.DeliveryModels, agency != null) };
             }
 
-            return result;
+            return new GetDeliveryModelsQueryResult() { DeliveryModels = result.DeliveryModels };
         }
 
         private List<string> AssignDeliveryModels(List<string> models, bool agencyExists)

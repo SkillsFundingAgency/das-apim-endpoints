@@ -14,8 +14,10 @@
 
     <ItemGroup>
       <None Remove="Application\Fjaa\Constants\" />
+      <None Remove="Application\GetProviderCoursesDeliveryModels\" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Application\Fjaa\Constants\" />
+      <Folder Include="Application\GetProviderCoursesDeliveryModels\" />
     </ItemGroup>
 </Project>
