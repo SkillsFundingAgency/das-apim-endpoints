@@ -71,6 +71,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
             model.TrainingCourseProvider.EmployerFeedback.Should().NotBeNull();
+            model.TrainingCourseProvider.ApprenticeFeedback.Should().NotBeNull();
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }

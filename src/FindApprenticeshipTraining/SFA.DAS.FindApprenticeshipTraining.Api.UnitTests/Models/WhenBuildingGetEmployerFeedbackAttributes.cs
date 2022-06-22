@@ -7,11 +7,11 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenBuildingGetProviderFeedbackAttributes
+    public class WhenBuildingGetEmployerFeedbackAttributes
     {
 
         [Test, AutoData]
-        public void Then_Returns_Empty_Feedback_Attribute_Lists_If_Totals_Are_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_Empty_Employer_Feedback_Attribute_Lists_If_Totals_Are_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
             source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {
@@ -106,7 +106,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
 
         [Test, AutoData]
-        public void Then_Returns_All_Available_Feedback_Attribute_Strengths_And_Weaknesses_Where_Strengths_Weaknesses_Greater_Than_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_All_Available_Employer_Feedback_Attribute_Strengths_And_Weaknesses_Where_Strengths_Weaknesses_Greater_Than_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
             source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {

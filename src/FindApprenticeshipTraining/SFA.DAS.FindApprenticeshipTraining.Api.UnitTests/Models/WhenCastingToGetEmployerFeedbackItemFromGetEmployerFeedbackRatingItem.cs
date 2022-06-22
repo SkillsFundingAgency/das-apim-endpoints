@@ -6,7 +6,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenCastingToGetProviderFeedbackItemFromGetFeedbackRatingItem
+    public class WhenCastingToGetEmployerFeedbackItemFromGetEmployerFeedbackRatingItem
     {
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetEmployerFeedbackRatingItem source)
