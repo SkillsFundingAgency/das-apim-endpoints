@@ -38,7 +38,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetDeliveryModelsResponse;
+            var model = controllerResult.Value as GetDeliveryModelsQueryResult;
             Assert.IsNotNull(model);
             model.Should().BeEquivalentTo(mediatorResponse);
         }
