@@ -81,7 +81,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             {
                 Course = courseTask.Result,
                 Providers = providers?.Providers,
-                Total = providers.TotalResults,
+                Total = providers?.TotalResults ?? 0,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result
             };
