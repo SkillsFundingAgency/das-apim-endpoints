@@ -1,0 +1,24 @@
+﻿using MediatR;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDeleteProviderCourse
+{
+    public class BulkDeleteProviderCourseLocationsCommand : IRequest<Unit>
+    {
+        public int Ukprn { get; set; }
+        public int LarsCode { get; set; }
+
+        public string UserId { get; set; }
+        public DeleteProviderCourseLocationOption DeleteProviderCourseLocationOption { get; set; }
+
+        public static implicit operator BulkDeleteProviderCourseLocationsRequest(BulkDeleteProviderCourseLocationsCommand command) 
+            => new BulkDeleteProviderCourseLocationsRequest
+            {
+                DeleteProviderCourseLocationOption = command.DeleteProviderCourseLocationOption,
+                UserId = command.UserId,
+                LarsCode = command.LarsCode,
+                Ukprn = command.Ukprn
+            };
+    }
+}
