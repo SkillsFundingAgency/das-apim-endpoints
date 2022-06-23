@@ -26,8 +26,6 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- name: OuterApiObject
-  value: $(ForecastingOuterApiObject)
 
 resources:
   repositories:
