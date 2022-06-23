@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement", "SFA.DAS.RoatpCourseManagement\SFA.DAS.RoatpCourseManagement.csproj", "{59916D5A-5B8A-4D60-A938-6A0AAB747890}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.Api", "SFA.DAS.RoatpCourseManagement.Api\SFA.DAS.RoatpCourseManagement.Api.csproj", "{B11D7DD1-3FAA-46FC-B5A7-D4E58D1030EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.Api.UnitTests", "SFA.DAS.RoatpCourseManagement.Api.UnitTests\SFA.DAS.RoatpCourseManagement.Api.UnitTests.csproj", "{EBA53352-99A4-4150-9851-0C26ED8FB732}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.UnitTests", "SFA.DAS.RoatpCourseManagement.UnitTests\SFA.DAS.RoatpCourseManagement.UnitTests.csproj", "{B630AF48-0477-4AE7-BB07-BA8F39614AAB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59916D5A-5B8A-4D60-A938-6A0AAB747890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59916D5A-5B8A-4D60-A938-6A0AAB747890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59916D5A-5B8A-4D60-A938-6A0AAB747890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59916D5A-5B8A-4D60-A938-6A0AAB747890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B11D7DD1-3FAA-46FC-B5A7-D4E58D1030EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B11D7DD1-3FAA-46FC-B5A7-D4E58D1030EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11D7DD1-3FAA-46FC-B5A7-D4E58D1030EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B11D7DD1-3FAA-46FC-B5A7-D4E58D1030EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBA53352-99A4-4150-9851-0C26ED8FB732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBA53352-99A4-4150-9851-0C26ED8FB732}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBA53352-99A4-4150-9851-0C26ED8FB732}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBA53352-99A4-4150-9851-0C26ED8FB732}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35695315-ADEC-4A65-B8C4-BE7BD41E3A48}
+	EndGlobalSection
+EndGlobal
