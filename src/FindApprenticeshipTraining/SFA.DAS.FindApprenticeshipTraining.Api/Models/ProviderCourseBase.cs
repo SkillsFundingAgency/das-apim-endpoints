@@ -71,7 +71,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             var ratingAverage = Math.Round((double)ratingScore / totalRatings, 1);
 
-            var ratingResponse = GetOverallRatingResponse(ratingAverage);
+            var ratingResponse = GetOverallEmployerRatingResponse(ratingAverage);
 
             var feedbackAttrItems = employerFeedback.FeedbackAttributes
                 .Where(c => c.Strength + c.Weakness != 0)
@@ -106,7 +106,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             var ratingAverage = Math.Round((double)ratingScore / totalRatings, 1);
 
-            var ratingResponse = GetOverallRatingResponse(ratingAverage);
+            var ratingResponse = GetOverallApprenticeRatingResponse(ratingAverage);
 
             var feedbackAttrItems = apprenticeFeedback.ProviderAttribute
                 .Where(c => c.Agree + c.Disagree != 0)
@@ -229,7 +229,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return ratingScore;
         }
 
-        private static int GetOverallRatingResponse(double ratingAverage)
+        /// <summary>
+        /// Had to have an Apprentice Rating method and Employer Rating method.
+        /// Apprentice feedback to be rounded at 0.5, but employer at 0.3
+        /// </summary>
+        /// <param name="ratingAverage"></param>
+        /// <returns></returns>
+        
+        private static int GetOverallApprenticeRatingResponse(double ratingAverage)
         {
             var ratingResponse = 0;
             if (ratingAverage >= 1 && ratingAverage < 1.5)
@@ -245,6 +252,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 ratingResponse = 3;
             }
             else if (ratingAverage >= 3.5 && ratingAverage <= 4)
+            {
+                ratingResponse = 4;
+            }
+
+            return ratingResponse;
+        }
+
+        private static int GetOverallEmployerRatingResponse(double ratingAverage)
+        {
+            var ratingResponse = 0;
+            if (ratingAverage >= 1 && ratingAverage < 1.3)
+            {
+                ratingResponse = 1;
+            }
+            else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
+            {
+                ratingResponse = 2;
+            }
+            else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
+            {
+                ratingResponse = 3;
+            }
+            else if (ratingAverage >= 3.3 && ratingAverage <= 4)
             {
                 ratingResponse = 4;
             }
