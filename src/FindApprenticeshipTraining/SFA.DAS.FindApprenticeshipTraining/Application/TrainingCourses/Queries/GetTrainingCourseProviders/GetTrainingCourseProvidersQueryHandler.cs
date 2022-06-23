@@ -80,7 +80,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providers.Providers,
+                Providers = providers?.Providers,
                 Total = providers.TotalResults,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result
