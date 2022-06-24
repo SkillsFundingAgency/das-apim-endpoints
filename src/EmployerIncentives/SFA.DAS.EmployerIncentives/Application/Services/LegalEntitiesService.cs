@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
+using SFA.DAS.SharedOuterApi.Extensions;
 using GetLegalEntityRequest = SFA.DAS.EmployerIncentives.InnerApi.Requests.GetLegalEntityRequest;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
@@ -60,6 +62,14 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task SignAgreement(SignAgreementRequest request)
         {
             await _client.Patch(new PatchSignAgreementRequest { Data = request });
+        }
+        
+        public async Task BlockAccountLegalEntitiesForPayments(BlockAccountLegalEntityForPaymentsRequest blockRequest)
+        {
+            var apiRequest = new PatchVendorBlockRequest(blockRequest);
+            var response = await _client.PatchWithResponseCode(apiRequest);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

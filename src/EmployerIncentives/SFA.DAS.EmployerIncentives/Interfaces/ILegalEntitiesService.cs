@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
 using SFA.DAS.EmployerIncentives.Models;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
@@ -13,5 +14,7 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task CreateLegalEntity(AccountLegalEntityCreateRequest accountLegalEntity);
         Task RefreshLegalEntities(IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages);
         Task SignAgreement(SignAgreementRequest request);
+
+        Task BlockAccountLegalEntitiesForPayments(BlockAccountLegalEntityForPaymentsRequest blockRequest);
     }
 }
