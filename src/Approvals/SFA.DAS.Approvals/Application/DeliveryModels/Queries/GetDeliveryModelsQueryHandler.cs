@@ -72,7 +72,7 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
 
         private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            if (_featureToggles.FeatureToggleFjaaEnabled)
+            if (_featureToggles.ApprovalsFeatureToggleFjaaEnabled)
             {
                 _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from AccountsApiClient");
                 var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
