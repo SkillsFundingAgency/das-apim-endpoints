@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
-    public class ProviderLocationUpdateModel
+    public class ProviderCourseLocationUpdateModel
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
