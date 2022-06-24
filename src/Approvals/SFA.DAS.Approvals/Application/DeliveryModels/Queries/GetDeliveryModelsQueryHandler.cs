@@ -37,22 +37,21 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
         public async Task<GetDeliveryModelsQueryResult> Handle(GetDeliveryModelsQuery request, CancellationToken cancellationToken)
         {
             var courseDeliveryModelsTask = GetCourseDeliveryModels(request.ProviderId, request.TrainingCode);
+
+            var isOnRegisterTask = IsLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
+
+            await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask);
+
             var courseDeliveryModels = courseDeliveryModelsTask.Result;
+            var isOnRegister = isOnRegisterTask.Result;
 
-            if (_featureToggles.FeatureToggleFjaaEnabled)
+            if (!isOnRegister)
             {
-                bool isOnRegister = await IsLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
-
-                courseDeliveryModels = courseDeliveryModelsTask.Result;
-
-                if (!isOnRegister)
-                {
-                    return new GetDeliveryModelsQueryResult() { DeliveryModels = courseDeliveryModels };
-                }
-
-                courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
-                courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
+                return new GetDeliveryModelsQueryResult() { DeliveryModels = courseDeliveryModels };
             }
+
+            courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+            courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
 
             return new GetDeliveryModelsQueryResult { DeliveryModels = courseDeliveryModels };
         }
@@ -73,19 +72,24 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
 
         private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from AccountsApiClient");
-            var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-
-            _logger.LogInformation($"Requesting fjaa agency for LegalEntityId {accountLegalEntity.MaLegalEntityId}");
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
-
-            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
+            if (_featureToggles.FeatureToggleFjaaEnabled)
             {
-                return false;
+                _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from AccountsApiClient");
+                var accountLegalEntity = await _accountsApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+
+                _logger.LogInformation($"Requesting fjaa agency for LegalEntityId {accountLegalEntity.MaLegalEntityId}");
+                var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
+
+                if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+
+                agencyRequest.EnsureSuccessStatusCode();
+                return true;
             }
 
-            agencyRequest.EnsureSuccessStatusCode();
-            return true;
+            return false;
         }
     }
 }
