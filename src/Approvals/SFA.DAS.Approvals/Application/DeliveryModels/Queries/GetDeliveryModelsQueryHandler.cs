@@ -20,34 +20,39 @@ namespace SFA.DAS.Approvals.Application.DeliveryModels.Queries
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly ILogger<GetDeliveryModelsQueryHandler> _logger;
+        private readonly FeatureToggles _featureToggles;
 
         public GetDeliveryModelsQueryHandler(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient,
             ILogger<GetDeliveryModelsQueryHandler> logger, IFjaaApiClient<FjaaApiConfiguration> fjaaClient,
-            IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+            IAccountsApiClient<AccountsConfiguration> accountsApiClient,
+            FeatureToggles featureToggles)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
             _logger = logger;
+            _featureToggles = featureToggles;
             _accountsApiClient = accountsApiClient;
         }
 
         public async Task<GetDeliveryModelsQueryResult> Handle(GetDeliveryModelsQuery request, CancellationToken cancellationToken)
         {
             var courseDeliveryModelsTask = GetCourseDeliveryModels(request.ProviderId, request.TrainingCode);
-            var isOnRegisterTask = IsLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
-
-            await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask);
-
             var courseDeliveryModels = courseDeliveryModelsTask.Result;
-            var isOnRegister = isOnRegisterTask.Result;
 
-            if (!isOnRegister)
+            if (_featureToggles.FeatureToggleFjaaEnabled)
             {
-                return new GetDeliveryModelsQueryResult() { DeliveryModels = courseDeliveryModels };
-            }
+                bool isOnRegister = await IsLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
 
-            courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
-            courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
+                courseDeliveryModels = courseDeliveryModelsTask.Result;
+
+                if (!isOnRegister)
+                {
+                    return new GetDeliveryModelsQueryResult() { DeliveryModels = courseDeliveryModels };
+                }
+
+                courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+                courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
+            }
 
             return new GetDeliveryModelsQueryResult { DeliveryModels = courseDeliveryModels };
         }
