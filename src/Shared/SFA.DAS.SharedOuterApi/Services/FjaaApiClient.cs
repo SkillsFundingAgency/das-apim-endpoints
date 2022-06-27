@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -7,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class FjaaApiClient : IFjaaApiClient<FjaaApiConfiguration>
     {
         private readonly IInternalApiClient<FjaaApiConfiguration> _client;
