@@ -24,7 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
             GetDeliveryModelsQuery query,
             GetDeliveryModelsResponse apiResponse,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler
@@ -34,7 +34,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync(apiResponse);
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
         public async Task Then_The_Api_Is_Called_And_When_No_Response_Returned_We_Create_Default(
             GetDeliveryModelsQuery query,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler
@@ -60,7 +60,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync((GetDeliveryModelsResponse)null);
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
@@ -76,7 +76,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
         public async Task Then_The_Api_Is_Called_And_When_Null_Response_Returned_We_Create_Default(
             GetDeliveryModelsQuery query,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler
@@ -86,7 +86,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = null });
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
@@ -102,7 +102,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
         public async Task Then_The_Api_Is_Called_And_When_Empty_Response_Returned_We_Create_Default(
             GetDeliveryModelsQuery query,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler)
@@ -111,7 +111,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular } });
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
@@ -128,7 +128,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
         public async Task Then_FlexiJobAgency_Is_Returned_For_LegalEntity_On_FJAA_Register(
             GetDeliveryModelsQuery query,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler)
@@ -137,7 +137,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular } });
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
@@ -155,7 +155,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
         public async Task Then_PortableFlexiJob_Is_Returned_For_LegalEntity_On_FJAA_Register(
             GetDeliveryModelsQuery query,
             [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
             long maLegalEntityId,
             GetDeliveryModelsQueryHandler handler)
@@ -164,7 +164,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
                 .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                 .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = new List<string>() { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob } });
 
-            accountsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            commitmentsApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
 
             fjaaApiClient.Setup(x => x
