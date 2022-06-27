@@ -43,6 +43,16 @@ namespace SFA.DAS.SharedOuterApi.Services
             await _apiClient.Delete(request);
         }
 
+        public async Task Put<TData>(IPutApiRequest<TData> request)
+        {
+            await _apiClient.Put(request);
+        }
+
+        public Task Put(IPutApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
             throw new System.NotImplementedException();
@@ -69,16 +79,6 @@ namespace SFA.DAS.SharedOuterApi.Services
         }
 
         public Task Post<TData>(IPostApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task Put(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task Put<TData>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }
