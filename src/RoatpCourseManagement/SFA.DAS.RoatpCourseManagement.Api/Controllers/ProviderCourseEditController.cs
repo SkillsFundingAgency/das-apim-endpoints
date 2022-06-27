@@ -6,6 +6,7 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContact
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using System.Threading.Tasks;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSubRegions;
+using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
