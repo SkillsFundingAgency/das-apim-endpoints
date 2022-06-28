@@ -15,6 +15,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private readonly Fixture _fixture;
         private IEnumerable<RegistrationsRemindersInvitationsResponse.Registration> _registrationsInNeedOfReminders;
         private readonly ApprenticeshipResponse _existingApprenticship;
+        private readonly ApprenticeshipResponse _latestConfirmedApprenticship;
 
         public ApprenticeCommitmentsInnerApiBuilder(int port)
         {
@@ -23,6 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             _registrationsInNeedOfReminders = _fixture.CreateMany<RegistrationsRemindersInvitationsResponse.Registration>();
             _existingApprenticship = _fixture.Create<ApprenticeshipResponse>();
+            _latestConfirmedApprenticship = _fixture.Create<ApprenticeshipResponse>();
         }
 
         public static ApprenticeCommitmentsInnerApiBuilder Create(int port)
@@ -158,6 +160,21 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
+        public ApprenticeCommitmentsInnerApiBuilder WithLatestConfirmedApprenticeship()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/*/apprenticeships/*/latest-confirmed-details")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(_latestConfirmedApprenticship)
+                );
 
+            return this;
+        }
     }
 }
