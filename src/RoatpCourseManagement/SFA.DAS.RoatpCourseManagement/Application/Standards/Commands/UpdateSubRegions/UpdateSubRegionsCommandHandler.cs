@@ -19,8 +19,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
         {
             _innerApiClient = innerApiClient;
         }
-
-
         public async Task<HttpStatusCode> Handle(UpdateSubRegionsCommand command, CancellationToken cancellationToken)
         {
             var existingProviderLocation = await _innerApiClient.Get<List<ProviderLocationModel>>(new GetAllProviderLocationsQuery (command.Ukprn ));
@@ -28,16 +26,16 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             var newSubregionIdsToAdd = new List<int>();
             foreach (var regionId in command.SelectedSubRegions)
             {
-                if (!existingSubregions.Exists(r => r.RegionId == int.Parse(regionId)))
+                if (!existingSubregions.Exists(r => r.RegionId == regionId))
                 {
-                    newSubregionIdsToAdd.Add(int.Parse(regionId));
+                    newSubregionIdsToAdd.Add(regionId);
                 }
             }
 
             var subregionIdsToDelete = new List<int>();
             foreach (var subregions in existingSubregions)
             {
-                if (!command.SelectedSubRegions.ToList().Contains(subregions.RegionId.Value.ToString()))
+                if (!command.SelectedSubRegions.ToList().Contains(subregions.RegionId.Value))
                 {
                     subregionIdsToDelete.Add(subregions.RegionId.Value);
                 }
@@ -57,7 +55,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             var AllSelectedSubregionIdsToAdd = new List<int>();
             foreach (var regionId in command.SelectedSubRegions)
             {
-                AllSelectedSubregionIdsToAdd.Add(int.Parse(regionId));
+                AllSelectedSubregionIdsToAdd.Add(regionId);
             }
             var updateProviderCourseLocation = new ProviderCourseLocationUpdateModel
             {

@@ -5,6 +5,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Regions.Queries
 {
     public class GetAllRegionsQueryResult
     {
-        public List<RegionModel> Regions { get; set; }
+        public List<RegionModel> Regions { get; set; } = new List<RegionModel>();
     }
 }
