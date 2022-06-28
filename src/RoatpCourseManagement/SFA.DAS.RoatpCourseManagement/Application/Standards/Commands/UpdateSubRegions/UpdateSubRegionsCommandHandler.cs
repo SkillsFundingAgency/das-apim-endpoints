@@ -50,23 +50,18 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             };
 
             var requestProviderLocation = new UpdateProviderLocationRequest(updateProviderLocation);
-            var responseProviderLocation = await _innerApiClient.PostWithResponseCode<UpdateProviderLocationRequest>(requestProviderLocation);
+            await _innerApiClient.PostWithResponseCode<UpdateProviderLocationRequest>(requestProviderLocation);
 
-            var AllSelectedSubregionIdsToAdd = new List<int>();
-            foreach (var regionId in command.SelectedSubRegions)
-            {
-                AllSelectedSubregionIdsToAdd.Add(regionId);
-            }
             var updateProviderCourseLocation = new ProviderCourseLocationUpdateModel
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
-                SelectedSubregionIds = AllSelectedSubregionIdsToAdd,
+                SelectedSubregionIds = command.SelectedSubRegions,
             };
 
             var requestProviderCourseLocation = new UpdateProviderCourseLocationRequest(updateProviderCourseLocation);
-            var responseProviderCourseLocation = await _innerApiClient.PostWithResponseCode<UpdateProviderCourseLocationRequest>(requestProviderCourseLocation);
+             await _innerApiClient.PostWithResponseCode<UpdateProviderCourseLocationRequest>(requestProviderCourseLocation);
            
             var deleteProviderLocation = new ProviderLocationDeleteModel
             {
@@ -77,7 +72,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             };
 
             var requestProviderLocationDelete = new DeleteProviderLocationRequest(deleteProviderLocation);
-            var responseProviderLocationDelete = await _innerApiClient.PostWithResponseCode<DeleteProviderLocationRequest>(requestProviderLocationDelete);
+            await _innerApiClient.PostWithResponseCode<DeleteProviderLocationRequest>(requestProviderLocationDelete);
 
             return HttpStatusCode.NoContent;
         }
