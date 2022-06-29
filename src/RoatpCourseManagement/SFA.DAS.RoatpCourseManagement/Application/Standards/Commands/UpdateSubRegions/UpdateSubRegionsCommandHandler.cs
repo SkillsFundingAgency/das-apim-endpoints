@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
 
@@ -26,7 +25,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             var existingProviderLocation = await _innerApiClient.Get<List<ProviderLocationModel>>(new GetAllProviderLocationsQuery(command.Ukprn));
             var existingSubregions = existingProviderLocation.FindAll(l => l.LocationType == LocationType.Regional);
             List<int> newSubregionIdsToAdd = GetProviderLocationsToAdd(command, existingSubregions);
-            List<int> subregionIdsToDelete = GetProviderLocationsToDelete(command, existingSubregions);
 
             var providerLocationBulkInsertModel = new ProviderLocationBulkInsertModel
             {
@@ -67,23 +65,9 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             };
 
             var providerLocationBulkDeleteRequest = new ProviderLocationBulkDeleteRequest(providerLocationBulkDeleteModel);
-            await _innerApiClient.PostWithResponseCode<ProviderLocationBulkDeleteRequest>(providerLocationBulkDeleteRequest);
+            await _innerApiClient.Delete(providerLocationBulkDeleteRequest);
 
             return HttpStatusCode.NoContent;
-        }
-
-        private static List<int> GetProviderLocationsToDelete(UpdateSubRegionsCommand command, List<ProviderLocationModel> existingSubregions)
-        {
-            var subregionIdsToDelete = new List<int>();
-            foreach (var subregions in existingSubregions)
-            {
-                if (!command.SelectedSubRegions.ToList().Contains(subregions.RegionId.Value))
-                {
-                    subregionIdsToDelete.Add(subregions.RegionId.Value);
-                }
-            }
-
-            return subregionIdsToDelete;
         }
 
         private static List<int> GetProviderLocationsToAdd(UpdateSubRegionsCommand command, List<ProviderLocationModel> existingSubregions)
@@ -96,7 +80,6 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
                     newSubregionIdsToAdd.Add(regionId);
                 }
             }
-
             return newSubregionIdsToAdd;
         }
     }
