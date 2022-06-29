@@ -2,14 +2,14 @@
 
 namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
 {
-    public class UpdateProviderCourseLocationRequest : IPostApiRequest
+    public class ProviderLocationBulkDeleteRequest : IPostApiRequest
     {
         public int Ukprn { get; }
         public int LarsCode { get; }
         public string UserId { get; set; }
-        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/locations/bulk";
+        public string PostUrl => $"providers/{Ukprn}/locations/cleanup";
 
-        public UpdateProviderCourseLocationRequest(ProviderCourseLocationUpdateModel data)
+        public ProviderLocationBulkDeleteRequest(ProviderLocationBulkDeleteModel data)
         {
             Ukprn = data.Ukprn;
             LarsCode = data.LarsCode;

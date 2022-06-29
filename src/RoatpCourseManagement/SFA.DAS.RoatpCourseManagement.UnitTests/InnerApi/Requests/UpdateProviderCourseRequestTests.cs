@@ -11,7 +11,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Constructor_ConstructsRequest(ProviderCourseUpdateModel data)
         {
-            var request = new UpdateProviderCourseRequest(data);
+            var request = new ProviderCourseUpdateRequest(data);
 
             request.Data.Should().Be(data);
             request.Ukprn.Should().Be(data.Ukprn);
