@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -39,5 +41,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select-delivery-model")]
+        public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetSelectDeliveryModelQuery
+                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
+
+            var response =  new GetSelectDeliveryModelResponse
+            {
+                LegalEntityName = result.LegalEntityName,
+                DeliveryModels = result.DeliveryModels
+            };
+
+            return Ok(response);
+        }
+
     }
 }
