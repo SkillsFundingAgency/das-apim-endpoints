@@ -25,6 +25,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.Inform
         [SetUp]
         public void Setup()
         {
+            _apprenticeshipResponse.ProviderId = _query.ProviderId;
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _commitmentsApiClient.Setup(x =>
                     x.Get<GetApprenticeshipResponse>(
@@ -49,6 +50,16 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.Inform
                     x.Get<GetApprenticeshipResponse>(
                         It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
                 .ReturnsAsync(() => null);
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task Handle_Returns_Null_If_Apprentice_Does_Not_Belong_To_Provider()
+        {
+            _apprenticeshipResponse.ProviderId = _query.ProviderId + 1;
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 

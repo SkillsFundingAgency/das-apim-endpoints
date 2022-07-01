@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         private GetSelectDeliveryModelQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
         private Mock<IDeliveryModelService> _deliveryModelService;
-        private static Fixture _fixture = new Fixture();
+        private static readonly Fixture _fixture = new Fixture();
         private readonly GetSelectDeliveryModelQuery _query = _fixture.Create<GetSelectDeliveryModelQuery>();
         private readonly GetApprenticeshipResponse _apprenticeshipResponse = _fixture.Create<GetApprenticeshipResponse>();
         private readonly List<string> _deliveryModels = _fixture.Create<List<string>>();
@@ -27,6 +27,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         [SetUp]
         public void Setup()
         {
+            _apprenticeshipResponse.ProviderId = _query.ProviderId;
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _commitmentsApiClient.Setup(x =>
                     x.Get<GetApprenticeshipResponse>(
@@ -43,7 +44,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
             _handler = new GetSelectDeliveryModelQueryHandler(_commitmentsApiClient.Object,
                 _deliveryModelService.Object);
         }
-
 
         [Test]
         public async Task Handle_Returns_DeliveryModels_For_Apprenticeship()
@@ -62,7 +62,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         }
 
         [Test]
-        public async Task Handle_Returns_Null_If_Apprentice_Is_Not_Found_DeliveryModels()
+        public async Task Handle_Returns_Null_If_Apprentice_Is_Not_Found()
         {
             _commitmentsApiClient.Setup(x =>
                     x.Get<GetApprenticeshipResponse>(
@@ -71,6 +71,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task Handle_Returns_Null_If_Apprentice_Does_Not_Belong_To_Provider()
+        {
+            _apprenticeshipResponse.ProviderId = _query.ProviderId + 1;
+            var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.IsNull(result);
         }
     }

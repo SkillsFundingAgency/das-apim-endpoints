@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Infor
         {
             var apprenticeship = await _commitmentsV2ApiClient.Get<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
 
-            if (apprenticeship == null)
+            if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
                 return null;
             }
