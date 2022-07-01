@@ -5,8 +5,8 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprove
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using System.Threading.Tasks;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSubRegions;
 using System.Net;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -61,16 +61,16 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larsCode}/update-subregions")]
-        public async Task<IActionResult> UpdateSubRegions(int ukprn, int larsCode, UpdateSubRegionsCommand command)
+        [Route("providers/{ukprn}/courses/{larsCode}/update-standardsubregions")]
+        public async Task<IActionResult> UpdateStandardSubRegions(int ukprn, int larsCode, UpdateStandardSubRegionsCommand command)
         {
-            _logger.LogInformation("Outer API: Request to update subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
+            _logger.LogInformation("Outer API: Request to update standard subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             command.Ukprn = ukprn;
             command.LarsCode = larsCode;
             var httpStatusCode = await _mediator.Send(command);
             if (httpStatusCode != HttpStatusCode.NoContent)
             {
-                _logger.LogError("Outer API: Failed request to update subregions for ukprn: {ukprn} larscode: {larscode} with HttpStatusCode: {httpstatuscode}", ukprn, larsCode, httpStatusCode);
+                _logger.LogError("Outer API: Failed request to update standard subregions for ukprn: {ukprn} larscode: {larscode} with HttpStatusCode: {httpstatuscode}", ukprn, larsCode, httpStatusCode);
                 return new StatusCodeResult((int)httpStatusCode);
             }
             return NoContent();

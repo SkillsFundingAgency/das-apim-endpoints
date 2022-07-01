@@ -2,16 +2,14 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSubRegions;
+using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,8 +21,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
         [Test, MoqAutoData]
         public async Task Handle_CallsApiClient(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            UpdateSubRegionsCommandHandler sut,
-            UpdateSubRegionsCommand command,
+            UpdateStandardSubRegionsCommandHandler sut,
+            UpdateStandardSubRegionsCommand command,
             CancellationToken cancellationToken,
             List<ProviderLocationModel> apiResponse)
         {
@@ -38,8 +36,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
         [Test, MoqAutoData]
         public void Handle_CallsApiClient_ReturnException(
            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-           UpdateSubRegionsCommandHandler sut,
-           UpdateSubRegionsCommand command,
+           UpdateStandardSubRegionsCommandHandler sut,
+           UpdateStandardSubRegionsCommand command,
            CancellationToken cancellationToken,
            HttpRequestContentException expectedException)
         {

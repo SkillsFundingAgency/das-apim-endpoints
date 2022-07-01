@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
 
-namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSubRegions
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions
 {
-    public class UpdateSubRegionsCommandHandler : IRequestHandler<UpdateSubRegionsCommand, HttpStatusCode>
+    public class UpdateStandardSubRegionsCommandHandler : IRequestHandler<UpdateStandardSubRegionsCommand, HttpStatusCode>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
-        public UpdateSubRegionsCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
+        public UpdateStandardSubRegionsCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
         {
             _innerApiClient = innerApiClient;
         }
-        public async Task<HttpStatusCode> Handle(UpdateSubRegionsCommand command, CancellationToken cancellationToken)
+        public async Task<HttpStatusCode> Handle(UpdateStandardSubRegionsCommand command, CancellationToken cancellationToken)
         {
             var existingProviderLocation = await _innerApiClient.Get<List<ProviderLocationModel>>(new GetAllProviderLocationsQuery(command.Ukprn));
             var existingSubregions = existingProviderLocation.FindAll(l => l.LocationType == LocationType.Regional);
@@ -70,7 +70,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSu
             return HttpStatusCode.NoContent;
         }
 
-        private static List<int> GetProviderLocationsToAdd(UpdateSubRegionsCommand command, List<ProviderLocationModel> existingSubregions)
+        private static List<int> GetProviderLocationsToAdd(UpdateStandardSubRegionsCommand command, List<ProviderLocationModel> existingSubregions)
         {
             var newSubregionIdsToAdd = new List<int>();
             foreach (var regionId in command.SelectedSubRegions)

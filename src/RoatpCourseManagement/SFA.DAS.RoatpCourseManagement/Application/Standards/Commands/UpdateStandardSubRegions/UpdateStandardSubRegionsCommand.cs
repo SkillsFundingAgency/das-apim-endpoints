@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSubRegions
+namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions
 {
-    public class UpdateSubRegionsCommand : IRequest<HttpStatusCode>
+    public class UpdateStandardSubRegionsCommand : IRequest<HttpStatusCode>
     {
         public int Ukprn{ get; set; }
         public int LarsCode { get; set; }

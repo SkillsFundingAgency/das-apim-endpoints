@@ -19,7 +19,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("regions")]
+        [Route("lookup/regions")]
         public async Task<IActionResult> GetAllRegions()
         {
             _logger.LogInformation("Request received for all Regions");
