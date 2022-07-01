@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -43,6 +44,35 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select/inform")]
+        public async Task<IActionResult> ChangeEmployerInform(long providerId, long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetInformQuery
+                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var response = new GetInformResponse
+                {
+                    LegalEntityName = result.LegalEntityName,
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting change employer - inform, apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select-delivery-model")]
         public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId)
         {
@@ -66,7 +96,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error getting select-delivery-model, apprenticeship {id}", apprenticeshipId);
+                _logger.LogError(e, "Error getting change employer - select-delivery-model, apprenticeship {id}", apprenticeshipId);
                 return BadRequest();
             }
         }
