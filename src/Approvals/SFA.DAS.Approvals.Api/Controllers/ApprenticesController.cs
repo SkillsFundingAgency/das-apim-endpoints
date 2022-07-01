@@ -46,17 +46,29 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select-delivery-model")]
         public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId)
         {
-            var result = await _mediator.Send(new GetSelectDeliveryModelQuery
-                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
-
-            var response =  new GetSelectDeliveryModelResponse
+            try
             {
-                LegalEntityName = result.LegalEntityName,
-                DeliveryModels = result.DeliveryModels
-            };
+                var result = await _mediator.Send(new GetSelectDeliveryModelQuery
+                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
 
-            return Ok(response);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var response = new GetSelectDeliveryModelResponse
+                {
+                    LegalEntityName = result.LegalEntityName,
+                    DeliveryModels = result.DeliveryModels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting select-delivery-model, apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
         }
-
     }
 }

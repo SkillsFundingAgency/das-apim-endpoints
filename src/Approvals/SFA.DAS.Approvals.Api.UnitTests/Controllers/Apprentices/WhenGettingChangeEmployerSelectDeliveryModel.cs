@@ -51,5 +51,15 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             Assert.AreEqual(_queryResult.DeliveryModels, response.DeliveryModels);
             Assert.AreEqual(_queryResult.LegalEntityName, response.LegalEntityName);
         }
+
+        [Test]
+        public async Task Then_NotFoundResponse_Is_Returned_If_Apprenticeship_Is_Not_Found()
+        {
+            _mediator.Setup(x => x.Send(It.Is<GetSelectDeliveryModelQuery>(q => q.ProviderId == _providerId && q.ApprenticeshipId == _apprenticeshipId), It.IsAny<CancellationToken>())).ReturnsAsync(() => null);
+
+            var result = await _controller.ChangeEmployerSelectDeliveryModel(_providerId, _apprenticeshipId);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
     }
 }

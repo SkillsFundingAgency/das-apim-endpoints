@@ -4,13 +4,13 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
 {
     public class GetApprenticeshipRequest : IGetApiRequest
     {
-        private readonly long _apprenticeshipId;
+        public readonly long ApprenticeshipId;
 
         public GetApprenticeshipRequest(long apprenticeshipId)
         {
-            _apprenticeshipId = apprenticeshipId;
+            ApprenticeshipId = apprenticeshipId;
         }
 
-        public string GetUrl => $"api/apprenticeships/{_apprenticeshipId}";
+        public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}";
     }
 }

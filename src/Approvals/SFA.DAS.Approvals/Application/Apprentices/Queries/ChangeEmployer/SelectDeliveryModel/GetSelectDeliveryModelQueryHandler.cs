@@ -22,9 +22,12 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Selec
 
         public async Task<GetSelectDeliveryModelResult> Handle(GetSelectDeliveryModelQuery request, CancellationToken cancellationToken)
         {
-            var apprenticeship = await
-                _commitmentsV2ApiClient.Get<GetApprenticeshipResponse>(
-                    new GetApprenticeshipRequest(request.ApprenticeshipId));
+            var apprenticeship = await _commitmentsV2ApiClient.Get<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
+
+            if (apprenticeship == null)
+            {
+                return null;
+            }
 
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId);
