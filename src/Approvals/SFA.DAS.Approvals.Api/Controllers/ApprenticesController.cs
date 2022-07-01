@@ -44,7 +44,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select/inform")]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/inform")]
         public async Task<IActionResult> ChangeEmployerInform(long providerId, long apprenticeshipId)
         {
             try
