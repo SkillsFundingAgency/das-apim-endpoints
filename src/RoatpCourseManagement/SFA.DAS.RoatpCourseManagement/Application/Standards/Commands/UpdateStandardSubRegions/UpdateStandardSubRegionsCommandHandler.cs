@@ -25,27 +25,29 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
             var existingProviderLocation = await _innerApiClient.Get<List<ProviderLocationModel>>(new GetAllProviderLocationsQuery(command.Ukprn));
             var existingSubregions = existingProviderLocation.FindAll(l => l.LocationType == LocationType.Regional);
             List<int> newSubregionIdsToAdd = GetProviderLocationsToAdd(command, existingSubregions);
+            await CreateProviderLocations(command, newSubregionIdsToAdd);
+            await DeleteExistingProviderCourseLocationRegions(command);
+            await CreateProviderCourseLocationRegions(command);
+            await CleanUpUnusedProviderLocations(command);
 
-            var providerLocationBulkInsertModel = new ProviderLocationBulkInsertModel
+            return HttpStatusCode.NoContent;
+        }
+
+        private async Task CleanUpUnusedProviderLocations(UpdateStandardSubRegionsCommand command)
+        {
+            var providerLocationBulkDeleteModel = new ProviderLocationBulkDeleteModel
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
-                SelectedSubregionIds = newSubregionIdsToAdd,
             };
 
-            var providerLocationsBulkInsertRequest = new ProviderLocationsBulkInsertRequest(providerLocationBulkInsertModel);
-            await _innerApiClient.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(providerLocationsBulkInsertRequest);
+            var providerLocationBulkDeleteRequest = new ProviderLocationBulkDeleteRequest(providerLocationBulkDeleteModel);
+            await _innerApiClient.Delete(providerLocationBulkDeleteRequest);
+        }
 
-            var providerCourseLocationsBulkDeleteRequest = new ProviderCourseLocationsBulkDeleteRequest
-            {
-                Ukprn = command.Ukprn,
-                LarsCode = command.LarsCode,
-                UserId = command.UserId,
-                DeleteProviderCourseLocationOption = DeleteProviderCourseLocationOption.DeleteEmployerLocations
-            };
-            await _innerApiClient.Delete(providerCourseLocationsBulkDeleteRequest);
-
+        private async Task CreateProviderCourseLocationRegions(UpdateStandardSubRegionsCommand command)
+        {
             var providerCourseLocationBulkInsertModel = new ProviderCourseLocationBulkInsertModel
             {
                 Ukprn = command.Ukprn,
@@ -56,18 +58,32 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
 
             var providerCourseLocationBulkInsertRequest = new ProviderCourseLocationBulkInsertRequest(providerCourseLocationBulkInsertModel);
             await _innerApiClient.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(providerCourseLocationBulkInsertRequest);
+        }
 
-            var providerLocationBulkDeleteModel = new ProviderLocationBulkDeleteModel
+        private async Task DeleteExistingProviderCourseLocationRegions(UpdateStandardSubRegionsCommand command)
+        {
+            var providerCourseLocationsBulkDeleteRequest = new ProviderCourseLocationsBulkDeleteRequest
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                DeleteProviderCourseLocationOption = DeleteProviderCourseLocationOption.DeleteEmployerLocations
+            };
+            await _innerApiClient.Delete(providerCourseLocationsBulkDeleteRequest);
+        }
+
+        private async Task CreateProviderLocations(UpdateStandardSubRegionsCommand command, List<int> newSubregionIdsToAdd)
+        {
+            var providerLocationBulkInsertModel = new ProviderLocationBulkInsertModel
+            {
+                Ukprn = command.Ukprn,
+                LarsCode = command.LarsCode,
+                UserId = command.UserId,
+                SelectedSubregionIds = newSubregionIdsToAdd,
             };
 
-            var providerLocationBulkDeleteRequest = new ProviderLocationBulkDeleteRequest(providerLocationBulkDeleteModel);
-            await _innerApiClient.Delete(providerLocationBulkDeleteRequest);
-
-            return HttpStatusCode.NoContent;
+            var providerLocationsBulkInsertRequest = new ProviderLocationsBulkInsertRequest(providerLocationBulkInsertModel);
+            await _innerApiClient.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(providerLocationsBulkInsertRequest);
         }
 
         private static List<int> GetProviderLocationsToAdd(UpdateStandardSubRegionsCommand command, List<ProviderLocationModel> existingSubregions)
