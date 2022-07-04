@@ -11,7 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourseEditControllerTests
+namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourseLocationRegionsEditControllerTests
 {
     [TestFixture]
     public class UpdateStandardSubRegionsTests
@@ -19,7 +19,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
         [Test, MoqAutoData]
         public async Task UpdateSubregions_Success_ReturnsNoContent(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] ProviderCourseEditController sut,
+            [Greedy] ProviderCourseLocationRegionsEditController sut,
             int ukprn, int larsCode, UpdateStandardSubRegionsCommand command)
         {
             mediator.Setup(m => m.Send(It.Is<UpdateStandardSubRegionsCommand>(c => c.Ukprn == ukprn && c.LarsCode == larsCode), It.IsAny<CancellationToken>())).ReturnsAsync(HttpStatusCode.NoContent);
@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
         [Test, MoqAutoData]
         public async Task UpdateSubregions_Failed_ReturnsRespectiveStatusCode(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] ProviderCourseEditController sut,
+            [Greedy] ProviderCourseLocationRegionsEditController sut,
             int ukprn, int larsCode, UpdateStandardSubRegionsCommand command)
         {
             mediator.Setup(m => m.Send(It.Is<UpdateStandardSubRegionsCommand>(c => c.Ukprn == ukprn && c.LarsCode == larsCode), It.IsAny<CancellationToken>())).ReturnsAsync(HttpStatusCode.BadRequest);

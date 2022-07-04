@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models
+﻿namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models
 {
     public class RegionModel
     {
@@ -9,5 +7,6 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Models
         public string RegionName { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
+        public bool IsSelected { get; set; }
     }
 }
