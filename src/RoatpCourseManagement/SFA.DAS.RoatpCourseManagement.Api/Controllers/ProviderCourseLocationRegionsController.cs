@@ -25,7 +25,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
             var standardRegionsQueryResult = await _mediator.Send(new GetAllStandardRegionsQuery(ukprn, larsCode));
 
-            if (standardRegionsQueryResult == null)
+            if (standardRegionsQueryResult == null || standardRegionsQueryResult.Regions.Count == 0)
             {
                 _logger.LogError($"Standard subregions for ukprn not found for ukprn {ukprn} and lars code {larsCode}");
                 return NotFound();
