@@ -1,17 +1,31 @@
 trigger:
+  batch: true
   branches:
     include:
       - "master"
   paths:
     include:
+    - azure
+    - pipeline-templates
     - src/Forecasting
     - src/Shared*
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
+    - src/Forecasting
+    - src/Shared*
+
 
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- name: OuterApiObject
-  value: $(ForecastingOuterApiObject)
 
 resources:
   repositories:

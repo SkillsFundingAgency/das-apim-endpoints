@@ -1,15 +1,14 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,12 +27,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             GetProviderCourseResponse apiResponse)
         {
             apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
-            
-            apiClientMock.Setup(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>())).ReturnsAsync(new ApiResponse<UpdateProviderCourseRequest>(request, HttpStatusCode.NoContent, string.Empty));
 
             await sut.Handle(command, cancellationToken);
 
-            apiClientMock.Verify(a => a.PostWithResponseCode<UpdateProviderCourseRequest>(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.Put(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -41,11 +38,17 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             UpdateContactDetailsCommandHandler sut,
             UpdateContactDetailsCommand command,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+           GetProviderCourseResponse apiResponse,
+           HttpRequestContentException expectedException)
         {
-            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ThrowsAsync(new Exception());
+            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
 
-            Assert.ThrowsAsync<Exception>(() => sut.Handle(command, cancellationToken));
+            apiClientMock.Setup(c => c.Put(It.IsAny<UpdateProviderCourseRequest>())).Throws(expectedException);
+
+            var actualException = Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
+
+            actualException.Should().Be(expectedException);
         }
     }
 }

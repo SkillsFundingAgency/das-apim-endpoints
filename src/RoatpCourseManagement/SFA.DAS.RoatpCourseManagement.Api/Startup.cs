@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,8 +12,8 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.RoatpCourseManagement.Api.AppStart;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.SharedOuterApi.AppStart;
+using System.Collections.Generic;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {

@@ -11,7 +11,6 @@ stages:
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
 
-      
 - stage: Deploy_AT
   dependsOn: Build
   displayName: Deploy to AT
@@ -20,26 +19,23 @@ stages:
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: AT
-      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -49,26 +45,23 @@ stages:
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: TEST
-      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -78,26 +71,23 @@ stages:
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: TEST2
-      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -107,26 +97,23 @@ stages:
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: PP
-      ServiceConnection: SFA-DIG-PreProd-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -136,26 +123,23 @@ stages:
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: PROD
-      ServiceConnection: SFA-DIG-Prod-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -165,26 +149,23 @@ stages:
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: MO
-      ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -194,23 +175,20 @@ stages:
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
   jobs:
-  - template: ../../pipeline-templates/job/arm-deploy.yml
+  - template: ../../pipeline-templates/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
-
-  - template: ../../pipeline-templates/job/deploy-api.yml
-    parameters:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
-      Environment: DEMO
-      ServiceConnection: SFA-DAS-DevTest-ARM
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
+      AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
+      ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
       DeploymentPackagePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/SFA.DAS.${{ parameters.OuterApiName }}.Api.zip
       ApiVersionSetName: $(${{ parameters.OuterApiName }}OuterApiVersionSetName)
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS

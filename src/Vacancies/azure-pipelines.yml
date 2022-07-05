@@ -1,17 +1,30 @@
 trigger:
+  batch: true
   branches:
     include:
       - "master"
   paths:
     include:
+    - azure
+    - pipeline-templates
+    - src/Vacancies
+    - src/Shared*
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
     - src/Vacancies
     - src/Shared*
 
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- name: OuterApiObject
-  value: $(VacanciesOuterApiObject)
 
 resources:
   repositories:
