@@ -17,6 +17,7 @@ using System.Net;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStandardRegions;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.Roatp.CourseManagement.Application.Regions.Queries;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
 {
@@ -42,6 +43,25 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().NotBeNull();
+        }
+
+
+        [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApiNoRegionsInResponseBody_ReturnsException(
+            List<GetProviderCourseLocationsResponse> apiResponseProviderCourseLocations,
+            GetAllStandardRegionsQuery query,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            GetAllStandardRegionsQueryHandler sut)
+        {
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<RegionModel>>(It.Is<GetAllRegionsQuery>(c =>
+                        c.GetUrl.Equals(new GetAllRegionsQuery().GetUrl)))).
+                        ReturnsAsync(new ApiResponse<List<RegionModel>>(null, HttpStatusCode.OK, ""));
+
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(It.Is<GetProviderCourseLocationsRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(apiResponseProviderCourseLocations, HttpStatusCode.OK, ""));
+
+            Assert.ThrowsAsync<ValidationException>(() => sut.Handle(query, new CancellationToken()));
         }
 
         [Test, RecursiveMoqAutoData]
