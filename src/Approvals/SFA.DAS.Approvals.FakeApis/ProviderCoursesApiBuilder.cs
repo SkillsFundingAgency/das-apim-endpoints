@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using AutoFixture;
+using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -49,8 +50,8 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithCoursesDeliveryModels(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetProviderCourseDeliveryModelsResponse>()
-                .With(a => a.DeliveryModels, new List<string> { "Regular", "PortableFlexiJob" })
+            var course = _fixture.Build<GetDeliveryModelsResponse>()
+                .With(a => a.DeliveryModels, new List<string> { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob })
                 .Create();
 
             _server
@@ -69,8 +70,8 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithCoursesDeliveryRegularModel(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetProviderCourseDeliveryModelsResponse>()
-                .With(a => a.DeliveryModels, new List<string> { "Regular" })
+            var course = _fixture.Build<GetDeliveryModelsResponse>()
+                .With(a => a.DeliveryModels, new List<string> { DeliveryModelStringTypes.Regular })
                 .Create();
 
             _server

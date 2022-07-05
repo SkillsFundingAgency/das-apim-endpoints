@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Providers.Queries;
+using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
 using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -73,11 +74,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("{providerId}/courses/{trainingCode}")]
-        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode)
+        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode, [FromQuery] long accountLegalEntityId = 0)
         {
             try
             {
-                var result = await _mediator.Send(new GetProviderCoursesDeliveryModelQuery(providerId, trainingCode));
+                var result = await _mediator.Send(new GetDeliveryModelsQuery(providerId, trainingCode, accountLegalEntityId));
                 return Ok(result);
             }
             catch (Exception e)
