@@ -65,6 +65,24 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
         }
 
         [Test, RecursiveMoqAutoData]
+        public void Handle_CallsInnerApiNoProviderCourseLocationsInResponseBody_ReturnsException(
+            List<RegionModel> apiResponseGetAllRegions,
+            GetAllStandardRegionsQuery query,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            GetAllStandardRegionsQueryHandler sut)
+        {
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<RegionModel>>(It.Is<GetAllRegionsQuery>(c =>
+                        c.GetUrl.Equals(new GetAllRegionsQuery().GetUrl)))).
+                        ReturnsAsync(new ApiResponse<List<RegionModel>>(apiResponseGetAllRegions, HttpStatusCode.OK, ""));
+
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(It.Is<GetProviderCourseLocationsRequest>(c =>
+                        c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl)))).
+                        ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(null, HttpStatusCode.OK, ""));
+
+            Assert.ThrowsAsync<ValidationException>(() => sut.Handle(query, new CancellationToken()));
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Handle_CallsInnerApi_ReturnsExceptionWhenRegionsGetsBadRequest(
             List<GetProviderCourseLocationsResponse> apiResponseProviderCourseLocations,
             GetAllStandardRegionsQuery query,
