@@ -67,7 +67,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStan
             {
                 foreach (var region in regions)
                 {
-                    region.IsSelected = subRegionCourseLocations.Exists(r => r.LocationName == region.SubregionName);
+                    region.IsSelected = subRegionCourseLocations.Exists(r => r.RegionId == region.Id);
                 }
             }
 
