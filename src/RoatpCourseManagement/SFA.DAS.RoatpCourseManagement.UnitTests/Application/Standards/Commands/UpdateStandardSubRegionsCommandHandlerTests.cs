@@ -3,8 +3,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions;
+using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -16,7 +18,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
 {
     [TestFixture]
-    public class UpdateSubRegionsCommandHandlerTests
+    public class UpdateStandardSubRegionsCommandHandlerTests
     {
         [Test, MoqAutoData]
         public async Task Handle_CallsApiClient(
@@ -29,6 +31,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             apiClientMock.Setup(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>())).ReturnsAsync(apiResponse);
 
             var result = await sut.Handle(command, cancellationToken);
+
+            apiClientMock.Verify(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(It.IsAny<ProviderLocationsBulkInsertRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.Delete(It.IsAny<ProviderCourseLocationsBulkDeleteRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(It.IsAny<ProviderCourseLocationBulkInsertRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.Delete(It.IsAny<ProviderLocationBulkDeleteRequest>()), Times.Once);
 
             Assert.IsNotNull(result);
         }
