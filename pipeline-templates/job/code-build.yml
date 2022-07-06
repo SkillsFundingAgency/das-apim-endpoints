@@ -1,10 +1,15 @@
+parameters:
+  SonarCloudProjectKey:
+  TargetProjects:
+  UnitTestProjects:
+  PublishProject: 
+  AcceptanceTestProjects:
+
 jobs:
 - job: CodeBuild
   pool:
     name: DAS - Continuous Integration Agents
-    demands: LATEST_DOTNET_VERSION -equals 3.1
   variables:
-  - group: Prod Management Resources
   - group: ESFA - SonarCloud
   - name: buildConfiguration
     value: release
@@ -16,198 +21,18 @@ jobs:
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: true
-      SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints
+      SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
+      TargetProjects: ${{ parameters.TargetProjects }}
+      UnitTestProjects: ${{ parameters.UnitTestProjects }}
+      AcceptanceTestProjects: ${{ parameters.AcceptanceTestProjects }}
+      RunAcceptanceTests: true
 
   - task: DotNetCoreCLI@2
-    displayName: 'Publish Find Apprenticeship Training Api'
+    displayName: 'Publish Outer Api'
     inputs:
       command: publish
       publishWebProjects: false
-      projects: 'src/SFA.DAS.FindApprenticeshipTraining.Api/SFA.DAS.FindApprenticeshipTraining.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Reservations Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Reservations.Api/SFA.DAS.Reservations.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Employer Incentives Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmployerIncentives.Api/SFA.DAS.EmployerIncentives.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Find Epao Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.FindEpao.Api/SFA.DAS.FindEpao.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Forecasting Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Forecasting.Api/SFA.DAS.Forecasting.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Epao Register Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EpaoRegister.Api/SFA.DAS.EpaoRegister.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Approvals Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Approvals.Api/SFA.DAS.Approvals.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Manage Apprenticeships Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.ManageApprenticeships.Api/SFA.DAS.ManageApprenticeships.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Recruit Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Recruit.Api/SFA.DAS.Recruit.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Campaign Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Campaign.Api/SFA.DAS.Campaign.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Assessors Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Assessors.Api/SFA.DAS.Assessors.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Apprentice Commitments Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.ApprenticeCommitments.Api/SFA.DAS.ApprenticeCommitments.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Apprentice Feedback Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.ApprenticeFeedback.Api/SFA.DAS.ApprenticeFeedback.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Apprentice Portal Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.ApprenticePortal.Api/SFA.DAS.ApprenticePortal.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Employer Demand Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmployerDemand.Api/SFA.DAS.EmployerDemand.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Levy Transfer Matching Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.LevyTransferMatching.Api/SFA.DAS.LevyTransferMatching.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Vacancies Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Vacancies.Api/SFA.DAS.Vacancies.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Vacancies Manage Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Vacancies.Manage.Api/SFA.DAS.Vacancies.Manage.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Find An Apprenticeship Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.FindAnApprenticeship.Api/SFA.DAS.FindAnApprenticeship.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish APIM Developer Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.ApimDeveloper.Api/SFA.DAS.ApimDeveloper.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish RoATP Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Roatp.Api/SFA.DAS.Roatp.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Employer Contact Forms Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmployerContactForms.Api/SFA.DAS.EmployerContactForms.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Employment Check Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.EmploymentCheck.Api/SFA.DAS.EmploymentCheck.Api.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Roatp Course Management Api'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/SFA.DAS.Roatp.CourseManagement.Api/SFA.DAS.Roatp.CourseManagement.Api.csproj'
+      projects: ${{ parameters.PublishProject }}
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
   - task: CopyFiles@2
