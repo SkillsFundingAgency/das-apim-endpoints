@@ -43,6 +43,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().NotBeNull();
+            result.Regions.Should().NotBeNull();
         }
 
 
