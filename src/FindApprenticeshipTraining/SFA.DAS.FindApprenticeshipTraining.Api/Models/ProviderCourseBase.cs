@@ -212,6 +212,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 switch (feedbackRatingItem.Rating.ToLower())
                 {
                     case "very poor":
+                    case "verypoor":
                         ratingScore += feedbackRatingItem.Count * 1;
                         break;
                     case "poor":
