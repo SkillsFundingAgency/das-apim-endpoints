@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
@@ -63,6 +64,35 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 };
 
                 return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting change employer - inform, apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm")]
+        public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] ConfirmRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ConfirmCommand
+                {
+                    ApprenticeshipId = apprenticeshipId,
+                    ProviderId = providerId,
+                    AccountLegalEntityId = request.AccountLegalEntityId,
+                    Price = request.Price,
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate,
+                    EmploymentEndDate = request.EmploymentEndDate,
+                    EmploymentPrice = request.EmploymentPrice,
+                    DeliveryModel = request.DeliveryModel,
+                    UserInfo = request.UserInfo
+                });
+
+                return Ok();
             }
             catch (Exception e)
             {
