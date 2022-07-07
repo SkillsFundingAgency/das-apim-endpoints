@@ -8,18 +8,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform
 {
-    public class GetInformQuery : IRequest<GetInformQueryResult>
-    {
-        public long ApprenticeshipId { get; set; }
-        public long ProviderId { get; set; }
-    }
-
-    public class GetInformQueryResult
-    {
-        public long ApprenticeshipId { get; set; }
-        public string LegalEntityName { get; set; }
-    }
-
     public class GetInformQueryHandler : IRequestHandler<GetInformQuery, GetInformQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;

@@ -1,31 +1,46 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm
 {
-    public class ConfirmCommand : IRequest
-    {
-        public long ProviderId { get; set; }
-        public long ApprenticeshipId { get; set; }
-        public long AccountLegalEntityId { get; set; }
-        public int? Price { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public DateTime? EmploymentEndDate { get; set; }
-        public int? EmploymentPrice { get; set; }
-        public DeliveryModel? DeliveryModel { get; set; }
-        public UserInfo UserInfo { get; set; }
-    }
-
     public class ConfirmCommandHandler : IRequestHandler<ConfirmCommand>
     {
-        public Task<Unit> Handle(ConfirmCommand request, CancellationToken cancellationToken)
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
+
+        public ConfirmCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient)
         {
-            throw new NotImplementedException();
+            _commitmentsApiClient = commitmentsApiClient;
+        }
+
+        public async Task<Unit> Handle(ConfirmCommand request, CancellationToken cancellationToken)
+        {
+            var body = new CreateChangeOfPartyRequestRequest.Body
+            {
+                ChangeOfPartyRequestType = ChangeOfPartyRequestType.ChangeEmployer,
+                NewPartyId = request.AccountLegalEntityId,
+                NewPrice = request.Price,
+                NewStartDate = request.StartDate,
+                NewEndDate = request.EndDate,
+                NewEmploymentEndDate  = request.EmploymentEndDate,
+                NewEmploymentPrice  = request.EmploymentPrice,
+                DeliveryModel = request.DeliveryModel,
+                UserInfo = request.UserInfo
+            };
+
+            var apiRequest = new CreateChangeOfPartyRequestRequest(request.ApprenticeshipId, body);
+
+            var response = await _commitmentsApiClient.PostWithResponseCode<CreateChangeOfPartyRequestResponse>(apiRequest);
+
+            response.EnsureSuccessStatusCode();
+
+            return Unit.Value;
         }
     }
 }
