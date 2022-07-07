@@ -119,8 +119,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 var response = new GetSelectDeliveryModelResponse
                 {
                     LegalEntityName = result.LegalEntityName,
-                    DeliveryModels = result.DeliveryModels,
-                    CurrentDeliveryModel = result.CurrentDeliveryModel
+                    DeliveryModels = result.DeliveryModels
                 };
 
                 return Ok(response);

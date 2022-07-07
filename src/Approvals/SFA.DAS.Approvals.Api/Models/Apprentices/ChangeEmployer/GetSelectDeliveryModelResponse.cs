@@ -6,6 +6,5 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer
     {
         public string LegalEntityName { get; set; }
         public List<string> DeliveryModels { get; set; }
-        public string CurrentDeliveryModel { get; set; }
     }
 }

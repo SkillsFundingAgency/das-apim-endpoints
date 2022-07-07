@@ -54,14 +54,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         }
 
         [Test]
-        public async Task Handle_Returns_Current_DeliveryModel_For_Apprenticeship()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-
-            Assert.AreEqual(_apprenticeshipResponse.DeliveryModel, result.CurrentDeliveryModel);
-        }
-
-        [Test]
         public async Task Handle_Returns_LegalEntityName_For_Apprenticeship()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
