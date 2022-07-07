@@ -7,5 +7,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Selec
         public long ApprenticeshipId { get; set; }
         public string LegalEntityName { get; set; }
         public List<string> DeliveryModels { get; set; }
+        public string CurrentDeliveryModel { get; set; }
     }
 }
