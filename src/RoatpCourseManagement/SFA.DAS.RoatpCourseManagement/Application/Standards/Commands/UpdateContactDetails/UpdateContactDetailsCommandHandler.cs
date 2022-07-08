@@ -2,6 +2,7 @@
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails
 {
-    public class UpdateContactDetailsCommandHandler : IRequestHandler<UpdateContactDetailsCommand, HttpStatusCode>
+    public class UpdateContactDetailsCommandHandler : IRequestHandler<UpdateContactDetailsCommand, Unit>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
         public UpdateContactDetailsCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
@@ -17,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
             _innerApiClient = innerApiClient;
         }
 
-        public async Task<HttpStatusCode> Handle(UpdateContactDetailsCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateContactDetailsCommand command, CancellationToken cancellationToken)
         {
             var providerCourse = await _innerApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(command.Ukprn, command.LarsCode));
             var updateProviderCourse = new ProviderCourseUpdateModel
@@ -32,10 +33,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
                 IsApprovedByRegulator = providerCourse.IsApprovedByRegulator
             };
 
-
             var request = new UpdateProviderCourseRequest(updateProviderCourse);
-            var response = await _innerApiClient.PostWithResponseCode<UpdateProviderCourseRequest>(request);
-            return response.StatusCode;
+            await _innerApiClient.Put(request);
+            return Unit.Value;
         }
     }
 }

@@ -1,17 +1,30 @@
 trigger:
+  batch: true
   branches:
     include:
       - "master"
   paths:
     include:
+    - azure
+    - pipeline-templates
+    - src/RoatpCourseManagement
+    - src/Shared*
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
     - src/RoatpCourseManagement
     - src/Shared*
 
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- name: OuterApiObject
-  value: $(RoatpCourseManagementOuterApiObject)
 
 resources:
   repositories:

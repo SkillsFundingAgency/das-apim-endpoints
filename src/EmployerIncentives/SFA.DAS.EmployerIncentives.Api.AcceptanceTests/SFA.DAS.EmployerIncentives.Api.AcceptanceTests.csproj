@@ -7,9 +7,14 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
+    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="SpecFlow" Version="3.3.30" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.3.30" />
@@ -26,6 +31,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TestData.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\BlockAccountLegalEntitiesForPayment.feature.cs">
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Update="Features\ConfirmApprenticeEmploymentDetails.feature.cs">
       <DesignTime>True</DesignTime>
@@ -76,6 +84,10 @@
     <SpecFlowFeatureFiles Update="Features\ApprenticeshipDetails.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ConfirmApprenticeEmploymentDetails.feature.cs</LastGenOutput>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\BlockAccountLegalEntitiesForPayment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BlockAccountLegalEntitiesForPayment.feature.cs</LastGenOutput>
     </SpecFlowFeatureFiles>
      <SpecFlowFeatureFiles Update="Features\EmploymentCheck.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
