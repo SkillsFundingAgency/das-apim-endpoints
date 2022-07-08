@@ -38,7 +38,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
             _deliveryModelService.Setup(x =>
                     x.GetDeliveryModels(It.Is<long>(p => p == _apprenticeshipResponse.ProviderId),
                         It.Is<string>(c => c == _apprenticeshipResponse.CourseCode),
-                        It.Is<long>(ale => ale == _apprenticeshipResponse.AccountLegalEntityId)))
+                        It.Is<long>(ale => ale == _query.AccountLegalEntityId)))
                 .ReturnsAsync(_deliveryModels);
 
             _handler = new GetSelectDeliveryModelQueryHandler(_commitmentsApiClient.Object,

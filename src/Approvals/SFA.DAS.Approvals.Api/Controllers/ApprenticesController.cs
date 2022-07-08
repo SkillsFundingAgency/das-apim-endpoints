@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 
@@ -72,6 +73,38 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm-employer")]
+        public async Task<IActionResult> ChangeEmployerConfirmEmployer(long providerId, long apprenticeshipId, [FromQuery] long accountLegalEntityId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetConfirmEmployerQuery
+                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var response = new GetConfirmEmployerResponse
+                {
+                    LegalEntityName = result.LegalEntityName,
+                    AccountLegalEntityName = result.AccountLegalEntityName,
+                    AccountName = result.AccountName,
+                    IsFlexiJobAgency = result.IsFlexiJobAgency,
+                    DeliveryModel = result.DeliveryModel
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting change employer - confirm employer, apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm")]
         public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] ConfirmRequest request)
@@ -104,12 +137,12 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select-delivery-model")]
-        public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId)
+        public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId, [FromQuery] long accountLegalEntityId)
         {
             try
             {
                 var result = await _mediator.Send(new GetSelectDeliveryModelQuery
-                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
+                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId});
 
                 if (result == null)
                 {

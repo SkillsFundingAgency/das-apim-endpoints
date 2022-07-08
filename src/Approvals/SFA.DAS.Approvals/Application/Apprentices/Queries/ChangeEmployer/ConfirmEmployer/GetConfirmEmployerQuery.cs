@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel
+namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer
 {
-    public class GetSelectDeliveryModelQuery : IRequest<GetSelectDeliveryModelResult>
+    public class GetConfirmEmployerQuery : IRequest<GetConfirmEmployerQueryResult>
     {
         public long ApprenticeshipId { get; set; }
         public long ProviderId { get; set; }

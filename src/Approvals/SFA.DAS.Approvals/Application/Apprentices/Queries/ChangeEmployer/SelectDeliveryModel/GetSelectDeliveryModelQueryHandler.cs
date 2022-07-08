@@ -29,8 +29,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Selec
                 return null;
             }
 
-            var deliveryModels = await _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
-                apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId);
+            var deliveryModels = await _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode,request.AccountLegalEntityId);
 
             return new GetSelectDeliveryModelResult
             {
