@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -73,12 +74,11 @@ namespace SFA.DAS.VacanciesManage.Api
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true)
-                .AddNewtonsoftJson(options=>options.SerializerSettings.Converters.Add(new StringEnumConverter()));
+                .AddJsonOptions(options=>options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks();
-                //     .AddCheck<ProviderRelationsHealthCheck>("Provider Relations API health check");
             }
             
             if (_configuration.IsLocalOrDev())
@@ -105,7 +105,6 @@ namespace SFA.DAS.VacanciesManage.Api
                 var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
                 c.IncludeXmlComments(filePath);
             });
-            services.AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
