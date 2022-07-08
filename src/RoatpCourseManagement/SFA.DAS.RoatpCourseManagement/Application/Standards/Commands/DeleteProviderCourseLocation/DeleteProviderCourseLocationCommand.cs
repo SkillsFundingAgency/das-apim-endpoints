@@ -7,7 +7,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeletePro
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-        public int ProviderCourseLocationId { get; set; }
+        public int Id { get; set; }
         public string UserId { get; set; }
 
         public static implicit operator DeleteProviderCourseLocationRequest(DeleteProviderCourseLocationCommand command) 
@@ -15,7 +15,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeletePro
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
-                ProviderCourseLocationId = command.ProviderCourseLocationId,
+                Id = command.Id,
                 UserId = command.UserId,
             };
     }

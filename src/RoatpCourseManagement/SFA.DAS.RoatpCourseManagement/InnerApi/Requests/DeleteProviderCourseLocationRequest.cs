@@ -6,9 +6,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-        public int ProviderCourseLocationId { get; set; }
+        public int Id { get; set; }
         public string UserId { get; set; }
 
-        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/location";
+        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/location/{Id}";
     }
 }
