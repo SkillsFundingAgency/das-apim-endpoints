@@ -58,8 +58,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         .Excluding(c=>c.AchievementRates)
                         .Excluding(c=>c.Ukprn)
                         .Excluding(c=>c.DeliveryTypes)
-                        .Excluding(c=>c.FeedbackRatings)
-                        .Excluding(c=>c.FeedbackAttributes)
+                        .Excluding(c=>c.EmployerFeedback)
+                        .Excluding(c=>c.ApprenticeFeedback)
                         .Excluding(c=>c.ProviderAddress)
                 );
             
@@ -70,7 +70,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.ProvidersCount.TotalProviders.Should().Be(mediatorResult.TotalProviders);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
-            model.TrainingCourseProvider.Feedback.Should().NotBeNull();
+            model.TrainingCourseProvider.EmployerFeedback.Should().NotBeNull();
+            model.TrainingCourseProvider.ApprenticeFeedback.Should().NotBeNull();
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
         }
