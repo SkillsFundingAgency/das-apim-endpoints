@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public Task Create(CreateIncentiveApplicationRequestData requestData)
         {
-            return _client.Post<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData });
+            return _client.PostWithResponseCode<CreateIncentiveApplicationRequestData>(new CreateIncentiveApplicationRequest { Data = requestData }, false);
         }
 
         public Task Update(UpdateIncentiveApplicationRequestData requestData)

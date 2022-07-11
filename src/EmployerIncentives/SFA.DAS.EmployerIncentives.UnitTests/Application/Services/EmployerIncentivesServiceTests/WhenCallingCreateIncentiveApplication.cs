@@ -21,10 +21,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await sut.Create(requestData);
 
             client.Verify(x =>
-                x.Post<CreateIncentiveApplicationRequestData>(It.Is<CreateIncentiveApplicationRequest>(
+                x.PostWithResponseCode<CreateIncentiveApplicationRequestData>(It.Is<CreateIncentiveApplicationRequest>(
                     c => (CreateIncentiveApplicationRequestData)c.Data == requestData &&
                         c.PostUrl.Contains("application")
-                )), Times.Once);
+                ), false), Times.Once);
         }
     }
 }

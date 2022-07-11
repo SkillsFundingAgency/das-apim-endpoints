@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
-    public class PostReinstateApplicationRequest : IPostApiRequest<ReinstateApplicationRequest>
+    public class PostReinstateApplicationRequest : IPostApiRequest
     {
         public PostReinstateApplicationRequest(ReinstateApplicationRequest request)
         {
@@ -13,6 +13,6 @@ namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
         }
 
         public string PostUrl => $"withdrawal-reinstatements";
-        public ReinstateApplicationRequest Data { get; set; }
+        public object Data { get; set; }
     }
 }

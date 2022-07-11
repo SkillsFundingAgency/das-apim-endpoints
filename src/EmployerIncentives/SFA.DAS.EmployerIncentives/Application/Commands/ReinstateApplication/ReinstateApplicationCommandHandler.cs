@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.ReinstateApplication
         {
             var postRequest = new PostReinstateApplicationRequest(request.ReinstateApplicationRequest);
 
-            await _client.Post(postRequest);
+            await _client.PostWithResponseCode<object>(postRequest, false);
 
             return Unit.Value;
         }
