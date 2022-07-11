@@ -1,26 +1,26 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
 {
     public class GetAvailableApiProductsResponse
     {
-        [JsonProperty("products")]
+        [JsonPropertyName("products")]
         public IEnumerable<GetAvailableApiProductItem> Products { get; set; }
     }
 
     public class GetAvailableApiProductItem
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
-        [JsonProperty("displayName")]
+        [JsonPropertyName("displayName")]
         public string DisplayName { get; set; }
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
-        [JsonProperty("documentation")]
+        [JsonPropertyName("documentation")]
         public string Documentation { get; set; }
     }
 }
