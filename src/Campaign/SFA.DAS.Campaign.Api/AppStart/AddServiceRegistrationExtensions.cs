@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using Contentful.Core;
-using Contentful.Core.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Campaign.Application.Services;
