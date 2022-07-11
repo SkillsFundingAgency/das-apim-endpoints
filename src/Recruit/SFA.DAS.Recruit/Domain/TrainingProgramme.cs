@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Domain
                 ApprenticeshipType = TrainingType.Standard,
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
-                EffectiveTo = source.StandardDates.EffectiveTo,
+                EffectiveTo = source.StandardDates.LastDateStarts,
                 ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
                 IsActive = source.IsActive,
