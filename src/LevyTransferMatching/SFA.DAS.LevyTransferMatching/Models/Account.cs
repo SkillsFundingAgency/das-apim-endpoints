@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LevyTransferMatching.Models
 {
     public class Account
     {
-        [JsonProperty("HashedAccountId")]
+        [JsonPropertyName("HashedAccountId")]
         public string EncodedAccountId { get; set; }
         public string DasAccountName { get; set; }
         public decimal RemainingTransferAllowance { get; set; }
