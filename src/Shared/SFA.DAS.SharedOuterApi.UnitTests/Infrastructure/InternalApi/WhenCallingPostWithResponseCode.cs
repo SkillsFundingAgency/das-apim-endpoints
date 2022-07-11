@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -29,7 +29,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
             azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
             config.Url = "https://test.local";
-            var testObject = JsonConvert.SerializeObject(new TestResponse{MyResponse = responseContent});
+            var testObject = JsonSerializer.Serialize(new TestResponse{MyResponse = responseContent});
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(testObject),

@@ -1,11 +1,10 @@
 using System;
-using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -35,7 +34,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
       
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
@@ -56,7 +55,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
             else
             {
-                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+                responseBody = JsonSerializer.Deserialize<TResponse>(json);
             }
 
             var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
@@ -72,7 +71,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         [Obsolete("Use PostWithResponseCode")]
         public async Task Post<TData>(IPostApiRequest<TData> request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
             
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
@@ -98,7 +97,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         [Obsolete("Use PatchWithResponseCode")]
         public async Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
             var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
@@ -111,7 +110,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
             var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
@@ -125,7 +124,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Put(IPutApiRequest request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, request.PutUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
@@ -137,7 +136,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task Put<TData>(IPutApiRequest<TData> request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, request.PutUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
@@ -161,7 +160,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<IEnumerable<TResponse>>(json);
+            return JsonSerializer.Deserialize<IEnumerable<TResponse>>(json);
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
@@ -189,7 +188,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<PagedResponse<TResponse>>(json);
+            return JsonSerializer.Deserialize<PagedResponse<TResponse>>(json);
         }
         private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
         {
