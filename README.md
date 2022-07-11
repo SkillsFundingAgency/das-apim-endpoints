@@ -217,6 +217,35 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used during payment processing for transaction information, adding metadata to the payments lines for Course and Provider information.
 
+### Employer Finance
+
+The Employer Finance outer api relies on the following inner apis:
+
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
+Data: {
+    "CoursesApiConfiguration": {
+        "url":"https://localhost:5001/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "CourseDeliveryApiConfiguration" : {
+        "url":"https://localhost:5006/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+}
+```
+* Start the api project ```SFA.DAS.EmployerFinance.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
 ### Recruit
 
 The Recruit outer api relies on the following inner apis:
