@@ -4,22 +4,22 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
-    public class GetProviderFeedbackResponse
+    public class GetEmployerFeedbackResponse
     {
         public int TotalEmployerResponses { get ; set ; }
         public int TotalFeedbackRating { get ; set ; }
-        public IEnumerable<GetProviderFeedbackItem> FeedbackDetail { get ; set ; }
-        public IEnumerable<FeedbackAttributeDetail> FeedbackAttributes { get; set; }
+        public IEnumerable<GetEmployerFeedbackItem> FeedbackDetail { get ; set ; }
+        public IEnumerable<GetEmployerFeedbackAttributeItem> FeedbackAttributes { get; set; }
     }
 
-    public class GetProviderFeedbackItem
+    public class GetEmployerFeedbackItem
     {
         public string FeedbackName { get; set; }
         public int FeedbackCount { get;set; }
 
-        public static implicit operator GetProviderFeedbackItem(GetFeedbackRatingItem source)
+        public static implicit operator GetEmployerFeedbackItem(GetEmployerFeedbackRatingItem source)
         {
-            return new GetProviderFeedbackItem
+            return new GetEmployerFeedbackItem
             {
                 FeedbackCount = source.FeedbackCount,
                 FeedbackName = source.FeedbackName
@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         }
     }
 
-    public class GetProviderFeedbackAttributeItem
+    public class GetEmployerFeedbackAttributeItem
     {
         public int Weakness { get ; set ; }
 
@@ -37,9 +37,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public int TotalVotes { get ; set ; }
         public int Rating { get ; set ; }
 
-        public static implicit operator GetProviderFeedbackAttributeItem(GetFeedbackAttributeItem source)
+        public static implicit operator GetEmployerFeedbackAttributeItem(InnerApi.Responses.GetEmployerFeedbackAttributeItem source)
         {
-            return new GetProviderFeedbackAttributeItem
+            return new GetEmployerFeedbackAttributeItem
             {
                 AttributeName = source.AttributeName,
                 Strength = source.Strength,
@@ -49,22 +49,4 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
     }
-
-    public enum FeedbackRatingType
-    {
-        NotYetReviewed = 0,
-        VeryPoor = 1,
-        Poor = 2,
-        Good = 3,
-        Excellent = 4
-    }
-
-    public class FeedbackAttributeDetail
-    {
-        public string AttributeName { get; set; }        
-        public int Weakness { get; set; }
-        public int Strength { get; set; }
-
-    }
-
 }

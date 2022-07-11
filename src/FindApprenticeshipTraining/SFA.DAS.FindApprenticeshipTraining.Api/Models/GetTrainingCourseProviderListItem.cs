@@ -7,20 +7,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetTrainingCourseProviderListItem : ProviderCourseBase
     {
-        public GetTrainingCourseProviderListItem Map(   GetProvidersListItem source, string sectorSubjectArea,
-            int level, List<DeliveryModeType> deliveryModes, List<FeedbackRatingType> feedbackRatings, bool hasLocation)
+        public GetTrainingCourseProviderListItem Map(GetProvidersListItem source, string sectorSubjectArea,
+            int level, List<DeliveryModeType> deliveryModes, List<FeedbackRatingType> employerFeedbackRatings, List<FeedbackRatingType> apprenticeFeedbackRatings, bool hasLocation)
         {
             var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
             var getDeliveryTypes = FilterDeliveryModes(source.DeliveryTypes);
-            var getFeedbackResponse = ProviderFeedbackResponse(source.FeedbackRatings, source.FeedbackAttributes);
-            
+            var getEmployerFeedbackResponse = EmployerFeedbackResponse(source.EmployerFeedback);
+            var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(source.ApprenticeFeedback);
+
             if (deliveryModes != null && deliveryModes.Any())
             {
-                if (!deliveryModes.Exists(c=>getDeliveryTypes.Select(x=>x.DeliveryModeType).Contains(c)))
+                if (!deliveryModes.Exists(c => getDeliveryTypes.Select(x => x.DeliveryModeType).Contains(c)))
                 {
                     return null;
                 }
-                
+
                 if (deliveryModes.Contains(DeliveryModeType.National))
                 {
                     if (getDeliveryTypes.FirstOrDefault(x =>
@@ -31,12 +32,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 }
             }
 
-            if (feedbackRatings != null && feedbackRatings.Any())
+            if (employerFeedbackRatings != null &&
+                employerFeedbackRatings.Any() &&
+                !employerFeedbackRatings.Contains((FeedbackRatingType)getEmployerFeedbackResponse.TotalFeedbackRating))
             {
-                if (!feedbackRatings.Contains((FeedbackRatingType)getFeedbackResponse.TotalFeedbackRating))
-                {
-                    return null;
-                }
+                return null;
+            }
+
+
+            if (apprenticeFeedbackRatings != null &&
+                apprenticeFeedbackRatings.Any() &&
+                !apprenticeFeedbackRatings.Contains((FeedbackRatingType)getApprenticeFeedbackResponse.TotalFeedbackRating))
+            {
+                return null;
+
             }
 
             return new GetTrainingCourseProviderListItem
@@ -48,11 +57,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 DeliveryModes = getDeliveryTypes,
-                Feedback = getFeedbackResponse,
+                EmployerFeedback = getEmployerFeedbackResponse,
+                ApprenticeFeedback = getApprenticeFeedbackResponse,
                 HasLocation = hasLocation
             };
         }
 
-        public decimal Score { get ; set ; }
+        public decimal Score { get; set; }
     }
 }
