@@ -33,9 +33,9 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.GetWithResponseCode<TResponse>(request);
         }
 
-        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            return await _apiClient.PostWithResponseCode<TResponse>(request);
+            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public async Task Delete(IDeleteApiRequest request)

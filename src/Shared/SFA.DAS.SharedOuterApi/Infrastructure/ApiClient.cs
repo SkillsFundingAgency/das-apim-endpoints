@@ -32,7 +32,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         }
 
       
-        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 errorContent = json;
                 HandleException(response, json);
             }
-            else
+            else if(includeResponse)
             {
                 responseBody = JsonSerializer.Deserialize<TResponse>(json);
             }
