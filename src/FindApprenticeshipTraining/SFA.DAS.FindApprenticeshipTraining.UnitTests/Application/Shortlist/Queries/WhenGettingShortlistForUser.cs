@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
                 (t => 
                 ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Shortlist.Select(s => s.ProviderDetails.Ukprn)).Count() == 0 &&
                 apiResponse.Shortlist.Select(s => s.ProviderDetails.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
-                ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+                ),true)).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
 
             var result = await handler.Handle(query, CancellationToken.None);
