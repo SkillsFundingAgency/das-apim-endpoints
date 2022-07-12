@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="contentful.aspnetcore" Version="6.0.7" />
+      <PackageReference Include="MediatR" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>
