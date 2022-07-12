@@ -64,7 +64,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
             else
             {
-                responseBody = JsonSerializer.Deserialize<TResponse>(json);
+                responseBody = JsonSerializer.Deserialize<TResponse>(json, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
             }
 
             var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
