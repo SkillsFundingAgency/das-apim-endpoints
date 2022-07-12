@@ -11,6 +11,9 @@
 */local.settings.json
 */App.Debug.config
 
+# Coverage results
+coverage.*[(json)(xml)]
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
