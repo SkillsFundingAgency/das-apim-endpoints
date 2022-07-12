@@ -39,7 +39,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/latest-confirmed-details")
+                        .WithPath($"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/confirmed/latest")
                         .UsingGet()
                 )
                 .RespondWith(
@@ -58,7 +58,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When(@"the latest confirmed apprenticeship is requested")]
         public async Task WhenTheApprenticeshipIsRequested()
         {
-            await _context.OuterApiClient.Get($"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/latest-confirmed-details");
+            await _context.OuterApiClient.Get($"/apprentices/{_apprenticeId}/apprenticeships/{_apprenticeshipId}/confirmed/latest");
         }
 
         [Then("the result should be OK")]

@@ -165,7 +165,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             _server
                 .Given(
                     Request.Create()
-                        .WithPath("/apprentices/*/apprenticeships/*/latest-confirmed-details")
+                        .WithPath("/apprentices/*/apprenticeships/*/confirmed/latest")
                         .UsingGet()
                 )
                 .RespondWith(
