@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Campaign.Api.Models;
+using SFA.DAS.Campaign.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 
 namespace SFA.DAS.Campaign.Api.Controllers
@@ -17,11 +21,13 @@ namespace SFA.DAS.Campaign.Api.Controllers
     {
         private readonly ILogger<RoiController> _logger;
         private readonly IMediator _mediator;
+        private readonly CampaignConfiguration _config;
 
-        public RoiController (ILogger<RoiController> logger, IMediator mediator)
+        public RoiController (ILogger<RoiController> logger, IMediator mediator, IOptions<CampaignConfiguration> config)
         {
             _logger = logger;
             _mediator = mediator;
+            _config = config.Value;
         }
 
         [HttpGet]
@@ -35,7 +41,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                     new DictionaryEntry("cat2", "Care Services"),
                     new DictionaryEntry("cat3", "Catering and Hospitality"),
                 };
-                return Ok(entries);
+                throw new System.NotImplementedException();
             }
             catch (Exception e)
             {
@@ -55,7 +61,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                     new DictionaryEntry("ql3", "Level 3 - A Level"),
                     new DictionaryEntry("ql4", "Level 4 - Higher National Certificate (HNC)"),
                 };
-                return Ok(entries);
+                throw new System.NotImplementedException();
             }
             catch (Exception e)
             {
@@ -75,7 +81,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                     new DictionaryEntry("soc2", "Sector2"),
                     new DictionaryEntry("soc3", "Sector3"),
                 };
-                return Ok(entries);
+                throw new System.NotImplementedException();
             }
             catch (Exception e)
             {
@@ -90,11 +96,26 @@ namespace SFA.DAS.Campaign.Api.Controllers
         {
             try
             {
-                return Ok((decimal)123.45);
+                throw new System.NotImplementedException();
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting estimated wage data");
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("ONSProductivityData")]
+        public async Task<IActionResult> GetONSProductivityData()
+        {
+            try
+            {
+                return Ok(_config.OnsProductivity);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting ONS productivity data");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -105,7 +126,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         {
             try
             {
-                return Ok((decimal)234.56);
+                throw new System.NotImplementedException();
             }
             catch (Exception e)
             {
