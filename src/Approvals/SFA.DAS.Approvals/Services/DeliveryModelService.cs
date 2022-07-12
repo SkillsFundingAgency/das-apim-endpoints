@@ -4,6 +4,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -14,7 +16,7 @@ namespace SFA.DAS.Approvals.Services
 {
     public interface IDeliveryModelService
     {
-        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId);
+        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -34,15 +36,22 @@ namespace SFA.DAS.Approvals.Services
             _featureToggles = featureToggles;
         }
 
-        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId)
+        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null)
         {
+            var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(apprenticeshipId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
             var isOnRegisterTask = IsLegalEntityOnFjaaRegister(accountLegalEntityId);
 
-            await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask);
+            await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask, isOnPortableFlexiJobTask);
 
+            var isOnPortableFlexiJob = isOnPortableFlexiJobTask.Result;
             var courseDeliveryModels = courseDeliveryModelsTask.Result;
             var isOnRegister = isOnRegisterTask.Result;
+
+            if (isOnPortableFlexiJob)
+            {
+                return isOnRegister ? new List<string>() : new List<string> { DeliveryModelStringTypes.PortableFlexiJob };
+            }
 
             if (!isOnRegister)
             {
@@ -86,6 +95,17 @@ namespace SFA.DAS.Approvals.Services
 
             agencyRequest.EnsureSuccessStatusCode();
             return true;
+        }
+
+        private async Task<bool> IsApprenticeshipOnPortableFlexiJob(long? apprenticeshipId)
+        {
+            if (!apprenticeshipId.HasValue)
+            {
+                return false;
+            }
+
+            var apprenticeship = await _commitmentsV2ApiClient.Get<GetApprenticeshipResponse>(new GetApprenticeshipRequest(apprenticeshipId.Value));
+            return apprenticeship.DeliveryModel == DeliveryModelStringTypes.PortableFlexiJob;
         }
     }
 }

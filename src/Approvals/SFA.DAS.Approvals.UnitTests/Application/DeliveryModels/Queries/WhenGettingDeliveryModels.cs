@@ -21,7 +21,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries
             GetDeliveryModelsQueryHandler handler)
         {
             apiClient
-                .Setup(x => x.GetDeliveryModels(query.ProviderId, query.TrainingCode, query.AccountLegalEntityId))
+                .Setup(x => x.GetDeliveryModels(query.ProviderId, query.TrainingCode, query.AccountLegalEntityId, null))
                 .ReturnsAsync(deliveryModels);
 
             var actual = await handler.Handle(query, CancellationToken.None);
