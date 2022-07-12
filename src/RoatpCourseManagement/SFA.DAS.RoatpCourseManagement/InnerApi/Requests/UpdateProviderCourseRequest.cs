@@ -1,14 +1,13 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
-    public class UpdateProviderCourseRequest : IPostApiRequest
+    public class UpdateProviderCourseRequest : IPutApiRequest<ProviderCourseUpdateModel>
     {
         public int Ukprn { get; }
         public int LarsCode { get; }
         public string UserId { get; set; }
-        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/";
+        public string PutUrl => $"providers/{Ukprn}/courses/{LarsCode}/";
 
         public UpdateProviderCourseRequest(ProviderCourseUpdateModel data)
         {
@@ -18,6 +17,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
             Data = data;
         }
 
-        public object Data { get; set; }
+        public ProviderCourseUpdateModel Data { get; set; }
     }
 }

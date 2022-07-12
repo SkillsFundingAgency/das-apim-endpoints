@@ -5,6 +5,9 @@ parameters:
   SchemaFilePath:
   DeploymentName:
   AppServiceName:
+  CustomHostName:
+  AppServiceKeyVaultCertificateName:
+  ConfigNames:
   DeploymentPackagePath:
   ApiVersionSetName:
   ApiPath:
@@ -20,6 +23,11 @@ jobs:
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all
+  variables:
+    AppServiceName: ${{ parameters.AppServiceName }}
+    CustomHostName: ${{ parameters.CustomHostName }}
+    AppServiceKeyVaultCertificateName: ${{ parameters.AppServiceKeyVaultCertificateName }}
+    ConfigNames: ${{ parameters.ConfigNames }}
   strategy:
     runOnce:
       deploy:
