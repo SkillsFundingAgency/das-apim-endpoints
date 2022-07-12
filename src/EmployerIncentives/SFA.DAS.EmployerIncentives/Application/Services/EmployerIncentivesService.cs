@@ -54,7 +54,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
             if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
 
             throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
+        }
 
+        public async Task RevertPayments(RevertPaymentsRequest revertPaymentsRequest)
+        {
+            var postRequest = new PostRevertPaymentsRequest(revertPaymentsRequest);
+
+            var response = await _client.PostWithResponseCode<PostRevertPaymentsRequest>(postRequest);
+
+            if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
+
+            throw new HttpRequestContentException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.StatusCode})", response.StatusCode, response.ErrorContent);
         }
     }
 }
