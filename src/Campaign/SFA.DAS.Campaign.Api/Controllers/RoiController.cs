@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -116,6 +117,21 @@ namespace SFA.DAS.Campaign.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting ONS productivity data");
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("ONSProductivityBySocCode")]
+        public async Task<IActionResult> GetONSProductivityBySocCode(string socCode)
+        {
+            try
+            {
+                return Ok(_config?.OnsProductivity?.FirstOrDefault(x => x.SocCode == socCode));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting ONS productivity data by SOC Code");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
