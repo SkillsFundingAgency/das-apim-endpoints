@@ -223,6 +223,8 @@ The Employer Finance outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 
 You are able to run the API by doing the following:
 
@@ -232,14 +234,28 @@ You are able to run the API by doing the following:
 ParitionKey: LOCAL
 RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
 Data: {
-    "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
+         {
+            "CoursesApiConfiguration":{
+                "url":"https://localhost:5001/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsapi-as-ar"
+            },
+            "CourseDeliveryApiConfiguration":{
+                "url":"https://localhost:5006/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsdelapi-as-ar"
+            },
+            "LevyTransferMatchingApiConfiguration":{
+                "url":"https://localhost:5002/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-ltmapi-as-ar"
+            },
+            "AzureAd":{
+                "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empfapi-as-ar"
+            },
+            "ForecastingApiConfiguration":{
+                "url":"https://localhost:5001/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-fcastapi-as-ar"
+            }
+         }
 }
 ```
 * Start the api project ```SFA.DAS.EmployerFinance.Api```
