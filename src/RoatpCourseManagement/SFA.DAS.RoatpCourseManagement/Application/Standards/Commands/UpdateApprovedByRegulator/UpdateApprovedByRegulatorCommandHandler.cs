@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
                 StandardInfoUrl = providerCourse.StandardInfoUrl,
                 IsApprovedByRegulator = command.IsApprovedByRegulator
             };
-            var request = new UpdateProviderCourseRequest(updateProviderCourse);
+            var request = new ProviderCourseUpdateRequest(updateProviderCourse);
             await _innerApiClient.Put(request);
             return Unit.Value;
         }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Api.Controllers;
-using SFA.DAS.ApprenticeFeedback.Application.Queries.GetProviderAttributes;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -18,19 +18,19 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_The_Attributes_Are_Returned_From_Mediator(
-            GetProviderAttributesResult queryResult,
+            GetAttributesResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProviderAttributesController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.IsAny<GetProviderAttributesQuery>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<GetAttributesQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
             var actual = await controller.GetProviderAttributes() as ObjectResult;
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult.ProviderAttributes);
+            actual.Value.Should().BeEquivalentTo(queryResult.Attributes);
         }
 
         [Test, MoqAutoData]
@@ -38,7 +38,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mediator,
             [Greedy] ProviderAttributesController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<GetProviderAttributesQuery>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<GetAttributesQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             var actual = await controller.GetProviderAttributes() as StatusCodeResult;
