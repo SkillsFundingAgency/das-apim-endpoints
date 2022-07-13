@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 {
     [TestFixture]
-    public class ProviderCourseLocationControllerTests
+    public class ProviderCourseLocationsControllerTests
     {
         [Test, MoqAutoData]
         public async Task GetProviderCourseLocations_ValidRequest_ReturnsProviderCourseLocations(
