@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
     [ApiController]
-    public class ProviderCourseLocationController : ControllerBase
+    public class ProviderCourseLocationsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ProviderCourseLocationController> _logger;
+        private readonly ILogger<ProviderCourseLocationsController> _logger;
 
-        public ProviderCourseLocationController(ILogger<ProviderCourseLocationController> logger, IMediator mediator)
+        public ProviderCourseLocationsController(ILogger<ProviderCourseLocationsController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

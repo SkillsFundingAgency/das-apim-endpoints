@@ -6,9 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             int larsCode,
             [Frozen] Mock<IMediator> mediatorMock,
             GetProviderCourseLocationResult result,
-            [Greedy] ProviderCourseLocationController sut)
+            [Greedy] ProviderCourseLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseLocationQuery>(q => q.LarsCode == larsCode && q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
@@ -35,11 +33,11 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task GetProviderCourseLocations_InvalidRequest_ReturnsLocations(
+        public async Task GetProviderCourseLocations_InvalidRequest_ReturnsNotFound(
             int ukprn,
             int larsCode,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] ProviderCourseLocationController sut)
+            [Greedy] ProviderCourseLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseLocationQuery>(q => q.LarsCode == larsCode && q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderCourseLocationResult());
 
