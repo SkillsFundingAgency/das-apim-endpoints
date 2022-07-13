@@ -53,13 +53,15 @@ namespace SFA.DAS.Approvals.Services
                 return isOnRegister ? new List<string>() : new List<string> { DeliveryModelStringTypes.PortableFlexiJob };
             }
 
-            if (!isOnRegister)
+            if (isOnRegister || apprenticeshipId.HasValue)
             {
-                return courseDeliveryModels;
+                courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
             }
 
-            courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
-            courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
+            if (isOnRegister)
+            {
+                courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+            }
 
             return courseDeliveryModels;
         }

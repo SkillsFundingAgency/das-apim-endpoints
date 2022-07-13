@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
+using AutoFixture;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
@@ -13,342 +14,251 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 {
     public class WhenGettingDeliveryModels
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_DeliveryModels_Returned(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            GetDeliveryModelsResponse apiResponse,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler
-        )
+        [Test]
+        public async Task Then_DeliveryModels_Are_Returned_From_ProviderCoursesApi()
         {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(apiResponse);
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            actual.Should().BeEquivalentTo(apiResponse.DeliveryModels);
+            var fixture = new DeliveryModelServiceTestFixture();
+            
+            await fixture.GetDeliveryModels();
+            
+            fixture.VerifyResult();
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_When_No_Response_Returned_We_Create_Default(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler
-        )
+        [TestCase(ProviderCoursesApiResponse.EmptyList)]
+        [TestCase(ProviderCoursesApiResponse.Null)]
+        [TestCase(ProviderCoursesApiResponse.NullResponse)]
+        public async Task Then_Default_Is_Returned_When_ProviderCoursesApi_Returns_Unexpected_Result(ProviderCoursesApiResponse apiResponse)
         {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync((GetDeliveryModelsResponse)null);
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            actual.Should().BeEquivalentTo(DeliveryModelStringTypes.Regular);
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(apiResponse);
+            
+            await fixture.GetDeliveryModels();
+            
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_When_Null_Response_Returned_We_Create_Default(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler
-        )
+        [Test]
+        public async Task Then_FlexiJobAgency_Is_Added_To_Result_When_Employer_Is_A_FlexiJobAgency()
         {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithFlexiJobAgencyEmployer();
 
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = null });
+            await fixture.GetDeliveryModels();
 
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            actual.Should().BeEquivalentTo(DeliveryModelStringTypes.Regular);
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_And_When_Empty_Response_Returned_We_Create_Default(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
+        [Test]
+        public async Task Then_FlexiJobAgency_Functionality_Is_Subject_To_Toggle()
         {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithFlexiJobAgencyToggleOff()
+                .WithFlexiJobAgencyEmployer();
 
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular);
+        }
+
+        [Test]
+        public async Task Then_FlexiJobAgency_Replaces_Portable_Option_When_Employer_Is_A_FlexiJobAgency()
+        {
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob)
+                .WithFlexiJobAgencyEmployer();
+
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
+        }
+
+        [Test]
+        public async Task Then_PortableFlexiJob_Is_The_Only_Option_When_Current_Apprenticeship_Is_PortableFlexiJob()
+        {
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithCurrentApprenticeship(DeliveryModelStringTypes.PortableFlexiJob);
+
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyResult(DeliveryModelStringTypes.PortableFlexiJob);
+        }
+
+        [Test]
+        public async Task Then_No_Options_Are_Available_When_Current_Apprenticeship_Is_PortableFlexiJob_And_Employer_Is_FlexiJobAgency()
+        {
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithFlexiJobAgencyEmployer()
+                .WithCurrentApprenticeship(DeliveryModelStringTypes.PortableFlexiJob);
+
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyEmptyResult();
+        }
+
+        [TestCase(DeliveryModelStringTypes.Regular)]
+        [TestCase(DeliveryModelStringTypes.FlexiJobAgency)]
+        public async Task Then_Regular_Is_The_Only_Option_When_Current_Apprenticeship_Is_Not_Portable_And_Employer_Is_Not_FlexiJobAgency(string currentDeliveryModel)
+        {
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob)
+                .WithCurrentApprenticeship(currentDeliveryModel);
+
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular);
+        }
+
+        private class DeliveryModelServiceTestFixture
+        {
+            private readonly Approvals.Services.DeliveryModelService _handler;
+            private readonly Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _apiClient;
+            private readonly Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+            private readonly Mock<IFjaaApiClient<FjaaApiConfiguration>> _fjaaApiClient;
+            private readonly FeatureToggles _featureToggles;
+
+            private readonly GetDeliveryModelsResponse _apiResponse;
+            private readonly GetAccountLegalEntityResponse _accountLegalEntityResponse;
+            private ApiResponse<GetAgencyResponse> _flexiJobAgencyResponse;
+            private long? _apprenticeshipId;
+
+            private List<string> _result;
+
+            public DeliveryModelServiceTestFixture()
+            {
+                var fixture = new Fixture();
+
+                _apiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
+                _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+                _fjaaApiClient = new Mock<IFjaaApiClient<FjaaApiConfiguration>>();
+                _featureToggles = new FeatureToggles { ApprovalsFeatureToggleFjaaEnabled = true };
+
+                _apiResponse = fixture.Create<GetDeliveryModelsResponse>();
+                _accountLegalEntityResponse = fixture.Create<GetAccountLegalEntityResponse>();
+                _flexiJobAgencyResponse = new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty);
+                _apprenticeshipId = null;
+
+                _apiClient
+                    .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                    .ReturnsAsync(_apiResponse);
+
+                _commitmentsApiClient.Setup(x =>
+                        x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+                    .ReturnsAsync(_accountLegalEntityResponse);
+
+                _fjaaApiClient.Setup(x => x
+                        .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
+                    .ReturnsAsync(_flexiJobAgencyResponse);
+
+                _handler = new Approvals.Services.DeliveryModelService(_apiClient.Object,
+                    _fjaaApiClient.Object,
+                    _commitmentsApiClient.Object,
+                    Mock.Of<ILogger<Approvals.Services.DeliveryModelService>>(),
+                    _featureToggles);
+            }
+
+            public DeliveryModelServiceTestFixture WithCurrentApprenticeship(string deliveryModel)
+            {
+                var fixture = new Fixture();
+                _apprenticeshipId = fixture.Create<long>();
+
+                _commitmentsApiClient.Setup(x =>
+                        x.Get<GetApprenticeshipResponse>(
+                            It.Is<GetApprenticeshipRequest>(x => x.ApprenticeshipId == _apprenticeshipId)))
+                    .ReturnsAsync(new GetApprenticeshipResponse
+                    { DeliveryModel = deliveryModel });
+
+                return this;
+            }
+
+            public DeliveryModelServiceTestFixture WithFlexiJobAgencyEmployer()
+            {
+                _flexiJobAgencyResponse =
+                    new ApiResponse<GetAgencyResponse>(new GetAgencyResponse { LegalEntityId = 123 },
+                        HttpStatusCode.OK, string.Empty);
+
+                _fjaaApiClient.Setup(x => x
+                        .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
+                    .ReturnsAsync(_flexiJobAgencyResponse);
+
+                return this;
+            }
+
+            public DeliveryModelServiceTestFixture WithFlexiJobAgencyToggleOff()
+            {
+                _featureToggles.ApprovalsFeatureToggleFjaaEnabled = false;
+                return this;
+            }
+
+            public DeliveryModelServiceTestFixture WithResponseFromProviderCoursesApi(params string[] responses)
+            {
+                _apiResponse.DeliveryModels = responses.ToList();
+                return this;
+            }
+
+            public DeliveryModelServiceTestFixture WithResponseFromProviderCoursesApi(ProviderCoursesApiResponse response)
+            {
+                if (response == ProviderCoursesApiResponse.NullResponse)
                 {
-                    DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular }
-                });
+                    _apiClient
+                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync((GetDeliveryModelsResponse)null);
+                }
 
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
+                if (response == ProviderCoursesApiResponse.EmptyList)
+                {
+                    _apiClient
+                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync(new GetDeliveryModelsResponse
+                        {
+                            DeliveryModels = new System.Collections.Generic.List<string>()
+                        });
+                }
 
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
+                if (response == ProviderCoursesApiResponse.Null)
+                {
+                    _apiClient
+                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = null });
+                }
 
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
+                return this;
+            }
 
-            actual.Should().BeEquivalentTo(DeliveryModelStringTypes.Regular);
+            public async Task GetDeliveryModels()
+            {
+                _result = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
+            }
+
+            public void VerifyResult()
+            {
+                Assert.AreEqual(_apiResponse.DeliveryModels, _result);
+            }
+
+            public void VerifyResult(params string[] expectedResult)
+            {
+                Assert.AreEqual(expectedResult.ToList(), _result);
+            }
+
+            public void VerifyEmptyResult()
+            {
+                Assert.IsEmpty(_result);
+            }
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_FlexiJobAgency_Is_Returned_For_LegalEntity_On_FJAA_Register(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
+        public enum ProviderCoursesApiResponse
         {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
-                {
-                    DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular }
-                });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse(), HttpStatusCode.OK,
-                    string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            var expected = new List<string>
-                { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency };
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_FlexiJobAgency_Is_Not_Returned_For_LegalEntity_On_FJAA_Register_When_Toggle_Is_Off(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
-        {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = false;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
-                {
-                    DeliveryModels = new System.Collections.Generic.List<string>() { DeliveryModelStringTypes.Regular }
-                });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse(), HttpStatusCode.OK,
-                    string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            var expected = new List<string> { DeliveryModelStringTypes.Regular };
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_PortableFlexiJob_Is_Not_Returned_For_LegalEntity_On_FJAA_Register(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
-        {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
-                {
-                    DeliveryModels = new List<string>()
-                        { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob }
-                });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse(), HttpStatusCode.OK,
-                    string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId);
-
-            var expected = new List<string>
-                { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency };
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_PortableFlexiJob_Is_The_Only_Option_When_Current_Apprenticeship_Is_PortableFlexiJob(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            long apprenticeshipId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
-        {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
-                {
-                    DeliveryModels = new List<string>()
-                        { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob }
-                });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipResponse>(
-                        It.Is<GetApprenticeshipRequest>(x => x.ApprenticeshipId == apprenticeshipId)))
-                .ReturnsAsync(new GetApprenticeshipResponse
-                    { DeliveryModel = DeliveryModelStringTypes.PortableFlexiJob });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound,
-                    string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId, apprenticeshipId);
-
-            var expected = new List<string> { DeliveryModelStringTypes.PortableFlexiJob };
-
-            actual.Should().BeEquivalentTo(expected);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_No_Options_Are_Available_When_Current_Apprenticeship_Is_PortableFlexiJob_And_Employer_Is_On_Flexijob_Register(
-            long providerId,
-            string trainingCode,
-            long accountLegalEntityId,
-            long apprenticeshipId,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-            [Frozen] FeatureToggles featureToggles,
-            long maLegalEntityId,
-            Approvals.Services.DeliveryModelService handler)
-        {
-            featureToggles.ApprovalsFeatureToggleFjaaEnabled = true;
-
-            apiClient
-                .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                .ReturnsAsync(new GetDeliveryModelsResponse
-                {
-                    DeliveryModels = new List<string>()
-                        { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob }
-                });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
-                .ReturnsAsync(new GetAccountLegalEntityResponse { MaLegalEntityId = maLegalEntityId });
-
-            commitmentsApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipResponse>(
-                        It.Is<GetApprenticeshipRequest>(x => x.ApprenticeshipId == apprenticeshipId)))
-                .ReturnsAsync(new GetApprenticeshipResponse
-                { DeliveryModel = DeliveryModelStringTypes.PortableFlexiJob });
-
-            fjaaApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse(), HttpStatusCode.OK,
-                    string.Empty));
-
-            var actual = await handler.GetDeliveryModels(providerId, trainingCode, accountLegalEntityId, apprenticeshipId);
-
-            actual.Should().BeEmpty();
+            NullResponse,
+            EmptyList,
+            Null
         }
     }
 }
