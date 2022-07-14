@@ -5,7 +5,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -15,6 +14,8 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation;
+using System.Linq;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
 {
@@ -32,9 +33,11 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                         c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl)))).
                         ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(apiResponseProviderCourseLocation, HttpStatusCode.OK, ""));
 
+            var providerCount = apiResponseProviderCourseLocation.Where(l => l.LocationType == LocationType.Provider).Count();
             var result = await sut.Handle(query, new CancellationToken());
             result.Should().NotBeNull();
-  
+            result.ProviderCourseLocations.Count.Should().Be(providerCount);
+            result.ProviderCourseLocations.Count.Should().NotBe(apiResponseProviderCourseLocation.Count());
         }
 
         [Test, RecursiveMoqAutoData]
