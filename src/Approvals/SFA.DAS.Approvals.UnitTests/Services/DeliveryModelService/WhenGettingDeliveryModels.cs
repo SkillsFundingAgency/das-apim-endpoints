@@ -46,7 +46,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_FlexiJobAgency_Is_Added_To_Result_When_Employer_Is_A_FlexiJobAgency()
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(false)
                 .WithFlexiJobAgencyEmployer();
 
             await fixture.GetDeliveryModels();
@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_FlexiJobAgency_Functionality_Is_Subject_To_Toggle()
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(false)
                 .WithFlexiJobAgencyToggleOff()
                 .WithFlexiJobAgencyEmployer();
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_FlexiJobAgency_Replaces_Portable_Option_When_Employer_Is_A_FlexiJobAgency()
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(true)
                 .WithFlexiJobAgencyEmployer();
 
             await fixture.GetDeliveryModels();
@@ -83,7 +83,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_PortableFlexiJob_Is_The_Only_Option_When_Current_Apprenticeship_Is_PortableFlexiJob()
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(false)
                 .WithCurrentApprenticeship(DeliveryModelStringTypes.PortableFlexiJob);
 
             await fixture.GetDeliveryModels();
@@ -95,7 +95,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_No_Options_Are_Available_When_Current_Apprenticeship_Is_PortableFlexiJob_And_Employer_Is_FlexiJobAgency()
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(false)
                 .WithFlexiJobAgencyEmployer()
                 .WithCurrentApprenticeship(DeliveryModelStringTypes.PortableFlexiJob);
 
@@ -109,7 +109,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
         public async Task Then_Regular_Is_The_Only_Option_When_Current_Apprenticeship_Is_Not_Portable_And_Employer_Is_Not_FlexiJobAgency(string currentDeliveryModel)
         {
             var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseFromProviderCoursesApi(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob)
+                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(true)
                 .WithCurrentApprenticeship(currentDeliveryModel);
 
             await fixture.GetDeliveryModels();
@@ -198,9 +198,9 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 return this;
             }
 
-            public DeliveryModelServiceTestFixture WithResponseFromProviderCoursesApi(params string[] responses)
+            public DeliveryModelServiceTestFixture WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(bool hasPortableFlexiJobOption)
             {
-                _apiResponse.DeliveryModels = responses.ToList();
+                _apiResponse.HasPortableFlexiJobOption = hasPortableFlexiJobOption;
                 return this;
             }
 
@@ -219,7 +219,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                         .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                         .ReturnsAsync(new GetDeliveryModelsResponse
                         {
-                            DeliveryModels = new System.Collections.Generic.List<string>()
+                            HasPortableFlexiJobOption = false
                         });
                 }
 
@@ -227,7 +227,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 {
                     _apiClient
                         .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                        .ReturnsAsync(new GetDeliveryModelsResponse { DeliveryModels = null });
+                        .ReturnsAsync(new GetDeliveryModelsResponse { HasPortableFlexiJobOption = false});
                 }
 
                 return this;
@@ -235,12 +235,20 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             public async Task GetDeliveryModels()
             {
-                _result = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
+                var resp = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
+
+                _result = resp;
+
             }
 
             public void VerifyResult()
             {
-                Assert.AreEqual(_apiResponse.DeliveryModels, _result);
+                var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
+                
+                if (_apiResponse.HasPortableFlexiJobOption)
+                    deliveryModels.Add(DeliveryModelStringTypes.PortableFlexiJob);
+                
+                Assert.AreEqual(deliveryModels, _result);
             }
 
             public void VerifyResult(params string[] expectedResult)

@@ -70,14 +70,20 @@ namespace SFA.DAS.Approvals.Services
         {
             _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
             var result = await _apiClient.Get<GetDeliveryModelsResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
+         
+            var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
 
-            if (result?.DeliveryModels == null || !result.DeliveryModels.Any())
+            if (result == null)
             {
                 _logger.LogInformation($"No information found for Provider {providerId} and Course {trainingCode}");
-                return new List<string> { DeliveryModelStringTypes.Regular };
+            }
+            else
+            {
+                if (result.HasPortableFlexiJobOption)
+                    deliveryModels.Add(DeliveryModelStringTypes.PortableFlexiJob);
             }
 
-            return result.DeliveryModels;
+            return deliveryModels;
         }
 
         private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
