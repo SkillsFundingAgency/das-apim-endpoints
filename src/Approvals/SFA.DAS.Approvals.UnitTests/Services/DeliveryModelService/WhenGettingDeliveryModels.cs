@@ -235,10 +235,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             public async Task GetDeliveryModels()
             {
-                var resp = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
-
-                _result = resp;
-
+                _result = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
             }
 
             public void VerifyResult()
