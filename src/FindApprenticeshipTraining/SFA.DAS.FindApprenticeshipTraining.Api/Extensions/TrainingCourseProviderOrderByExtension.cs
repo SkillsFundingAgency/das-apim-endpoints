@@ -37,7 +37,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .OrderByDescending(c=>c.Score)
                 .ThenByDescending(c=>c.OverallAchievementRate)
                 .ThenByDescending(c=>c.OverallCohort)
-                .ThenByDescending(c=>c.Feedback.TotalEmployerResponses)
+                .ThenByDescending(c=>c.EmployerFeedback.TotalEmployerResponses)
+                .ThenByDescending(c=>c.ApprenticeFeedback.TotalApprenticeResponses)
                 .ThenBy(c=>c.Name)
                 .ToList();
 
@@ -117,8 +118,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
         {
             foreach (var listItem in getTrainingCourseProviderListItems)
             {
-                var feedbackScore = GetFeedbackScore(listItem.Feedback.TotalFeedbackRating);
-                _providerScores.Add(listItem.ProviderId, feedbackScore);
+                var employerFeedbackScore = GetFeedbackScore(listItem.EmployerFeedback.TotalFeedbackRating);
+                var apprenticeFeedbackScore = GetFeedbackScore(listItem.ApprenticeFeedback.TotalFeedbackRating);
+                var totalFeedbackScore = employerFeedbackScore + apprenticeFeedbackScore;
+                _providerScores.Add(listItem.ProviderId, totalFeedbackScore);
             }
         }
         private static decimal GetFeedbackScore(int score)

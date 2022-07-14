@@ -8,7 +8,7 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
     public class CreateApprenticeFeedbackRequest : IPostApiRequest
     {
-        public string PostUrl => "api/apprenticefeedback";
+        public string PostUrl => "api/apprenticefeedbackresult";
 
         public object Data { get; set; }
 
