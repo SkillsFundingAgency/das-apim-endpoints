@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithHasPortableFlexiJobOption(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetDeliveryModelsResponse>()
+            var course = _fixture.Build<GetHasPortableFlexiJobOptionResponse>()
                 .With(a => a.HasPortableFlexiJobOption, true)
                 .Create();
 
@@ -70,7 +70,7 @@ namespace SFA.DAS.Approvals.FakeApis
 
         public ProviderCoursesApiBuilder WithHasPortableFlexiJobOptionFalse(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetDeliveryModelsResponse>()
+            var course = _fixture.Build<GetHasPortableFlexiJobOptionResponse>()
                 .With(a => a.HasPortableFlexiJobOption, false)
                 .Create();
 

@@ -69,7 +69,7 @@ namespace SFA.DAS.Approvals.Services
         private async Task<List<string>> GetCourseDeliveryModels(long providerId, string trainingCode)
         {
             _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
-            var result = await _apiClient.Get<GetDeliveryModelsResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
+            var result = await _apiClient.Get<GetHasPortableFlexiJobOptionResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
          
             var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
 

@@ -125,7 +125,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             private readonly Mock<IFjaaApiClient<FjaaApiConfiguration>> _fjaaApiClient;
             private readonly FeatureToggles _featureToggles;
 
-            private readonly GetDeliveryModelsResponse _apiResponse;
+            private readonly GetHasPortableFlexiJobOptionResponse _apiResponse;
             private readonly GetAccountLegalEntityResponse _accountLegalEntityResponse;
             private ApiResponse<GetAgencyResponse> _flexiJobAgencyResponse;
             private long? _apprenticeshipId;
@@ -141,13 +141,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 _fjaaApiClient = new Mock<IFjaaApiClient<FjaaApiConfiguration>>();
                 _featureToggles = new FeatureToggles { ApprovalsFeatureToggleFjaaEnabled = true };
 
-                _apiResponse = fixture.Create<GetDeliveryModelsResponse>();
+                _apiResponse = fixture.Create<GetHasPortableFlexiJobOptionResponse>();
                 _accountLegalEntityResponse = fixture.Create<GetAccountLegalEntityResponse>();
                 _flexiJobAgencyResponse = new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty);
                 _apprenticeshipId = null;
 
                 _apiClient
-                    .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                    .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                     .ReturnsAsync(_apiResponse);
 
                 _commitmentsApiClient.Setup(x =>
@@ -209,15 +209,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 if (response == ProviderCoursesApiResponse.NullResponse)
                 {
                     _apiClient
-                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                        .ReturnsAsync((GetDeliveryModelsResponse)null);
+                        .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync((GetHasPortableFlexiJobOptionResponse)null);
                 }
 
                 if (response == ProviderCoursesApiResponse.EmptyList)
                 {
                     _apiClient
-                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                        .ReturnsAsync(new GetDeliveryModelsResponse
+                        .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync(new GetHasPortableFlexiJobOptionResponse
                         {
                             HasPortableFlexiJobOption = false
                         });
@@ -226,8 +226,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 if (response == ProviderCoursesApiResponse.Null)
                 {
                     _apiClient
-                        .Setup(x => x.Get<GetDeliveryModelsResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                        .ReturnsAsync(new GetDeliveryModelsResponse { HasPortableFlexiJobOption = false});
+                        .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
+                        .ReturnsAsync(new GetHasPortableFlexiJobOptionResponse { HasPortableFlexiJobOption = false});
                 }
 
                 return this;
