@@ -11,6 +11,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
+            services.Configure<FjaaApiConfiguration>(configuration.GetSection(nameof(FjaaApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FjaaApiConfiguration>>().Value);
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
@@ -35,7 +37,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>().Value);
             services.Configure<ReservationApiConfiguration>(configuration.GetSection(nameof(ReservationApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ReservationApiConfiguration>>().Value);
-
+            services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
         }
     }
 }

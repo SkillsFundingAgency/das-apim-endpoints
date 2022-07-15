@@ -9,6 +9,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
         public bool? HasDayReleaseDeliveryOption { get; set; }
         public bool? HasBlockReleaseDeliveryOption { get; set; }
         public string RegionName { get; set; }
+        public int? RegionId { get; set; }
         public static implicit operator ProviderCourseLocationModel(GetProviderCourseLocationsResponse source) =>
           new ProviderCourseLocationModel
           {
@@ -17,6 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
               HasDayReleaseDeliveryOption = source.HasDayReleaseDeliveryOption,
               HasBlockReleaseDeliveryOption = source.HasBlockReleaseDeliveryOption,
               RegionName = source.RegionName,
+              RegionId = source.RegionId
           };
     }
 }

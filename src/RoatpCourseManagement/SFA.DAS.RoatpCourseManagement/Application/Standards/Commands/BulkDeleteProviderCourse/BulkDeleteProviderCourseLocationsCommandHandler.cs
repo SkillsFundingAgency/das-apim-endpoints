@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDelet
 
         public async Task<Unit> Handle(BulkDeleteProviderCourseLocationsCommand request, CancellationToken cancellationToken)
         {
-            await _innerApiClient.Delete((BulkDeleteProviderCourseLocationsRequest)request);
+            await _innerApiClient.Delete((ProviderCourseLocationsBulkDeleteRequest)request);
             return Unit.Value;
         }
     }

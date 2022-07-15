@@ -16,5 +16,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }
         public string RegionName { get; set; }
+        public int? RegionId { get; set; }
     }
 }
