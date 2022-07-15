@@ -31,5 +31,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
     {
         Regular = 0,
         PortableFlexiJob = 1,
+        FlexiJobAgency = 2
     }
 }
