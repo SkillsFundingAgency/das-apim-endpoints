@@ -19,7 +19,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("providers/{ukprn}/courses/{larsCode}/provider-course-locations")]
+        [Route("providers/{ukprn}/courses/{larsCode}/locations/provider-locations")]
         public async Task<IActionResult> GetProviderCourseLocations(int ukprn, int larsCode)
         {
             _logger.LogInformation("Outer API: Request received to get provider course locations for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
