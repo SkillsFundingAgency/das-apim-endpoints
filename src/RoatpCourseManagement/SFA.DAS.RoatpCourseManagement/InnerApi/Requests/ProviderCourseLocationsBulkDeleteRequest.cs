@@ -4,7 +4,7 @@ using System.Web;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
-    public class BulkDeleteProviderCourseLocationsRequest : IDeleteApiRequest
+    public class ProviderCourseLocationsBulkDeleteRequest : IDeleteApiRequest
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }

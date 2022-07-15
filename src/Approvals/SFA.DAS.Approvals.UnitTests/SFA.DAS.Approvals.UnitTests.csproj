@@ -31,8 +31,4 @@
       <None Remove="Application\DeliveryModels\" />
       <None Remove="Application\DeliveryModels\Queries\" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Application\DeliveryModels\" />
-      <Folder Include="Application\DeliveryModels\Queries\" />
-    </ItemGroup>
 </Project>

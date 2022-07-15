@@ -26,6 +26,7 @@ stages:
       Environment: AT
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
@@ -52,6 +53,7 @@ stages:
       Environment: TEST
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
@@ -78,6 +80,7 @@ stages:
       Environment: TEST2
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
@@ -104,6 +107,7 @@ stages:
       Environment: PP
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
@@ -182,6 +186,7 @@ stages:
       Environment: DEMO
       SchemaFilePath: $(${{ parameters.OuterApiName }}OuterApiSchemaFilePath)
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
