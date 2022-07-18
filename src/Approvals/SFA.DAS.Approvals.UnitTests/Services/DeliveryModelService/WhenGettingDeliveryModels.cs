@@ -29,7 +29,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             fixture.VerifyResult();
         }
 
-        [TestCase(ProviderCoursesApiResponse.EmptyList)]
         [TestCase(ProviderCoursesApiResponse.Null)]
         [TestCase(ProviderCoursesApiResponse.NullResponse)]
         public async Task Then_Default_Is_Returned_When_ProviderCoursesApi_Returns_Unexpected_Result(ProviderCoursesApiResponse apiResponse)
@@ -211,16 +210,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                     _apiClient
                         .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
                         .ReturnsAsync((GetHasPortableFlexiJobOptionResponse)null);
-                }
-
-                if (response == ProviderCoursesApiResponse.EmptyList)
-                {
-                    _apiClient
-                        .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
-                        .ReturnsAsync(new GetHasPortableFlexiJobOptionResponse
-                        {
-                            HasPortableFlexiJobOption = false
-                        });
                 }
 
                 if (response == ProviderCoursesApiResponse.Null)
