@@ -23,4 +23,8 @@
       <ProjectReference Include="..\SFA.DAS.Approvals\SFA.DAS.Approvals.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Application\DeliveryModels\" />
+      <None Remove="Application\DeliveryModels\Queries\" />
+    </ItemGroup>
 </Project>
