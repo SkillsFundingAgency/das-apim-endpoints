@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ApprenticePortal.Models
 {
@@ -13,5 +14,6 @@ namespace SFA.DAS.ApprenticePortal.Models
         public DateTime? LastViewed { get; set; }
         public DateTime? StoppedReceivedOn { get; set; }
         public bool IsStopped { get; set; }
+        public List<Revision> Revisions { get; set; }
     }
 }
