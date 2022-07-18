@@ -1,0 +1,95 @@
+parameters:
+  ServiceConnection:
+  AppRoleAssignmentsServiceConnection:
+  Environment:
+  AADGroupObjectIdArray:
+  SchemaFilePath:
+  DeploymentName:
+  AppServiceName:
+  CustomHostName:
+  AppServiceKeyVaultCertificateName:
+  ConfigNames:
+  DeploymentPackagePath:
+  ApiVersionSetName:
+  ApiPath:
+  ApiBaseUrl:
+  ProductId:
+  ApplicationIdentifierUri:
+  SandboxEnabled: $False
+
+jobs:
+- deployment: DeployInfrastructure
+  pool:
+    name: DAS - Continuous Deployment Agents
+  environment: ${{ parameters.Environment }}
+  workspace:
+    clean: all
+  variables:
+    AppServiceName: ${{ parameters.AppServiceName }}
+    CustomHostName: ${{ parameters.CustomHostName }}
+    AppServiceKeyVaultCertificateName: ${{ parameters.AppServiceKeyVaultCertificateName }}
+    ConfigNames: ${{ parameters.ConfigNames }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/wait-azure-devops-deployment.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            EnvironmentId: $(Environment.Id)
+            PipelineName: $(Build.DefinitionName)
+            RunId: $(Build.BuildId)
+        - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
+          parameters:
+            Location: $(ResourceGroupLocation)
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            SubscriptionId: $(SubscriptionId)
+            TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+            ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+            IsMultiRepoCheckout: true
+            TemplateSecrets:
+              LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+              ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-apim-endpoints
+            TargetFileName: ${{ parameters.SchemaFilePath }}
+            TableName: Configuration
+        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
+            ResourceName: $(InstanceName)
+            Tenant: $(Tenant)
+            IsMultiRepoCheckout: true
+        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
+            ResourceName: ${{ parameters.AppServiceName }}
+            Tenant: $(Tenant)
+            AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
+            IsMultiRepoCheckout: true
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: ${{ parameters.AppServiceName }}
+            DeploymentPackagePath: ${{ parameters.DeploymentPackagePath }}
+        - checkout: das-platform-automation
+        - task: AzurePowerShell@5
+          displayName: Import-ApimSwaggerApiDefinition - ${{ parameters.AppServiceName }}
+          inputs:
+            azureSubscription: ${{ parameters.ServiceConnection }}
+            ScriptPath: das-platform-automation/Infrastructure-Scripts/Import-ApimSwaggerApiDefinition.ps1
+            ScriptArguments:
+              -ApimResourceGroup $(ApimResourceGroup) `
+              -InstanceName $(InstanceName) `
+              -AppServiceResourceGroup $(ResourceGroupName) `
+              -ApiVersionSetName ${{ parameters.ApiVersionSetName }} `
+              -ApiPath ${{ parameters.ApiPath }} `
+              -ApiBaseUrl ${{ parameters.ApiBaseUrl }} `
+              -ProductId ${{ parameters.ProductId }} `
+              -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
+              -SandboxEnabled ${{ parameters.SandboxEnabled }} `
+              -Verbose
+            azurePowerShellVersion: LatestVersion
+            pwsh: true

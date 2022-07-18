@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals", "SFA.DAS.Approvals\SFA.DAS.Approvals.csproj", "{8C2B1F20-4E0E-4F20-B7A1-B91F9CF60D3F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.Api", "SFA.DAS.Approvals.Api\SFA.DAS.Approvals.Api.csproj", "{8E796FF7-075F-4D18-9E7B-C6DD3FE3B8D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.Api.UnitTests", "SFA.DAS.Approvals.Api.UnitTests\SFA.DAS.Approvals.Api.UnitTests.csproj", "{D71CCE42-5EDC-4E4E-B963-75A130629079}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.FakeApis", "SFA.DAS.Approvals.FakeApis\SFA.DAS.Approvals.FakeApis.csproj", "{6032818D-1B2E-4ACC-963B-98C009508B4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.UnitTests", "SFA.DAS.Approvals.UnitTests\SFA.DAS.Approvals.UnitTests.csproj", "{5C1D836C-8A00-4098-931C-C458C9F2181F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A7ED596B-3BC7-4078-8024-17C47D2EDE3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C2B1F20-4E0E-4F20-B7A1-B91F9CF60D3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C2B1F20-4E0E-4F20-B7A1-B91F9CF60D3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C2B1F20-4E0E-4F20-B7A1-B91F9CF60D3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C2B1F20-4E0E-4F20-B7A1-B91F9CF60D3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E796FF7-075F-4D18-9E7B-C6DD3FE3B8D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E796FF7-075F-4D18-9E7B-C6DD3FE3B8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E796FF7-075F-4D18-9E7B-C6DD3FE3B8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E796FF7-075F-4D18-9E7B-C6DD3FE3B8D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D71CCE42-5EDC-4E4E-B963-75A130629079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D71CCE42-5EDC-4E4E-B963-75A130629079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D71CCE42-5EDC-4E4E-B963-75A130629079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D71CCE42-5EDC-4E4E-B963-75A130629079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6032818D-1B2E-4ACC-963B-98C009508B4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6032818D-1B2E-4ACC-963B-98C009508B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6032818D-1B2E-4ACC-963B-98C009508B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6032818D-1B2E-4ACC-963B-98C009508B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7ED596B-3BC7-4078-8024-17C47D2EDE3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7ED596B-3BC7-4078-8024-17C47D2EDE3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7ED596B-3BC7-4078-8024-17C47D2EDE3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7ED596B-3BC7-4078-8024-17C47D2EDE3D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {70D1B8C0-96BD-4ACE-8F4D-3548B072AFF0}
+	EndGlobalSection
+EndGlobal
