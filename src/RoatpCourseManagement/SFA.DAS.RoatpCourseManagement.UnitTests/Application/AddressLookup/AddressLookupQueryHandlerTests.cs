@@ -1,24 +1,33 @@
-﻿using Moq;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.AddressLookup;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.AddressLookup
 {
     [TestFixture]
     public class AddressLookupQueryHandlerTests
     {
-        [Test]
-        public void Handle_CallsLocationService()
+        [Test, AutoData]
+        public async Task Handle_CallsLocationService(GetAddressesListResponse data)
         {
             var postcode = "CV1 1ET";
+            var expectedAddresses = data.Addresses.Select(a => (AddressItem)a).ToArray();
             var mockService = new Mock<ILocationLookupService>();
-            var sut = new AddressLookupQueryHandler(mockService.Object);
+            mockService.Setup(m => m.GetExactMatchAddresses(postcode)).ReturnsAsync(data);
+            var sut = new AddressLookupQueryHandler(mockService.Object, Mock.Of<ILogger<AddressLookupQueryHandler>>());
 
-            sut.Handle(new AddresssLookupQuery(postcode), new CancellationToken());
+            var result = await sut.Handle(new AddresssLookupQuery(postcode), new CancellationToken());
 
-            mockService.Verify(m => m.GetExactMatchAddresses(postcode));
+            mockService.VerifyAll();
+            result.Addresses.Should().BeEquivalentTo(expectedAddresses);
         }
     }
 }

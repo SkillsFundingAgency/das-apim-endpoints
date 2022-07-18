@@ -15,6 +15,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         private const string PostcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$";
         private const string OutcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?";
         private const string OutcodeDistrictRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s[A-Za-z]*";
+        private const double MinMatch = 1;
 
         public LocationLookupService(ILocationApiClient<LocationApiConfiguration> locationApiClient)
         {
@@ -84,7 +85,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             if (!Regex.IsMatch(fullPostcode, PostcodeRegex)) return null;
 
-            return await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(fullPostcode, 1));
+            return await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(fullPostcode, MinMatch));
         }
     }
 }
