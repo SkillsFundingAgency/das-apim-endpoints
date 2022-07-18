@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
 {
-    public class AddressLookupQueryHandler : IRequestHandler<AddresssLookupQuery, AddresssLookupQueryResponse>
+    public class AddressLookupQueryHandler : IRequestHandler<AddresssLookupQuery, AddresssLookupQueryResult>
     {
         private readonly ILocationLookupService _locationLookupService;
         private readonly ILogger<AddressLookupQueryHandler> _logger;
@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
             _logger = logger;
         }
 
-        public async Task<AddresssLookupQueryResponse> Handle(AddresssLookupQuery request, CancellationToken cancellationToken)
+        public async Task<AddresssLookupQueryResult> Handle(AddresssLookupQuery request, CancellationToken cancellationToken)
         {
             var result = await _locationLookupService.GetExactMatchAddresses(request.Postcode);
             if (result == null)
@@ -27,7 +27,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
                 return null;
             }
             _logger.LogInformation($"Found {result.Addresses.Count()} addresses for postcode: {request.Postcode}");
-            var response = new AddresssLookupQueryResponse();
+            var response = new AddresssLookupQueryResult();
             response.Addresses = result.Addresses.Select(a => (AddressItem)a);
             return response;
         }

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
 {
-    public class AddresssLookupQueryResponse
+    public class AddresssLookupQueryResult
     {
         public IEnumerable<AddressItem> Addresses { get; set; }
     }
