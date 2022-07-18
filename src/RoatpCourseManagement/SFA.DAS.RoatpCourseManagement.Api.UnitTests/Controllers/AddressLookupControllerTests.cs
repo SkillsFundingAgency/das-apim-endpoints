@@ -27,7 +27,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test]
         public async Task GetAddresses_InvalidPostcode_ReturnsBadRequest()
         {
-            _mediator.Setup(m => m.Send(It.IsAny<AddresssLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((GetAddressesListResponse) null);
+            _mediator.Setup(m => m.Send(It.IsAny<AddresssLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((AddresssLookupQueryResponse) null);
 
             var result = await _sut.GetAddresses("rubbish");
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test]
         public async Task GetAddresses_ValidPostcode_ReturnsOkResponse()
         {
-            var expectedResponse = new GetAddressesListResponse();
+            var expectedResponse = new AddresssLookupQueryResponse();
             _mediator.Setup(m => m.Send(It.IsAny<AddresssLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
             var result = await _sut.GetAddresses("CV1 1ET");
