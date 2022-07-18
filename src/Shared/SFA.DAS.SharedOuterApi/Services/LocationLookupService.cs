@@ -1,11 +1,11 @@
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -78,6 +78,13 @@ namespace SFA.DAS.SharedOuterApi.Services
             return getLocationsListItem?.Location != null
                 ? new LocationItem(location, getLocationsListItem.Location.GeoPoint, getLocationsListItem.Country) 
                 : null;
+        }
+
+        public async Task<GetAddressesListResponse> GetExactMatchAddresses(string fullPostcode)
+        {
+            if (!Regex.IsMatch(fullPostcode, PostcodeRegex)) return null;
+
+            return await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(fullPostcode, 1));
         }
     }
 }
