@@ -32,21 +32,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
             var apiShortlistRequest = new GetShortlistForUserRequest(request.ShortlistUserId);
             var shortListTask = _courseDeliveryApiClient.Get<GetShortlistForUserResponse>(apiShortlistRequest);
             var coursesTask = _cachedCoursesService.GetCourses();
+            var appFeedbackTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
 
-            await Task.WhenAll(shortListTask, coursesTask);
+            await Task.WhenAll(shortListTask, coursesTask, appFeedbackTask);
 
-            var apprenticeFeedbackTasks = new List<Task<GetApprenticeFeedbackResponse>>();
             var shortlist = shortListTask.Result.Shortlist.ToList();
-
-            var ukprns = shortlist.Select(s => s.ProviderDetails.Ukprn);
-            
-            var apprenticeFeedbackRatings =
-                await _apprenticeFeedbackApiClient.
-                PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(
-                    new PostApprenticeFeedbackRequest
-                    {
-                        Data = new PostApprenticeFeedbackRequestData { Ukprns = ukprns }
-                    });
+            var appFeedbackResult = appFeedbackTask.Result ?? new List<GetApprenticeFeedbackSummaryItem>();
 
             foreach (var item in shortlist)
             {
@@ -54,10 +45,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
                     coursesTask.Result.Standards.FirstOrDefault(listItem =>
                         listItem.LarsCode == item.CourseId);
 
-                if (apprenticeFeedbackRatings.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    item.ProviderDetails.ApprenticeFeedback = apprenticeFeedbackRatings.Body.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
-                }
+                item.ProviderDetails.ApprenticeFeedback = appFeedbackResult.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
             }
 
             return new GetShortlistForUserResult
