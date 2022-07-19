@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateFeedbackSummariesResponse
+namespace SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateFeedbackSummaries
 {
     public class GenerateFeedbackSummariesCommandHandler : IRequestHandler<GenerateFeedbackSummariesCommand, GenerateFeedbackSummariesResponse>
     {
