@@ -15,9 +15,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         private readonly ILogger<DataLoadController> _logger;
         private readonly IMediator _mediator;
 
-        public DataLoadController(
-            ILogger<DataLoadController> logger,
-            IMediator mediator)
+        public DataLoadController(IMediator mediator, ILogger<DataLoadController> logger)
         {
             _logger = logger;
             _mediator = mediator;
