@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("/generate-feedback-summaries")]
+        [HttpPost("generate-feedback-summaries")]
         public async Task<IActionResult> GenerateFeedbackSummaries()
         {
             try

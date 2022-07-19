@@ -88,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
         {
-            if (apprenticeFeedback?.ReviewCount == 0)
+            if (apprenticeFeedback == null || apprenticeFeedback.ReviewCount == 0)
             {
                 return new GetApprenticeFeedbackResponse
                 {
@@ -97,10 +97,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                     FeedbackAttributes = new List<GetApprenticeFeedbackAttributeItem>(),
                 };
             }
-                        
-            var feedbackAttrItems = apprenticeFeedback.ProviderAttribute
-                .Where(c => c.Agree + c.Disagree != 0)
-                .Select(c => (GetApprenticeFeedbackAttributeItem)c).ToList();
+
+            IEnumerable<GetApprenticeFeedbackAttributeItem> feedbackAttrItems;
+            if (apprenticeFeedback?.ProviderAttribute == null)
+            {
+                feedbackAttrItems = new List<GetApprenticeFeedbackAttributeItem>();
+            }
+            else
+            {
+                feedbackAttrItems = apprenticeFeedback.ProviderAttribute
+                    .Where(c => c.Agree + c.Disagree != 0)
+                    .Select(c => (GetApprenticeFeedbackAttributeItem)c).ToList();
+            }
 
             return new GetApprenticeFeedbackResponse
             {
