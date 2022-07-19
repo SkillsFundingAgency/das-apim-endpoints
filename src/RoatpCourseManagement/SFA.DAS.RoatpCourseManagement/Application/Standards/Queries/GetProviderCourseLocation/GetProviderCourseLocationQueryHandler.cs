@@ -38,8 +38,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 throw new HttpRequestContentException(errorMessage, providerCourseLocationsResponse.StatusCode, providerCourseLocationsResponse.ErrorContent);
             }
             var providerCourseLocations = providerCourseLocationsResponse.Body;
-
-            var locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
+            
+            var locations = providerCourseLocations.Where(a => a.LocationType == LocationType.Provider).Select(x => (ProviderCourseLocationModel)x).ToList();
             return new GetProviderCourseLocationResult
             {
                 ProviderCourseLocations = locations,
