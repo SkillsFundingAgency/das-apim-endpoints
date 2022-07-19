@@ -30,8 +30,8 @@ namespace SFA.DAS.Approvals.FakeApis
             {
                 _fakeProviderCoursesApi = ProviderCoursesApiBuilder.Create(PortProviderCoursesApi)
                         .WithPing()
-                        .WithCoursesDeliveryModels(PeterboroughCollege, CourseWithMultipleDeliveryModels)
-                        .WithCoursesDeliveryRegularModel(PeterboroughCollege, CourseWithOnlyRegularDeliveryModel)
+                        .WithHasPortableFlexiJobOption(PeterboroughCollege, CourseWithMultipleDeliveryModels)
+                        .WithHasPortableFlexiJobOptionFalse(PeterboroughCollege, CourseWithOnlyRegularDeliveryModel)
                         .WithNoCoursesDeliveryModels404(PeterboroughCollege, CourseWithNoDeliveryModelsFound)
                         .Build();
 
