@@ -2,9 +2,7 @@
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +31,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
                 IsApprovedByRegulator = providerCourse.IsApprovedByRegulator
             };
 
-            var request = new UpdateProviderCourseRequest(updateProviderCourse);
+            var request = new ProviderCourseUpdateRequest(updateProviderCourse);
             await _innerApiClient.Put(request);
             return Unit.Value;
         }

@@ -23,14 +23,14 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             UpdateContactDetailsCommandHandler sut,
             UpdateContactDetailsCommand command,
             CancellationToken cancellationToken,
-            UpdateProviderCourseRequest request,
+            ProviderCourseUpdateRequest request,
             GetProviderCourseResponse apiResponse)
         {
             apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
 
             await sut.Handle(command, cancellationToken);
 
-            apiClientMock.Verify(a => a.Put(It.IsAny<UpdateProviderCourseRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.Put(It.IsAny<ProviderCourseUpdateRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -44,7 +44,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
         {
             apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
 
-            apiClientMock.Setup(c => c.Put(It.IsAny<UpdateProviderCourseRequest>())).Throws(expectedException);
+            apiClientMock.Setup(c => c.Put(It.IsAny<ProviderCourseUpdateRequest>())).Throws(expectedException);
 
             var actualException = Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
 

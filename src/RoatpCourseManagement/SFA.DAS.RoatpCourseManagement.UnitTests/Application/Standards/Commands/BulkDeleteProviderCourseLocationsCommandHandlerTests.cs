@@ -20,10 +20,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             BulkDeleteProviderCourseLocationsCommandHandler sut,
             BulkDeleteProviderCourseLocationsCommand command)
         {
-            BulkDeleteProviderCourseLocationsRequest expectedRequest = command;
+            ProviderCourseLocationsBulkDeleteRequest expectedRequest = command;
             await sut.Handle(command, new CancellationToken());
 
-            apiClientMock.Verify(c => c.Delete(It.Is<BulkDeleteProviderCourseLocationsRequest>(r => r.DeleteProviderCourseLocationOption == command.DeleteProviderCourseLocationOption && r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode)));
+            apiClientMock.Verify(c => c.Delete(It.Is<ProviderCourseLocationsBulkDeleteRequest>(r => r.DeleteProviderCourseLocationOption == command.DeleteProviderCourseLocationOption && r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode)));
         }
 
     }
