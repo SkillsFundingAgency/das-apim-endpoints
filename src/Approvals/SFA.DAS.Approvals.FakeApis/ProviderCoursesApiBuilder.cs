@@ -48,10 +48,10 @@ namespace SFA.DAS.Approvals.FakeApis
             return this;
         }
 
-        public ProviderCoursesApiBuilder WithCoursesDeliveryModels(int providerId, string courseCode)
+        public ProviderCoursesApiBuilder WithHasPortableFlexiJobOption(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetDeliveryModelsResponse>()
-                .With(a => a.DeliveryModels, new List<string> { DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob })
+            var course = _fixture.Build<GetHasPortableFlexiJobOptionResponse>()
+                .With(a => a.HasPortableFlexiJobOption, true)
                 .Create();
 
             _server
@@ -68,10 +68,10 @@ namespace SFA.DAS.Approvals.FakeApis
             return this;
         }
 
-        public ProviderCoursesApiBuilder WithCoursesDeliveryRegularModel(int providerId, string courseCode)
+        public ProviderCoursesApiBuilder WithHasPortableFlexiJobOptionFalse(int providerId, string courseCode)
         {
-            var course = _fixture.Build<GetDeliveryModelsResponse>()
-                .With(a => a.DeliveryModels, new List<string> { DeliveryModelStringTypes.Regular })
+            var course = _fixture.Build<GetHasPortableFlexiJobOptionResponse>()
+                .With(a => a.HasPortableFlexiJobOption, false)
                 .Create();
 
             _server
