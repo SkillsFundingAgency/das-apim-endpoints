@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\PausePayments - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\RevertPayments - Copy.feature.cs" />
   </ItemGroup>
 
 
@@ -41,6 +42,9 @@
     </Compile>
     <Compile Update="Features\ConfirmApprenticeEmploymentDetails.feature.cs">
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Features\ReinstatePayments.feature.cs">
+      <DependentUpon>ReinstatePayments.feature</DependentUpon>
     </Compile>
     <Compile Update="Features\RevertPayments.feature.cs">
       <DependentUpon>RevertPayments.feature</DependentUpon>
@@ -101,6 +105,10 @@
       <LastGenOutput>EmploymentCheck.feature.cs</LastGenOutput>
       <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></Generator>
     </SpecFlowFeatureFiles>
+     <SpecFlowFeatureFiles Update="Features\ReinstatePayments.feature">
+       <Visible>$(UsingMicrosoftNETSdk)</Visible>
+       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+     </SpecFlowFeatureFiles>
      <SpecFlowFeatureFiles Update="Features\RevertPayments.feature">
        <Visible>$(UsingMicrosoftNETSdk)</Visible>
        <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
