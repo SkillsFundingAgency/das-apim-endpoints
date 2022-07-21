@@ -1,4 +1,5 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+﻿using Microsoft.Azure.Amqp.Serialization;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
