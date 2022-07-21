@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\PausePayments - Copy.feature.cs" />
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\RevertPayments - Copy.feature.cs" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.13.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
