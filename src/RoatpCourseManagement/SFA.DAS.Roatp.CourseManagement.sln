@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManageme
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{871A9784-62BE-457C-929B-47D6690F92C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,18 @@ Global
 		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EBA53352-99A4-4150-9851-0C26ED8FB732} = {871A9784-62BE-457C-929B-47D6690F92C4}
+		{B630AF48-0477-4AE7-BB07-BA8F39614AAB} = {871A9784-62BE-457C-929B-47D6690F92C4}
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C} = {871A9784-62BE-457C-929B-47D6690F92C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35695315-ADEC-4A65-B8C4-BE7BD41E3A48}
