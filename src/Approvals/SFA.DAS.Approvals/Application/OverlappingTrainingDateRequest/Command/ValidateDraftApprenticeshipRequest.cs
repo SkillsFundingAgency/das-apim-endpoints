@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Approvals.InnerApi.Requests;
+﻿using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.Approvals.InnerApi.Requests;
 using System;
-using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
 {
@@ -26,13 +26,5 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
         public DateTime? EmploymentEndDate { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public UserInfo UserInfo { get; set; }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum DeliveryModel : byte
-    {
-        Regular = 0,
-        PortableFlexiJob = 1,
-        FlexiJobAgency = 2
     }
 }
