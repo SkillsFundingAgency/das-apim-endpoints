@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Api.Models.OverlappingTrainingDateRequest;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
+using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -37,6 +38,19 @@ namespace SFA.DAS.Approvals.Api.Controllers
             var result = await _mediator.Send(new ValidateDraftApprenticeshipDetailsCommand
             {
                  DraftApprenticeshipRequest = request
+            });
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{providerId}/apprenticeship/details")]
+        public async Task<IActionResult> GetOverlappingApprenticeshipDetails(long providerId, long draftApprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetOverlappingApprenticeshipDetailsQuery
+            {
+                 DraftApprenticeshipId = draftApprenticeshipId,
+                 ProviderId = providerId,
             });
 
             return Ok(result);
