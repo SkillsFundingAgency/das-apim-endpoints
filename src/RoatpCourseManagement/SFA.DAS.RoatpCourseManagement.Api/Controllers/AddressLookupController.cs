@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.AddressLookup;
+using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers

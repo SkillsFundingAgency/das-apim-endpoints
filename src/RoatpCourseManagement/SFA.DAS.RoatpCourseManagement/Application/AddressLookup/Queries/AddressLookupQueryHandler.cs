@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
+namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
     public class AddressLookupQueryHandler : IRequestHandler<AddresssLookupQuery, AddresssLookupQueryResult>
     {
