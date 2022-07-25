@@ -5,20 +5,21 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class PatchProviderCourseRequest : IPatchApiRequest<List<PatchOperation>>
     {
-        public int Ukprn { get; set; }
-        public int LarsCode { get; set; }
-        public string UserId { get; set; }
-        public string PatchUrl => $"providers/{Ukprn}/courses/{LarsCode}";
+        private const string Replace = "replace";
+        private readonly int _ukprn;
+
+        private readonly int _larsCode;
+        //TODO Deal with userId
+        //public string UserId { get; set; }
+        public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}";
 
         public List<PatchOperation> Data { get; set; }
 
-
-
         public PatchProviderCourseRequest(ProviderCourseUpdateModel model)
         {
-            Ukprn = model.Ukprn;
-            LarsCode = model.LarsCode;
-            UserId = model.UserId;
+            _ukprn = model.Ukprn;
+            _larsCode = model.LarsCode;
+            //UserId = model.UserId;
             Data = BuildDataPatchFromModel(model);
         }
 
@@ -27,31 +28,19 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
             var data = new List<PatchOperation>();
 
             if (model.ContactUsEmail != null)
-            {
-                data.Add(new PatchOperation { Path = "ContactUsEmail", Value = model.ContactUsEmail });
-            }
-            
+                data.Add(new PatchOperation { Path = "ContactUsEmail", Value = model.ContactUsEmail, Op=Replace });
+
             if (model.ContactUsPageUrl != null)
-            {
-                data.Add(new PatchOperation { Path = "ContactUsPageUrl", Value = model.ContactUsPageUrl });
-            }
-            
+                data.Add(new PatchOperation { Path = "ContactUsPageUrl", Value = model.ContactUsPageUrl, Op=Replace });
+
             if (model.ContactUsPhoneNumber != null)
-            {
-                data.Add(new PatchOperation
-                    { Path = "ContactUsPhoneNumber", Value = model.ContactUsPhoneNumber });
-            }
-            
+                data.Add(new PatchOperation { Path = "ContactUsPhoneNumber", Value = model.ContactUsPhoneNumber, Op=Replace });
+
             if (model.StandardInfoUrl != null)
-            {
-                data.Add(new PatchOperation { Path = "StandardInfoUrl", Value = model.StandardInfoUrl });
-            }
-            
+                data.Add(new PatchOperation { Path = "StandardInfoUrl", Value = model.StandardInfoUrl, Op=Replace });
+
             if (model.IsApprovedByRegulator != null)
-            {
-                data.Add(new PatchOperation
-                    { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator });
-            }
+                data.Add(new PatchOperation { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator, Op=Replace });
             
             return data;
         }
