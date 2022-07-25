@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
+namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
     public class AddresssLookupQueryResult
     {

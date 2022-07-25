@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup
+namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
     public class AddressItem
     {

@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.RoatpCourseManagement.Application.AddressLookup;
+using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.AddressLookup

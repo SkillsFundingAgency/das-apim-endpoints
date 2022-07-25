@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.RoatpCourseManagement.Application.AddressLookup;
+using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
