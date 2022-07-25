@@ -89,7 +89,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('api-application-insights-', parameters('appServiceName'), '-', parameters('utcValue'))]",
+            "name": "[concat('api-app-insights-', parameters('appServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -110,7 +110,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('api-app-service-', parameters('appServiceName'), '-', parameters('utcValue'))]",
+            "name": "[concat('api-app-srvce-', parameters('appServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "dependsOn": [],
@@ -159,7 +159,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('api-application-insights-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat('api-app-insights-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 }
                             ]
                         }
@@ -181,7 +181,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('role-assignment-', parameters('appServiceName'), '-', parameters('utcValue'))]",
+            "name": "[concat('role-assgnmnt-', parameters('appServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -192,7 +192,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.managedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-srvce-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
@@ -205,7 +205,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('role-assignment-staging-', parameters('appServiceName'), '-', parameters('utcValue'))]",
+            "name": "[concat('role-assgnmnt-stging-', parameters('appServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -216,7 +216,7 @@
                 },
                 "parameters": {
                     "principalId": {
-                        "value": "[reference(concat('api-app-service-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.stagingManagedServiceIdentityId.value]"
+                        "value": "[reference(concat('api-app-srvce-', parameters('appServiceName'), '-', parameters('utcValue'))).outputs.stagingManagedServiceIdentityId.value]"
                     },
                     "assignmentType": {
                         "value": "ServiceBusSender"
