@@ -21,6 +21,10 @@
         },
         "resourceGroupLocation": {
             "type": "string"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
@@ -40,7 +44,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "apim-endpoint-app-service-plan",
+            "name": "[concat('apim-endpoint-app-service-plan-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
