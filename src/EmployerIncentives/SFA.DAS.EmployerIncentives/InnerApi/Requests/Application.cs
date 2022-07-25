@@ -4,5 +4,6 @@
     {
         public long AccountLegalEntityId { get; set; }
         public long ULN { get; set; }
+        public ServiceRequest ServiceRequest { get; set; }
     }  
 }
