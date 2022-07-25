@@ -18,21 +18,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
 
         public async Task<Unit> Handle(UpdateApprovedByRegulatorCommand command, CancellationToken cancellationToken)
         {
-            // var providerCourse = await _innerApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(command.Ukprn, command.LarsCode));
-            // var updateProviderCourse = new ProviderCourseUpdateModel
-            // {
-            //     Ukprn = command.Ukprn,
-            //     LarsCode = command.LarsCode,
-            //     UserId = command.UserId,
-            //     ContactUsEmail = providerCourse.ContactUsEmail,
-            //     ContactUsPhoneNumber = providerCourse.ContactUsPhoneNumber,
-            //     ContactUsPageUrl = providerCourse.ContactUsPageUrl,
-            //     StandardInfoUrl = providerCourse.StandardInfoUrl,
-            //     IsApprovedByRegulator = command.IsApprovedByRegulator
-            // };
-            // var request = new ProviderCourseUpdateRequest(updateProviderCourse);
-            // await _innerApiClient.Put(request);
-
             var patchUpdateProviderCourse = new ProviderCourseUpdateModel
             {
                 Ukprn = command.Ukprn,
