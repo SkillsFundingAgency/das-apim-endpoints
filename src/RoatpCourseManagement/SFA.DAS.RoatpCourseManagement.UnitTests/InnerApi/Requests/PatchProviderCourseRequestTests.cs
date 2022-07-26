@@ -24,6 +24,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
             request.PatchUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}");
         }
 
+        [TestCase("test@test.com", "1234567890", "http://www.google.com/contact.us", "http://www.google.com", true, 5)]
         [TestCase("test@test.com","1234567890","http://www.google.com/contact.us","http://www.google.com",null,4)]
         [TestCase("test@test.com", "1234567890", "http://www.google.com/contact.us", null, null, 3)]
         [TestCase("test@test.com", "1234567890", null, "http://www.google.com", null, 3)]
