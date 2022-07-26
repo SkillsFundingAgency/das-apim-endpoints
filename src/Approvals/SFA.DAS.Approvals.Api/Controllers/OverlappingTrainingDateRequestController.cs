@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models.OverlappingTrainingDateRequest;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -44,13 +45,15 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{providerId}/apprenticeship/details")]
-        public async Task<IActionResult> GetOverlappingApprenticeshipDetails(long providerId, long draftApprenticeshipId)
+        [Route("{providerId}/validateUlnOverlap")]
+        public async Task<IActionResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate)
         {
-            var result = await _mediator.Send(new GetOverlappingApprenticeshipDetailsQuery
+            var result = await _mediator.Send(new ValidateUlnOverlapOnStartDateQuery
             {
-                 DraftApprenticeshipId = draftApprenticeshipId,
                  ProviderId = providerId,
+                 Uln = uln,
+                 StartDate = startDate,
+                 EndDate = endDate
             });
 
             return Ok(result);

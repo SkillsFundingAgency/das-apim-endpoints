@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.Approvals.Enums;
 
-namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
+namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 {
-    public class ValidateUlnOverlapOnStartDateResponse
+    public class ValidateUlnOverlapOnStartDateQueryResult
     {
         public long? HasOverlapWithApprenticeshipId { get; set; }
         public bool HasStartDateOverlap { get; set; }
