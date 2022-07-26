@@ -21,25 +21,25 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 
         public async Task<GetApprenticeResult> Handle(GetApprenticeQuery request, CancellationToken cancellationToken)
         {
-            var result = _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
+            var apprentice = _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
 
             var apprenticePreferences = _apiClient.Get<GetApprenticePreferencesResponse>(
                 new GetApprenticePreferencesRequest(request.ApprenticeId));
 
-            await Task.WhenAll(result, apprenticePreferences);
+            await Task.WhenAll(apprentice, apprenticePreferences);
 
-            if (result.Result == null)
+            if (apprentice.Result == null)
                 return null;
 
             return new GetApprenticeResult
             {
-                ApprenticeId = result.Result.ApprenticeId,
-                FirstName = result.Result.FirstName,
-                LastName = result.Result.LastName,
-                DateOfBirth = result.Result.DateOfBirth,
-                Email = result.Result.Email,
-                TermsOfUseAccepted = result.Result.TermsOfUseAccepted,
-                ReacceptTermsOfUseRequired = result.Result.ReacceptTermsOfUseRequired,
+                ApprenticeId = apprentice.Result.ApprenticeId,
+                FirstName = apprentice.Result.FirstName,
+                LastName = apprentice.Result.LastName,
+                DateOfBirth = apprentice.Result.DateOfBirth,
+                Email = apprentice.Result.Email,
+                TermsOfUseAccepted = apprentice.Result.TermsOfUseAccepted,
+                ReacceptTermsOfUseRequired = apprentice.Result.ReacceptTermsOfUseRequired,
                 ApprenticePreferences = apprenticePreferences.Result.ApprenticePreferences
             };
         }
