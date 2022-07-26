@@ -45,7 +45,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
-            await Task.WhenAll(locationTask, courseTask, shortlistTask);
+            var apprenticeFeedbackSummaryTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
+
+            await Task.WhenAll(locationTask, courseTask, shortlistTask, apprenticeFeedbackSummaryTask);
 
             var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
                 request.Id,
@@ -56,24 +58,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 request.SortOrder,
                 request.ShortlistUserId));
 
-            if (providers?.Providers.Any() == true)
+            if (providers?.Providers.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
             {
-                var ukprns = providers.Providers.Select(s => s.Ukprn);
-
-                var apprenticeFeedbackRatings =
-                    await _apprenticeFeedbackApiClient.
-                    PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(
-                        new PostApprenticeFeedbackRequest
-                        {
-                            Data = new PostApprenticeFeedbackRequestData { Ukprns = ukprns }
-                        });
-
-                if (apprenticeFeedbackRatings.StatusCode == HttpStatusCode.OK)
+                var summaries = apprenticeFeedbackSummaryTask.Result;
+                foreach (var provider in providers.Providers)
                 {
-                    foreach (var ratingResponse in apprenticeFeedbackRatings.Body)
-                    {
-                        providers.Providers.First(s => s.Ukprn == ratingResponse.Ukprn).ApprenticeFeedback = ratingResponse;
-                    }
+                    provider.ApprenticeFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
                 }
             }
 
