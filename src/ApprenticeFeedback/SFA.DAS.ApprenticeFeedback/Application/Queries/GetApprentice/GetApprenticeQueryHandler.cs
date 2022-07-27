@@ -40,7 +40,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 Email = apprentice.Result.Email,
                 TermsOfUseAccepted = apprentice.Result.TermsOfUseAccepted,
                 ReacceptTermsOfUseRequired = apprentice.Result.ReacceptTermsOfUseRequired,
-                ApprenticePreferences = apprenticePreferences.Result.ApprenticePreferences
+                ApprenticePreferences = apprenticePreferences.Result?.ApprenticePreferences ?? new System.Collections.Generic.List<ApprenticePreferenceDto>()
             };
         }
     }

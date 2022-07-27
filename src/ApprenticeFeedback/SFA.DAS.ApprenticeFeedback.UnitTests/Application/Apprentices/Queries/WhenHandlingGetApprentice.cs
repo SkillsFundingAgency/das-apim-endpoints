@@ -59,7 +59,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
         {
             apiClient.Setup(x =>
                     x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
-                .Returns(Task.FromResult((GetApprenticeResponse)null));
+                .ReturnsAsync((GetApprenticeResponse)null);
 
             apiClient.Setup(x =>
                     x.Get<GetApprenticePreferencesResponse>(
@@ -75,7 +75,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
         [MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_No_ApprenticePreferences_Is_Returned(
             GetApprenticeQuery query,
-            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
             GetApprenticeQueryHandler handler,
             [Greedy] GetApprenticeResponse response)
         {
@@ -104,14 +104,12 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
         [MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_No_ApprenticePreferences_Or_Apprentice_Is_Returned(
                 GetApprenticeQuery query,
-                [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
+                [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
                 GetApprenticeQueryHandler handler)
         {
-            //var apprentice = _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
-
             apiClient.Setup(x =>
-                    x.Get<GetApprenticeResponse>(It.IsAny<GetApprenticeRequest>()))
-                .Returns((Task<GetApprenticeResponse>)null);
+                    x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync((GetApprenticeResponse)null);
 
             apiClient.Setup(x =>
                     x.Get<GetApprenticePreferencesResponse>(
@@ -124,4 +122,3 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
         }
     }
 }
-//(x => x.Id == query.ApprenticeId)
