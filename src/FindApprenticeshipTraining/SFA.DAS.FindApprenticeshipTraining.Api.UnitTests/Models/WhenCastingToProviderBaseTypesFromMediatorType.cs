@@ -150,8 +150,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         public void Then_Maps_Zero_If_No_Feedback(GetProvidersListItem source, string sectorSubjectArea)
         {
             source.EmployerFeedback.FeedbackRatings = null;
-            source.ApprenticeFeedback.ProviderRating = null;
-
+            source.ApprenticeFeedback.ReviewCount = 0;
+            
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(0);
@@ -187,34 +187,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 92,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 29,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 7,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Very Poor",
-                    Count = 1,
-                }
-            };
+            source.ApprenticeFeedback.ReviewCount = 24;
+            source.ApprenticeFeedback.Stars = 2;
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackDetail.Should().BeEquivalentTo(source.EmployerFeedback.FeedbackRatings);
-            response.ApprenticeFeedback.FeedbackDetail.Should().BeEquivalentTo(source.ApprenticeFeedback.ProviderRating);
+            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(2);
+            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(24);
         }
 
         [Test, AutoData]
@@ -244,37 +224,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 92,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 29,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 7,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Very Poor",
-                    Count = 1,
-                }
-            };
+            source.ApprenticeFeedback.ReviewCount = 20;
+            source.ApprenticeFeedback.Stars = 2;
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(129);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
 
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(129);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
+            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(20);
+            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(2);
         }
 
         [Test, AutoData]
@@ -295,28 +254,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Very Poor",
-                    Count = 8,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 6,
-                }
-            };
-
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(10);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(1);
-
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(14);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(1);
         }
 
         [Test, AutoData]
@@ -336,28 +277,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 4,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 3,
-                }
-            };
-
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(13);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(2);
-
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(7);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(2);
         }
 
         [Test, AutoData]
@@ -377,27 +300,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 4,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 4,
-                }
-            };
-
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(8);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
-
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(8);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
         }
         [Test, AutoData]
         public void Then_Returns_Feedback_Of_Four_If_Between_Boundary(GetProvidersListItem source, string sectorSubjectArea)
@@ -416,27 +322,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 1,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 1,
-                }
-            };
-
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(6);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(4);
-
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(2);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(4);
         }
 
         [Test, AutoData]
@@ -451,22 +340,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 6,
-                }
-            };
-
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.TotalEmployerResponses.Should().Be(6);
             response.EmployerFeedback.TotalFeedbackRating.Should().Be(4);
-
-            response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(6);
-            response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(4);
         }
 
         [Test, AutoData]
@@ -679,19 +556,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_If_There_Are_ApprenticeRatings_To_Filter_Then_Matches_On_Values(string sectorSubjectArea, GetProvidersListItem source)
         {
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 1,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 1,
-                }
-            };
+            source.ApprenticeFeedback.ReviewCount = 23;
+            source.ApprenticeFeedback.Stars = 4;
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType> { FeedbackRatingType.Poor }, new List<FeedbackRatingType>(), true);
 
@@ -703,20 +569,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_If_There_Are_Multiple_ApprenticeRatings_To_Filter_Then_Matches_On_Values(string sectorSubjectArea, GetProvidersListItem source)
         {
-            source.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 1,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 1,
-                }
-            };
-
+            source.ApprenticeFeedback.Stars = 4;
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType> { FeedbackRatingType.Poor, FeedbackRatingType.Excellent }, true);
 
             response.Should().NotBeNull();

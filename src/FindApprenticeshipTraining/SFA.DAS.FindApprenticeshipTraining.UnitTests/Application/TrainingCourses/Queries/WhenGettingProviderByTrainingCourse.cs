@@ -120,9 +120,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync(ukprnsCountResponse);
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                        .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                        .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -187,9 +186,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -342,9 +340,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -415,9 +412,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                        .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                        .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -494,9 +490,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+             .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+             .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -572,9 +567,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                    (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -633,9 +627,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             apprenticeFeedbackResponse.Ukprn = query.ProviderId;
             mockApprenticeFeedbackClient
-                            .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>
-                                (It.Is<PostApprenticeFeedbackRequest>(t => ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Contains(query.ProviderId)),true))
-                            .ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(new List<GetApprenticeFeedbackResponse> { apprenticeFeedbackResponse }, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
+                .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+
         }
     }
 }

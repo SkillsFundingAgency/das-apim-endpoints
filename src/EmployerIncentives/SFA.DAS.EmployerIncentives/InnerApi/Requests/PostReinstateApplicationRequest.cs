@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests
 {
