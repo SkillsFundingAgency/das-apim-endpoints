@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Http;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -85,7 +88,15 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             if (!Regex.IsMatch(fullPostcode, PostcodeRegex)) return null;
 
-            return await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(fullPostcode, MinMatch));
+            var response = await _locationApiClient.GetWithResponseCode<GetAddressesListResponse>(new GetAddressesQueryRequest(fullPostcode, MinMatch));
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var message = $"Location api did not return a successful response when trying to get addresses for postcode {fullPostcode}";
+                throw new InvalidOperationException(message);
+            }
+
+            return response.Body;
         }
     }
 }
