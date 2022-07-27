@@ -7,10 +7,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         private const string Replace = "replace";
         private readonly int _ukprn;
-
         private readonly int _larsCode;
-        //TODO Deal with userId
-        //public string UserId { get; set; }
+
         public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}";
 
         public List<PatchOperation> Data { get; set; }
@@ -19,7 +17,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         {
             _ukprn = model.Ukprn;
             _larsCode = model.LarsCode;
-            //UserId = model.UserId;
             Data = BuildDataPatchFromModel(model);
         }
 

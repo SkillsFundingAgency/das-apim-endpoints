@@ -8,7 +8,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         public object Value { get; set; }
         [JsonProperty("path")]
         public string Path { get; set; }
-
         [JsonProperty("op")] 
         public string Op { get; set; }
     }
