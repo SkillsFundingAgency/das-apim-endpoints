@@ -65,6 +65,8 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
 
                 var postVacancyRequestData = (PostVacancyRequestData)request;
                 postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
+                postVacancyRequestData.AccountType = account.AccountType;
+
                 var contactDetails = new ContactDetails
                 {
                     Email = request.SubmitterContactDetails.Email,
