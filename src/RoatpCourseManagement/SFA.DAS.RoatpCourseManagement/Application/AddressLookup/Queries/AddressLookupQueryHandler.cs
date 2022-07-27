@@ -23,12 +23,12 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
             var result = await _locationLookupService.GetExactMatchAddresses(request.Postcode);
             if (result == null)
             {
-                _logger.LogWarning($"Address lookup did not respond with success code for postcode: {request.Postcode}.");
+                _logger.LogWarning($"Invalid postcode: {request.Postcode}.");
                 return null;
             }
             _logger.LogInformation($"Found {result.Addresses.Count()} addresses for postcode: {request.Postcode}");
             var response = new AddresssLookupQueryResult();
-            response.Addresses = result.Addresses.Select(a => (AddressItem)a);
+            response.Addresses = result.Addresses.Select(a => (AddressItem)a).ToList();
             return response;
         }
     }
