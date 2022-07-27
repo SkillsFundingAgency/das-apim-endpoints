@@ -2,7 +2,7 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Location.Queries.GetProviderLocationDetails
+namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails
 {
     public class GetProviderLocationDetailsQuery : IGetApiRequest, IRequest<GetProviderLocationDetailsQueryResult>
     {

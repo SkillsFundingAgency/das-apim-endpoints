@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Location.Queries.GetProviderLocationDetails
+namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails
 {
     public class GetProviderLocationDetailsQueryHandler : IRequestHandler<GetProviderLocationDetailsQuery, GetProviderLocationDetailsQueryResult>
     {

@@ -1,20 +1,20 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.Location.Queries.GetProviderLocationDetails;
-using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries;
+using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
+using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
 using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
     [ApiController]
-    public class GetProviderLocationsController : ControllerBase
+    public class ProviderLocationsGetController : ControllerBase
     {
-        private readonly ILogger<GetProviderLocationsController> _logger;
+        private readonly ILogger<ProviderLocationsGetController> _logger;
         private readonly IMediator _mediator;
 
-        public GetProviderLocationsController(ILogger<GetProviderLocationsController> logger, IMediator mediator)
+        public ProviderLocationsGetController(ILogger<ProviderLocationsGetController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

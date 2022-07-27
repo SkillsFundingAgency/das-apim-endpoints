@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -10,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
+using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
 
 namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions
 {

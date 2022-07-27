@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Location.Queries.GetProviderLocationDetails
+namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails
 {
     public class GetProviderLocationDetailsQueryResult
     {
