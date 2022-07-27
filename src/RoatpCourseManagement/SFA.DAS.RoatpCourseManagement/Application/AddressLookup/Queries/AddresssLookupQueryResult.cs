@@ -4,6 +4,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
     public class AddresssLookupQueryResult
     {
-        public IEnumerable<AddressItem> Addresses { get; set; }
+        public List<AddressItem> Addresses { get; set; } = new List<AddressItem>();
     }
 }
