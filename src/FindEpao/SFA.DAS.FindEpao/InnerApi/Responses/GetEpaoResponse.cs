@@ -1,11 +1,11 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
     public class GetEpaoResponse
     {
-        [JsonProperty("organisationId")]
+        [JsonPropertyName("organisationId")]
         public string Id { get; set; }
         public string Name { get; set; }
         public uint? Ukprn { get; set; }
