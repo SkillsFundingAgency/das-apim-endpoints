@@ -21,8 +21,6 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         private Mock<IMediator> _mediator;
         private GetEditDraftApprenticeshipQueryResult _queryResult;
 
-        private Party _party;
-        private long _partyId;
         private long _cohortId;
         private long _draftApprenticeshipId;
 
@@ -32,15 +30,11 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
             var fixture = new Fixture();
             _queryResult = fixture.Create<GetEditDraftApprenticeshipQueryResult>();
 
-            _party = fixture.Create<Party>();
-            _partyId = fixture.Create<long>();
             _cohortId = fixture.Create<long>();
             _draftApprenticeshipId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.Is<GetEditDraftApprenticeshipQuery>(q =>
-                        q.Party == _party &&
-                        q.PartyId == _partyId &&
                         q.CohortId == _cohortId &&
                         q.DraftApprenticeshipId == _draftApprenticeshipId),
                     It.IsAny<CancellationToken>()))
@@ -52,7 +46,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         [Test]
         public async Task EditDraftApprenticeshipResponseIsReturned()
         {
-            var result = await _controller.GetEditDraftApprenticeship(_party, _partyId, _cohortId, _draftApprenticeshipId);
+            var result = await _controller.GetEditDraftApprenticeship(_cohortId, _draftApprenticeshipId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult) result;

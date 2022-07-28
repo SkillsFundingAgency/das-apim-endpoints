@@ -45,48 +45,20 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{party}/{partyId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit")]
-        public async Task<IActionResult> GetEditDraftApprenticeship(Party party, long partyId, long cohortId, long draftApprenticeshipId)
+        [Route("employer/{accountId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit")]
+        public async Task<IActionResult> GetEditDraftApprenticeship(long cohortId, long draftApprenticeshipId)
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipQuery{ Party = party, PartyId = partyId, CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
+                var result = await _mediator.Send(new GetEditDraftApprenticeshipQuery{ CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
                 
                 if (result == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(new GetEditDraftApprenticeshipResponse
-                {
-                    FirstName = result.FirstName,
-                    LastName = result.LastName,
-                    DateOfBirth = result.DateOfBirth,
-                    ReservationId = result.ReservationId,
-                    Email  = result.Email,
-                    Uln   = result.Uln,
-                    DeliveryModel =  result.DeliveryModel,
-                    CourseCode  = result.CourseCode,
-                    StandardUId = result.StandardUId,
-                    CourseName = result.CourseName,
-                    StartDate = result.StartDate,
-                    EndDate = result.EndDate,
-                    Cost = result.Cost,
-                    EmploymentPrice = result.EmploymentPrice,
-                    EmploymentEndDate = result.EmploymentEndDate,
-                    EmployerReference = result.EmployerReference,
-                    ProviderReference = result.ProviderReference,
-                    ProviderId = result.ProviderId,
-                    AccountLegalEntityId = result.AccountLegalEntityId,
-                    ProviderName = result.ProviderName,
-                    LegalEntityName = result.LegalEntityName,
-                    IsContinuation = result.IsContinuation,
-                    HasMultipleDeliveryModelOptions = result.HasMultipleDeliveryModelOptions,
-                    RecognisePriorLearning = result.RecognisePriorLearning,
-                    DurationReducedBy = result.DurationReducedBy,
-                    PriceReducedBy = result.PriceReducedBy,
-                    RecognisingPriorLearningStillNeedsToBeConsidered = result.RecognisingPriorLearningStillNeedsToBeConsidered
-                });
+                return Ok((GetEditDraftApprenticeshipResponse)result);
             }
             catch (Exception e)
             {

@@ -16,11 +16,13 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IDeliveryModelService _deliveryModelService;
+        private readonly ServiceParameters _serviceParameters;
 
-        public GetEditDraftApprenticeshipQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService)
+        public GetEditDraftApprenticeshipQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
             _deliveryModelService = deliveryModelService;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<GetEditDraftApprenticeshipQueryResult> Handle(GetEditDraftApprenticeshipQuery request, CancellationToken cancellationToken)
@@ -44,7 +46,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             var apprenticeship = innerApiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
-            if (!CheckParty(cohort, request))
+            if (!CheckParty(cohort))
             {
                 return null;
             }
@@ -84,13 +86,13 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             };
         }
 
-        private bool CheckParty(GetCohortResponse cohort, GetEditDraftApprenticeshipQuery query)
+        private bool CheckParty(GetCohortResponse cohort)
         {
-            switch (query.Party)
+            switch (_serviceParameters.CallingParty)
             {
                 case Party.Employer:
                 {
-                    if (cohort.AccountId != query.PartyId)
+                    if (cohort.AccountId != _serviceParameters.CallingPartyId)
                     {
                         return false;
                     }
@@ -99,7 +101,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 }
                 case Party.Provider:
                 {
-                    if (cohort.ProviderId != query.PartyId)
+                    if (cohort.ProviderId != _serviceParameters.CallingPartyId)
                     {
                         return false;
                     }

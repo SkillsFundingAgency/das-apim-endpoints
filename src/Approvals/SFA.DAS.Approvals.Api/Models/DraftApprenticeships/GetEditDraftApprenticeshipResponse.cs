@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
@@ -40,5 +41,39 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+
+        public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
+        {
+            return new GetEditDraftApprenticeshipResponse
+            {
+                FirstName = source.FirstName,
+                LastName = source.LastName,
+                DateOfBirth = source.DateOfBirth,
+                ReservationId = source.ReservationId,
+                Email = source.Email,
+                Uln = source.Uln,
+                DeliveryModel = source.DeliveryModel,
+                CourseCode = source.CourseCode,
+                StandardUId = source.StandardUId,
+                CourseName = source.CourseName,
+                StartDate = source.StartDate,
+                EndDate = source.EndDate,
+                Cost = source.Cost,
+                EmploymentPrice = source.EmploymentPrice,
+                EmploymentEndDate = source.EmploymentEndDate,
+                EmployerReference = source.EmployerReference,
+                ProviderReference = source.ProviderReference,
+                ProviderId = source.ProviderId,
+                AccountLegalEntityId = source.AccountLegalEntityId,
+                ProviderName = source.ProviderName,
+                LegalEntityName = source.LegalEntityName,
+                IsContinuation = source.IsContinuation,
+                HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions,
+                RecognisePriorLearning = source.RecognisePriorLearning,
+                DurationReducedBy = source.DurationReducedBy,
+                PriceReducedBy = source.PriceReducedBy,
+                RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered
+            };
+        }
     }
 }
