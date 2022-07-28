@@ -53,7 +53,7 @@
         },
         "utcValue": {
             "type": "string",
-            "defaultValue": "[utcNow()]"
+            "defaultValue": "[utcNow('yyMMddHHmmss')]"
         }
     },
     "variables": {
@@ -205,7 +205,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('role-assgnmnt-stging-', parameters('appServiceName'), '-', parameters('utcValue'))]",
+            "name": "[concat('role-assgnmnt-stgng-', parameters('appServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
