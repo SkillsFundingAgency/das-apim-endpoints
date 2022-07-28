@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries
 {
@@ -45,16 +45,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries
                 Uln = x.Uln,
                 CourseCode = x.CourseCode,
                 CourseName = x.CourseName,
-                DeliveryModel = (DeliveryModel)x.DeliveryModel,
+                DeliveryModel = x.DeliveryModel,
                 OriginalStartDate = x.OriginalStartDate,
             };
         }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum DeliveryModel : byte
-    {
-        Regular = 0,
-        PortableFlexiJob = 1,
     }
 }

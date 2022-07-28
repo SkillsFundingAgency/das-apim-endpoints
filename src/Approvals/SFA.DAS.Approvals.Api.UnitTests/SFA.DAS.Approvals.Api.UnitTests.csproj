@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
+        <PackageReference Include="CompareNETObjects" Version="4.77.0" />
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
         <PackageReference Include="MediatR" Version="6.0.0" />
         <PackageReference Include="Moq" Version="4.7.0" />
