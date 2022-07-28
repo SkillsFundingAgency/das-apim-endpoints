@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -8,7 +9,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.Testing.AutoFixture;
@@ -37,7 +37,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             distributedCache.Verify(x=>
                 x.SetAsync(
                     $"{appName}_{keyName}",
-                    It.Is<byte[]>(c=>Encoding.UTF8.GetString(c).Equals(JsonConvert.SerializeObject(test))), 
+                    It.Is<byte[]>(c=>Encoding.UTF8.GetString(c).Equals(JsonSerializer.Serialize(test,null))), 
                     It.Is<DistributedCacheEntryOptions>(c
                         => c.AbsoluteExpirationRelativeToNow.Value.Hours == TimeSpan.FromHours(expiryInHours).Hours),
                     It.IsAny<CancellationToken>()), 
@@ -65,7 +65,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             distributedCache.Verify(x=>
                     x.SetAsync(
                         $"{appName}_{keyName}",
-                        It.Is<byte[]>(c=>Encoding.UTF8.GetString(c).Equals(JsonConvert.SerializeObject(test))), 
+                        It.Is<byte[]>(c=>Encoding.UTF8.GetString(c).Equals(JsonSerializer.Serialize(test,null))), 
                         It.Is<DistributedCacheEntryOptions>(c
                             => c.AbsoluteExpirationRelativeToNow.Value.Hours == TimeSpan.FromHours(expiryInHours).Hours),
                         It.IsAny<CancellationToken>()), 
@@ -85,7 +85,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             //Arrange
             configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
             distributedCache.Setup(x => x.GetAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(test)));
+                .ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(test,null)));
 
             //Act
             var item = await service.RetrieveFromCache<TestObject>(keyName);
@@ -109,7 +109,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             //Arrange
             configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns($"{appName},{appName2}");
             distributedCache.Setup(x => x.GetAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(test)));
+                .ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(test,null)));
 
             //Act
             var item = await service.RetrieveFromCache<TestObject>(keyName);
@@ -130,7 +130,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             //Arrange
             configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
             distributedCache.Setup(x => x.GetAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new byte[0]);
+                .ReturnsAsync((byte[]) null);
 
             //Act
             var item = await service.RetrieveFromCache<TestObject>(keyName);
@@ -150,7 +150,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             //Arrange
             configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
             distributedCache.Setup(x => x.GetAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new byte[0]);
+                .ReturnsAsync((byte[]) null);
 
             //Act
             var item = await service.RetrieveFromCache<List<TestObject>>(keyName);

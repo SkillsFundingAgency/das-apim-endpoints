@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     && ((CreateCourseDemandData)c.Data).StartSharingUrl.Equals(command.StartSharingUrl)
                     && ((CreateCourseDemandData)c.Data).ExpiredCourseDemandId.Equals(command.ExpiredCourseDemandId)
                     && ((CreateCourseDemandData)c.Data).EntryPoint.Equals(command.EntryPoint)
-                )))
+                ),true))
                 .ReturnsAsync(apiResponse);
 
             SendEmailCommand actualEmail = null;
@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Accepted, "");
             apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
-                )))
+                ),true))
                 .ReturnsAsync(apiResponse);
 
             //Act
@@ -107,7 +107,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostEmployerCourseDemand>(responseBody, HttpStatusCode.Conflict, "");
             apiClient.Setup(x => x.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(
-                )))
+                ),true))
                 .ReturnsAsync(apiResponse);
 
             //Act
@@ -130,7 +130,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostEmployerCourseDemand>(null, HttpStatusCode.BadRequest, errorContent);
             apiClient
-                .Setup(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostEmployerCourseDemand>(It.IsAny<PostCreateCourseDemandRequest>(),true))
                 .ReturnsAsync(apiResponse);
 
             //Act

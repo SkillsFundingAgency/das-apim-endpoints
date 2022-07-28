@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         }
 
         [Test, MoqAutoData]
-        public async Task Then_An_Exception_Is_Thrown_When_The_InnerApi_Returns_A_Conflict(
+        public void Then_An_Exception_Is_Thrown_When_The_InnerApi_Returns_A_Conflict(
             ConfirmIncentiveApplicationRequest request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             ApplicationService service)

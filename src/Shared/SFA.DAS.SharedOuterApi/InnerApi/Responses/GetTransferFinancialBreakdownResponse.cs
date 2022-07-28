@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
@@ -19,14 +18,14 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         }
         public class FundsDetails
         {
-            [JsonProperty("approved-pledge-applications")]
+            [JsonPropertyName("approved-pledge-applications")]
             public decimal ApprovedPledgeApplications { get; set; }
-            [JsonProperty("accepted-pledge-applications")]
+            [JsonPropertyName("accepted-pledge-applications")]
             public decimal AcceptedPledgeApplications { get; set; }
-            [JsonProperty("pledge-originated-commitments")]
+            [JsonPropertyName("pledge-originated-commitments")]
             public decimal PledgeOriginatedCommitments { get; set; }            
             public decimal Commitments { get; set; }            
-            [JsonProperty("transfer-connections")]
+            [JsonPropertyName("transfer-connections")]
             public decimal TransferConnections { get; set; }
 
         }
