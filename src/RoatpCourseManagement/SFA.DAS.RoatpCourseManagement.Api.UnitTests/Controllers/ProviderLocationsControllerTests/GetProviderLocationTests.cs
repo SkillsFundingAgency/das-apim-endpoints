@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
     public class GetProviderLocationTests
     {
         [Test, MoqAutoData]
-        public async Task GetAllLocations_ValidRequest_ReturnsLocations(
+        public async Task GetProviderLocation_ValidRequest_ReturnsLocations(
             int ukprn,
             Guid id,
             [Frozen] Mock<IMediator> mediatorMock,
@@ -34,7 +34,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
         }
 
         [Test, MoqAutoData]
-        public async Task GetAllLocations_InvalidRequest_ReturnsLocations(
+        public async Task GetProviderLocation_InvalidRequest_ReturnsLocations(
             int ukprn,
             Guid id,
             [Frozen] Mock<IMediator> mediatorMock,
