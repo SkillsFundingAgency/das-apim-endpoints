@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
          )
         {
             var response = new ApiResponse<CreateOverlappingTrainingDateResult>(new CreateOverlappingTrainingDateResult { Id = 1 }, System.Net.HttpStatusCode.OK, string.Empty);
-            apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.IsAny<PostCreateOverlappingTrainingDateRequest>())).ReturnsAsync(response);
+            apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.IsAny<PostCreateOverlappingTrainingDateRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
             Assert.IsNotNull(actual);
         }
@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
         )
         {
             var response = new ApiResponse<CreateOverlappingTrainingDateResult>(new CreateOverlappingTrainingDateResult { Id = 1 }, System.Net.HttpStatusCode.InternalServerError, string.Empty);
-            apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.IsAny<PostCreateOverlappingTrainingDateRequest>())).ReturnsAsync(response);
+            apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.IsAny<PostCreateOverlappingTrainingDateRequest>(), true)).ReturnsAsync(response);
             Assert.CatchAsync<ApiResponseException>(async () => await handler.Handle(query, CancellationToken.None));
         }
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
             apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.Is<PostCreateOverlappingTrainingDateRequest>(x => x.ProviderId == cmd.ProviderId
             && (x.Data as CreateOverlappingTrainingDateRequest).DraftApprenticeshipId == cmd.DraftApprneticeshipId
             && (x.Data as CreateOverlappingTrainingDateRequest).UserInfo == cmd.UserInfo
-                ))).ReturnsAsync(response);
+                ), true)).ReturnsAsync(response);
             var actual = await handler.Handle(cmd, CancellationToken.None);
             Assert.IsNotNull(actual);
         }

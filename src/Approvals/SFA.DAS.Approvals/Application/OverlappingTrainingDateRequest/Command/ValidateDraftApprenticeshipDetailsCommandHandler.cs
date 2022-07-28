@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
         public async Task<Unit> Handle(ValidateDraftApprenticeshipDetailsCommand request, CancellationToken cancellationToken)
         {
             var result = await _apiClient.PostWithResponseCode<object>(
-               new PostValidateDraftApprenticeshipDetailsRequest(request.DraftApprenticeshipRequest));
+               new PostValidateDraftApprenticeshipDetailsRequest(request.DraftApprenticeshipRequest), false);
 
             result.EnsureSuccessStatusCode();
 

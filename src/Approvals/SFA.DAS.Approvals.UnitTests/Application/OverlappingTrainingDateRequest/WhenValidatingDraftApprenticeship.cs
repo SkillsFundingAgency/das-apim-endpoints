@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
           )
         {
             var response = new ApiResponse<object>(null, System.Net.HttpStatusCode.OK, string.Empty);
-            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateDraftApprenticeshipDetailsRequest>())).ReturnsAsync(response);
+            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateDraftApprenticeshipDetailsRequest>(), false)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
             Assert.IsNotNull(actual);
         }
@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
          )
         {
             var response = new ApiResponse<object>(null, System.Net.HttpStatusCode.InternalServerError, string.Empty);
-            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateDraftApprenticeshipDetailsRequest>())).ReturnsAsync(response);
+            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateDraftApprenticeshipDetailsRequest>(), false)).ReturnsAsync(response);
             Assert.CatchAsync<ApiResponseException>(async () =>   await handler.Handle(query, CancellationToken.None));
         }
     }
