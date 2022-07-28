@@ -29,13 +29,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Setup(x => x.PostWithResponseCode<PostRevertPaymentsRequest>(
                 It.Is<PostRevertPaymentsRequest>(
                     c => c.PostUrl.Contains("revert-payments")
-                ))).ReturnsAsync(new ApiResponse<PostRevertPaymentsRequest>(null, HttpStatusCode.NoContent, ""));
+                ), false)).ReturnsAsync(new ApiResponse<PostRevertPaymentsRequest>(null, HttpStatusCode.NoContent, ""));
 
             await service.RevertPayments(request);
 
             client.Verify(x => x.PostWithResponseCode<PostRevertPaymentsRequest>(
                 It.Is<PostRevertPaymentsRequest>(c => c.PostUrl.Contains("revert-payments")
-                )), Times.Once);
+                ), false), Times.Once);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Setup(x => x.PostWithResponseCode<PostRevertPaymentsRequest>(
                 It.Is<PostRevertPaymentsRequest>(
                     c => c.PostUrl.Contains("revert-payments")
-                ))).ReturnsAsync(new ApiResponse<PostRevertPaymentsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
+                ), false)).ReturnsAsync(new ApiResponse<PostRevertPaymentsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
 
             var request = fixture.Create<RevertPaymentsRequest>();
 

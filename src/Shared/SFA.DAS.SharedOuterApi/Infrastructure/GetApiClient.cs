@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -65,7 +64,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
             else
             {
-                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+                responseBody = JsonSerializer.Deserialize<TResponse>(json, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
             }
 
             var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);

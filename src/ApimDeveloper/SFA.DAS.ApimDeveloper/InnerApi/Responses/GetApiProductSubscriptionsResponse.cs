@@ -1,19 +1,19 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
 {
     public class GetApiProductSubscriptionsResponse
     {
-        [JsonProperty("subscriptions")]
+        [JsonPropertyName("subscriptions")]
         public IEnumerable<GetApiProductSubscriptionsResponseItem> Subscriptions { get; set; }
     }
 
     public class GetApiProductSubscriptionsResponseItem
     {
-        [JsonProperty("key")]
+        [JsonPropertyName("key")]
         public string Key { get; set; }
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
     }
 }
