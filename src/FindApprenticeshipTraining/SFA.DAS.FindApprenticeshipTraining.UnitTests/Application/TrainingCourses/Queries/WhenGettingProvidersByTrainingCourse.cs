@@ -13,7 +13,6 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
             GetStandardsListItem apiCourseResponse,
-            IEnumerable<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
+            IEnumerable<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
@@ -61,12 +60,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(service => service.GetLocationInformation(query.Location, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem)null);
             mockApprenticeFeedbackApiClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(It.Is<PostApprenticeFeedbackRequest>
-                (t =>
-                    ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Providers.Select(s => s.Ukprn)).Count() == 0 &&
-                    apiResponse.Providers.Select(s => s.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
-                ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
-
+                 .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
+                 .ReturnsAsync(apprenticeFeedbackResponse);
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers, options => options.Excluding(s => s.ApprenticeFeedback));
@@ -87,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             string authorityName,
             GetTrainingCourseProvidersQuery query,
             GetProvidersListResponse apiResponse,
-            IEnumerable<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
+            IEnumerable<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
             GetStandardsListItem apiCourseResponse,
             LocationItem locationServiceResponse,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
@@ -121,12 +116,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains(query.Id.ToString()))))
                 .ReturnsAsync(apiCourseResponse);
             mockApprenticeFeedbackApiClient
-                    .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(It.Is<PostApprenticeFeedbackRequest>
-                    (t =>
-                        ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Providers.Select(s => s.Ukprn)).Count() == 0 &&
-                        apiResponse.Providers.Select(s => s.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
-                    ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
-
+             .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
+             .ReturnsAsync(apprenticeFeedbackResponse);
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Providers.Should().BeEquivalentTo(apiResponse.Providers, options => options.Excluding(s => s.ApprenticeFeedback));

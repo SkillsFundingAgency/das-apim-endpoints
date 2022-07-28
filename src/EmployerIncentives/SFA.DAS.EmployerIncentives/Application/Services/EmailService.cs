@@ -19,12 +19,12 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             var request = new PostBankDetailsRepeatReminderEmailsRequest { Data = sendBankDetailsRepeatReminderEmailsRequest };
 
-            await _client.Post<SendBankDetailsRepeatReminderEmailsRequest>(request);
+            await _client.PostWithResponseCode<SendBankDetailsRepeatReminderEmailsRequest>(request, false);
         }
 
         public async Task SendEmail<T>(T emailRequest) where T : IPostApiRequest
         {
-            await _client.Post<T>(emailRequest);
+            await _client.PostWithResponseCode<T>(emailRequest, false);
         }
     }
 }

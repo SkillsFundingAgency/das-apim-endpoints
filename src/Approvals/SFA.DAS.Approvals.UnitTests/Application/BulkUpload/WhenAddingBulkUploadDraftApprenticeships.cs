@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             apiClient.Setup(x => x.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>
                 (It.Is<PostAddDraftApprenticeshipsRequest>(
                     x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).BulkUploadDraftApprenticeships == command.BulkUploadAddDraftApprenticeships
-                ))).ReturnsAsync(apiResponse);
+                ), true)).ReturnsAsync(apiResponse);
 
 
             var result = new BulkCreateReservationsWithNonLevyResult();
@@ -41,7 +41,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             }
 
             var reservationApiResponse = new ApiResponse<BulkCreateReservationsWithNonLevyResult>(result, System.Net.HttpStatusCode.OK, "");
-            reservationApiClient.Setup(x => x.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(It.IsAny<PostBulkCreateReservationRequest>())).ReturnsAsync(() => reservationApiResponse);
+            reservationApiClient.Setup(x => x.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(It.IsAny<PostBulkCreateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
 
             var actual = await handler.Handle(command, CancellationToken.None);
             Assert.IsNotNull(actual);

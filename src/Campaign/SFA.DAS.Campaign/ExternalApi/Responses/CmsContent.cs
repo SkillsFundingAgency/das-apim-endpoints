@@ -1,390 +1,389 @@
 using System;
 using System.Collections.Generic;
-using Contentful.Core.Models;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Campaign.ExternalApi.Responses
 {
    public class CmsContent
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public SysElement Sys { get; set; }
 
-        [JsonProperty("total")]
+        [JsonPropertyName("total")]
         public long Total { get; set; }
 
-        [JsonProperty("skip")]
+        [JsonPropertyName("skip")]
         public long Skip { get; set; }
 
-        [JsonProperty("limit")]
+        [JsonPropertyName("limit")]
         public long Limit { get; set; }
 
-        [JsonProperty("items")]
+        [JsonPropertyName("items")]
         public List<Item> Items { get; set; }
 
-        [JsonProperty("includes")]
+        [JsonPropertyName("includes")]
         public Includes Includes { get; set; }
     }
 
     public class Includes
     {
-        [JsonProperty("Entry")]
+        [JsonPropertyName("Entry")]
         public List<Entry> Entry { get; set; }
 
-        [JsonProperty("Asset")]
+        [JsonPropertyName("Asset")]
         public List<Asset> Asset { get; set; }
     }
 
     public class Asset
     {
-        [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public Metadata Metadata { get; set; }
 
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public AssetSys Sys { get; set; }
 
-        [JsonProperty("fields")]
+        [JsonPropertyName("fields")]
         public AssetFields Fields { get; set; }
     }
 
     public class AssetFields
     {
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonProperty("file")]
+        [JsonPropertyName("file")]
         public File File { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get ; set ; }
     }
 
     public class File
     {
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public string Url { get; set; }
 
-        [JsonProperty("details")]
+        [JsonPropertyName("details")]
         public Details Details { get; set; }
 
-        [JsonProperty("fileName")]
+        [JsonPropertyName("fileName")]
         public string FileName { get; set; }
 
-        [JsonProperty("contentType")]
+        [JsonPropertyName("contentType")]
         public string ContentType { get; set; }
     }
 
     public class Details
     {
-        [JsonProperty("size")]
+        [JsonPropertyName("size")]
         public long Size { get; set; }
 
-        [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("image")]
         public Image Image { get; set; }
     }
 
     public class Image
     {
-        [JsonProperty("width")]
+        [JsonPropertyName("width")]
         public long Width { get; set; }
 
-        [JsonProperty("height")]
+        [JsonPropertyName("height")]
         public long Height { get; set; }
     }
 
     public class Metadata
     {
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<object> Tags { get; set; }
     }
 
     public class AssetSys
     {
-        [JsonProperty("space")]
+        [JsonPropertyName("space")]
         public LandingPage Space { get; set; }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonProperty("createdAt")]
+        [JsonPropertyName("createdAt")]
         public DateTimeOffset CreatedAt { get; set; }
 
-        [JsonProperty("updatedAt")]
+        [JsonPropertyName("updatedAt")]
         public DateTimeOffset UpdatedAt { get; set; }
 
-        [JsonProperty("environment")]
+        [JsonPropertyName("environment")]
         public LandingPage Environment { get; set; }
 
-        [JsonProperty("revision")]
+        [JsonPropertyName("revision")]
         public long Revision { get; set; }
 
-        [JsonProperty("locale")]
+        [JsonPropertyName("locale")]
         public string Locale { get; set; }
 
-        [JsonProperty("contentType", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("contentType")]
         public LandingPage ContentType { get; set; }
     }
 
     public class LandingPage
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
     }
 
     public class LandingPageSys
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonProperty("linkType")]
+        [JsonPropertyName("linkType")]
         public string LinkType { get; set; }
     }
 
     public class Entry
     {
-        [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public Metadata Metadata { get; set; }
 
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public AssetSys Sys { get; set; }
 
-        [JsonProperty("fields")]
+        [JsonPropertyName("fields")]
         public EntryFields Fields { get; set; }
     }
 
     public class EntryFields
     {
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonProperty("table", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("table")]
         public Table Table { get; set; }
 
-        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("slug", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("slug")]
         public string Slug { get; set; }
 
-        [JsonProperty("hubType", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("hubType")]
         public string HubType { get; set; }
 
-        [JsonProperty("summary", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("summary")]
         public string Summary { get; set; }
 
-        [JsonProperty("headerImage", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("headerImage")]
         public LandingPage HeaderImage { get; set; }
 
-        [JsonProperty("landingPage", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("landingPage")]
         public LandingPage LandingPage { get; set; }
 
-        [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("content")]
         public PurpleContent Content { get; set; }
 
-        [JsonProperty("pageTitle", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("pageTitle")]
         public string PageTitle { get; set; }
 
-        [JsonProperty("metaDescription", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("metaDescription")]
         public string MetaDescription { get; set; }
 
-        [JsonProperty("tabName", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("tabName")]
         public string TabName { get; set; }
 
 
-        [JsonProperty("tabTitle", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("tabTitle")]
         public string TabTitle { get; set; }
 
-        [JsonProperty("tabContent", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("tabContent")]
         public PurpleContent TabContent { get; set; }
-        [JsonProperty("findTraineeship")]
+        [JsonPropertyName("findTraineeship")]
         public bool FindTraineeship { get; set; }
     }
 
     public class PurpleContent
     {
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
 
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public PurpleData Data { get; set; }
 
-        [JsonProperty("content")]
+        [JsonPropertyName("content")]
         public List<FluffyContent> Content { get; set; }
     }
 
     public class FluffyContent
     {
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
 
-        [JsonProperty("content")]
+        [JsonPropertyName("content")]
         public List<RelatedContent> Content { get; set; }
 
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public PurpleData Data { get; set; }
     }
 
     public class RelatedContent
     {
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
 
-        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("value")]
         public string Value { get; set; }
 
-        [JsonProperty("marks", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("marks")]
         public List<SysElement> Marks { get; set; }
 
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public RelatedData Data { get; set; }
 
-        [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("content")]
         public List<RelatedContent> Content { get; set; }
     }
 
     public class PurpleData
     {
-        [JsonProperty("target")]
+        [JsonPropertyName("target")]
         public LandingPage Target { get; set; }
     }
 
     public class SysElement
     {
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
     }
 
     public class FluffyData
     {
-        [JsonProperty("uri", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("uri")]
         public Uri Uri { get; set; }
     }
 
     public class Table
     {
-        [JsonProperty("tableData")]
+        [JsonPropertyName("tableData")]
         public List<List<string>> TableData { get; set; }
     }
 
     public class Item
     {
-        [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public Metadata Metadata { get; set; }
 
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public AssetSys Sys { get; set; }
 
-        [JsonProperty("fields")]
+        [JsonPropertyName("fields")]
         public ItemFields Fields { get; set; }
     }
 
     public class ItemFields
     {
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonProperty("slug")]
+        [JsonPropertyName("slug")]
         public string Slug { get; set; }
 
-        [JsonProperty("hubType")]
+        [JsonPropertyName("hubType")]
         public string HubType { get; set; }
 
-        [JsonProperty("landingPage")]
+        [JsonPropertyName("landingPage")]
         public LandingPage LandingPage { get; set; }
 
-        [JsonProperty("content")]
+        [JsonPropertyName("content")]
         public MainContent Content { get; set; }
 
-        [JsonProperty("summary")]
+        [JsonPropertyName("summary")]
         public string Summary { get; set; }
 
-        [JsonProperty("pageTitle")]
+        [JsonPropertyName("pageTitle")]
         public string PageTitle { get; set; }
 
-        [JsonProperty("metaDescription")]
+        [JsonPropertyName("metaDescription")]
         public string MetaDescription { get; set; }
 
-        [JsonProperty("attachments")]
+        [JsonPropertyName("attachments")]
         public List<LandingPage> Attachments { get; set; }
 
-        [JsonProperty("relatedArticles")]
+        [JsonPropertyName("relatedArticles")]
         public List<LandingPage> RelatedArticles { get; set; }
 
-        [JsonProperty("headerImage")]
+        [JsonPropertyName("headerImage")]
         public HeaderImage HeaderImage { get; set; }
 
-        [JsonProperty("cards")]
+        [JsonPropertyName("cards")]
         public List<CardItem> Cards { get; set; }
 
-        [JsonProperty("menuItems")]
+        [JsonPropertyName("menuItems")]
         public List<MenuItem> MenuItems { get; set; }
 
-        [JsonProperty("tabbedContent")]
+        [JsonPropertyName("tabbedContent")]
         public List<TabbedContent> TabbedContents { get; set; }
-        [JsonProperty("backgroundColour", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("backgroundColour")]
         public string BackgroundColour { get; set; }
 
-        [JsonProperty("allowUserToHideTheBanner", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("allowUserToHideTheBanner")]
         public bool AllowUserToHideTheBanner { get; set; }
 
-        [JsonProperty("showOnTheHomepageOnly", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("showOnTheHomepageOnly")]
         public bool ShowOnTheHomepageOnly { get; set; }
     }
 
     public class MainContent
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public PurpleData Data { get; set; }
 
-        [JsonProperty("content")]
+        [JsonPropertyName("content")]
         public List<SubContentItems> Content { get; set; }
 
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
     }
 
     public class SubContentItems
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public PurpleData Data { get; set; }
 
-        [JsonProperty("content")]
+        [JsonPropertyName("content")]
         public List<ContentDefinition> Content { get; set; }
 
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
     }
 
     public class ContentDefinition
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public RelatedData Data { get; set; }
 
-        [JsonProperty("marks", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("marks")]
         public List<Marks> Marks { get; set; }
 
-        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("value")]
         public string Value { get; set; }
 
-        [JsonProperty("nodeType")]
+        [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }
 
-        [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("content")]
         public List<RelatedContent> Content { get; set; }
     }
 
     public class RelatedData
     {
-        [JsonProperty("uri", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("uri")]
         public Uri Uri { get; set; }
 
-        [JsonProperty("target", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("target")]
         public LandingPage Target { get; set; }
     }
 
@@ -395,25 +394,25 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
     public class HeaderImage
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
     }
 
     public class CardItem
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
     }
 
     public class MenuItem
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
     }
 
     public class TabbedContent
     {
-        [JsonProperty("sys")]
+        [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
     }
 }

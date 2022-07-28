@@ -35,13 +35,13 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
             var response = new ApiResponse<CreateApprenticeFeedbackResponse>(new CreateApprenticeFeedbackResponse(), HttpStatusCode.Created, errorContent);
             IPostApiRequest submittedRequest = null;
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateApprenticeFeedbackResponse>(It.IsAny<CreateApprenticeFeedbackRequest>()))
-                .Callback<IPostApiRequest>(x => submittedRequest = x)
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateApprenticeFeedbackResponse>(It.IsAny<CreateApprenticeFeedbackRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest, bool>((x,y) => submittedRequest = x)
                 .ReturnsAsync(response);
 
             await _handler.Handle(command, CancellationToken.None);
 
-            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>()));
+            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), true));
             (submittedRequest.Data).Should().BeEquivalentTo(new
             {
                 command.ApprenticeFeedbackTargetId,
@@ -62,7 +62,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         {
             var response = new ApiResponse<object>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateApprenticeFeedbackRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateApprenticeFeedbackRequest>(), true))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

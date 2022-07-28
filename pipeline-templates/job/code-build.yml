@@ -22,6 +22,7 @@ jobs:
     parameters:
       SonarCloud: true
       SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
+      SonarCloudExtraProperties: sonar.cpd.exclusions=Shared/SFA.DAS.SharedOuterApi/Services/*Client.cs
       TargetProjects: ${{ parameters.TargetProjects }}
       UnitTestProjects: ${{ parameters.UnitTestProjects }}
       AcceptanceTestProjects: ${{ parameters.AcceptanceTestProjects }}
