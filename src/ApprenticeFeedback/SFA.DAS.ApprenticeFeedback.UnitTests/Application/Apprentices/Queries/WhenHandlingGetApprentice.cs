@@ -102,7 +102,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
 
         [Test]
         [MoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_No_ApprenticePreferences_Or_Apprentice_Is_Returned(
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_No_ApprenticePreferences_Nor_Apprentice_Is_Returned(
                 GetApprenticeQuery query,
                 [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
                 GetApprenticeQueryHandler handler)
