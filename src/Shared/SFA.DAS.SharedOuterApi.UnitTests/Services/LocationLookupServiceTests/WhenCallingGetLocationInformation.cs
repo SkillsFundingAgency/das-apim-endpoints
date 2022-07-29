@@ -13,7 +13,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Services
+namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
 {
     public class WhenCallingGetLocationInformation
     {
@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
             await service.GetLocationInformation(location, lat, lon);
 
-            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
+            mockLocationApiClient.Verify(x => x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -74,12 +74,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_Location_But_It_Does_Not_Have_Location_And_Authority_Supplied_It_Is_Null(
             string locationName,
@@ -90,10 +90,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var location = $"{locationName} ";//no regex match
             var lat = 0;
             var lon = 0;
-            
+
             var result = await service.GetLocationInformation(location, lat, lon);
 
-            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
+            mockLocationApiClient.Verify(x => x.Get<GetLocationsListItem>(It.IsAny<GetLocationByLocationAndAuthorityName>()), Times.Never);
             result.Should().BeNull();
         }
 
@@ -115,7 +115,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
@@ -141,7 +141,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 });
 
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Should().BeNull();
         }
 
@@ -167,7 +167,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
@@ -193,7 +193,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(postcode, lat, lon, true);
-            
+
             result.Name.Should().Be(location);
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
@@ -216,7 +216,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .ReturnsAsync(apiLocationResponse);
 
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Name.Should().Be($"{apiLocationResponse.Outcode} {apiLocationResponse.DistrictName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
@@ -232,8 +232,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var lon = 2;
 
             await service.GetLocationInformation(location, lat, lon);
-            
-            mockLocationApiClient.Verify(x=>x.Get<GetLocationsListItem>(It.IsAny<IGetApiRequest>()), Times.Never);
+
+            mockLocationApiClient.Verify(x => x.Get<GetLocationsListItem>(It.IsAny<IGetApiRequest>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -251,10 +251,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
                         It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(location))))
-                .ReturnsAsync(new GetLocationsListResponse{Locations = new List<GetLocationsListItem>{apiLocationResponse}});
-            
+                .ReturnsAsync(new GetLocationsListResponse { Locations = new List<GetLocationsListItem> { apiLocationResponse } });
+
             var result = await service.GetLocationInformation(location, lat, lon);
-            
+
             result.Name.Should().Be($"{apiLocationResponse.LocationName}, {apiLocationResponse.LocalAuthorityName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
@@ -272,13 +272,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
                         It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(location))))
-                .ReturnsAsync(new GetLocationsListResponse{Locations = new List<GetLocationsListItem>()});
+                .ReturnsAsync(new GetLocationsListResponse { Locations = new List<GetLocationsListItem>() });
 
             var result = await handler.GetLocationInformation(location, lat, lon);
 
             result.Should().BeNull();
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_Partial_Location_Name_Which_Is_Less_Than_Two_Characters_Then_Location_Is_Set_To_Null(
             LocationLookupService service)
@@ -315,7 +315,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
                         It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(location))))
-                .ReturnsAsync(new GetLocationsListResponse{Locations = new List<GetLocationsListItem>{apiLocationResponse}});
+                .ReturnsAsync(new GetLocationsListResponse { Locations = new List<GetLocationsListItem> { apiLocationResponse } });
 
             var result = await service.GetLocationInformation(location, lat, lon);
 

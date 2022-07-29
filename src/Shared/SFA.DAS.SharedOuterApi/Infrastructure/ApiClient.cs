@@ -160,7 +160,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<IEnumerable<TResponse>>(json);
+            return JsonSerializer.Deserialize<IEnumerable<TResponse>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
