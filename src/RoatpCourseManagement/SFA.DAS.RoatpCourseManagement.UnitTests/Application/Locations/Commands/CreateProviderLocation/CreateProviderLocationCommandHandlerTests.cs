@@ -21,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Locations.Commands
             CreateProviderLocationCommand command)
         {
             await sut.Handle(command, new CancellationToken());
-            apiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command)));
+            apiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command), true));
         }
     }
 }
