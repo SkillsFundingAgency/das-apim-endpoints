@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
         public async Task RunCheck()
         {
-            await _client.Post<string>(new EarningsResilenceCheckRequest());
+            await _client.PostWithResponseCode<string>(new EarningsResilenceCheckRequest(), false);
         }
     }
 }

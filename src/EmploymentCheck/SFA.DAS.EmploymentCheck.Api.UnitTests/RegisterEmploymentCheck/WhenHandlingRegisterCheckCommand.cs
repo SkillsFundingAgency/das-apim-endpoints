@@ -28,7 +28,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.RegisterEmploymentCheck
                 (It.Is<RegisterCheckRequest>(
                     request =>
                         request.PostUrl == "api/EmploymentCheck/RegisterCheck"
-                        && request.Data == requestData)))
+                        && request.Data == requestData),true))
                 .ReturnsAsync(new ApiResponse<RegisterCheckResponse>(expected, HttpStatusCode.OK, string.Empty));
 
             var actual = await sut.Handle(requestData, CancellationToken.None);

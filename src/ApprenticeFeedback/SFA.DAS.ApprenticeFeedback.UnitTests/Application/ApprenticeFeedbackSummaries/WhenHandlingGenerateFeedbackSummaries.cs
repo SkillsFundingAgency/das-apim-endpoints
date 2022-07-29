@@ -33,12 +33,12 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         {
             var response = new ApiResponse<object>(null, HttpStatusCode.OK, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), true))
                 .ReturnsAsync(response);
 
             var result = await _handler.Handle(command, CancellationToken.None);
 
-            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>()), Times.Once);
+            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), true), Times.Once);
             result.Should().BeOfType<GenerateFeedbackSummariesResponse>();
         }
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         {
             var response = new ApiResponse<object>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), true))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

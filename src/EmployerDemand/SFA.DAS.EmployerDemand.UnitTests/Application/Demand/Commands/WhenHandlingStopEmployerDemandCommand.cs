@@ -71,7 +71,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             actualEmail.TemplateId.Should().BeEquivalentTo(expectedEmail.TemplateId);
             mockApiClient.Verify(
                 x => x.PostWithResponseCode<object>(It.Is<PostEmployerDemandNotificationAuditRequest>(c =>
-                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedByUser}"))), Times.Once);
+                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedByUser}")),true), Times.Once);
         }
 
         [Test, MoqAutoData]
