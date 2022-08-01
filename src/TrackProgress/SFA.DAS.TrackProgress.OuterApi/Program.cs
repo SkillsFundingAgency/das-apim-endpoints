@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.TrackProgress.Api;
@@ -16,7 +15,7 @@ var config = builder.Configuration
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(typeof(TrackProgress));
+builder.Services.AddMediatR(typeof(TrackApprenticeProgress));
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
