@@ -24,6 +24,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Locations.Commands
             CreateProviderLocationCommandHandler sut,
             CreateProviderLocationCommand command)
         {
+            var response = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
+            apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command), true)).ReturnsAsync(response);
+
             await sut.Handle(command, new CancellationToken());
             apiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command), true));
         }
@@ -38,7 +41,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Locations.Commands
             apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command), true)).ReturnsAsync(response);
 
             Func<Task> action = () => sut.Handle(command, new CancellationToken());
+
             await action.Should().ThrowAsync<InvalidOperationException>();
+            apiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<ProviderLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command), true));
         }
     }
 }
