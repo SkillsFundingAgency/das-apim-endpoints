@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
             Guid id,
             [Frozen] Mock<IMediator> mediatorMock,
             GetProviderLocationDetailsQueryResult result,
-            [Greedy] ProviderLocationsGetController sut)
+            [Greedy] GetProviderLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderLocationDetailsQuery>(c =>c.GetUrl.Equals(new GetProviderLocationDetailsQuery(ukprn, id).GetUrl)), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
             int ukprn,
             Guid id,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] ProviderLocationsGetController sut)
+            [Greedy] GetProviderLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetProviderLocationDetailsQuery>(c =>c.GetUrl.Equals(new GetProviderLocationDetailsQuery(ukprn,id).GetUrl)), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderLocationDetailsQueryResult());
 

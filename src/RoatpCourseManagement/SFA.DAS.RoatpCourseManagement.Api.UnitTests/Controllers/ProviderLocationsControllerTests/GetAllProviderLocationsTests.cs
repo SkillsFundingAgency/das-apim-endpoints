@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
             int ukprn,
             [Frozen] Mock<IMediator> mediatorMock,
             GetAllProviderLocationsQueryResult result,
-            [Greedy] ProviderLocationsGetController sut)
+            [Greedy] GetProviderLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetAllProviderLocationsQuery>(c =>
                         c.GetUrl.Equals(new GetAllProviderLocationsQuery(ukprn).GetUrl)), It.IsAny<CancellationToken>())).ReturnsAsync(result);
@@ -36,7 +36,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
         public async Task GetAllLocations_InvalidRequest_ReturnsLocations(
             int ukprn,
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] ProviderLocationsGetController sut)
+            [Greedy] GetProviderLocationsController sut)
         {
             mediatorMock.Setup(m => m.Send(It.Is<GetAllProviderLocationsQuery>(c =>
                         c.GetUrl.Equals(new GetAllProviderLocationsQuery(ukprn).GetUrl)), It.IsAny<CancellationToken>())).ReturnsAsync(new GetAllProviderLocationsQueryResult());
