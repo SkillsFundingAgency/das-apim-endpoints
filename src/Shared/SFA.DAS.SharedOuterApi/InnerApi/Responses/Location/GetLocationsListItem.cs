@@ -1,32 +1,32 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetLocationsListItem
     {
-        [JsonProperty("localAuthorityName")]
+        [JsonPropertyName("localAuthorityName")]
         public string LocalAuthorityName { get; set; }
 
-        [JsonProperty("countyName")]
+        [JsonPropertyName("countyName")]
         public string CountyName { get; set; }
 
-        [JsonProperty("locationName")]
+        [JsonPropertyName("locationName")]
         public string LocationName { get; set; }
         
-        [JsonProperty("location")]
+        [JsonPropertyName("location")]
         public Coordinates Location { get; set; }
-        [JsonProperty("postcode")]
+        [JsonPropertyName("postcode")]
         public string Postcode { get; set; }
-        [JsonProperty("districtName")]
+        [JsonPropertyName("districtName")]
         public string DistrictName { get; set; }
-        [JsonProperty("outcode")]
+        [JsonPropertyName("outcode")]
         public string Outcode { get; set; }
-        [JsonProperty("country")]
+        [JsonPropertyName("country")]
         public string Country { get; set; }
 
         public class Coordinates
         {
-            [JsonProperty("coordinates")]
+            [JsonPropertyName("coordinates")]
             public double[] GeoPoint { get; set; }
         }
 

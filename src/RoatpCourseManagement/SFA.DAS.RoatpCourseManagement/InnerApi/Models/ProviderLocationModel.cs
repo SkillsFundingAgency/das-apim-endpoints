@@ -4,7 +4,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
 {
     public class ProviderLocationModel
     {
+        public int ProviderLocationId { get; set; }
         public Guid NavigationId { get; set; }
+        public int? RegionId { get; set; }
         public string LocationName { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.LevyTransferMatching.Api.AppStart;
@@ -28,7 +29,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-
+        private const string EndpointName = "SFA.DAS.LevyTransferMatching.Api";
+        
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration.BuildSharedConfiguration();
@@ -87,10 +89,14 @@ namespace SFA.DAS.LevyTransferMatching.Api
                     }
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson(x =>
-                {
-                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
-                });
+                .AddJsonOptions
+                (
+                    options=>
+                    {
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                    }
+                );
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -102,14 +108,11 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             
-            services.AddNServiceBus();
-
             services
                 .AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LevyTransferMatchingOuterApi", Version = "v1" });
-                })
-                .AddSwaggerGenNewtonsoftSupport();
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -142,6 +145,11 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LevyTransferMatchingOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+        
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }

@@ -69,7 +69,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
                 
             }
 
-            var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
+            var result = await _recruitApiClient.PostWithResponseCode<long?>(apiRequest);
 
             if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
             {
@@ -84,7 +84,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             
             return new CreateVacancyCommandResponse
             {
-                VacancyReference = result.Body
+                VacancyReference = result.Body.ToString()
             };
         }
     }

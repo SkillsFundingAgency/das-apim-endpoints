@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -17,17 +18,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseProvidersQueryHandler : IRequestHandler<GetTrainingCourseProvidersQuery, GetTrainingCourseProvidersResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly ILocationLookupService _locationLookupService;
 
-        public GetTrainingCourseProvidersQueryHandler (
+        public GetTrainingCourseProvidersQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
+            IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            IShortlistService shortlistService, 
+            IShortlistService shortlistService,
             ILocationLookupService locationLookupService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
@@ -36,30 +40,41 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
-            
-            var courseTask =  _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
+
+            var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
-            await Task.WhenAll(locationTask, courseTask, shortlistTask);
-            
+            var apprenticeFeedbackSummaryTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
+
+            await Task.WhenAll(locationTask, courseTask, shortlistTask, apprenticeFeedbackSummaryTask);
+
             var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
-                request.Id, 
-                courseTask.Result.SectorSubjectAreaTier2Description, 
+                request.Id,
+                courseTask.Result.SectorSubjectAreaTier2Description,
                 courseTask.Result.Level,
-                locationTask.Result?.GeoPoint?.FirstOrDefault(), 
-                locationTask.Result?.GeoPoint?.LastOrDefault(), 
-                request.SortOrder, 
+                locationTask.Result?.GeoPoint?.FirstOrDefault(),
+                locationTask.Result?.GeoPoint?.LastOrDefault(),
+                request.SortOrder,
                 request.ShortlistUserId));
-            
+
+            if (providers?.Providers.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
+            {
+                var summaries = apprenticeFeedbackSummaryTask.Result;
+                foreach (var provider in providers.Providers)
+                {
+                    provider.ApprenticeFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
+                }
+            }
+
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providers.Providers,
-                Total = providers.TotalResults,
+                Providers = providers?.Providers,
+                Total = providers?.TotalResults ?? 0,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result
-            }; 
+            };
         }
     }
 }

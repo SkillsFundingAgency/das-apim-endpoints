@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,7 +30,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
                 StandardInfoUrl = providerCourse.StandardInfoUrl,
                 IsApprovedByRegulator = command.IsApprovedByRegulator
             };
-            var request = new UpdateProviderCourseRequest(updateProviderCourse);
+            var request = new ProviderCourseUpdateRequest(updateProviderCourse);
             await _innerApiClient.Put(request);
             return Unit.Value;
         }

@@ -1,9 +1,8 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
@@ -22,7 +21,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
         public async Task<T> RetrieveFromCache<T>(string key)
         {
             var json = await _distributedCache.GetStringAsync($"{_configuration["ConfigNames"].Split(",")[0]}_{key}");
-            return json == null ? default : JsonConvert.DeserializeObject<T>(json);
+            return json == null ? default : JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions{});
         }
 
         public async Task SaveToCache<T>(string key, T item, int expirationInHours)
@@ -32,7 +31,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 
         public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow)
         {
-            var json = JsonConvert.SerializeObject(item);
+            var json = JsonSerializer.Serialize(item);
 
             await _distributedCache.SetStringAsync($"{_configuration["ConfigNames"].Split(",")[0]}_{key}", json, new DistributedCacheEntryOptions
             {

@@ -13,29 +13,33 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetTrainingCourseProviderResult providerStandardItem)
         {
-            providerStandardItem.ProviderStandard.FeedbackRatings = new List<GetFeedbackRatingItem>
+            providerStandardItem.ProviderStandard.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
             {
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Good",
                     FeedbackCount = 92,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Excellent",
                     FeedbackCount = 29,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Poor",
                     FeedbackCount = 7,
                 },
-                new GetFeedbackRatingItem
+                new GetEmployerFeedbackRatingItem
                 {
                     FeedbackName = "Very Poor",
                     FeedbackCount = 1,
                 }
             };
+
+            providerStandardItem.ProviderStandard.ApprenticeFeedback.ReviewCount = 129;
+            providerStandardItem.ProviderStandard.ApprenticeFeedback.Stars = 3;
+
             var actual =new GetProviderCourseItem().Map(providerStandardItem, "",1, true);
             
             actual.Should().BeEquivalentTo(providerStandardItem.Course, options => options.ExcludingMissingMembers());
@@ -43,8 +47,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.StandardInfoUrl);
             actual.ProviderId.Should().Be(providerStandardItem.ProviderStandard.Ukprn);
             actual.ProviderAddress.Should().BeEquivalentTo(providerStandardItem.ProviderStandard.ProviderAddress);
-            actual.Feedback.TotalEmployerResponses.Should().Be(129);
-            actual.Feedback.TotalFeedbackRating.Should().Be(3);
+            actual.EmployerFeedback.TotalEmployerResponses.Should().Be(129);
+            actual.EmployerFeedback.TotalFeedbackRating.Should().Be(3);
+            actual.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(129);
+            actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
             actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
         }
         [Test, AutoData]
@@ -69,6 +75,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
         }
         [Test, AutoData]
+
         public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level(string sectorSubjectArea,
             GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2,GetAchievementRateItem item3)
         {

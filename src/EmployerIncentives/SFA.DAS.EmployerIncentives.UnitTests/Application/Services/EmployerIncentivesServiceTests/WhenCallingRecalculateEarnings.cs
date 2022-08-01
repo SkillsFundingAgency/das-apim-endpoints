@@ -29,13 +29,13 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Setup(x => x.PostWithResponseCode<PostRecalculateEarningsRequest>(
                 It.Is<PostRecalculateEarningsRequest>(
                     c => c.PostUrl.Contains("earningsRecalculations")
-                ))).ReturnsAsync(new ApiResponse<PostRecalculateEarningsRequest>(null, HttpStatusCode.NoContent, ""));
+                ), false)).ReturnsAsync(new ApiResponse<PostRecalculateEarningsRequest>(null, HttpStatusCode.NoContent, ""));
 
             await service.RecalculateEarnings(request);
 
             client.Verify(x => x.PostWithResponseCode<PostRecalculateEarningsRequest>(
                 It.Is<PostRecalculateEarningsRequest>(c => c.PostUrl.Contains("earningsRecalculations")
-                )), Times.Once);
+                ), false), Times.Once);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Setup(x => x.PostWithResponseCode<PostRecalculateEarningsRequest>(
                 It.Is<PostRecalculateEarningsRequest>(
                     c => c.PostUrl.Contains("earningsRecalculations")
-                ))).ReturnsAsync(new ApiResponse<PostRecalculateEarningsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
+                ),false)).ReturnsAsync(new ApiResponse<PostRecalculateEarningsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
 
             var request = fixture.Create<RecalculateEarningsRequest>();
 

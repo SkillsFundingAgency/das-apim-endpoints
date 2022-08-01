@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -13,13 +14,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
     public class GetShortlistForUserQueryHandler : IRequestHandler<GetShortlistForUserQuery, GetShortlistForUserResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly ICachedCoursesService _cachedCoursesService;
 
         public GetShortlistForUserQueryHandler(
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, 
+            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
+            IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             ICachedCoursesService cachedCoursesService)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _cachedCoursesService = cachedCoursesService;
         }
 
@@ -28,15 +32,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
             var apiShortlistRequest = new GetShortlistForUserRequest(request.ShortlistUserId);
             var shortListTask = _courseDeliveryApiClient.Get<GetShortlistForUserResponse>(apiShortlistRequest);
             var coursesTask = _cachedCoursesService.GetCourses();
+            var appFeedbackTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
 
-            await Task.WhenAll(shortListTask, coursesTask);
+            await Task.WhenAll(shortListTask, coursesTask, appFeedbackTask);
 
             var shortlist = shortListTask.Result.Shortlist.ToList();
+            var appFeedbackResult = appFeedbackTask.Result ?? new List<GetApprenticeFeedbackSummaryItem>();
+
             foreach (var item in shortlist)
             {
                 item.Course =
                     coursesTask.Result.Standards.FirstOrDefault(listItem =>
                         listItem.LarsCode == item.CourseId);
+
+                item.ProviderDetails.ApprenticeFeedback = appFeedbackResult.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
             }
 
             return new GetShortlistForUserResult

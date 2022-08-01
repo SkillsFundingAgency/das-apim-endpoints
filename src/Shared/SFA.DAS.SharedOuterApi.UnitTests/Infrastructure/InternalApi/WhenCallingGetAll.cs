@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var configuration = config;
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(JsonConvert.SerializeObject(new List<string>{"string","string"})),
+                Content = new StringContent(JsonSerializer.Serialize(new List<string>{"string","string"})),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetAllTestRequest();
@@ -66,7 +66,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var configuration = config;
              var response = new HttpResponseMessage
              {
-                 Content = new StringContent(""),
+                 Content = new StringContent("[\"test\"]"),
                  StatusCode = HttpStatusCode.Accepted
              };
              var getTestRequest = new GetAllTestRequest();

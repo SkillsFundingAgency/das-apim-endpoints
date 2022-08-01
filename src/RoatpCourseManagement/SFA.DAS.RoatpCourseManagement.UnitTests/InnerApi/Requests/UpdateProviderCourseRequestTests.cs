@@ -1,6 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
@@ -11,7 +12,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Constructor_ConstructsRequest(ProviderCourseUpdateModel data)
         {
-            var request = new UpdateProviderCourseRequest(data);
+            var request = new ProviderCourseUpdateRequest(data);
 
             request.Data.Should().Be(data);
             request.Ukprn.Should().Be(data.Ukprn);

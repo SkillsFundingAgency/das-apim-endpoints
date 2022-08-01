@@ -39,7 +39,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
                     && ((UserRequestData)c.Data).State.Equals(0)
-                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Created, ""));
+                ),true)).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Created, ""));
             SendEmailCommand actualEmail = null;
             mockNotificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
@@ -60,7 +60,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
                     && ((UserRequestData)c.Data).State.Equals(0)
-                )), Times.Once);
+                ),true), Times.Once);
             
             actualEmail.Tokens.Should().BeEquivalentTo(expectedEmail.Tokens);
             actualEmail.RecipientsAddress.Should().BeEquivalentTo(expectedEmail.RecipientAddress);
@@ -83,7 +83,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Commands
                     && ((UserRequestData)c.Data).LastName.Equals(command.LastName)
                     && ((UserRequestData)c.Data).ConfirmationEmailLink.Equals(command.ConfirmationEmailLink)
                     && ((UserRequestData)c.Data).State.Equals(0)
-                ))).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Error"));
+                ),true)).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Error"));
 
             Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));
             
