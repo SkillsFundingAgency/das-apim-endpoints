@@ -224,7 +224,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 return this;
             }
 
-
             public DeliveryModelServiceTestFixture WithResponseFromProviderCoursesApi(ProviderCoursesApiResponse response)
             {
                 if (response == ProviderCoursesApiResponse.NullResponse)
