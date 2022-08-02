@@ -66,6 +66,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 CourseCode = apprenticeship.CourseCode,
                 StandardUId = apprenticeship.StandardUId,
                 CourseName = apprenticeship.TrainingCourseName,
+                HasStandardOptions = apprenticeship.HasStandardOptions,
+                TrainingCourseOption = apprenticeship.TrainingCourseOption,
                 StartDate = apprenticeship.StartDate,
                 EndDate = apprenticeship.EndDate,
                 Cost = apprenticeship.Cost,

@@ -19,6 +19,10 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string StandardUId { get; set; }
         public string CourseName { get; set; }
 
+        
+        public bool HasStandardOptions { get; set; }
+        public string TrainingCourseOption { get; set; }
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
@@ -54,6 +58,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 Uln = source.Uln,
                 DeliveryModel = source.DeliveryModel,
                 CourseCode = source.CourseCode,
+                HasStandardOptions = source.HasStandardOptions,
+                TrainingCourseOption = source.TrainingCourseOption,
                 StandardUId = source.StandardUId,
                 CourseName = source.CourseName,
                 StartDate = source.StartDate,

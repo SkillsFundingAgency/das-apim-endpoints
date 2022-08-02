@@ -17,6 +17,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public string CourseCode { get; set; }
         public string StandardUId { get; set; }
         public string CourseName { get; set; }
+        public bool HasStandardOptions { get; set; }
+        public string TrainingCourseOption { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
