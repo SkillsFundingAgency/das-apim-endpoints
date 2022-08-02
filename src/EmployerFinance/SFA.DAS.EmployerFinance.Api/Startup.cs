@@ -50,7 +50,6 @@ namespace SFA.DAS.EmployerFinance.Api
             }
 
             services.AddMediatR(typeof(GetFrameworksQuery).Assembly);
-            services.AddAutoMapper(typeof(GetFrameworksQuery), typeof(GetFrameworksResponse));
             services.AddServiceRegistration();
 
             services

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFinance.Api.Models.Accounts;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMembersWhichReceiveNotifications;
+using OuterApiResponseTeamMember = SFA.DAS.EmployerFinance.Api.Models.Accounts.TeamMember;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers
 {
@@ -13,13 +13,11 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
     [Route("[controller]/")]
     public class AccountsController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly ILogger<TransfersController> _logger;
 
-        public AccountsController(IMapper mapper, IMediator mediator, ILogger<TransfersController> logger)
+        public AccountsController(IMediator mediator, ILogger<TransfersController> logger)
         {
-            _mapper = mapper;
             _mediator = mediator;
             _logger = logger;
         }
@@ -35,7 +33,7 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
                     AccountId = accountId,
                 });
 
-                return Ok(_mapper.Map<GetAccountTeamMembersWhichReceiveNotificationsResponse>(response));
+                return Ok((GetAccountTeamMembersWhichReceiveNotificationsResponse)(response));
             }
             catch (Exception e)
             {
