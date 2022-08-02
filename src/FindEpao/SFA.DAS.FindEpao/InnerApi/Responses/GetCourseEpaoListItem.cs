@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
     public class GetCourseEpaoListItem
     {
-        [JsonProperty("endPointAssessorOrganisationId")]
+        [JsonPropertyName("endPointAssessorOrganisationId")]
         public string EpaoId { get; set; }
-        [JsonProperty("endPointAssessorName")]
+        [JsonPropertyName("endPointAssessorName")]
         public string Name { get; set; }
         public string Status { get; set; }
         public string City { get; set; }
         public string Postcode { get; set; }
-        [JsonProperty("deliveryAreasDetails")]
+        [JsonPropertyName("deliveryAreasDetails")]
         public IEnumerable<EpaoDeliveryArea> DeliveryAreas { get; set; }
-        [JsonProperty("organisationStandard")]
+        [JsonPropertyName("organisationStandard")]
         public CourseEpaoDetails CourseEpaoDetails { get; set; }
     }
 }

@@ -1,141 +1,141 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses
 {
     public class GetVacanciesResponse
     {
-        [JsonProperty("total")]
+        [JsonPropertyName("total")]
         public long Total { get; set; }
 
-        [JsonProperty("totalFound")]
+        [JsonPropertyName("totalFound")]
         public long TotalFound { get; set; }
 
-        [JsonProperty("apprenticeshipVacancies")]
+        [JsonPropertyName("apprenticeshipVacancies")]
         public IEnumerable<GetVacanciesListItem> ApprenticeshipVacancies { get; set; }
     }
 
     public class GetVacanciesListItem
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonProperty("anonymousEmployerName")]
+        [JsonPropertyName("anonymousEmployerName")]
         public string AnonymousEmployerName { get; set; }
 
-        [JsonProperty("apprenticeshipLevel")]
+        [JsonPropertyName("apprenticeshipLevel")]
         public string ApprenticeshipLevel { get; set; }
 
-        [JsonProperty("category")]
+        [JsonPropertyName("category")]
         public string Category { get; set; }
 
-        [JsonProperty("categoryCode")]
+        [JsonPropertyName("categoryCode")]
         public string CategoryCode { get; set; }
 
-        [JsonProperty("closingDate")]
+        [JsonPropertyName("closingDate")]
         public DateTime ClosingDate { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("employerName")]
+        [JsonPropertyName("employerName")]
         public string EmployerName { get; set; }
 
-        [JsonProperty("frameworkLarsCode")]
+        [JsonPropertyName("frameworkLarsCode")]
         public string FrameworkLarsCode { get; set; }
 
-        [JsonProperty("hoursPerWeek")]
+        [JsonPropertyName("hoursPerWeek")]
         public decimal HoursPerWeek { get; set; }
 
-        [JsonProperty("isDisabilityConfident")]
+        [JsonPropertyName("isDisabilityConfident")]
         public bool IsDisabilityConfident { get; set; }
 
-        [JsonProperty("isEmployerAnonymous")]
+        [JsonPropertyName("isEmployerAnonymous")]
         public bool IsEmployerAnonymous { get; set; }
 
-        [JsonProperty("isPositiveAboutDisability")]
+        [JsonPropertyName("isPositiveAboutDisability")]
         public bool IsPositiveAboutDisability { get; set; }
 
-        [JsonProperty("location")]
+        [JsonPropertyName("location")]
         public Location Location { get; set; }
 
-        [JsonProperty("numberOfPositions")]
+        [JsonPropertyName("numberOfPositions")]
         public long NumberOfPositions { get; set; }
 
-        [JsonProperty("postedDate")]
+        [JsonPropertyName("postedDate")]
         public DateTime PostedDate { get; set; }
 
-        [JsonProperty("providerName")]
+        [JsonPropertyName("providerName")]
         public string ProviderName { get; set; }
 
-        [JsonProperty("standardLarsCode")]
+        [JsonPropertyName("standardLarsCode")]
         public int? StandardLarsCode { get; set; }
 
-        [JsonProperty("startDate")]
+        [JsonPropertyName("startDate")]
         public DateTime StartDate { get; set; }
 
-        [JsonProperty("subCategory")]
+        [JsonPropertyName("subCategory")]
         public string SubCategory { get; set; }
 
-        [JsonProperty("subCategoryCode")]
+        [JsonPropertyName("subCategoryCode")]
         public string SubCategoryCode { get; set; }
 
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonProperty("ukprn")]
+        [JsonPropertyName("ukprn")]
         public int Ukprn { get; set; }
 
-        [JsonProperty("vacancyLocationType")]
+        [JsonPropertyName("vacancyLocationType")]
         public string VacancyLocationType { get; set; }
 
-        [JsonProperty("vacancyReference")]
+        [JsonPropertyName("vacancyReference")]
         public string VacancyReference { get; set; }
 
-        [JsonProperty("wageAmount")]
+        [JsonPropertyName("wageAmount")]
         public decimal? WageAmount { get; set; }
 
-        [JsonProperty("wageAmountLowerBound")]
+        [JsonPropertyName("wageAmountLowerBound")]
         public decimal? WageAmountLowerBound { get; set; }
 
-        [JsonProperty("wageAmountUpperBound")]
+        [JsonPropertyName("wageAmountUpperBound")]
         public decimal? WageAmountUpperBound { get; set; }
 
-        [JsonProperty("wageText")]
+        [JsonPropertyName("wageText")]
         public string WageText { get; set; }
 
-        [JsonProperty("wageUnit")]
+        [JsonPropertyName("wageUnit")]
         public int WageUnit { get; set; }
 
-        [JsonProperty("wageType")]
+        [JsonPropertyName("wageType")]
         public int WageType { get; set; }
 
-        [JsonProperty("workingWeek")]
+        [JsonPropertyName("workingWeek")]
         public string WorkingWeek { get; set; }
         
-        [JsonProperty("expectedDuration")]
+        [JsonPropertyName("expectedDuration")]
         public string ExpectedDuration { get; set; }
         
-        [JsonProperty("employerWebsiteUrl")]
+        [JsonPropertyName("employerWebsiteUrl")]
         public string EmployerWebsiteUrl { get; set; }
 
-        [JsonProperty("employerContactPhone")]
+        [JsonPropertyName("employerContactPhone")]
         public string EmployerContactPhone { get; set; }
         
-        [JsonProperty("employerContactEmail")]
+        [JsonPropertyName("employerContactEmail")]
         public string EmployerContactEmail { get; set; }
         
-        [JsonProperty("employerContactName")]
+        [JsonPropertyName("employerContactName")]
         public string EmployerContactName { get; set; }
         
-        [JsonProperty("address")]
+        [JsonPropertyName("address")]
         public Address Address { get; set; }
         
-        [JsonProperty("distance")]
+        [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }
 
-        [JsonProperty("score")]
+        [JsonPropertyName("score")]
         public long Score { get; set; }
         
         [JsonIgnore]
@@ -150,15 +150,15 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
 
     public class Address
     {
-        [JsonProperty("addressLine1")]
+        [JsonPropertyName("addressLine1")]
         public string AddressLine1 { get; set; }
-        [JsonProperty("addressLine2")]
+        [JsonPropertyName("addressLine2")]
         public string AddressLine2 { get; set; }
-        [JsonProperty("addressLine3")]
+        [JsonPropertyName("addressLine3")]
         public string AddressLine3 { get; set; }
-        [JsonProperty("addressLine4")]
+        [JsonPropertyName("addressLine4")]
         public string AddressLine4 { get; set; }
-        [JsonProperty("postcode")]
+        [JsonPropertyName("postcode")]
         public string Postcode { get; set; }
     }
 }

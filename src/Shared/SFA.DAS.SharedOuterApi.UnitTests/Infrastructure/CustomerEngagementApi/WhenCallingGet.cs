@@ -2,14 +2,13 @@
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -28,7 +27,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             config.Url = "https://test.local";
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequest(config.Url, id) {BaseUrl = config.Url };
@@ -64,7 +63,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.CustomerEngagementApi
             config.Url = "https://test.local";
             var httpResponse = new HttpResponseMessage
             {
-                Content = new StringContent(JsonConvert.SerializeObject(expectedResponse), Encoding.UTF8, "application/json"),
+                Content = new StringContent(JsonSerializer.Serialize(expectedResponse), Encoding.UTF8, "application/json"),
                 StatusCode = HttpStatusCode.OK
             };
             var getTestRequest = new GetTestRequest(config.Url, id) { BaseUrl = config.Url };

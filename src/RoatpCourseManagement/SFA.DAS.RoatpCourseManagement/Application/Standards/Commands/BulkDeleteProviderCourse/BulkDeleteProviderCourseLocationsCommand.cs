@@ -12,8 +12,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDelet
         public string UserId { get; set; }
         public DeleteProviderCourseLocationOption DeleteProviderCourseLocationOption { get; set; }
 
-        public static implicit operator BulkDeleteProviderCourseLocationsRequest(BulkDeleteProviderCourseLocationsCommand command) 
-            => new BulkDeleteProviderCourseLocationsRequest
+        public static implicit operator ProviderCourseLocationsBulkDeleteRequest(BulkDeleteProviderCourseLocationsCommand command) 
+            => new ProviderCourseLocationsBulkDeleteRequest
             {
                 DeleteProviderCourseLocationOption = command.DeleteProviderCourseLocationOption,
                 UserId = command.UserId,

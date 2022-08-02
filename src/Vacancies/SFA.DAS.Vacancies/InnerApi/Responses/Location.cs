@@ -1,13 +1,13 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses
 {
     public class Location
     {
-        [JsonProperty("lon")]
+        [JsonPropertyName("lon")]
         public double Lon { get; set; }
 
-        [JsonProperty("lat")]
+        [JsonPropertyName("lat")]
         public double Lat { get; set; }
     }
 }

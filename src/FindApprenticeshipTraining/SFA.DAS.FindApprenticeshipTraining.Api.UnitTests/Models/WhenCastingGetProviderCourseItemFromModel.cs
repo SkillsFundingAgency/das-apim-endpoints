@@ -36,29 +36,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            shortlistItem.ProviderDetails.ApprenticeFeedback.ProviderRating = new List<GetApprenticeFeedbackRatingItem>
-            {
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Good",
-                    Count = 92,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Excellent",
-                    Count = 29,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Poor",
-                    Count = 7,
-                },
-                new GetApprenticeFeedbackRatingItem
-                {
-                    Rating = "Very Poor",
-                    Count = 1,
-                }
-            };
+            shortlistItem.ProviderDetails.ApprenticeFeedback.ReviewCount = 129;
+            shortlistItem.ProviderDetails.ApprenticeFeedback.Stars = 3;
 
             var actual =new GetProviderCourseItem().Map(shortlistItem);
             
