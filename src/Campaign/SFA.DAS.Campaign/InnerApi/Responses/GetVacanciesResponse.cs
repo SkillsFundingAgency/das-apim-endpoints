@@ -1,74 +1,74 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Campaign.InnerApi.Responses
 {
     public class GetVacanciesResponse
     {
-        [JsonProperty("total")]
+        [JsonPropertyName("total")]
         public long Total { get; set; }
 
-        [JsonProperty("totalFound")]
+        [JsonPropertyName("totalFound")]
         public long TotalFound { get; set; }
 
-        [JsonProperty("apprenticeshipVacancies")]
+        [JsonPropertyName("apprenticeshipVacancies")]
         public IEnumerable<GetVacanciesListItem> ApprenticeshipVacancies { get; set; }
     }
 
     public class GetVacanciesListItem
     {
-        [JsonProperty("anonymousEmployerName")]
+        [JsonPropertyName("anonymousEmployerName")]
         public string AnonymousEmployerName { get; set; }
 
-        [JsonProperty("category")]
+        [JsonPropertyName("category")]
         public string Category { get; set; }
 
-        [JsonProperty("subCategory")]
+        [JsonPropertyName("subCategory")]
         public string SubCategory { get; set; }
         
-        [JsonProperty("closingDate")]
+        [JsonPropertyName("closingDate")]
         public DateTime ClosingDate { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("employerName")]
+        [JsonPropertyName("employerName")]
         public string EmployerName { get; set; }
 
-        [JsonProperty("isEmployerAnonymous")]
+        [JsonPropertyName("isEmployerAnonymous")]
         public bool IsEmployerAnonymous { get; set; }
         
-        [JsonProperty("location")]
+        [JsonPropertyName("location")]
         public Location Location { get; set; }
 
-        [JsonProperty("postedDate")]
+        [JsonPropertyName("postedDate")]
         public DateTime PostedDate { get; set; }
 
-        [JsonProperty("startDate")]
+        [JsonPropertyName("startDate")]
         public DateTime StartDate { get; set; }
 
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
         
-        [JsonProperty("vacancyReference")]
+        [JsonPropertyName("vacancyReference")]
         public string VacancyReference { get; set; }
 
-        [JsonProperty("distance")]
+        [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }
-        [JsonProperty("standardLarsCode")]
+        [JsonPropertyName("standardLarsCode")]
         public int? StandardLarsCode { get; set; }
 
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string VacancyUrl { get ; set ; }
     }
     
     public class Location
     {
-        [JsonProperty("lon")]
+        [JsonPropertyName("lon")]
         public double Lon { get; set; }
 
-        [JsonProperty("lat")]
+        [JsonPropertyName("lat")]
         public double Lat { get; set; }
     }
     

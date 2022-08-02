@@ -72,9 +72,9 @@ namespace SFA.DAS.VacanciesManage.Services
             throw new System.NotImplementedException();
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            return _apiClient.PostWithResponseCode<TResponse>(request);
+            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)

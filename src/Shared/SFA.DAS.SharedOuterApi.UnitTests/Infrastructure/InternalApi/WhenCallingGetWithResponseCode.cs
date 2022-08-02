@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             config.Url = "https://test.local";
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequest(id);
@@ -69,7 +69,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequest(id);
@@ -109,7 +109,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var configuration = config;
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequestNoVersion(id);
@@ -168,6 +168,36 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             actualResult.Body.Should().BeNull();
             actualResult.ErrorContent.Should().Be(responseContent);
         }
+
+        [Test, AutoData]
+        public async Task Then_The_Casing_Is_Ignored_On_Deserialization(int id,string authToken,string responseValue,
+            TestInternalApiConfiguration config)
+        {
+            //Arrange
+            var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
+            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
+            config.Url = "https://test.local";
+            var response = new HttpResponseMessage
+            {
+                Content = new StringContent("{\"SOMEID\":\"" + responseValue +"\"}"),
+                StatusCode = HttpStatusCode.Accepted
+            };
+            var getTestRequest = new GetTestRequest(id);
+            var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
+            var client = new HttpClient(httpMessageHandler.Object);
+            var clientFactory = new Mock<IHttpClientFactory>();
+            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+            var actualClient = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
+            
+            //Act
+            var actualResult = await actualClient.GetWithResponseCode<TestClass>(getTestRequest);
+             
+            //Assert
+            Assert.IsNotNull(actualResult);
+            actualResult.StatusCode.Should().Be(HttpStatusCode.Accepted);
+            actualResult.Body.SomeId.Should().Be(responseValue);
+        }
         
         private class GetTestRequest : IGetApiRequest
         {
@@ -190,6 +220,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
                 _id = id;
             }
             public string GetUrl => $"test-url/get{_id}";
+        }
+
+        private class TestClass
+        {
+            public string SomeId { get; set; }
         }
     }
 }

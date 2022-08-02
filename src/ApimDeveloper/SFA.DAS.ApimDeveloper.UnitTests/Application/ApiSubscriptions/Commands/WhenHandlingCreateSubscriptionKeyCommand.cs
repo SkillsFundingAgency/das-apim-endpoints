@@ -29,18 +29,18 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
             client.Setup(
                 x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
                     ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
-                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)),true)).ReturnsAsync(createResponse);
             
             await handler.Handle(command, CancellationToken.None);
             client.Verify(
                 x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
                     ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
-                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId))), Times.Once);
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)),true), Times.Once);
 
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_Error_Creating_A_HttpRequestContentException_Is_Thrown(
+        public void Then_If_Error_Creating_A_HttpRequestContentException_Is_Thrown(
             CreateSubscriptionKeyCommand command,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> client,
             CreateSubscriptionKeyCommandHandler handler)
@@ -49,7 +49,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
             client.Setup(
                 x => x.PostWithResponseCode<object>(It.Is<PostCreateSubscriptionKeyRequest>(c =>
                     ((CreateSubscriptionApiRequest)c.Data).AccountIdentifier.Equals(command.AccountIdentifier) &&
-                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)))).ReturnsAsync(createResponse);
+                    ((CreateSubscriptionApiRequest)c.Data).ProductId.Equals(command.ProductId)),true)).ReturnsAsync(createResponse);
             
             Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));
         }

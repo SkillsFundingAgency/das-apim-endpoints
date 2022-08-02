@@ -22,10 +22,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await sut.TriggerBankRepeatReminderEmails(requestData);
 
             client.Verify(x =>
-                x.Post<SendBankDetailsRepeatReminderEmailsRequest>(It.Is<PostBankDetailsRepeatReminderEmailsRequest>(
+                x.PostWithResponseCode<SendBankDetailsRepeatReminderEmailsRequest>(It.Is<PostBankDetailsRepeatReminderEmailsRequest>(
                     c => c.Data == requestData &&
                          c.PostUrl.Contains("bank-details-repeat-reminders")
-                )), Times.Once);
+                ), false), Times.Once);
         }
     }
 }

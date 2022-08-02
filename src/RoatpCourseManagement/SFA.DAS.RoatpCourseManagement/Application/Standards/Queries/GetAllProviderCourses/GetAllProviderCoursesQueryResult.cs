@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllCoursesQuery
+﻿namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses
 {
-    public class GetAllCoursesResult
+    public class GetAllProviderCoursesQueryResult
     {
         public int ProviderCourseId { get; set; }
         public string CourseName { get; set; }
