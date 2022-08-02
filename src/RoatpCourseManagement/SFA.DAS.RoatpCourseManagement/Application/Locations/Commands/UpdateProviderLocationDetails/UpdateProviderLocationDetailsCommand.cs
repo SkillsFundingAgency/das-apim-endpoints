@@ -4,7 +4,7 @@ using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdateProviderLocationDetails
 {
-    public class UpdateProviderLocationDetailsCommand : IRequest<Unit>
+    public class UpdateProviderLocationDetailsCommand : IRequest<HttpStatusCode>
     {
         public int Ukprn{ get; set; }
         public Guid Id { get; set; }

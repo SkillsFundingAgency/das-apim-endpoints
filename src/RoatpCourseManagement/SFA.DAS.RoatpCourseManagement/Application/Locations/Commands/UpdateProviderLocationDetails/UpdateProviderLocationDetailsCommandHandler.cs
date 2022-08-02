@@ -4,17 +4,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdateProviderLocationDetails
 {
-    public class UpdateProviderLocationDetailsCommandHandler : IRequestHandler<UpdateProviderLocationDetailsCommand, Unit>
+    public class UpdateProviderLocationDetailsCommandHandler : IRequestHandler<UpdateProviderLocationDetailsCommand, HttpStatusCode>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
         public UpdateProviderLocationDetailsCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
         {
             _innerApiClient = innerApiClient;
         }
-        public async Task<Unit> Handle(UpdateProviderLocationDetailsCommand command, CancellationToken cancellationToken)
+        public async Task<HttpStatusCode> Handle(UpdateProviderLocationDetailsCommand command, CancellationToken cancellationToken)
         {
             var updateProviderLocation = new ProviderLocationUpdateModel
             {
@@ -29,7 +30,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdatePro
 
             var request = new ProviderLocationUpdateRequest(updateProviderLocation);
             await _innerApiClient.Put(request);
-            return Unit.Value;
+            return HttpStatusCode.NoContent;
         }
     }
 }
