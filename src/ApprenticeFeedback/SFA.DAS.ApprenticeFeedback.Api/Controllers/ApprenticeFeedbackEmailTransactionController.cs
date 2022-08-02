@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
     [ApiController]
-    [Route("FeedbackTransaction")]
-    public class ApprenticeFeedbackEmailTransactionController : Controller
+    [Route("[controller]/")]
+    public class FeedbackTransactionController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ApprenticeFeedbackEmailTransactionController> _logger;
+        private readonly ILogger<FeedbackTransactionController> _logger;
 
-        public ApprenticeFeedbackEmailTransactionController(IMediator mediator, ILogger<ApprenticeFeedbackEmailTransactionController> logger)
+        public FeedbackTransactionController(IMediator mediator, ILogger<FeedbackTransactionController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
         [HttpPost]
-        public async Task<ActionResult<GenerateEmailTransactionResponse>> GenerateEmailTransaction(GenerateEmailTransactionCommand request)
-            => await _mediator.Send(request);
+        public async Task<ActionResult<GenerateEmailTransactionResponse>> GenerateEmailTransaction()
+            => await _mediator.Send(new GenerateEmailTransactionCommand());
 
     }
 }
