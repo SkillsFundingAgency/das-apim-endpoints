@@ -116,6 +116,19 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             fixture.VerifyResult(DeliveryModelStringTypes.Regular);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task Then_Default_Is_Returned_When_TRainingCode_Is_Empty(string trainingCode)
+        {
+            var fixture = new DeliveryModelServiceTestFixture()
+                .WithTrainingCode(trainingCode);
+
+            await fixture.GetDeliveryModels();
+
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular);
+        }
+
         private class DeliveryModelServiceTestFixture
         {
             private readonly Approvals.Services.DeliveryModelService _handler;
@@ -128,6 +141,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             private readonly GetAccountLegalEntityResponse _accountLegalEntityResponse;
             private ApiResponse<GetAgencyResponse> _flexiJobAgencyResponse;
             private long? _apprenticeshipId;
+            private string _trainingCode;
 
             private List<string> _result;
 
@@ -144,6 +158,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 _accountLegalEntityResponse = fixture.Create<GetAccountLegalEntityResponse>();
                 _flexiJobAgencyResponse = new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty);
                 _apprenticeshipId = null;
+                _trainingCode = "trainingCode";
 
                 _apiClient
                     .Setup(x => x.Get<GetHasPortableFlexiJobOptionResponse>(It.IsAny<GetDeliveryModelsRequest>()))
@@ -203,6 +218,12 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 return this;
             }
 
+            public DeliveryModelServiceTestFixture WithTrainingCode(string trainingCode)
+            {
+                _trainingCode = trainingCode;
+                return this;
+            }
+
             public DeliveryModelServiceTestFixture WithResponseFromProviderCoursesApi(ProviderCoursesApiResponse response)
             {
                 if (response == ProviderCoursesApiResponse.NullResponse)
@@ -224,7 +245,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             public async Task GetDeliveryModels()
             {
-                _result = await _handler.GetDeliveryModels(1, "trainingCode", 2, _apprenticeshipId);
+                _result = await _handler.GetDeliveryModels(1, _trainingCode, 2, _apprenticeshipId);
             }
 
             public void VerifyResult()
