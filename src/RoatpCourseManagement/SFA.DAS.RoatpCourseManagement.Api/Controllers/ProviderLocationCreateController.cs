@@ -28,6 +28,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             command.Ukprn = ukprn;
 
             await _mediator.Send(command);
+
             return new StatusCodeResult(StatusCodes.Status201Created);
         }
     }
