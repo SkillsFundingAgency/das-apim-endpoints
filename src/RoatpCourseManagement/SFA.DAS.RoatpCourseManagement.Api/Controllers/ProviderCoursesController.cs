@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using System;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/courses/{larsCode}")]
-        public async Task<IActionResult> GetProviderCourse(int ukprn, int larsCode)
+        public async Task<IActionResult> GetProviderCourse([FromRoute] int ukprn, [FromRoute] int larsCode)
         {
             if (ukprn <= 9999999)
             {
@@ -49,7 +50,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/courses")]
-        public async Task<IActionResult> GetAllProviderCourses(int ukprn)
+        public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn)
         {
             if (ukprn <= 0)
             {
@@ -77,6 +78,15 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
                 _logger.LogError(ex, $"Error occurred trying to retrieve Standards data for ukprn number {ukprn}");
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("providers/{ukprn}/available-courses")]
+        public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn)
+        {
+            var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn));
+            _logger.LogInformation($"Total {result.AvailableCourses.Count} courses are available for ukprn: {ukprn}");
+            return Ok(result);
         }
     }
 }
