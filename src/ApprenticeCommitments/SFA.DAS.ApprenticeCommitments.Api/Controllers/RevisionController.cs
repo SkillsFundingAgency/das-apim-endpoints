@@ -25,5 +25,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations")]
         public Task ConfirmApprenticeship(Guid apprenticeId, long apprenticeshipId, long revisionId, [FromBody] Confirmations confirmations)
             => _client.Patch($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations", confirmations);
+
+        [HttpGet("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}")]
+        public Task<IActionResult> GetApprenticeshipRevision(Guid apprenticeId, long apprenticeshipId, long revisionId)
+            => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}");
     }
 }
