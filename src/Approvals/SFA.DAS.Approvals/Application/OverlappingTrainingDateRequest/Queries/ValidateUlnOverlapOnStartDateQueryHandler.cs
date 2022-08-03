@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 {
-    /// TODO : Unit test 
     public class ValidateUlnOverlapOnStartDateQueryHandler : IRequestHandler<ValidateUlnOverlapOnStartDateQuery, ValidateUlnOverlapOnStartDateQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
@@ -27,8 +26,10 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
             response.EnsureSuccessStatusCode();
 
             return new ValidateUlnOverlapOnStartDateQueryResult
-            { HasOverlapWithApprenticeshipId = response.Body.HasOverlapWithApprenticeshipId, 
-                HasStartDateOverlap = response.Body.HasStartDateOverlap };
+            {
+                HasOverlapWithApprenticeshipId = response.Body.HasOverlapWithApprenticeshipId,
+                HasStartDateOverlap = response.Body.HasStartDateOverlap
+            };
         }
     }
 }
