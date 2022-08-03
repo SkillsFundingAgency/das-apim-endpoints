@@ -59,6 +59,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 {
                     PropertyNameCaseInsensitive = true,
                 };
+
                 responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
             }
 
