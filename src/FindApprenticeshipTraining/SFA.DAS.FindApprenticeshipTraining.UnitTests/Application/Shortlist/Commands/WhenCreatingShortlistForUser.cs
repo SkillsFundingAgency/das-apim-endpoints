@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Com
                     && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
                     && ((PostShortlistData)c.Data).StandardId.Equals(command.StandardId)
                     && ((PostShortlistData)c.Data).SectorSubjectArea.Equals(standardApiResponse.SectorSubjectAreaTier2Description)
-                    && ((PostShortlistData)c.Data).ShortlistUserId.Equals(command.ShortlistUserId)))).ReturnsAsync(new ApiResponse<PostShortListResponse>(apiResponse, HttpStatusCode.Accepted, ""));
+                    && ((PostShortlistData)c.Data).ShortlistUserId.Equals(command.ShortlistUserId)),true)).ReturnsAsync(new ApiResponse<PostShortListResponse>(apiResponse, HttpStatusCode.Accepted, ""));
             //Act
             var actual = await handler.Handle(command, CancellationToken.None);
 

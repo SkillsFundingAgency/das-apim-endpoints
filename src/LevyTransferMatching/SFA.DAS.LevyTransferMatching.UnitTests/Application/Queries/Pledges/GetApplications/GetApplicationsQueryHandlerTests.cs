@@ -21,7 +21,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
     [TestFixture]
     public class GetApplicationsQueryHandlerTests
     {
-        private GetApplicationsQueryHandler _handler;
         private Mock<ILevyTransferMatchingService> _service;
         private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
         private Mock<IReferenceDataService> _referenceDataService;

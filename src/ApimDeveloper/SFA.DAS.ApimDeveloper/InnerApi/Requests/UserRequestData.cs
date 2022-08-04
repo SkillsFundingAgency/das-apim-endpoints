@@ -1,20 +1,20 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
 {
     public class UserRequestData
     {
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
-        [JsonProperty("firstName")]
+        [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
-        [JsonProperty("lastName")]
+        [JsonPropertyName("lastName")]
         public string LastName { get; set; }
-        [JsonProperty("password")]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
-        [JsonProperty("confirmEmailLink")]
+        [JsonPropertyName("confirmEmailLink")]
         public string ConfirmationEmailLink { get; set; }
-        [JsonProperty("state")]
+        [JsonPropertyName("state")]
         public int? State { get; set; }
     }
 }

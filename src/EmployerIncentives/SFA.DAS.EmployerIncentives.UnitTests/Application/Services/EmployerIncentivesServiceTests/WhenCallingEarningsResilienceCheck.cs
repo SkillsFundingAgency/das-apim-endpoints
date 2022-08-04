@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await service.RunCheck();
 
             client.Verify(x =>
-                x.Post<string>(It.IsAny<EarningsResilenceCheckRequest>()), Times.Once);
+                x.PostWithResponseCode<string>(It.IsAny<EarningsResilenceCheckRequest>(), false), Times.Once);
         }
     }
 }

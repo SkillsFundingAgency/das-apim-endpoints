@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
-    public class GetAllCoursesResponse
+    public class GetAllProviderCoursesResponse
     {
         public int ProviderCourseId { get; set; }
         public string CourseName { get; set; }

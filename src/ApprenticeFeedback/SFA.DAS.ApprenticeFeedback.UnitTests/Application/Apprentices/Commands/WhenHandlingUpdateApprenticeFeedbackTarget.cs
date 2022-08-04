@@ -107,8 +107,8 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 
             // Don't care about update response, just that values are returned.
             var updateRequests = new List<UpdateApprenticeFeedbackTargetRequest>();
-            _mockFeedbackApiClient.Setup(c => c.PostWithResponseCode<ApprenticeFeedbackTarget>(It.IsAny<UpdateApprenticeFeedbackTargetRequest>()))
-                .Callback<IPostApiRequest>(request => updateRequests.Add((UpdateApprenticeFeedbackTargetRequest)request))
+            _mockFeedbackApiClient.Setup(c => c.PostWithResponseCode<ApprenticeFeedbackTarget>(It.IsAny<UpdateApprenticeFeedbackTargetRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest, bool>((request, includeResponse) => updateRequests.Add((UpdateApprenticeFeedbackTargetRequest)request))
                 .ReturnsAsync(apiResponse);
 
             // Act

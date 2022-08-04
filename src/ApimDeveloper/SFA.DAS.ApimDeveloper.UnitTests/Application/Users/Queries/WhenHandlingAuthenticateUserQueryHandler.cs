@@ -27,7 +27,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Queries
             apimDeveloperApiClient.Setup(x =>
                     x.PostWithResponseCode<PostAuthenticateUserResult>(It.Is<PostAuthenticateUserRequest>(c =>
                     ((PostAuthenticateUserRequestData)c.Data).Email.Equals(command.Email)
-                    && ((PostAuthenticateUserRequestData)c.Data).Password.Equals(command.Password))))
+                    && ((PostAuthenticateUserRequestData)c.Data).Password.Equals(command.Password)),true))
                 .ReturnsAsync(new ApiResponse<PostAuthenticateUserResult>(apiResponse, HttpStatusCode.OK, ""));
             
             var actual = await handler.Handle(command, CancellationToken.None);
@@ -45,7 +45,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Queries
             apimDeveloperApiClient.Setup(x =>
                     x.PostWithResponseCode<PostAuthenticateUserResult>(It.Is<PostAuthenticateUserRequest>(c =>
                         ((PostAuthenticateUserRequestData)c.Data).Email.Equals(command.Email)
-                        && ((PostAuthenticateUserRequestData)c.Data).Password.Equals(command.Password))))
+                        && ((PostAuthenticateUserRequestData)c.Data).Password.Equals(command.Password)),true))
                 .ReturnsAsync(new ApiResponse<PostAuthenticateUserResult>(apiResponse, HttpStatusCode.BadRequest, "An Error"));
             
             Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));

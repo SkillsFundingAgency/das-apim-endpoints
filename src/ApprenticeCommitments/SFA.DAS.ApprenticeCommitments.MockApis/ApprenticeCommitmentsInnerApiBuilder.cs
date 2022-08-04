@@ -15,6 +15,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         private readonly Fixture _fixture;
         private IEnumerable<RegistrationsRemindersInvitationsResponse.Registration> _registrationsInNeedOfReminders;
         private readonly ApprenticeshipResponse _existingApprenticship;
+        private readonly ApprenticeshipResponse _latestConfirmedApprenticship;
+        private readonly ApprenticeshipResponse _explicitApprenticshipRevision;
 
         public ApprenticeCommitmentsInnerApiBuilder(int port)
         {
@@ -23,6 +25,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
             _registrationsInNeedOfReminders = _fixture.CreateMany<RegistrationsRemindersInvitationsResponse.Registration>();
             _existingApprenticship = _fixture.Create<ApprenticeshipResponse>();
+            _latestConfirmedApprenticship = _fixture.Create<ApprenticeshipResponse>();
+            _explicitApprenticshipRevision = _fixture.Create<ApprenticeshipResponse>();
         }
 
         public static ApprenticeCommitmentsInnerApiBuilder Create(int port)
@@ -150,6 +154,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                         .WithPath("/apprentices/*/apprenticeships/*/howapprenticeshipwillbedeliveredconfirmation")
                         .UsingPost()
                 )
+                .AtPriority(10)
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
@@ -158,6 +163,40 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             return this;
         }
 
+        public ApprenticeCommitmentsInnerApiBuilder WithLatestConfirmedApprenticeship()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/*/apprenticeships/*/confirmed/latest")
+                        .UsingGet()
+                )
+                .AtPriority(9)
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(_latestConfirmedApprenticship)
+                );
 
+            return this;
+        }
+
+        public ApprenticeCommitmentsInnerApiBuilder WithExplicitApprenticeshipRevision()
+        {
+            _server
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices/*/apprenticeships/*/revisions/*")
+                        .UsingGet()
+                )
+                .AtPriority(8)
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(_explicitApprenticshipRevision)
+                );
+
+            return this;
+        }
     }
 }
