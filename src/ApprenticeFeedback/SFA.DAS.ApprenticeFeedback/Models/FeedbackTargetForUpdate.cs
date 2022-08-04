@@ -5,15 +5,15 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class FeedbackTargetForUpdate
     {
-        public Guid Id { get; set; }
-        public Guid ApprenticeId { get; set; }
+        public Guid ApprenticeFeedbackTargetId { get; set; }
+        public long ApprenticeshipId { get; set; }
 
         public static explicit operator FeedbackTargetForUpdate(ApprenticeFeedbackTarget source)
         {
             return new FeedbackTargetForUpdate()
             {
-                Id = source.Id,
-                ApprenticeId = source.ApprenticeId,
+                ApprenticeFeedbackTargetId = source.Id,
+                ApprenticeshipId = source.ApprenticeshipId,
             };
         }
     }

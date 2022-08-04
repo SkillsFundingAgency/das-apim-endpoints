@@ -25,7 +25,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_CommandIsProcessedSuccessfully_Then_ReturnOk(TriggerFeedbackTargetUpdateCommand request)
         {
-            var result = await _controller.TriggerUpdate(request);
+            var result = await _controller.UpdateFeedbackTarget(request);
             result.Should().NotBeNull();
         }
     }
