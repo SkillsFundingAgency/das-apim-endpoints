@@ -30,7 +30,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateChangeOfPartyRequestResponse>(It.IsAny<CreateChangeOfPartyRequestRequest>(), true))
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateChangeOfPartyRequestResponse>(It.IsAny<CreateChangeOfPartyRequestRequest>(), false))
                 .Callback((IPostApiRequest request, bool includeResponse) => _apiRequest = request as CreateChangeOfPartyRequestRequest)
                 .ReturnsAsync(new ApiResponse<CreateChangeOfPartyRequestResponse>(null, HttpStatusCode.OK, string.Empty));
 
