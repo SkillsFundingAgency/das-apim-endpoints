@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.OuterApi", "SFA.DAS.TrackProgress.OuterApi\SFA.DAS.TrackProgress.OuterApi.csproj", "{12249FB3-9DF1-4874-B27B-A469122FB7A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api", "SFA.DAS.TrackProgress.Api\SFA.DAS.TrackProgress.Api.csproj", "{12249FB3-9DF1-4874-B27B-A469122FB7A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress", "SFA.DAS.TrackProgress\SFA.DAS.TrackProgress.csproj", "{D0806F3A-E382-4EA0-82D6-DC297EC623BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{0A47150D-8C77-4FD2-B1E4-CFD1D004CACC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.OuterApi.Tests", "SFA.DAS.TrackProgress.OuterApi.Tests\SFA.DAS.TrackProgress.OuterApi.Tests.csproj", "{8A3888C8-F03B-4399-9804-DE9D721169A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.AcceptanceTests", "SFA.DAS.TrackProgress.Api.Tests\SFA.DAS.TrackProgress.Api.AcceptanceTests.csproj", "{8A3888C8-F03B-4399-9804-DE9D721169A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
