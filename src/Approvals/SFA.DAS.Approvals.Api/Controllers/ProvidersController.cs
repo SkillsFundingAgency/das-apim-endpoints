@@ -73,7 +73,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{providerId}/courses/{trainingCode}")]
+        [Route("{providerId}/courses/{trainingCode?}")]
         public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode, [FromQuery] long accountLegalEntityId = 0)
         {
             try

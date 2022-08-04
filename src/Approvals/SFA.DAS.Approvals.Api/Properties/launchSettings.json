@@ -1,24 +1,8 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
-    "iisExpress": {
-      "applicationUrl": "http://localhost:6890",
-      "sslPort": 44328
-    }
-  },
-  "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "SFA.DAS.Approvals.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5011;http://localhost:5012",
+      "applicationUrl": "https://localhost:10234;http://localhost:10235",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
