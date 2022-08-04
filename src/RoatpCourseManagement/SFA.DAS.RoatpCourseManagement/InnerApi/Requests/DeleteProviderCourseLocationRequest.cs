@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Web;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
@@ -7,7 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserId { get; set; }
 
         public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/location/{Id}?userId={HttpUtility.UrlEncode(UserId)}";

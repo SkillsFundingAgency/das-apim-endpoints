@@ -5,7 +5,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseLocationsResponse
     {
-        public int Id { get; set; }
         public Guid NavigationId { get; set; }
         public int ProviderCourseId { get; set; }
         public int? ProviderLocationId { get; set; }
