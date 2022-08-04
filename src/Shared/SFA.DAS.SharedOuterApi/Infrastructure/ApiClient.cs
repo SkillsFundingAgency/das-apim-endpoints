@@ -55,7 +55,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
             else if(includeResponse)
             {
-                responseBody = JsonSerializer.Deserialize<TResponse>(json);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+
+                responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
             }
 
             var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
@@ -160,7 +165,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<IEnumerable<TResponse>>(json);
+            return JsonSerializer.Deserialize<IEnumerable<TResponse>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
