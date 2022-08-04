@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator
 {
