@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
 
     public class GetEditApprenticeshipQueryResult
     {
+        public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
     }
@@ -59,8 +60,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
 
             return new GetEditApprenticeshipQueryResult
             {
-                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
-                IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue
+                CourseName = apprenticeship.CourseName,
+                IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue,
+                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
             };
         }
 

@@ -66,6 +66,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             Assert.AreEqual(_apprenticeship.TransferSenderId.HasValue, result.IsFundedByTransfer);
         }
 
+        [Test]
+        public async Task Handle_IsCourseName_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_apprenticeship.CourseName, result.CourseName);
+        }
+
         [TestCase(0, false)]
         [TestCase(1, false)]
         [TestCase(2, true)]

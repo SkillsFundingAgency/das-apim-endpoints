@@ -4,6 +4,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {
     public class GetEditApprenticeshipResponse
     {
+        public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
 
@@ -11,6 +12,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         {
             return new GetEditApprenticeshipResponse
             {
+                CourseName = source.CourseName,
                 IsFundedByTransfer = source.IsFundedByTransfer,
                 HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions
             };
