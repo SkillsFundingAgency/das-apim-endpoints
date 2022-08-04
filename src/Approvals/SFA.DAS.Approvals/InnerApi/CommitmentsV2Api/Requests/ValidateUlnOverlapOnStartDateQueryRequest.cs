@@ -2,7 +2,6 @@
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
 {
-    /// TODO : Unit Test
     public class ValidateUlnOverlapOnStartDateQueryRequest : IGetApiRequest
     {
         public readonly long ProviderId;
