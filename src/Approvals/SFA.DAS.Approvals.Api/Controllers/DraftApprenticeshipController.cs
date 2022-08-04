@@ -6,7 +6,6 @@ using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
-using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {

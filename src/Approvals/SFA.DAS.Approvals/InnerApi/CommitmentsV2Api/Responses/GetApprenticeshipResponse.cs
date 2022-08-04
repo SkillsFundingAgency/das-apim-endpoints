@@ -10,5 +10,6 @@
         public string EmployerName { get; set; }
         public string DeliveryModel { get; set; }
         public string CourseCode { get; set; }
+        public long? ContinuationOfId { get; set; }
     }
 }
