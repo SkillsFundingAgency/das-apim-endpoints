@@ -33,10 +33,9 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
         public string StandardReference { get; set; }
         public string StandardName { get; set; }
         public int? CompletionStatus { get; set; }
-        public string Outcome { get; set; }
         public DateTime? ApprovalsStopDate { get; set; }
         public DateTime? ApprovalsPauseDate { get; set; }
-        public DateTime? AchievementDate { get; set; }
+        public DateTime? LearnActEndDate { get; set; }
         public DateTime? EstimatedEndDate { get; set; }
 
         public static implicit operator LearnerData(GetApprenticeLearnerResponse source)
@@ -45,12 +44,11 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
             {
                 Ukprn = source.Ukprn,
                 ProviderName = source.ProviderName,
-                AchievementDate = source.AchievementDate,
+                LearnActEndDate = source.LearnActEndDate,
                 EstimatedEndDate = source.EstimatedEndDate,
                 ApprovalsStopDate = source.ApprovalsStopDate,
                 ApprovalsPauseDate = source.ApprovalsPauseDate,
                 CompletionStatus = source.CompletionStatus,
-                Outcome = source.Outcome,
                 LearnStartDate = source.LearnStartDate,
                 PlannedEndDate = source.PlannedEndDate,
                 StandardCode = source.StandardCode,

@@ -132,10 +132,9 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
                     learnerResponse.StandardReference,
                     learnerResponse.StandardName,
                     learnerResponse.CompletionStatus,
-                    learnerResponse.Outcome,
                     learnerResponse.ApprovalsStopDate,
                     learnerResponse.ApprovalsPauseDate,
-                    learnerResponse.AchievementDate,
+                    learnerResponse.LearnActEndDate,
                     learnerResponse.EstimatedEndDate
 
                 });
