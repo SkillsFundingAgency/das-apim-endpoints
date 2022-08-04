@@ -4,16 +4,14 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {
     public class GetEditApprenticeshipResponse
     {
-        public string ProviderName { get; set; }
-        public string LegalEntityName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool IsFundedByTransfer { get; set; }
 
         public static implicit operator GetEditApprenticeshipResponse(GetEditApprenticeshipQueryResult source)
         {
             return new GetEditApprenticeshipResponse
             {
-                ProviderName = source.ProviderName,
-                LegalEntityName = source.LegalEntityName,
+                IsFundedByTransfer = source.IsFundedByTransfer,
                 HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions
             };
         }

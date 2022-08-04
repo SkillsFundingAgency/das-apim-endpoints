@@ -60,17 +60,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         }
 
         [Test]
-        public async Task Handle_ProviderNameIs_Mapped()
+        public async Task Handle_IsFundedByTransfer_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship.ProviderName, result.ProviderName);
-        }
-
-        [Test]
-        public async Task Handle_LegalEntityName_Is_Mapped()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship.EmployerName, result.LegalEntityName);
+            Assert.AreEqual(_apprenticeship.TransferSenderId.HasValue, result.IsFundedByTransfer);
         }
 
         [TestCase(0, false)]
