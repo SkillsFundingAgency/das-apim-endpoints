@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetEmployerAccountLegalEntityItem
     {
-        [JsonProperty("Name")]
+        [JsonPropertyName("Name")]
         public string AccountLegalEntityName { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public string AccountPublicHashedId { get ; set ; }

@@ -1,14 +1,14 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
 {
     public class GetUserAccountsResponse
     {
-        [JsonProperty("HashedAccountId")]
+        [JsonPropertyName("HashedAccountId")]
         public string EncodedAccountId { get; set; }
-        [JsonProperty("DasAccountName")]
+        [JsonPropertyName("DasAccountName")]
         public string DasAccountName { get; set; }
-        [JsonProperty("Role")]
+        [JsonPropertyName("Role")]
         public string Role { get; set; }
     }
 }

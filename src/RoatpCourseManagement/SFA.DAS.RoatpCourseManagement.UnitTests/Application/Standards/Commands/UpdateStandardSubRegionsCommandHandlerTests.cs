@@ -33,9 +33,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             var result = await sut.Handle(command, cancellationToken);
 
             apiClientMock.Verify(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>()), Times.Once);
-            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(It.IsAny<ProviderLocationsBulkInsertRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(It.IsAny<ProviderLocationsBulkInsertRequest>(), false), Times.Once);
             apiClientMock.Verify(a => a.Delete(It.IsAny<ProviderCourseLocationsBulkDeleteRequest>()), Times.Once);
-            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(It.IsAny<ProviderCourseLocationBulkInsertRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(It.IsAny<ProviderCourseLocationBulkInsertRequest>(), false), Times.Once);
             apiClientMock.Verify(a => a.Delete(It.IsAny<ProviderLocationBulkDeleteRequest>()), Times.Once);
 
             Assert.IsNotNull(result);

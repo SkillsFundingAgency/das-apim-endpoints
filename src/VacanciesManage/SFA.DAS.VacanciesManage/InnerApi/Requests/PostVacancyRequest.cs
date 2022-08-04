@@ -1,5 +1,4 @@
 using System;
-using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests

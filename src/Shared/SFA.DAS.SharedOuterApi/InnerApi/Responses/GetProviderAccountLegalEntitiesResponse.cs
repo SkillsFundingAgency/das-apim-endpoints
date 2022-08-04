@@ -1,38 +1,38 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetProviderAccountLegalEntitiesResponse
     {
-        [JsonProperty("AccountProviderLegalEntities")]
+        [JsonPropertyName("AccountProviderLegalEntities")]
         public List<GetProviderAccountLegalEntityItem> AccountProviderLegalEntities { get; set; }
     }
 
     public class GetProviderAccountLegalEntityItem
     {
-        [JsonProperty("AccountId")]
+        [JsonPropertyName("AccountId")]
         public long AccountId { get; set; }
 
-        [JsonProperty("AccountPublicHashedId")]
+        [JsonPropertyName("AccountPublicHashedId")]
         public string AccountPublicHashedId { get; set; }
 
-        [JsonProperty("AccountHashedId")]
+        [JsonPropertyName("AccountHashedId")]
         public string AccountHashedId { get; set; }
 
-        [JsonProperty("AccountName")]
+        [JsonPropertyName("AccountName")]
         public string AccountName { get; set; }
 
-        [JsonProperty("AccountLegalEntityId")]
+        [JsonPropertyName("AccountLegalEntityId")]
         public long AccountLegalEntityId { get; set; }
 
-        [JsonProperty("AccountLegalEntityPublicHashedId")]
+        [JsonPropertyName("AccountLegalEntityPublicHashedId")]
         public string AccountLegalEntityPublicHashedId { get; set; }
 
-        [JsonProperty("AccountLegalEntityName")]
+        [JsonPropertyName("AccountLegalEntityName")]
         public string AccountLegalEntityName { get; set; }
 
-        [JsonProperty("AccountProviderId")]
+        [JsonPropertyName("AccountProviderId")]
         public long AccountProviderId { get; set; }
     }
 }

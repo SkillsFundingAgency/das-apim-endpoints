@@ -54,6 +54,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public Task<IActionResult> GetApprenticeship(Guid apprenticeId, long apprenticeshipId)
             => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}");
 
+        [HttpGet("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/confirmed/latest")]
+        public Task<IActionResult> MyApprenticeship(Guid apprenticeId, long apprenticeshipId)
+            => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/confirmed/latest");
+
         [HttpGet("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions")]
         public Task<IActionResult> GetApprenticeshipRevisions(Guid apprenticeId, long apprenticeshipId)
             => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions");

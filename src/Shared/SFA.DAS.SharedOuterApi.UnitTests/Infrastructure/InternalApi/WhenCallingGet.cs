@@ -27,7 +27,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             config.Url = "https://test.local";
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequest(id);
@@ -67,7 +67,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             
             var response = new HttpResponseMessage
             {
-                Content = new StringContent(""),
+                Content = new StringContent("\"test\""),
                 StatusCode = HttpStatusCode.Accepted
             };
             var getTestRequest = new GetTestRequest(id);
@@ -108,7 +108,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var configuration = config;
              var response = new HttpResponseMessage
              {
-                 Content = new StringContent(""),
+                 Content = new StringContent("\"test\""),
                  StatusCode = HttpStatusCode.Accepted
              };
              var getTestRequest = new GetTestRequestNoVersion(id);

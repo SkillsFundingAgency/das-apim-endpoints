@@ -33,9 +33,9 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.GetWithResponseCode<TResponse>(request);
         }
 
-        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            return await _apiClient.PostWithResponseCode<TResponse>(request);
+            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public async Task Delete(IDeleteApiRequest request)
@@ -70,7 +70,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.PatchWithResponseCode(request);
         }
 
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)

@@ -11,7 +11,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public long Uln { get; set; }
+        public string Uln { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public string StandardUId { get; set; }
         public string CourseCode { get; set; }

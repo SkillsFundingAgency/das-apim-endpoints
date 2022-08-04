@@ -21,10 +21,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             await sut.SendEmail<PostBankDetailsRequiredEmailRequest>(requestData);
 
             client.Verify(x =>
-                x.Post<PostBankDetailsRequiredEmailRequest>(It.Is<PostBankDetailsRequiredEmailRequest>(
+                x.PostWithResponseCode<PostBankDetailsRequiredEmailRequest>(It.Is<PostBankDetailsRequiredEmailRequest>(
                     c => c.Data == requestData.Data &&
                          c.PostUrl.Contains("bank-details-required")
-                )), Times.Once);
+                ), false), Times.Once);
         }
     }
 }
