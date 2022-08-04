@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TriggerFeedbackTargetU
 {
     public class TriggerFeedbackTargetUpdateCommand : IRequest<TriggerFeedbackTargetUpdateResponse>
     {
-        public Guid Id { get; set; }
-        public Guid ApprenticeId { get; set; }
+        public long ApprenticeshipId { get; set; }
+        public Guid ApprenticeFeedbackTargetId { get; set; }
     }
 }

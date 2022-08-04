@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.TriggerFeedbackTargetUpdate;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTargetsForUpdate;
-using SFA.DAS.ApprenticeFeedback.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             => await _mediator.Send(request);
 
         [HttpGet("requiresupdate")]
-        public async Task<IActionResult> GetApprenticeFeedbackTargetsForUpdate(int batchSize)
+        public async Task<IActionResult> GetFeedbackTargetsForUpdate(int batchSize)
         {
             try
             {
@@ -44,7 +43,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> TriggerUpdate([FromBody]TriggerFeedbackTargetUpdateCommand command)
+        public async Task<IActionResult> UpdateFeedbackTarget([FromBody]TriggerFeedbackTargetUpdateCommand command)
         {
             try
             {
