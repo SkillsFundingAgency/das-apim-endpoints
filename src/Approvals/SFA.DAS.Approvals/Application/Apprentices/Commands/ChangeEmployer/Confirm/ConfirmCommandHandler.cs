@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Conf
 
             var apiRequest = new CreateChangeOfPartyRequestRequest(request.ApprenticeshipId, body);
 
-            var response = await _commitmentsApiClient.PostWithResponseCode<CreateChangeOfPartyRequestResponse>(apiRequest);
+            var response = await _commitmentsApiClient.PostWithResponseCode<CreateChangeOfPartyRequestResponse>(apiRequest, false);
 
             response.EnsureSuccessStatusCode();
 
