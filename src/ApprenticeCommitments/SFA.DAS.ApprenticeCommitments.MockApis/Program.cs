@@ -58,6 +58,8 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                         .WithRegistrationSeen()
                         .WithExistingApprenticeship()
                         .WithHowApprenticeshipWillBeDelivered()
+                        .WithLatestConfirmedApprenticeship()
+                        .WithExplicitApprenticeshipRevision()
                         .Build();
                 }
 

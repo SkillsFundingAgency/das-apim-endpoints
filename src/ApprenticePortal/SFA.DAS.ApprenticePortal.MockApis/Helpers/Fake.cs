@@ -25,7 +25,8 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
                 ApprovedOn = DateTime.UtcNow.AddMonths(-3),
                 ConfirmedOn = null,
                 StoppedReceivedOn = null,
-                LastViewed = null
+                LastViewed = null,
+                HasBeenConfirmedAtLeastOnce = false
             };
         }
 
