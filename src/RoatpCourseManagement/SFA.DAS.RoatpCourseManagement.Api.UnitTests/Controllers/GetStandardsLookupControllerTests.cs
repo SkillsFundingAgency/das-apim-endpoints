@@ -78,7 +78,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task GetStandardInformation_InvokesHandler(
             [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] GetStandardsLookupController sut,
+            [Greedy] StandardsLookupGetController sut,
             int larsCode)
         {
             await sut.GetStandardInformation(larsCode);
