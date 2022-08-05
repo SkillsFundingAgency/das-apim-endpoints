@@ -4,8 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFinance.Api.Models.Accounts;
+using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountMinimumSignedAgreementVersion;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMembersWhichReceiveNotifications;
-using OuterApiResponseTeamMember = SFA.DAS.EmployerFinance.Api.Models.Accounts.TeamMember;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers
 {
@@ -28,16 +28,36 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetAccountTeamMembersWhichReceiveNotificationsQuery()
+                var result = await _mediator.Send(new GetAccountTeamMembersWhichReceiveNotificationsQuery()
                 {
                     AccountId = accountId,
                 });
 
-                return Ok((GetAccountTeamMembersWhichReceiveNotificationsResponse)(response));
+                return Ok((GetAccountTeamMembersWhichReceiveNotificationsResponse)(result));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting account team members which receive notifications");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{_accountId}/minimum-signed-agreement-version")]
+        public async Task<IActionResult> GetAccountMinimumSignedAgreementVersion(long accountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAccountMinimumSignedAgreementVersionQuery()
+                {
+                    AccountId = accountId,
+                });
+
+                return Ok(new GetAccountMinimumSignedAgreementVersionResponse { MinimumSignedAgreementVersion = result.MinimumSignedAgreementVersion });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting account minimum signed agreement version");
                 return BadRequest();
             }
         }
