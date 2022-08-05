@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larsCode}/location/delete/{id}")]
+        [Route("providers/{ukprn}/courses/{larsCode}/location/{id}/delete")]
         public async Task<IActionResult> DeleteProviderCourseLocation(int ukprn, int larsCode, Guid id, DeleteProviderCourseLocationCommand command)
         {
             _logger.LogInformation("Outer API: Request received to delete provider course location for ukprn: {ukprn} larscode: {larscode} providerCourseLocationId: {id}", ukprn, larsCode, id);
