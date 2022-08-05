@@ -30,7 +30,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
-            var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);
+            var subject = new StandardsLookupGetController(Mock.Of<ILogger<StandardsLookupGetController>>(), mediatorMock.Object);
 
             var response = await subject.GetAllStandards();
 
@@ -62,7 +62,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
-            var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);
+            var subject = new StandardsLookupGetController(Mock.Of<ILogger<StandardsLookupGetController>>(), mediatorMock.Object);
 
             var response = await subject.GetAllStandards();
 

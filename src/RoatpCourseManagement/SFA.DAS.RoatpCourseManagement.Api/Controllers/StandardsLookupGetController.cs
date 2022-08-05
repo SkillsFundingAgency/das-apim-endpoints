@@ -7,12 +7,12 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLo
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
-    public class GetStandardsLookupController : ControllerBase
+    public class StandardsLookupGetController : ControllerBase
     {
-        private readonly ILogger<GetStandardsLookupController> _logger;
+        private readonly ILogger<StandardsLookupGetController> _logger;
         private readonly IMediator _mediator;
 
-        public GetStandardsLookupController(ILogger<GetStandardsLookupController> logger, IMediator mediator)
+        public StandardsLookupGetController(ILogger<StandardsLookupGetController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
