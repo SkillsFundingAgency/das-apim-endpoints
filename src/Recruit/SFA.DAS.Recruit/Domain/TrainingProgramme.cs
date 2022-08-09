@@ -10,13 +10,14 @@ namespace SFA.DAS.Recruit.Domain
         public string Title { get; set; }
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
+        public DateTime? LastDateStarts { get; set; }
         public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         public int Duration { get; set; }
         public bool IsActive { get; set; }
         public int? EducationLevelNumber { get; set; }
-        public int SectorCode { get ; set ; }
-        public int FrameworkCode { get ; set ; }
-        public int Ssa1 { get ; set ; }
+        public int SectorCode { get; set; }
+        public int FrameworkCode { get; set; }
+        public int Ssa1 { get; set; }
 
         public static implicit operator TrainingProgramme(GetFrameworksListItem source)
         {
@@ -46,6 +47,7 @@ namespace SFA.DAS.Recruit.Domain
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
                 EffectiveTo = source.StandardDates.EffectiveTo,
+                LastDateStarts = source.StandardDates.LastDateStarts,
                 ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
                 Duration = source.TypicalDuration,
                 IsActive = source.IsActive,
