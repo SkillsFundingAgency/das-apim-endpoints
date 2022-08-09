@@ -26,7 +26,7 @@ namespace SFA.DAS.TrackProgress.Application.Commands
                 else return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
             }
 
-            if (apprenticeshipResult.Body.Apprenticeships?.Where(x => x.StartDate == request.PlannedStartDate).Count() > 1)
+            if (apprenticeshipResult.Body.Apprenticeships?.Count(x => x.StartDate == request.PlannedStartDate) > 1)
                 return new TrackProgressResponse(HttpStatusCode.NotFound, "Multiple results for start date");
 
             return new TrackProgressResponse(HttpStatusCode.Created);
