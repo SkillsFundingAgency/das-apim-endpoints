@@ -2,6 +2,7 @@
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.TrackProgress.Application.Services;
 
 namespace SFA.DAS.TrackProgress.Api.AppStart;
 
@@ -13,8 +14,8 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         //services.AddTransient<ICacheStorageService, CacheStorageService>();
         //services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
-
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<CommitmentsV2Service>();
         //services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         //services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         //services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
