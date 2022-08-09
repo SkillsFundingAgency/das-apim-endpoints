@@ -30,7 +30,7 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
 
             return new GetApprenticeHomepageQueryResult
             {
-                apprenticeHomepage = new ApprenticeHomepage
+                ApprenticeHomepage = new ApprenticeHomepage
                 {                    
                     Apprentice = _apprentice,
                     Apprenticeship = _apprenticeships?.Apprenticeships.FirstOrDefault()

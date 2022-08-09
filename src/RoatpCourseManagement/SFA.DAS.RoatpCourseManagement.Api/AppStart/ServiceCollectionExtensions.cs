@@ -23,6 +23,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+            services.AddTransient<ILocationLookupService, LocationLookupService>();
             ConfigureCourseDirectoryHttpClient(services, configuration);
         }
 
@@ -35,7 +37,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
-
+            services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
         }
 
         private static void ConfigureCourseDirectoryHttpClient(IServiceCollection services, IConfiguration configuration)

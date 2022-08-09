@@ -74,7 +74,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("{providerId}/courses/{trainingCode}")]
-        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode, [FromQuery] long accountLegalEntityId = 0)
+        [Obsolete("Will be replaced by /{providerId}/courses?trainingCode={trainingCode}")]
+        public async Task<IActionResult> GetProviderCoursesDeliveryModel(long providerId, string trainingCode = "", [FromQuery] long accountLegalEntityId = 0)
         {
             try
             {
@@ -86,6 +87,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 _logger.LogError(e, "Error getting Provider Courses Delivery Models for Provider {providerId} and course {trainingCode}", providerId, trainingCode);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
+            }
+        }
+
+        [HttpGet]
+        [Route("{providerId}/courses")]
+        public async Task<IActionResult> GetProviderCoursesDeliveryModelByQuery(long providerId, [FromQuery] string trainingCode, [FromQuery] long accountLegalEntityId = 0)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetDeliveryModelsQuery(providerId, trainingCode, accountLegalEntityId));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting Provider Courses Delivery Models for Provider {providerId} and course {trainingCode}", providerId, trainingCode);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

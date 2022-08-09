@@ -10,6 +10,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string Title { get; set; }
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
+        public DateTime? LastDateStarts { get; set; }
         public GetTrainingProgrammeApprenticeshipLevel ApprenticeshipLevel { get; set; }
         public int Duration { get; set; }
         public bool IsActive { get; set; }
@@ -27,6 +28,7 @@ namespace SFA.DAS.Recruit.Api.Models
                 Title = source.Title,
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
+                LastDateStarts = source.LastDateStarts,
                 ApprenticeshipLevel = (GetTrainingProgrammeApprenticeshipLevel)source.ApprenticeshipLevel,
                 Duration = source.Duration,
                 IsActive = source.IsActive,
