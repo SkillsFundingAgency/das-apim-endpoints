@@ -34,9 +34,12 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             var result = await _sut.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf(typeof(TrackProgressResponse), result);
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.InstanceOf(typeof(TrackProgressResponse)));
+                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            });   
         }
 
         [Test, MoqAutoData]
@@ -54,9 +57,12 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             var result = await _sut.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf(typeof(TrackProgressResponse), result);
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.InstanceOf(typeof(TrackProgressResponse)));
+                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            });
         }
 
         [Test, MoqAutoData]
@@ -80,9 +86,12 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             var result = await _sut.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf(typeof(TrackProgressResponse), result);
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.InstanceOf(typeof(TrackProgressResponse)));
+                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            });
         }
 
         [Test, MoqAutoData]
@@ -113,9 +122,12 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             var result = await _sut.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(request);
-            Assert.IsInstanceOf(typeof(TrackProgressResponse), result);
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.InstanceOf(typeof(TrackProgressResponse)));
+                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            });
         }
 
         private void AddProviderResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode)

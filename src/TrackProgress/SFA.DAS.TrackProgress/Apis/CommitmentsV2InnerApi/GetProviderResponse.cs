@@ -7,6 +7,6 @@ namespace SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi
     {
         public HttpStatusCode StatusCode { get; set; }
         public long ProviderId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 }
