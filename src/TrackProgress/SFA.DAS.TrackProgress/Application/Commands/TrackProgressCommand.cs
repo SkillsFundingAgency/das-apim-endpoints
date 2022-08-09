@@ -6,12 +6,12 @@ namespace SFA.DAS.TrackProgress.Application.Commands
 {
     public class TrackProgressCommand : IRequest<TrackProgressResponse>
     {
-        public UkPRN Ukprn { get; set; }
+        public long Ukprn { get; set; }
         public long Uln { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public ProgressDto? Progress { get; set; } = null;
 
-        public TrackProgressCommand(UkPRN ukprn, long uln, DateTime plannedStartDate, ProgressDto progressDto)
+        public TrackProgressCommand(long ukprn, long uln, DateTime plannedStartDate, ProgressDto progressDto)
             => (Ukprn, Uln, PlannedStartDate, Progress) = (ukprn, uln, plannedStartDate, progressDto);
     }
 }

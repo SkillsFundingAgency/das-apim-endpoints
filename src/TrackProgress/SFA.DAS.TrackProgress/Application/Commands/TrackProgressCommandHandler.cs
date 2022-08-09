@@ -13,13 +13,13 @@ namespace SFA.DAS.TrackProgress.Application.Commands
 
         public async Task<TrackProgressResponse> Handle(TrackProgressCommand request, CancellationToken cancellationToken)
         {
-            var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.Ukprn.Value, request.Uln, request.PlannedStartDate);
+            var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.Ukprn, request.Uln, request.PlannedStartDate);
             if (apprenticeshipResult.StatusCode != HttpStatusCode.OK)
                 return new TrackProgressResponse(apprenticeshipResult.StatusCode, apprenticeshipResult.ErrorContent);
 
             if (apprenticeshipResult.Body.TotalApprenticeshipsFound == 0)
             {
-                var providerResult = await _commitmentsService.GetProvider(request.Ukprn.Value);
+                var providerResult = await _commitmentsService.GetProvider(request.Ukprn);
 
                 if (providerResult.StatusCode == HttpStatusCode.NotFound)
                     return new TrackProgressResponse(HttpStatusCode.NotFound, "Provider not found");
