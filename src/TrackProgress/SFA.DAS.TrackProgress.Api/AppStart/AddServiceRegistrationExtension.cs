@@ -12,13 +12,7 @@ public static class AddServiceRegistrationExtension
     {
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        //services.AddTransient<ICacheStorageService, CacheStorageService>();
-        //services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<CommitmentsV2Service>();
-        //services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
-        //services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-        //services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
-        //services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
     }
 }
