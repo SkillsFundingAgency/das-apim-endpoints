@@ -1,14 +1,13 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi
+namespace SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+
+public class GetProviderRequest : IGetApiRequest
 {
-    public class GetProviderRequest : IGetApiRequest
-    {
-        private readonly long _providerId;
+    private readonly long _providerId;
 
-        public GetProviderRequest(long providerId)
-            => _providerId = providerId;
+    public GetProviderRequest(long providerId)
+        => _providerId = providerId;
 
-        public string GetUrl => $"api/providers/{_providerId}";
-    }
+    public string GetUrl => $"api/providers/{_providerId}";
 }

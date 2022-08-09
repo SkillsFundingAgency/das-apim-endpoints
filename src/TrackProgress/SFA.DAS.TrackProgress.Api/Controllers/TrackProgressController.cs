@@ -29,8 +29,8 @@ public class TrackProgressController : ControllerBase
     {
         try
         {
-            var response = await _mediator.Send(new TrackProgressCommand(UkPrn.Parse(Ukprn), uln, plannedStartDate, progress));
-            return response.result;
+            var response = await _mediator.Send(new TrackProgressCommand(Application.Models.Ukprn.Parse(Ukprn), uln, plannedStartDate, progress));
+            return response.Result;
         }
         catch (Exception ex)
         {
