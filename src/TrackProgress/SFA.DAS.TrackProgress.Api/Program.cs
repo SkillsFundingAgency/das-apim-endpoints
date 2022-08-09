@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Application.Commands;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackProgressOuterApi", Version = "v1" });
 });
-builder.Services.AddMediatR(typeof(TrackApprenticeProgress)); 
+builder.Services.AddMediatR(typeof(TrackProgressCommand)); 
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
@@ -35,7 +36,11 @@ if (!builder.Configuration.IsLocalOrDev())
         new Dictionary<string, string> { { "default", "APIM" } });
 }
 
-    var app = builder.Build();
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+builder.Host.UseNLog();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

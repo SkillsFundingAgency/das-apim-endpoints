@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="10.0.1" />
+    <Compile Remove="Apis\Commitments\**" />
+    <EmbeddedResource Remove="Apis\Commitments\**" />
+    <None Remove="Apis\Commitments\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Apis\Commitments\Commands\" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+	<ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ public class UkprnTests
 {
 	[Test]
 	public void Parse_a_valid_ukprn()
-		=> Ukprn.Parse("123456").Should().BeEquivalentTo(new { Value = 123456 });
+		=> UkPRN.Parse("123456").Should().BeEquivalentTo(new { Value = 123456 });
 
     [TestCase(null)]
     [TestCase("")]

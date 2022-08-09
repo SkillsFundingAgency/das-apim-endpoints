@@ -1,26 +1,19 @@
 ﻿using MediatR;
+using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Models;
 
-namespace SFA.DAS.TrackProgress.Application.Commands;
-
-public static class TrackApprenticeProgress
+namespace SFA.DAS.TrackProgress.Application.Commands
 {
-	public record Command(
-		  Ukprn Ukprn
-		, long Uln
-		, DateTime PlannedStartDate
-		, Progress Progress
-		) : IRequest;
+    public class TrackProgressCommand : IRequest<TrackProgressResponse>
+    {
+        public UkPRN? Ukprn { get; set; }
+        public long Uln { get; set; }
+        public DateTime PlannedStartDate { get; set; }
+        public ProgressDto? Progress { get; set; } = null;
 
-	public record Progress
-	{
-	}
+        public TrackProgressCommand() { }
 
-	public class CommandHandler : IRequestHandler<Command>
-	{
-		public Task<Unit> Handle(Command request, CancellationToken cancellationToken)
-		{
-			return Unit.Task;
-		}
-	}
+        public TrackProgressCommand(UkPRN? ukprn, long uln, DateTime plannedStartDate, ProgressDto progressDto)
+            => (Ukprn, Uln, PlannedStartDate, Progress) = (ukprn, uln, plannedStartDate, progressDto);
+    }
 }
