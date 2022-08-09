@@ -4,7 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Requests;
-using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries;
+using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;

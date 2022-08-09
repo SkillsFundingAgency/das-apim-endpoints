@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
             actual.Title.Should().Be(source.Title);
             actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
             actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);
+            actual.LastDateStarts.Should().Be(source.StandardDates.LastDateStarts);
             actual.ApprenticeshipLevel.Should().Be(ApprenticeshipLevelMapper.RemapFromInt(source.Level));
             actual.Duration.Should().Be(source.TypicalDuration);
             actual.IsActive.Should().Be(source.IsActive);
