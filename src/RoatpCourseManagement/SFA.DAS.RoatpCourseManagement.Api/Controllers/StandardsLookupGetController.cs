@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -33,6 +34,14 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
             _logger.LogInformation("Active standards gathered");
             return Ok(result.Body);
+        }
+
+        [HttpGet]
+        [Route("lookup/standards/{larsCode}")]
+        public async Task<ActionResult<GetStandardInformationQueryResult>> GetStandardInformation([FromRoute] int larsCode)
+        {
+            _logger.LogInformation("Outer API: request received to get details for standard: {larscode} from courses api", larsCode);
+            return await _mediator.Send(new GetStandardInformationQuery(larsCode));
         }
     }
 }
