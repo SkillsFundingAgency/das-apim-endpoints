@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress", "SF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{0A47150D-8C77-4FD2-B1E4-CFD1D004CACC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.AcceptanceTests", "SFA.DAS.TrackProgress.Api.Tests\SFA.DAS.TrackProgress.Api.AcceptanceTests.csproj", "{8A3888C8-F03B-4399-9804-DE9D721169A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.AcceptanceTests", "SFA.DAS.TrackProgress.Api.AcceptanceTests\SFA.DAS.TrackProgress.Api.AcceptanceTests.csproj", "{8A3888C8-F03B-4399-9804-DE9D721169A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.TrackProgress.OuterApi\SFA.DAS.TrackProgress.OuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.TrackProgress.Api\SFA.DAS.TrackProgress.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.TrackProgress\SFA.DAS.TrackProgress.csproj" />
   </ItemGroup>
 
