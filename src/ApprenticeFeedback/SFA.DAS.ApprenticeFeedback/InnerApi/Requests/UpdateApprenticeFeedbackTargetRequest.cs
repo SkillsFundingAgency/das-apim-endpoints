@@ -40,6 +40,11 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 
         public static implicit operator LearnerData(GetApprenticeLearnerResponse source)
         {
+            if(source == null)
+            {
+                return null;
+            }
+
             return new LearnerData
             {
                 Ukprn = source.Ukprn,
