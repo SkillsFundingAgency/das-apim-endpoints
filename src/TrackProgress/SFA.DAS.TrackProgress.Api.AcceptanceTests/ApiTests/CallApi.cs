@@ -11,7 +11,7 @@ public class CallApi : ApiFixture
 	public async Task Can_call_API()
 	{
 		var response = await client.GetAsync("/");
-		response.Should().Be404NotFound();
+		response.Should().Be200Ok(); // Returns Swagger UI
 	}
 
 	[Test]
