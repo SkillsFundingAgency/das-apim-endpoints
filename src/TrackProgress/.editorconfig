@@ -1,4 +1,4 @@
-[SFA.DAS.TrackProgress.Api\Program.cs]
+[SFA.DAS.TrackProgress.Api/Program.cs]
 dotnet_diagnostic.S3903.severity = none
 dotnet_diagnostic.S1118.severity = none
 dotnet_diagnostic.CA1050.severity = none

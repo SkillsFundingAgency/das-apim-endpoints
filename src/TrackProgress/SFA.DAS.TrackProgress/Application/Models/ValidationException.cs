@@ -2,6 +2,7 @@
 
 namespace SFA.DAS.TrackProgress.Application.Models;
 
+[Serializable]
 public class InvalidUkprnException : Exception
 {
     public InvalidUkprnException(string invalidUkprn) : base($"`{invalidUkprn}` is not a valid UKPRN")
