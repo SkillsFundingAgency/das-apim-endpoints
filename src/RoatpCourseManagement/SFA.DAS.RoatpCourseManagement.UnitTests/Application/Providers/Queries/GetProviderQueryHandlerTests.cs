@@ -36,6 +36,22 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Providers.Queries
         }
 
         [Test, RecursiveMoqAutoData]
+        public async Task Handle_CallsInnerApi_404ReturnsNull(
+            GetProviderResponse apiResponseProvider,
+            GetProviderQuery query,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            GetProviderQueryHandler sut)
+        {
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetProviderResponse>(It.Is<GetProviderRequest>(c =>
+                    c.GetUrl.Equals(new GetProviderRequest(query.Ukprn).GetUrl)))).
+                ReturnsAsync(new ApiResponse<GetProviderResponse>(apiResponseProvider, HttpStatusCode.NotFound, ""));
+
+            var result = await sut.Handle(query, new CancellationToken());
+            result.Should().NotBeNull();
+            result.MarketingInfo.Should().BeEquivalentTo(apiResponseProvider.MarketingInfo);
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Handle_CallsInnerApi_ReturnsExceptionWhenProviderGetsBadRequest(
             GetProviderResponse apiResponseProvider,
             GetProviderQuery query,
