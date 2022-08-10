@@ -1,28 +1,24 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.TrackProgress.Application.DTOs;
+using SFA.DAS.TrackProgress.Application.Models;
 using SFA.DAS.TrackProgress.Application.Services;
 using System.Net;
 
 namespace SFA.DAS.TrackProgress.Application.Commands;
 
-public class TrackProgressCommand : IRequest<TrackProgressResponse>
-{
-    public long Ukprn { get; set; }
-    public long Uln { get; set; }
-    public DateTime PlannedStartDate { get; set; }
-    public ProgressDto? Progress { get; set; } = null;
-
-    public TrackProgressCommand(long ukprn, long uln, DateTime plannedStartDate, ProgressDto progressDto)
-        => (Ukprn, Uln, PlannedStartDate, Progress) = (ukprn, uln, plannedStartDate, progressDto);
-}
+public record TrackProgressCommand(
+    Ukprn Ukprn,
+    long Uln,
+    DateTime PlannedStartDate,
+    ProgressDto? Progress) : IRequest<TrackProgressResponse>;
 
 public class TrackProgressResponse
 {
     public HttpStatusCode StatusCode { get; set; }
     public string Message { get; set; } = string.Empty;
 
-    public IActionResult result
+    public IActionResult Result
         => StatusCode switch
         {
             HttpStatusCode.Created => new CreatedResult(string.Empty, null),
@@ -46,13 +42,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     public async Task<TrackProgressResponse> Handle(TrackProgressCommand request, CancellationToken cancellationToken)
     {
-        var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.Ukprn, request.Uln, request.PlannedStartDate);
+        var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.Ukprn.Value, request.Uln, request.PlannedStartDate);
         if (apprenticeshipResult.StatusCode != HttpStatusCode.OK)
             return new TrackProgressResponse(apprenticeshipResult.StatusCode, apprenticeshipResult.ErrorContent);
 
         if (apprenticeshipResult.Body.TotalApprenticeshipsFound == 0)
         {
-            var providerResult = await _commitmentsService.GetProvider(request.Ukprn);
+            var providerResult = await _commitmentsService.GetProvider(request.Ukprn.Value);
 
             if (providerResult.StatusCode == HttpStatusCode.NotFound)
                 return new TrackProgressResponse(HttpStatusCode.NotFound, "Provider not found");
