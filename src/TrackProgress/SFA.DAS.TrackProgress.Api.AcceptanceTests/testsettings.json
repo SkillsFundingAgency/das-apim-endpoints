@@ -1,0 +1,10 @@
+{
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
+  "ConfigNames": "SFA.DAS.ApprenticeFeedback.OuterApi",
+  "Environment": "LOCAL",
+  "Version": "1.0",
+  "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+  "CommitmentsV2InnerApi": {
+    "url": "https://google.com/"
+  }
+}

@@ -1,17 +1,29 @@
 ﻿using AutoFixture;
+using JustEat.HttpClientInterception;
 
 namespace SFA.DAS.TrackProgress.Tests;
 
 public class ApiFixture
 {
-    private TrackProgressApiFactory factory = null!;
+    private protected TrackProgressApiFactory factory = null!;
     private protected Fixture fixture = null!;
     private protected HttpClient client = null!;
+
+    protected HttpClientInterceptorOptions Interceptor { get; private set; }
 
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        factory = new TrackProgressApiFactory();
+        Interceptor = new HttpClientInterceptorOptions
+        {
+            OnSend = request =>
+            {
+                Console.WriteLine($"HTTP {request.Method} {request.RequestUri}");
+                return Task.CompletedTask;
+            }
+        };
+
+        factory = new TrackProgressApiFactory(Interceptor);
         client = factory.CreateClient();
     }
 
