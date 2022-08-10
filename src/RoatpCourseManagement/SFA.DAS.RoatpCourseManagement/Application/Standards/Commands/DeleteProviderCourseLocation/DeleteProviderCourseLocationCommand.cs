@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+using System;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeleteProviderCourseLocation
 {
@@ -7,7 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeletePro
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserId { get; set; }
 
         public static implicit operator DeleteProviderCourseLocationRequest(DeleteProviderCourseLocationCommand command) 
