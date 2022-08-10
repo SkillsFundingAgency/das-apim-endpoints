@@ -6,7 +6,7 @@ public record Ukprn
 
 	public override string ToString() => $"UKPRN {Value}";
 
-	public static Ukprn? Parse(string input)
+	public static Ukprn Parse(string input)
 	{
 		if (long.TryParse(input, out var value) && value > 0)
 			return new() { Value = value };

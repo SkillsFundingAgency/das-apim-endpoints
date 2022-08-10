@@ -14,11 +14,6 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
         : base()
     {
         Interceptor = interceptor;
-
-        // HACK Force HTTP server startup
-        using (CreateDefaultClient())
-        {
-        }
     }
 
     public HttpClientInterceptorOptions Interceptor { get; }
@@ -32,8 +27,8 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
         });
 
         // Add the test configuration file to override the application configuration
-        string directory = Path.GetDirectoryName(typeof(TrackProgressApiFactory).Assembly.Location);
-        string fullPath = Path.Combine(directory, "testsettings.json");
+        var directory = Path.GetDirectoryName(typeof(TrackProgressApiFactory).Assembly.Location)!;
+        var fullPath = Path.Combine(directory, "testsettings.json");
 
         builder.ConfigureAppConfiguration((_, config) => config.AddJsonFile(fullPath, optional: true));
     }
