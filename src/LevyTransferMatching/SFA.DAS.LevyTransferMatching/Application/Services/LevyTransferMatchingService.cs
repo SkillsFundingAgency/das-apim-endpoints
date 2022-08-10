@@ -112,7 +112,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task ApproveApplication(ApproveApplicationRequest request)
         {
-            await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request);
+            await _levyTransferMatchingApiClient.PostWithResponseCode<ApproveApplicationRequest>(request, false);
         }
 
         public async Task RejectApplication(RejectApplicationRequest request)
