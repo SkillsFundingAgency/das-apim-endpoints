@@ -4,7 +4,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
 {
     public class GetProviderQuery : IRequest<GetProviderResult>
     {
-        public string GetUrl => $"providers/{Ukprn}";
         public int Ukprn { get; }
       
         public GetProviderQuery(int ukprn)

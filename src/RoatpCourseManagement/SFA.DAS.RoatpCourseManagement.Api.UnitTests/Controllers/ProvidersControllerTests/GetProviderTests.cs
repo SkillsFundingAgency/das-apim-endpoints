@@ -14,13 +14,13 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProvidersContr
     public class GetProviderTests
     {
         private const int ValidUkprn = 10000001;
-        [TestCase(0,  400)]
-        [TestCase(-1,  400)]
-        [TestCase(ValidUkprn,  200)]
-        public async Task GetProviderCourse_ReturnsExpectedState(int ukprn,  int expectedStatusCode)
+        private const string MarketingInfo = "Marketing info";
+
+        [TestCase(ValidUkprn)]
+        public async Task GetProviderCourse_ReturnsExpectedState(int ukprn)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult { Ukprn = ukprn });
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult { MarketingInfo = MarketingInfo});
 
             var controller = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
 
@@ -28,7 +28,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProvidersContr
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.AreEqual(200, statusCodeResult.StatusCode.GetValueOrDefault());
         }
 
         [Test]

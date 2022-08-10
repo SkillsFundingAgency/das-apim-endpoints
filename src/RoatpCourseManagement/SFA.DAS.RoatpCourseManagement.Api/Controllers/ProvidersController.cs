@@ -22,12 +22,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         [Route("providers/{ukprn}")]
         public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
         {
-            if (ukprn <= 9999999)
-            {
-                _logger.LogWarning("Invalid ukprn {ukprn}", ukprn);
-                return BadRequest();
-            }
-
             var providerResult = await _mediator.Send(new GetProviderQuery(ukprn));
 
             if (providerResult == null)

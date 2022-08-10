@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -9,7 +10,6 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvider;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Providers.Queries
 
             var result = await sut.Handle(query, new CancellationToken());
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(apiResponseProvider);
+            result.MarketingInfo.Should().BeEquivalentTo(apiResponseProvider.MarketingInfo);
         }
 
         [Test, RecursiveMoqAutoData]
@@ -44,7 +44,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Providers.Queries
         {
             apiClientMock.Setup(c => c.GetWithResponseCode<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
                 .ReturnsAsync(new ApiResponse<GetProviderResponse>(apiResponseProvider, HttpStatusCode.BadRequest, ""));
-            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
+            Assert.ThrowsAsync<InvalidOperationException>(() => sut.Handle(query, new CancellationToken()));
         }
     }
 }
