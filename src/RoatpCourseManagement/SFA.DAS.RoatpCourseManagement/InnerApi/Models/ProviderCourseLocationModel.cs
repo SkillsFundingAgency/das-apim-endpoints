@@ -1,10 +1,11 @@
 ﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+using System;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
 {
     public class ProviderCourseLocationModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }
         public bool? HasDayReleaseDeliveryOption { get; set; }
@@ -14,7 +15,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
         public static implicit operator ProviderCourseLocationModel(GetProviderCourseLocationsResponse source) =>
           new ProviderCourseLocationModel
           {
-              Id = source.Id,
+              Id = source.NavigationId,
               LocationName = source.LocationName,
               LocationType = source.LocationType,
               HasDayReleaseDeliveryOption = source.HasDayReleaseDeliveryOption,
