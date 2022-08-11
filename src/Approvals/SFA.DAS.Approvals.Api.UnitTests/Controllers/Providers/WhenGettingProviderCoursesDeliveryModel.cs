@@ -10,9 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using GetProvidersListResponse = SFA.DAS.Approvals.Api.Models.GetProvidersListResponse;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 {
