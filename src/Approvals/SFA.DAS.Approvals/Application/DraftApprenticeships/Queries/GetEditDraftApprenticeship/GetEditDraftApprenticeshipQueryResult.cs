@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.InnerApi;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship
 {
