@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             GetApplicationQuery getApplicationQuery,
             GetApplicationResponse getApplicationResponse,
             GetStandardsListItem getStandardsListItem,
-            GetCohortsResponse getCohortsResponse,
+            [Greedy] GetCohortsResponse getCohortsResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiClient,

@@ -7,6 +7,11 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses.CommitmentsV2
 {
     public class GetCohortsResponse
     {
+        public GetCohortsResponse()
+        {
+            // parameterless constructor to address system.text.json deserialisation issue.
+        }
+
         public GetCohortsResponse(IEnumerable<CohortSummary> cohorts)
         {
             Cohorts = cohorts.ToArray();
