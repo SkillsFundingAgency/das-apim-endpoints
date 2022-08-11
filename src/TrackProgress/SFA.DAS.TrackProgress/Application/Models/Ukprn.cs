@@ -8,8 +8,9 @@ public record Ukprn
 
 	public static Ukprn? Parse(string input)
 	{
-		if (!long.TryParse(input, out var value)) return null;
-		if (value < 1) return null;
-		return new() { Value = value };
+		if (long.TryParse(input, out var value) && value > 0)
+			return new() { Value = value };
+
+        throw new InvalidUkprnException(input);
 	}
 }
