@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SFA.DAS.Approvals.InnerApi;
+using System;
 using System.Collections.Generic;
-using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries
 {
