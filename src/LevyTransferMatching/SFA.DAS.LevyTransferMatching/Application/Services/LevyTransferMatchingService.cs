@@ -117,7 +117,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task RejectApplication(RejectApplicationRequest request)
         {
-            await _levyTransferMatchingApiClient.PostWithResponseCode<RejectApplicationRequest>(request);
+            await _levyTransferMatchingApiClient.PostWithResponseCode<RejectApplicationRequest>(request, false);
         }
 
         public async Task<ApiResponse<AcceptFundingRequest>> AcceptFunding(AcceptFundingRequest request, CancellationToken cancellationToken = default)
