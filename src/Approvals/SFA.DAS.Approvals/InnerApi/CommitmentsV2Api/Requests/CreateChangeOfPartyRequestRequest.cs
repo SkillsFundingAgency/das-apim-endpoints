@@ -1,7 +1,6 @@
 ﻿using System;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests

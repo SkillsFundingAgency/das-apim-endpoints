@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -9,9 +10,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 {
@@ -30,7 +33,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
-            var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);
+            var subject = new StandardsLookupGetController(Mock.Of<ILogger<StandardsLookupGetController>>(), mediatorMock.Object);
 
             var response = await subject.GetAllStandards();
 
@@ -62,7 +65,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
-            var subject = new GetStandardsLookupController(Mock.Of<ILogger<GetStandardsLookupController>>(), mediatorMock.Object);
+            var subject = new StandardsLookupGetController(Mock.Of<ILogger<StandardsLookupGetController>>(), mediatorMock.Object);
 
             var response = await subject.GetAllStandards();
 
@@ -70,6 +73,17 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             Assert.AreEqual((int)statusCode, statusCodeResult.StatusCode.GetValueOrDefault());
             Assert.AreEqual(errorMessage, ((ObjectResult)statusCodeResult).Value);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetStandardInformation_InvokesHandler(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] StandardsLookupGetController sut,
+            int larsCode)
+        {
+            await sut.GetStandardInformation(larsCode);
+
+            mediatorMock.Verify(m => m.Send(It.Is<GetStandardInformationQuery>(q => q.LarsCode == larsCode), It.IsAny<CancellationToken>()));
         }
     }
 }

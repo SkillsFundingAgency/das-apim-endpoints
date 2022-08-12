@@ -68,10 +68,16 @@ namespace SFA.DAS.Approvals.Services
 
         private async Task<List<string>> GetCourseDeliveryModels(long providerId, string trainingCode)
         {
+            var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
+            if (string.IsNullOrWhiteSpace(trainingCode))
+            {
+                _logger.LogInformation($"Defaulting DeliveryModels to Regular because code is blank");
+                return deliveryModels;
+            }
+
             _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
             var result = await _apiClient.Get<GetHasPortableFlexiJobOptionResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
          
-            var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
 
             if (result == null)
             {
