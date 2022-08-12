@@ -66,9 +66,9 @@ namespace SFA.DAS.EmployerIncentives.Clients
             return _client.Put(request);
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request,  bool includeResponse = true)
         {
-            return _client.PostWithResponseCode<TResponse>(request);
+            return _client.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)

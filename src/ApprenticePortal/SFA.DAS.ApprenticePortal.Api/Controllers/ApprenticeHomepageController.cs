@@ -20,10 +20,10 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         { 
             var result = await _mediator.Send(new GetApprenticeHomepageQuery { ApprenticeId = id });
 
-            if (result.apprenticeHomepage.Apprentice == null)
+            if (result.ApprenticeHomepage.Apprentice == null)
                 return NotFound();            
 
-            return Ok(result.apprenticeHomepage);
+            return Ok(result.ApprenticeHomepage);
         }
 
         [HttpGet("/apprentices/{id}")]

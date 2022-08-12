@@ -25,6 +25,9 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public string AgreementId { get; set; }
         public long? LegalEntityId { get; set; }
         public long? TransferSenderId { get; set; }
+        public string RecognisePriorLearningAsString { get; set; }
+        public string DurationReducedByAsString { get; set; }
+        public string PriceReducedByAsString { get; set; }
 
         public static implicit operator ReservationRequest(BulkUploadAddDraftApprenticeshipRequest response)
         {

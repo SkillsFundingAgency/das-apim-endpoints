@@ -23,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
 
             var apiClient = new Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>>();
             apiClient
-                .Setup(x => x.PostWithResponseCode<CreateAccountRequest>(It.IsAny<CreateAccountRequest>()))
+                .Setup(x => x.PostWithResponseCode<CreateAccountRequest>(It.IsAny<CreateAccountRequest>(), true))
                 .ReturnsAsync(new ApiResponse<CreateAccountRequest>(null, HttpStatusCode.Created, ""));
 
             var service = new LevyTransferMatchingService(apiClient.Object);
@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
             apiClient.Verify(x => x.PostWithResponseCode<CreateAccountRequest>(It.Is<CreateAccountRequest>(r =>
                 r.PostUrl.StartsWith("/accounts")
                 && r.Data == createAccountRequest.Data
-                )));
+                ), true));
         }
     }
 }
