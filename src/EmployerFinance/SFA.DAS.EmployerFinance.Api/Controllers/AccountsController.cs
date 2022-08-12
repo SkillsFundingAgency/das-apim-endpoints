@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{_accountId}/minimum-signed-agreement-version")]
+        [Route("{accountId}/minimum-signed-agreement-version")]
         public async Task<IActionResult> GetAccountMinimumSignedAgreementVersion(long accountId)
         {
             try
