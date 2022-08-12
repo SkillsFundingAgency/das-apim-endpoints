@@ -127,7 +127,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task WithdrawApplication(WithdrawApplicationRequest request, CancellationToken cancellationToken = default)
         {
-            await _levyTransferMatchingApiClient.PostWithResponseCode<WithdrawApplicationRequest>(request);
+            await _levyTransferMatchingApiClient.PostWithResponseCode<WithdrawApplicationRequest>(request, false);
         }
 
         public async Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request)

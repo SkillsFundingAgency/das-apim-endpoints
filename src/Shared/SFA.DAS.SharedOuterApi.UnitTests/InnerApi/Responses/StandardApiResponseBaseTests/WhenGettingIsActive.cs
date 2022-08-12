@@ -27,6 +27,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test, AutoData]
         public void And_EffectiveTo_Before_Today_Then_False(TestStandardResponse standard)
         {
+            standard.StandardDates.EffectiveFrom = DateTime.UtcNow;
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-50);
             standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(-1);
 
