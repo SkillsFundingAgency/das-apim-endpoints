@@ -6,7 +6,9 @@ stages:
   - template: ../../pipeline-templates/job/code-build.yml
     parameters:
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
-      TargetProjects: 'src/${{ parameters.OuterApiName }}/**/*.csproj'
+      TargetProjects: |
+        src/${{ parameters.OuterApiName }}/**/*.csproj
+        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
         src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
