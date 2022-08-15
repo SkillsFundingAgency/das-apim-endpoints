@@ -49,11 +49,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 // Raised to potentially query apprentice commitments / account api 
                 // For now we should return an error to allow the UX to show a relevant page.
 
-                return new UpdateApprenticeFeedbackTargetResponse
-                {
-                    Success = false,
-                    Message = responseMessage
-                };
+                return new UpdateApprenticeFeedbackTargetResponse { };
             }
 
             // 2. Setup Learner aggregate object holder to contain information from external systems to supply to Inner Api.
@@ -65,13 +61,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             {
                 _logger.LogDebug($"Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}");
                 var learnerResponse = await _assessorsApiClient.GetWithResponseCode<GetApprenticeLearnerResponse>(new GetApprenticeLearnerRequest(feedbackTarget.ApprenticeshipId));
-
-                if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    _logger.LogError($"Error Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}, Content: {learnerResponse.ErrorContent}");
-                    continue;
-                }
-
+                                
                 learnerAggregate.Add(new ApprenticeLearnerAggregate
                 {
                     ApprenticeFeedbackTargetId = feedbackTarget.Id,
@@ -99,10 +89,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 }
             }
 
-            return new UpdateApprenticeFeedbackTargetResponse
-            {
-                Success = true
-            };
+            return new UpdateApprenticeFeedbackTargetResponse();
         }
     }
 }
