@@ -7,7 +7,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public readonly int Ukprn;
         public readonly int LarsCode;
-        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/create-providercourselocation";
+        public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}/locations";
         public object Data { get; set; }
         public ProviderCourseLocationCreateRequest(AddProviderCourseLocationCommand data)
         {

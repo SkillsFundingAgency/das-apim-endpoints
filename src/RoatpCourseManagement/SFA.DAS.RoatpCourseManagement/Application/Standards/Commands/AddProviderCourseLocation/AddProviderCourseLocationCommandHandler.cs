@@ -27,8 +27,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreatePro
             var response = await _courseManagementApiClient.PostWithResponseCode<int>(apiRequest);
             if (response.StatusCode != HttpStatusCode.Created)
             {
-                _logger.LogError("Create provider course location name :{locationname} for ukprn: {ukprn} larsCode: {larsCode} did not come back with successful response", request.LocationName, request.Ukprn, request.LarsCode);
-                throw new InvalidOperationException($"Create provider course location did not come back with successful response for ukprn{request.Ukprn} larsCode{request.LarsCode}");
+                _logger.LogError("Create provider course location for locationNavigationId :{locationNavigationId} ukprn: {ukprn} larsCode: {larsCode} did not come back with successful response", request.LocationNavigationId, request.Ukprn, request.LarsCode);
+                throw new InvalidOperationException($"Create provider course location did not come back with successful response for ukprn {request.Ukprn} larsCode {request.LarsCode} locationNavigationId {request.LocationNavigationId}");
             }
             return Unit.Value;
         }

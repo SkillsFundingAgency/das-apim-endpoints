@@ -27,13 +27,13 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             var apiClientMock = new Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>>();
 
             var response = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
-            apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/create-providercourselocation"), true)).ReturnsAsync(response);
+            apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/locations"), true)).ReturnsAsync(response);
 
             var sut = new AddProviderCourseLocationCommandHandler(apiClientMock.Object, Mock.Of<ILogger<AddProviderCourseLocationCommandHandler>>());
 
             await sut.Handle(command, new CancellationToken());
 
-            apiClientMock.Verify(a => a.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/create-providercourselocation"), true));
+            apiClientMock.Verify(a => a.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/locations"), true));
         }
 
         [Test, MoqAutoData]
@@ -43,7 +43,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             AddProviderCourseLocationCommand command)
         {
             var response = new ApiResponse<int>(0, HttpStatusCode.InternalServerError, string.Empty);
-            apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/create-providercourselocation"), true)).ReturnsAsync(response);
+            apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.Is<ProviderCourseLocationCreateRequest>(r => r.Ukprn == command.Ukprn && r.Data == command && r.PostUrl == $"providers/{command.Ukprn}/courses/{command.LarsCode}/locations"), true)).ReturnsAsync(response);
 
             Func<Task> action = () => sut.Handle(command, new CancellationToken());
 

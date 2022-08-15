@@ -37,7 +37,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         [Route("providers/{ukprn}/courses/{larsCode}/create-providercourselocation")]
         public async Task<IActionResult> CreateProviderCourseLocation([FromRoute] int ukprn, [FromRoute] int larsCode, [FromBody] AddProviderCourseLocationCommand command)
         {
-            _logger.LogInformation("Outer API: Request received to create provider course location for ukprn: {ukprn} larscode: {larscode} by user: {userId}", ukprn, larsCode, command.UserId);
+            _logger.LogInformation("Outer API: Request received to create provider course location for ukprn: {ukprn} larscode: {larscode} locationNavigationId : {locationNavigationId} by user: {userId}", ukprn, larsCode, command.LocationNavigationId, command.UserId);
 
             command.Ukprn = ukprn;
             command.LarsCode = larsCode;
