@@ -33,14 +33,14 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             => await _mediator.Send(new GenerateEmailTransactionCommand());
 
         [HttpPost("{apprenticeFeedbackTransactionId}")]
-        public async Task<ActionResult<EmailStatus>> ProcessEmailTransaction([FromRoute] long apprenticeFeedbackTransactionId, [FromBody] ApprenticeFeedbackTransaction feedbackTransaction)
+        public async Task<ActionResult> ProcessEmailTransaction([FromRoute] long apprenticeFeedbackTransactionId, [FromBody] ApprenticeFeedbackTransaction feedbackTransaction)
         {
             GetApprenticeResult result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = feedbackTransaction.ApprenticeId });
 
             if (result == null)
                 return NotFound(EmailStatus.Failed);
 
-            var status = await _mediator.Send(new ProcessEmailTransactionCommand()
+            ProcessEmailTransactionResponse response = await _mediator.Send(new ProcessEmailTransactionCommand()
             {
                 FeedbackTransactionId = apprenticeFeedbackTransactionId,
                 ApprenticeName = result.LastName,
@@ -48,8 +48,11 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 IsEmailContactAllowed = result.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? false
             });
 
-            //return Ok(EmailStatus.Successfull);
-            return Ok(status);
+            return Ok(new ProcessEmailTransactionResult()
+            {
+                FeedbackTransactionId = apprenticeFeedbackTransactionId,
+                EmailStatus = response.Status
+            });
         }
 
         [HttpGet]

@@ -7,7 +7,7 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
     public class ProcessEmailTransactionRequest : IPostApiRequest
     {
         private string transactionId => ((ProcessEmailTransactionData)Data).FeedbackTransactionId.ToString();
-        public string PostUrl => "api/processemailtransaction/{transactionId}";
+        public string PostUrl => $"api/feedbacktransaction/{transactionId}";
 
         public object Data { get; set; }
 
