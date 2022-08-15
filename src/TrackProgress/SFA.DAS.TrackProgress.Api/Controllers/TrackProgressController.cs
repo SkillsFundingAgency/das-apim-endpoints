@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.TrackProgress.Application.Commands;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Models;
@@ -18,8 +17,11 @@ public class TrackProgressController : ControllerBase
     public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
         => (_mediator, _logger) = (mediator, logger);
 
-    [FromHeader(Name = "x-request-context-subscription-name")]
+    [FromHeader(Name = SubscriptionHeaderConstants.HeaderForProviderId)]
     public string Ukprn { get; set; } = null!;
+
+    [FromHeader(Name = SubscriptionHeaderConstants.HeaderForSandboxMode)]
+    public string? IsSandbox { get; set; }
 
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]
@@ -31,7 +33,7 @@ public class TrackProgressController : ControllerBase
         {
             var response = await _mediator.Send(
                 new TrackProgressCommand(
-                    Application.Models.Ukprn.Parse(Ukprn), uln, plannedStartDate, progress));
+                    ProviderContext.Create(Ukprn, IsSandbox), uln, plannedStartDate, progress));
             return response.Result;
         }
         catch (Exception ex)
