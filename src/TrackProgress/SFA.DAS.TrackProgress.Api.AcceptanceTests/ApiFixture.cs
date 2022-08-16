@@ -24,12 +24,18 @@ public class ApiFixture
         };
 
         factory = new TrackProgressApiFactory(Interceptor);
-        client = factory.CreateClient();
+        fixture = new Fixture();
     }
 
     [SetUp]
     public void Setup()
     {
-        fixture = new Fixture();
+        client = factory.CreateClient();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        client?.Dispose();
     }
 }

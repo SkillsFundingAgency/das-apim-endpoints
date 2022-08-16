@@ -8,7 +8,7 @@ using System.Net;
 namespace SFA.DAS.TrackProgress.Application.Commands;
 
 public record TrackProgressCommand(
-    Ukprn Ukprn,
+    ProviderContext ProviderContext,
     long Uln,
     DateTime PlannedStartDate,
     ProgressDto? Progress) : IRequest<TrackProgressResponse>;
@@ -42,13 +42,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     public async Task<TrackProgressResponse> Handle(TrackProgressCommand request, CancellationToken cancellationToken)
     {
-        var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.Ukprn.Value, request.Uln, request.PlannedStartDate);
+        var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate);
         if (apprenticeshipResult.StatusCode != HttpStatusCode.OK)
             return new TrackProgressResponse(apprenticeshipResult.StatusCode, apprenticeshipResult.ErrorContent);
 
         if (apprenticeshipResult.Body.TotalApprenticeshipsFound == 0)
         {
-            var providerResult = await _commitmentsService.GetProvider(request.Ukprn.Value);
+            var providerResult = await _commitmentsService.GetProvider(request.ProviderContext.ProviderId);
 
             if (providerResult.StatusCode == HttpStatusCode.NotFound)
                 return new TrackProgressResponse(HttpStatusCode.NotFound, "Provider not found");
@@ -59,6 +59,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeshipResult.Body.Apprenticeships?.Count(x => x.StartDate == request.PlannedStartDate) > 1)
             return new TrackProgressResponse(HttpStatusCode.NotFound, "Multiple results for start date");
 
+        if (request.ProviderContext.InSandboxMode)
+        {
+            // Any calls to add the progress record should be avoided when in Sandbox Mode
+            return new TrackProgressResponse(HttpStatusCode.Created);
+        }
+
         return new TrackProgressResponse(HttpStatusCode.Created);
+
     }
 }
