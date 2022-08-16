@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.ComponentModel;
 
 namespace SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;

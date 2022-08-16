@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;

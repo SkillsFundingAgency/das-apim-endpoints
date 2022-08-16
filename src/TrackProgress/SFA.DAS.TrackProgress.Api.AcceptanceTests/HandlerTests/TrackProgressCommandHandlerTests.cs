@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using Moq;
 using SFA.DAS.SharedOuterApi.Configuration;
