@@ -2,10 +2,10 @@
 
 public record ProviderContext
 {
-	public long ProviderId { get; set; }
-	public bool InSandboxMode { get; set; } 
+	public long ProviderId { get; private set; }
+	public bool InSandboxMode { get; private set; } 
 
-	public override string ToString() => $"ProviderId {ProviderId} : InSandboxModel = {InSandboxMode}";
+	public override string ToString() => $"ProviderId {ProviderId} : InSandboxMode = {InSandboxMode}";
 
 	public static ProviderContext Create(string ukPrn, string? isSandbox)
 	{

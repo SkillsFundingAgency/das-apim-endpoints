@@ -17,10 +17,10 @@ public class TrackProgressController : ControllerBase
     public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
         => (_mediator, _logger) = (mediator, logger);
 
-    [FromHeader(Name = SubscriptionHeaderConstants.HeaderForProviderId)]
+    [FromHeader(Name = SubscriptionHeaderConstants.ForProviderId)]
     public string Ukprn { get; set; } = null!;
 
-    [FromHeader(Name = SubscriptionHeaderConstants.HeaderForSandboxMode)]
+    [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
     public string? IsSandbox { get; set; }
 
     [HttpPost]

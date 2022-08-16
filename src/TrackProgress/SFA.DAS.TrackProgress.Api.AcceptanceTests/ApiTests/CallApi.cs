@@ -23,7 +23,7 @@ public class CallApi : ApiFixture
                 })
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.HeaderForProviderId, "12345");
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
             var postData = new { };
             var content = new StringContent(
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
@@ -53,8 +53,8 @@ public class CallApi : ApiFixture
                 })
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.HeaderForProviderId, "12345");
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.HeaderForSandboxMode, isSandbox);
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
             var postData = new { };
             var content = new StringContent(
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
@@ -85,7 +85,7 @@ public class CallApi : ApiFixture
                 })
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.HeaderForProviderId, "12345");
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
             var postData = new { };
             var content = new StringContent(
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
