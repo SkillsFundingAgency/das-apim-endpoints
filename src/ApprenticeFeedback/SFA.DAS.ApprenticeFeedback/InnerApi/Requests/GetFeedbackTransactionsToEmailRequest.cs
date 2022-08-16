@@ -13,6 +13,6 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
             BatchSize = batchSize;
         }
 
-        public string GetUrl => $"api/feedbacktransaction/{BatchSize}";
+        public string GetUrl => $"api/feedbacktransaction?batchSize={BatchSize}";
     }
 }
