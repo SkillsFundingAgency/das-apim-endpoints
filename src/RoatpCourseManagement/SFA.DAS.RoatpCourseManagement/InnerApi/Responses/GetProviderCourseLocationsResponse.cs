@@ -5,7 +5,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseLocationsResponse
     {
-        public int Id { get; set; }
         public Guid NavigationId { get; set; }
         public int ProviderCourseId { get; set; }
         public int? ProviderLocationId { get; set; }
@@ -16,6 +15,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string LocationName { get; set; }
         public LocationType LocationType { get; set; }
         public string RegionName { get; set; }
+        public string SubregionName { get; set; }
         public int? RegionId { get; set; }
     }
 }
