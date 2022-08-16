@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class Enums
@@ -31,6 +28,13 @@ namespace SFA.DAS.ApprenticeFeedback.Models
         {
             Disagree = 0,
             Agree = 1
+        }
+
+        public enum EmailStatus
+        {
+            Successfull,
+            NotAllowed,
+            Failed
         }
     }
 }
