@@ -1,6 +1,6 @@
 ﻿using System;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer
 {
