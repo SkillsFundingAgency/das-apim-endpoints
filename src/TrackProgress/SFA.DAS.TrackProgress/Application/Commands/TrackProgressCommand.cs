@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Models;
 using SFA.DAS.TrackProgress.Application.Services;
@@ -56,8 +57,14 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
                 return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
         }
 
-        if (apprenticeshipResult.Body.Apprenticeships?.Count(x => x.StartDate == request.PlannedStartDate) > 1)
-            return new TrackProgressResponse(HttpStatusCode.NotFound, "Multiple results for start date");
+        if (apprenticeshipResult.Body.TotalApprenticeshipsFound > 1)
+            apprenticeshipResult.Body.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
+
+        if (apprenticeshipResult.Body.Apprenticeships?.Count == 0)
+            return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
+
+        if (apprenticeshipResult.Body.Apprenticeships?.Count > 1)
+            return new TrackProgressResponse(HttpStatusCode.BadRequest, "Multiple apprenticeship records exist");
 
         return new TrackProgressResponse(HttpStatusCode.Created);
     }
