@@ -14,24 +14,47 @@ public record TrackProgressCommand(
     DateTime PlannedStartDate,
     ProgressDto? Progress) : IRequest<TrackProgressResponse>;
 
+public record ErrorDetail(
+    string error,
+    string description
+    );
+
 public class TrackProgressResponse
 {
     public HttpStatusCode StatusCode { get; set; }
     public string Message { get; set; } = string.Empty;
+    public string ErrorTitle { get; set; } = string.Empty;
+    public List<ErrorDetail> ErrorDetails { get; set; } = new List<ErrorDetail>();
 
     public IActionResult Result
         => StatusCode switch
         {
             HttpStatusCode.Created => new CreatedResult(string.Empty, null),
             HttpStatusCode.NotFound => new NotFoundObjectResult(Message),
+            HttpStatusCode.BadRequest => new BadRequestObjectResult(GetProblemDetails()),
             _ => new ObjectResult(new { StatusCode, Message }),
         };
+
+    private ProblemDetails GetProblemDetails()
+    {
+        var details = new ProblemDetails
+        {
+            Title = ErrorTitle,
+            Status = (int)StatusCode,
+        };
+        details.Extensions.Add("errors", ErrorDetails);
+
+        return details;
+    }
 
     public TrackProgressResponse(HttpStatusCode statusCode)
         => StatusCode = statusCode;
 
     public TrackProgressResponse(HttpStatusCode statusCode, string message)
         => (StatusCode, Message) = (statusCode, message);
+
+    public TrackProgressResponse(HttpStatusCode statusCode, string errorTitle, List<ErrorDetail> errorDetails)
+        => (StatusCode, ErrorTitle, ErrorDetails) = (statusCode, errorTitle, errorDetails);
 }
 
 public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand, TrackProgressResponse>
@@ -48,14 +71,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             return new TrackProgressResponse(apprenticeshipResult.StatusCode, apprenticeshipResult.ErrorContent);
 
         if (apprenticeshipResult.Body.TotalApprenticeshipsFound == 0)
-        {
-            var providerResult = await _commitmentsService.GetProvider(request.Ukprn.Value);
-
-            if (providerResult.StatusCode == HttpStatusCode.NotFound)
-                return new TrackProgressResponse(HttpStatusCode.NotFound, "Provider not found");
-            else
-                return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
-        }
+            return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
 
         if (apprenticeshipResult.Body.TotalApprenticeshipsFound > 1)
             apprenticeshipResult.Body.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
@@ -64,7 +80,9 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
 
         if (apprenticeshipResult.Body.Apprenticeships?.Count > 1)
-            return new TrackProgressResponse(HttpStatusCode.BadRequest, "Multiple apprenticeship records exist");
+            return new TrackProgressResponse(HttpStatusCode.BadRequest, "Multiple apprenticeship records exist", new List<ErrorDetail>());
+
+        var apprenticeship = apprenticeshipResult.Body.Apprenticeships?.FirstOrDefault();
 
         return new TrackProgressResponse(HttpStatusCode.Created);
     }
