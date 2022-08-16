@@ -20,6 +20,11 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMe
         public async Task<GetAccountTeamMembersWhichReceiveNotificationsQueryResult> Handle(GetAccountTeamMembersWhichReceiveNotificationsQuery request, CancellationToken cancellationToken)
         {
             var response = await _accountsApiClient.Get<GetAccountTeamMembersWhichReceiveNotificationsResponse>(new GetAccountTeamMembersWhichReceiveNotificationsRequest(request.AccountId));
+
+            // any exception will return a default (null) response from the shared outer api library
+            if (response == null)
+                return null;
+
             return ((GetAccountTeamMembersWhichReceiveNotificationsQueryResult)(response));
         }
     }
