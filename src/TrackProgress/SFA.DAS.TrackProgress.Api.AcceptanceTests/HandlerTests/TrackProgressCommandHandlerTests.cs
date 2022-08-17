@@ -24,7 +24,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             //Arrange
-            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK);
+            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK, 1);
 
             _service = new CommitmentsV2Service(commitmentsV2Api.Object);
             _sut = new TrackProgressCommandHandler(_service);
@@ -47,7 +47,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             // Arrange            
-            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.NotFound);
+            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK, 0);
 
             _service = new CommitmentsV2Service(commitmentsV2Api.Object);
             _sut = new TrackProgressCommandHandler(_service);
@@ -133,7 +133,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             });
         }
 
-        private void AddApprenticeshipResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode)
+        private void AddApprenticeshipResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode, int numberFound)
         {
             var apprenticeships = new List<ApprenticeshipDetailsResponse>()
             {
@@ -142,6 +142,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
 
             var apprenticeshipsResponse = _fixture.Build<GetApprenticeshipsResponse>()
                 .With(x => x.StatusCode, statusCode)
+                .With(x => x.TotalApprenticeshipsFound, numberFound)
                 .With(x => x.Apprenticeships, apprenticeships).Create();
 
             var apprenticeshipsApiResponse = new ApiResponse<GetApprenticeshipsResponse>(apprenticeshipsResponse, statusCode, string.Empty);
