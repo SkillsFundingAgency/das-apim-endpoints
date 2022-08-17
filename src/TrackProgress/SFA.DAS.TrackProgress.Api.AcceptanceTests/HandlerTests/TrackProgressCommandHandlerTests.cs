@@ -24,7 +24,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             //Arrange
-            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK);
+            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK, 1);
 
             _service = new CommitmentsV2Service(commitmentsV2Api.Object);
             _sut = new TrackProgressCommandHandler(_service);
@@ -47,7 +47,7 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             // Arrange            
-            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.NotFound);
+            AddApprenticeshipResponse(ref commitmentsV2Api, HttpStatusCode.OK, 0);
 
             _service = new CommitmentsV2Service(commitmentsV2Api.Object);
             _sut = new TrackProgressCommandHandler(_service);
@@ -70,8 +70,6 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             // Arrange
-            AddProviderResponse(ref commitmentsV2Api, HttpStatusCode.NotFound);
-
             var apprenticeshipsResponse = _fixture.Build<GetApprenticeshipsResponse>()
                 .With(x => x.StatusCode, HttpStatusCode.OK)
                 .With(x => x.TotalApprenticeshipsFound, 0).Create();
@@ -99,8 +97,6 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2Api)
         {
             // Arrange
-            AddProviderResponse(ref commitmentsV2Api, HttpStatusCode.OK);
-
             var startdate = DateTime.Now;
             var apprenticeships = new List<ApprenticeshipDetailsResponse>()
             { 
@@ -130,16 +126,18 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.HandlerTests
             });
         }
 
-        private void AddProviderResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode)
+        private void AddApprenticeshipResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode, int numberFound)
         {
-            var providerResponse = _fixture.Build<GetProviderResponse>().With(x => x.StatusCode, statusCode).Create();
-            var providerApiResponse = new ApiResponse<GetProviderResponse>(providerResponse, statusCode, string.Empty);
-            client.Setup(x => x.GetWithResponseCode<GetProviderResponse>(It.IsAny<GetProviderRequest>())).ReturnsAsync(providerApiResponse);
-        }
+            var apprenticeships = new List<ApprenticeshipDetailsResponse>()
+            {
+                _fixture.Create<ApprenticeshipDetailsResponse>()
+            };
 
-        private void AddApprenticeshipResponse(ref Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> client, HttpStatusCode statusCode)
-        {
-            var apprenticeshipsResponse = _fixture.Build<GetApprenticeshipsResponse>().With(x => x.StatusCode, statusCode).Create();
+            var apprenticeshipsResponse = _fixture.Build<GetApprenticeshipsResponse>()
+                .With(x => x.StatusCode, statusCode)
+                .With(x => x.TotalApprenticeshipsFound, numberFound)
+                .With(x => x.Apprenticeships, apprenticeships).Create();
+
             var apprenticeshipsApiResponse = new ApiResponse<GetApprenticeshipsResponse>(apprenticeshipsResponse, statusCode, string.Empty);
             client.Setup(x => x.GetWithResponseCode<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsRequest>())).ReturnsAsync(apprenticeshipsApiResponse);
         }

@@ -16,21 +16,18 @@ public record TrackProgressCommand(
 public class TrackProgressResponse
 {
     public HttpStatusCode StatusCode { get; set; }
-    public string Message { get; set; } = string.Empty;
 
     public IActionResult Result
         => StatusCode switch
         {
             HttpStatusCode.Created => new CreatedResult(string.Empty, null),
-            HttpStatusCode.NotFound => new NotFoundObjectResult(Message),
-            _ => new ObjectResult(new { StatusCode, Message }),
+            HttpStatusCode.NotFound => new NotFoundResult(),
+            HttpStatusCode.InternalServerError => new StatusCodeResult((int)HttpStatusCode.InternalServerError),
+            _ => new StatusCodeResult((int)StatusCode),
         };
 
     public TrackProgressResponse(HttpStatusCode statusCode)
         => StatusCode = statusCode;
-
-    public TrackProgressResponse(HttpStatusCode statusCode, string message)
-        => (StatusCode, Message) = (statusCode, message);
 }
 
 public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand, TrackProgressResponse>
@@ -44,20 +41,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
     {
         var apprenticeshipResult = await _commitmentsService.GetApprenticeship(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate);
         if (apprenticeshipResult.StatusCode != HttpStatusCode.OK)
-            return new TrackProgressResponse(apprenticeshipResult.StatusCode, apprenticeshipResult.ErrorContent);
+            return new TrackProgressResponse(HttpStatusCode.InternalServerError);
 
         if (apprenticeshipResult.Body.TotalApprenticeshipsFound == 0)
-        {
-            var providerResult = await _commitmentsService.GetProvider(request.ProviderContext.ProviderId);
-
-            if (providerResult.StatusCode == HttpStatusCode.NotFound)
-                return new TrackProgressResponse(HttpStatusCode.NotFound, "Provider not found");
-            else
-                return new TrackProgressResponse(HttpStatusCode.NotFound, "Apprenticeship not found");
-        }
+            return new TrackProgressResponse(HttpStatusCode.NotFound);
 
         if (apprenticeshipResult.Body.Apprenticeships?.Count(x => x.StartDate == request.PlannedStartDate) > 1)
-            return new TrackProgressResponse(HttpStatusCode.NotFound, "Multiple results for start date");
+            return new TrackProgressResponse(HttpStatusCode.NotFound);
 
         if (request.ProviderContext.InSandboxMode)
         {
