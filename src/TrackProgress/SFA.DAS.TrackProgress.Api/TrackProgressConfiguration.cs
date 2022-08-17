@@ -1,0 +1,10 @@
+﻿using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
+
+namespace SFA.DAS.TrackProgress.Api;
+
+public class TrackProgressConfiguration
+{
+    public AzureActiveDirectoryConfiguration AzureAd { get; set; } = new();
+    public CommitmentsV2ApiConfiguration CommitmentsV2InnerApi { get; set; } = new();
+}

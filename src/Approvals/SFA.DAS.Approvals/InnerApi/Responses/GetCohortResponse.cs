@@ -2,6 +2,7 @@
 {
     public class GetCohortResponse
     {
+        public long AccountId { get; set; }
         public TransferApprovalStatus? TransferApprovalStatus { get; set; }
         public bool IsLinkedToChangeOfPartyRequest { get; }
         public long? ChangeOfPartyRequestId { get; set; }
@@ -16,6 +17,7 @@
         public int? PledgeApplicationId { get; set; }
         public long? TransferSenderId { get; set; }
         public bool IsFundedByTransfer { get; }
+        public long ProviderId { get; set; }
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
         public long AccountLegalEntityId { get; set; }
