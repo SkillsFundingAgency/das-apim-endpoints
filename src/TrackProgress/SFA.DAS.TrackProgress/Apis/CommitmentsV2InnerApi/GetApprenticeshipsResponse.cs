@@ -23,7 +23,7 @@ public class GetApprenticeshipsResponse
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime PauseDate { get; set; }
-        public DateTime StopDate { get; set; }
+        public DateTime? StopDate { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
