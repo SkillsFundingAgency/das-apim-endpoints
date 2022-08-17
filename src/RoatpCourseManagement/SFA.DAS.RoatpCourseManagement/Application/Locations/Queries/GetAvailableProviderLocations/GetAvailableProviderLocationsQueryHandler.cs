@@ -36,16 +36,16 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailab
 
             _logger.LogInformation($"Retrieved Provider locations:{allProviderLocations.Count} Provider course locations: {allProviderCourseLocations.Count} for ukprn {request.Ukprn} larscode {request.LarsCode} from Roatp API");
 
-            var AvailableProviderLocations = new List<ProviderLocationModel>();
+            var availableProviderLocations = new List<ProviderLocationModel>();
             foreach (var l in allProviderLocations)
             {
                 if (!allProviderCourseLocations.Exists(a => a.LocationName == l.LocationName))
                 {
-                    AvailableProviderLocations.Add(l);
+                    availableProviderLocations.Add(l);
                 }
             }
 
-            return new GetAvailableProviderLocationsQueryResult() { AvailableProviderLocations = AvailableProviderLocations.ToList() };
+            return new GetAvailableProviderLocationsQueryResult() { AvailableProviderLocations = availableProviderLocations };
         }
     }
 }
