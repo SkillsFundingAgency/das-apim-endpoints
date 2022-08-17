@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Models;
 using SFA.DAS.TrackProgress.Application.Services;
@@ -78,6 +79,18 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeshipResult.Body.Apprenticeships?.Count > 1)
             return new TrackProgressResponse(HttpStatusCode.BadRequest, "Multiple apprenticeship records exist", new List<ErrorDetail>());
 
+        var apprenticeship = apprenticeshipResult.Body.Apprenticeships?.FirstOrDefault();
+        var errors = new List<ErrorDetail>();
+
+        if (apprenticeship?.DeliveryModel != DeliveryModel.PortableFlexiJob)
+            errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
+
+        if (apprenticeship?.ApprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
+            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprenticeship cannot be updated if not started"));
+
+        if (errors.Any())
+            return new TrackProgressResponse(HttpStatusCode.BadRequest, "One or more validation errors occured", errors);
+
         if (request.ProviderContext.InSandboxMode)
         {
             // Any calls to add the progress record should be avoided when in Sandbox Mode
@@ -85,6 +98,5 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         }
 
         return new TrackProgressResponse(HttpStatusCode.Created);
-
     }
 }
