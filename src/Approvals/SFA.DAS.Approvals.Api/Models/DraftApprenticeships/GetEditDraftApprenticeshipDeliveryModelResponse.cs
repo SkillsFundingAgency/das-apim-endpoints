@@ -14,7 +14,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         {
             return new GetEditDraftApprenticeshipDeliveryModelResponse
             {
-                DeliveryModel = source.DeliveryModel,
+                DeliveryModel = source.DeliveryModel.ToString(),
                 DeliveryModels = source.DeliveryModels,
                 HasUnavailableDeliveryModel = source.HasUnavailableDeliveryModel,
                 EmployerName = source.EmployerName
