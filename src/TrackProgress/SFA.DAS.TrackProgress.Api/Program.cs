@@ -35,9 +35,6 @@ if (!builder.Configuration.IsLocalOrDev())
         new Dictionary<string, string> { { "default", "APIM" } });
 }
 
-builder.Logging.ClearProviders();
-builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
