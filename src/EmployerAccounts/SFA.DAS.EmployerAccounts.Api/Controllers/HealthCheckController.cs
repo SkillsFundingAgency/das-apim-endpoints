@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("healthcheck")]        
+        [Route("healthcheck")]
         public async Task<HealthCheckResult> CheckHealth()
         {
             var timer = Stopwatch.StartNew();
@@ -30,6 +30,6 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
             return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, new Dictionary<string, object> { { "Duration", durationString } })
                 : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, new Dictionary<string, object> { { "Duration", durationString } }));
-        }       
+        }
     }
 }
