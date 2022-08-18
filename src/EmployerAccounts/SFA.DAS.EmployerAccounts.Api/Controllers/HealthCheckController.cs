@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerAccounts.Api.Controllers
 {
+    [ApiController]
     public class HealthCheckController : ControllerBase
     {
-        private const string HealthCheckResultDescription = "Employer Accounts Api Health Check";
+        private const string HealthCheckResultDescription = "Employer Accounts Outer Api Health Check";
         private readonly IEmployerAccountsService _employerAccountsService;
 
         public HealthCheckController(IEmployerAccountsService employerAccountsService)
@@ -19,8 +20,8 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("healthcheck")]
-        public async Task<HealthCheckResult> Get()
+        [Route("healthcheck")]        
+        public async Task<HealthCheckResult> CheckHealth()
         {
             var timer = Stopwatch.StartNew();
             var isHealthy = await _employerAccountsService.IsHealthy();
@@ -29,6 +30,6 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
             return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, new Dictionary<string, object> { { "Duration", durationString } })
                 : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, new Dictionary<string, object> { { "Duration", durationString } }));
-        }
+        }       
     }
 }
