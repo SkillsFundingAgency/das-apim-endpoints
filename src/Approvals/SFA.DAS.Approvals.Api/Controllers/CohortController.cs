@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.Api.Models.Cohorts;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
     public class CohortController : ControllerBase
     {
         private readonly ILogger<DraftApprenticeshipController> _logger;
@@ -22,7 +23,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{cohortId}")]
+        [Route("[controller]/{cohortId}")]
         public async Task<IActionResult> Get(long cohortId)
         {
             try
@@ -37,6 +38,29 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error getting cohort with {cohortId}", e);
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/{cohortId}")]
+        [Route("provider/{providerId}/unapproved/{cohortId}")]
+        public async Task<IActionResult> GetCohortDetails(long cohortId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetCohortDetailsResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in Get Cohort Details - cohort id {cohortId}");
                 return BadRequest();
             }
         }
