@@ -5,6 +5,7 @@ using AutoFixture;
 using FluentAssertions;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Tests;
 using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeshipsResponse;
 
@@ -27,12 +28,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be201Created();
         }
@@ -58,12 +56,9 @@ public class CallApi : ApiFixture
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             // TODO Ensure an update is called only when it is expected 
 
@@ -87,12 +82,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be404NotFound();
         }
@@ -113,12 +105,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be400BadRequest();
         }
@@ -139,12 +128,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be400BadRequest();
         }
@@ -165,12 +151,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be400BadRequest();
         }
@@ -191,12 +174,9 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
-            var postData = new { };
-            var content = new StringContent(
-                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
             response.Should().Be400BadRequest();
         }
@@ -229,4 +209,20 @@ public class CallApi : ApiFixture
 
         return apprenticeshipsResponse;
     }
+
+    private StringContent BuildValidProgressDtoContent()
+    {
+        var dto = new ProgressDto
+        {
+            Progress = new ProgressDto.ProgressDetails
+                {Ksbs = new List<ProgressDto.Ksb>
+                {
+                    new() {Id = Guid.NewGuid().ToString(), Value = 5},
+                    new() {Id = Guid.NewGuid().ToString(), Value = 6}
+                }
+            }
+        };
+        return new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
+    }
+
 }

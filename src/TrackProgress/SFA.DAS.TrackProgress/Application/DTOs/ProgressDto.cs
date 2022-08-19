@@ -2,6 +2,16 @@
 
 public class ProgressDto
 {
-    public long ApprovalId { get; set; }
-    public bool OnTrack { get; set; }
+    public ProgressDetails? Progress { get; set; }
+
+    public class ProgressDetails
+    {
+        public List<Ksb>? Ksbs { get; set; }
+    }
+
+    public class Ksb
+    {
+        public string? Id { get; set; }
+        public int? Value { get; set; }
+    }
 }
