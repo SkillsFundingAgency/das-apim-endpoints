@@ -1,26 +1,43 @@
-﻿using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.TrackProgress.Application.Services;
 
 public class CommitmentsV2Service
 {
     private readonly IInternalApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2Api;
+    private readonly ILogger<CommitmentsV2Service> _logger;
 
-    public CommitmentsV2Service(IInternalApiClient<CommitmentsV2ApiConfiguration> commitmentsV2Api) 
-        => _commitmentsV2Api = commitmentsV2Api;
-
-    public async Task<ApiResponse<GetProviderResponse>> GetProvider(long providerId)
+    public CommitmentsV2Service(IInternalApiClient<CommitmentsV2ApiConfiguration> commitmentsV2Api, ILogger<CommitmentsV2Service> logger)
     {
-        var request = new GetProviderRequest(providerId);
-        return await _commitmentsV2Api.GetWithResponseCode<GetProviderResponse>(request);
+        _commitmentsV2Api = commitmentsV2Api;
+        _logger = logger;
     }
 
-    public async Task<ApiResponse<GetApprenticeshipsResponse>> GetApprenticeship(long providerId, long uln, DateTime startDate)
+    public async Task<GetApprenticeshipsResponse> GetApprenticeships(long providerId, long uln, DateTime startDate)
     {
         var request = new GetApprenticeshipsRequest(providerId, uln, startDate);
-        return await _commitmentsV2Api.GetWithResponseCode<GetApprenticeshipsResponse>(request);
+        var result = await _commitmentsV2Api.GetWithResponseCode<GetApprenticeshipsResponse>(request);
+
+        if (result.StatusCode != HttpStatusCode.OK)
+        {
+            _logger.LogInformation("Unexpected response from Commitments V2 API when calling {0}", request.GetUrl);
+            throw new CommitmentsApiException(result.StatusCode, result.ErrorContent);
+        }
+
+        return result.Body;
     }
+}
+
+public class CommitmentsApiException : Exception
+{
+    public CommitmentsApiException(HttpStatusCode statusCode, string details) : base(details)
+    {
+        StatusCode = statusCode;
+    }
+
+    public HttpStatusCode StatusCode { get; }
 }

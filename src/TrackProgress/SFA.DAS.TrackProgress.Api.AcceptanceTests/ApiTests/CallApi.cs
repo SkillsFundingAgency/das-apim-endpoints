@@ -1,14 +1,14 @@
-﻿using AutoFixture;
+﻿using System.Net;
+using System.Text;
+using System.Text.Json;
+using AutoFixture;
 using FluentAssertions;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Tests;
-using System.Net;
-using System.Text;
-using System.Text.Json;
 using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeshipsResponse;
 
-namespace SFA.DAS.TrackProgress.OuterApi.Tests.ApiTests;
+namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
 public class CallApi : ApiFixture
 {
@@ -21,7 +21,7 @@ public class CallApi : ApiFixture
         {
             CommitmentsApi
                 .ForPath("api/apprenticeships")
-                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-19")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
                 .RegisterWith(Interceptor);
@@ -32,11 +32,12 @@ public class CallApi : ApiFixture
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
 
             response.Should().Be201Created();
         }
     }
+
 
     [TestCase(null, true)]
     [TestCase("true", false)]
@@ -50,7 +51,7 @@ public class CallApi : ApiFixture
         {
             CommitmentsApi
                 .ForPath("api/apprenticeships")
-                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-19")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
                 .RegisterWith(Interceptor);
@@ -62,7 +63,7 @@ public class CallApi : ApiFixture
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
 
             // TODO Ensure an update is called only when it is expected 
 
@@ -77,7 +78,7 @@ public class CallApi : ApiFixture
         {
             CommitmentsApi
                 .ForPath("api/apprenticeships")
-                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-19")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(new
                 {
@@ -91,7 +92,7 @@ public class CallApi : ApiFixture
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
 
             response.Should().Be404NotFound();
         }
@@ -99,6 +100,32 @@ public class CallApi : ApiFixture
 
     [Test]
     public async Task Track_progress_with_multiple_matching_apprenticeships()
+    {
+        var mockResponse = GetMockApprenticeshipResponse(2);
+
+        using (Interceptor.BeginScope())
+        {
+            CommitmentsApi
+                .ForPath("api/apprenticeships")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
+                .Responds()
+                .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
+            var postData = new { };
+            var content = new StringContent(
+                JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
+
+            response.Should().Be400BadRequest();
+        }
+    }
+
+    [Test]
+    public async Task Track_progress_called_with_start_date_other_than_01()
     {
         var mockResponse = GetMockApprenticeshipResponse(2);
 
@@ -132,7 +159,7 @@ public class CallApi : ApiFixture
         {
             CommitmentsApi
                 .ForPath("api/apprenticeships")
-                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-19")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
                 .RegisterWith(Interceptor);
@@ -143,7 +170,7 @@ public class CallApi : ApiFixture
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
 
             response.Should().Be400BadRequest();
         }
@@ -158,7 +185,7 @@ public class CallApi : ApiFixture
         {
             CommitmentsApi
                 .ForPath("api/apprenticeships")
-                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-19")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
                 .RegisterWith(Interceptor);
@@ -169,7 +196,7 @@ public class CallApi : ApiFixture
                 JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", content);
+                $"/apprenticeships/{1}/{"2020-01"}/progress", content);
 
             response.Should().Be400BadRequest();
         }
@@ -181,16 +208,16 @@ public class CallApi : ApiFixture
     private GetApprenticeshipsResponse GetMockApprenticeshipResponse(
         int numberFound, DeliveryModel deliveryModel = DeliveryModel.PortableFlexiJob, ApprenticeshipStatus status = ApprenticeshipStatus.Live)
     {
-        var apprenticeships = new List<ApprenticeshipDetailsResponse>()
+        var apprenticeships = new List<ApprenticeshipDetails>()
             {
-                fixture.Build<ApprenticeshipDetailsResponse>()
+                fixture.Build<ApprenticeshipDetails>()
                     .With(x => x.DeliveryModel, deliveryModel)
                     .With(x => x.ApprenticeshipStatus, status)
                     .Create()
             };
 
         if (numberFound > 1)
-            apprenticeships.Add(fixture.Build<ApprenticeshipDetailsResponse>()
+            apprenticeships.Add(fixture.Build<ApprenticeshipDetails>()
                     .With(x => x.DeliveryModel, deliveryModel)
                     .With(x => x.ApprenticeshipStatus, status)
                     .Create());

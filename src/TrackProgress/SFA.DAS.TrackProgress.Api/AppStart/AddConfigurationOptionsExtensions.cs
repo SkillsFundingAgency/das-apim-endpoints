@@ -10,5 +10,6 @@ public static class AddConfigurationOptionsExtensions
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<TrackProgressConfiguration>>().Value);
         services.AddSingleton(cfg => cfg.GetRequiredService<TrackProgressConfiguration>().AzureAd);
         services.AddSingleton(cfg => cfg.GetRequiredService<TrackProgressConfiguration>().CommitmentsV2InnerApi);
+        services.AddSingleton(cfg => cfg.GetRequiredService<TrackProgressConfiguration>().CoursesApi);
     }
 }

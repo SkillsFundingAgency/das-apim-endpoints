@@ -7,4 +7,5 @@ public class TrackProgressConfiguration
 {
     public AzureActiveDirectoryConfiguration AzureAd { get; set; } = new();
     public CommitmentsV2ApiConfiguration CommitmentsV2InnerApi { get; set; } = new();
+    public CoursesApiConfiguration CoursesApi { get; set; } = new();
 }
