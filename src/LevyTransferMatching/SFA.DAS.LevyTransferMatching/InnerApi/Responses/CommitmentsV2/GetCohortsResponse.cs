@@ -1,17 +1,11 @@
-﻿using SFA.DAS.LevyTransferMatching.Models.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses.CommitmentsV2
 {
     public class GetCohortsResponse
     {
-        public GetCohortsResponse(IEnumerable<CohortSummary> cohorts)
-        {
-            Cohorts = cohorts.ToArray();
-        }
-        public CohortSummary[] Cohorts { get; }
+        public CohortSummary[] Cohorts { get; set; }
 
         public class CohortSummary
         {
