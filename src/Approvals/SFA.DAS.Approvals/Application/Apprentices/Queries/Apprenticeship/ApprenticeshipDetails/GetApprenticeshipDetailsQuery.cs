@@ -10,32 +10,32 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.DetailsApprenticeship
+namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails
 {
-    public class GetDetailsApprenticeshipQuery : IRequest<GetDetailsApprenticeshipQueryResult>
+    public class GetApprenticeshipDetailsQuery : IRequest<GetApprenticeshipDetailsQueryResult>
     {
         public long ApprenticeshipId { get; set; }
     }
 
-    public class GetDetailsApprenticeshipQueryResult
+    public class GetApprenticeshipDetailsQueryResult
     {
         public bool HasMultipleDeliveryModelOptions { get; set; }
     }
 
-    public class GetDetailsApprenticeshipQueryHandler : IRequestHandler<GetDetailsApprenticeshipQuery, GetDetailsApprenticeshipQueryResult>
+    public class GetApprenticeshipDetailsQueryHandler : IRequestHandler<GetApprenticeshipDetailsQuery, GetApprenticeshipDetailsQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IDeliveryModelService _deliveryModelService;
         private readonly ServiceParameters _serviceParameters;
 
-        public GetDetailsApprenticeshipQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters)
+        public GetApprenticeshipDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
             _deliveryModelService = deliveryModelService;
             _serviceParameters = serviceParameters;
         }
 
-        public async Task<GetDetailsApprenticeshipQueryResult> Handle(GetDetailsApprenticeshipQuery request, CancellationToken cancellationToken)
+        public async Task<GetApprenticeshipDetailsQueryResult> Handle(GetApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
         {
             var innerApiRequest = new GetApprenticeshipRequest(request.ApprenticeshipId);
             var innerApiResponse = await _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(innerApiRequest);
@@ -56,7 +56,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.Detai
             var deliveryModel = await _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
-            return new GetDetailsApprenticeshipQueryResult
+            return new GetApprenticeshipDetailsQueryResult
             {
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
             };

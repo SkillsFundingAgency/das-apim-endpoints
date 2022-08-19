@@ -6,7 +6,7 @@ using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.DetailsApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -18,15 +18,15 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
     [TestFixture]
-    public class GetDetailsApprenticeshipQueryHandlerTests
+    public class GetApprenticeshipDetailsQueryHandlerTests
     {
-        private GetDetailsApprenticeshipQueryHandler _handler;
+        private GetApprenticeshipDetailsQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
         private Mock<IDeliveryModelService> _deliveryModelService;
         private ServiceParameters _serviceParameters;
 
         private GetApprenticeshipResponse _apprenticeship;
-        private GetDetailsApprenticeshipQuery _query;
+        private GetApprenticeshipDetailsQuery _query;
         private List<string> _deliveryModels;
 
         [SetUp]
@@ -37,7 +37,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeship = fixture.Build<GetApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, 123)
                 .Create();
-            _query = fixture.Create<GetDetailsApprenticeshipQuery>();
+            _query = fixture.Create<GetApprenticeshipDetailsQuery>();
             _deliveryModels = fixture.Create<List<string>>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
@@ -56,7 +56,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             _serviceParameters = new ServiceParameters(Party.Employer, 123);
 
-            _handler = new GetDetailsApprenticeshipQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
+            _handler = new GetApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
         }
 
         [TestCase(0, false)]

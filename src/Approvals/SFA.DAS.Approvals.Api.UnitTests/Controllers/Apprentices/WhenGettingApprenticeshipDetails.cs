@@ -9,16 +9,16 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.DetailsApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 {
     [TestFixture]
-    public class WhenGettingDetailsApprenticeship
+    public class WhenGettingApprenticeshipDetails
     {
         private ApprenticesController _controller;
         private Mock<IMediator> _mediator;
-        private GetDetailsApprenticeshipQueryResult _queryResult;
+        private GetApprenticeshipDetailsQueryResult _queryResult;
 
         private long _apprenticeshipId;
 
@@ -26,12 +26,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         public void Setup()
         {
             var fixture = new Fixture();
-            _queryResult = fixture.Create<GetDetailsApprenticeshipQueryResult>();
+            _queryResult = fixture.Create<GetApprenticeshipDetailsQueryResult>();
 
             _apprenticeshipId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetDetailsApprenticeshipQuery>(q =>
+            _mediator.Setup(x => x.Send(It.Is<GetApprenticeshipDetailsQuery>(q =>
                         q.ApprenticeshipId == _apprenticeshipId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
@@ -40,14 +40,14 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         }
 
         [Test]
-        public async Task GetDetailsApprenticeshipResponseIsReturned()
+        public async Task GetApprenticeshipDetailsResponseIsReturned()
         {
-            var result = await _controller.DetailsApprenticeship( _apprenticeshipId);
+            var result = await _controller.ApprenticeshipDetails( _apprenticeshipId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetDetailsApprenticeshipResponse>(okObjectResult.Value);
-            var objectResult = (GetDetailsApprenticeshipResponse)okObjectResult.Value;
+            Assert.IsInstanceOf<GetApprenticeshipDetailsResponse>(okObjectResult.Value);
+            var objectResult = (GetApprenticeshipDetailsResponse)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
