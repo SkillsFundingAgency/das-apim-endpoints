@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
 
     public class GetAddDraftApprenticeshipDetailsQueryResult
     {
+        public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
@@ -61,6 +62,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
 
             return new GetAddDraftApprenticeshipDetailsQueryResult
             {
+                AccountLegalEntityId = cohort.AccountLegalEntityId,
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 HasMultipleDeliveryModelOptions = deliveryModels.Count > 1

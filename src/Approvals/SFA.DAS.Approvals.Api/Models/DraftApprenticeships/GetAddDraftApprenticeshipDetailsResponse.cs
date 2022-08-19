@@ -5,6 +5,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
 {
     public class GetAddDraftApprenticeshipDetailsResponse
     {
+        public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
@@ -13,6 +14,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         {
             return new GetAddDraftApprenticeshipDetailsResponse
             {
+                AccountLegalEntityId = source.AccountLegalEntityId,
                 LegalEntityName = source.LegalEntityName,
                 ProviderName = source.ProviderName,
                 HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions
