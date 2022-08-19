@@ -11,6 +11,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditAppre
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.DetailsApprenticeship;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -188,5 +189,29 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/details")]
+        [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/details")]
+        public async Task<IActionResult> DetailsApprenticeship(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetDetailsApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetDetailsApprenticeshipResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
     }
 }
