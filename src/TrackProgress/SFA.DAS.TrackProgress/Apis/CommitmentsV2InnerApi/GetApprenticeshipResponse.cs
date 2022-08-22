@@ -4,7 +4,7 @@ public class GetApprenticeshipResponse
 {
     public long Id { get; set; }
     public string StandardUId { get; set; } = null!;
-    public string Option { get; set; } = string.Empty;
+    public string? Option { get; set; }
     public string Uln { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
     public DateTime? StopDate { get; set; }

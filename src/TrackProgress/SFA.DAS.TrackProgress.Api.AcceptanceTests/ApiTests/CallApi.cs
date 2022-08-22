@@ -15,13 +15,18 @@ namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
 public class CallApi : ApiFixture
 {
-    [Test]
-    public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode()
+    [TestCase("OPTION")]
+    [TestCase("")]
+    [TestCase(null)]
+    [TestCase(" ")]
+    public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode(string optionToTest)
     {
         var mockResponse = GetMockApprenticeshipResponse(1);
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live,  "STDUID", optionToTest);
         var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var optionCode = string.IsNullOrWhiteSpace(singleMockResponse.Option) ? "core" : singleMockResponse.Option; 
         var validDto = BuildValidProgressDtoContentFromCourseResponse(courseKsbsResponse);
+
 
         using (Interceptor.BeginScope())
         {
@@ -39,7 +44,7 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{optionCode}/ksbs")
                 .Responds()
                 .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
