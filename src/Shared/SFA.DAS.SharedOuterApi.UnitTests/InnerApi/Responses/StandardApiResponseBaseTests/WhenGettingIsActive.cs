@@ -84,13 +84,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             standard.IsActive.Should().BeFalse();
         }
 
-        //[Test, AutoData]
-        //public void And_EffectiveFrom_Before_Today_And_EffectiveTo_After_Today_Then_True(TestStandardResponse standard)
-        //{
-        //    standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
-        //    standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(1);
+        [Test, AutoData]
+        public void And_EffectiveFrom_Before_Today_And_EffectiveTo_After_Today_Then_True(TestStandardResponse standard)
+        {
+            standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
+            standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(1);
 
-        //    standard.IsActive.Should().BeTrue();
-        //}
+            standard.IsActive.Should().BeTrue();
+        }
     }
 }

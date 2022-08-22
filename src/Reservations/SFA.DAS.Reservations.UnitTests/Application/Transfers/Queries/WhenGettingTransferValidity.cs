@@ -20,7 +20,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
         public async Task When_PledgeApplicationId_Has_Value_Return_True_If_PledgeApplication_Is_Accepted(
             GetTransferValidityQuery query,
             GetPledgeApplicationResponse pledgeApplication,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockAccountsApiClient,
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockApiClient,
             GetTransferValidityQueryHandler handler)
         {
@@ -41,7 +41,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
         public async Task When_PledgeApplicationId_Has_Value_Return_False_If_PledgeApplication_Is_Not_Accepted(
             GetTransferValidityQuery query,
             GetPledgeApplicationResponse pledgeApplication,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockEmployerFinanceApiClient,
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockApiClient,
             GetTransferValidityQueryHandler handler)
         {
@@ -62,7 +62,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
         public async Task When_PledgeApplicationId_Has_No_Value_Return_True_If_TransferConnection_Exists(
             GetTransferValidityQuery query,
             List<TransferConnection> transferConnections,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockEmployerFinanceApiClient,
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockApiClient,
             GetTransferValidityQueryHandler handler)
         {
@@ -73,7 +73,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
                 new TransferConnection{ FundingEmployerAccountId = query.SenderId }
             };
 
-            mockEmployerFinanceApiClient
+            mockFinanceApiClient
                 .Setup(client => client.GetAll<TransferConnection>(It.IsAny<GetTransferConnectionsRequest>()))
                 .ReturnsAsync(transferConnections);
 
@@ -87,14 +87,14 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
         public async Task When_PledgeApplicationId_Has_No_Value_Return_False_If_TransferConnection_Does_Not_Exist(
             GetTransferValidityQuery query,
             List<TransferConnection> transferConnections,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockEmployerFinanceApiClient,
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockApiClient,
             GetTransferValidityQueryHandler handler)
         {
             query.PledgeApplicationId = null;
             transferConnections = new List<TransferConnection>();
 
-            mockEmployerFinanceApiClient
+            mockFinanceApiClient
                 .Setup(client => client.GetAll<TransferConnection>(It.IsAny<GetTransferConnectionsRequest>()))
                 .ReturnsAsync(transferConnections);
 
