@@ -11,12 +11,12 @@ namespace SFA.DAS.Reservations.Application.Transfers.Queries.GetTransferValidity
 {
     public class GetTransferValidityQueryHandler : IRequestHandler<GetTransferValidityQuery, GetTransferValidityQueryResult>
     {
-        private readonly IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> _employerFinanceApiClient;
+        private readonly IFinanceApiClient<FinanceApiConfiguration> _employerFinanceApiClient;
         private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
 
         private const string PledgeApplicationAcceptedStatus = "Accepted";
 
-        public GetTransferValidityQueryHandler(IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> accountsApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+        public GetTransferValidityQueryHandler(IFinanceApiClient<FinanceApiConfiguration> accountsApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
         {
             _employerFinanceApiClient = accountsApiClient;
             _levyTransferMatchingApiClient = levyTransferMatchingApiClient;

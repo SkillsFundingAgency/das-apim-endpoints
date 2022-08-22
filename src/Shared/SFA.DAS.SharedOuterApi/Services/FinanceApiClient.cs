@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-
-    public class EmployerFinanceApiClient : IEmployerFinanceApiClient<EmployerFinanceApiConfiguration>
+    public class FinanceApiClient : IFinanceApiClient<FinanceApiConfiguration>
     {
-        private readonly IInternalApiClient<EmployerFinanceApiConfiguration> _client;
+        private readonly IInternalApiClient<FinanceApiConfiguration> _client;
 
-        public EmployerFinanceApiClient(IInternalApiClient<EmployerFinanceApiConfiguration> client)
+        public FinanceApiClient(IInternalApiClient<FinanceApiConfiguration> client)
         {
             _client = client;
         }

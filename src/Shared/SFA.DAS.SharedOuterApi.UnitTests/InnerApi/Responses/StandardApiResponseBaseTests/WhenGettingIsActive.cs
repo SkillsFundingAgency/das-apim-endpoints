@@ -61,7 +61,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             standard.StandardDates.EffectiveTo = null;
             standard.StandardDates.LastDateStarts = null;
 
-
             standard.IsActive.Should().BeTrue();
         }
 

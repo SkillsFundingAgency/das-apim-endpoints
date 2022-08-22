@@ -2,7 +2,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Configuration
 {
-    public class EmployerFinanceApiConfiguration : IInternalApiConfiguration
+    public class FinanceApiConfiguration : IInternalApiConfiguration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }

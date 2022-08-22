@@ -11,12 +11,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
-    public class EmployerFinanceApiHealthCheck : IHealthCheck
+    public class FinanceApiHealthCheck : IHealthCheck
     {
         private const string HealthCheckResultDescription = "Employer Finance Api Health Check";
-        private readonly IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> _client;
+        private readonly IFinanceApiClient<FinanceApiConfiguration> _client;
 
-        public EmployerFinanceApiHealthCheck(IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> client)
+        public FinanceApiHealthCheck(IFinanceApiClient<FinanceApiConfiguration> client)
         {
             _client = client;
         }

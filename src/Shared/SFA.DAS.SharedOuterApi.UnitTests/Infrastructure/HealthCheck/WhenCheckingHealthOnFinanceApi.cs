@@ -14,13 +14,13 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
-    public class WhenCheckingHealthOnEmployerFinanceApi
+    public class WhenCheckingHealthOnFinanceApi
     {
         [Test, MoqAutoData]
         public async Task Then_Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-         [Frozen] Mock<IEmployerFinanceApiClient<EmployerFinanceApiConfiguration>> apiClient,
+         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> apiClient,
          HealthCheckContext context,
-         EmployerFinanceApiHealthCheck healthCheck)
+         FinanceApiHealthCheck healthCheck)
         {
             //Arrange
             apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
@@ -35,9 +35,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 
         [Test, MoqAutoData]
         public async Task Then_Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
-            [Frozen] Mock<IEmployerFinanceApiClient<EmployerFinanceApiConfiguration>> apiClient,
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> apiClient,
             HealthCheckContext context,
-            EmployerFinanceApiHealthCheck healthCheck)
+            FinanceApiHealthCheck healthCheck)
         {
             //Arrange
             apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
