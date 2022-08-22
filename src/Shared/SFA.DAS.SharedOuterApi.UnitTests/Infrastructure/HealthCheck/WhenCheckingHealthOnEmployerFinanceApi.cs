@@ -16,22 +16,22 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
     public class WhenCheckingHealthOnEmployerFinanceApi
     {
-        //[Test, MoqAutoData]
-        //public async Task Then_Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-        // [Frozen] Mock<IEmployerFinanceApiClient<EmployerFinanceApiConfiguration>> apiClient,
-        // HealthCheckContext context,
-        // EmployerFinanceApiHealthCheck healthCheck)
-        //{
-        //    //Arrange
-        //    apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
-        //        .ReturnsAsync(HttpStatusCode.OK);
+        [Test, MoqAutoData]
+        public async Task Then_Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
+         [Frozen] Mock<IEmployerFinanceApiClient<EmployerFinanceApiConfiguration>> apiClient,
+         HealthCheckContext context,
+         EmployerFinanceApiHealthCheck healthCheck)
+        {
+            //Arrange
+            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
+                .ReturnsAsync(HttpStatusCode.OK);
 
-        //    //Act
-        //    var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
+            //Act
+            var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
-        //    //Assert
-        //    actual.Status.Should().Be(HealthStatus.Healthy);
-        //}
+            //Assert
+            actual.Status.Should().Be(HealthStatus.Healthy);
+        }
 
         [Test, MoqAutoData]
         public async Task Then_Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
