@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
     {
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions();            
+            services.AddOptions();
             services.Configure<AccountsConfiguration>(configuration.GetSection(nameof(AccountsConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
