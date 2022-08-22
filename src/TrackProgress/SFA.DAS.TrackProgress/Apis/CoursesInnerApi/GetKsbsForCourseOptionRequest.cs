@@ -13,5 +13,5 @@ public class GetKsbsForCourseOptionRequest : IGetApiRequest
         _option = option;
     }
 
-    public string GetUrl => $"/api/courses/Standards/{_standardUId}/options/{_option}/ksbs";
+    public string GetUrl => $"/api/courses/standards/{_standardUId}/options/{_option}/ksbs";
 }

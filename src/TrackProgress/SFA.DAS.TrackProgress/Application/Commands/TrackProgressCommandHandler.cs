@@ -31,11 +31,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeshipsReponse.Apprenticeships?.Count > 1)
             throw new InvalidTaxonomyRequestException("Multiple apprenticeship records exist");
 
-        var app = apprenticeshipsReponse.Apprenticeships!.First();
-        CheckApprenticeshipStateCanAcceptTrackProgressUpdates(app);
-
         CheckPayloadFormatIsCorrect(request.Progress);
-        CheckProgressForDuplicateIds(request.Progress!.Progress!.Ksbs!);
+        CheckPayloadForDuplicateIds(request.Progress!.Progress!.Ksbs!);
+
+        var apprenticeship = await _commitmentsService.GetApprenticeship(apprenticeshipsReponse.Apprenticeships!.First().Id);
+        CheckApprenticeshipStateCanAcceptTrackProgressUpdates(apprenticeship);
+
+        await ValidateKsbIdsAgainstCourseKsbs(apprenticeship.StandardUId, apprenticeship.Option, request.Progress!.Progress!.Ksbs!);
 
         if (request.ProviderContext.InSandboxMode)
         {
@@ -44,6 +46,32 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         }
 
         return new TrackProgressResponse();
+    }
+
+    private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string option, List<ProgressDto.Ksb> ksbs)
+    {
+        var courseKsbsResponse = await _coursesService.GetKsbsForCourseOption(standardUId, option);
+
+        var ksbMatches = from ksb in ksbs
+            join courseKsb in courseKsbsResponse.Ksbs on ksb.Id!.ToLower() equals courseKsb.Id.ToString().ToLower() 
+            into joinedKsbs
+            from match in joinedKsbs.DefaultIfEmpty()
+            select new 
+            {
+                ksb.Id,
+                Matched = match != null
+            };
+
+        var errors = new List<ErrorDetail>();
+        foreach (var missingKsb in ksbMatches.Where(x => !x.Matched))
+        {
+            errors.Add(new (missingKsb.Id, "This KSB does not match the course option"));
+        }
+
+        if (errors.Any())
+        {
+            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted  are not valid for the matched apprenticeship");
+        }
     }
 
     private void CheckPayloadFormatIsCorrect(ProgressDto? payload)
@@ -74,15 +102,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         }
 
         if (errors.Any())
-            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid");
+            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid", errors);
     }
 
-    private void CheckProgressForDuplicateIds(List<ProgressDto.Ksb> ksbs)
+    private void CheckPayloadForDuplicateIds(List<ProgressDto.Ksb> ksbs)
     {
 
         var errors = new List<ErrorDetail>();
-        if (ksbs.Any(x => x.Id == null))
-            errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
 
         var groupIds = ksbs.GroupBy(x => x.Id).Where(g=>g.Count() > 1);
 
@@ -93,10 +119,8 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         }
 
         if (errors.Any())
-            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid");
+            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid", errors);
     }
-
-
 
     private void CheckTheApprenticeshipHasBeenFound(GetApprenticeshipsResponse apprenticeships)
     {
@@ -110,7 +134,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             throw new ApprenticeshipNotFoundException();
     }
 
-    private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipsResponse.ApprenticeshipDetails apprenticeship)
+    private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipResponse apprenticeship)
     {
         var errors = new List<ErrorDetail>();
 
@@ -123,7 +147,6 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (errors.Any())
             throw new InvalidTaxonomyRequestException("This apprenticeship cannot accept the taxonomy as it's in an incorrect state", errors);
     }
-
 }
 
 public class ApprenticeshipNotFoundException : Exception
@@ -136,18 +159,15 @@ public class InvalidTaxonomyRequestException : Exception
 
     public InvalidTaxonomyRequestException(string errorTitle) : base(errorTitle)
     {
-        
     }
 
     public InvalidTaxonomyRequestException(string errorTitle, List<ErrorDetail> errors) : this(errorTitle)
     {
         Errors = errors;
     }
-
 }
 
 public record ErrorDetail(
     string Error,
     string Description
 );
-

@@ -30,6 +30,20 @@ public class CommitmentsV2Service
 
         return result.Body;
     }
+
+    public async Task<GetApprenticeshipResponse> GetApprenticeship(long apprenticeshipId)
+    {
+        var request = new GetApprenticeshipRequest(apprenticeshipId);
+        var result = await _commitmentsV2Api.GetWithResponseCode<GetApprenticeshipResponse>(request);
+
+        if (result.Body == null)
+        {
+            _logger.LogInformation("No apprenticeship found in Commitments V2 API when calling {0}", request.GetUrl);
+            throw new CommitmentsApiException(result.StatusCode, result.ErrorContent);
+        }
+
+        return result.Body;
+    }
 }
 
 public class CommitmentsApiException : Exception
