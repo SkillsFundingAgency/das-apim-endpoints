@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class RegionsController : ControllerBase
     {
