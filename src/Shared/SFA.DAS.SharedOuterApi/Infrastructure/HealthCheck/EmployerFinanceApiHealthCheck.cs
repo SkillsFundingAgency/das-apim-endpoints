@@ -14,9 +14,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class EmployerFinanceApiHealthCheck : IHealthCheck
     {
         private const string HealthCheckResultDescription = "Employer Finance Api Health Check";
-        private readonly IAccountsApiClient<EmployerFinanceApiConfiguration> _client;
+        private readonly IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> _client;
 
-        public EmployerFinanceApiHealthCheck(IAccountsApiClient<EmployerFinanceApiConfiguration> client)
+        public EmployerFinanceApiHealthCheck(IEmployerFinanceApiClient<EmployerFinanceApiConfiguration> client)
         {
             _client = client;
         }
