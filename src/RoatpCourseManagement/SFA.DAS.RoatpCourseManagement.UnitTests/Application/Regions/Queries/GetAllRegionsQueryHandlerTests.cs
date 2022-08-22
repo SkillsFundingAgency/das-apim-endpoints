@@ -35,7 +35,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Regions.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_SuccessfulStatus_ThrowsException(
+        public async Task Handle_SuccessfulStatus_ReturnsData(
            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
            GetAllRegionsQueryHandler sut,
            List<RegionModel> data)
