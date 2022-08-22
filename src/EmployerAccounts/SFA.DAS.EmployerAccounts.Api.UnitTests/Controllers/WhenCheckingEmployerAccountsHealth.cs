@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers
             _employerAccountsService.Setup(x => x.IsHealthy()).ReturnsAsync(true);
 
             //Act
-            var actual = await _pingController.Get();
+            var actual = await _pingController.CheckHealth();
 
             //Assert
             actual.Status.Should().Be(HealthStatus.Healthy);
@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers
             _employerAccountsService.Setup(x => x.IsHealthy()).ReturnsAsync(false);
 
             //Act
-            var actual = await _pingController.Get();
+            var actual = await _pingController.CheckHealth();
 
             //Assert
             actual.Status.Should().Be(HealthStatus.Unhealthy);
