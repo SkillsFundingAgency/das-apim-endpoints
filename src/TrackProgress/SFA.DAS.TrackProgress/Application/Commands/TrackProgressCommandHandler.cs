@@ -50,6 +50,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string option, List<ProgressDto.Ksb> ksbs)
     {
+        option = string.IsNullOrWhiteSpace(option) ? "core" : option; 
         var courseKsbsResponse = await _coursesService.GetKsbsForCourseOption(standardUId, option);
 
         var ksbMatches = from ksb in ksbs
