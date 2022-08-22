@@ -5,17 +5,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Models\**" />
+      <EmbeddedResource Remove="Models\**" />
+      <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Application\Queries\" />
-      <Folder Include="InnerApi\Responses\" />
-      <Folder Include="Models\Constants\" />
     </ItemGroup>
 
 </Project>

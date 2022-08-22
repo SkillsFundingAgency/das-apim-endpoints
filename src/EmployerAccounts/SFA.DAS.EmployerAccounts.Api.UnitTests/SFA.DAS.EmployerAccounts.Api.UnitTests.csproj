@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Models\**" />
+      <EmbeddedResource Remove="Models\**" />
+      <None Remove="Models\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
         <PackageReference Include="Moq" Version="4.7.0" />
@@ -20,10 +26,6 @@
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.EmployerAccounts.Api\SFA.DAS.EmployerAccounts.Api.csproj" />
       <ProjectReference Include="..\SFA.DAS.EmployerAccounts\SFA.DAS.EmployerAccounts.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>
