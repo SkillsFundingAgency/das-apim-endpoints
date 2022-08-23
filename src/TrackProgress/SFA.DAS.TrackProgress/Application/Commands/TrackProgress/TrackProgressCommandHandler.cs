@@ -110,7 +110,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             if (!ksbState.IsValidId)
                 errors.Add(new ErrorDetail(ksbState.Id!, $"{ksbState.Id} is not a valid guid"));
             if (!ksbState.IsValidValue)
-                errors.Add(new ErrorDetail(ksbState.Id!, $"That the progress “{ksbState.Value}” presented against this KSB is between 1 and 10 (inclusive)"));
+                errors.Add(new ErrorDetail(ksbState.Id!, $"That the progress “{ksbState.Value}” presented against this KSB is between 1 and 100 (inclusive)"));
         }
 
         if (errors.Any())

@@ -13,7 +13,7 @@ public class CreateTrackProgressRequest : IPostApiRequest
         Data = data;
     }
 
-    public string PostUrl => $"/apprenticeship/{_apprenticeshipId}";
+    public string PostUrl => $"/apprenticeships/{_apprenticeshipId}";
     public object Data { get; set; }
 }
 
