@@ -40,6 +40,9 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         var apprenticeship = await _commitmentsService.GetApprenticeship(apprenticeshipsReponse.Apprenticeships!.First().Id);
         CheckApprenticeshipStateCanAcceptTrackProgressUpdates(apprenticeship);
 
+        if (string.IsNullOrEmpty(apprenticeship.Option))
+            await ValidateCourseOptions(apprenticeship.StandardUId);
+
         await ValidateKsbIdsAgainstCourseKsbs(apprenticeship.StandardUId, apprenticeship.Option, request.Progress!.Progress!.Ksbs!);
 
         if (request.ProviderContext.InSandboxMode)
@@ -84,6 +87,14 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         {
             throw new InvalidTaxonomyRequestException("The KSB identifiers submitted  are not valid for the matched apprenticeship");
         }
+    }
+
+    private async Task ValidateCourseOptions(string standardUId)
+    {
+        var course = await _coursesService.GetOptionsForCourse(standardUId);
+
+        if (course.Options.Any())
+            throw new InvalidTaxonomyRequestException("You need to select an option for the apprenticeship standard");
     }
 
     private void CheckPayloadFormatIsCorrect(ProgressDto? payload)

@@ -24,9 +24,9 @@ public class CallApi : ApiFixture
         var mockResponse = GetMockApprenticeshipResponse(1);
         var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live,  "STDUID", optionToTest);
         var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var courseOptionsResponse = fixture.Build<GetCourseOptionsResponse>().With(x => x.Options, new List<string>()).Create();
         var optionCode = string.IsNullOrWhiteSpace(singleMockResponse.Option) ? "core" : singleMockResponse.Option; 
         var validDto = BuildValidProgressDtoContentFromCourseResponse(courseKsbsResponse);
-
 
         using (Interceptor.BeginScope())
         {
@@ -47,6 +47,12 @@ public class CallApi : ApiFixture
                 .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{optionCode}/ksbs")
                 .Responds()
                 .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi2
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}")
+                .Responds()
+                .WithSystemTextJsonContent(courseOptionsResponse)
                 .RegisterWith(Interceptor);
 
             TrackProgressInnerApi
@@ -435,6 +441,54 @@ public class CallApi : ApiFixture
         }
     }
 
+    [Test]
+    public async Task Track_progress_with_no_options_but_options_do_exist_for_course()
+    {
+        var mockResponse = GetMockApprenticeshipResponse(1);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live, "STDUID", "");
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var courseOptionsResponse = fixture.Build<GetCourseOptionsResponse>().With(x => x.Options, new List<string>() { "Option 1", "Option 2" }).Create();
+        var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(courseKsbsResponse);
+
+        using (Interceptor.BeginScope())
+        {
+            CommitmentsApi
+                .ForPath("api/apprenticeships")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
+                .Responds()
+                .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi2
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}")
+                .Responds()
+                .WithSystemTextJsonContent(courseOptionsResponse)
+                .RegisterWith(Interceptor);
+
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
+
+            var response = await client.PostAsync(
+                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+
+            response.Should().Be400BadRequest();
+            var body = await response.Content.ReadAsStringAsync();
+            var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
+            problem?.Title.Should().StartWith("You need to select an option for the apprenticeship standard");
+        }
+    }
+
     private static HttpRequestInterceptionBuilder CommitmentsApi { get; } =
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
@@ -442,6 +496,9 @@ public class CallApi : ApiFixture
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
     private static HttpRequestInterceptionBuilder CoursesApi { get; } =
+        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
+
+    private static HttpRequestInterceptionBuilder CoursesApi2 { get; } =
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
     private static HttpRequestInterceptionBuilder TrackProgressInnerApi { get; } =

@@ -16,7 +16,21 @@ public class CoursesService
         _coursesApi = coursesApi;
         _logger = logger;
     }
-    
+
+    public async Task<GetCourseOptionsResponse> GetOptionsForCourse(string standardUId)
+    {
+        var request = new GetCourseOptionsRequest(standardUId);
+        var result = await _coursesApi.GetWithResponseCode<GetCourseOptionsResponse>(request);
+
+        if (result.StatusCode != HttpStatusCode.OK)
+        {
+            _logger.LogInformation("Unexpected response from Courses API when calling {0}", request.GetUrl);
+            throw new CourseApiException(result.StatusCode, result.ErrorContent);
+        }
+
+        return result.Body;
+    }
+
     public async Task<GetKsbsForCourseOptionResponse> GetKsbsForCourseOption(string standardUId, string option)
     {
         var request = new GetKsbsForCourseOptionRequest(standardUId, option);
