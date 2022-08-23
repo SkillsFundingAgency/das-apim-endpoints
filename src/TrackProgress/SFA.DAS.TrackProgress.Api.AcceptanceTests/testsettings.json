@@ -9,6 +9,8 @@
   },
   "trackProgressApi": {
     "url": "https://google.co.uk/"
+  },
+  "coursesApi": {
+    "url": "https://google.co.uk/"
   }
-
 }
