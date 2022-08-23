@@ -49,7 +49,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         var data = new KsbProgress
         {
-            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM")),
+            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM-dd")),
             ApprenticeshipContinuationId = apprenticeship.ContinuationOfId,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
         };

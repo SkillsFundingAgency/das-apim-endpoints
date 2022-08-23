@@ -23,21 +23,20 @@ public class TrackProgressService
     public async Task SaveProgress(long apprenticeshipId, KsbProgress data)
     {
         var request = new CreateTrackProgressRequest(apprenticeshipId, data);
-        var result = await _trackProgressApi.PostWithResponseCode<GetKsbsForCourseOptionResponse>(request);
+        var result = await _trackProgressApi.PostWithResponseCode<GetKsbsForCourseOptionResponse>(request, false);
 
         if(result.StatusCode != HttpStatusCode.Created)
         {
             _logger.LogInformation("Unexpected response from Track Progress inner API when calling {0}",
                 request.PostUrl);
-            throw new CourseApiException(result.StatusCode, result.ErrorContent);
+            throw new TrackProgressApiException(result.StatusCode, result.ErrorContent);
         }
-
     }
 }
 
-public class TrackProgressInnerApiException : Exception
+public class TrackProgressApiException : Exception
 {
-    public TrackProgressInnerApiException(HttpStatusCode statusCode, string details) : base(details)
+    public TrackProgressApiException(HttpStatusCode statusCode, string details) : base(details)
     {
         StatusCode = statusCode;
     }
