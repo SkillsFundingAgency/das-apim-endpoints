@@ -5,25 +5,23 @@ namespace SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
 
 public class CreateTrackProgressRequest : IPostApiRequest
 {
-    private readonly long _providerId;
-    private readonly long _uln;
-    private readonly DateOnly _startDate;
+    private readonly long _apprenticeshipId;
 
-    public CreateTrackProgressRequest(long providerId, long uln, DateOnly startDate, KsbProgress data)
+    public CreateTrackProgressRequest(long apprenticeshipId, KsbProgress data)
     {
-        _providerId = providerId;
-        _uln = uln;
-        _startDate = startDate;
+        _apprenticeshipId = apprenticeshipId;
         Data = data;
     }
 
-    public string PostUrl => $"/apprenticeship/{_providerId}/{_uln}/{_startDate.ToString("yyyy-MM")}/progress";
+    public string PostUrl => $"/apprenticeship/{_apprenticeshipId}";
     public object Data { get; set; }
 }
 
 public class KsbProgress
 {
-    public long ApprovalId { get; set; }
-    public long? ApprovalContinuationId { get; set; }
+    public ProviderApprenticeshipIdentifier ProviderApprenticeshipIdentifier { get; set; } = null!;
+    public long? ApprenticeshipContinuationId { get; set; }
     public ProgressDto.Ksb[] Ksbs { get; set; } = null!;
 }
+
+public record ProviderApprenticeshipIdentifier(long ProviderId, long Uln, string StartDate);

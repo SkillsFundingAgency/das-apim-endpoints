@@ -560,7 +560,7 @@ public class CallApi : ApiFixture
             {
                 Ksbs = new List<ProgressDto.Ksb>
                 {
-                    new() {Id = Guid.NewGuid().ToString(), Value = 15},
+                    new() {Id = Guid.NewGuid().ToString(), Value = 101},
                     new() {Id = Guid.NewGuid().ToString(), Value = -6}
                 }
             }

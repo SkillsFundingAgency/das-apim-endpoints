@@ -31,7 +31,7 @@ public class ApiFixture
                 var response = new HttpResponseMessage(HttpStatusCode.Created)
                 {
                     Content = new StringContent("{}")
-                }; ;
+                };
                 return Task.FromResult(response);
             },
             ThrowOnMissingRegistration = true

@@ -49,14 +49,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         var data = new KsbProgress
         {
-            ApprovalId = apprenticeship.Id,
-            ApprovalContinuationId = apprenticeship.ContinuationOfId,
+            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM")),
+            ApprenticeshipContinuationId = apprenticeship.ContinuationOfId,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
         };
 
-        await _trackProgressService.SaveProgress(request.ProviderContext.ProviderId, request.Uln,
-            DateOnly.FromDateTime(request.PlannedStartDate), data);
-
+        await _trackProgressService.SaveProgress(apprenticeship.Id, data);
+        
         return new TrackProgressResponse();
     }
 
@@ -102,7 +101,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
 
         var KsbStates = progress.Ksbs.Where(x => x.Id != null).Select(x => new
-        { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 1 && x.Value <= 10 });
+        { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 1 && x.Value <= 100 });
 
         foreach (var ksbState in KsbStates)
         {
