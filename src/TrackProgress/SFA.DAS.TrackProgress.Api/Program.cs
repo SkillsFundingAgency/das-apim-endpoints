@@ -27,6 +27,7 @@ builder.Services.Configure<RouteOptions>(options =>
 });
 builder.Services.AddServiceRegistration();
 builder.Services.AddConfigurationOptions(builder.Configuration);
+builder.Services.AddHealthChecks();
 
 if (!builder.Configuration.IsLocalOrDev())
 {
@@ -49,6 +50,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrackProgressOuterApi");
     c.RoutePrefix = string.Empty;
 });
+app.UseHealthChecks();
 
 app.UseHttpsRedirection();
 
