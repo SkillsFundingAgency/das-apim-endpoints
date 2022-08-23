@@ -1,7 +1,7 @@
-﻿using System;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiResponseBaseTests
 {
@@ -87,6 +87,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test, AutoData]
         public void And_EffectiveFrom_Before_Today_And_EffectiveTo_After_Today_Then_True(TestStandardResponse standard)
         {
+            standard.StandardDates.LastDateStarts = null;
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
             standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(1);
             standard.StandardDates.LastDateStarts = null;
