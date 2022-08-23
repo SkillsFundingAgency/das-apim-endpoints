@@ -15,5 +15,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<CommitmentsV2Service>();
         services.AddTransient<CoursesService>();
+        services.AddTransient<TrackProgressService>();
     }
 }

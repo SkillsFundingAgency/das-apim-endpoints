@@ -1,21 +1,24 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Services;
 
-namespace SFA.DAS.TrackProgress.Application.Commands;
+namespace SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
 
 public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand, TrackProgressResponse>
 {
     private readonly CommitmentsV2Service _commitmentsService;
     private readonly CoursesService _coursesService;
+    private readonly TrackProgressService _trackProgressService;
     private readonly ILogger<TrackProgressCommandHandler> _logger;
 
-    public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, ILogger<TrackProgressCommandHandler> logger)
+    public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, TrackProgressService trackProgressService, ILogger<TrackProgressCommandHandler> logger)
     {
         _commitmentsService = commitmentsV2Service;
         _coursesService = coursesService;
+        _trackProgressService = trackProgressService;
         _logger = logger;
     }
 
@@ -41,32 +44,41 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (request.ProviderContext.InSandboxMode)
         {
-            // Any calls to add the progress record should be avoided when in Sandbox Mode
             return new TrackProgressResponse();
         }
+
+        var data = new KsbProgress
+        {
+            ApprovalId = apprenticeship.Id,
+            ApprovalContinuationId = apprenticeship.ContinuationOfId,
+            Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
+        };
+
+        await _trackProgressService.SaveProgress(request.ProviderContext.ProviderId, request.Uln,
+            DateOnly.FromDateTime(request.PlannedStartDate), data);
 
         return new TrackProgressResponse();
     }
 
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string? option, List<ProgressDto.Ksb> ksbs)
     {
-        option = string.IsNullOrWhiteSpace(option) ? "core" : option; 
+        option = string.IsNullOrWhiteSpace(option) ? "core" : option;
         var courseKsbsResponse = await _coursesService.GetKsbsForCourseOption(standardUId, option);
 
         var ksbMatches = from ksb in ksbs
-            join courseKsb in courseKsbsResponse.Ksbs on ksb.Id!.ToLower() equals courseKsb.Id.ToString().ToLower() 
-            into joinedKsbs
-            from match in joinedKsbs.DefaultIfEmpty()
-            select new 
-            {
-                ksb.Id,
-                Matched = match != null
-            };
+                         join courseKsb in courseKsbsResponse.Ksbs on ksb.Id!.ToLower() equals courseKsb.Id.ToString().ToLower()
+                         into joinedKsbs
+                         from match in joinedKsbs.DefaultIfEmpty()
+                         select new
+                         {
+                             ksb.Id,
+                             Matched = match != null
+                         };
 
         var errors = new List<ErrorDetail>();
         foreach (var missingKsb in ksbMatches.Where(x => !x.Matched))
         {
-            errors.Add(new (missingKsb.Id, "This KSB does not match the course option"));
+            errors.Add(new(missingKsb.Id, "This KSB does not match the course option"));
         }
 
         if (errors.Any())
@@ -84,19 +96,19 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             throw new InvalidTaxonomyRequestException("KSBs are required");
 
         var progress = payload.Progress;
-        
+
         var errors = new List<ErrorDetail>();
-        if(progress.Ksbs.Any(x=>x.Id == null))
+        if (progress.Ksbs.Any(x => x.Id == null))
             errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
 
         var KsbStates = progress.Ksbs.Where(x => x.Id != null).Select(x => new
-            {x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 1 && x.Value <= 10});
+        { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 1 && x.Value <= 10 });
 
         foreach (var ksbState in KsbStates)
         {
-            if(ksbState.IsValidId && ksbState.IsValidValue)
+            if (ksbState.IsValidId && ksbState.IsValidValue)
                 continue;
-            if(!ksbState.IsValidId)
+            if (!ksbState.IsValidId)
                 errors.Add(new ErrorDetail(ksbState.Id!, $"{ksbState.Id} is not a valid guid"));
             if (!ksbState.IsValidValue)
                 errors.Add(new ErrorDetail(ksbState.Id!, $"That the progress “{ksbState.Value}” presented against this KSB is between 1 and 10 (inclusive)"));
@@ -111,7 +123,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         var errors = new List<ErrorDetail>();
 
-        var groupIds = ksbs.GroupBy(x => x.Id).Where(g=>g.Count() > 1);
+        var groupIds = ksbs.GroupBy(x => x.Id).Where(g => g.Count() > 1);
 
         foreach (var group in groupIds)
         {
@@ -156,7 +168,7 @@ public class ApprenticeshipNotFoundException : Exception
 
 public class InvalidTaxonomyRequestException : Exception
 {
-    public List<ErrorDetail> Errors { get; } = new ();
+    public List<ErrorDetail> Errors { get; } = new();
 
     public InvalidTaxonomyRequestException(string errorTitle) : base(errorTitle)
     {

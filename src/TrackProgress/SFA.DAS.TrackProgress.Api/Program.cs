@@ -4,7 +4,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
-using SFA.DAS.TrackProgress.Application.Commands;
+using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
 
 var builder = WebApplication.CreateBuilder(args);
 

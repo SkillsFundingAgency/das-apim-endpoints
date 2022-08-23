@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.TrackProgress.Application.Commands;
+using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Application.Models;
 using System.ComponentModel.DataAnnotations;

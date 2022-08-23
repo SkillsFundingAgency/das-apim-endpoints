@@ -6,5 +6,9 @@
   "APPINSIGHTS_INSTRUMENTATIONKEY": "",
   "CommitmentsV2InnerApi": {
     "url": "https://google.com/"
+  },
+  "trackProgressApi": {
+    "url": "https://google.co.uk/"
   }
+
 }

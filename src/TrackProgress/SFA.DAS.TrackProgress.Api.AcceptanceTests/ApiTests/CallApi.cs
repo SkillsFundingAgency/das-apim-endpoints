@@ -49,6 +49,13 @@ public class CallApi : ApiFixture
                 .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
+            TrackProgressInnerApi
+                .ForPost()
+                .ForPath($"apprentice/{12345}/{singleMockResponse.Uln}/2021-01/progress")
+                .Responds()
+                .WithStatus(HttpStatusCode.Created)
+                .RegisterWith(Interceptor);
+
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
 
             var response = await client.PostAsync(
@@ -88,6 +95,11 @@ public class CallApi : ApiFixture
                 .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
                 .Responds()
                 .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
+            TrackProgressInnerApi
+                .ForPost()
+                .ForPath($"apprentice/{12345}/{singleMockResponse.Uln}/2021-01-01/progress")
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
@@ -365,6 +377,14 @@ public class CallApi : ApiFixture
                 .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
+            TrackProgressInnerApi
+                .ForPost()
+                .ForPath($"/apprentice/{12345}/{singleMockResponse.Uln}/2021-01/progress")
+                .Responds()
+                .WithSystemTextJsonContent("{}")
+                .WithStatus(HttpStatusCode.Created)
+                .RegisterWith(Interceptor);
+
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "12345");
 
             var response = await client.PostAsync(
@@ -422,6 +442,9 @@ public class CallApi : ApiFixture
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
     private static HttpRequestInterceptionBuilder CoursesApi { get; } =
+        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
+
+    private static HttpRequestInterceptionBuilder TrackProgressInnerApi { get; } =
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
     private GetApprenticeshipsResponse GetMockApprenticeshipResponse(

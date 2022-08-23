@@ -1,0 +1,42 @@
+﻿using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
+
+namespace SFA.DAS.TrackProgress.Application.Services;
+
+public class TrackProgressService
+{
+    private readonly IInternalApiClient<TrackProgressApiConfiguration> _trackProgressApi;
+    private readonly ILogger<TrackProgressService> _logger;
+
+    public TrackProgressService(IInternalApiClient<TrackProgressApiConfiguration> trackProgressApi, ILogger<TrackProgressService> logger)
+    {
+        _trackProgressApi = trackProgressApi;
+        _logger = logger;
+    }
+    
+    public async Task SaveProgress(long providerId, long uln, DateOnly startDate, KsbProgress data)
+    {
+        var request = new CreateTrackProgressRequest(providerId, uln, startDate, data);
+        var result = await _trackProgressApi.PostWithResponseCode<GetKsbsForCourseOptionResponse>(request);
+
+        if(result.StatusCode != HttpStatusCode.Created)
+        {
+            _logger.LogInformation("Unexpected response from Track Progress inner API when calling {0}", request.PostUrl);
+            throw new CourseApiException(result.StatusCode, result.ErrorContent);
+        }
+    }
+}
+
+public class TrackProgressInnerApiException : Exception
+{
+    public TrackProgressInnerApiException(HttpStatusCode statusCode, string details) : base(details)
+    {
+        StatusCode = statusCode;
+    }
+
+    public HttpStatusCode StatusCode { get; }
+}
