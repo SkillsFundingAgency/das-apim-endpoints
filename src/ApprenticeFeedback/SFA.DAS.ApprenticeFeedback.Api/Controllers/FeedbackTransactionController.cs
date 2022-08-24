@@ -1,17 +1,13 @@
-﻿
-using System;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MediatR;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
-using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
-using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Threading.Tasks;
 using static SFA.DAS.ApprenticeFeedback.Models.Enums;
-using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
@@ -45,7 +41,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 FeedbackTransactionId = apprenticeFeedbackTransactionId,
                 ApprenticeName = result.LastName,
                 ApprenticeEmailAddress = result.Email,
-                IsEmailContactAllowed = result.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? false
+                // If the preference is null, it's not set and we default to true until told otherwise for sending feedback emails.
+                IsEmailContactAllowed = result.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true
             });
 
             return Ok(new ProcessEmailTransactionResult()
