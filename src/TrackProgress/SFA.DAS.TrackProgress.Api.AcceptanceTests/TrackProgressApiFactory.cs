@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
-namespace SFA.DAS.TrackProgress.Tests;
+namespace SFA.DAS.TrackProgress.Api.AcceptanceTests;
 
 public class TrackProgressApiFactory : WebApplicationFactory<Program>
 {
@@ -31,6 +31,7 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
         var fullPath = Path.Combine(directory, "testsettings.json");
 
         builder.ConfigureAppConfiguration((_, config) => config.AddJsonFile(fullPath, optional: true));
+        builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
     }
 }
 

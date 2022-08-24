@@ -10,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var config = builder.Configuration
-    .Get<TrackProgressConfiguration>();
+var configuration = builder.Configuration.BuildSharedConfiguration();
+var config = configuration.Get<TrackProgressConfiguration>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

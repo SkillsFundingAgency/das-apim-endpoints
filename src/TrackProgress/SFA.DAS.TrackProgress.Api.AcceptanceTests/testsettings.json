@@ -1,7 +1,7 @@
 {
   "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
-  "ConfigNames": "SFA.DAS.ApprenticeFeedback.OuterApi",
-  "Environment": "LOCAL",
+  "ConfigNames": "SFA.DAS.TrackProgress.OuterApi",
+  "Environment": "LOCAL_ACCEPTANCE_TESTS",
   "Version": "1.0",
   "APPINSIGHTS_INSTRUMENTATIONKEY": "",
   "CommitmentsV2InnerApi": {

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using AutoFixture;
 using JustEat.HttpClientInterception;
+using SFA.DAS.TrackProgress.Api.AcceptanceTests;
 
 namespace SFA.DAS.TrackProgress.Tests;
 

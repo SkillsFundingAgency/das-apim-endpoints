@@ -11,14 +11,14 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 {
     private readonly CommitmentsV2Service _commitmentsService;
     private readonly CoursesService _coursesService;
-//    private readonly TrackProgressService _trackProgressService;
+    private readonly TrackProgressService _trackProgressService;
     private readonly ILogger<TrackProgressCommandHandler> _logger;
 
-    public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService /*, TrackProgressService trackProgressService*/, ILogger<TrackProgressCommandHandler> logger)
+    public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, TrackProgressService trackProgressService, ILogger<TrackProgressCommandHandler> logger)
     {
         _commitmentsService = commitmentsV2Service;
         _coursesService = coursesService;
-  //      _trackProgressService = trackProgressService;
+        _trackProgressService = trackProgressService;
         _logger = logger;
     }
 
@@ -50,15 +50,15 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             return new TrackProgressResponse();
         }
 
-        //var data = new KsbProgress
-        //{
-        //    ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM-dd")),
-        //    ApprenticeshipContinuationId = apprenticeship.ContinuationOfId,
-        //    Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
-        //};
+        var data = new KsbProgress
+        {
+            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM-dd")),
+            ApprenticeshipContinuationId = apprenticeship.ContinuationOfId,
+            Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
+        };
 
-        //await _trackProgressService.SaveProgress(apprenticeship.Id, data);
-        
+        await _trackProgressService.SaveProgress(apprenticeship.Id, data);
+
         return new TrackProgressResponse();
     }
 
