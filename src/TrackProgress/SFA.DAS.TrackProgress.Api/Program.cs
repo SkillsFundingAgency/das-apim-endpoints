@@ -26,7 +26,7 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 builder.Services.AddServiceRegistration();
-builder.Services.AddConfigurationOptions(builder.Configuration);
+builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 
 if (!builder.Configuration.IsLocalOrDev())
