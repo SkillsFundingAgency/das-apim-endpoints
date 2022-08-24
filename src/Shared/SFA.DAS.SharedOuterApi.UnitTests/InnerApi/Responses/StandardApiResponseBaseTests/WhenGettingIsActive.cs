@@ -90,7 +90,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             standard.StandardDates.LastDateStarts = null;
             standard.StandardDates.EffectiveFrom = DateTime.UtcNow.AddDays(-1);
             standard.StandardDates.EffectiveTo = DateTime.UtcNow.AddDays(1);
-            standard.StandardDates.LastDateStarts = null;
 
             standard.IsActive.Should().BeTrue();
         }
