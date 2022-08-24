@@ -13,12 +13,25 @@ public class TrackProgressController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<TrackProgressController> _logger;
+    private string _providerId = null!;
 
     public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
         => (_mediator, _logger) = (mediator, logger);
 
     [FromHeader(Name = SubscriptionHeaderConstants.ForProviderId)]
-    public string Ukprn { get; set; } = null!;
+    public string Ukprn
+    {
+        get => _providerId;
+        set
+        {
+            // Incoming string is '`Provider-99999-TrackProgressOuterApi'
+            var items = value.Split("-");
+            if (items.Length >= 2)
+                _providerId = items[1];
+            else
+                _providerId = "No providerId supplied";
+        }
+    }
 
     [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
     public string? IsSandbox { get; set; }
