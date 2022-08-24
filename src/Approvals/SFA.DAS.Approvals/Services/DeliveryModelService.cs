@@ -16,7 +16,7 @@ namespace SFA.DAS.Approvals.Services
 {
     public interface IDeliveryModelService
     {
-        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null);
+        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -36,9 +36,9 @@ namespace SFA.DAS.Approvals.Services
             _featureToggles = featureToggles;
         }
 
-        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null)
+        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null)
         {
-            var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(apprenticeshipId);
+            var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
             var isOnRegisterTask = IsLegalEntityOnFjaaRegister(accountLegalEntityId);
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.Approvals.Services
                 return isOnRegister ? new List<string>() : new List<string> { DeliveryModelStringTypes.PortableFlexiJob };
             }
 
-            if (isOnRegister || apprenticeshipId.HasValue)
+            if (isOnRegister || continuationOfId.HasValue)
             {
                 courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
             }
