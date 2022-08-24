@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 
         public enum EmailStatus
         {
-            Successfull,
+            Successful,
             NotAllowed,
             Failed
         }
