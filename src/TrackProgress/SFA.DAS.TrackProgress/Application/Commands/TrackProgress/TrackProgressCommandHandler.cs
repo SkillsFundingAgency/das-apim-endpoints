@@ -38,7 +38,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         CheckPayloadForDuplicateIds(request.Progress!.Progress!.Ksbs!);
 
         var apprenticeship = await _commitmentsService.GetApprenticeship(apprenticeshipsReponse.Apprenticeships!.First().Id);
-        CheckApprenticeshipStateCanAcceptTrackProgressUpdates(apprenticeship);
+        CheckApprenticeshipStateCanAcceptTrackProgressUpdates(apprenticeship, apprenticeshipsReponse.Apprenticeships!.First().ApprenticeshipStatus);
 
         if (string.IsNullOrEmpty(apprenticeship.Option))
             await ValidateCourseOptions(apprenticeship.StandardUId);
@@ -157,14 +157,14 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             throw new ApprenticeshipNotFoundException();
     }
 
-    private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipResponse apprenticeship)
+    private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipResponse apprenticeship, ApprenticeshipStatus apprenticeshipStatus)
     {
         var errors = new List<ErrorDetail>();
 
         if (apprenticeship?.DeliveryModel != DeliveryModel.PortableFlexiJob)
             errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
 
-        if (apprenticeship?.ApprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
+        if (apprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
             errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprenticeship cannot be updated if not started"));
 
         if (errors.Any())
