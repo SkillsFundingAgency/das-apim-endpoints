@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             // 1.a If none, we do nothing, but potential for in future to make it smarter.
             if (apprenticeFeedbackTargets == null || apprenticeFeedbackTargets.Any() == false)
             {
-                var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: { command.ApprenticeId}";
+                var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: {command.ApprenticeId}";
                 _logger.LogWarning(responseMessage);
 
                 // No feedback targets for the signed in apprentice id
@@ -61,7 +61,18 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             {
                 _logger.LogDebug($"Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}");
                 var learnerResponse = await _assessorsApiClient.GetWithResponseCode<GetApprenticeLearnerResponse>(new GetApprenticeLearnerRequest(feedbackTarget.ApprenticeshipId));
-                                
+
+                if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK && learnerResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
+                {
+                    var errorMsg = $"Error retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}";
+                    if (!string.IsNullOrWhiteSpace(learnerResponse.ErrorContent))
+                    {
+                        errorMsg += $", Content: {learnerResponse.ErrorContent}";
+                    }
+                    _logger.LogError(errorMsg);
+                    return new UpdateApprenticeFeedbackTargetResponse();
+                }
+
                 learnerAggregate.Add(new ApprenticeLearnerAggregate
                 {
                     ApprenticeFeedbackTargetId = feedbackTarget.Id,
