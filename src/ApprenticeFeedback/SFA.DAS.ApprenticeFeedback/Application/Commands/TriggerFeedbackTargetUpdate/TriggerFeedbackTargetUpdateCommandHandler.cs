@@ -32,7 +32,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TriggerFeedbackTargetU
         {
             // 1. Attempt to get learner info
             var learnerResponse = await _assessorsApiClient.GetWithResponseCode<GetApprenticeLearnerResponse>(new GetApprenticeLearnerRequest(command.ApprenticeshipId));
-            if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK
+                && learnerResponse.StatusCode != System.Net.HttpStatusCode.NoContent
+                )
             {
                 var errorMsg = $"Error retrieving learner record with apprentice commitments Id: {command.ApprenticeshipId}";
                 if(!string.IsNullOrWhiteSpace(learnerResponse.ErrorContent))
