@@ -85,7 +85,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (errors.Any())
         {
-            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted  are not valid for the matched apprenticeship");
+            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted  are not valid for the matched apprenticeship", errors);
         }
     }
 
