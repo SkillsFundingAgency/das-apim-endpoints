@@ -13,7 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Application\Interfaces\" />
       <Folder Include="Application\Queries\" />
+      <Folder Include="Application\Services\" />
+      <Folder Include="InnerApi\Requests\" />
       <Folder Include="InnerApi\Responses\" />
       <Folder Include="Models\Constants\" />
     </ItemGroup>
