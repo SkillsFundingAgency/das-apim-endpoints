@@ -8,9 +8,11 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using MediatR;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.JobControllerTests
 {
@@ -36,6 +38,25 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.JobControllerTest
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+        }
+
+        [Test]
+        public async Task Then_a_bad_request_response_is_returned_if_an_http_exception_is_thrown()
+        {
+            // Arrange
+            var mockMediator = new Mock<IMediator>();
+            var exception = new HttpRequestContentException("Error", HttpStatusCode.BadRequest, "Error message");
+            mockMediator.Setup(mediator => mediator.Send(It.IsAny<AddJobCommand>(), It.IsAny<CancellationToken>()))
+                .Throws(exception);
+            var jobRequest = new Fixture().Build<JobRequest>().Create();
+            var controller = new JobController(mockMediator.Object);
+
+            // Act
+            var result = await controller.AddJob(jobRequest) as BadRequestObjectResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Value.Should().Be(exception.ErrorContent);
         }
     }
 }
