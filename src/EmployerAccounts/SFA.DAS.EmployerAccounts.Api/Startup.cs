@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
@@ -91,8 +93,13 @@ namespace SFA.DAS.EmployerAccounts.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
+                   name: "default",
+                   pattern: "{controller?}/{action?}/{id?}");
+
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse,
+                });
             });
 
             app.UseSwagger();
