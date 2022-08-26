@@ -39,7 +39,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             ProcessEmailTransactionResponse response = await _mediator.Send(new ProcessEmailTransactionCommand()
             {
                 FeedbackTransactionId = apprenticeFeedbackTransactionId,
-                ApprenticeName = result.LastName,
+                ApprenticeName = result.FirstName,
                 ApprenticeEmailAddress = result.Email,
                 // If the preference is null, it's not set and we default to true until told otherwise for sending feedback emails.
                 IsEmailContactAllowed = result.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true
