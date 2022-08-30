@@ -47,19 +47,20 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (request.ProviderContext.InSandboxMode)
         {
-            return new TrackProgressResponse();
+            return new();
         }
 
-        var data = new KsbProgress
+        await _trackProgressService.SaveProgress(new KsbProgress
         {
-            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(request.ProviderContext.ProviderId, request.Uln, request.PlannedStartDate.ToString("yyyy-MM-dd")),
-            ApprenticeshipContinuationId = apprenticeship.ContinuationOfId,
+            ProviderId = request.ProviderContext.ProviderId,
+            Uln = request.Uln,
+            StartDate = request.PlannedStartDate,
+            CommitmentsApprenticeshipId = apprenticeship.Id,
+            CommitmentsContinuationId = apprenticeship.ContinuationOfId,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
-        };
+        });
 
-        await _trackProgressService.SaveProgress(apprenticeship.Id, data);
-
-        return new TrackProgressResponse();
+        return new();
     }
 
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string? option, List<ProgressDto.Ksb> ksbs)
@@ -130,7 +131,6 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     private void CheckPayloadForDuplicateIds(List<ProgressDto.Ksb> ksbs)
     {
-
         var errors = new List<ErrorDetail>();
 
         var groupIds = ksbs.GroupBy(x => x.Id).Where(g => g.Count() > 1);

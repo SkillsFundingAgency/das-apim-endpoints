@@ -1,10 +1,9 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+﻿using Microsoft.Extensions.Logging;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
-using Microsoft.Extensions.Logging;
-using System.Net;
 using SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
-using SFA.DAS.TrackProgress.Application.DTOs;
+using System.Net;
 
 namespace SFA.DAS.TrackProgress.Application.Services;
 
@@ -19,27 +18,16 @@ public class TrackProgressService
         _logger = logger;
     }
 
-
-    public async Task SaveProgress(long apprenticeshipId, KsbProgress data)
+    public async Task SaveProgress(KsbProgress data)
     {
-        var request = new CreateTrackProgressRequest(apprenticeshipId, data);
+        var request = new CreateTrackProgressRequest(data);
         var result = await _trackProgressApi.PostWithResponseCode<GetKsbsForCourseOptionResponse>(request, false);
 
-        if(result.StatusCode != HttpStatusCode.Created)
+        if (result.StatusCode != HttpStatusCode.Created)
         {
-            _logger.LogInformation("Unexpected response from Track Progress inner API when calling {0}",
+            _logger.LogInformation("Unexpected response from Track Progress inner API when calling {Url}",
                 request.PostUrl);
             throw new TrackProgressApiException(result.StatusCode, result.ErrorContent);
         }
     }
-}
-
-public class TrackProgressApiException : Exception
-{
-    public TrackProgressApiException(HttpStatusCode statusCode, string details) : base(details)
-    {
-        StatusCode = statusCode;
-    }
-
-    public HttpStatusCode StatusCode { get; }
 }
