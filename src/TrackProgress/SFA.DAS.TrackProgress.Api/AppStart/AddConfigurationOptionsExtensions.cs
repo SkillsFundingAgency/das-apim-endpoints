@@ -4,8 +4,16 @@ using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.TrackProgress.Api.AppStart;
 
+/// <summary>
+/// 
+/// </summary>
 public static class AddConfigurationOptionsExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions();

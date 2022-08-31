@@ -17,7 +17,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackProgressOuterApi", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Track Progress API", Version = "v1", Description = "Track an apprentice's progress" });
+    var filePath = Path.Combine(AppContext.BaseDirectory, $"SFA.DAS.TrackProgress.Api.xml");
+    c.IncludeXmlComments(filePath);
 });
 builder.Services.AddMediatR(typeof(TrackProgressCommand));
 builder.Services.Configure<RouteOptions>(options =>
@@ -60,5 +62,6 @@ app.MapControllers();
 
 app.Run();
 
+/// <summary></summary>
 public partial class Program
 { }

@@ -8,6 +8,9 @@ using System.Net;
 
 namespace SFA.DAS.TrackProgress.Api.Controllers;
 
+/// <summary>
+/// Track progress controller summary
+/// </summary>
 [ApiController]
 public class TrackProgressController : ControllerBase
 {
@@ -15,9 +18,17 @@ public class TrackProgressController : ControllerBase
     private readonly ILogger<TrackProgressController> _logger;
     private string _providerId = null!;
 
+    /// <summary>
+    /// TrackProgress controller constructor
+    /// </summary>
+    /// <param name="mediator"></param>
+    /// <param name="logger"></param>
     public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
         => (_mediator, _logger) = (mediator, logger);
 
+    /// <summary>
+    /// The UKPRN of the training provider for this apprenticeship.
+    /// </summary>
     [FromHeader(Name = SubscriptionHeaderConstants.ForProviderId)]
     public string Ukprn
     {
@@ -33,9 +44,19 @@ public class TrackProgressController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// IsSandbox - test call identifier
+    /// </summary>
     [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
     public string? IsSandbox { get; set; }
 
+    /// <summary>
+    /// Upload an apprentice's progress
+    /// </summary>
+    /// <param name="uln">The unique learner number of the apprentice</param>
+    /// <param name="plannedStartDate">The start date of the apprenticeship</param>
+    /// <returns></returns>
+    /// <param name="progress"></param>
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]
     [ProducesResponseType(StatusCodes.Status201Created)]
