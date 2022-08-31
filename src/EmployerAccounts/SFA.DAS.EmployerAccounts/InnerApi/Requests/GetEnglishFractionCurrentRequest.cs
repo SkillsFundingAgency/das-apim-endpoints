@@ -11,9 +11,11 @@ namespace SFA.DAS.EmployerAccounts.InnerApi.Requests
         public GetEnglishFractionCurrentRequest(string hashedAccountId, string[] empRefs)
         {
             _hashedAccountId = hashedAccountId;
-            
-            _baseUri = new UriBuilder();
-            _baseUri.Path = $"api/accounts/{_hashedAccountId}/levy/english-fraction-current";
+
+            _baseUri = new UriBuilder
+            {
+                Path = $"api/accounts/{_hashedAccountId}/levy/english-fraction-current"
+            };
 
             foreach (string empRef in empRefs)
             {
