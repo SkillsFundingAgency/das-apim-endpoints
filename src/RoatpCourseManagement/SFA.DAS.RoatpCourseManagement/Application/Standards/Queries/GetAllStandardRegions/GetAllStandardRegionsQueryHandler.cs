@@ -30,20 +30,15 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStan
         public async Task<GetAllStandardRegionsQueryResult> Handle(GetAllStandardRegionsQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get All Regions request received");
-            var response = await _courseManagementApiClient.GetWithResponseCode<List<RegionModel>>(new GetAllRegionsQuery());
+            var response = await _courseManagementApiClient.GetWithResponseCode<List<StandardRegionModel>>(new GetAllRegionsRequest());
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 var errorMessage = $"Response status code does not indicate success: {(int)response.StatusCode} - Regions data not found";
                 _logger.LogError(errorMessage);
                 throw new HttpRequestContentException(errorMessage, response.StatusCode, response.ErrorContent);
             }
+
             var regions = response.Body;
-           if (regions == null)
-            {
-                var message = "All Regions not found";
-                _logger.LogError(message);
-                throw new ValidationException(message);
-            }
 
             _logger.LogInformation("Get Provider Course Locations request received for ukprn {ukprn} and larsCode {larsCode}", request.Ukprn, request.LarsCode);
             var providerCourseLocationsResponse = await _courseManagementApiClient.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
@@ -63,7 +58,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStan
                 throw new ValidationException(message);
             }
             var subRegionCourseLocations = providerCourseLocations.Where(a => a.LocationType == LocationType.Regional).ToList();
-            if(subRegionCourseLocations.Any())
+            if (subRegionCourseLocations.Any())
             {
                 foreach (var region in regions)
                 {
