@@ -36,6 +36,17 @@ public class TrackProgressController : ControllerBase
     [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
     public string? IsSandbox { get; set; }
 
+
+    /// <summary>
+    /// POST Add taxonomy progress for the matching apprenticeship.
+    /// </summary>
+    /// <remarks>
+    /// Save the progress for a specific apprenticeship. This will record the progress of your KSBs for this apprenticeship. The progress of KSBs can
+    /// be updated using this endpoint and additional KSBs can be submitted.
+    ///
+    /// The overall progress of this apprenticeship will be constructed from these submissions. 
+    /// </remarks>
+    /// <returns></returns>
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]
     [ProducesResponseType(StatusCodes.Status201Created)]
