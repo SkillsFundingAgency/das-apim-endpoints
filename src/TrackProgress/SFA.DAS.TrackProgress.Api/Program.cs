@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,8 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Track Progress API", Version = "v1", Description = "Track an apprentice's progress" });
-    //var filePath = Path.Combine(AppContext.BaseDirectory, $"SFA.DAS.TrackProgress.Api.xml");
-    //c.IncludeXmlComments(filePath);
+    var filePath = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+    c.IncludeXmlComments(filePath);
 });
 builder.Services.AddMediatR(typeof(TrackProgressCommand));
 builder.Services.Configure<RouteOptions>(options =>

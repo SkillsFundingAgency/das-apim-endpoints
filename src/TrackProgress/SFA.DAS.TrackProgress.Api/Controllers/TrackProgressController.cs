@@ -9,7 +9,7 @@ using System.Net;
 namespace SFA.DAS.TrackProgress.Api.Controllers;
 
 /// <summary>
-/// Track progress controller summary
+/// Track progress controller
 /// </summary>
 [ApiController]
 public class TrackProgressController : ControllerBase
@@ -18,9 +18,7 @@ public class TrackProgressController : ControllerBase
     private readonly ILogger<TrackProgressController> _logger;
     private string _providerId = null!;
 
-    /// <summary>
-    /// TrackProgress controller constructor
-    /// </summary>
+    /// <summary></summary>
     /// <param name="mediator"></param>
     /// <param name="logger"></param>
     public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
