@@ -36,7 +36,6 @@ public class TrackProgressController : ControllerBase
     [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
     public string? IsSandbox { get; set; }
 
-
     /// <summary>
     /// POST Add taxonomy progress for the matching apprenticeship.
     /// </summary>
@@ -46,6 +45,14 @@ public class TrackProgressController : ControllerBase
     ///
     /// The overall progress of this apprenticeship will be constructed from these submissions. 
     /// </remarks>
+    /// <param name="uln">The apprentice's Unique Learner Number.</param>
+    /// <param name="plannedStartDate">The planned start date for this apprenticeship.</param>
+    /// <param name="progress">The taxonomy content.Accepts an array of KSB progress percentiles.
+    /// 
+    /// The "id" field must be the GUID identifier of the KSB for the apprenticeship's course.
+    /// 
+    /// The "value" field must be the percentile range 1-100, denoting what percentage of the KSB has been completed.
+    /// </param>
     /// <returns></returns>
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]

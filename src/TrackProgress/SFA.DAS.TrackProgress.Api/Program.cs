@@ -18,8 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Track Progress API", Version = "v1", Description = "Save the taxonomy progress for a specific apprenticeship using your existing systems." });
-    //var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Namespace}.xml");
-    //c.IncludeXmlComments(filePath);
+    var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(TrackProgressConfiguration).Namespace}.xml");
+    c.IncludeXmlComments(filePath);
 });
 builder.Services.AddMediatR(typeof(TrackProgressCommand));
 builder.Services.Configure<RouteOptions>(options =>
@@ -49,7 +49,7 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrackProgressOuterApi");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Track Progress Api");
     c.RoutePrefix = string.Empty;
 });
 app.UseHealthChecks();
