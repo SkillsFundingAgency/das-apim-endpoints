@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrackProgressOuterApi");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Track Progress Api");
     c.RoutePrefix = string.Empty;
 });
 app.UseHealthChecks();
