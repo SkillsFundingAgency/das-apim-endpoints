@@ -272,7 +272,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Format of the Progress body is invalid");
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -298,7 +298,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Format of the Progress body is invalid");
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -350,7 +350,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Format of the Progress body is invalid");
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -437,7 +437,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("The KSB identifiers submitted  are not valid for the matched apprenticeship");
+            problem.Title.Should().StartWith("The KSB identifiers submitted are not valid for the matched apprenticeship");
         }
     }
 
@@ -485,7 +485,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem?.Title.Should().StartWith("You need to select an option for the apprenticeship standard");
+            problem?.Title.Should().StartWith("This apprenticeship requires an option to be set to record progress against it");
         }
     }
 
