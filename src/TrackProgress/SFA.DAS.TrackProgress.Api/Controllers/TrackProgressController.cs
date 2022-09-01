@@ -38,7 +38,7 @@ public class TrackProgressController : ControllerBase
 
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TrackProgressResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> AddApprenticeshipProgress(
@@ -47,9 +47,9 @@ public class TrackProgressController : ControllerBase
     {
         try
         {
-            await _mediator.Send(new TrackProgressCommand(
+            var response = await _mediator.Send(new TrackProgressCommand(
                     ProviderContext.Create(Ukprn, IsSandbox), uln, plannedStartDate, progress));
-            return new StatusCodeResult(StatusCodes.Status201Created);
+            return Created("", response);
         }
         catch (ApprenticeshipNotFoundException)
         {

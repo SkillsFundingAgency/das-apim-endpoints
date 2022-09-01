@@ -48,10 +48,10 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (request.ProviderContext.InSandboxMode)
         {
-            return new();
+            return new(999);
         }
 
-        await _trackProgressService.SaveProgress(new KsbProgress
+        var response = await _trackProgressService.SaveProgress(new KsbProgress
         {
             ProviderId = request.ProviderContext.ProviderId,
             Uln = request.Uln,
@@ -61,7 +61,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
         });
 
-        return new();
+        return response;
     }
 
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string? option, List<ProgressDto.Ksb> ksbs)
