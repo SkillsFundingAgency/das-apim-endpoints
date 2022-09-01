@@ -90,4 +90,17 @@ public class TrackProgressController : ControllerBase
 
         return details;
     }
+
+    // build test - remove
+    private ProblemDetails CreateProblemTest(string title, List<ErrorDetail> errors)
+    {
+        var details = new ProblemDetails
+        {
+            Title = title,
+            Status = StatusCodes.Status400BadRequest,
+        };
+        details.Extensions.Add("errors", errors);
+
+        return details;
+    }
 }
