@@ -390,3 +390,37 @@ Data: {
 * Start the api project ```SFA.DAS.EmployerDemand.Api```
 
 Starting the API will then show the swagger definition with the available operations. Alternatively you can connect [das-employerdemand-web](https://github.com/SkillsFundingAgency/das-employerdemand-web) which is the consuming service of this outer API.
+
+
+### Course Management
+
+The Course Management outer api relies on the following inner apis, which must all be set up according to their own readme setups:
+
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-roatp-service](https://github.com/SkillsFundingAgency/das-roatp-service)
+* [das-provide-feedback-employer](https://github.com/SkillsFundingAgency/das-provide-feedback-employer)
+
+> **Note:**  
+> This repo/course management outer does not use das-provide-feedback-employer directly, but it is required to get das-roatp-service running successfully
+
+
+You are able to run the API by doing the following:
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.Roatp.CourseManagement.OuterApi_1.0
+Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.RoATP.CourseManagement.OuterApi.json
+```
+
+> **Note:**  
+> To get a functioning key for CourseDirectoryConfiguration.Key, you will need to create an account here: https://sit-portal.api.nationalcareersservice.org.uk/ and request a key for 'Course Directory'.  Be aware the support for this can be slow.
+
+* Start the api project ```SFA.DAS.RoatpCourseManagement.Api``` within apim
+
+Download the repo and load into Visual Studio the project '..\dev\das-apim-endpoints\src\RoatpCourseManagement\SFA.DAS.Roatp.CourseManagement.sln' and run the project SFA.DAS.RoatpCourseManagement.Api
+
+You will then see the swagger definition with the available operations.
+
