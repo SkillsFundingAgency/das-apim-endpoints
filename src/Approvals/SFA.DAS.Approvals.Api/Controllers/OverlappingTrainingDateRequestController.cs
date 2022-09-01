@@ -59,5 +59,17 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("{apprenticeshipId}/get")]
+        public async Task<IActionResult> GetOverlapRequest(long apprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetOverlapRequestQuery
+            {
+                DraftApprneticeshipId = apprenticeshipId
+            });
+
+            return Ok(result);
+        }
     }
 }
