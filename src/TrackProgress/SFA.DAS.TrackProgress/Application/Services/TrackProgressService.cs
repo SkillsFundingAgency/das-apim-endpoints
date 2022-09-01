@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
 using System.Net;
+using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
 
 namespace SFA.DAS.TrackProgress.Application.Services;
 
@@ -18,10 +18,10 @@ public class TrackProgressService
         _logger = logger;
     }
 
-    public async Task SaveProgress(KsbProgress data)
+    public async Task<TrackProgressResponse> SaveProgress(KsbProgress data)
     {
         var request = new CreateTrackProgressRequest(data);
-        var result = await _trackProgressApi.PostWithResponseCode<GetKsbsForCourseOptionResponse>(request, false);
+        var result = await _trackProgressApi.PostWithResponseCode<TrackProgressResponse>(request);
 
         if (result.StatusCode != HttpStatusCode.Created)
         {
@@ -29,5 +29,7 @@ public class TrackProgressService
                 request.PostUrl);
             throw new TrackProgressApiException(result.StatusCode, result.ErrorContent);
         }
+
+        return result.Body;
     }
 }

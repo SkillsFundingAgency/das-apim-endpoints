@@ -13,6 +13,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
     private readonly CoursesService _coursesService;
     private readonly TrackProgressService _trackProgressService;
     private readonly ILogger<TrackProgressCommandHandler> _logger;
+    private const string ErrorTitleForProgressBody = "Failed to record progress due to one or more validation errors";
 
     public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, TrackProgressService trackProgressService, ILogger<TrackProgressCommandHandler> logger)
     {
@@ -47,10 +48,10 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (request.ProviderContext.InSandboxMode)
         {
-            return new();
+            return new(999);
         }
 
-        await _trackProgressService.SaveProgress(new KsbProgress
+        var response = await _trackProgressService.SaveProgress(new KsbProgress
         {
             ProviderId = request.ProviderContext.ProviderId,
             Uln = request.Uln,
@@ -60,7 +61,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
         });
 
-        return new();
+        return response;
     }
 
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string? option, List<ProgressDto.Ksb> ksbs)
@@ -86,7 +87,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         if (errors.Any())
         {
-            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted  are not valid for the matched apprenticeship", errors);
+            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted are not valid for the matched apprenticeship", errors);
         }
     }
 
@@ -95,7 +96,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         var course = await _coursesService.GetOptionsForCourse(standardUId);
 
         if (course.Options.Any())
-            throw new InvalidTaxonomyRequestException("You need to select an option for the apprenticeship standard");
+            throw new InvalidTaxonomyRequestException("This apprenticeship requires an option to be set to record progress against it");
     }
 
     private void CheckPayloadFormatIsCorrect(ProgressDto? payload)
@@ -113,7 +114,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
 
         var KsbStates = progress.Ksbs.Where(x => x.Id != null).Select(x => new
-        { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 1 && x.Value <= 100 });
+        { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 0 && x.Value <= 100 });
 
         foreach (var ksbState in KsbStates)
         {
@@ -122,11 +123,11 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             if (!ksbState.IsValidId)
                 errors.Add(new ErrorDetail(ksbState.Id!, $"{ksbState.Id} is not a valid guid"));
             if (!ksbState.IsValidValue)
-                errors.Add(new ErrorDetail(ksbState.Id!, $"That the progress “{ksbState.Value}” presented against this KSB is between 1 and 100 (inclusive)"));
+                errors.Add(new ErrorDetail(ksbState.Id!, $"The progress value ({ksbState.Value}) associated with this KSB must be in the range of 0 to 100 (inclusive)"));
         }
 
         if (errors.Any())
-            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid", errors);
+            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 
     private void CheckPayloadForDuplicateIds(List<ProgressDto.Ksb> ksbs)
@@ -142,7 +143,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         }
 
         if (errors.Any())
-            throw new InvalidTaxonomyRequestException("Format of the Progress body is invalid", errors);
+            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 
     private void CheckTheApprenticeshipHasBeenFound(GetApprenticeshipsResponse apprenticeships)
@@ -168,7 +169,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprenticeship cannot be updated if not started"));
 
         if (errors.Any())
-            throw new InvalidTaxonomyRequestException("This apprenticeship cannot accept the taxonomy as it's in an incorrect state", errors);
+            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 }
 
