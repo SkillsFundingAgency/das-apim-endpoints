@@ -6,11 +6,8 @@ using SFA.DAS.TrackProgress.Application.Services;
 
 namespace SFA.DAS.TrackProgress.Api.AppStart;
 
-/// <summary></summary>
 public static class AddServiceRegistrationExtension
 {
-    /// <summary></summary>
-    /// <param name="services"></param>
     public static void AddServiceRegistration(this IServiceCollection services)
     {
         services.AddHttpClient();
