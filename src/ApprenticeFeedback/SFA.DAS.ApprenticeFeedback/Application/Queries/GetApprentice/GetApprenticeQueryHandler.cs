@@ -32,7 +32,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
             {
                 throw new ApprenticeNotFoundException($"Apprentice with id:{request.ApprenticeId} not found");
             }
-            else if(apprenticeResult.Result.StatusCode != System.Net.HttpStatusCode.OK || apprenticeResult.Result == null)
+            else if(apprenticeResult.Result.StatusCode != System.Net.HttpStatusCode.OK || apprenticeResult.Result.Body == null)
             {
                 return null;
             }
