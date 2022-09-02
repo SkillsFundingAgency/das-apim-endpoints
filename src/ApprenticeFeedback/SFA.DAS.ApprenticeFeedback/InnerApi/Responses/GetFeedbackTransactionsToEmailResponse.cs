@@ -8,5 +8,6 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Responses
     {
         public long ApprenticeFeedbackTransactionId { get; set; }
         public Guid ApprenticeId  { get; set; }
+        public Guid ApprenticeFeedbackTargetId { get; set; }
     }
 }

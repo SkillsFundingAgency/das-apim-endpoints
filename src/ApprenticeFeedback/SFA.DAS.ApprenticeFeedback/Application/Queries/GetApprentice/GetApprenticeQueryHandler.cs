@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
+using SFA.DAS.ApprenticeFeedback.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -21,26 +22,34 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 
         public async Task<GetApprenticeResult> Handle(GetApprenticeQuery request, CancellationToken cancellationToken)
         {
-            var apprentice = _apiClient.Get<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
+            var apprenticeResult = _apiClient.GetWithResponseCode<GetApprenticeResponse>(new GetApprenticeRequest(request.ApprenticeId));
+            
+            var apprenticePreferencesResult = _apiClient.GetWithResponseCode<GetApprenticePreferencesResponse>(new GetApprenticePreferencesRequest(request.ApprenticeId));
 
-            var apprenticePreferences = _apiClient.Get<GetApprenticePreferencesResponse>(
-                new GetApprenticePreferencesRequest(request.ApprenticeId));
+            await Task.WhenAll(apprenticeResult, apprenticePreferencesResult);
 
-            await Task.WhenAll(apprentice, apprenticePreferences);
-
-            if (apprentice.Result == null)
+            if (apprenticeResult.Result.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new ApprenticeNotFoundException($"Apprentice with id:{request.ApprenticeId} not found");
+            }
+            else if(apprenticeResult.Result.StatusCode != System.Net.HttpStatusCode.OK || apprenticeResult.Result == null)
+            {
                 return null;
+            }
 
+            var apprentice = apprenticeResult.Result.Body;
+            var apprenticePreferences = apprenticePreferencesResult.Result.Body;
+            
             return new GetApprenticeResult
             {
-                ApprenticeId = apprentice.Result.ApprenticeId,
-                FirstName = apprentice.Result.FirstName,
-                LastName = apprentice.Result.LastName,
-                DateOfBirth = apprentice.Result.DateOfBirth,
-                Email = apprentice.Result.Email,
-                TermsOfUseAccepted = apprentice.Result.TermsOfUseAccepted,
-                ReacceptTermsOfUseRequired = apprentice.Result.ReacceptTermsOfUseRequired,
-                ApprenticePreferences = apprenticePreferences.Result?.ApprenticePreferences ?? new System.Collections.Generic.List<ApprenticePreferenceDto>()
+                ApprenticeId = apprentice.ApprenticeId,
+                FirstName = apprentice.FirstName,
+                LastName = apprentice.LastName,
+                DateOfBirth = apprentice.DateOfBirth,
+                Email = apprentice.Email,
+                TermsOfUseAccepted = apprentice.TermsOfUseAccepted,
+                ReacceptTermsOfUseRequired = apprentice.ReacceptTermsOfUseRequired,
+                ApprenticePreferences = apprenticePreferences?.ApprenticePreferences ?? new System.Collections.Generic.List<ApprenticePreferenceDto>()
             };
         }
     }
