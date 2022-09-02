@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
+    [ApiController]
     public class AddressLookupController : ControllerBase
     {
         private readonly IMediator _mediator;
