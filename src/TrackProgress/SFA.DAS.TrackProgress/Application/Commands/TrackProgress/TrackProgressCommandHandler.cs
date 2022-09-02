@@ -166,7 +166,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
 
         if (apprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
-            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped, Stopped - no delivery or Complete"));
+            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped or Complete"));
 
         if (errors.Any())
             throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
