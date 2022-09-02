@@ -81,6 +81,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 AccountLegalEntityId = cohort.AccountLegalEntityId,
                 IsContinuation = apprenticeship.IsContinuation,
                 HasMultipleDeliveryModelOptions = deliveryModels.Count > 1,
+                HasUnavailableDeliveryModel = !deliveryModels.Contains(apprenticeship.DeliveryModel.ToString()),
                 RecognisePriorLearning = apprenticeship.RecognisePriorLearning,
                 DurationReducedBy = apprenticeship.DurationReducedBy,
                 PriceReducedBy = apprenticeship.PriceReducedBy,
