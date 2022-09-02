@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using InnerApiResponseTeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.TeamMember;
+using InnerApiResponseTeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMembersWhichReceiveNotifications
 {
