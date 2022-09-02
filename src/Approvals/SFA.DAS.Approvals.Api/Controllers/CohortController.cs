@@ -4,11 +4,13 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.Api.Models.Cohorts;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
     public class CohortController : ControllerBase
     {
         private readonly ILogger<DraftApprenticeshipController> _logger;
@@ -22,7 +24,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{cohortId}")]
+        [Route("[controller]/{cohortId}")]
         public async Task<IActionResult> Get(long cohortId)
         {
             try
@@ -32,11 +34,59 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 {
                     return NotFound();
                 }
+
                 return Ok(result);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error getting cohort with {cohortId}", e);
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/{cohortId}")]
+        [Route("provider/{providerId}/unapproved/{cohortId}")]
+        public async Task<IActionResult> GetCohortDetails(long cohortId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetCohortDetailsResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in Get Cohort Details - cohort id {cohortId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/apprenticeship")]
+        [Route("provider/{providerId}/unapproved/add/apprenticeship")]
+        public async Task<IActionResult> GetAddDraftApprenticeshipDetails([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId, [FromQuery] string courseCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipDetailsQuery
+                    { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId, CourseCode = courseCode });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetAddDraftApprenticeshipDetailsResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails ale {accountLegalEntityId}");
                 return BadRequest();
             }
         }
