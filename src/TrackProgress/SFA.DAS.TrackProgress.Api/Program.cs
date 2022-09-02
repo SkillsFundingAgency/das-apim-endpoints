@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 var config = configuration.Get<TrackProgressConfiguration>();
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
