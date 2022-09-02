@@ -7,6 +7,6 @@
         public string RegionName { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
-        public bool IsSelected { get; set; }
+
     }
 }
