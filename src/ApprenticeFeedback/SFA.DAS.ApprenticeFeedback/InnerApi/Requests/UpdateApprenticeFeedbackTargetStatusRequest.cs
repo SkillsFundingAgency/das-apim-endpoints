@@ -19,5 +19,6 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
     {
         public Guid ApprenticeFeedbackTargetId { get; internal set; }
         public int Status { get; set; }
+        public int FeedbackEligibilityStatus { get; set; }
     }
 }

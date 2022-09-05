@@ -3,6 +3,14 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class Enums
     {
+        public enum FeedbackTargetStatus
+        {
+            Unknown = 0,
+            NotYetActive = 1,
+            Active = 2,
+            Complete = 3,
+        }
+
         public enum FeedbackEligibility
         {
             Unknown = 0,

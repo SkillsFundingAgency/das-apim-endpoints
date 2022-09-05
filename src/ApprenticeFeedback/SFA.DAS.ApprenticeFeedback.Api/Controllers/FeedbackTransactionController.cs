@@ -43,7 +43,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             catch (ApprenticeNotFoundException)
             {
                 // close off transaction status of 3 for complete
-                await _mediator.Send(new PatchApprenticeFeedbackTargetCommand { ApprenticeFeedbackTargetId = feedbackTransaction.ApprenticeFeedbackTargetId, Status = 3 });
+                await _mediator.Send(new PatchApprenticeFeedbackTargetCommand { ApprenticeFeedbackTargetId = feedbackTransaction.ApprenticeFeedbackTargetId, Status = (int)FeedbackTargetStatus.Complete, FeedbackEligibilityStatus = (int)FeedbackEligibility.Deny_Complete });
 
                 // Returning success as no email sent and it didn't fail we've just closed it off.
                 return Ok(new ProcessEmailTransactionResult()

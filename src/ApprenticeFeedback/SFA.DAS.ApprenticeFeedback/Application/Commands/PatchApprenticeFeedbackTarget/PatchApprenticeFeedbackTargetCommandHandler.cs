@@ -32,7 +32,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbac
             var patchRequest = new UpdateApprenticeFeedbackTargetStatusRequest(new UpdateApprenticeFeedbackTargetStatusRequestData()
             {
                 ApprenticeFeedbackTargetId = command.ApprenticeFeedbackTargetId,
-                Status = command.Status
+                Status = command.Status,
+                FeedbackEligibilityStatus = command.FeedbackEligibilityStatus
             });
             var response = await _apprenticeFeedbackApiClient.PatchWithResponseCode(patchRequest);
 

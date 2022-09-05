@@ -7,6 +7,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbac
     {
         public Guid ApprenticeFeedbackTargetId { get; set; }
         public int Status { get; set; }
+        public int FeedbackEligibilityStatus { get; set; }
 
     }
 }
