@@ -15,7 +15,7 @@
         <PackageVersion Include="Faker.Net" Version="2.0.154" />
         <PackageVersion Include="FluentAssertions" Version="6.7.0" />
         <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
-        <PackageVersion Include="FluentValidation" Version="9.5.0" />
+        <PackageVersion Include="FluentValidation" Version="10.0.4" />
         <PackageVersion Include="MediatR" Version="9.0.0" />
         <PackageVersion Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="1.2.0" />
         <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
@@ -67,11 +67,11 @@
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
         <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
-        <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.16" />
-        <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.11" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
-        <PackageVersion Include="Microsoft.Extensions.Http" Version="3.1.5" />
-        <PackageVersion Include="Microsoft.Extensions.Options" Version="3.1.5" />
+        <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.20" />
+        <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.20" />
+        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.20" />
+        <PackageVersion Include="Microsoft.Extensions.Http" Version="3.1.20" />
+        <PackageVersion Include="Microsoft.Extensions.Options" Version="3.1.20" />
         <PackageVersion Include="SFA.DAS.NServiceBus" Version="16.0.21" />
     </ItemGroup>
 </Project>
