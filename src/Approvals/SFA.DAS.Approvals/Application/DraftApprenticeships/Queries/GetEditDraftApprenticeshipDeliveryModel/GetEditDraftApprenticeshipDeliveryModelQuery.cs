@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -10,22 +11,36 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship
+namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel
 {
-    public class GetEditDraftApprenticeshipQueryHandler : IRequestHandler<GetEditDraftApprenticeshipQuery, GetEditDraftApprenticeshipQueryResult>
+    public class GetEditDraftApprenticeshipDeliveryModelQuery : IRequest<GetEditDraftApprenticeshipDeliveryModelQueryResult>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
+        public long CohortId { get; set; }
+        public long DraftApprenticeshipId { get; set; }
+    }
+
+    public class GetEditDraftApprenticeshipDeliveryModelQueryResult
+    {
+        public string DeliveryModel { get; set; }
+        public List<string> DeliveryModels { get; set; }
+        public bool HasUnavailableDeliveryModel { get; set; }
+        public string EmployerName { get; set; }
+    }
+
+    public class GetEditDraftApprenticeshipDeliveryModelQueryHandler : IRequestHandler<GetEditDraftApprenticeshipDeliveryModelQuery, GetEditDraftApprenticeshipDeliveryModelQueryResult>
+    {
         private readonly IDeliveryModelService _deliveryModelService;
         private readonly ServiceParameters _serviceParameters;
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 
-        public GetEditDraftApprenticeshipQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters)
+        public GetEditDraftApprenticeshipDeliveryModelQueryHandler(IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
         {
-            _apiClient = apiClient;
             _deliveryModelService = deliveryModelService;
             _serviceParameters = serviceParameters;
+            _apiClient = apiClient;
         }
 
-        public async Task<GetEditDraftApprenticeshipQueryResult> Handle(GetEditDraftApprenticeshipQuery request, CancellationToken cancellationToken)
+        public async Task<GetEditDraftApprenticeshipDeliveryModelQueryResult> Handle(GetEditDraftApprenticeshipDeliveryModelQuery request, CancellationToken cancellationToken)
         {
             var innerApiRequest = new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
@@ -54,38 +69,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId,
                 apprenticeship.CourseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
-            return new GetEditDraftApprenticeshipQueryResult
+            return new GetEditDraftApprenticeshipDeliveryModelQueryResult
             {
-                FirstName = apprenticeship.FirstName,
-                LastName = apprenticeship.LastName,
-                DateOfBirth = apprenticeship.DateOfBirth,
-                ReservationId = apprenticeship.ReservationId,
-                Email = apprenticeship.Email,
-                Uln = apprenticeship.Uln,
-                DeliveryModel = apprenticeship.DeliveryModel,
-                CourseCode = apprenticeship.CourseCode,
-                StandardUId = apprenticeship.StandardUId,
-                CourseName = apprenticeship.TrainingCourseName,
-                HasStandardOptions = apprenticeship.HasStandardOptions,
-                TrainingCourseOption = apprenticeship.TrainingCourseOption,
-                StartDate = apprenticeship.StartDate,
-                EndDate = apprenticeship.EndDate,
-                Cost = apprenticeship.Cost,
-                EmploymentPrice = apprenticeship.EmploymentPrice,
-                EmploymentEndDate = apprenticeship.EmploymentEndDate,
-                EmployerReference = apprenticeship.EmployerReference,
-                ProviderReference = apprenticeship.ProviderReference,
-                ProviderId = cohort.ProviderId,
-                ProviderName = cohort.ProviderName,
-                LegalEntityName = cohort.LegalEntityName,
-                AccountLegalEntityId = cohort.AccountLegalEntityId,
-                IsContinuation = apprenticeship.IsContinuation,
-                HasMultipleDeliveryModelOptions = deliveryModels.Count > 1,
+                DeliveryModel = apprenticeship.DeliveryModel.ToString(),
+                DeliveryModels = deliveryModels,
                 HasUnavailableDeliveryModel = !deliveryModels.Contains(apprenticeship.DeliveryModel.ToString()),
-                RecognisePriorLearning = apprenticeship.RecognisePriorLearning,
-                DurationReducedBy = apprenticeship.DurationReducedBy,
-                PriceReducedBy = apprenticeship.PriceReducedBy,
-                RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered
+                EmployerName = cohort.LegalEntityName
             };
         }
 
