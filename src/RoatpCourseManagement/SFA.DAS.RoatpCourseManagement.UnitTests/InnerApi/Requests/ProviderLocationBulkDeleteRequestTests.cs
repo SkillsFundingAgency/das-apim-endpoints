@@ -15,8 +15,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
             var request = new ProviderLocationBulkDeleteRequest(data);
 
             request.Ukprn.Should().Be(data.Ukprn);
-            request.LarsCode.Should().Be(data.LarsCode);
-            request.DeleteUrl.Should().Be($"/providers/{data.Ukprn}/locations/{data.LarsCode}/cleanup?userId={HttpUtility.UrlEncode(data.UserId)}");
+            request.DeleteUrl.Should().Be($"/providers/{data.Ukprn}/locations/cleanup?userId={HttpUtility.UrlEncode(data.UserId)}");
         }
     }
 }
