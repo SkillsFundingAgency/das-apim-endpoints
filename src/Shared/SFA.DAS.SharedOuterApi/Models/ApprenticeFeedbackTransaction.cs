@@ -9,5 +9,6 @@ namespace SFA.DAS.SharedOuterApi.Models
     {
         public long ApprenticeFeedbackTransactionId { get; set; }
         public Guid ApprenticeId { get; set; }
+        public Guid ApprenticeFeedbackTargetId { get; set; }
     }
 }
