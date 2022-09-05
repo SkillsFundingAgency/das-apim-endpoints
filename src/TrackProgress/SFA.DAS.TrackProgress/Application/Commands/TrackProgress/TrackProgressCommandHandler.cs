@@ -14,7 +14,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
     private readonly TrackProgressService _trackProgressService;
     private readonly ILogger<TrackProgressCommandHandler> _logger;
     private const string ErrorTitleForProgressBody = "Failed to record progress due to one or more validation errors";
-    List<ErrorDetail> _errors = new List<ErrorDetail>();
+    private readonly List<ErrorDetail> _errors = new();
 
     public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, TrackProgressService trackProgressService, ILogger<TrackProgressCommandHandler> logger)
     {
