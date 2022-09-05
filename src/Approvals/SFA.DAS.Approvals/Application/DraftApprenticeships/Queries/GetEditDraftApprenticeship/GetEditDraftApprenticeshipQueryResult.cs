@@ -38,6 +38,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
 
         public bool IsContinuation { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool HasUnavailableDeliveryModel { get; set; }
         public bool? RecognisePriorLearning { get; set; }
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
