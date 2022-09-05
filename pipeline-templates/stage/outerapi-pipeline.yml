@@ -207,5 +207,5 @@ stages:
       ApiPath: $(${{ parameters.OuterApiName }}OuterApiPath)
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
-      ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}cdOuterApiIdentifierUri)
+      ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
