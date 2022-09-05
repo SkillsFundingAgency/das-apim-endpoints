@@ -14,6 +14,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
     private readonly TrackProgressService _trackProgressService;
     private readonly ILogger<TrackProgressCommandHandler> _logger;
     private const string ErrorTitleForProgressBody = "Failed to record progress due to one or more validation errors";
+    List<ErrorDetail> _errors = new List<ErrorDetail>();
 
     public TrackProgressCommandHandler(CommitmentsV2Service commitmentsV2Service, CoursesService coursesService, TrackProgressService trackProgressService, ILogger<TrackProgressCommandHandler> logger)
     {
@@ -35,16 +36,12 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeshipsReponse.Apprenticeships?.Count > 1)
             throw new InvalidTaxonomyRequestException("Multiple apprenticeship records exist");
 
-        CheckPayloadFormatIsCorrect(request.Progress);
-        CheckPayloadForDuplicateIds(request.Progress!.Progress!.Ksbs!);
-
         var apprenticeship = await _commitmentsService.GetApprenticeship(apprenticeshipsReponse.Apprenticeships!.First().Id);
-        CheckApprenticeshipStateCanAcceptTrackProgressUpdates(apprenticeship, apprenticeshipsReponse.Apprenticeships!.First().ApprenticeshipStatus);
 
         if (string.IsNullOrEmpty(apprenticeship.Option))
             await ValidateCourseOptions(apprenticeship.StandardUId);
 
-        await ValidateKsbIdsAgainstCourseKsbs(apprenticeship.StandardUId, apprenticeship.Option, request.Progress!.Progress!.Ksbs!);
+        await CheckForPayloadErrors(apprenticeship, request, apprenticeshipsReponse.Apprenticeships!.First().ApprenticeshipStatus);
 
         if (request.ProviderContext.InSandboxMode)
         {
@@ -64,30 +61,38 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         return response;
     }
 
+    private async Task CheckForPayloadErrors(GetApprenticeshipResponse apprenticeship, TrackProgressCommand request, ApprenticeshipStatus apprenticeshipStatus)
+    {
+        RecordPayloadFormatErrors(request.Progress);
+        RecordDuplicateIdErrors(request.Progress!.Progress!.Ksbs!);
+
+        RecordApprenticeshipStateCanAcceptTrackProgressUpdateErrors(apprenticeship, apprenticeshipStatus);
+
+        await ValidateKsbIdsAgainstCourseKsbs(apprenticeship.StandardUId, apprenticeship.Option, request.Progress!.Progress!.Ksbs!);
+
+        if (_errors.Any())
+            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, _errors);
+    }
+
     private async Task ValidateKsbIdsAgainstCourseKsbs(string standardUId, string? option, List<ProgressDto.Ksb> ksbs)
     {
         option = string.IsNullOrWhiteSpace(option) ? "core" : option;
         var courseKsbsResponse = await _coursesService.GetKsbsForCourseOption(standardUId, option);
 
         var ksbMatches = from ksb in ksbs
-                         join courseKsb in courseKsbsResponse.Ksbs on ksb.Id!.ToLower() equals courseKsb.Id.ToString().ToLower()
-                         into joinedKsbs
-                         from match in joinedKsbs.DefaultIfEmpty()
-                         select new
-                         {
-                             ksb.Id,
-                             Matched = match != null
-                         };
+             where ksb.Id != null                    
+             join courseKsb in courseKsbsResponse.Ksbs on ksb.Id!.ToLower() equals courseKsb.Id.ToString().ToLower()
+             into joinedKsbs
+             from match in joinedKsbs.DefaultIfEmpty()
+             select new
+             {
+                 ksb.Id,
+                 Matched = match != null
+             };
 
-        var errors = new List<ErrorDetail>();
         foreach (var missingKsb in ksbMatches.Where(x => !x.Matched))
         {
-            errors.Add(new(missingKsb.Id, "This KSB does not match the course option"));
-        }
-
-        if (errors.Any())
-        {
-            throw new InvalidTaxonomyRequestException("The KSB identifiers submitted are not valid for the matched apprenticeship", errors);
+            _errors.Add(new(missingKsb.Id, "This KSB does not match the course option"));
         }
     }
 
@@ -99,7 +104,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             throw new InvalidTaxonomyRequestException("This apprenticeship requires an option to be set to record progress against it");
     }
 
-    private void CheckPayloadFormatIsCorrect(ProgressDto? payload)
+    private void RecordPayloadFormatErrors(ProgressDto? payload)
     {
         if (payload == null || payload.Progress == null)
             throw new InvalidTaxonomyRequestException("Progress must be present");
@@ -109,9 +114,8 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
         var progress = payload.Progress;
 
-        var errors = new List<ErrorDetail>();
         if (progress.Ksbs.Any(x => x.Id == null))
-            errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
+            _errors.Add(new ErrorDetail("KSBs", "KSB Ids cannot be null"));
 
         var KsbStates = progress.Ksbs.Where(x => x.Id != null).Select(x => new
         { x.Id, IsValidId = Guid.TryParse(x.Id, out _), x.Value, IsValidValue = x.Value >= 0 && x.Value <= 100 });
@@ -121,29 +125,21 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             if (ksbState.IsValidId && ksbState.IsValidValue)
                 continue;
             if (!ksbState.IsValidId)
-                errors.Add(new ErrorDetail(ksbState.Id!, $"{ksbState.Id} is not a valid guid"));
+                _errors.Add(new ErrorDetail(ksbState.Id!, $"{ksbState.Id} is not a valid guid"));
             if (!ksbState.IsValidValue)
-                errors.Add(new ErrorDetail(ksbState.Id!, $"The progress value ({ksbState.Value}) associated with this KSB must be in the range of 0 to 100 (inclusive)"));
+                _errors.Add(new ErrorDetail(ksbState.Id!, $"The progress value ({ksbState.Value}) associated with this KSB must be in the range of 0 to 100 (inclusive)"));
         }
-
-        if (errors.Any())
-            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 
-    private void CheckPayloadForDuplicateIds(List<ProgressDto.Ksb> ksbs)
+    private void RecordDuplicateIdErrors(List<ProgressDto.Ksb> ksbs)
     {
-        var errors = new List<ErrorDetail>();
-
-        var groupIds = ksbs.GroupBy(x => x.Id).Where(g => g.Count() > 1);
+        var groupIds = ksbs.Where(x=>x.Id != null).GroupBy(x => x.Id).Where(g => g.Count() > 1);
 
         foreach (var group in groupIds)
         {
-            errors.Add(new ErrorDetail(group.Key!,
+            _errors.Add(new ErrorDetail(group.Key!,
                 $"Ensure that there are no duplicate GUIDs in the progress submission"));
         }
-
-        if (errors.Any())
-            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 
     private void CheckTheApprenticeshipHasBeenFound(GetApprenticeshipsResponse apprenticeships)
@@ -158,18 +154,13 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             throw new ApprenticeshipNotFoundException();
     }
 
-    private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipResponse apprenticeship, ApprenticeshipStatus apprenticeshipStatus)
+    private void RecordApprenticeshipStateCanAcceptTrackProgressUpdateErrors(GetApprenticeshipResponse apprenticeship, ApprenticeshipStatus apprenticeshipStatus)
     {
-        var errors = new List<ErrorDetail>();
-
         if (apprenticeship?.DeliveryModel != DeliveryModel.PortableFlexiJob)
-            errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
+            _errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
 
         if (apprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
-            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete"));
-
-        if (errors.Any())
-            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
+            _errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete"));
     }
 }
 

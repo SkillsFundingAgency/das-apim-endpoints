@@ -195,6 +195,7 @@ public class CallApi : ApiFixture
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.Regular);
         var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.Regular);
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -209,6 +210,12 @@ public class CallApi : ApiFixture
                 .ForPath("api/apprenticeships/1")
                 .Responds()
                 .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -225,6 +232,7 @@ public class CallApi : ApiFixture
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.WaitingToStart);
         var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.FlexiJobAgency, ApprenticeshipStatus.WaitingToStart);
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -241,6 +249,12 @@ public class CallApi : ApiFixture
                 .WithSystemTextJsonContent(singleMockResponse)
                 .RegisterWith(Interceptor);
 
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
@@ -254,6 +268,8 @@ public class CallApi : ApiFixture
     public async Task Track_progress_with_invalid_Ids()
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -262,6 +278,18 @@ public class CallApi : ApiFixture
                 .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -280,6 +308,8 @@ public class CallApi : ApiFixture
     public async Task Track_progress_with_invalid_Values()
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -288,6 +318,18 @@ public class CallApi : ApiFixture
                 .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -306,6 +348,8 @@ public class CallApi : ApiFixture
     public async Task Track_progress_with_no_Ksbs()
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -314,6 +358,18 @@ public class CallApi : ApiFixture
                 .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
                 .Responds()
                 .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -332,6 +388,8 @@ public class CallApi : ApiFixture
     public async Task Track_progress_with_null_Ids()
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
 
         using (Interceptor.BeginScope())
         {
@@ -342,10 +400,62 @@ public class CallApi : ApiFixture
                 .WithSystemTextJsonContent(mockResponse)
                 .RegisterWith(Interceptor);
 
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
+
+            response.Should().Be400BadRequest();
+            var body = await response.Content.ReadAsStringAsync();
+            var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+        }
+    }
+
+    [Test]
+    public async Task Track_progress_with_duplicate_Ids()
+    {
+        var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live);
+        var singleMockResponse = GetMockSingleApprenticeshipResponse();
+        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+
+        using (Interceptor.BeginScope())
+        {
+            CommitmentsApi
+                .ForPath("api/apprenticeships")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
+                .Responds()
+                .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            CommitmentsApi2
+                .ForPath("api/apprenticeships/1")
+                .Responds()
+                .WithSystemTextJsonContent(singleMockResponse)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
+                .Responds()
+                .WithSystemTextJsonContent(courseKsbsResponse)
+                .RegisterWith(Interceptor);
+
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
+
+            var response = await client.PostAsync(
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
 
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
@@ -437,7 +547,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("The KSB identifiers submitted are not valid for the matched apprenticeship");
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -647,6 +757,24 @@ public class CallApi : ApiFixture
                 {
                     new() {Id = null, Value = 5},
                     new() {Id = Guid.NewGuid().ToString(), Value = 6}
+                }
+            }
+        };
+        return BuildProgressDtoContent(dto);
+    }
+
+    private StringContent BuildProgressDtoContentWithDuplicateIds()
+    {
+        var id = Guid.NewGuid().ToString();
+        var dto = new ProgressDto
+        {
+            Progress = new ProgressDto.ProgressDetails
+            {
+                Ksbs = new List<ProgressDto.Ksb>
+                {
+                    new() {Id = Guid.NewGuid().ToString(), Value = 5},
+                    new() {Id = id, Value = 33},
+                    new() {Id = id, Value = 60}
                 }
             }
         };
