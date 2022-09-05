@@ -228,7 +228,7 @@ public class CallApi : ApiFixture
     }
 
     [Test]
-    public async Task Track_progress_with_non_started_apprenticeship()
+    public async Task Track_progress_with_not_started_apprenticeship()
     {
         var mockResponse = GetMockApprenticeshipResponse(1, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.WaitingToStart);
         var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.FlexiJobAgency, ApprenticeshipStatus.WaitingToStart);
@@ -464,6 +464,33 @@ public class CallApi : ApiFixture
         }
     }
 
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task Track_progress_with_non_delivery_apprenticesships(int apprenticeshipCount)
+    {
+        var mockResponse = GetMockNonDeliveryApprenticeshipResponse(apprenticeshipCount, DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Stopped);
+
+        using (Interceptor.BeginScope())
+        {
+            CommitmentsApi
+                .ForPath("api/apprenticeships")
+                .ForQuery("providerid=12345&searchterm=1&startdate=2020-01-01")
+                .Responds()
+                .WithSystemTextJsonContent(mockResponse)
+                .RegisterWith(Interceptor);
+
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
+
+            var response = await client.PostAsync(
+                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+
+            response.Should().Be400BadRequest();
+            var body = await response.Content.ReadAsStringAsync();
+            var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
+            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+        }
+    }
+
     [Test]
     public async Task Track_progress_with_single_matching_apprenticeship_and_a_subset_of_valid_ksbs()
     {
@@ -631,6 +658,37 @@ public class CallApi : ApiFixture
                 .With(x => x.Id, 2)
                 .With(x => x.DeliveryModel, deliveryModel)
                 .With(x => x.ApprenticeshipStatus, status)
+                .Create());
+
+        var apprenticeshipsResponse = fixture.Build<GetApprenticeshipsResponse>()
+            .With(x => x.StatusCode, HttpStatusCode.OK)
+            .With(x => x.TotalApprenticeshipsFound, numberFound)
+            .With(x => x.Apprenticeships, apprenticeships).Create();
+
+        return apprenticeshipsResponse;
+    }
+
+    private GetApprenticeshipsResponse GetMockNonDeliveryApprenticeshipResponse(int numberFound, DeliveryModel deliveryModel = DeliveryModel.PortableFlexiJob, ApprenticeshipStatus status = ApprenticeshipStatus.Live)
+    {
+        var stopDate = DateTime.Today;
+        var apprenticeships = new List<ApprenticeshipDetails>()
+        {
+            fixture.Build<ApprenticeshipDetails>()
+                .With(x=>x.Id, 1)
+                .With(x => x.DeliveryModel, deliveryModel)
+                .With(x => x.ApprenticeshipStatus, status)
+                .With(x=>x.StartDate, stopDate)
+                .With(x=>x.StopDate, stopDate)
+                .Create()
+        };
+
+        if (numberFound > 1)
+            apprenticeships.Add(fixture.Build<ApprenticeshipDetails>()
+                .With(x => x.Id, 2)
+                .With(x => x.DeliveryModel, deliveryModel)
+                .With(x => x.ApprenticeshipStatus, status)
+                .With(x => x.StartDate, stopDate)
+                .With(x => x.StopDate, stopDate)
                 .Create());
 
         var apprenticeshipsResponse = fixture.Build<GetApprenticeshipsResponse>()
