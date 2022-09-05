@@ -151,8 +151,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeships.TotalApprenticeshipsFound == 0)
             throw new ApprenticeshipNotFoundException();
 
-        if (apprenticeships.TotalApprenticeshipsFound > 1)
-            apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
+        apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
 
         if (apprenticeships.Apprenticeships?.Count == 0)
             throw new ApprenticeshipNotFoundException();
@@ -166,7 +165,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             errors.Add(new ErrorDetail("DeliveryModel", "Must be a portable flexi-job"));
 
         if (apprenticeshipStatus == ApprenticeshipStatus.WaitingToStart)
-            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete"));
+            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete."));
 
         if (errors.Any())
             throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
