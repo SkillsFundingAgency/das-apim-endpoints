@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Application\Interfaces\" />
+      <Folder Include="Application\Queries\" />
+      <Folder Include="Application\Services\" />
+      <Folder Include="InnerApi\Requests\" />
+      <Folder Include="InnerApi\Responses\" />
+      <Folder Include="Models\Constants\" />
+    </ItemGroup>
+
+</Project>
