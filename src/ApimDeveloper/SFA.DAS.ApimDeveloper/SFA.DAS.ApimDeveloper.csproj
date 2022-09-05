@@ -2,10 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="6.0.0" />
+        <PackageReference Include="MediatR" />
     </ItemGroup>
 
     <ItemGroup>
