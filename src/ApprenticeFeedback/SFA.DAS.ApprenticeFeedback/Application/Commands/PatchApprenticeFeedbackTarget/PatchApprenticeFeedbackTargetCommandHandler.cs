@@ -18,15 +18,11 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbac
     public class PatchApprenticeFeedbackTargetCommandHandler : IRequestHandler<PatchApprenticeFeedbackTargetCommand, PatchApprenticeFeedbackTargetResponse>
     {
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
-        private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ILogger<PatchApprenticeFeedbackTargetCommandHandler> _logger;
 
-        public PatchApprenticeFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
-            IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
-            ILogger<PatchApprenticeFeedbackTargetCommandHandler> logger)
+        public PatchApprenticeFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient, ILogger<PatchApprenticeFeedbackTargetCommandHandler> logger)
         {
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
-            _assessorsApiClient = assessorsApiClient;
             _logger = logger;
         }
 
@@ -40,7 +36,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbac
             });
             var response = await _apprenticeFeedbackApiClient.PatchWithResponseCode(patchRequest);
 
-            if(response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 _logger.LogError($"Unable to delete feedback transactions belonging to ApprenticeTargetId {command.ApprenticeFeedbackTargetId} which should now be complete");
             }
