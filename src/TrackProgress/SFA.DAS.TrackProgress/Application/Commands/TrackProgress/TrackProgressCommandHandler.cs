@@ -148,13 +148,19 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     private void CheckTheApprenticeshipHasBeenFound(GetApprenticeshipsResponse apprenticeships)
     {
+        var errors = new List<ErrorDetail>();
+
         if (apprenticeships.TotalApprenticeshipsFound == 0)
             throw new ApprenticeshipNotFoundException();
 
-        apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
+        if (apprenticeships.TotalApprenticeshipsFound > 1)
+            apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
 
         if (apprenticeships.Apprenticeships?.Count == 0)
-            throw new ApprenticeshipNotFoundException();
+            errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete."));
+
+        if (errors.Any())
+            throw new InvalidTaxonomyRequestException(ErrorTitleForProgressBody, errors);
     }
 
     private void CheckApprenticeshipStateCanAcceptTrackProgressUpdates(GetApprenticeshipResponse apprenticeship, ApprenticeshipStatus apprenticeshipStatus)
