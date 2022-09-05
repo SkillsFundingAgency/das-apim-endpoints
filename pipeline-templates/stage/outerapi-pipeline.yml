@@ -1,6 +1,6 @@
 parameters:
   OuterApiName:
-  SandboxEnabled:
+  SandboxEnabled: $False
 stages:
 - stage: Build
   jobs:
