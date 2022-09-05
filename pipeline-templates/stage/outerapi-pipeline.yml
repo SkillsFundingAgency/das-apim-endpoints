@@ -1,5 +1,6 @@
 parameters:
   OuterApiName:
+  SandboxEnabled:
 stages:
 - stage: Build
   jobs:
@@ -41,6 +42,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -68,6 +70,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -95,6 +98,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -122,6 +126,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -148,6 +153,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -174,6 +180,7 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -201,3 +208,4 @@ stages:
       ApiBaseUrl: $(${{ parameters.OuterApiName }}OuterApiBaseUrl)
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
+      SandboxEnabled: ${{ parameters.SandboxEnabled }}
