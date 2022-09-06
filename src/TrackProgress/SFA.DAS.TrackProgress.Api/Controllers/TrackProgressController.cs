@@ -37,7 +37,7 @@ public class TrackProgressController : ControllerBase
     public string? IsSandbox { get; set; }
 
     /// <summary>
-    /// POST Add taxonomy progress for the matching apprenticeship.
+    /// POST Record data on the progress of your apprenticeships.
     /// </summary>
     /// <remarks>
     /// Save the progress for a specific apprenticeship. This will record the progress of your KSBs for this apprenticeship. The progress of KSBs can
@@ -51,7 +51,7 @@ public class TrackProgressController : ControllerBase
     /// 
     /// The "id" field must be the GUID identifier of the KSB for the apprenticeship's course.
     /// 
-    /// The "value" field must be the percentile range 1-100, denoting what percentage of the KSB has been completed.
+    /// The "value" field must be the percentile range 0-100, denoting what percentage of the KSB has been completed.
     /// </param>
     /// <returns></returns>
     [HttpPost]
