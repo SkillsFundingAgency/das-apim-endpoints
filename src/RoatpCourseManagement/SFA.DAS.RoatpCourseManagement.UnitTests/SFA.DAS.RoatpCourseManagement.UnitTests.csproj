@@ -13,7 +13,6 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" VersionOverride="6.6.0" /> <!-- TODO: Align with central package versions -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" >
