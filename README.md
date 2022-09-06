@@ -416,7 +416,7 @@ Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-conf
 ```
 
 > **Note:**  
-> To get a functioning key for CourseDirectoryConfiguration.Key, you will need to create an account here: https://sit-portal.api.nationalcareersservice.org.uk/ and request a key for 'Course Directory'.  Be aware the support for this can be slow.
+> To get a functioning key for CourseDirectoryConfiguration.Key, you will need to create an account here: https://sit-portal.api.nationalcareersservice.org.uk/ and request a key for 'Course Directory'.  Be aware the support for this can be very slow, and may not work, in which case you will need to talk to the team responsible for roatp-coursemanagement for assistance.
 
 * Start the api project ```SFA.DAS.RoatpCourseManagement.Api``` within apim
 
