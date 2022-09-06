@@ -9,6 +9,7 @@ trigger:
     - pipeline-templates
     - src/TrackProgress
     - src/Shared*
+    - Directory.Packages.props
 
 pr:
   branches:
@@ -20,6 +21,7 @@ pr:
     - pipeline-templates
     - src/TrackProgress
     - src/Shared*
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources

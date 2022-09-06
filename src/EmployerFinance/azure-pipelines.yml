@@ -9,6 +9,7 @@ trigger:
     - pipeline-templates
     - src/EmployerFinance
     - src/Shared*
+    - Directory.Packages.props
 
 pr:
   autoCancel: true
@@ -21,6 +22,7 @@ pr:
     - pipeline-templates
     - src/EmployerFinance
     - src/Shared*
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
