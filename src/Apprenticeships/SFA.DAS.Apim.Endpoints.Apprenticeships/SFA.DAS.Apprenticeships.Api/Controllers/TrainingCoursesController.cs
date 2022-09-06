@@ -1,44 +1,44 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
+using SFA.DAS.Apprenticeships.Application.TrainingCourses;
 
-namespace SFA.DAS.Apprenticeships.Api.Controllers
+namespace SFA.DAS.Apprenticeships.Api.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class TrainingCoursesController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class TrainingCoursesController : ControllerBase
+    private readonly ILogger<TrainingCoursesController> _logger;
+    private readonly IMediator _mediator;
+
+    public TrainingCoursesController(ILogger<TrainingCoursesController> logger, IMediator mediator)
     {
-        private readonly ILogger<TrainingCoursesController> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-        public TrainingCoursesController(ILogger<TrainingCoursesController> logger)
+    [HttpGet]
+    [Route("standards/{courseCode}")]
+    public async Task<IActionResult> GetStandard(string courseCode)
+    {
+        try
         {
-            _logger = logger;
+            var queryResult = await _mediator.Send(new GetStandardQuery(courseCode));
+
+            if (queryResult == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetStandardResponse)queryResult;
+
+            return Ok(model);
         }
-
-        [HttpGet]
-        [Route("standards/{courseCode}")]
-        public async Task<IActionResult> GetStandard(string courseCode)
+        catch (Exception e)
         {
-            try
-            {
-                //var queryResult = await _mediator.Send(new GetStandardQuery(courseCode)); //todo commented out to allow deployment work to start
-
-                //if (queryResult == null)
-                //{
-                //    return NotFound();
-                //}
-
-                //var model = (GetStandardResponse)queryResult;
-
-                var model = new GetStandardResponse();
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error attempting to get list of standards");
-                return BadRequest();
-            }
+            _logger.LogError(e, "Error attempting to get list of standards");
+            return BadRequest();
         }
     }
 }

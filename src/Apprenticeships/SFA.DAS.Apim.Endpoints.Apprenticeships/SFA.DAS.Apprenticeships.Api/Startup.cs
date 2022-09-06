@@ -1,8 +1,14 @@
 ﻿using System.Text.Json.Serialization;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apprenticeships.Api.AppStart;
+using SFA.DAS.Apprenticeships.Application.TrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Apprenticeships.Api;
 
@@ -23,7 +29,7 @@ public class Startup
         services.AddOptions();
         services.AddSingleton(_env);
 
-        //todo pull in required config object(s)
+        services.AddConfigurationOptions(_configuration);
 
         if (!_configuration.IsLocalOrDev())
         {
@@ -38,10 +44,26 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
+        services.AddMediatR(typeof(GetStandardQuery).Assembly);
+        services.AddServiceRegistration(_configuration);
+
+        services
+            .AddMvc(o =>
+            {
+                if (!_configuration.IsLocalOrDev())
+                {
+                    o.Filters.Add(new AuthorizeFilter("default"));
+                }
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-        //todo healthchecks
+        if (_configuration["Environment"] != "DEV")
+        {
+            services.AddHealthChecks()
+                .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+        }
 
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 

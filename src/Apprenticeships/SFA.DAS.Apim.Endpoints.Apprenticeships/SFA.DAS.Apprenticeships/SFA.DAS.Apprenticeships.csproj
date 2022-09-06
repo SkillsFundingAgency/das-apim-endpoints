@@ -10,4 +10,8 @@
     <PackageReference Include="MediatR" Version="10.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+  </ItemGroup>
+
 </Project>
