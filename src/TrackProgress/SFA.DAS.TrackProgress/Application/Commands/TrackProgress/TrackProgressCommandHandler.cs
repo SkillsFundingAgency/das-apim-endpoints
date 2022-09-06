@@ -153,8 +153,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         if (apprenticeships.TotalApprenticeshipsFound == 0)
             throw new ApprenticeshipNotFoundException();
 
-        if (apprenticeships.TotalApprenticeshipsFound > 1)
-            apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
+        apprenticeships.Apprenticeships?.RemoveAll(x => x.StartDate == x.StopDate);
 
         if (apprenticeships.Apprenticeships?.Count == 0)
             errors.Add(new ErrorDetail("ApprenticeshipStatus", "Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete."));
