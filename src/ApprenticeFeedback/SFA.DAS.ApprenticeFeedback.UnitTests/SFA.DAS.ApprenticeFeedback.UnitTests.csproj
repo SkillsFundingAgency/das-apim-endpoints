@@ -14,7 +14,7 @@
     <PackageReference Include="AutoFixture.NUnit3" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
+    <PackageReference Include="Moq" VersionOverride="4.16.1"  /> <!-- TODO: Align with central package versions -->
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" />
