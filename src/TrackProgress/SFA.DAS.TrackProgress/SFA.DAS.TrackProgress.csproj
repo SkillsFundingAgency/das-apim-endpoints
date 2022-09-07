@@ -1,32 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Apis\Commitments\**" />
-    <EmbeddedResource Remove="Apis\Commitments\**" />
-    <None Remove="Apis\Commitments\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
-	<ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Apis\Commitments\Commands\" />
   </ItemGroup>
 
 </Project>

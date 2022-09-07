@@ -4,23 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-	<PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
 	<PackageReference Include="SFA.DAS.Api.Common" Version="1.0.13" />
 	<PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
@@ -30,5 +18,5 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.TrackProgress\SFA.DAS.TrackProgress.csproj" />
   </ItemGroup>
-	
+
 </Project>

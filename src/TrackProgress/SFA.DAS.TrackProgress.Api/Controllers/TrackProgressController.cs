@@ -1,98 +1,27 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
-using SFA.DAS.TrackProgress.Application.DTOs;
-using SFA.DAS.TrackProgress.Application.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
+using SFA.DAS.TrackProgress.Application.Commands;
 
-namespace SFA.DAS.TrackProgress.Api.Controllers;
+namespace SFA.DAS.TrackProgress.Controllers;
 
 [ApiController]
 public class TrackProgressController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ILogger<TrackProgressController> _logger;
-    private string _providerId = null!;
 
-    public TrackProgressController(IMediator mediator, ILogger<TrackProgressController> logger) 
-        => (_mediator, _logger) = (mediator, logger);
+    public TrackProgressController(IMediator mediator) => _mediator = mediator;
 
-    [FromHeader(Name = SubscriptionHeaderConstants.ForProviderId)]
-    public string Ukprn
-    {
-        get => _providerId;
-        set
-        {
-            // Incoming string is '`Provider-99999-TrackProgressOuterApi'
-            var items = value.Split("-");
-            if (items.Length >= 2)
-                _providerId = items[1];
-            else
-                _providerId = "No providerId supplied";
-        }
-    }
+    [FromHeader(Name = "x-request-context-subscription-name")]
+    public string Ukprn { get; set; } = null!;
 
-    [FromHeader(Name = SubscriptionHeaderConstants.ForSandboxMode)]
-    public string? IsSandbox { get; set; }
-
-    /// <summary>
-    /// POST Record data on the progress of your apprenticeships.
-    /// </summary>
-    /// <remarks>
-    /// Save the progress for a specific apprenticeship. This will record the progress of your KSBs for this apprenticeship. The progress of KSBs can
-    /// be updated using this endpoint and additional KSBs can be submitted.
-    ///
-    /// The overall progress of this apprenticeship will be constructed from these submissions. 
-    /// </remarks>
-    /// <param name="uln">The unique learner number of the apprentice undertaking the apprenticeship as recorded on the Apprenticeship Service.</param>
-    /// <param name="plannedStartDate">The planned start date of the apprenticeship (employment) as recorded on the Apprenticeship Service.</param>
-    /// <param name="progress">The taxonomy content.Accepts an array of KSB progress percentiles.
-    /// 
-    /// The "id" field must be the GUID identifier of the KSB for the apprenticeship's course.
-    /// 
-    /// The "value" field must be the percentile range 0-100, denoting what percentage of the KSB has been completed.
-    /// </param>
-    /// <returns></returns>
     [HttpPost]
 	[Route("/apprenticeships/{uln}/{plannedStartDate}/progress")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TrackProgressResponse))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-    public async Task<IActionResult> AddApprenticeshipProgress(
-        [Range(1, double.MaxValue, ErrorMessage = "ULN must be greater than zero.")] long uln,
-        DateTime plannedStartDate, ProgressDto progress)
+    public async Task Post(
+        long uln, DateTime plannedStartDate, TrackApprenticeProgress.Progress request)
     {
-        try
-        {
-            var response = await _mediator.Send(new TrackProgressCommand(
-                    ProviderContext.Create(Ukprn, IsSandbox), uln, plannedStartDate, progress));
-            return Created("", response);
-        }
-        catch (ApprenticeshipNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (InvalidTaxonomyRequestException e)
-        {
-            return new BadRequestObjectResult(CreateProblemDetailsResponse(e.Message, e.Errors));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error adding apprenticeship progress for ULN: {uln}, Start date: {plannedStartDate}");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
-    private ProblemDetails CreateProblemDetailsResponse(string title, List<ErrorDetail> errors)
-    {
-        var details = new ProblemDetails
-        {
-            Title = title,
-            Status = StatusCodes.Status400BadRequest,
-        };
-        details.Extensions.Add("errors", errors);
-
-        return details;
+        await _mediator.Send(
+            new TrackApprenticeProgress.Command(
+				Application.Models.Ukprn.Parse(Ukprn), uln, plannedStartDate, request));
     }
 }
+
