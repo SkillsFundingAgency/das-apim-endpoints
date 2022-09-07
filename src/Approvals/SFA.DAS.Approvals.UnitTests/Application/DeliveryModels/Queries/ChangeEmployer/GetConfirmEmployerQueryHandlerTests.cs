@@ -55,9 +55,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
                     .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                 .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
-            var featureToggles = new FeatureToggles { ApprovalsFeatureToggleFjaaEnabled = true };
-
-            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object, featureToggles);
+            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object);
         }
 
         [Test]

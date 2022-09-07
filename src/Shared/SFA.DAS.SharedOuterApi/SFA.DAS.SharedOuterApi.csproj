@@ -5,18 +5,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.5.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
-        <PackageReference Include="SFA.DAS.Api.Common" Version="1.0.13" />
-        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
-        <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
-        <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
-        <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+        <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+        <PackageReference Include="SFA.DAS.Api.Common" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
+        <PackageReference Include="SFA.DAS.Notifications.Messages" />
+        <PackageReference Include="System.Net.Http.Json" />
+        <PackageReference Include="SFA.DAS.NServiceBus" />
     </ItemGroup>
 
 </Project>
