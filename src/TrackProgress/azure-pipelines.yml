@@ -50,3 +50,4 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: TrackProgress
+    SandboxEnabled: $True
