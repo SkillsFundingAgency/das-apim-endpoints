@@ -25,15 +25,13 @@ namespace SFA.DAS.Approvals.Services
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ILogger<DeliveryModelService> _logger;
-        private readonly FeatureToggles _featureToggles;
 
-        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, FeatureToggles featureToggles)
+        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _logger = logger;
-            _featureToggles = featureToggles;
         }
 
         public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null)
@@ -94,7 +92,7 @@ namespace SFA.DAS.Approvals.Services
 
         private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            if (accountLegalEntityId == 0 || !_featureToggles.ApprovalsFeatureToggleFjaaEnabled) return false;
+            if (accountLegalEntityId == 0) return false;
 
             _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
             var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
