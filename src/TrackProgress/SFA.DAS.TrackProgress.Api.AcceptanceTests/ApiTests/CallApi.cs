@@ -300,7 +300,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -340,7 +340,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -380,7 +380,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("KSBs are required");
+            problem!.Title.Should().StartWith("KSBs are required");
         }
     }
 
@@ -420,7 +420,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -460,7 +460,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -487,7 +487,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
@@ -574,7 +574,7 @@ public class CallApi : ApiFixture
             response.Should().Be400BadRequest();
             var body = await response.Content.ReadAsStringAsync();
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
         }
     }
 
