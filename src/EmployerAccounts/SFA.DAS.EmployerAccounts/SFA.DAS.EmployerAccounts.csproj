@@ -1,24 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Application\Queries\**" />
+      <Compile Remove="InnerApi\**" />
+      <EmbeddedResource Remove="Application\Queries\**" />
+      <EmbeddedResource Remove="InnerApi\**" />
+      <None Remove="Application\Queries\**" />
+      <None Remove="InnerApi\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="6.0.0" />
-    </ItemGroup>
+      <PackageReference Include="MediatR" />
+    </ItemGroup>  
 
-    <ItemGroup>
+     <ItemGroup>
       <Folder Include="Application\Interfaces\" />
-      <Folder Include="Application\Queries\" />
       <Folder Include="Application\Services\" />
-      <Folder Include="InnerApi\Requests\" />
-      <Folder Include="InnerApi\Responses\" />
-      <Folder Include="Models\Constants\" />
-    </ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>  
 
 </Project>
