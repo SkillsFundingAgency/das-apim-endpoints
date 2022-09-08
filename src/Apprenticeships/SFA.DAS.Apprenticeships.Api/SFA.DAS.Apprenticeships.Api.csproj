@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.Apprenticeships\SFA.DAS.Apprenticeships.csproj" />
   </ItemGroup>
 
