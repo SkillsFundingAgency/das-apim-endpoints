@@ -9,10 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="6.0.0" />
-    <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
-    <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="MediatR"  />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" />
+    <PackageReference Include="SFA.DAS.NServiceBus" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -144,6 +144,8 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
 
     private void CheckTheApprenticeshipHasBeenFound(GetApprenticeshipsResponse apprenticeships)
     {
+        var errors = new List<ErrorDetail>();
+
         if (apprenticeships.TotalApprenticeshipsFound == 0)
             throw new ApprenticeshipNotFoundException();
 
