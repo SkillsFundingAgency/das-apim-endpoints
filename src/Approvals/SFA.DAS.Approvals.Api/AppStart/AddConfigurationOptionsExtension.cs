@@ -39,6 +39,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ReservationApiConfiguration>>().Value);
             services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
+            services.Configure<ProviderEventsConfiguration>(configuration.GetSection(nameof(ProviderEventsConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderEventsConfiguration>>().Value);
         }
     }
 }

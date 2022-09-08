@@ -24,17 +24,17 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("[controller]/events")]
-        public async Task<IActionResult> GetDataLockEvents(GetDataLockEventsRequest request)
+        public async Task<IActionResult> GetDataLockEvents(long sinceEventId, DateTime? sinceTime, string employerAccountId, long ukprn, int page = 1)
         {
             try
             {
                 var response = await _mediator.Send(new GetDataLockEventsQuery()
                 {
-                    EmployerAccountId = request.EmployerAccountId,
-                    SinceEventId = request.SinceEventId,
-                    PageNumber = request.PageNumber,
-                    SinceTime = request.SinceTime,
-                    Ukprn = request.Ukprn
+                    EmployerAccountId = employerAccountId,
+                    SinceEventId = sinceEventId,
+                    PageNumber = page,
+                    SinceTime = sinceTime,
+                    Ukprn = ukprn
                 });
 
                 return Ok(response.PagedDataLockEvent);

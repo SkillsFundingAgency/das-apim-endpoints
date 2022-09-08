@@ -20,18 +20,22 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
     {
         [Test, MoqAutoData]
         public async Task Then_Get_DataLockEvents_From_Mediator(
-            GetDataLockEventsRequest request,
+            long sinceEventId,
+            DateTime? sinceTime,
+            string employerAccountId,
+            long ukprn,
+            int page,
             GetDataLockEventsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DataLockController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetDataLockEventsQuery>(x => x.EmployerAccountId == request.EmployerAccountId),
+                    It.Is<GetDataLockEventsQuery>(x => x.EmployerAccountId == employerAccountId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetDataLockEvents(request) as ObjectResult;
+            var controllerResult = await controller.GetDataLockEvents(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -42,7 +46,11 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            GetDataLockEventsRequest request,
+            long sinceEventId,
+            DateTime? sinceTime,
+            string employerAccountId,
+            long ukprn,
+            int page,
             GetDataLockEventsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DataLockController controller)
@@ -53,7 +61,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetDataLockEvents(request) as BadRequestResult;
+            var controllerResult = await controller.GetDataLockEvents(sinceEventId, sinceTime, employerAccountId, ukprn, page) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
