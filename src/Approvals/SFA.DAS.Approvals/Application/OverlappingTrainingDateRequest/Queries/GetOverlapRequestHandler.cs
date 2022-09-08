@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 
         public async Task<GetOverlapRequestResult> Handle(GetOverlapRequestQuery request, CancellationToken cancellationToken)
         {
-            var response = await _apiClient.GetWithResponseCode<GetOverlapRequestResponse>(new GetOverlapRequestRequest(request.DraftApprneticeshipId));
+            var response = await _apiClient.GetWithResponseCode<GetOverlapRequestResponse>(new GetOverlapRequestRequest(request.DraftApprenticeshipId));
             response.EnsureSuccessStatusCode();
             return new GetOverlapRequestResult
             {

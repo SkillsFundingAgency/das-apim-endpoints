@@ -11,6 +11,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
             DraftApprenticeshipId = draftApprenticeshipId;
         }
 
-        public string GetUrl => $"api/overlapping-training-date-request/{DraftApprenticeshipId}/get";
+        public string GetUrl => $"api/overlapping-training-date-request/{DraftApprenticeshipId}/getOverlapRequest";
     }
 }
