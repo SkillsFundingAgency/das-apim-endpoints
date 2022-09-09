@@ -4,38 +4,46 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
-using SFA.DAS.TrackProgress.Application.Commands;
+using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;
+using SFA.DAS.TrackProgress;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var config = builder.Configuration
-    .Get<TrackProgressConfiguration>();
+var configuration = builder.Configuration.BuildSharedConfiguration();
+var config = configuration.Get<TrackProgressConfiguration>();
+
+builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackProgressOuterApi", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Track Apprenticeship Progress API", Version = "v1", Description = "Share data on the progress of your apprenticeships" });
+    var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(TrackProgressConfiguration).Namespace}.xml");
+    c.IncludeXmlComments(filePath);
+    var filePath2 = Path.Combine(AppContext.BaseDirectory, $"{typeof(SubscriptionHeaderConstants).Namespace}.xml");
+    c.IncludeXmlComments(filePath2);
 });
-builder.Services.AddMediatR(typeof(TrackApprenticeProgress)); 
+builder.Services.AddMediatR(typeof(TrackProgressCommand));
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
 builder.Services.AddServiceRegistration();
-builder.Services.AddConfigurationOptions(builder.Configuration);
+builder.Services.AddConfigurationOptions(configuration);
+builder.Services.AddHealthChecks();
 
 if (!builder.Configuration.IsLocalOrDev())
 {
     builder.Services.AddAuthentication(
-        config.AzureAd, 
+        config.AzureAd,
         new Dictionary<string, string> { { "default", "APIM" } });
 }
 
-    var app = builder.Build();
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -46,9 +54,10 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TrackProgressOuterApi");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Track Apprenticeship Progress Api");
     c.RoutePrefix = string.Empty;
 });
+app.UseHealthChecks();
 
 app.UseHttpsRedirection();
 
