@@ -72,7 +72,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = CohortContainsUnavailableFjaaDm(apprenticeships.DraftApprenticeships, cohort).Result
+                HasUnavailableFlexiJobAgencyDeliveryModel = CohortContainsUnavailableApprenticeshipFjaa(apprenticeships.DraftApprenticeships, cohort).Result
             };
         }
 
@@ -105,7 +105,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             return true;
         }
 
-        private async Task<bool> CohortContainsUnavailableFjaaDm(List<DraftApprenticeship> apprenticeships, GetCohortResponse cohort)
+        private async Task<bool> CohortContainsUnavailableApprenticeshipFjaa(List<DraftApprenticeship> apprenticeships, GetCohortResponse cohort)
         {
             foreach (DraftApprenticeship apprenticeship in apprenticeships)
             {
