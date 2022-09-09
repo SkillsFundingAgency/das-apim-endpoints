@@ -111,7 +111,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId, apprenticeship.CourseCode, cohort.AccountLegalEntityId);
 
-                if (!deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
+                if (apprenticeship.DeliveryModel.Equals(DeliveryModelStringTypes.FlexiJobAgency) &&
+                    !deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
                 {
                     return false;
                 }
