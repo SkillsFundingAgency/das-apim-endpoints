@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
 
             return new GetDataLockEventsQueryResult()
             {
-                PagedDataLockEvent = response
+                PagedDataLockEvent = response ?? new PageOfResults<GetDataLockEventsResponse>()
             };
         }
     }
