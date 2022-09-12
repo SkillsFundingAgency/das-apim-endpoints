@@ -24,6 +24,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string TrainingCourseOption { get; set; }
 
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
@@ -64,6 +65,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 StandardUId = source.StandardUId,
                 CourseName = source.CourseName,
                 StartDate = source.StartDate,
+                ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
                 Cost = source.Cost,
                 EmploymentPrice = source.EmploymentPrice,
