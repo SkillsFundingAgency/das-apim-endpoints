@@ -61,7 +61,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipId}/getOverlapRequest")]
+        [Route("{draftApprenticeshipId}/getOverlapRequest")]
         public async Task<IActionResult> GetOverlapRequest(long draftApprenticeshipId)
         {
             var result = await _mediator.Send(new GetOverlapRequestQuery
