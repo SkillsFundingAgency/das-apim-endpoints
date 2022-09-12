@@ -114,11 +114,11 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 if (apprenticeship.DeliveryModel.Equals(DeliveryModelStringTypes.FlexiJobAgency) &&
                     !deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
     }
