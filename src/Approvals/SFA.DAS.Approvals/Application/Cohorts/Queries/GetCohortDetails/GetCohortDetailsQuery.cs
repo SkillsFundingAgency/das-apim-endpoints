@@ -34,6 +34,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         private readonly IDeliveryModelService _deliveryModelService;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
+        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
 
         public GetCohortDetailsQueryHandler(IDeliveryModelService deliveryModelService, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters)
         {
@@ -44,24 +45,26 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
         {
-            var innerApiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
+            var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
 
-            var innerApiResponseTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(innerApiRequest);
+            var apiResponseTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
 
-            await Task.WhenAll(innerApiResponseTask, cohortResponseTask);
+            await Task.WhenAll(apiResponseTask, cohortResponseTask);
 
-            if (innerApiResponseTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
+            if (apiResponseTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
 
-            innerApiResponseTask.Result.EnsureSuccessStatusCode();
+            apiResponseTask.Result.EnsureSuccessStatusCode();
             cohortResponseTask.Result.EnsureSuccessStatusCode();
 
-            var apprenticeships = innerApiResponseTask.Result.Body;
+            var apprenticeships = apiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
+
+            var isOnRegister = await _deliveryModelService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
 
             if (!CheckParty(cohort))
             {
@@ -72,7 +75,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = CohortContainsUnavailableApprenticeshipFjaa(apprenticeships.DraftApprenticeships, cohort).Result
+                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister
             };
         }
 
@@ -104,22 +107,5 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             return true;
         }
-
-        private async Task<bool> CohortContainsUnavailableApprenticeshipFjaa(List<DraftApprenticeship> apprenticeships, GetCohortResponse cohort)
-        {
-            foreach (DraftApprenticeship apprenticeship in apprenticeships)
-            {
-                var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId, apprenticeship.CourseCode, cohort.AccountLegalEntityId);
-
-                if (apprenticeship.DeliveryModel.Equals(DeliveryModelStringTypes.FlexiJobAgency) &&
-                    !deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
     }
 }

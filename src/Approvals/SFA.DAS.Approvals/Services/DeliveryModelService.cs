@@ -17,6 +17,7 @@ namespace SFA.DAS.Approvals.Services
     public interface IDeliveryModelService
     {
         Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
+        Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -90,7 +91,7 @@ namespace SFA.DAS.Approvals.Services
             return deliveryModels;
         }
 
-        private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
+        public async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
             if (accountLegalEntityId == 0) return false;
 
