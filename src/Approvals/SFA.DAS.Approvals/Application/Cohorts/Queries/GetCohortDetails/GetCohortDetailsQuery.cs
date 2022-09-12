@@ -64,7 +64,13 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var apprenticeships = apiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
-            var isOnRegister = await _deliveryModelService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+            var isOnRegisterTask = _deliveryModelService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+            var cohortContainsUnavailableFjaaDmTask = CohortContainsUnavailableFjaaDm(apprenticeships.DraftApprenticeships, cohort);
+
+            await Task.WhenAll(isOnRegisterTask, cohortContainsUnavailableFjaaDmTask);
+
+            var cohortContainsUnavailableFjaaDms = cohortContainsUnavailableFjaaDmTask.Result;
+            var isOnRegister = isOnRegisterTask.Result;
 
             if (!CheckParty(cohort))
             {
@@ -75,7 +81,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister
+                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister || cohortContainsUnavailableFjaaDms ? false : true
             };
         }
 
@@ -107,5 +113,23 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             return true;
         }
+
+        private async Task<bool> CohortContainsUnavailableFjaaDm(List<DraftApprenticeship> apprenticeships, GetCohortResponse cohort)
+        {
+            foreach (DraftApprenticeship apprenticeship in apprenticeships)
+            {
+                var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId, apprenticeship.CourseCode, cohort.AccountLegalEntityId);
+
+                if (apprenticeship.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency) &&
+                    !deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
     }
 }
