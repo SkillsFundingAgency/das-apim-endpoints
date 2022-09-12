@@ -81,7 +81,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister || cohortContainsUnavailableFjaaDms ? false : true
+                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister && cohortContainsUnavailableFjaaDms ? true : false
             };
         }
 
