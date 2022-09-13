@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Api.Models.OverlappingTrainingDateRequest;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
 using SFA.DAS.Testing.AutoFixture;
 
