@@ -5,6 +5,7 @@ using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -56,6 +57,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
             _flexiJobAgencyApiClient.Setup(x => x
                     .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                 .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            _fjaaService = new Mock<IFjaaService>();
 
             _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object, _fjaaService.Object);
         }

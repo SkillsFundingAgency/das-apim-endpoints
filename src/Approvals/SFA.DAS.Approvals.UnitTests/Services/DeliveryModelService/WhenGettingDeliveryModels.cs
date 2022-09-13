@@ -160,11 +160,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                         .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                     .ReturnsAsync(_flexiJobAgencyResponse);
 
+                _fjaaService = new Mock<IFjaaService>();
+
                 _handler = new Approvals.Services.DeliveryModelService(_apiClient.Object,
                     _fjaaApiClient.Object,
                     _commitmentsApiClient.Object,
                     Mock.Of<ILogger<Approvals.Services.DeliveryModelService>>(),
-                    Mock.Of<Approvals.Services.FjaaService>()
+                    _fjaaService.Object
                     );
             }
 
