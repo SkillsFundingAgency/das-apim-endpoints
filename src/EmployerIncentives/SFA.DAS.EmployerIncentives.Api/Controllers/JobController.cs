@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -21,9 +22,16 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [Route("/jobs")]
         public async Task<IActionResult> AddJob([FromBody] JobRequest request)
         {
-            await _mediator.Send(new AddJobCommand(request.Type, request.Data), CancellationToken.None);
+            try
+            {
+                await _mediator.Send(new AddJobCommand(request.Type, request.Data), CancellationToken.None);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (HttpRequestContentException requestException)
+            {
+                return BadRequest(requestException.ErrorContent);
+            }
         }
     }
 }
