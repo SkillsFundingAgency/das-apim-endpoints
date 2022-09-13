@@ -28,9 +28,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         private GetCohortResponse _cohort;
         private GetCohortDetailsQuery _query;
 
-        private GetDraftApprenticeshipResponse _draftApprenticeship;
-
-        private GetEditDraftApprenticeshipDeliveryModelQuery _queryEditDraft;
+        private GetDraftApprenticeshipsResponse _draftApprenticeship;
 
         private GetEditDraftApprenticeshipDeliveryModelQueryResult _queryEditDraftResult;
 
@@ -50,11 +48,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _query = fixture.Create<GetCohortDetailsQuery>();
 
-            _queryEditDraft = fixture.Create<GetEditDraftApprenticeshipDeliveryModelQuery>();
             _queryEditDraftResult = fixture.Create<GetEditDraftApprenticeshipDeliveryModelQueryResult>();
 
 
-            _draftApprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
+            _draftApprenticeship = fixture.Create<GetDraftApprenticeshipsResponse>();
 
             _deliveryModels = fixture.Create<List<string>>();
 
@@ -64,18 +61,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
                 x.GetWithResponseCode<GetCohortResponse>(It.Is<GetCohortRequest>(r => r.CohortId == _query.CohortId)))
                 .ReturnsAsync(new ApiResponse<GetCohortResponse>(_cohort, HttpStatusCode.OK, string.Empty));
 
+
             _apiClient.Setup(x =>
-                    x.GetWithResponseCode<GetDraftApprenticeshipResponse>(It.Is<GetDraftApprenticeshipRequest>(r => r.CohortId == _queryEditDraft.CohortId && r.DraftApprenticeshipId == _queryEditDraft.DraftApprenticeshipId)))
-                .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipResponse>(_draftApprenticeship, HttpStatusCode.OK, string.Empty));
+                    x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.Is<GetDraftApprenticeshipsRequest>(r => r.CohortId == _query.CohortId)))
+                .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(_draftApprenticeship, HttpStatusCode.OK, string.Empty));
 
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
-            _deliveryModelService.Setup(x => x.GetDeliveryModels(
-                It.Is<long>(p => p == _cohort.ProviderId),
-                It.Is<string>(s => s == _draftApprenticeship.CourseCode),
-                It.Is<long>(ale => ale == _cohort.AccountLegalEntityId),
-                It.Is<long?>(a => a == _draftApprenticeship.ContinuationOfId)))
-            .ReturnsAsync(_deliveryModels);
 
             _fjaaService = new Mock<IFjaaService>();
 
