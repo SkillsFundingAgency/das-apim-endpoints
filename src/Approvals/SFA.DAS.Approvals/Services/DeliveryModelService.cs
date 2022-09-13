@@ -17,7 +17,6 @@ namespace SFA.DAS.Approvals.Services
     public interface IDeliveryModelService
     {
         Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
-        Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -26,20 +25,22 @@ namespace SFA.DAS.Approvals.Services
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ILogger<DeliveryModelService> _logger;
+        private readonly IFjaaService _fjaaService;
 
-        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger)
+        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, IFjaaService fjaaService)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _logger = logger;
+            _fjaaService = fjaaService;
         }
 
         public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null)
         {
             var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
-            var isOnRegisterTask = IsLegalEntityOnFjaaRegister(accountLegalEntityId);
+            var isOnRegisterTask = _fjaaService.IsLegalEntityOnFjaaRegister(accountLegalEntityId);
 
             await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask, isOnPortableFlexiJobTask);
 
@@ -89,25 +90,6 @@ namespace SFA.DAS.Approvals.Services
             }
 
             return deliveryModels;
-        }
-
-        public async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
-        {
-            if (accountLegalEntityId == 0) return false;
-
-            _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
-            var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-
-            _logger.LogInformation($"Requesting fjaa agency for LegalEntityId {accountLegalEntity.MaLegalEntityId}");
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
-
-            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
-
-            agencyRequest.EnsureSuccessStatusCode();
-            return true;
         }
 
         private async Task<bool> IsApprenticeshipOnPortableFlexiJob(long? apprenticeshipId)

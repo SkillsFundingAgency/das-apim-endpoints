@@ -14,6 +14,7 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using static Microsoft.Azure.Amqp.Serialization.SerializableType;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 {
@@ -35,16 +36,20 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
+        private readonly IFjaaService _fjaaService;
 
-        public GetCohortDetailsQueryHandler(IDeliveryModelService deliveryModelService, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters)
+        public GetCohortDetailsQueryHandler(IDeliveryModelService deliveryModelService, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService)
         {
             _deliveryModelService = deliveryModelService;
             _apiClient = apiClient;
             _serviceParameters = serviceParameters;
+            _fjaaService = fjaaService;
         }
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
         {
+            var hasUavailableFjaaDms = false;
+
             var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
 
@@ -64,13 +69,12 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var apprenticeships = apiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
-            var isOnRegisterTask = _deliveryModelService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
-            var cohortContainsUnavailableFjaaDmTask = CohortContainsUnavailableFjaaDm(apprenticeships.DraftApprenticeships, cohort);
+            var cohortIsOnRegister = await _fjaaService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
 
-            await Task.WhenAll(isOnRegisterTask, cohortContainsUnavailableFjaaDmTask);
-
-            var cohortContainsUnavailableFjaaDms = cohortContainsUnavailableFjaaDmTask.Result;
-            var isOnRegister = isOnRegisterTask.Result;
+            if (!cohortIsOnRegister)
+            {
+                hasUavailableFjaaDms = apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency));
+            }
 
             if (!CheckParty(cohort))
             {
@@ -81,7 +85,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = isOnRegister && cohortContainsUnavailableFjaaDms ? true : false
+                HasUnavailableFlexiJobAgencyDeliveryModel = hasUavailableFjaaDms
             };
         }
 
@@ -113,23 +117,5 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             return true;
         }
-
-        private async Task<bool> CohortContainsUnavailableFjaaDm(List<DraftApprenticeship> apprenticeships, GetCohortResponse cohort)
-        {
-            foreach (DraftApprenticeship apprenticeship in apprenticeships)
-            {
-                var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId, apprenticeship.CourseCode, cohort.AccountLegalEntityId);
-
-                if (apprenticeship.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency) &&
-                    !deliveryModels.Contains(DeliveryModelStringTypes.FlexiJobAgency))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-
     }
 }

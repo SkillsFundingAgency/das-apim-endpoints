@@ -9,6 +9,7 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -22,6 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         private GetConfirmEmployerQuery _query;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
         private Mock<IFjaaApiClient<FjaaApiConfiguration>> _flexiJobAgencyApiClient;
+        private Mock<IFjaaService> _fjaaService;
         private GetAccountLegalEntityResponse _accountLegalEntityApiResponse;
         private GetApprenticeshipResponse _apprenticeshipApiResponse;
 
@@ -55,7 +57,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
                     .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                 .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
-            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object);
+            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object, _fjaaService.Object);
         }
 
         [Test]

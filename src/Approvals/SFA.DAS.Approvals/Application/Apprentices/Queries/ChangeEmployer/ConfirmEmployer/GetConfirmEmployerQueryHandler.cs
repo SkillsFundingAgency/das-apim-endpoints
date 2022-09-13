@@ -6,6 +6,7 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -16,11 +17,13 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
+        private readonly IFjaaService _fjaaService;
 
-        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient)
+        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IFjaaService fjaaService)
         {
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _fjaaClient = fjaaClient;
+            _fjaaService = fjaaService;
         }
 
         public async Task<GetConfirmEmployerQueryResult> Handle(GetConfirmEmployerQuery request, CancellationToken cancellationToken)
@@ -33,7 +36,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
             var apprenticeship = apprenticeshipTask.Result;
             var accountLegalEntity = accountLegalEntityTask.Result;
 
-            var isFlexiJobAgency = await IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
+            var isFlexiJobAgency = await _fjaaService.IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
 
             if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
@@ -48,19 +51,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
                 IsFlexiJobAgency = isFlexiJobAgency,
                 DeliveryModel = apprenticeship.DeliveryModel
             };
-        }
-
-        private async Task<bool> IsLegalEntityOnFjaaRegister(long legalEntityId)
-        {
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(legalEntityId));
-
-            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
-
-            agencyRequest.EnsureSuccessStatusCode();
-            return true;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
         private List<string> _deliveryModels;
         private Mock<IDeliveryModelService> _deliveryModelService;
+        private Mock<IFjaaService> _fjaaService;
 
         [SetUp]
         public void Setup()
@@ -80,7 +81,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _serviceParameters = new ServiceParameters(_cohort.WithParty, _cohort.AccountId);
 
-            _handler = new GetCohortDetailsQueryHandler(_deliveryModelService.Object, _apiClient.Object, _serviceParameters);
+            _handler = new GetCohortDetailsQueryHandler(_deliveryModelService.Object, _apiClient.Object, _serviceParameters, _fjaaService.Object);
         }
 
         [Test]
