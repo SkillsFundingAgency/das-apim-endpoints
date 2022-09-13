@@ -48,7 +48,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
                 .With(x => x.WithParty, Party.Employer)
                 .Create();
 
-
             _query = fixture.Create<GetCohortDetailsQuery>();
 
             _queryEditDraft = fixture.Create<GetEditDraftApprenticeshipDeliveryModelQuery>();
@@ -78,6 +77,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
                 It.Is<long?>(a => a == _draftApprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
 
+            _fjaaService = new Mock<IFjaaService>();
 
             _serviceParameters = new ServiceParameters(_cohort.WithParty, _cohort.AccountId);
 
