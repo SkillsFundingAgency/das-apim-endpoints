@@ -1,29 +1,28 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 namespace SFA.DAS.LevyTransferMatching.Api.Models
 {
     public class CreatePledgeRequest
     {
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public int Amount { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public bool IsNamePublic { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public string DasAccountName { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public IEnumerable<string> Sectors { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public IEnumerable<string> JobRoles { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public IEnumerable<string> Levels { get; set; }
 
-        [JsonProperty(Required = Required.Always)]
+        [Required]
         public List<string> Locations { get; set; }
 
         public string UserId { get; set; }

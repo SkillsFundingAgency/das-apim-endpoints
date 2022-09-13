@@ -4,7 +4,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -22,15 +21,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             UpdateApprovedByRegulatorCommandHandler sut,
             UpdateApprovedByRegulatorCommand command,
-            CancellationToken cancellationToken,
-            ProviderCourseUpdateRequest request,
-            GetProviderCourseResponse apiResponse)
+            CancellationToken cancellationToken)
         {
-            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
-
             await sut.Handle(command, cancellationToken);
-
-            apiClientMock.Verify(a => a.Put(It.IsAny<ProviderCourseUpdateRequest>()), Times.Once);
+            apiClientMock.Verify(a => a.PatchWithResponseCode(It.IsAny<PatchProviderCourseRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -39,15 +33,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
            UpdateApprovedByRegulatorCommandHandler sut,
            UpdateApprovedByRegulatorCommand command,
            CancellationToken cancellationToken,
-           GetProviderCourseResponse apiResponse,
            HttpRequestContentException expectedException)
         {
-            apiClientMock.Setup(a => a.Get<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>())).ReturnsAsync(apiResponse);
-
-            apiClientMock.Setup(c => c.Put(It.IsAny<ProviderCourseUpdateRequest>())).Throws(expectedException);
-
+            apiClientMock.Setup(c => c.PatchWithResponseCode(It.IsAny<PatchProviderCourseRequest>())).Throws(expectedException);
             var actualException = Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
-
             actualException.Should().Be(expectedException);
         }
     }

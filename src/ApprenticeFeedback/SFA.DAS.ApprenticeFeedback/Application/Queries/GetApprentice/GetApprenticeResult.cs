@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
 {
@@ -11,5 +13,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
         public DateTime DateOfBirth { get; set; }
         public bool TermsOfUseAccepted { get; set; }
         public bool ReacceptTermsOfUseRequired { get; set; }
+        public List<ApprenticePreferenceDto> ApprenticePreferences { get; set; } = new List<ApprenticePreferenceDto>();
     }
 }

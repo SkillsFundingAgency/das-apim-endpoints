@@ -5,11 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="6.0.0" />
+      <PackageReference Include="MediatR"  />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Application\ValidateDraftApprenticeship\" />
     </ItemGroup>
 
 </Project>

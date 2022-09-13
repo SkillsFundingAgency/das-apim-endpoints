@@ -217,6 +217,51 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used during payment processing for transaction information, adding metadata to the payments lines for Course and Provider information.
 
+### Employer Finance
+
+The Employer Finance outer api relies on the following inner apis:
+
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
+Data: {
+         {
+            "CoursesApiConfiguration":{
+                "url":"https://localhost:5001/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsapi-as-ar"
+            },
+            "CourseDeliveryApiConfiguration":{
+                "url":"https://localhost:5006/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsdelapi-as-ar"
+            },
+            "LevyTransferMatchingApiConfiguration":{
+                "url":"https://localhost:5002/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-ltmapi-as-ar"
+            },
+            "AzureAd":{
+                "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empfapi-as-ar"
+            },
+            "ForecastingApiConfiguration":{
+                "url":"https://localhost:5001/",
+                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-fcastapi-as-ar"
+            }
+         }
+}
+```
+* Start the api project ```SFA.DAS.EmployerFinance.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
 ### Recruit
 
 The Recruit outer api relies on the following inner apis:
@@ -345,3 +390,37 @@ Data: {
 * Start the api project ```SFA.DAS.EmployerDemand.Api```
 
 Starting the API will then show the swagger definition with the available operations. Alternatively you can connect [das-employerdemand-web](https://github.com/SkillsFundingAgency/das-employerdemand-web) which is the consuming service of this outer API.
+
+
+### Course Management
+
+The Course Management outer api relies on the following inner apis, which must all be set up according to their own readme setups:
+
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-roatp-service](https://github.com/SkillsFundingAgency/das-roatp-service)
+* [das-provide-feedback-employer](https://github.com/SkillsFundingAgency/das-provide-feedback-employer)
+
+> **Note:**  
+> This repo/course management outer does not use das-provide-feedback-employer directly, but it is required to get das-roatp-service running successfully
+
+
+You are able to run the API by doing the following:
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.Roatp.CourseManagement.OuterApi_1.0
+Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.RoATP.CourseManagement.OuterApi.json
+```
+
+> **Note:**  
+> To get a functioning key for CourseDirectoryConfiguration.Key, you will need to create an account here: https://sit-portal.api.nationalcareersservice.org.uk/ and request a key for 'Course Directory'.  Be aware the support for this can be very slow, and may not work, in which case you will need to talk to the team responsible for roatp-coursemanagement for assistance.
+
+* Start the api project ```SFA.DAS.RoatpCourseManagement.Api``` within apim
+
+Download the repo and load into Visual Studio the project '..\dev\das-apim-endpoints\src\RoatpCourseManagement\SFA.DAS.Roatp.CourseManagement.sln' and run the project SFA.DAS.RoatpCourseManagement.Api
+
+You will then see the swagger definition with the available operations.
+

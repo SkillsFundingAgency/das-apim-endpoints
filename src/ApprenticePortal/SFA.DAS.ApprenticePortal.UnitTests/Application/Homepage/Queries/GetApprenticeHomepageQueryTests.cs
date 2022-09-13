@@ -49,12 +49,12 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
             var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result.apprenticeHomepage);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.FirstName, firstName);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.LastName, lastName);
-            Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.CourseName, courseName);
-            Assert.AreEqual(result.apprenticeHomepage.Apprenticeship.EmployerName, employerName);
+            Assert.NotNull(result.ApprenticeHomepage);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.FirstName, firstName);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.LastName, lastName);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.CourseName, courseName);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.EmployerName, employerName);
         }
 
         [Test, MoqAutoData]
@@ -81,11 +81,11 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
             var result = await sut.Handle(new GetApprenticeHomepageQuery() { ApprenticeId = apprenticeId }, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result.apprenticeHomepage);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.FirstName, firstName);
-            Assert.AreEqual(result.apprenticeHomepage.Apprentice.LastName, lastName);
-            Assert.IsNull(result.apprenticeHomepage.Apprenticeship);            
+            Assert.NotNull(result.ApprenticeHomepage);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.FirstName, firstName);
+            Assert.AreEqual(result.ApprenticeHomepage.Apprentice.LastName, lastName);
+            Assert.IsNull(result.ApprenticeHomepage.Apprenticeship);            
         }
 
         private void SetupMoqApprentice()

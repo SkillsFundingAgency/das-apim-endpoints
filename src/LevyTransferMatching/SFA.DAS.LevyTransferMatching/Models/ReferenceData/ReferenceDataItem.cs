@@ -1,19 +1,21 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LevyTransferMatching.Models.ReferenceData
 {
     public class ReferenceDataItem
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("shortDescription", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("shortDescription")]//, NullValueHandling = NullValueHandling.Ignore)]
+        //TODO for 6.1 and remove global option [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string ShortDescription { get; set; }
 
-        [JsonProperty("hint", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("hint")]//, NullValueHandling = NullValueHandling.Ignore)]
+        //TODO for 6.1 and remove global option [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Hint { get; set; }
     }
 }

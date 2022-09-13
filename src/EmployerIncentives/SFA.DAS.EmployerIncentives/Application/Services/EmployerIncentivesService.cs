@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             var postRequest = new PostRecalculateEarningsRequest(recalculateEarningsRequest);
 
-            var response = await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest);
+            var response = await _client.PostWithResponseCode<PostRecalculateEarningsRequest>(postRequest, includeResponse: false);
 
             if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             var postRequest = new PostRevertPaymentsRequest(revertPaymentsRequest);
 
-            var response = await _client.PostWithResponseCode<PostRevertPaymentsRequest>(postRequest);
+            var response = await _client.PostWithResponseCode<PostRevertPaymentsRequest>(postRequest, includeResponse: false);
 
             if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             var postRequest = new PostReinstatePaymentsRequest(reinstatePaymentsRequest);
 
-            var response = await _client.PostWithResponseCode<PostReinstatePaymentsRequest>(postRequest);
+            var response = await _client.PostWithResponseCode<PostReinstatePaymentsRequest>(postRequest, includeResponse: false);
 
             if (ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)) return;
 

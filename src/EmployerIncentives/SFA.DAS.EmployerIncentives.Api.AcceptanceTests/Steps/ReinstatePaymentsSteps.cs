@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
     public class ReinstatePaymentsSteps
     {
         private readonly TestContext _context;
-        private PostReinstatePaymentsRequest _request;
+        private ReinstatePaymentsRequest _request;
         private HttpResponseMessage _response;
         private readonly Fixture _fixture;
 
@@ -31,12 +32,11 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Given(@"the caller wants to reinstate payments for apprenticeship incentives")]
         public void GivenTheCallerWantsToReinstatePayments()
         {
-            _request = new PostReinstatePaymentsRequest(
-                new ReinstatePaymentsRequest
-                {
-                    ServiceRequest = _fixture.Create<ReinstatePaymentsServiceRequest>(),
-                    Payments = _fixture.CreateMany<Guid>(10).ToList()
-                });
+            _request = new ReinstatePaymentsRequest
+            {
+                ServiceRequest = _fixture.Create<ReinstatePaymentsServiceRequest>(),
+                Payments = _fixture.CreateMany<Guid>(10).ToList()
+            };
         }
 
         [Given(@"the Employer Incentives Api receives the request")]
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 );
         }
 
-        [Given(@"the Employer Incentives Api receives request but returns a payment not found status")]
+        [Given(@"the Employer Incentives Api receives the request but returns a payment not found status")]
         public void GivenTheEmployerIncentivesApiReceivesTheRequestButPaymentNotFound()
         {
             _context.InnerApi.MockServer

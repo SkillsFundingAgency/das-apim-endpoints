@@ -24,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
         public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
             GetShortlistForUserQuery query,
             GetShortlistForUserResponse apiResponse,
-            List<GetApprenticeFeedbackResponse> apprenticeFeedbackResponse,
+            List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
             GetStandardsListResponse cachedCourses,
             List<GetStandardsListItem> standards,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
@@ -48,11 +48,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
                 .Setup(service => service.GetCourses())
                 .ReturnsAsync(cachedCourses);
             mockApprenticeFeedbackClient
-                .Setup(s => s.PostWithResponseCode<IEnumerable<GetApprenticeFeedbackResponse>>(It.Is<PostApprenticeFeedbackRequest>
-                (t => 
-                ((PostApprenticeFeedbackRequestData)t.Data).Ukprns.Except(apiResponse.Shortlist.Select(s => s.ProviderDetails.Ukprn)).Count() == 0 &&
-                apiResponse.Shortlist.Select(s => s.ProviderDetails.Ukprn).Except(((PostApprenticeFeedbackRequestData)t.Data).Ukprns).Count() == 0
-                ))).ReturnsAsync(new ApiResponse<IEnumerable<GetApprenticeFeedbackResponse>>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+                .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
+                .ReturnsAsync(apprenticeFeedbackResponse);
 
 
             var result = await handler.Handle(query, CancellationToken.None);

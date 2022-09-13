@@ -28,14 +28,14 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
         {
             client.Setup(x => x.PostWithResponseCode<PostReinstatePaymentsRequest>(
                 It.Is<PostReinstatePaymentsRequest>(
-                    c => c.PostUrl.Contains("reinstate-payments")
-                ))).ReturnsAsync(new ApiResponse<PostReinstatePaymentsRequest>(null, HttpStatusCode.NoContent, ""));
+                    c => c.PostUrl.Contains("reinstate-payments")),
+                It.IsAny<bool>())).ReturnsAsync(new ApiResponse<PostReinstatePaymentsRequest>(null, HttpStatusCode.NoContent, ""));
 
             await service.ReinstatePayments(request);
 
             client.Verify(x => x.PostWithResponseCode<PostReinstatePaymentsRequest>(
-                It.Is<PostReinstatePaymentsRequest>(c => c.PostUrl.Contains("reinstate-payments")
-                )), Times.Once);
+                It.Is<PostReinstatePaymentsRequest>(c => c.PostUrl.Contains("reinstate-payments")),
+                It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             var client = new Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>>();
             client.Setup(x => x.PostWithResponseCode<PostReinstatePaymentsRequest>(
                 It.Is<PostReinstatePaymentsRequest>(
-                    c => c.PostUrl.Contains("reinstate-payments")
-                ))).ReturnsAsync(new ApiResponse<PostReinstatePaymentsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
+                    c => c.PostUrl.Contains("reinstate-payments")),
+                It.IsAny<bool>())).ReturnsAsync(new ApiResponse<PostReinstatePaymentsRequest>(null, HttpStatusCode.BadRequest, "Invalid request"));
 
             var request = fixture.Create<ReinstatePaymentsRequest>();
 

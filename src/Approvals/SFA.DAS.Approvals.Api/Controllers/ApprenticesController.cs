@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -163,5 +166,52 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit")]
+        [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit")]
+        public async Task<IActionResult> EditApprenticeship(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEditApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetEditApprenticeshipResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/details")]
+        [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/details")]
+        public async Task<IActionResult> ApprenticeshipDetails(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApprenticeshipDetailsQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetApprenticeshipDetailsResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
     }
 }
