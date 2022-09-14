@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyEmptyResult();
+            fixture.VerifyResult(DeliveryModelStringTypes.PortableFlexiJob);
         }
 
         [TestCase(DeliveryModelStringTypes.Regular)]

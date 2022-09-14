@@ -99,7 +99,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
                 .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse{ LegalEntityId = 123}, HttpStatusCode.OK, string.Empty));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsTrue(result.IsFlexiJobAgency);
+            Assert.IsFalse(result.IsFlexiJobAgency);
         }
 
         [Test]
