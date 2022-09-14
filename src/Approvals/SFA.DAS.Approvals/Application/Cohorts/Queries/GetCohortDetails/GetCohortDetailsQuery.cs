@@ -14,7 +14,6 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static Microsoft.Azure.Amqp.Serialization.SerializableType;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 {
@@ -32,15 +31,12 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
     public class GetCohortDetailsQueryHandler : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
     {
-        private readonly IDeliveryModelService _deliveryModelService;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
-        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly IFjaaService _fjaaService;
 
-        public GetCohortDetailsQueryHandler(IDeliveryModelService deliveryModelService, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService)
+        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService)
         {
-            _deliveryModelService = deliveryModelService;
             _apiClient = apiClient;
             _serviceParameters = serviceParameters;
             _fjaaService = fjaaService;
@@ -48,8 +44,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
         {
-            var hasUavailableFjaaDms = false;
-
             var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
 
@@ -69,23 +63,18 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var apprenticeships = apiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
-            var cohortIsOnRegister = await _fjaaService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
-
-            if (!cohortIsOnRegister)
-            {
-                hasUavailableFjaaDms = apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency));
-            }
-
             if (!CheckParty(cohort))
             {
                 return null;
             }
 
+            var cohortIsOnRegister = await _fjaaService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+
             return new GetCohortDetailsQueryResult
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = hasUavailableFjaaDms
+                HasUnavailableFlexiJobAgencyDeliveryModel = !cohortIsOnRegister && apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency))
             };
         }
 

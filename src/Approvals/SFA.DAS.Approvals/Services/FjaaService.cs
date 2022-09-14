@@ -29,8 +29,6 @@ namespace SFA.DAS.Approvals.Services
 
         public async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            if (accountLegalEntityId == 0) return false;
-
             _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
             var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
 
