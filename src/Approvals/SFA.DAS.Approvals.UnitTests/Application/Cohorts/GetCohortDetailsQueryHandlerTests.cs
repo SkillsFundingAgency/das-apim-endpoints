@@ -73,7 +73,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _serviceParameters = new ServiceParameters(_cohort.WithParty, _cohort.AccountId);
 
-            _handler = new GetCohortDetailsQueryHandler(_deliveryModelService.Object, _apiClient.Object, _serviceParameters, _fjaaService.Object);
+            _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object);
         }
 
         [Test]
