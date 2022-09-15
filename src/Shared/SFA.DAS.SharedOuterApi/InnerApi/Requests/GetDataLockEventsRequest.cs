@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 
         private string BuildUrl()
         {
-            var url = $"api/datalock?page={PageNumber}";
+            var url = $"api/v2/datalock?page={PageNumber}";
             if (SinceEventId > 0)
             {
                 url += $"&sinceEventId={SinceEventId}";

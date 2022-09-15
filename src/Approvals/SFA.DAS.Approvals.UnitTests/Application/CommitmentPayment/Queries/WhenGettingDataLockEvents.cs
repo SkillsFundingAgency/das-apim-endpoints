@@ -21,13 +21,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.CommitmentPayment.Queries
         public async Task Then_The_Api_Is_Called_With_The_Request_And_DataLockEvents_Returned(
             GetDataLockEventsQuery query,
             GetDataLockEventsQueryResult result,
-            PageOfResults<GetDataLockEventsResponse> apiResponse,
+            PageOfResults<DataLockEvent> apiResponse,
             [Frozen] Mock<IProviderPaymentEventsApiClient<ProviderEventsConfiguration>> apiClient,
             GetDataLockEventsQueryHandler handler
         )
         {
             apiClient
-                .Setup(x => x.Get<PageOfResults<GetDataLockEventsResponse>>(It.IsAny<GetDataLockEventsRequest>()))
+                .Setup(x => x.Get<PageOfResults<DataLockEvent>>(It.IsAny<GetDataLockEventsRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

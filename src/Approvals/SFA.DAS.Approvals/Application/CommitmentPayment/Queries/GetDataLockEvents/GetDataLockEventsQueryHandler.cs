@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
 
         public async Task<GetDataLockEventsQueryResult> Handle(GetDataLockEventsQuery query, CancellationToken cancellationToken)
         {
-            var response = await _providerPaymentEventsApiClient.Get<PageOfResults<GetDataLockEventsResponse>>(new GetDataLockEventsRequest
+            var response = await _providerPaymentEventsApiClient.Get<PageOfResults<DataLockEvent>>(new GetDataLockEventsRequest
             {
                 SinceEventId = query.SinceEventId,
                 SinceTime = query.SinceTime,
@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
 
             return new GetDataLockEventsQueryResult()
             {
-                PagedDataLockEvent = response ?? new PageOfResults<GetDataLockEventsResponse>()
+                PagedDataLockEvent = response ?? new PageOfResults<DataLockEvent>()
             };
         }
     }

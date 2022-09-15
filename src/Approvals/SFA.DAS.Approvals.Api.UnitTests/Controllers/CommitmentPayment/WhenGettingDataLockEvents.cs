@@ -39,7 +39,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as PageOfResults<GetDataLockEventsResponse>;
+            var model = controllerResult.Value as PageOfResults<DataLockEvent>;
             Assert.IsNotNull(model);
             model.Should().BeEquivalentTo(mediatorResult.PagedDataLockEvent);
         }

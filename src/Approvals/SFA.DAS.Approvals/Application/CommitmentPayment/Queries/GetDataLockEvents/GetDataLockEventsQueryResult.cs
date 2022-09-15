@@ -4,6 +4,6 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
 {
     public class GetDataLockEventsQueryResult
     {
-        public PageOfResults<GetDataLockEventsResponse> PagedDataLockEvent { get; set; }
+        public PageOfResults<DataLockEvent> PagedDataLockEvent { get; set; }
     }
 }

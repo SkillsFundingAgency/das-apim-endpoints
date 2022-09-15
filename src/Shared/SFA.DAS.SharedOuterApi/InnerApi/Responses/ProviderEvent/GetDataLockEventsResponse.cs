@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent
 {
-    public class GetDataLockEventsResponse
+    public class DataLockEvent
     {
         public long Id { get; set; }
         public DateTime ProcessDateTime { get; set; }
