@@ -11,7 +11,7 @@ namespace SFA.DAS.Approvals.Services
 {
     public interface IFjaaService
     {
-        Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId);
+        Task<bool> IsAccountLegalEntityOnFjaaRegister(long accountLegalEntityId);
     }
 
     public class FjaaService : IFjaaService
@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Services
             _logger = logger;
         }
 
-        public async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
+        public async Task<bool> IsAccountLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
             _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
             var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));

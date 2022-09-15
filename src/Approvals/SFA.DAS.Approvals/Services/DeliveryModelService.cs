@@ -40,7 +40,7 @@ namespace SFA.DAS.Approvals.Services
         {
             var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
-            var isOnRegisterTask = _fjaaService.IsLegalEntityOnFjaaRegister(accountLegalEntityId);
+            var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntityId);
 
             await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask, isOnPortableFlexiJobTask);
 

@@ -68,13 +68,13 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 return null;
             }
 
-            var cohortIsOnRegister = await _fjaaService.IsLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+            var isOnRegister = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
 
             return new GetCohortDetailsQueryResult
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = !cohortIsOnRegister && apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency))
+                HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency))
             };
         }
 

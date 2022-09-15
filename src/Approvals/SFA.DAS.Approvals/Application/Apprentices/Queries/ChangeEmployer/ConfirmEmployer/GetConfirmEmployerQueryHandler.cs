@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
             var apprenticeship = apprenticeshipTask.Result;
             var accountLegalEntity = accountLegalEntityTask.Result;
 
-            var isFlexiJobAgency = await _fjaaService.IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
+            var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
 
             if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
