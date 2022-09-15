@@ -69,6 +69,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 HasStandardOptions = apprenticeship.HasStandardOptions,
                 TrainingCourseOption = apprenticeship.TrainingCourseOption,
                 StartDate = apprenticeship.StartDate,
+                ActualStartDate =  apprenticeship.ActualStartDate,
                 EndDate = apprenticeship.EndDate,
                 Cost = apprenticeship.Cost,
                 EmploymentPrice = apprenticeship.EmploymentPrice,
