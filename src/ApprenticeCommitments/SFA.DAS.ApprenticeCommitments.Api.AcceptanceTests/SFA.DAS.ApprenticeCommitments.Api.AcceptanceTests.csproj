@@ -5,22 +5,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+    <PackageReference Include="coverlet.msbuild">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AutoFixture" Version="4.13.0" />
-    <PackageReference Include="FluentAssertions.Web" Version="1.0.138" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.11" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="SpecFlow" Version="3.5.14" />
-    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.5.286" />
-    <PackageReference Include="SpecFlow.NUnit" Version="3.5.14" />
-    <PackageReference Include="nunit" Version="3.13.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.5.14" />
-    <PackageReference Include="WireMock.Net" Version="1.4.8" />
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="FluentAssertions.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="SpecFlow" />
+    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" />
+    <PackageReference Include="SpecFlow.NUnit" />
+    <PackageReference Include="nunit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" />
+    <PackageReference Include="WireMock.Net" />
   </ItemGroup>
 
   <ItemGroup>
