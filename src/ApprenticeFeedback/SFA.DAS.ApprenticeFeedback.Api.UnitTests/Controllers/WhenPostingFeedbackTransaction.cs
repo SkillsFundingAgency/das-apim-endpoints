@@ -15,7 +15,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
-
+using System.Linq;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 {
@@ -44,23 +44,26 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task And_ProcessCommandIsProcessedSuccessfully_Then_ReturnResults(
             long apprenticeFeedbackTransactionId,
             ApprenticeFeedbackTransaction feedbackTransaction,
-            object mediatorTransactionResult,
             GetApprenticeResult mediatorApprenticeResult,
-            [Frozen] Mock<IMediator> mockTransactionMediator,
-            [Frozen] Mock<IMediator> mockApprenticeMediator,
+            ProcessEmailTransactionResponse mediatorCommandResponse,
+            [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] FeedbackTransactionController controller)
         {
-            mockApprenticeMediator.Setup(mediator =>
+            mediatorApprenticeResult.ApprenticePreferences.Add(new InnerApi.Responses.ApprenticePreferenceDto { PreferenceId = 1, Status = true });
+
+            mediatorMock.Setup(mediator =>
                 mediator.Send(
                     It.Is<GetApprenticeQuery>(x => x.ApprenticeId == feedbackTransaction.ApprenticeId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorApprenticeResult);
 
-            mockTransactionMediator.Setup(mediator =>
+            mediatorMock.Setup(mediator =>
                 mediator.Send(
-                    It.Is<long>(x => x == apprenticeFeedbackTransactionId),
+                    It.Is<ProcessEmailTransactionCommand>(x => x.FeedbackTransactionId == apprenticeFeedbackTransactionId 
+                    && x.ApprenticeName == mediatorApprenticeResult.FirstName && x.ApprenticeEmailAddress == mediatorApprenticeResult.Email
+                    && x.IsEmailContactAllowed == true),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorTransactionResult);
+                .ReturnsAsync(mediatorCommandResponse);
 
             ObjectResult objectResult = await controller.ProcessEmailTransaction(apprenticeFeedbackTransactionId, feedbackTransaction) as ObjectResult;
             Assert.IsNotNull(objectResult);
