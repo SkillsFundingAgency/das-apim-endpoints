@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -9,7 +10,6 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse
@@ -37,7 +37,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 var errorMessage =
                     $"Response status code does not indicate success: {(int)standardResponse.StatusCode} - Standard data not found for Lars Code: {request.LarsCode}";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, standardResponse.StatusCode, standardResponse.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
             var standard = standardResponse.Body;
             var courseResponse = await _courseManagementApiClient.GetWithResponseCode<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
@@ -46,7 +46,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 var errorMessage =
                    $"Response status code does not indicate success: {(int)courseResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, courseResponse.StatusCode, courseResponse.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
             var course = courseResponse.Body;
             var providerCourseLocationsResponse = await _courseManagementApiClient.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
@@ -55,7 +55,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 var errorMessage =
                    $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, providerCourseLocationsResponse.StatusCode, providerCourseLocationsResponse.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
             var providerCourseLocations = providerCourseLocationsResponse.Body;
 
