@@ -1,13 +1,11 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Roatp.CourseManagement.Application.Regions.Queries;
-using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,7 +33,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStan
             {
                 var errorMessage = $"Response status code does not indicate success: {(int)response.StatusCode} - Regions data not found";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, response.StatusCode, response.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
 
             var regions = response.Body;
@@ -47,7 +45,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStan
                 var errorMessage =
                    $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider Course Locations not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, providerCourseLocationsResponse.StatusCode, providerCourseLocationsResponse.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
             var providerCourseLocations = providerCourseLocationsResponse.Body;
 
