@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{apprenticeId}")]
+        [HttpGet("{ApprenticeId}")]
         public async Task<ActionResult<GetApprenticeTrainingProvidersResult>> GetApprenticeTrainingProviders([FromRoute] GetApprenticeTrainingProvidersQuery request)
         {
             _logger.LogDebug($"Begin Get Apprentice Training Providers for ApprenticeId: {request?.ApprenticeId}");
@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             return result;
         }
 
-        [HttpGet("{apprenticeId}/{ukprn}")]
+        [HttpGet("{ApprenticeId}/{Ukprn}")]
         public async Task<ActionResult<GetApprenticeTrainingProviderResult>> GetApprenticeTrainingProviders([FromRoute] GetApprenticeTrainingProviderQuery request)
         {
             _logger.LogDebug($"Begin Get Apprentice Training Provider for ApprenticeId: {request?.ApprenticeId}, Ukprn: {request?.Ukprn}");
