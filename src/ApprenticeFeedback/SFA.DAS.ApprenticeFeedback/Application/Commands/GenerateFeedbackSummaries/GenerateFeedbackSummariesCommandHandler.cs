@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateFeedbackSummar
 
         public async Task<GenerateFeedbackSummariesResponse> Handle(GenerateFeedbackSummariesCommand command, CancellationToken cancellationToken)
         {
-            var response = await _feedbackApiClient.PostWithResponseCode<object>(new GenerateFeedbackSummariesRequest());
+            var response = await _feedbackApiClient.PostWithResponseCode<object>(new GenerateFeedbackSummariesRequest(), false);
 
             response.EnsureSuccessStatusCode();
             return new GenerateFeedbackSummariesResponse();
