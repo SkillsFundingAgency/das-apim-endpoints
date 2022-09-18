@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent
+namespace SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent
 {
     public class DataLockEventApprenticeship
     {

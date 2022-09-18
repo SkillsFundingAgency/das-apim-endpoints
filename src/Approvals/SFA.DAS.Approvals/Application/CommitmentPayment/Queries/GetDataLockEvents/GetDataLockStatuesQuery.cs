@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEvents
 {
-    public class GetDataLockEventsQuery : IRequest<GetDataLockEventsQueryResult>
+    public class GetDataLockStatuesQuery : IRequest<GetDataLockStatusesQueryResult>
     {
         public long SinceEventId { get; set; }
         public DateTime? SinceTime { get; set; }

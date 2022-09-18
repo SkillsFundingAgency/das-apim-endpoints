@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent
+namespace SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent
 {
-    public class DataLockEvent
+    public class DataLockStatusEvent
     {
         public long Id { get; set; }
         public DateTime ProcessDateTime { get; set; }

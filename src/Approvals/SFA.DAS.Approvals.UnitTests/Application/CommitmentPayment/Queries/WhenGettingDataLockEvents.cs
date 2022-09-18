@@ -7,9 +7,9 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEvents;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,15 +19,15 @@ namespace SFA.DAS.Approvals.UnitTests.Application.CommitmentPayment.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_DataLockEvents_Returned(
-            GetDataLockEventsQuery query,
-            GetDataLockEventsQueryResult result,
-            PageOfResults<DataLockEvent> apiResponse,
+            GetDataLockStatuesQuery query,
+            GetDataLockStatusesQueryResult result,
+            PageOfResults<DataLockStatusEvent> apiResponse,
             [Frozen] Mock<IProviderPaymentEventsApiClient<ProviderEventsConfiguration>> apiClient,
-            GetDataLockEventsQueryHandler handler
+            GetDataLockStatusesQueryHandler handler
         )
         {
             apiClient
-                .Setup(x => x.Get<PageOfResults<DataLockEvent>>(It.IsAny<GetDataLockEventsRequest>()))
+                .Setup(x => x.Get<PageOfResults<DataLockStatusEvent>>(It.IsAny<GetDataLockEventsRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

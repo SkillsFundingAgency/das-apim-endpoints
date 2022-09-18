@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent
+﻿namespace SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent
 {
     public enum TransactionType
     {

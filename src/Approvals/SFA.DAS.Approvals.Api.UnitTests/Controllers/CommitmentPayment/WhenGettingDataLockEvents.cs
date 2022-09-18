@@ -9,14 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEvents;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
 {
-    public class WhenGettingDataLockEvents
+    public class WhenGettingDataLockStatuses
     {
         [Test, MoqAutoData]
         public async Task Then_Get_DataLockEvents_From_Mediator(
@@ -25,23 +24,23 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
             string employerAccountId,
             long ukprn,
             int page,
-            GetDataLockEventsQueryResult mediatorResult,
+            GetDataLockStatusesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DataLockController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetDataLockEventsQuery>(x => x.EmployerAccountId == employerAccountId),
+                    It.IsAny<GetDataLockStatuesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetDataLockEvents(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
+            var controllerResult = await controller.GetDataLockStatuses(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as PageOfResults<DataLockEvent>;
+            var model = controllerResult.Value as GetDataLockStatusListResponse;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo(mediatorResult.PagedDataLockEvent);
+            model.Should().BeOfType<GetDataLockStatusListResponse>();
         }
 
         [Test, MoqAutoData]
@@ -51,17 +50,17 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
             string employerAccountId,
             long ukprn,
             int page,
-            GetDataLockEventsQueryResult mediatorResult,
+            GetDataLockStatusesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] DataLockController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetDataLockEventsQuery>(),
+                    It.IsAny<GetDataLockStatuesQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetDataLockEvents(sinceEventId, sinceTime, employerAccountId, ukprn, page) as BadRequestResult;
+            var controllerResult = await controller.GetDataLockStatuses(sinceEventId, sinceTime, employerAccountId, ukprn, page) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

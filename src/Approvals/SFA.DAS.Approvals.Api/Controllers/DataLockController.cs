@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEvents;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System;
@@ -23,12 +24,12 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/events")]
-        public async Task<IActionResult> GetDataLockEvents(long sinceEventId, DateTime? sinceTime, string employerAccountId, long ukprn, int page = 1)
+        [Route("[controller]/statuses")]
+        public async Task<IActionResult> GetDataLockStatuses(long sinceEventId, DateTime? sinceTime, string employerAccountId, long ukprn, int page = 1)
         {
             try
             {
-                var response = await _mediator.Send(new GetDataLockEventsQuery()
+                var response = await _mediator.Send(new GetDataLockStatuesQuery()
                 {
                     EmployerAccountId = employerAccountId,
                     SinceEventId = sinceEventId,
@@ -37,7 +38,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     Ukprn = ukprn
                 });
 
-                return Ok(response.PagedDataLockEvent);
+                var model = new GetDataLockStatusListResponse
+                {
+                    DataLockStatuses = response?.PagedDataLockEvent?.Items?.Select(c => (GetDataLockStatusResponse)c)
+                };
+                return Ok(model);
             }
             catch (Exception e)
             {
