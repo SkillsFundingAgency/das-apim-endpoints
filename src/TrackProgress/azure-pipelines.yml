@@ -9,6 +9,7 @@ trigger:
     - pipeline-templates
     - src/TrackProgress
     - src/Shared*
+    - Directory.Packages.props
 
 pr:
   branches:
@@ -20,6 +21,7 @@ pr:
     - pipeline-templates
     - src/TrackProgress
     - src/Shared*
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
@@ -31,7 +33,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.62
+    ref: refs/tags/1.0.5
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -48,3 +50,4 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: TrackProgress
+    SandboxEnabled: $True
