@@ -28,6 +28,7 @@ public sealed record Apprenticeship(long ProviderId, int Uln, DateOnly StartDate
 
     internal Apprenticeship WithStartAndStopOnSameDay()
         => new Apprenticeship(this) with { Status = ApprenticeshipStatus.Stopped, StopDate = StartDate };
+    
     internal Apprenticeship WithStandard(string standard)
         => new Apprenticeship(this) with { Standard = standard };
 }

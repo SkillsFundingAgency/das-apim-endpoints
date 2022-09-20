@@ -15,18 +15,13 @@ namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
 public class CallApi : ApiFixture
 {
-    [TestCase("OPTION")]
     [TestCase("")]
     [TestCase(null)]
     [TestCase(" ")]
     public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode(string optionToTest)
     {
         var apprenticeship = An.Apprenticeship.WithOption(optionToTest);
-
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var courseOptionsResponse = fixture.Build<GetCourseOptionsResponse>().With(x => x.Options, new List<string>()).Create();
-        var optionCode = string.IsNullOrWhiteSpace(apprenticeship.Option) ? "core" : apprenticeship.Option;
-        var validDto = BuildValidProgressDtoContentFromCourseResponse(courseKsbsResponse);
+        var course = A.Course.WithoutOptions();
 
         using (Interceptor.BeginScope())
         {
@@ -35,15 +30,7 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{apprenticeship.Standard}/options/{optionCode}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
-                .RegisterWith(Interceptor);
-
-            CoursesApi2
-                .ForPath($"/api/courses/standards/{apprenticeship.Standard}")
-                .Responds()
-                .WithSystemTextJsonContent(courseOptionsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             TrackProgressInnerApi
@@ -54,6 +41,42 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
+
+            var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
+
+            var response = await client.PostAsync(
+                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+
+            response.Should().Be201Created();
+        }
+    }
+
+    [TestCase("OPTION")]
+    public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode_options(string optionToTest)
+    {
+        var apprenticeship = An.Apprenticeship.WithOption(optionToTest);
+        var course = A.Course.WithOptions(optionToTest);
+
+        using (Interceptor.BeginScope())
+        {
+            CommitmentsApi
+                .WithApprenticeship(apprenticeship)
+                .RegisterWith(Interceptor);
+
+            CoursesApi
+                .WithCourse(course)
+                .RegisterWith(Interceptor);
+
+            TrackProgressInnerApi
+                .ForPost()
+                .ForPath($"apprentice/{12345}/{apprenticeship.Uln}/2021-01/progress")
+                .Responds()
+                .WithStatus(HttpStatusCode.Created)
+                .RegisterWith(Interceptor);
+
+            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
+
+            var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -69,8 +92,8 @@ public class CallApi : ApiFixture
     public async Task Track_progress_with_single_matching_apprenticeship_and_different_sandbox_modes(string? isSandbox, bool updateExpected)
     {
         var apprenticeship = An.Apprenticeship;
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var validDto = BuildValidProgressDtoContentFromCourseResponse(courseKsbsResponse);
+        var course = A.Course.WithOptions(apprenticeship.Option);
+        var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
@@ -79,9 +102,7 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{apprenticeship.Standard}/options/{apprenticeship.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             TrackProgressInnerApi
@@ -158,19 +179,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_non_portable_flexi_delivery_model()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.Regular);
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship.WithDeliveryModel(DeliveryModel.Regular);
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship.WithDeliveryModel(DeliveryModel.Regular))
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -185,19 +204,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_not_started_apprenticeship()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.FlexiJobAgency, ApprenticeshipStatus.WaitingToStart);
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship.WithNotStarted();
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship.WithNotStarted())
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -213,19 +230,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_invalid_Ids()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship;
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -240,19 +255,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_invalid_Values()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship;
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -268,19 +281,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_no_Ksbs()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship;
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -295,19 +306,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_null_Ids()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship;
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -322,19 +331,17 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_duplicate_Ids()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
+        var apprenticeship = An.Apprenticeship;
+        var course = A.Course.WithOptions(apprenticeship.Option);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -373,25 +380,23 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_single_matching_apprenticeship_and_a_subset_of_valid_ksbs()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var validDto = BuildValidSubsetProgressDtoContentFromCourseResponse(courseKsbsResponse);
+        var apprenticeship = An.Apprenticeship.WithOption("OPTION1").WithStandard("STD");
+        var course = A.Course.WithOptions(apprenticeship.Option).WithStandard(apprenticeship.Standard);
+        var validDto = BuildValidSubsetProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
             CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
+                .WithApprenticeship(apprenticeship)
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             TrackProgressInnerApi
                 .ForPost()
-                .ForPath($"/apprentice/{12345}/{singleMockResponse.Uln}/2021-01/progress")
+                .ForPath($"/apprentice/{12345}/{apprenticeship.Uln}/2021-01/progress")
                 .Responds()
                 .WithSystemTextJsonContent("{}")
                 .WithStatus(HttpStatusCode.Created)
@@ -409,9 +414,9 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_single_matching_apprenticeship_and_an_additional_ksbs_which_doesnt_belong_course()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse();
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(courseKsbsResponse);
+        var apprenticeship = An.Apprenticeship.WithOption("OPTION1").WithStandard("STD");
+        var course = A.Course.WithOptions(apprenticeship.Option).WithStandard(apprenticeship.Standard);
+        var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
@@ -420,9 +425,7 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
+                .WithCourse(course)
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -430,19 +433,15 @@ public class CallApi : ApiFixture
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be400BadRequest();
-            var body = await response.Content.ReadAsStringAsync();
-            var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem!.Title.Should().StartWith("Failed to record progress due to one or more validation errors");
+            response.Should().Be400BadRequest()
+                .And.MatchInContent("*This KSB does not match the course option*");
         }
     }
 
     [Test]
     public async Task Track_progress_with_no_options_but_options_do_exist_for_course()
     {
-        var singleMockResponse = GetMockSingleApprenticeshipResponse(DeliveryModel.PortableFlexiJob, ApprenticeshipStatus.Live, "STDUID", "");
         var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var courseOptionsResponse = fixture.Build<GetCourseOptionsResponse>().With(x => x.Options, new List<string>() { "Option 1", "Option 2" }).Create();
         var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(courseKsbsResponse);
 
         using (Interceptor.BeginScope())
@@ -452,15 +451,7 @@ public class CallApi : ApiFixture
                 .RegisterWith(Interceptor);
 
             CoursesApi
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}/options/{singleMockResponse.Option}/ksbs")
-                .Responds()
-                .WithSystemTextJsonContent(courseKsbsResponse)
-                .RegisterWith(Interceptor);
-
-            CoursesApi2
-                .ForPath($"/api/courses/standards/{singleMockResponse.StandardUId}")
-                .Responds()
-                .WithSystemTextJsonContent(courseOptionsResponse)
+                .WithCourse(A.Course.WithStandard("STDUID").WithOptions("Option 1", "Option 2"))
                 .RegisterWith(Interceptor);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
@@ -481,9 +472,6 @@ public class CallApi : ApiFixture
     private static HttpRequestInterceptionBuilder CoursesApi { get; } =
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
-    private static HttpRequestInterceptionBuilder CoursesApi2 { get; } =
-        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
-
     private static HttpRequestInterceptionBuilder TrackProgressInnerApi { get; } =
         new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
 
@@ -498,18 +486,18 @@ public class CallApi : ApiFixture
             .Create();
     }
 
-    private StringContent BuildValidProgressDtoContentFromCourseResponse(GetKsbsForCourseOptionResponse response)
+    private StringContent BuildValidProgressDtoContentFromCourseResponse(Course course)
     {
-        var ksbs = response.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).ToList();
+        var ksbs = course.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).ToList();
         var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
         var validDto = BuildProgressDtoContent(dto);
 
         return BuildProgressDtoContent(dto);
     }
 
-    private StringContent BuildValidSubsetProgressDtoContentFromCourseResponse(GetKsbsForCourseOptionResponse response)
+    private StringContent BuildValidSubsetProgressDtoContentFromCourseResponse(Course course)
     {
-        var ksbs = response.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
+        var ksbs = course.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
         var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
         var validDto = BuildProgressDtoContent(dto);
 
@@ -519,6 +507,16 @@ public class CallApi : ApiFixture
     private StringContent BuildAdditionalKsbToProgressDtoContentFromCourseResponse(GetKsbsForCourseOptionResponse response)
     {
         var ksbs = response.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
+        ksbs.Add(new ProgressDto.Ksb { Id = Guid.NewGuid().ToString(), Value = 9 });
+        var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
+        var validDto = BuildProgressDtoContent(dto);
+
+        return BuildProgressDtoContent(dto);
+    }
+
+    private StringContent BuildAdditionalKsbToProgressDtoContentFromCourseResponse(Course course)
+    {
+        var ksbs = course.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
         ksbs.Add(new ProgressDto.Ksb { Id = Guid.NewGuid().ToString(), Value = 9 });
         var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
         var validDto = BuildProgressDtoContent(dto);

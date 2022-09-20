@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using System.Net;
 using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeshipsResponse;
 
@@ -81,5 +82,42 @@ public static partial class MockApiExtensions
            .WithSystemTextJsonContent(mockResponse);
 
         return new BuildApprenticeship(builder);
+    }
+
+    public static BuildApprenticeship WithCourse(
+        this HttpRequestInterceptionBuilder _, TestModels.Course course)
+    {
+        var fixture = new Fixture();
+
+        var builders = new List<HttpRequestInterceptionBuilder> { };
+
+        var courseOptionsResponse = fixture
+                  .Build<GetCourseOptionsResponse>()
+                  .With(x => x.Options, course.Options.ToList())
+                  .Create();
+
+        builders.Add(
+            new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost()
+                .ForPath($"/api/courses/standards/{course.Standard}")
+                .Responds()
+                .WithSystemTextJsonContent(courseOptionsResponse));
+
+        var options = course.Options.Any() ? course.Options : new[] { "core" };
+
+        foreach (var option in options)
+        {
+            builders.Add(
+                new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost()
+                    .ForPath($"/api/courses/standards/{course.Standard}/options/{option}/ksbs")
+                    .Responds()
+                    .WithSystemTextJsonContent(fixture
+                        .Build<GetKsbsForCourseOptionResponse>()
+                        .With(x => x.Ksbs,
+                                   course.Ksbs.Select(k =>
+                                        new CourseKsb { Type = k.Type, Id = k.Id }).ToList())
+                        .Create()));
+        }
+
+        return new BuildApprenticeship(builders.ToArray());
     }
 }
