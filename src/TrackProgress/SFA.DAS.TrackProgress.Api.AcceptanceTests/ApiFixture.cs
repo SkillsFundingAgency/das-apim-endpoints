@@ -1,15 +1,16 @@
-﻿using System.Net;
-using AutoFixture;
+﻿using AutoFixture;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests;
+using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
+using System.Net;
 
 namespace SFA.DAS.TrackProgress.Tests;
 
 public class ApiFixture
 {
-    private protected TrackProgressApiFactory factory = null!;
-    private protected Fixture fixture = null!;
-    private protected HttpClient client = null!;
+    protected TrackProgressApiFactory factory = null!;
+    protected Fixture fixture = null!;
+    protected HttpClient client = null!;
 
     protected HttpClientInterceptorOptions Interceptor { get; private set; }
 
@@ -45,12 +46,22 @@ public class ApiFixture
     [SetUp]
     public void Setup()
     {
-        client = factory.CreateClient();
+        client = factory.CreateClient().ForProvider(An.Apprenticeship.ProviderId);
     }
 
     [TearDown]
     public void TearDown()
     {
         client?.Dispose();
+    }
+}
+
+public static class HttpClientExtension
+{
+    public static HttpClient ForProvider(this HttpClient client, long providerId)
+    {
+        client.DefaultRequestHeaders.Remove(SubscriptionHeaderConstants.ForProviderId);
+        client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, $"Provider-{providerId}-TrackProgressOuterApi");
+        return client;
     }
 }

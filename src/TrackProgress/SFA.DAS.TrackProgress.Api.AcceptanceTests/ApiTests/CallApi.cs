@@ -33,15 +33,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            TrackProgressInnerApi
-                .ForPost()
-                .ForPath($"apprentice/{12345}/{apprenticeship.Uln}/2021-01/progress")
-                .Responds()
-                .WithStatus(HttpStatusCode.Created)
-                .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
             var response = await client.PostAsync(
@@ -66,15 +57,6 @@ public class CallApi : ApiFixture
             CoursesApi
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
-
-            TrackProgressInnerApi
-                .ForPost()
-                .ForPath($"apprentice/{12345}/{apprenticeship.Uln}/2021-01/progress")
-                .Responds()
-                .WithStatus(HttpStatusCode.Created)
-                .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
@@ -105,12 +87,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            TrackProgressInnerApi
-                .ForPost()
-                .ForPath($"apprentice/{12345}/{apprenticeship.Uln}/2021-01-01/progress")
-                .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
 
             var response = await client.PostAsync(
@@ -131,8 +107,6 @@ public class CallApi : ApiFixture
                 .WithoutApprenticeship(An.Apprenticeship)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
@@ -149,8 +123,6 @@ public class CallApi : ApiFixture
                 .WithApprenticeship(An.Apprenticeship.WithMultipleStages())
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
@@ -166,8 +138,6 @@ public class CallApi : ApiFixture
             CommitmentsApi
                 .WithApprenticeship(An.Apprenticeship.WithStartDate("2020-01-19"))
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
@@ -192,8 +162,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
@@ -216,8 +184,6 @@ public class CallApi : ApiFixture
             CoursesApi
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -243,8 +209,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidIds());
 
@@ -267,8 +231,6 @@ public class CallApi : ApiFixture
             CoursesApi
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidValues());
@@ -294,8 +256,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithNoKsbs());
 
@@ -318,8 +278,6 @@ public class CallApi : ApiFixture
             CoursesApi
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
@@ -344,8 +302,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
 
@@ -366,8 +322,6 @@ public class CallApi : ApiFixture
                     .WithStartAndStopOnSameDay()
                     .WithMultipleStages(apprenticeshipCount))
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -394,16 +348,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            TrackProgressInnerApi
-                .ForPost()
-                .ForPath($"/apprentice/{12345}/{apprenticeship.Uln}/2021-01/progress")
-                .Responds()
-                .WithSystemTextJsonContent("{}")
-                .WithStatus(HttpStatusCode.Created)
-                .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
@@ -428,8 +372,6 @@ public class CallApi : ApiFixture
                 .WithCourse(course)
                 .RegisterWith(Interceptor);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
-
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
@@ -453,8 +395,6 @@ public class CallApi : ApiFixture
             CoursesApi
                 .WithCourse(A.Course.WithStandard("STDUID").WithOptions("Option 1", "Option 2"))
                 .RegisterWith(Interceptor);
-
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForProviderId, "Provider-12345-TrackProgressOuterApi");
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
