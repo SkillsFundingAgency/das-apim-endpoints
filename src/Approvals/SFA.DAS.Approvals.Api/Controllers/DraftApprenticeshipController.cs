@@ -48,11 +48,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         [Route("employer/{accountId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit")]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit")]
-        public async Task<IActionResult> GetEditDraftApprenticeship(long cohortId, long draftApprenticeshipId)
+        public async Task<IActionResult> GetEditDraftApprenticeship(long cohortId, long draftApprenticeshipId, [FromQuery] string courseCode)
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipQuery{ CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
+                var result = await _mediator.Send(new GetEditDraftApprenticeshipQuery{ CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode});
                 
                 if (result == null)
                 {
@@ -71,11 +71,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         [Route("employer/{accountId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/select-delivery-model")]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/select-delivery-model")]
-        public async Task<IActionResult> GetEditDraftApprenticeshipDeliveryModel(long cohortId, long draftApprenticeshipId)
+        public async Task<IActionResult> GetEditDraftApprenticeshipDeliveryModel(long cohortId, long draftApprenticeshipId, [FromQuery] string courseCode)
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipDeliveryModelQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId });
+                var result = await _mediator.Send(new GetEditDraftApprenticeshipDeliveryModelQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode });
 
                 if (result == null)
                 {

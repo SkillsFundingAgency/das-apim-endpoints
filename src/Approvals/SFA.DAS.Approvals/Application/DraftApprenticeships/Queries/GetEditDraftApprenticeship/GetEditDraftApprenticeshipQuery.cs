@@ -6,5 +6,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
     {
         public long CohortId { get; set; }
         public long DraftApprenticeshipId { get; set; }
+        public string CourseCode { get; set; }
     }
 }

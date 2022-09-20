@@ -22,6 +22,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
         private long _cohortId;
         private long _draftApprenticeshipId;
+        private string _courseCode;
 
         [SetUp]
         public void Setup()
@@ -31,6 +32,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             _cohortId = fixture.Create<long>();
             _draftApprenticeshipId = fixture.Create<long>();
+            _courseCode = fixture.Create<string>();
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.Is<GetEditDraftApprenticeshipDeliveryModelQuery>(q =>
@@ -45,7 +47,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         [Test]
         public async Task EditDraftApprenticeshipResponseIsReturned()
         {
-            var result = await _controller.GetEditDraftApprenticeshipDeliveryModel(_cohortId, _draftApprenticeshipId);
+            var result = await _controller.GetEditDraftApprenticeshipDeliveryModel(_cohortId, _draftApprenticeshipId, _courseCode);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult) result;
