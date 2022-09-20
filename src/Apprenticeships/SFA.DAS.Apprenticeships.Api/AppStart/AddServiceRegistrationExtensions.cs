@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -9,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Apprenticeships.Api.AppStart;
 
+[ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationExtensions
 {
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
@@ -20,6 +22,7 @@ public static class AddServiceRegistrationExtensions
     }
 }
 
+[ExcludeFromCodeCoverage]
 public static class AddConfigurationOptionsExtension
 {
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)

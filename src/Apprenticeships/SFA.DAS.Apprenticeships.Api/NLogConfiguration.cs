@@ -1,4 +1,5 @@
-﻿using Microsoft.ApplicationInsights.NLogTarget;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.ApplicationInsights.NLogTarget;
 using NLog;
 using NLog.Common;
 using NLog.Config;
@@ -8,6 +9,7 @@ using LogLevel = NLog.LogLevel;
 
 namespace SFA.DAS.Apprenticeships.Api;
 
+[ExcludeFromCodeCoverage]
 public class NLogConfiguration
 {
     public void ConfigureNLog()

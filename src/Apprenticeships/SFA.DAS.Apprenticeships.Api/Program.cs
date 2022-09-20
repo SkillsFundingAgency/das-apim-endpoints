@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using NLog.Web;
 
 namespace SFA.DAS.Apprenticeships.Api;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args)

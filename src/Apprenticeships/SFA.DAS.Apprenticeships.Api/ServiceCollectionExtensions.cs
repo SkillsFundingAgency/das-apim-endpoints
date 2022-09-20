@@ -1,7 +1,9 @@
-﻿using NLog.Extensions.Logging;
+﻿using System.Diagnostics.CodeAnalysis;
+using NLog.Extensions.Logging;
 
 namespace SFA.DAS.Apprenticeships.Api;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddNLog(this IServiceCollection serviceCollection)
