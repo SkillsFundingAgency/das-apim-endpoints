@@ -1,0 +1,35 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
+using SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLookup.Queries;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
+{
+    [ApiController]
+    public class NationalAchievementRatesLookupController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+        private readonly ILogger<NationalAchievementRatesLookupController> _logger;
+
+        public NationalAchievementRatesLookupController(IMediator mediator, ILogger<NationalAchievementRatesLookupController> logger)
+        {
+            _mediator = mediator;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        [Route("lookup/national-acheivement-rates")]
+        public async Task<IActionResult> GetNationalAcheivementRates([FromQuery] int forYear)
+        {
+            _logger.LogInformation($"Outer API: Trying to get national acheivement rates for year: {forYear}");
+
+            var result = await _mediator.Send(new NationalAchievementRatesLookupQuery(forYear));
+
+            if (result == null) return BadRequest();
+
+            return Ok(result);
+        }
+    }
+}
