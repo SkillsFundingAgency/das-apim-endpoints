@@ -50,7 +50,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         {
             var result = await mediator.Send(new GetPreviewPanelQuery
             {
-                Title = title
+                Slug = title
             }, cancellationToken);
 
             if (result == null)

@@ -1,22 +1,23 @@
-﻿namespace SFA.DAS.Campaign.ExternalApi.Requests
-{
-    public class GetPanelRequest
-    {
-        private readonly string _title;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-        public GetPanelRequest(string title)
+namespace SFA.DAS.Campaign.ExternalApi.Requests
+{
+    public class GetPanelRequest : IGetApiRequest
+    {
+        private readonly string _slug;
+
+        public GetPanelRequest(string slug)
         {
-            _title = title;
+            _slug = slug;
         }
 
         public string GetUrl => BuildUrl();
 
         private string BuildUrl()
         {
-            var getUrl = $"entries?content_type=panel?title={_title}";
+            var getUrl = $"entries?content_type=panel&fields.slug={_slug}";
 
             return getUrl;
         }
-        //come back to this url
     }
 }

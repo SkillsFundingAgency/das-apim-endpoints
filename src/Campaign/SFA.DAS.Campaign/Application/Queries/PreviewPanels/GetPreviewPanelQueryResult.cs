@@ -4,6 +4,6 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewPanels
 {
     public class GetPreviewPanelQueryResult
     {
-        public PreviewPanelPageModel PanelModel { get; set; }
+        public PanelPageModel PanelModel { get; set; }
     }
 }

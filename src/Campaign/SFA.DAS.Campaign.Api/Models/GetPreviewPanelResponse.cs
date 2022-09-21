@@ -4,6 +4,6 @@ namespace SFA.DAS.Campaign.Api.Models
 {
     public class GetPreviewPanelResponse
     {
-        public PreviewPanelPageModel PanelModel { get; set; }
+        public PanelPageModel PanelModel { get; set; }
     }
 }

@@ -5,6 +5,6 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewPanels
 {
     public class GetPreviewPanelQuery : IRequest<GetPreviewPanelQueryResult>
     {
-        public string Title { get; set; }
+        public string Slug { get; set; }
     }
 }

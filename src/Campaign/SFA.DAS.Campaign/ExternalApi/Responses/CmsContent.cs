@@ -334,6 +334,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("showOnTheHomepageOnly")]
         public bool ShowOnTheHomepageOnly { get; set; }
+        [JsonPropertyName("buttonText")]
+        public string ButtonText { get; set; }
+        [JsonPropertyName("buttonUrl")]
+        public string ButtonUrl { get; set; }
+        [JsonPropertyName("buttonStyle")]
+        public List<string> ButtonStyle { get; set; }
     }
 
     public class MainContent
