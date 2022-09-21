@@ -312,10 +312,8 @@ public class CallApi : ApiFixture
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be400BadRequest();
-            var body = await response.Content.ReadAsStringAsync();
-            var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
-            problem?.Title.Should().StartWith("This apprenticeship requires an option to be set to record progress against it");
+            response.Should().Be400BadRequest()
+                .And.MatchInContent("*This apprenticeship requires an option to be set to record progress against it*");
         }
     }
 
