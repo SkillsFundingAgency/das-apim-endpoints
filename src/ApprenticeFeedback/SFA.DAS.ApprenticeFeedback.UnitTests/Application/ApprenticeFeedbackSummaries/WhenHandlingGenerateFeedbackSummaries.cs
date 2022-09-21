@@ -33,12 +33,12 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         {
             var response = new ApiResponse<object>(null, HttpStatusCode.OK, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), true))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), false))
                 .ReturnsAsync(response);
 
             var result = await _handler.Handle(command, CancellationToken.None);
 
-            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), true), Times.Once);
+            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), false), Times.Once);
             result.Should().BeOfType<GenerateFeedbackSummariesResponse>();
         }
 
