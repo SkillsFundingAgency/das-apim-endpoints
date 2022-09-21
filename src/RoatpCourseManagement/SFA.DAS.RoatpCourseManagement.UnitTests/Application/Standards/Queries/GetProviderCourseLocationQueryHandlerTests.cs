@@ -16,6 +16,7 @@ using System.Net;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation;
 using System.Linq;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+using System;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
 {
@@ -50,7 +51,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                         c.GetUrl.Equals(new GetProviderCourseLocationsRequest(query.Ukprn, query.LarsCode).GetUrl))))
                        .ReturnsAsync(new ApiResponse<List<GetProviderCourseLocationsResponse>>(new List<GetProviderCourseLocationsResponse>(), HttpStatusCode.BadRequest, "Error"));
 
-            Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(query, new CancellationToken()));
+            Assert.ThrowsAsync<InvalidOperationException>(() => sut.Handle(query, new CancellationToken()));
         }
     }
 }
