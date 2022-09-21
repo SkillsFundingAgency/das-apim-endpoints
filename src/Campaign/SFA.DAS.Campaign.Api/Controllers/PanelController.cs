@@ -45,19 +45,19 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("preview/{title}")]
-        public async Task<IActionResult> GetPreviewPanelAsync(string title, CancellationToken cancellationToken)
+        [Route("preview/{slug}")]
+        public async Task<IActionResult> GetPreviewPanelAsync(string slug, CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetPreviewPanelQuery
             {
-                Slug = title
+                Slug = slug
             }, cancellationToken);
 
             if (result == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
-                    Message = $"Preview Panel not found for {title}"
+                    Message = $"Preview Panel not found for {slug}"
                 });
             }
 
