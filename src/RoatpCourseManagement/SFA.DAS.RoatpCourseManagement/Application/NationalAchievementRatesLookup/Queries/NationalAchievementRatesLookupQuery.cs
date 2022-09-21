@@ -4,10 +4,5 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
 {
     public class NationalAchievementRatesLookupQuery : IRequest<NationalAchievementRatesLookupQueryResult>
     {
-        public int ForYear { get; }
-        public NationalAchievementRatesLookupQuery(int forYear)
-        {
-            ForYear = forYear;
-        }
     }
 }

@@ -5,6 +5,9 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RoatpCourseManagement.Api.Configuration;
 using SFA.DAS.RoatpCourseManagement.Services;
+using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
+using SFA.DAS.RoatpCourseManagement.Services.PageParsing;
+using SFA.DAS.RoatpCourseManagement.Services.StreamHelper;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,6 +28,9 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
+            services.AddTransient<IDataDownloadService, DataDownloadService>();
+            services.AddTransient<INationalAchievementRatesPageParser, NationalAchievementRatesPageParser>();
+            services.AddTransient<IZipArchiveHelper, ZipArchiveHelper>();
             ConfigureCourseDirectoryHttpClient(services, configuration);
         }
 

@@ -21,11 +21,11 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("lookup/national-acheivement-rates")]
-        public async Task<IActionResult> GetNationalAcheivementRates([FromQuery] int forYear)
+        public async Task<IActionResult> GetNationalAcheivementRates()
         {
-            _logger.LogInformation($"Outer API: Trying to get national acheivement rates for year: {forYear}");
+            _logger.LogInformation($"Outer API: Trying to get national acheivement rates");
 
-            var result = await _mediator.Send(new NationalAchievementRatesLookupQuery(forYear));
+            var result = await _mediator.Send(new NationalAchievementRatesLookupQuery());
 
             if (result == null) return BadRequest();
 

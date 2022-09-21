@@ -1,34 +1,63 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+using SFA.DAS.RoatpCourseManagement.Services.Models.ImportTypes;
+using SFA.DAS.RoatpCourseManagement.Services.Models;
+using SFA.DAS.RoatpCourseManagement.Services.Configuration;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLookup.Queries
 {
     public class NationalAchievementRatesLookupQueryHandler : IRequestHandler<NationalAchievementRatesLookupQuery, NationalAchievementRatesLookupQueryResult>
     {
-        private readonly INationalAchievementRatesLookupService _nationalAchievementRatesLookupService;
         private readonly ILogger<NationalAchievementRatesLookupQueryHandler> _logger;
+        private readonly INationalAchievementRatesPageParser _pageParser;
+        private readonly IDataDownloadService _downloadService;
+        private readonly IZipArchiveHelper _zipArchiveHelper;
 
-        public NationalAchievementRatesLookupQueryHandler(INationalAchievementRatesLookupService nationalAchievementRatesLookupService, ILogger<NationalAchievementRatesLookupQueryHandler> logger)
+        public NationalAchievementRatesLookupQueryHandler(INationalAchievementRatesPageParser pageParser,
+            IDataDownloadService downloadService,
+            IZipArchiveHelper zipArchiveHelper,
+            ILogger<NationalAchievementRatesLookupQueryHandler> logger)
         {
-            _nationalAchievementRatesLookupService = locationLookupService;
+            _pageParser = pageParser;
+            _downloadService = downloadService;
+            _zipArchiveHelper = zipArchiveHelper;
             _logger = logger;
         }
 
         public async Task<NationalAchievementRatesLookupQueryResult> Handle(NationalAchievementRatesLookupQuery request, CancellationToken cancellationToken)
         {
-            var result = await INationalAchievementRatesLookupService.GetNationalAchievementRates(request.ForYear);
-            if (result == null)
-            {
-                _logger.LogWarning($"No National achievement rates found for year: {request.ForYear}.");
-                return null;
-            }
-            _logger.LogInformation($"Found {result.Addresses.Count()} National achievement rates for year: {request.ForYear}");
+            var timeStarted = DateTime.UtcNow;
+            var downloadFilePathTask = _pageParser.GetCurrentDownloadFilePath();
+
+            var dataFile = await _downloadService.GetFileStream(downloadFilePathTask.Result);
             var response = new NationalAchievementRatesLookupQueryResult();
-            response.NationalAchievementRates = result.Addresses.Select(a => (NationalAchievementRates)a).ToList();
+
+            var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, Constants.NationalAchievementRatesOverallCsvFileName);
+            response.OverallAchievementRates = dataOverallAchievementRates
+                .Where(c =>
+                    !c.SectorSubjectArea.Contains("All Sector Subject Area"))
+                .Where(c => c.InstitutionType == "All Institution Type")
+                .Where(c => c.Age == "All Age")
+                .Select(c => (NationalAchievementRateOverall)c).ToList();
+
+            if (!response.OverallAchievementRates.Any())
+            {
+                _logger.LogWarning($"No Overall National achievement rates found");
+            }
+
+            var dataNationalAchievementRate = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(dataFile, Constants.NationalAchievementRatesCsvFileName);
+            response.NationalAchievementRates = dataNationalAchievementRate.Select(c => (NationalAchievementRate)c).ToList();
+            
+            if (!response.NationalAchievementRates.Any())
+            {
+                _logger.LogWarning($"No National achievement rates found.");
+            }
+            _logger.LogInformation($"Found {response.NationalAchievementRates.Count()} National achievement rates.");
             return response;
         }
     }

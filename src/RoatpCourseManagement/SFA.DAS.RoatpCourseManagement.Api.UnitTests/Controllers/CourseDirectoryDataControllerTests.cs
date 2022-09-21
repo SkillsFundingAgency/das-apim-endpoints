@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
-using SFA.DAS.RoatpCourseManagement.Services;
+using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 
