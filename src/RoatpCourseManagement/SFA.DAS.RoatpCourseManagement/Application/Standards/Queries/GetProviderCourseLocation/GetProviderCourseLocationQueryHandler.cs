@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -9,7 +10,6 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation
@@ -35,7 +35,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 var errorMessage =
                    $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider Course locations not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
                 _logger.LogError(errorMessage);
-                throw new HttpRequestContentException(errorMessage, providerCourseLocationsResponse.StatusCode, providerCourseLocationsResponse.ErrorContent);
+                throw new InvalidOperationException(errorMessage);
             }
             var providerCourseLocations = providerCourseLocationsResponse.Body;
             
