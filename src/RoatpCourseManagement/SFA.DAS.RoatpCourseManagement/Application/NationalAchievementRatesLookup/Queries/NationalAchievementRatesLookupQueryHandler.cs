@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.RoatpCourseManagement.Services.Models.ImportTypes;
 using SFA.DAS.RoatpCourseManagement.Services.Models;
-using SFA.DAS.RoatpCourseManagement.Services.Configuration;
+using SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLookup.Queries
 {
@@ -17,6 +16,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
         private readonly INationalAchievementRatesPageParser _pageParser;
         private readonly IDataDownloadService _downloadService;
         private readonly IZipArchiveHelper _zipArchiveHelper;
+        private static string NationalAchievementRatesCsvFileName => "NART_vDM_Apprenticeships_Institution_SectorSubjectArea_Overall.csv";
+        private static string NationalAchievementRatesOverallCsvFileName => "NART_vDM_Apprenticeships_SectorSubjectArea_Overall.csv";
+
 
         public NationalAchievementRatesLookupQueryHandler(INationalAchievementRatesPageParser pageParser,
             IDataDownloadService downloadService,
@@ -37,7 +39,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
             var dataFile = await _downloadService.GetFileStream(downloadFilePathTask.Result);
             var response = new NationalAchievementRatesLookupQueryResult();
 
-            var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, Constants.NationalAchievementRatesOverallCsvFileName);
+            var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, NationalAchievementRatesOverallCsvFileName);
             response.OverallAchievementRates = dataOverallAchievementRates
                 .Where(c =>
                     !c.SectorSubjectArea.Contains("All Sector Subject Area"))
@@ -50,7 +52,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
                 _logger.LogWarning($"No Overall National achievement rates found");
             }
 
-            var dataNationalAchievementRate = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(dataFile, Constants.NationalAchievementRatesCsvFileName);
+            var dataNationalAchievementRate = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(dataFile, NationalAchievementRatesCsvFileName);
             response.NationalAchievementRates = dataNationalAchievementRate.Select(c => (NationalAchievementRate)c).ToList();
             
             if (!response.NationalAchievementRates.Any())

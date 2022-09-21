@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.Services.Interfaces
+namespace SFA.DAS.RoatpCourseManagement.Services
 {
     public interface ICourseDirectoryService
     {

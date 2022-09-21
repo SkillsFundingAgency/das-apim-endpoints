@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Services
 {

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
 using SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLookup.Queries;
 using System.Threading.Tasks;
 
@@ -20,7 +19,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
 
         [HttpGet]
-        [Route("lookup/national-acheivement-rates")]
+        [Route("lookup/national-achievement-rates")]
         public async Task<IActionResult> GetNationalAcheivementRates()
         {
             _logger.LogInformation($"Outer API: Trying to get national acheivement rates");

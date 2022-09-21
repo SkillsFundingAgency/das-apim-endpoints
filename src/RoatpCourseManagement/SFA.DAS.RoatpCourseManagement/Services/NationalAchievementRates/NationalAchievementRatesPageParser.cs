@@ -4,13 +4,13 @@ using System.Net;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using SFA.DAS.RoatpCourseManagement.Services.Configuration;
-using SFA.DAS.RoatpCourseManagement.Services.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.Services.PageParsing
+namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
     public class NationalAchievementRatesPageParser : INationalAchievementRatesPageParser
     {
+        private static string NationalAchievementRatesPageUrl => "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
+
         public async Task<string> GetCurrentDownloadFilePath()
         {
             var yearTo = DateTime.Today.Year;
@@ -21,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services.PageParsing
             var pageFound = false;
             while (!pageFound)
             {
-                document = await context.OpenAsync(string.Format(Constants.NationalAchievementRatesPageUrl, yearFrom, yearTo));
+                document = await context.OpenAsync(string.Format(NationalAchievementRatesPageUrl, yearFrom, yearTo));
                 if (document.StatusCode != HttpStatusCode.NotFound)
                 {
                     pageFound = true;
@@ -29,15 +29,15 @@ namespace SFA.DAS.RoatpCourseManagement.Services.PageParsing
                 else
                 {
                     yearTo--;
-                    yearFrom--;    
+                    yearFrom--;
                 }
             }
-            
+
             var downloadHref = document
                 .QuerySelectorAll($"a:contains('{yearFrom} to {yearTo} apprenticeship NARTs overall CSV')")
                 .First()
                 .GetAttribute("Href");
-            
+
             var uri = new Uri(downloadHref);
 
             return uri.AbsoluteUri;
