@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
+using Castle.DynamicProxy;
 using JustEat.HttpClientInterception;
+using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using System.Net;
@@ -18,8 +20,48 @@ public record BuildApprenticeship(params HttpRequestInterceptionBuilder[] Builde
 
 public static partial class MockApiExtensions
 {
+    public static HttpClientInterceptorOptions WithApprenticeship(
+        this HttpClientInterceptorOptions interceptor, Apprenticeship apprenticeship)
+    {
+        new HttpRequestInterceptionBuilder()
+            .Requests().ForHttps().ForAnyHost()
+            .WithApprenticeship(apprenticeship)
+            .RegisterWith(interceptor);
+        return interceptor;
+    }
+
+    public static HttpClientInterceptorOptions WithoutApprenticeship(
+        this HttpClientInterceptorOptions interceptor, Apprenticeship apprenticeship)
+    {
+        new HttpRequestInterceptionBuilder()
+            .Requests().ForHttps().ForAnyHost()
+            .WithoutApprenticeship(apprenticeship)
+            .RegisterWith(interceptor);
+        return interceptor;
+    }
+
+
+    public static HttpClientInterceptorOptions WithCourse(
+        this HttpClientInterceptorOptions interceptor, Course course)
+    {
+        new HttpRequestInterceptionBuilder()
+            .Requests().ForHttps().ForAnyHost()
+            .WithCourse(course)
+            .RegisterWith(interceptor);
+        return interceptor;
+    }
+
+    public static HttpClientInterceptorOptions WithModels(
+        this HttpClientInterceptorOptions interceptor, Apprenticeship? apprenticeship = null, Course? course = null)
+    {
+        if (apprenticeship != null) interceptor.WithApprenticeship(apprenticeship);
+        if (course != null) interceptor.WithCourse(course);
+                
+        return interceptor;
+    }
+
     public static BuildApprenticeship WithApprenticeship(
-        this HttpRequestInterceptionBuilder builder, TestModels.Apprenticeship apprenticeship)
+        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship)
     {
         var fixture = new Fixture();
 
@@ -65,7 +107,7 @@ public static partial class MockApiExtensions
     }
 
     public static BuildApprenticeship WithoutApprenticeship(
-        this HttpRequestInterceptionBuilder builder, TestModels.Apprenticeship apprenticeship)
+        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship)
     {
         var fixture = new Fixture();
 
@@ -85,7 +127,7 @@ public static partial class MockApiExtensions
     }
 
     public static BuildApprenticeship WithCourse(
-        this HttpRequestInterceptionBuilder _, TestModels.Course course)
+        this HttpRequestInterceptionBuilder _, Course course)
     {
         var fixture = new Fixture();
 
@@ -102,9 +144,7 @@ public static partial class MockApiExtensions
                 .Responds()
                 .WithSystemTextJsonContent(courseOptionsResponse));
 
-        var options = course.Options.Any() ? course.Options : new[] { "core" };
-
-        foreach (var option in options)
+        foreach (var option in course.CoreAndOptions)
         {
             builders.Add(
                 new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost()

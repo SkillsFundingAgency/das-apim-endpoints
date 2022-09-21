@@ -31,4 +31,11 @@ public sealed record Apprenticeship(long ProviderId, int Uln, DateOnly StartDate
     
     internal Apprenticeship WithStandard(string standard)
         => new Apprenticeship(this) with { Standard = standard };
+
+    internal Apprenticeship WithCourse(Course course)
+        => new Apprenticeship(this) with
+        {
+            Standard = course.Standard,
+            Option = course.FirstOption,
+        };
 }

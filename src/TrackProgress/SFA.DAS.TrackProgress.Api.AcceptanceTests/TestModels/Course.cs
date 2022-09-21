@@ -18,4 +18,8 @@ public sealed record Course(string Standard, params string[] Options)
 
     internal Course WithoutOptions()
         => new Course(this) with { Options = Array.Empty<string>() };
+
+    internal string[] CoreAndOptions => Options.Any() ? Options : new[] { "core" };
+
+    internal string FirstOption => Options.Any() ? Options.First() : "core";
 }

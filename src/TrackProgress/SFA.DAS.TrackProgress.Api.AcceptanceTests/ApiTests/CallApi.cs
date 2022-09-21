@@ -1,13 +1,9 @@
-using AutoFixture;
 using FluentAssertions;
-using JustEat.HttpClientInterception;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
-using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Tests;
-using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -25,13 +21,7 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
@@ -50,13 +40,7 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
@@ -73,19 +57,13 @@ public class CallApi : ApiFixture
     [TestCase("rubbish", true)]
     public async Task Track_progress_with_single_matching_apprenticeship_and_different_sandbox_modes(string? isSandbox, bool updateExpected)
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
         var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
 
@@ -103,9 +81,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithoutApprenticeship(An.Apprenticeship)
-                .RegisterWith(Interceptor);
+            Interceptor.WithoutApprenticeship(An.Apprenticeship);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -119,9 +95,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship.WithMultipleStages())
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(An.Apprenticeship.WithMultipleStages());
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -135,9 +109,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship.WithStartDate("2020-01-19"))
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(An.Apprenticeship.WithStartDate("2020-01-19"));
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
@@ -149,18 +121,14 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_non_portable_flexi_delivery_model()
     {
-        var apprenticeship = An.Apprenticeship.WithDeliveryModel(DeliveryModel.Regular);
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship
+            .WithDeliveryModel(DeliveryModel.Regular)
+            .WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -172,18 +140,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_not_started_apprenticeship()
     {
-        var apprenticeship = An.Apprenticeship.WithNotStarted();
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithNotStarted().WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -196,18 +158,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_invalid_Ids()
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidIds());
@@ -219,18 +175,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_invalid_Values()
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidValues());
@@ -243,18 +193,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_no_Ksbs()
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithNoKsbs());
@@ -266,18 +210,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_null_Ids()
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
@@ -289,18 +227,12 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_duplicate_Ids()
     {
-        var apprenticeship = An.Apprenticeship;
-        var course = A.Course.WithOptions(apprenticeship.Option);
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
@@ -316,12 +248,10 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(
-                    An.Apprenticeship
+            Interceptor.WithApprenticeship(
+                An.Apprenticeship
                     .WithStartAndStopOnSameDay()
-                    .WithMultipleStages(apprenticeshipCount))
-                .RegisterWith(Interceptor);
+                    .WithMultipleStages(apprenticeshipCount));
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -340,13 +270,7 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -358,19 +282,13 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_single_matching_apprenticeship_and_an_additional_ksbs_which_doesnt_belong_course()
     {
-        var apprenticeship = An.Apprenticeship.WithOption("OPTION1").WithStandard("STD");
-        var course = A.Course.WithOptions(apprenticeship.Option).WithStandard(apprenticeship.Standard);
+        var course = A.Course.WithOptions("OPTION1").WithStandard("STD");
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
         var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship)
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(course)
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -383,18 +301,13 @@ public class CallApi : ApiFixture
     [Test]
     public async Task Track_progress_with_no_options_but_options_do_exist_for_course()
     {
-        var courseKsbsResponse = fixture.Create<GetKsbsForCourseOptionResponse>();
-        var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(courseKsbsResponse);
+        var apprenticeship = An.Apprenticeship.WithStandard("STDUID").WithOption("");
+        var course = A.Course.WithStandard("STDUID").WithOptions("Option 1", "Option 2");
+        var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(course);
 
         using (Interceptor.BeginScope())
         {
-            CommitmentsApi
-                .WithApprenticeship(An.Apprenticeship.WithStandard("STDUID").WithOption(""))
-                .RegisterWith(Interceptor);
-
-            CoursesApi
-                .WithCourse(A.Course.WithStandard("STDUID").WithOptions("Option 1", "Option 2"))
-                .RegisterWith(Interceptor);
+            Interceptor.WithModels(apprenticeship, course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -404,26 +317,6 @@ public class CallApi : ApiFixture
             var problem = JsonSerializer.Deserialize<ProblemDetails>(body);
             problem?.Title.Should().StartWith("This apprenticeship requires an option to be set to record progress against it");
         }
-    }
-
-    private static HttpRequestInterceptionBuilder CommitmentsApi =>
-        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
-
-    private static HttpRequestInterceptionBuilder CoursesApi { get; } =
-        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
-
-    private static HttpRequestInterceptionBuilder TrackProgressInnerApi { get; } =
-        new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost();
-
-    private GetApprenticeshipResponse GetMockSingleApprenticeshipResponse(DeliveryModel deliveryModel = DeliveryModel.PortableFlexiJob, ApprenticeshipStatus status = ApprenticeshipStatus.Live, string standardUId = "STD", string option = "OPTION1")
-    {
-        return fixture.Build<GetApprenticeshipResponse>()
-            .With(x => x.Id, 1)
-            .With(x => x.StandardUId, standardUId)
-            .With(x => x.Option, option)
-            .With(x => x.DeliveryModel, deliveryModel)
-            .With(x => x.ApprenticeshipStatus, status)
-            .Create();
     }
 
     private StringContent BuildValidProgressDtoContentFromCourseResponse(Course course)
@@ -438,16 +331,6 @@ public class CallApi : ApiFixture
     private StringContent BuildValidSubsetProgressDtoContentFromCourseResponse(Course course)
     {
         var ksbs = course.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
-        var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
-        var validDto = BuildProgressDtoContent(dto);
-
-        return BuildProgressDtoContent(dto);
-    }
-
-    private StringContent BuildAdditionalKsbToProgressDtoContentFromCourseResponse(GetKsbsForCourseOptionResponse response)
-    {
-        var ksbs = response.Ksbs.Select(x => new ProgressDto.Ksb { Id = x.Id.ToString(), Value = 5 }).Take(2).ToList();
-        ksbs.Add(new ProgressDto.Ksb { Id = Guid.NewGuid().ToString(), Value = 9 });
         var dto = new ProgressDto { Progress = new ProgressDto.ProgressDetails { Ksbs = ksbs } };
         var validDto = BuildProgressDtoContent(dto);
 

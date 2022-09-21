@@ -3,7 +3,7 @@
 public static class An
 {
     public static Apprenticeship Apprenticeship =>
-        new(12345, 1, new DateOnly(2020, 01, 01));
+        new Apprenticeship(12345, 1, new DateOnly(2020, 01, 01)).WithCourse(A.Course);
 }
 
 public static class A
