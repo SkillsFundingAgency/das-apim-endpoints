@@ -34,9 +34,10 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
         public async Task<NationalAchievementRatesLookupQueryResult> Handle(NationalAchievementRatesLookupQuery request, CancellationToken cancellationToken)
         {
             var timeStarted = DateTime.UtcNow;
-            var downloadFilePathTask = _pageParser.GetCurrentDownloadFilePath();
+            var downloadFilePath = await _pageParser.GetCurrentDownloadFilePath();
 
-            var dataFile = await _downloadService.GetFileStream(downloadFilePathTask.Result);
+            var dataFile = await _downloadService.GetFileStream(downloadFilePath);
+            
             var response = new NationalAchievementRatesLookupQueryResult();
 
             var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, NationalAchievementRatesOverallCsvFileName);
@@ -59,7 +60,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
             {
                 _logger.LogWarning($"No National achievement rates found.");
             }
-            _logger.LogInformation($"Found {response.NationalAchievementRates.Count()} National achievement rates.");
+            _logger.LogInformation($"Found {response.NationalAchievementRates.Count()} National achievement rates and {response.OverallAchievementRates.Count()} Overall National achievement rates.");
             return response;
         }
     }
