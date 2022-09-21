@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
+    [ExcludeFromCodeCoverage]
     public class DataDownloadService : IDataDownloadService
     {
         private readonly HttpClient _client;

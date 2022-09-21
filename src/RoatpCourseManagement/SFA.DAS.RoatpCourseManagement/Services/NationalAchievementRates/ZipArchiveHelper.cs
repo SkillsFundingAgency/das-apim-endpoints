@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -8,6 +9,7 @@ using CsvHelper;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
+    [ExcludeFromCodeCoverage]
     public class ZipArchiveHelper : IZipArchiveHelper
     {
         public IEnumerable<T> ExtractModelFromCsvFileZipStream<T>(Stream stream, string filePath)

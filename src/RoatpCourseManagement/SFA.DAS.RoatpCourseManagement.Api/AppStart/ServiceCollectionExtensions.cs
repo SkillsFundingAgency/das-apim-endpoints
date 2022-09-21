@@ -11,9 +11,11 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtensions
     {
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
