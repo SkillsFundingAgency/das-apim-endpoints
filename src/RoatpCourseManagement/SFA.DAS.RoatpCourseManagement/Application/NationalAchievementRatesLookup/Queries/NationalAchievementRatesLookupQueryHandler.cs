@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.Services.Models.ImportTypes;
 using SFA.DAS.RoatpCourseManagement.Services.Models;
 using SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates;
-using System.Diagnostics;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLookup.Queries
 {
