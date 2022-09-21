@@ -85,7 +85,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 RecognisePriorLearning = apprenticeship.RecognisePriorLearning,
                 DurationReducedBy = apprenticeship.DurationReducedBy,
                 PriceReducedBy = apprenticeship.PriceReducedBy,
-                RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered
+                RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
+                IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
+                ActualStartDate = apprenticeship.ActualStartDate
             };
         }
 
