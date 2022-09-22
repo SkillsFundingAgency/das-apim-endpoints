@@ -4,7 +4,7 @@ using SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.NationalAchievementRates
 {
     [TestFixture]
     public class NationalAchievementRatesPageParserTests
