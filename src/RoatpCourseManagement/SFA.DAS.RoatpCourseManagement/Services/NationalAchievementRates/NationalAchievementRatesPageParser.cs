@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
         }
 
         private const string NationalAchievementRatesPageUrl = "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
-
+        private const string ErrorMessage = "Error in finding the National Achievement Rates download page url";
         public async Task<string> GetCurrentDownloadFilePath()
         {
             var yearTo = DateTime.Today.Year;
@@ -41,9 +41,8 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
                 }
                 if (yearTo < DateTime.Today.AddYears(-10).Year)
                 {
-                    var message = "Error in finding the National Achievement Rates download page url";
-                    _logger.LogError(message);
-                    throw new InvalidOperationException(message);
+                    _logger.LogError(ErrorMessage);
+                    throw new InvalidOperationException(ErrorMessage);
                 }
             }
 

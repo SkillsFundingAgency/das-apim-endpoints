@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 
                 if (entry == null)
                 {
-                    return null;
+                    return new List<T>();
                 }
 
                 using (var reader = new StreamReader(entry.Open()))
