@@ -340,6 +340,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public string ButtonUrl { get; set; }
         [JsonPropertyName("buttonStyle")]
         public List<string> ButtonStyle { get; set; }
+        [JsonPropertyName("image")]
+        public ImageContent Image { get; set; }
     }
 
     public class MainContent
@@ -417,6 +419,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
     }
 
     public class TabbedContent
+    {
+        [JsonPropertyName("sys")]
+        public LandingPageSys Sys { get; set; }
+    }
+
+    public class ImageContent
     {
         [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }

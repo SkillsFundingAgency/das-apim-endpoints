@@ -1,7 +1,8 @@
-﻿using SFA.DAS.Campaign.Extensions;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using System.Collections.Generic;
-using static SFA.DAS.Campaign.Models.MenuPageModel;
+using static SFA.DAS.Campaign.Models.CmsPageModel;
 
 namespace SFA.DAS.Campaign.Models
 {
@@ -22,9 +23,10 @@ namespace SFA.DAS.Campaign.Models
             public List<string> ButtonStyle { get; set; }
             public string Title { get; set; }
             public string Id { get; set; }
+            public ResourceItem PanelImage { get; set; }
         }
 
-        public PanelPageModel Build(CmsContent panel, MenuPageContent content)
+        public PanelPageModel Build(CmsContent panel)
         {
             if (panel.ContentItemsAreNullOrEmpty())
             {
@@ -32,8 +34,7 @@ namespace SFA.DAS.Campaign.Models
             }
 
             var panels = new List<PanelPageContent>();
-            var panelItem = panel.Items;
-            foreach (var item in panelItem)
+            foreach (var item in panel.Items)
             {
                 var panelModel = new PanelPageContent
                 {
@@ -44,8 +45,21 @@ namespace SFA.DAS.Campaign.Models
                     ButtonUrl = item.Fields.ButtonUrl,
                     ButtonStyle = item.Fields.ButtonStyle
                 };
+
+                foreach (var contentItem in item.Fields.Content.Content)
+                {
+                    contentItem.ProcessListNodeTypes(panelModel.Items);
+                    contentItem.ProcessContentNodeTypes(panelModel.Items);
+                }
+
+                if (item.Fields.Image != null && !string.IsNullOrWhiteSpace(item.Fields.Image.Sys.Id))
+                {
+                    panelModel.PanelImage = panel.GetEmbeddedResource(item.Fields.Image.Sys.Id);                    
+                }
+
                 panels.Add(panelModel);
             }
+
 
 
             return GenerateModelPage(panels);
