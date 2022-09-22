@@ -1,7 +1,9 @@
 using SFA.DAS.RoatpCourseManagement.Services.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.Extensions
 {
+    [ExcludeFromCodeCoverage]
     public static class EnumExtensions
     {
         public static Age ToAge(this string value)
