@@ -8,9 +8,9 @@ using System.Threading;
 using SFA.DAS.Campaign.Models;
 using SFA.DAS.Campaign.Extensions;
 
-namespace SFA.DAS.Campaign.Application.Queries.PreviewPanels
+namespace SFA.DAS.Campaign.Application.Queries.PreviewPanel
 {
-    public class GetPreviewPanelQueryHandler: IRequestHandler<GetPreviewPanelQuery, GetPreviewPanelQueryResult>
+    public class GetPreviewPanelQueryHandler : IRequestHandler<GetPreviewPanelQuery, GetPreviewPanelQueryResult>
     {
         private readonly IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> _client;
         private readonly IMediator _mediator;
@@ -35,5 +35,5 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewPanels
                 PanelModel = pageModel
             };
         }
-}
+    }
 }

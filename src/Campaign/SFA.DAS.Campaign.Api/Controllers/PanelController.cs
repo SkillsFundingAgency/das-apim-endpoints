@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Panel;
-using SFA.DAS.Campaign.Application.Queries.PreviewPanels;
+using SFA.DAS.Campaign.Application.Queries.PreviewPanel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +10,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class PanelController: Controller
+    public class PanelController : Controller
     {
         private readonly IMediator mediator;
 
@@ -20,20 +20,20 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{title}")]
+        [Route("{slug}")]
 
-        public async Task<IActionResult> GetPanelAsync(string title, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPanelAsync(string slug, CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetPanelQuery
             {
-                Title = title
+                Slug = slug
             }, cancellationToken);
 
             if (result == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
-                    Message = $"Panel not found for {title}"
+                    Message = $"Panel not found for {slug}"
                 });
             }
 

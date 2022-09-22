@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.Campaign.Application.Queries.Panel
 {
-    public class GetPanelQuery: IRequest<GetPanelQueryResult>
+    public class GetPanelQuery : IRequest<GetPanelQueryResult>
     {
-        public string Title { get; set; }
+        public string Slug { get; set; }
     }
 }

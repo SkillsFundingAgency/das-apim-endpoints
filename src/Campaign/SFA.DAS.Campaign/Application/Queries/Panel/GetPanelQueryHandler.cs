@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
@@ -24,16 +25,19 @@ namespace SFA.DAS.Campaign.Application.Queries.Panel
         }
         public async Task<GetPanelQueryResult> Handle(GetPanelQuery request, CancellationToken cancellationToken)
         {
-            //var panel = await _reliableCacheStorageService.GetData<CmsContent>(
-            //    new GetPanelRequest(request.Title),
-            //    $"{request.Title}",
-            //    _contentService.HasContent);
+            var panel = _reliableCacheStorageService.GetData<CmsContent>(
+                new GetPanelRequest(request.Slug),
+                $"{request.Slug}",
+                _contentService.HasContent);
+            var menu = _mediator.RetrieveMenu(cancellationToken);
 
-            //var pageModel = new PanelPageModel().Build(panel.Result);
+            await Task.WhenAll(panel, menu);
+
+            var pageModel = new PanelPageModel().Build(panel.Result, menu.Result.MainContent);
 
             return new GetPanelQueryResult
             {
-                //Panel = pageModel
+                Panel = pageModel
             };
         }
     }

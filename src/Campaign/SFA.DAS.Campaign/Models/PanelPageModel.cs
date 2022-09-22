@@ -16,8 +16,6 @@ namespace SFA.DAS.Campaign.Models
                 Items = new List<ContentItem>();
             }
             public List<ContentItem> Items { get; set; }
-            //image?
-            //content?
             public string Slug { get; set; }
             public string ButtonText { get; set; }
             public string ButtonUrl { get; set; }
@@ -55,10 +53,10 @@ namespace SFA.DAS.Campaign.Models
 
         public PanelPageModel GenerateModelPage(IEnumerable<PanelPageContent> content)
         {
-                return new PanelPageModel()
-                {
-                    MainContent = content
-                };
+            return new PanelPageModel()
+            {
+                MainContent = content
+            };
         }
     }
 }

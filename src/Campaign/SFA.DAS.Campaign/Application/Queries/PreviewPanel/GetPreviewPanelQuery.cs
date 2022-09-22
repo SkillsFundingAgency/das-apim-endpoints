@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Campaign.Application.Queries.Panel;
 
-namespace SFA.DAS.Campaign.Application.Queries.PreviewPanels
+namespace SFA.DAS.Campaign.Application.Queries.PreviewPanel
 {
     public class GetPreviewPanelQuery : IRequest<GetPreviewPanelQueryResult>
     {
