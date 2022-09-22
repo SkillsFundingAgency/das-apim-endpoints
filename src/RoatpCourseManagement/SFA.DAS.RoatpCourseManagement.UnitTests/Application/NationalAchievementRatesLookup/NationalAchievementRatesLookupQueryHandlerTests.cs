@@ -37,6 +37,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.NationalAchievemen
                 x.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(It.IsAny<Stream>(),
                     It.IsAny<string>())).Returns(downloadDataAchievementRate);
 
+            downloadDataOverallAchievementRate.ForEach(a => a.InstitutionType = "All Institution Type");
+            downloadDataOverallAchievementRate.ForEach(a => a.Age = "All Age");
+
             zipArchiveHelper.Setup(x =>
                 x.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(It.IsAny<Stream>(),
                     It.IsAny<string>())).Returns(downloadDataOverallAchievementRate);
