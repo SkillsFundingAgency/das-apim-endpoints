@@ -29,12 +29,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
             var pageFound = false;
             while (!pageFound)
             {
-                if (yearTo < DateTime.Today.AddYears(-10).Year)
-                {
-                    var message = "Error in finding the National Achievement Rates download page url";
-                    _logger.LogError(message);
-                    throw new InvalidOperationException(message);
-                }
                 document = await context.OpenAsync(string.Format(NationalAchievementRatesPageUrl, yearFrom, yearTo));
                 if (document.StatusCode != HttpStatusCode.NotFound)
                 {
@@ -44,6 +38,12 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
                 {
                     yearTo--;
                     yearFrom--;
+                }
+                if (yearTo < DateTime.Today.AddYears(-10).Year)
+                {
+                    var message = "Error in finding the National Achievement Rates download page url";
+                    _logger.LogError(message);
+                    throw new InvalidOperationException(message);
                 }
             }
 
