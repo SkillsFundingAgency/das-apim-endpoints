@@ -28,7 +28,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             _mediator.Setup(m => m.Send(It.IsAny<NationalAchievementRatesLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((NationalAchievementRatesLookupQueryResult) null);
 
-            var result = await _sut.GetNationalAcheivementRates();
+            var result = await _sut.GetNationalAchievementRates();
 
             var response = (BadRequestResult)result;
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var expectedResponse = new NationalAchievementRatesLookupQueryResult();
             _mediator.Setup(m => m.Send(It.IsAny<NationalAchievementRatesLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
-            var result = await _sut.GetNationalAcheivementRates();
+            var result = await _sut.GetNationalAchievementRates();
 
             var response = (OkObjectResult)result;
 

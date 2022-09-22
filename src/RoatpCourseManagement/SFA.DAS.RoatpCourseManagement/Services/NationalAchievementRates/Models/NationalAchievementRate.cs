@@ -3,8 +3,15 @@ using SFA.DAS.RoatpCourseManagement.Services.Models.ImportTypes;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.Models
 {
-    public class NationalAchievementRate : NationalAchievementRateBase
+    public class NationalAchievementRate 
     {
+        public int Ukprn { get; set; }
+        public Age Age { get; set; }
+        public string SectorSubjectArea { get; set; }
+        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
+        public int? OverallCohort { get; set; }
+        public decimal? OverallAchievementRate { get; set; }
+
         public static implicit operator NationalAchievementRate(NationalAchievementRateCsv source)
         {
             var overallCohortResult = int.TryParse(source.OverallCohort, out var overallCohort);

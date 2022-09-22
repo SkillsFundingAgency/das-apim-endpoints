@@ -4,12 +4,20 @@ using System.Net;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
     public class NationalAchievementRatesPageParser : INationalAchievementRatesPageParser
     {
-        private static string NationalAchievementRatesPageUrl => "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
+        private readonly ILogger<NationalAchievementRatesPageParser> _logger;
+
+        public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger)
+        {
+            _logger = logger;
+        }
+
+        private const string NationalAchievementRatesPageUrl = "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
 
         public async Task<string> GetCurrentDownloadFilePath()
         {
@@ -21,6 +29,12 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
             var pageFound = false;
             while (!pageFound)
             {
+                if (yearTo < DateTime.Today.AddYears(-10).Year)
+                {
+                    var message = "Error in finding the National Achievement Rates download page url";
+                    _logger.LogError(message);
+                    throw new InvalidOperationException(message);
+                }
                 document = await context.OpenAsync(string.Format(NationalAchievementRatesPageUrl, yearFrom, yearTo));
                 if (document.StatusCode != HttpStatusCode.NotFound)
                 {
