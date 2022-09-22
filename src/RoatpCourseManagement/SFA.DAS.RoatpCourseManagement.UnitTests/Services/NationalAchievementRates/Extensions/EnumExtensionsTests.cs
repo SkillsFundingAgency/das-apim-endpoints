@@ -13,7 +13,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.NationalAchievementRa
         [TestCase("24+", Age.TwentyFourPlus)]
         [TestCase("all age", Age.AllAges)]
         [TestCase("15", Age.Unknown)]
-        public void ToAge_ReturnsEnum(string value, Age age)
+        public void ToAge_ReturnsAgeEnum(string value, Age age)
         {
             var result = EnumExtensions.ToAge(value);
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.NationalAchievementRa
         [TestCase("4+", ApprenticeshipLevel.FourPlus)]
         [TestCase("all levels", ApprenticeshipLevel.AllLevels)]
         [TestCase("1", ApprenticeshipLevel.Unknown)]
-        public void ToAge_ReturnsEnum(string value, ApprenticeshipLevel apprenticeshipLevel)
+        public void ToApprenticeshipLevel_ReturnsApprenticeshipLevelEnum(string value, ApprenticeshipLevel apprenticeshipLevel)
         {
             var result = EnumExtensions.ToApprenticeshipLevel(value);
 
