@@ -21,7 +21,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
@@ -40,7 +42,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
@@ -63,7 +67,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
 
@@ -81,7 +87,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithoutApprenticeship(An.Apprenticeship);
+            factory.WithoutApprenticeship(An.Apprenticeship);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -95,7 +101,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(An.Apprenticeship.WithMultipleStages());
+            factory.WithApprenticeship(An.Apprenticeship.WithMultipleStages());
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -109,7 +115,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(An.Apprenticeship.WithStartDate("2020-01-19"));
+            factory.WithApprenticeship(An.Apprenticeship.WithStartDate("2020-01-19"));
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
@@ -128,7 +134,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -145,7 +153,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
@@ -163,7 +173,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidIds());
@@ -180,7 +192,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidValues());
@@ -198,7 +212,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithNoKsbs());
@@ -215,7 +231,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
@@ -232,7 +250,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
@@ -248,7 +268,7 @@ public class CallApi : ApiFixture
     {
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithApprenticeship(
+            factory.WithApprenticeship(
                 An.Apprenticeship
                     .WithStartAndStopOnSameDay()
                     .WithMultipleStages(apprenticeshipCount));
@@ -270,7 +290,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -288,7 +310,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
@@ -307,7 +331,9 @@ public class CallApi : ApiFixture
 
         using (Interceptor.BeginScope())
         {
-            Interceptor.WithModels(apprenticeship, course);
+            factory
+                .WithApprenticeship(apprenticeship)
+                .WithCourse(course);
 
             var response = await client.PostAsync(
                 $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);

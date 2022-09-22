@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Castle.DynamicProxy;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
@@ -20,44 +19,34 @@ public record BuildApprenticeship(params HttpRequestInterceptionBuilder[] Builde
 
 public static partial class MockApiExtensions
 {
-    public static HttpClientInterceptorOptions WithApprenticeship(
-        this HttpClientInterceptorOptions interceptor, Apprenticeship apprenticeship)
+    public static TrackProgressApiFactory WithApprenticeship(
+        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
             .WithApprenticeship(apprenticeship)
-            .RegisterWith(interceptor);
-        return interceptor;
+            .RegisterWith(factory.Interceptor);
+        return factory;
     }
 
-    public static HttpClientInterceptorOptions WithoutApprenticeship(
-        this HttpClientInterceptorOptions interceptor, Apprenticeship apprenticeship)
+    public static TrackProgressApiFactory WithoutApprenticeship(
+        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
             .WithoutApprenticeship(apprenticeship)
-            .RegisterWith(interceptor);
-        return interceptor;
+            .RegisterWith(factory.Interceptor);
+        return factory;
     }
 
-
-    public static HttpClientInterceptorOptions WithCourse(
-        this HttpClientInterceptorOptions interceptor, Course course)
+    public static TrackProgressApiFactory WithCourse(
+        this TrackProgressApiFactory factory, Course course)
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
             .WithCourse(course)
-            .RegisterWith(interceptor);
-        return interceptor;
-    }
-
-    public static HttpClientInterceptorOptions WithModels(
-        this HttpClientInterceptorOptions interceptor, Apprenticeship? apprenticeship = null, Course? course = null)
-    {
-        if (apprenticeship != null) interceptor.WithApprenticeship(apprenticeship);
-        if (course != null) interceptor.WithCourse(course);
-                
-        return interceptor;
+            .RegisterWith(factory.Interceptor);
+        return factory;
     }
 
     public static BuildApprenticeship WithApprenticeship(
