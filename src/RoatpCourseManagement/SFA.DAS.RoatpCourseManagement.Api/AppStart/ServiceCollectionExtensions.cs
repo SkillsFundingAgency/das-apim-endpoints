@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AngleSharp;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
@@ -12,6 +13,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
 {
@@ -45,6 +47,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+            var config = AngleSharp.Configuration.Default.WithDefaultLoader();
+            services.AddSingleton(BrowsingContext.New(config));
         }
 
         private static void ConfigureCourseDirectoryHttpClient(IServiceCollection services, IConfiguration configuration)

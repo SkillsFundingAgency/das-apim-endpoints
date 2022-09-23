@@ -11,25 +11,24 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
     public class NationalAchievementRatesPageParser : INationalAchievementRatesPageParser
     {
         private readonly ILogger<NationalAchievementRatesPageParser> _logger;
+        IBrowsingContext _browsingContext;
 
-        public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger)
+        public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger, IBrowsingContext browsingContext)
         {
             _logger = logger;
+            _browsingContext = browsingContext;
         }
-
-        private const string NationalAchievementRatesPageUrl = "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
         private const string ErrorMessage = "Error in finding the National Achievement Rates download page url";
-        public async Task<string> GetCurrentDownloadFilePath()
+
+        public async Task<string> GetCurrentDownloadFilePath(string nationalAchievementRatesDownloadPageUrl)
         {
             var yearTo = DateTime.Today.Year;
             var yearFrom = DateTime.Today.AddYears(-1).Year;
-            var config = AngleSharp.Configuration.Default.WithDefaultLoader();
-            var context = BrowsingContext.New(config);
             IDocument document = null;
             var pageFound = false;
             while (!pageFound)
             {
-                document = await context.OpenAsync(string.Format(NationalAchievementRatesPageUrl, yearFrom, yearTo));
+                document = await _browsingContext.OpenAsync(string.Format(nationalAchievementRatesDownloadPageUrl, yearFrom, yearTo));
                 if (document.StatusCode != HttpStatusCode.NotFound)
                 {
                     pageFound = true;

@@ -4,6 +4,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
     public interface INationalAchievementRatesPageParser
     {
-        Task<string> GetCurrentDownloadFilePath();
+        Task<string> GetCurrentDownloadFilePath(string nationalAchievementRatesDownloadPageUrl);
     }
 }

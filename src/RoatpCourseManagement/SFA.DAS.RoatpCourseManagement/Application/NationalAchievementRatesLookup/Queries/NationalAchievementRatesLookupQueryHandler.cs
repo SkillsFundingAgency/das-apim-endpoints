@@ -15,9 +15,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
         private readonly INationalAchievementRatesPageParser _pageParser;
         private readonly IDataDownloadService _downloadService;
         private readonly IZipArchiveHelper _zipArchiveHelper;
+        private const string NationalAchievementRatesDownloadPageUrl = "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
         private const string NationalAchievementRatesCsvFileName = "NART_vDM_Apprenticeships_Institution_SectorSubjectArea_Overall.csv";
         private const string NationalAchievementRatesOverallCsvFileName = "NART_vDM_Apprenticeships_SectorSubjectArea_Overall.csv";
-
 
         public NationalAchievementRatesLookupQueryHandler(INationalAchievementRatesPageParser pageParser,
             IDataDownloadService downloadService,
@@ -34,7 +34,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
         {
             _logger.LogInformation($"Start getting National achievement rates and Overall National achievement rates.");
 
-            var downloadFilePath = await _pageParser.GetCurrentDownloadFilePath();
+            var downloadFilePath = await _pageParser.GetCurrentDownloadFilePath(NationalAchievementRatesDownloadPageUrl);
 
             var dataFile = await _downloadService.GetFileStream(downloadFilePath);
 

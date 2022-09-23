@@ -30,7 +30,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.NationalAchievemen
             NationalAchievementRatesLookupQueryHandler sut)
         {
             //Arrange
-            pageParser.Setup(x => x.GetCurrentDownloadFilePath()).ReturnsAsync(filePath);
+            string nationalAchievementRatesDownloadPageUrl = "https://www.gov.uk/government/statistics/national-achievement-rates-tables-{0}-to-{1}";
+
+            pageParser.Setup(x => x.GetCurrentDownloadFilePath(nationalAchievementRatesDownloadPageUrl)).ReturnsAsync(filePath);
             downloadService.Setup(x => x.GetFileStream(filePath)).ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(content)));
 
             zipArchiveHelper.Setup(x =>
@@ -48,7 +50,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.NationalAchievemen
             var result = await sut.Handle(query, new CancellationToken());
 
             //Assert
-            pageParser.Verify(x => x.GetCurrentDownloadFilePath(), Times.Once);
+            pageParser.Verify(x => x.GetCurrentDownloadFilePath(nationalAchievementRatesDownloadPageUrl), Times.Once);
             downloadService.Verify(x => x.GetFileStream(It.IsAny<string>()), Times.Once);
 
             zipArchiveHelper.Verify(x =>x.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(It.IsAny<Stream>(), It.IsAny<string>()),Times.Once);
