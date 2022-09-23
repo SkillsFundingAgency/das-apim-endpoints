@@ -19,19 +19,16 @@ public class CallApi : ApiFixture
         var apprenticeship = An.Apprenticeship.WithOption(optionToTest);
         var course = A.Course.WithoutOptions();
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
+        var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be201Created();
-        }
+        response.Should().Be201Created();
     }
 
     [TestCase("OPTION")]
@@ -40,19 +37,16 @@ public class CallApi : ApiFixture
         var apprenticeship = An.Apprenticeship.WithOption(optionToTest);
         var course = A.Course.WithOptions(optionToTest);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
+        var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be201Created();
-        }
+        response.Should().Be201Created();
     }
 
     [TestCase(null, true)]
@@ -65,63 +59,51 @@ public class CallApi : ApiFixture
         var apprenticeship = An.Apprenticeship.WithCourse(course);
         var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
+        client.DefaultRequestHeaders.Add(SubscriptionHeaderConstants.ForSandboxMode, isSandbox);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            // TODO Ensure an update is called only when it is expected
+        // TODO Ensure an update is called only when it is expected
 
-            response.Should().Be201Created();
-        }
+        response.Should().Be201Created();
     }
 
     [Test]
     public async Task Track_progress_with_no_matching_apprenticeship()
     {
-        using (Interceptor.BeginScope())
-        {
-            factory.WithoutApprenticeship(An.Apprenticeship);
+        factory.WithoutApprenticeship(An.Apprenticeship);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
-            response.Should().Be404NotFound();
-        }
+        response.Should().Be404NotFound();
     }
 
     [Test]
     public async Task Track_progress_with_multiple_matching_apprenticeships()
     {
-        using (Interceptor.BeginScope())
-        {
-            factory.WithApprenticeship(An.Apprenticeship.WithMultipleStages());
+        factory.WithApprenticeship(An.Apprenticeship.WithMultipleStages());
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
-            response.Should().Be400BadRequest().And.MatchInContent("*Multiple apprenticeship records exist*");
-        }
+        response.Should().Be400BadRequest().And.MatchInContent("*Multiple apprenticeship records exist*");
     }
 
     [Test]
     public async Task Track_progress_called_with_start_date_other_than_01()
     {
-        using (Interceptor.BeginScope())
-        {
-            factory.WithApprenticeship(An.Apprenticeship.WithStartDate("2020-01-19"));
+        factory.WithApprenticeship(An.Apprenticeship.WithStartDate("2020-01-19"));
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01-19"}/progress", BuildValidProgressDtoContent());
 
-            response.Should().Be400BadRequest().And.MatchInContent("*Invalid start date (must start on the 1st)*");
-        }
+        response.Should().Be400BadRequest().And.MatchInContent("*Invalid start date (must start on the 1st)*");
     }
 
     [Test]
@@ -132,17 +114,14 @@ public class CallApi : ApiFixture
             .WithDeliveryModel(DeliveryModel.Regular)
             .WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
-            response.Should().Be400BadRequest().And.MatchInContent("*Must be a portable flexi-job*");
-        }
+        response.Should().Be400BadRequest().And.MatchInContent("*Must be a portable flexi-job*");
     }
 
     [Test]
@@ -151,18 +130,15 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithNotStarted().WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
 
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete*");
-        }
+        response.Should().Be400BadRequest()
+            .And.MatchInContent("*Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete*");
     }
 
     [Test]
@@ -171,17 +147,14 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidIds());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidIds());
 
-            response.Should().Be400BadRequest().And.MatchInContent("*XXXX is not a valid guid*");
-        }
+        response.Should().Be400BadRequest().And.MatchInContent("*XXXX is not a valid guid*");
     }
 
     [Test]
@@ -190,18 +163,15 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidValues());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithInvalidValues());
 
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*The progress value (-6) associated with this KSB must be in the range of 0 to 100*");
-        }
+        response.Should().Be400BadRequest()
+            .And.MatchInContent("*The progress value (-6) associated with this KSB must be in the range of 0 to 100*");
     }
 
     [Test]
@@ -210,17 +180,14 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithNoKsbs());
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithNoKsbs());
 
-            response.Should().Be400BadRequest().And.MatchInContent("*KSBs are required*");
-        }
+        response.Should().Be400BadRequest().And.MatchInContent("*KSBs are required*");
     }
 
     [Test]
@@ -229,17 +196,9 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
-
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
-
-            response.Should().Be400BadRequest().And.MatchInContent("*KSB Ids cannot be null*");
-        }
+        factory.WithApprenticeship(apprenticeship).WithCourse(course);
+        var response = await client.PostAsync($"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithANullId());
+        response.Should().Be400BadRequest().And.MatchInContent("*KSB Ids cannot be null*");
     }
 
     [Test]
@@ -248,37 +207,18 @@ public class CallApi : ApiFixture
         var course = A.Course;
         var apprenticeship = An.Apprenticeship.WithCourse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
-
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
-
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*Ensure that there are no duplicate GUIDs in the progress submission*");
-        }
+        factory.WithApprenticeship(apprenticeship).WithCourse(course);
+        var response = await client.PostAsync($"/apprenticeships/{1}/{"2020-01"}/progress", BuildProgressDtoContentWithDuplicateIds());
+        response.Should().Be400BadRequest().And.MatchInContent("*Ensure that there are no duplicate GUIDs in the progress submission*");
     }
 
     [TestCase(1)]
     [TestCase(2)]
     public async Task Track_progress_with_non_delivery_apprenticesships(int apprenticeshipCount)
     {
-        using (Interceptor.BeginScope())
-        {
-            factory.WithApprenticeship(
-                An.Apprenticeship
-                    .WithStartAndStopOnSameDay()
-                    .WithMultipleStages(apprenticeshipCount));
-
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
-
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete*");
-        }
+        factory.WithApprenticeship(An.Apprenticeship.WithStartAndStopOnSameDay().WithMultipleStages(apprenticeshipCount));
+        var response = await client.PostAsync($"/apprenticeships/{1}/{"2020-01"}/progress", BuildValidProgressDtoContent());
+        response.Should().Be400BadRequest().And.MatchInContent("*Apprentice status must be Live, Paused, Stopped (provided some delivery took place) or Complete*");
     }
 
     [Test]
@@ -288,17 +228,14 @@ public class CallApi : ApiFixture
         var course = A.Course.WithOptions(apprenticeship.Option).WithStandard(apprenticeship.Standard);
         var validDto = BuildValidSubsetProgressDtoContentFromCourseResponse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be201Created();
-        }
+        response.Should().Be201Created();
     }
 
     [Test]
@@ -308,18 +245,15 @@ public class CallApi : ApiFixture
         var apprenticeship = An.Apprenticeship.WithCourse(course);
         var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*This KSB does not match the course option*");
-        }
+        response.Should().Be400BadRequest()
+            .And.MatchInContent("*This KSB does not match the course option*");
     }
 
     [Test]
@@ -329,18 +263,15 @@ public class CallApi : ApiFixture
         var course = A.Course.WithStandard("STDUID").WithOptions("Option 1", "Option 2");
         var validDto = BuildAdditionalKsbToProgressDtoContentFromCourseResponse(course);
 
-        using (Interceptor.BeginScope())
-        {
-            factory
-                .WithApprenticeship(apprenticeship)
-                .WithCourse(course);
+        factory
+            .WithApprenticeship(apprenticeship)
+            .WithCourse(course);
 
-            var response = await client.PostAsync(
-                $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/{"2020-01"}/progress", validDto);
 
-            response.Should().Be400BadRequest()
-                .And.MatchInContent("*This apprenticeship requires an option to be set to record progress against it*");
-        }
+        response.Should().Be400BadRequest()
+            .And.MatchInContent("*This apprenticeship requires an option to be set to record progress against it*");
     }
 
     private StringContent BuildValidProgressDtoContentFromCourseResponse(Course course)
