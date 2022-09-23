@@ -5,34 +5,12 @@ using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using System.Net;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Server;
 using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeshipsResponse;
 
 namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
 public static partial class MockApiExtensions
 {
-    public static TrackProgressApiFactory WithApprenticeship(
-        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
-    {
-        WithApprenticeship(apprenticeship, factory.CommitmentsApi.MockServer);
-        return factory;
-    }
-
-    public static TrackProgressApiFactory WithoutApprenticeship(
-        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
-    {
-        WithoutApprenticeship(apprenticeship, factory.CommitmentsApi.MockServer);
-        return factory;
-    }
-
-    public static TrackProgressApiFactory WithCourse(
-        this TrackProgressApiFactory factory, Course course)
-    {
-        WithCourse(course, factory.CommitmentsApi.MockServer);
-        return factory;
-    }
-
     public static TrackProgressApiFactory Reset(this TrackProgressApiFactory factory)
     {
         factory.CommitmentsApi.MockServer.Reset();
@@ -55,8 +33,10 @@ public static partial class MockApiExtensions
         return factory;
     }
 
-    public static void WithApprenticeship(Apprenticeship apprenticeship, WireMockServer mockServer)
+    public static TrackProgressApiFactory WithApprenticeship(
+        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
+        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var apprenticeships = Enumerable.Range(1, apprenticeship.NumberOfApprenticeships)
@@ -105,11 +85,14 @@ public static partial class MockApiExtensions
             .RespondWith(
                 Response.Create()
                     .WithBodyAsJson(singleMockResponse));
+
+        return factory;
     }
 
-    public static void WithoutApprenticeship(
-        Apprenticeship apprenticeship, WireMockServer mockServer)
+    public static TrackProgressApiFactory WithoutApprenticeship(
+        this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
+        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var mockResponse = fixture.Build<GetApprenticeshipsResponse>()
@@ -128,10 +111,14 @@ public static partial class MockApiExtensions
             .RespondWith(
                 Response.Create()
                     .WithBodyAsJson(mockResponse));
+
+        return factory;
     }
 
-    public static void WithCourse(Course course, WireMockServer mockServer)
+    public static TrackProgressApiFactory WithCourse(
+        this TrackProgressApiFactory factory, Course course)
     {
+        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var courseOptionsResponse = fixture
@@ -165,5 +152,7 @@ public static partial class MockApiExtensions
                     Response.Create()
                         .WithBodyAsJson(content));
         }
+
+        return factory;
     }
 }
