@@ -30,7 +30,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Panel
                 $"{request.Slug}",
                 _contentService.HasContent);
 
-            var pageModel = new PanelPageModel().Build(panel);
+            var pageModel = new PanelModel().Build(panel);
 
             return new GetPanelQueryResult
             {

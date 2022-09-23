@@ -25,7 +25,7 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewPanel
         {
             var panel = await _client.Get<CmsContent>(new GetPanelRequest(request.Slug));
             
-            var pageModel = new PanelPageModel().Build(panel);
+            var pageModel = new PanelModel().Build(panel);
 
             return new GetPreviewPanelQueryResult
             {

@@ -9,7 +9,7 @@ using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
-using static SFA.DAS.Campaign.Models.PanelPageModel;
+using static SFA.DAS.Campaign.Models.PanelModel;
 
 namespace SFA.DAS.Campaign.Extensions
 {
@@ -372,7 +372,8 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     Type = contentItem.NodeType,
                     Values = contentItem.BuildParagraph(),
-                });
+                    TableValue = new List<List<string>>()
+            });
             }
         }
 

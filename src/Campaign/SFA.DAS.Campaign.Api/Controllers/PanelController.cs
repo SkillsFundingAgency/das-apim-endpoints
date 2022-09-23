@@ -39,7 +39,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
 
             return Ok(new GetPanelResponse
             {
-                PanelModel = result.Panel
+                Panel = result.Panel
             });
 
         }
@@ -63,7 +63,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
 
             return Ok(new GetPreviewPanelResponse
             {
-                PanelModel = result.PanelModel
+                Panel = result.PanelModel
             });
 
         }
