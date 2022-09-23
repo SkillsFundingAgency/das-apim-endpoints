@@ -4,6 +4,9 @@ using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Apis.CoursesInnerApi;
 using System.Net;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeshipsResponse;
 
 namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
@@ -24,7 +27,7 @@ public static partial class MockApiExtensions
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
-            .WithApprenticeship(apprenticeship)
+            .WithApprenticeship(apprenticeship, factory.CommitmentsApi.MockServer)
             .RegisterWith(factory.Interceptor);
         return factory;
     }
@@ -34,7 +37,7 @@ public static partial class MockApiExtensions
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
-            .WithoutApprenticeship(apprenticeship)
+            .WithoutApprenticeship(apprenticeship, factory.CommitmentsApi.MockServer)
             .RegisterWith(factory.Interceptor);
         return factory;
     }
@@ -44,13 +47,35 @@ public static partial class MockApiExtensions
     {
         new HttpRequestInterceptionBuilder()
             .Requests().ForHttps().ForAnyHost()
-            .WithCourse(course)
+            .WithCourse(course, factory.CommitmentsApi.MockServer)
             .RegisterWith(factory.Interceptor);
         return factory;
     }
 
+    public static TrackProgressApiFactory Reset(this TrackProgressApiFactory factory)
+    {
+        factory.CommitmentsApi.MockServer.Reset();
+        factory.WithStubProviderResponse();
+        return factory;
+    }
+
+    public static TrackProgressApiFactory WithStubProviderResponse(
+        this TrackProgressApiFactory factory)
+    {
+        factory.CommitmentsApi.MockServer
+            .Given(
+                Request.Create()
+                    .UsingPost()
+                    .WithPath("/progress"))
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.Created)
+                    .WithBodyAsJson(new object()));
+        return factory;
+    }
+
     public static BuildApprenticeship WithApprenticeship(
-        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship)
+        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship, WireMockServer mockServer)
     {
         var fixture = new Fixture();
 
@@ -68,12 +93,26 @@ public static partial class MockApiExtensions
             .With(x => x.TotalApprenticeshipsFound, 1)
             .With(x => x.Apprenticeships, apprenticeships).Create();
 
+        //http://localhost:53736/api/apprenticeships?providerid=12345&searchterm=1&startdate=2020-01-01
+        //                       api/apprenticeships?providerid=12345&searchterm=1&startdate=2020-01-01
+
         var query = $"providerid={apprenticeship.ProviderId}&searchterm={apprenticeship.Uln}&startdate={apprenticeship.StartDate.Year}-{apprenticeship.StartDate.Month:00}-{apprenticeship.StartDate.Day:00}";
         builder
            .ForPath("api/apprenticeships")
            .ForQuery(query)
            .Responds()
            .WithSystemTextJsonContent(mockResponse);
+        mockServer
+            .Given(
+                Request.Create()
+                    .WithPath("/api/apprenticeships")
+                    .WithParam("providerid", apprenticeship.ProviderId.ToString())
+                    .WithParam("searchterm", apprenticeship.Uln.ToString())
+                    .WithParam("startdate", $"{apprenticeship.StartDate.Year}-{apprenticeship.StartDate.Month:00}-{apprenticeship.StartDate.Day:00}")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithBodyAsJson(mockResponse));
 
         var singleMockResponse =
             fixture.Build<GetApprenticeshipResponse>()
@@ -91,12 +130,20 @@ public static partial class MockApiExtensions
             .ForPath($"api/apprenticeships/{apprenticeships.First().Id}")
             .Responds()
             .WithSystemTextJsonContent(singleMockResponse);
+        mockServer
+            .Given(
+                Request.Create()
+                    .WithPath($"/api/apprenticeships/{apprenticeships.First().Id}")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithBodyAsJson(singleMockResponse));
 
         return new BuildApprenticeship(builder, builder2);
     }
 
     public static BuildApprenticeship WithoutApprenticeship(
-        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship)
+        this HttpRequestInterceptionBuilder builder, Apprenticeship apprenticeship, WireMockServer mockServer)
     {
         var fixture = new Fixture();
 
@@ -111,12 +158,23 @@ public static partial class MockApiExtensions
            .ForQuery(query)
            .Responds()
            .WithSystemTextJsonContent(mockResponse);
+        mockServer
+            .Given(
+                Request.Create()
+                    .WithPath("/api/apprenticeships")
+                    .WithParam("providerid", apprenticeship.ProviderId.ToString())
+                    .WithParam("searchterm", apprenticeship.Uln.ToString())
+                    .WithParam("startdate", $"{apprenticeship.StartDate.Year}-{apprenticeship.StartDate.Month:00}-{apprenticeship.StartDate.Day:00}")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithBodyAsJson(mockResponse));
 
         return new BuildApprenticeship(builder);
     }
 
     public static BuildApprenticeship WithCourse(
-        this HttpRequestInterceptionBuilder _, Course course)
+        this HttpRequestInterceptionBuilder _, Course course, WireMockServer mockServer)
     {
         var fixture = new Fixture();
 
@@ -132,19 +190,36 @@ public static partial class MockApiExtensions
                 .ForPath($"/api/courses/standards/{course.Standard}")
                 .Responds()
                 .WithSystemTextJsonContent(courseOptionsResponse));
+        mockServer
+            .Given(
+                Request.Create()
+                    .WithPath($"/api/courses/standards/{course.Standard}")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithBodyAsJson(courseOptionsResponse));
 
         foreach (var option in course.CoreAndOptions)
         {
+            var content = fixture
+                .Build<GetKsbsForCourseOptionResponse>()
+                .With(x => x.Ksbs,
+                            course.Ksbs.Select(k =>
+                                new CourseKsb { Type = k.Type, Id = k.Id }).ToList())
+                .Create();
             builders.Add(
                 new HttpRequestInterceptionBuilder().Requests().ForHttps().ForAnyHost()
                     .ForPath($"/api/courses/standards/{course.Standard}/options/{option}/ksbs")
                     .Responds()
-                    .WithSystemTextJsonContent(fixture
-                        .Build<GetKsbsForCourseOptionResponse>()
-                        .With(x => x.Ksbs,
-                                   course.Ksbs.Select(k =>
-                                        new CourseKsb { Type = k.Type, Id = k.Id }).ToList())
-                        .Create()));
+                    .WithSystemTextJsonContent(content));
+            mockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/api/courses/standards/{course.Standard}/options/{option}/ksbs")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithBodyAsJson(content));
         }
 
         return new BuildApprenticeship(builders.ToArray());

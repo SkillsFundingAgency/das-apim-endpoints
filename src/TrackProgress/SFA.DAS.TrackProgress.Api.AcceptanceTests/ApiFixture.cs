@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using JustEat.HttpClientInterception;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests;
+using SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using System.Net;
 
@@ -47,6 +48,7 @@ public class ApiFixture
     public void Setup()
     {
         client = factory.CreateClient().ForProvider(An.Apprenticeship.ProviderId);
+        factory.Reset();
     }
 
     [TearDown]
