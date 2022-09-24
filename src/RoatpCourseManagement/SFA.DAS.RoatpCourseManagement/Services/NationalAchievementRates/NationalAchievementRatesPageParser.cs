@@ -13,7 +13,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
     {
         private readonly ILogger<NationalAchievementRatesPageParser> _logger;
         private readonly HttpClient _client;
-      
 
         public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger, HttpClient client)
         {

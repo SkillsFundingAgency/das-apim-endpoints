@@ -52,7 +52,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
 
             result.Should().NotBeNullOrEmpty();
 
-            result.Should().Contain("*.zip");
+            result.Should().Contain("https://test/202122_App_NARTs_Overall.zip");
         }
 
         [Test]
