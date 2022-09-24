@@ -33,27 +33,29 @@ namespace SFA.DAS.RoatpCourseManagement.Application.NationalAchievementRatesLook
         public async Task<NationalAchievementRatesLookupQueryResult> Handle(NationalAchievementRatesLookupQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Start getting National achievement rates and Overall National achievement rates.");
-
-            var downloadFilePath = await _pageParser.GetCurrentDownloadFilePath(NationalAchievementRatesDownloadPageUrl);
-
-            var dataFile = await _downloadService.GetFileStream(downloadFilePath);
-
+            
             var response = new NationalAchievementRatesLookupQueryResult();
 
-            var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, NationalAchievementRatesOverallCsvFileName);
-            response.OverallAchievementRates = dataOverallAchievementRates
-                .Where(c => !c.SectorSubjectArea.Contains("All Sector Subject Area"))
-                .Where(c => c.InstitutionType == "All Institution Type")
-                .Where(c => c.Age == "All Age")
-                .Select(c => (NationalAchievementRateOverall)c).ToList();
+            var downloadFilePath = await _pageParser.GetCurrentDownloadFilePath(NationalAchievementRatesDownloadPageUrl);
+            if(!string.IsNullOrEmpty(downloadFilePath))
+            {
+                var dataFile = await _downloadService.GetFileStream(downloadFilePath);
+
+                var dataOverallAchievementRates = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(dataFile, NationalAchievementRatesOverallCsvFileName);
+                response.OverallAchievementRates = dataOverallAchievementRates
+                    .Where(c => !c.SectorSubjectArea.Contains("All Sector Subject Area"))
+                    .Where(c => c.InstitutionType == "All Institution Type")
+                    .Where(c => c.Age == "All Age")
+                    .Select(c => (NationalAchievementRateOverall)c).ToList();
+
+                var dataNationalAchievementRate = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(dataFile, NationalAchievementRatesCsvFileName);
+                response.NationalAchievementRates = dataNationalAchievementRate.Select(c => (NationalAchievementRate)c).ToList();
+            }
 
             if (!response.OverallAchievementRates.Any())
             {
                 _logger.LogWarning($"No Overall National achievement rates found");
             }
-
-            var dataNationalAchievementRate = _zipArchiveHelper.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(dataFile, NationalAchievementRatesCsvFileName);
-            response.NationalAchievementRates = dataNationalAchievementRate.Select(c => (NationalAchievementRate)c).ToList();
             
             if (!response.NationalAchievementRates.Any())
             {
