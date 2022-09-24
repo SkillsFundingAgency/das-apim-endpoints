@@ -1,22 +1,24 @@
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Dom;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 {
     public class NationalAchievementRatesPageParser : INationalAchievementRatesPageParser
     {
         private readonly ILogger<NationalAchievementRatesPageParser> _logger;
-        IBrowsingContext _browsingContext;
+        private readonly HttpClient _client;
+      
 
-        public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger, IBrowsingContext browsingContext)
+        public NationalAchievementRatesPageParser(ILogger<NationalAchievementRatesPageParser> logger, HttpClient client)
         {
             _logger = logger;
-            _browsingContext = browsingContext;
+            _client = client;
         }
         private const string ErrorMessage = "Error in finding the National Achievement Rates download page url";
 
@@ -28,10 +30,12 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
             var pageFound = false;
             while (!pageFound)
             {
-                document = await _browsingContext.OpenAsync(string.Format(nationalAchievementRatesDownloadPageUrl, yearFrom, yearTo));
-                if (document.StatusCode != HttpStatusCode.NotFound)
+                var response = await _client.GetAsync(string.Format(nationalAchievementRatesDownloadPageUrl, yearFrom, yearTo));
+                if (response.StatusCode != HttpStatusCode.NotFound)
                 {
                     pageFound = true;
+                    var parser = new HtmlParser();
+                    document = parser.ParseDocument(await response.Content.ReadAsStringAsync());
                 }
                 else
                 {
