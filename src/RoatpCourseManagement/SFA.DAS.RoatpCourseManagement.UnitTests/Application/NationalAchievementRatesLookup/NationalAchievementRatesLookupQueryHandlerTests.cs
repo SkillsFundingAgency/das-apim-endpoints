@@ -57,6 +57,35 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.NationalAchievemen
             zipArchiveHelper.Verify(x => x.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(It.IsAny<Stream>(), It.IsAny<string>()), Times.Once);
 
             result.Should().NotBeNull();
+            result.NationalAchievementRates.Count.Should().NotBe(0);
+            result.OverallAchievementRates.Count.Should().NotBe(0);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public async Task Handle_downloadlocationEmpty_ReturnsEmptyResponse(
+           [Frozen] Mock<INationalAchievementRatesPageParser> pageParser,
+           [Frozen] Mock<IDataDownloadService> downloadService,
+           [Frozen] Mock<IZipArchiveHelper> zipArchiveHelper,
+           NationalAchievementRatesLookupQuery query,
+           NationalAchievementRatesLookupQueryHandler sut)
+        {
+            //Arrange
+            pageParser.Setup(x => x.GetCurrentDownloadFilePath(It.IsAny<string>())).ReturnsAsync(string.Empty);
+
+            
+            //Act
+            var result = await sut.Handle(query, new CancellationToken());
+
+            //Assert
+            pageParser.Verify(x => x.GetCurrentDownloadFilePath(It.IsAny<string>()), Times.Once);
+            downloadService.Verify(x => x.GetFileStream(It.IsAny<string>()), Times.Never);
+
+            zipArchiveHelper.Verify(x => x.ExtractModelFromCsvFileZipStream<NationalAchievementRateCsv>(It.IsAny<Stream>(), It.IsAny<string>()), Times.Never);
+            zipArchiveHelper.Verify(x => x.ExtractModelFromCsvFileZipStream<NationalAchievementRateOverallCsv>(It.IsAny<Stream>(), It.IsAny<string>()), Times.Never);
+
+            result.Should().NotBeNull();
+            result.NationalAchievementRates.Count.Should().Be(0);
+            result.OverallAchievementRates.Count.Should().Be(0);
         }
     }
 }
