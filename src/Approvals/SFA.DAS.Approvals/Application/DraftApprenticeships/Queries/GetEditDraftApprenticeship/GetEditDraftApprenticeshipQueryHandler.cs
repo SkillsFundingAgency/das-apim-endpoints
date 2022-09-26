@@ -51,8 +51,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 return null;
             }
 
+            var courseCode = !string.IsNullOrWhiteSpace(request.CourseCode)
+                ? request.CourseCode
+                : apprenticeship.CourseCode;
+
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId,
-                apprenticeship.CourseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+                courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             return new GetEditDraftApprenticeshipQueryResult
             {
