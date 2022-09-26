@@ -8,7 +8,6 @@ namespace SFA.DAS.Campaign.Models
     public class PanelModel
     {
         public PanelContent MainContent { get; set; }
-        public PageModel PageAttributes { get; set; }
 
         public PanelModel Build(CmsContent cmsPanel)
         {
@@ -21,14 +20,9 @@ namespace SFA.DAS.Campaign.Models
 
             var panelContent = new PanelModel
             {
-                PageAttributes = new PageModel
-                {
-                    Slug = panelItem.Fields.Slug,
-                    Title = panelItem.Fields.Title,
-                    Id = panelItem.Sys.Id,
-                },
                 MainContent = new PanelContent
                 {
+                    Title = panelItem.Fields.Title,
                     Button = new ButtonModel
                     {
                         Title = panelItem.Fields.ButtonText,
@@ -59,6 +53,7 @@ namespace SFA.DAS.Campaign.Models
                 Items = new List<ContentItem>();
             }
 
+            public string Title { get; set; }
             public List<ContentItem> Items { get; set; }
             public ResourceItem Image { get; set; }
             public ButtonModel Button { get; set; }
