@@ -4,6 +4,6 @@ namespace SFA.DAS.Campaign.Application.Queries.Panel
 {
     public class GetPanelQueryResult
     {
-        public PanelPageModel Panel { get; set; }
+        public PanelModel Panel { get; set; }
     }
 }
