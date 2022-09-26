@@ -56,6 +56,40 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
         }
 
         [Test]
+        public async Task GetCurrentDownloadFilePath_FoundPathButNoUrl_ReturnsEmptystring()
+        {
+            var nationalAchievementRatesDownloadPageUrl = "http://test.com";
+
+            var content = @"<!DOCTYPE html>
+                            <html>
+                            <head>
+                                <title></title>
+                            </head>
+                            <body>
+                               <div>
+                                
+                            </body>
+                            </html>";
+
+            var mockMessageHandler = new Mock<HttpMessageHandler>();
+            mockMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(content),
+                    RequestMessage = new HttpRequestMessage()
+                });
+            HttpClient httpClient = new HttpClient(mockMessageHandler.Object);
+            httpClient.BaseAddress = new Uri("https://test");
+            var sut = new NationalAchievementRatesPageParser(Mock.Of<ILogger<NationalAchievementRatesPageParser>>(), httpClient);
+
+            var result = await sut.GetCurrentDownloadFilePath(nationalAchievementRatesDownloadPageUrl);
+
+            result.Should().BeNullOrEmpty();
+        }
+
+        [Test]
         public async Task GetCurrentDownloadFilePath_NotFoundPath_ThrowsInvalidOperationException()
         {
             var nationalAchievementRatesDownloadPageUrl = "http://test.com";

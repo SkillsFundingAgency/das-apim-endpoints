@@ -26,8 +26,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
             var result = await _mediator.Send(new NationalAchievementRatesLookupQuery());
 
-            if (result == null) return BadRequest();
-
             return Ok(result);
         }
     }

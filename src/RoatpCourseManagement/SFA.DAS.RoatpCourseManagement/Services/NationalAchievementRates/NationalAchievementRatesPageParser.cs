@@ -50,12 +50,16 @@ namespace SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates
 
             var downloadHref = document
                 .QuerySelectorAll($"a:contains('{yearFrom} to {yearTo} apprenticeship NARTs overall CSV')")
-                .First()
+                .FirstOrDefault()?
                 .GetAttribute("Href");
 
-            var uri = new Uri(downloadHref);
-
-            return uri.AbsoluteUri;
+            if (downloadHref != null)
+            {
+                var uri = new Uri(downloadHref);
+                return uri.AbsoluteUri;
+            }
+            else
+                return string.Empty;
         }
     }
 }

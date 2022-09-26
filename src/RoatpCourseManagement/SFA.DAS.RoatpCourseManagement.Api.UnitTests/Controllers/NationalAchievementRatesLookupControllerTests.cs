@@ -24,18 +24,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetNationalAcheivementRates_NullResponse_ReturnsBadRequest()
-        {
-            _mediator.Setup(m => m.Send(It.IsAny<NationalAchievementRatesLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((NationalAchievementRatesLookupQueryResult) null);
-
-            var result = await _sut.GetNationalAchievementRates();
-
-            var response = (BadRequestResult)result;
-
-            response.Should().NotBeNull();
-        }
-
-        [Test]
         public async Task GetNationalAcheivementRates_ValidResponse_ReturnsOkResponse()
         {
             var expectedResponse = new NationalAchievementRatesLookupQueryResult();
