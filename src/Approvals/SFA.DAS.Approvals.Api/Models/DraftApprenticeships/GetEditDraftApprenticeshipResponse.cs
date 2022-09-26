@@ -84,7 +84,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 DurationReducedBy = source.DurationReducedBy,
                 PriceReducedBy = source.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }
