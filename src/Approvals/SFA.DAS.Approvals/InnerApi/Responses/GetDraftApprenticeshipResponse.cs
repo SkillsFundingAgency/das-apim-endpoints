@@ -59,5 +59,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
+        public DateTime? ActualStartDate { get; set; }
     }
 }
