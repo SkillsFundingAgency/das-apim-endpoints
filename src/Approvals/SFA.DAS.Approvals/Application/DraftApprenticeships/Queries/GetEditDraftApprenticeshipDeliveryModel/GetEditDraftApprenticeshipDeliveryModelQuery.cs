@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
     {
         public long CohortId { get; set; }
         public long DraftApprenticeshipId { get; set; }
+        public string CourseCode { get; set; }
     }
 
     public class GetEditDraftApprenticeshipDeliveryModelQueryResult
@@ -66,8 +68,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 return null;
             }
 
+            var courseCode = !string.IsNullOrWhiteSpace(request.CourseCode)
+                ? request.CourseCode
+                : apprenticeship.CourseCode;
+
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId,
-                apprenticeship.CourseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+                courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             return new GetEditDraftApprenticeshipDeliveryModelQueryResult
             {

@@ -52,8 +52,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Course.Route.Should().Be(source.Vacancy.Route);
             actual.Course.LarsCode.Should().Be(source.Vacancy.StandardLarsCode);
             actual.Wage.WageAmount.Should().Be(source.Vacancy.WageAmount);
-            actual.Wage.WageType.Should().Be(source.Vacancy.WageType);
-            actual.Wage.WageUnit.Should().Be(source.Vacancy.WageUnit);
+            actual.Wage.WageType.Should().Be((WageType)source.Vacancy.WageType);
+            actual.Wage.WageUnit.Should().Be((WageUnit)source.Vacancy.WageUnit);
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
             actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
             actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
