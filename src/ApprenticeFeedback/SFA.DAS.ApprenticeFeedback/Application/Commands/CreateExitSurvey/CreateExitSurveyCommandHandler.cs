@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.CreateExitSurvey
                 IncompletionFactor_Financial = command.IncompletionFactor_Financial,
                 IncompletionFactor_Mental = command.IncompletionFactor_Mental,
                 IncompletionFactor_Physical = command.IncompletionFactor_Physical,
-                IncompletionFactor_Other = command.IncompletionFactor_Other,
+                IncompletionFactor_None = command.IncompletionFactor_None,
                 RemainedReason = command.RemainedReason,
                 ReasonForIncorrect = command.ReasonForIncorrect,
                 AllowContact = command.AllowContact

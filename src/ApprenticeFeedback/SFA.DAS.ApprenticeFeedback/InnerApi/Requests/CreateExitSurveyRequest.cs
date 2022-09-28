@@ -27,7 +27,7 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
         public bool IncompletionFactor_Financial { get; set; }
         public bool IncompletionFactor_Mental { get; set; }
         public bool IncompletionFactor_Physical { get; set; }
-        public bool IncompletionFactor_Other { get; set; }
+        public bool IncompletionFactor_None { get; set; }
         public string RemainedReason { get; set; }
         public string ReasonForIncorrect { get; set; }
         public bool AllowContact { get; set; }
