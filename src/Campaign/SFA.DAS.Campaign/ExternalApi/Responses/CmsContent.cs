@@ -334,6 +334,14 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("showOnTheHomepageOnly")]
         public bool ShowOnTheHomepageOnly { get; set; }
+        [JsonPropertyName("buttonText")]
+        public string ButtonText { get; set; }
+        [JsonPropertyName("buttonUrl")]
+        public string ButtonUrl { get; set; }
+        [JsonPropertyName("buttonStyle")]
+        public List<string> ButtonStyle { get; set; }
+        [JsonPropertyName("image")]
+        public ImageContent Image { get; set; }
     }
 
     public class MainContent
@@ -411,6 +419,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
     }
 
     public class TabbedContent
+    {
+        [JsonPropertyName("sys")]
+        public LandingPageSys Sys { get; set; }
+    }
+
+    public class ImageContent
     {
         [JsonPropertyName("sys")]
         public LandingPageSys Sys { get; set; }
