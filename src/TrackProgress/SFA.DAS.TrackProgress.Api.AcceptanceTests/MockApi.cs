@@ -9,7 +9,7 @@ public sealed class MockApi : IDisposable
 {
     public readonly WireMockServer _mockServer;
 
-    public MockApi(int port = 0, bool ssl = true)
+    public MockApi(int port = 0, bool ssl = false)
         => _mockServer = WireMockServer.Start(new WireMockServerSettings
         {
             Port = port,
