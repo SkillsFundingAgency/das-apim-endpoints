@@ -342,8 +342,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public List<string> ButtonStyle { get; set; }
         [JsonPropertyName("image")]
         public ImageContent Image { get; set; }
-        [JsonPropertyName("position")]
-        public string Position { get; set; }
+        [JsonPropertyName("linkTitle")]
+        public string LinkTitle { get; set; }
     }
 
     public class MainContent
