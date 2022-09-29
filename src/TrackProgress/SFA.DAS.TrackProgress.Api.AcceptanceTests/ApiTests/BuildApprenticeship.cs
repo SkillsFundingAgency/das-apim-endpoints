@@ -9,11 +9,11 @@ using static SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi.GetApprenticeships
 
 namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
-public static partial class MockApiExtensions
+public static class MockApiExtensions
 {
     public static TrackProgressApiFactory Reset(this TrackProgressApiFactory factory)
     {
-        factory.CommitmentsApi.MockServer.Reset();
+        factory.InnerApis.Reset();
         factory.WithStubProviderResponse();
         return factory;
     }
@@ -21,7 +21,7 @@ public static partial class MockApiExtensions
     public static TrackProgressApiFactory WithStubProviderResponse(
         this TrackProgressApiFactory factory)
     {
-        factory.CommitmentsApi.MockServer
+        factory.InnerApis
             .Given(
                 Request.Create()
                     .UsingPost()
@@ -36,7 +36,6 @@ public static partial class MockApiExtensions
     public static TrackProgressApiFactory WithApprenticeship(
         this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
-        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var apprenticeships = Enumerable.Range(1, apprenticeship.NumberOfApprenticeships)
@@ -53,7 +52,7 @@ public static partial class MockApiExtensions
             .With(x => x.TotalApprenticeshipsFound, 1)
             .With(x => x.Apprenticeships, apprenticeships).Create();
 
-        mockServer
+        factory.InnerApis
             .Given(
                 Request.Create()
                     .WithPath("/api/apprenticeships")
@@ -77,7 +76,7 @@ public static partial class MockApiExtensions
             .With(x => x.StopDate, apprenticeship.StopDate?.ToDateTime(TimeOnly.MinValue))
             .Create();
 
-        mockServer
+        factory.InnerApis
             .Given(
                 Request.Create()
                     .WithPath($"/api/apprenticeships/{apprenticeships.First().Id}")
@@ -92,7 +91,6 @@ public static partial class MockApiExtensions
     public static TrackProgressApiFactory WithoutApprenticeship(
         this TrackProgressApiFactory factory, Apprenticeship apprenticeship)
     {
-        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var mockResponse = fixture.Build<GetApprenticeshipsResponse>()
@@ -100,7 +98,7 @@ public static partial class MockApiExtensions
             .With(x => x.TotalApprenticeshipsFound, 0)
             .Without(x => x.Apprenticeships).Create();
 
-        mockServer
+        factory.InnerApis
             .Given(
                 Request.Create()
                     .WithPath("/api/apprenticeships")
@@ -118,7 +116,6 @@ public static partial class MockApiExtensions
     public static TrackProgressApiFactory WithCourse(
         this TrackProgressApiFactory factory, Course course)
     {
-        var mockServer = factory.CommitmentsApi.MockServer;
         var fixture = new Fixture();
 
         var courseOptionsResponse = fixture
@@ -126,7 +123,7 @@ public static partial class MockApiExtensions
                   .With(x => x.Options, course.Options.ToList())
                   .Create();
 
-        mockServer
+        factory.InnerApis
             .Given(
                 Request.Create()
                     .WithPath($"/api/courses/standards/{course.Standard}")
@@ -143,7 +140,7 @@ public static partial class MockApiExtensions
                             course.Ksbs.Select(k =>
                                 new CourseKsb { Type = k.Type, Id = k.Id }).ToList())
                 .Create();
-            mockServer
+            factory.InnerApis
                 .Given(
                     Request.Create()
                         .WithPath($"/api/courses/standards/{course.Standard}/options/{option}/ksbs")
