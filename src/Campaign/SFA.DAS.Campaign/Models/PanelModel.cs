@@ -29,7 +29,8 @@ namespace SFA.DAS.Campaign.Models
                         Url = panelItem.Fields.ButtonUrl,
                         Styles = panelItem.Fields.ButtonStyle
                     },
-                    LinkTitle = panelItem.Fields.LinkTitle
+                    LinkTitle = panelItem.Fields.LinkTitle,
+                    Slug = panelItem.Fields.Slug
                 }
             };
 
@@ -55,6 +56,7 @@ namespace SFA.DAS.Campaign.Models
             }
 
             public string Title { get; set; }
+            public string Slug { get; set; }
             public List<ContentItem> Items { get; set; }
             public ResourceItem Image { get; set; }
             public ButtonModel Button { get; set; }
