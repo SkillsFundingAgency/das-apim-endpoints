@@ -33,14 +33,14 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetStandardsBySector(sector) as ObjectResult;
+            var controllerResult = await controller.GetStandards(sector) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
             Assert.IsNotNull(model);
 
-            var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem { Id = s.LarsCode });
+            var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem { LarsCode = s.LarsCode });
             model.Standards.Should().BeEquivalentTo(response);
         }
         
@@ -57,7 +57,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetStandardsQueryResult());
 
-            var controllerResult = await controller.GetStandardsBySector(sector) as ObjectResult;
+            var controllerResult = await controller.GetStandards(sector) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -78,7 +78,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetStandardsBySector("") as StatusCodeResult;
+            var controllerResult = await controller.GetStandards("") as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

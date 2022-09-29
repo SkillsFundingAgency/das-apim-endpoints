@@ -28,7 +28,8 @@ namespace SFA.DAS.Campaign.Models
                         Title = panelItem.Fields.ButtonText,
                         Url = panelItem.Fields.ButtonUrl,
                         Styles = panelItem.Fields.ButtonStyle
-                    }
+                    },
+                    Position = panelItem.Fields.Position
                 }
             };
 
@@ -57,6 +58,7 @@ namespace SFA.DAS.Campaign.Models
             public List<ContentItem> Items { get; set; }
             public ResourceItem Image { get; set; }
             public ButtonModel Button { get; set; }
+            public string Position { get; set; }
         }
     }
 }

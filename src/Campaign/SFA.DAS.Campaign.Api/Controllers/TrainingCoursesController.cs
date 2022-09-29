@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -26,7 +27,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetStandardsBySector([FromQuery]string sector)
+        public async Task<IActionResult> GetStandards([FromQuery]string? sector)
         {
             try
             {
