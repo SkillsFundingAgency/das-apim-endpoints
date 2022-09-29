@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -210,8 +209,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
-                .Which.ErrorContent.Should().Be(errorContent);
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Result.Which.ErrorContent.Should().Be(errorContent);
         }
         
         [Test, MoqAutoData]
@@ -238,7 +237,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<Exception>()
+            act.Should().ThrowAsync<Exception>()
                 .WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})");
         }
     }
