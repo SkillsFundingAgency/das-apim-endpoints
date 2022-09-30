@@ -22,6 +22,7 @@
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="WireMock.Net.FluentAssertions" />
   </ItemGroup>
 
   <ItemGroup>

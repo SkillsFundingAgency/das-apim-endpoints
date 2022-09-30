@@ -7,10 +7,8 @@ namespace SFA.DAS.TrackProgress.Api.AcceptanceTests;
 
 public sealed class MockApi : IDisposable
 {
-    public readonly WireMockServer _mockServer;
-
     public MockApi(int port = 0, bool ssl = false)
-        => _mockServer = WireMockServer.Start(new WireMockServerSettings
+        => Server = WireMockServer.Start(new WireMockServerSettings
         {
             Port = port,
             UseSSL = ssl,
@@ -18,14 +16,16 @@ public sealed class MockApi : IDisposable
             Logger = new WireMockConsoleLogger(),
         });
 
+    public WireMockServer Server { get; }
+
     public Uri BaseAddress =>
-        new(_mockServer.Urls[0]
+        new(Server.Urls[0]
         ?? throw new InvalidOperationException("No mock server Url"));
 
     public IRespondWithAProvider Given(IRequestMatcher requestMatcher)
-        => _mockServer.Given(requestMatcher);
+        => Server.Given(requestMatcher);
 
-    public void Reset() => _mockServer.Reset();
+    public void Reset() => Server.Reset();
 
-    public void Dispose() => _mockServer?.Dispose();
+    public void Dispose() => Server?.Dispose();
 }

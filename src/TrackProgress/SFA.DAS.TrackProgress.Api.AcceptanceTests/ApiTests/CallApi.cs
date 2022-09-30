@@ -1,11 +1,11 @@
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Tests;
 using System.Text;
 using System.Text.Json;
+using WireMock.FluentAssertions;
 
 namespace SFA.DAS.TrackProgress.Api.AcceptanceTests.ApiTests;
 
@@ -72,17 +72,15 @@ public class CallApi : ApiFixture
 
         response.Should().Be201Created();
 
-        if(isSandbox == "true")
+        if (isSandbox == "true")
         {
-            factory.TrackProgressInnerApi._mockServer.LogEntries.Should().NotContain(x =>
-                x.RequestMessage.AbsolutePath.Contains("/progress"));
+            factory.TrackProgressInnerApi.Server.LogEntries.Should().BeEmpty();
         }
         else
         {
-            factory.TrackProgressInnerApi._mockServer.LogEntries.Should().Contain(x =>
-                x.RequestMessage.AbsolutePath.Contains("/progress"));
+            factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
+                .UsingPost().And.AtAbsoluteUrl($"{factory.TrackProgressInnerApi.BaseAddress}progress");
         }
-
     }
 
     [Test]
