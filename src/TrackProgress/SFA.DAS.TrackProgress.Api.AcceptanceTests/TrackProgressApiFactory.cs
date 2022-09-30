@@ -21,11 +21,6 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
             webBuilder.AddInMemoryCollection(config);
         });
 
-        // Add the test configuration file to override the application configuration
-        var directory = Path.GetDirectoryName(typeof(TrackProgressApiFactory).Assembly.Location)!;
-        var fullPath = Path.Combine(directory, "testsettings.json");
-
-        builder.ConfigureAppConfiguration((_, config) => config.AddJsonFile(fullPath, optional: true));
         builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
     }
 }

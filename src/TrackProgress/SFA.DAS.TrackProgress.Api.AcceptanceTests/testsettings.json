@@ -1,7 +1,0 @@
-{
-  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
-  "ConfigNames": "SFA.DAS.TrackProgress.OuterApi",
-  "Environment": "LOCAL_ACCEPTANCE_TESTS",
-  "Version": "1.0",
-  "APPINSIGHTS_INSTRUMENTATIONKEY": ""
-}
