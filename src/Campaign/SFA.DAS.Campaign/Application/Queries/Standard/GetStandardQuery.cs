@@ -5,6 +5,6 @@ namespace SFA.DAS.Campaign.Application.Queries.Standard
 {
     public class GetStandardQuery : IRequest<GetStandardQueryResult>
     {
-        public int LarsCode { get; set; }
+        public string StandardUId { get; set; }
     }
 }
