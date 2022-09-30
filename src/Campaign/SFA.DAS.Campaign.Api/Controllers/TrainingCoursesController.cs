@@ -27,7 +27,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/StandardsBySector")]
+        [Route("")]
         public async Task<IActionResult> GetStandards([FromQuery] string? sector)
         {
             try
@@ -48,21 +48,20 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/StandardByLarsCode")]
-        public async Task<IActionResult> GetStandard([FromQuery] int larsCode)
+        [Route("{standardUId}")]
+        public async Task<IActionResult> GetStandard([FromRoute] string standardUId)
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardQuery { LarsCode = larsCode });
+                var result = await _mediator.Send(new GetStandardQuery { StandardUId = standardUId });
+                //add 404
+                var item = (GetStandardByStandardUIdResponse)result.Standard;
 
-                return Ok(new GetStandardByLarsCodeResponse
-                {
-                    Standard = (GetStandardResponse)result.Standard
-                });
+                return Ok(item);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting standards by LarsCode {larsCode}");
+                _logger.LogError(e, $"Error getting standards by StandardUId {standardUId}");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

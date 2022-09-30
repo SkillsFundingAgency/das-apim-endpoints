@@ -21,7 +21,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Standard
         public async Task<GetStandardQueryResult> Handle(GetStandardQuery request, CancellationToken cancellationToken)
         {
             var standard =
-                await _coursesApiClient.Get<GetStandardListResponse>(new GetStandardRequest(request.LarsCode));
+                await _coursesApiClient.Get<GetStandardListResponse>(new GetStandardRequest(request.StandardUId));
 
             return new GetStandardQueryResult
             {
@@ -31,7 +31,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Standard
                     Level = standard.Level,
                     StandardUId = standard.StandardUId,
                     LarsCode = standard.LarsCode,
-                    Duration = standard.ApprenticeshipFunding.Last().Duration,
+                    TimeToComplete = standard.ApprenticeshipFunding.Last().Duration,
                     MaxFunding = standard.ApprenticeshipFunding.Last().MaxEmployerLevyCap
                 }
             };
