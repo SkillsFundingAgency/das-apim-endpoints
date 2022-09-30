@@ -15,6 +15,7 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProvider
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.RoatpCourseManagement.Api.Configuration;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
@@ -83,6 +84,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api
             {
                 app.UseHsts();
             }
+
+            MappingStartup.AddMappings();
 
             app.ConfigureExceptionHandler(logger);
 

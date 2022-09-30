@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RoatpCourseManagement.Api.Configuration;
+using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.RoatpCourseManagement.Services;
 using SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -13,6 +14,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.RoatpCourseManagement.Configuration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
@@ -33,7 +35,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<IDataDownloadService, DataDownloadService>();
             services.AddTransient<INationalAchievementRatesPageParser, NationalAchievementRatesPageParser>();
             services.AddTransient<IZipArchiveHelper, ZipArchiveHelper>();
+            services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
             ConfigureCourseDirectoryHttpClient(services, configuration);
+            ConfigureUkrlpHttpClient(services, configuration);
+
         }
 
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
@@ -48,6 +53,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
             services.AddSingleton(BrowsingContext.New(AngleSharp.Configuration.Default.WithDefaultLoader()));
+            services.Configure<UkrlpApiConfiguration>(configuration.GetSection(nameof(UkrlpApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<UkrlpApiConfiguration>>().Value);
         }
 
         private static void ConfigureCourseDirectoryHttpClient(IServiceCollection services, IConfiguration configuration)
@@ -64,6 +71,21 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
                 config.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiconfiguration.Key);
             })
            .SetHandlerLifetime(handlerLifeTime);
+        }
+
+        private static void ConfigureUkrlpHttpClient(IServiceCollection services, IConfiguration configuration)
+        {
+            var handlerLifeTime = TimeSpan.FromMinutes(5);
+            services.AddHttpClient<IUkrlpService, UkrlpService>(config =>
+                {
+                    var apiConfiguration = configuration
+                        .GetSection(nameof(UkrlpApiConfiguration))
+                        .Get<UkrlpApiConfiguration>();
+
+                    config.BaseAddress = new Uri(apiConfiguration.ApiBaseAddress, UriKind.Absolute);
+                    
+                })
+                .SetHandlerLifetime(handlerLifeTime);
         }
     }
 }

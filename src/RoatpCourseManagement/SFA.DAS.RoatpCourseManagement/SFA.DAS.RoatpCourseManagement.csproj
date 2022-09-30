@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" />
+    <PackageReference Include="AutoMapper" />
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="MediatR" />
   </ItemGroup>
