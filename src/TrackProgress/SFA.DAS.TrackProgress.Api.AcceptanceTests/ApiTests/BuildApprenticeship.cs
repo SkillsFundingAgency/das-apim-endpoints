@@ -14,6 +14,7 @@ public static class MockApiExtensions
     public static TrackProgressApiFactory Reset(this TrackProgressApiFactory factory)
     {
         factory.InnerApis.Reset();
+        factory.TrackProgressInnerApi.Reset();
         factory.WithStubProviderResponse();
         return factory;
     }
@@ -21,7 +22,7 @@ public static class MockApiExtensions
     public static TrackProgressApiFactory WithStubProviderResponse(
         this TrackProgressApiFactory factory)
     {
-        factory.InnerApis
+        factory.TrackProgressInnerApi
             .Given(
                 Request.Create()
                     .UsingPost()

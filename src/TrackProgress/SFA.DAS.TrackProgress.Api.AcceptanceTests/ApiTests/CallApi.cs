@@ -74,12 +74,12 @@ public class CallApi : ApiFixture
 
         if(isSandbox == "true")
         {
-            factory.InnerApis._mockServer.LogEntries.Should().NotContain(x =>
+            factory.TrackProgressInnerApi._mockServer.LogEntries.Should().NotContain(x =>
                 x.RequestMessage.AbsolutePath.Contains("/progress"));
         }
         else
         {
-            factory.InnerApis._mockServer.LogEntries.Should().Contain(x =>
+            factory.TrackProgressInnerApi._mockServer.LogEntries.Should().Contain(x =>
                 x.RequestMessage.AbsolutePath.Contains("/progress"));
         }
 

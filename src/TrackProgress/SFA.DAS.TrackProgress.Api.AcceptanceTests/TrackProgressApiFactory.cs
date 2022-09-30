@@ -7,7 +7,7 @@ namespace SFA.DAS.TrackProgress.Api.AcceptanceTests;
 public class TrackProgressApiFactory : WebApplicationFactory<Program>
 {
     public MockApi InnerApis { get; } = new();
-    //public MockApi TrackProgressInnerApi { get; } = new();
+    public MockApi TrackProgressInnerApi { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -17,7 +17,7 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
             {
                 {"CommitmentsV2InnerApi:Url", InnerApis.BaseAddress.ToString() },
                 {"CoursesApi:Url", InnerApis.BaseAddress.ToString() },
-                {"TrackProgressApi:Url", InnerApis.BaseAddress.ToString() },
+                {"TrackProgressApi:Url", TrackProgressInnerApi.BaseAddress.ToString() },
             };
             webBuilder.AddInMemoryCollection(config);
         });
