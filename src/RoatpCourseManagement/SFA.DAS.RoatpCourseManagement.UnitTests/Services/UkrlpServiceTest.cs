@@ -318,5 +318,66 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             var addresses = await sut.GetAddresses(command);
             addresses.Should().BeNull();
         }
+
+        [Test]
+        public async Task GetProviderAddresses_NoMAtchingRecords_OkResponse_ReturnsNoContent()
+        {
+            var content = "xml that comes back";
+            var ukprn1 = "12345678";
+            var ukprn2 = "87654321";
+            var address1_1 = "1 green street";
+            var address2_1 = "centre";
+            var address3_1 = "New area";
+            var address4_1 = "Smallville";
+            var town_1 = "New Town";
+            var postcode_1 = "ZZ1 1ZZ";
+            var address1_2 = "2 green street";
+            var request = "string request";
+            var mockMessageHandler = new Mock<HttpMessageHandler>();
+
+            List<MatchingProviderRecords> matchingProviderRecords = null;
+
+            mockMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(content),
+                    RequestMessage = new HttpRequestMessage()
+                });
+            HttpClient httpClient = new HttpClient(mockMessageHandler.Object);
+            httpClient.BaseAddress = new Uri("https://test");
+            var mockSerializer = new Mock<IUkrlpSoapSerializer>();
+
+            mockSerializer
+                .Setup(x => x.BuildGetAllUkrlpsUpdatedSinceSoapRequest(DateTime.Today, StakeholderId, QueryId))
+                .Returns(request);
+
+            mockSerializer
+                .Setup(x => x.DeserialiseMatchingProviderRecordsResponse(content))
+                .Returns((List <MatchingProviderRecords>) null);
+
+            var ukrlpApiConfiguration = new UkrlpApiConfiguration
+            {
+                ApiBaseAddress = "https://test",
+                QueryId = QueryId,
+                StakeholderId = StakeholderId
+            };
+
+            var optionsConfiguration = Options.Create<UkrlpApiConfiguration>(ukrlpApiConfiguration);
+
+            var sut = new UkrlpService(httpClient, Mock.Of<ILogger<UkrlpService>>(), mockSerializer.Object, optionsConfiguration);
+            var command = new UkrlpDataCommand
+            {
+                ProvidersUpdatedSince = DateTime.Today
+            };
+
+            var addresses = await sut.GetAddresses(command);
+
+            addresses.Count.Should().Be(0);
+            mockSerializer.Verify(x => x.BuildGetAllUkrlpsUpdatedSinceSoapRequest(DateTime.Today, StakeholderId, QueryId), Times.Once);
+            mockSerializer.Verify(x => x.BuildGetAllUkrlpsFromUkprnsSoapRequest(It.IsAny<List<long>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
     }
 }

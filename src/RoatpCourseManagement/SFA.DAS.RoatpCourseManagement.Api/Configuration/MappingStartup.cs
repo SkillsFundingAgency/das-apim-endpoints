@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Configuration
 {
+    [ExcludeFromCodeCoverage]
     public static class MappingStartup
     {
         public static void AddMappings()
