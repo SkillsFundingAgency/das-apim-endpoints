@@ -67,7 +67,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
             if (queryResponses == null)
             {
-                return null;
+                return new List<MatchingProviderRecords>();
             }
 
             var matches = new List<MatchingProviderRecords>();

@@ -33,7 +33,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var request = string.Empty;
+            string request;
 
             if (command.ProvidersUpdatedSince != null)
                 request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest((DateTime)command.ProvidersUpdatedSince, _ukrlpConfiguration.StakeholderId,
@@ -44,11 +44,13 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
             }
 
-            var response=await GetUkprnLookupResponse(request);
+            var response = await GetUkprnLookupResponse(request);
 
-            _logger.LogInformation($"It took {stopWatch.Elapsed.TotalMilliseconds} milliseconds to get back a response from ukrlp, with {response?.Results.Count} records returned");
+            var recordCount = response?.Results.Count;
 
-            if (response is { Success: true })
+            _logger.LogInformation($"It took {stopWatch.Elapsed.TotalMilliseconds} milliseconds to get back a response from ukrlp, with {recordCount} records returned");
+
+            if (response != null  && response.Success)
             {
                 return response.Results.Select(GetProviderAddressFromProviderDetails).ToList();
 
