@@ -45,8 +45,9 @@ namespace SFA.DAS.RoatpCourseManagement.Services
             }
 
             var response = await GetUkprnLookupResponse(request);
+            var millisecondsTaken = stopWatch.Elapsed.TotalMilliseconds;
 
-            _logger.LogInformation($"It took {stopWatch.Elapsed.TotalMilliseconds} milliseconds to get back a response from ukrlp");
+            _logger.LogInformation($"It took {millisecondsTaken} milliseconds to get back a response from ukrlp");
 
             if (response != null  && response.Success)
             {

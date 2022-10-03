@@ -326,8 +326,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             var request = "string request";
             var mockMessageHandler = new Mock<HttpMessageHandler>();
 
-            List<MatchingProviderRecords> matchingProviderRecords = null;
-
             mockMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
