@@ -156,10 +156,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             address2.Address1.Should().Be(address1_2);
             mockSerializer.Verify(x=>x.BuildGetAllUkrlpsUpdatedSinceSoapRequest(DateTime.Today,StakeholderId,QueryId),Times.Once);
             mockSerializer.Verify(x => x.BuildGetAllUkrlpsFromUkprnsSoapRequest(It.IsAny<List<long>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-
         }
-
-
 
         [Test]
         public async Task GetProviderAddressesUsingUkprns_OkResponse_ReturnsContent()
@@ -280,7 +277,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             address2.Address1.Should().Be(address1_2);
             mockSerializer.Verify(x => x.BuildGetAllUkrlpsFromUkprnsSoapRequest(new List<long>{ukprn1,ukprn2}, StakeholderId, QueryId), Times.Once);
             mockSerializer.Verify(x => x.BuildGetAllUkrlpsUpdatedSinceSoapRequest(It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-
         }
 
         [Test]
@@ -315,7 +311,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
                 ProvidersUpdatedSince = DateTime.Today
             };
 
-
             mockSerializer
                 .Setup(x => x.BuildGetAllUkrlpsUpdatedSinceSoapRequest(DateTime.Today, StakeholderId, QueryId))
                 .Returns(request);
@@ -324,5 +319,4 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             addresses.Should().BeNull();
         }
     }
-
 }
