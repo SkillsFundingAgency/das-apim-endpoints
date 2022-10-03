@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
+    [ExcludeFromCodeCoverage]
     public class ProviderDetails
     {
         public string UKPRN { get; set; }
