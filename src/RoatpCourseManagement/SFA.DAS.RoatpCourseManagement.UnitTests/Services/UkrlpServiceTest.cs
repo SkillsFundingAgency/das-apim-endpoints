@@ -323,15 +323,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
         public async Task GetProviderAddresses_NoMAtchingRecords_OkResponse_ReturnsNoContent()
         {
             var content = "xml that comes back";
-            var ukprn1 = "12345678";
-            var ukprn2 = "87654321";
-            var address1_1 = "1 green street";
-            var address2_1 = "centre";
-            var address3_1 = "New area";
-            var address4_1 = "Smallville";
-            var town_1 = "New Town";
-            var postcode_1 = "ZZ1 1ZZ";
-            var address1_2 = "2 green street";
             var request = "string request";
             var mockMessageHandler = new Mock<HttpMessageHandler>();
 
