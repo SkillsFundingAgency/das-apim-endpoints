@@ -33,7 +33,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var request = String.Empty;
+            var request = string.Empty;
 
             if (command.ProvidersUpdatedSince != null)
                 request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest((DateTime)command.ProvidersUpdatedSince, _ukrlpConfiguration.StakeholderId,
@@ -43,12 +43,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                 request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(command.Ukprns,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
             }
-
-            var requestMessage =
-                new HttpRequestMessage(HttpMethod.Post, _httpClient.BaseAddress)
-                {
-                    Content = new StringContent(request, Encoding.UTF8, "text/xml")
-                };
 
             var response=await GetUkprnLookupResponse(request);
 

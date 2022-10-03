@@ -38,20 +38,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             return BuildSoapRequest(queryId, selectionCriteriaElement);
         }
 
-        public string BuildUkrlpSoapRequest(long ukprn, string stakeholderId, string queryId)
-        {
-            var selectionCriteriaElement = new XElement("SelectionCriteria",
-                new XElement("UnitedKingdomProviderReferenceNumberList",
-                    new XElement("UnitedKingdomProviderReferenceNumber", new XText(ukprn.ToString()))),
-                new XElement("CriteriaCondition", new XText("OR")),
-                new XElement("StakeholderId", stakeholderId),
-                new XElement("ApprovedProvidersOnly", "No"),
-                new XElement("ProviderStatus", "A")
-            );
-
-            return BuildSoapRequest(queryId, selectionCriteriaElement);
-        }
-
         private static string BuildSoapRequest(string queryId, XElement selectionCriteriaElement)
         {
             var queryIdElement = new XElement(XName.Get("QueryId"), new XText(queryId));
