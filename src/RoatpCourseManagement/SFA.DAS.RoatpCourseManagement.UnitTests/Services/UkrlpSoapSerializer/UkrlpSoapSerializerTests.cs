@@ -24,9 +24,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.UkrlpSoapSerializer
                 $"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ukr=\"http://ukrlp.co.uk.server.ws.v3\">\r\n  <soapenv:Header />\r\n  <soapenv:Body>\r\n    <ukr:ProviderQueryRequest>\r\n      <SelectionCriteria>\r\n        <StakeholderId>{stakeholderId}</StakeholderId>\r\n        <CriteriaCondition>OR</CriteriaCondition>\r\n        <ApprovedProvidersOnly>No</ApprovedProvidersOnly>\r\n        <ProviderStatus>A</ProviderStatus>\r\n        <ProviderUpdatedSince>{dateUpdatedSince}</ProviderUpdatedSince>\r\n      </SelectionCriteria>\r\n      <QueryId>{queryId}</QueryId>\r\n    </ukr:ProviderQueryRequest>\r\n  </soapenv:Body>\r\n</soapenv:Envelope>";
 
             Assert.AreEqual(expectedRequest,actualRequest);
-
         }
-
 
         [TestCase(12345678, 23456789, "2", "3")]
         [TestCase(12345678, 98765432, "3", "2")]
@@ -46,8 +44,11 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.UkrlpSoapSerializer
             var expectedRequest =
                 $"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ukr=\"http://ukrlp.co.uk.server.ws.v3\">\r\n  <soapenv:Header />\r\n  <soapenv:Body>\r\n    <ukr:ProviderQueryRequest>\r\n      <SelectionCriteria>\r\n        <UnitedKingdomProviderReferenceNumberList>\r\n          <UnitedKingdomProviderReferenceNumber>{ukprn1}</UnitedKingdomProviderReferenceNumber>\r\n          <UnitedKingdomProviderReferenceNumber>{ukprn2}</UnitedKingdomProviderReferenceNumber>\r\n        </UnitedKingdomProviderReferenceNumberList>\r\n        <StakeholderId>{stakeholderId}</StakeholderId>\r\n        <CriteriaCondition>OR</CriteriaCondition>\r\n        <ApprovedProvidersOnly>No</ApprovedProvidersOnly>\r\n        <ProviderStatus>A</ProviderStatus>\r\n      </SelectionCriteria>\r\n      <QueryId>{queryId}</QueryId>\r\n    </ukr:ProviderQueryRequest>\r\n  </soapenv:Body>\r\n</soapenv:Envelope>";
 
-            Assert.AreEqual(expectedRequest, actualRequest);
+            // the build jobs falls over with line endings
+            expectedRequest = expectedRequest.Replace("\n", "").Replace("\r", "");
+            actualRequest = actualRequest.Replace("\n", "").Replace("\r", "");
 
+            Assert.AreEqual(expectedRequest, actualRequest);
         }
 
         [Test]
@@ -67,7 +68,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.UkrlpSoapSerializer
             Assert.AreEqual("Town 1", company1.ProviderContacts[0].ContactAddress.Town); 
             Assert.AreEqual("Postcode 1", company1.ProviderContacts[0].ContactAddress.PostCode);
             Assert.IsNotEmpty(company1.VerificationDetails[0].VerificationAuthority);
-           
         }
     }
 }
