@@ -40,7 +40,13 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
             var model = controllerResult.Value as GetStandardsResponse;
             Assert.IsNotNull(model);
 
-            var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem { LarsCode = s.LarsCode });
+            var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem 
+            { 
+                LarsCode = s.LarsCode,
+                StandardUId = s.StandardUId,
+                Level = s.Level,
+                Title = s.Title
+            });
             model.Standards.Should().BeEquivalentTo(response);
         }
         
