@@ -23,6 +23,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.UkrlpSoapSerializer
             var expectedRequest =
                 $"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ukr=\"http://ukrlp.co.uk.server.ws.v3\">\r\n  <soapenv:Header />\r\n  <soapenv:Body>\r\n    <ukr:ProviderQueryRequest>\r\n      <SelectionCriteria>\r\n        <StakeholderId>{stakeholderId}</StakeholderId>\r\n        <CriteriaCondition>OR</CriteriaCondition>\r\n        <ApprovedProvidersOnly>No</ApprovedProvidersOnly>\r\n        <ProviderStatus>A</ProviderStatus>\r\n        <ProviderUpdatedSince>{dateUpdatedSince}</ProviderUpdatedSince>\r\n      </SelectionCriteria>\r\n      <QueryId>{queryId}</QueryId>\r\n    </ukr:ProviderQueryRequest>\r\n  </soapenv:Body>\r\n</soapenv:Envelope>";
 
+            // the build jobs falls over with line endings
+            expectedRequest = expectedRequest.Replace("\n", "").Replace("\r", "");
+            actualRequest = actualRequest.Replace("\n", "").Replace("\r", "");
+
             Assert.AreEqual(expectedRequest,actualRequest);
         }
 
