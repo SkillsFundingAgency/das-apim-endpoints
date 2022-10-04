@@ -31,8 +31,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services
 
         public async Task<List<ProviderAddress>> GetAddresses(UkrlpDataCommand command)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
             string request;
 
             if (command.ProvidersUpdatedSince != null)
@@ -55,7 +53,6 @@ namespace SFA.DAS.RoatpCourseManagement.Services
 
             _logger.LogWarning("The response from UKRLP was failure");
             return null;
-
         }
 
         static ProviderAddress GetProviderAddressFromProviderDetails(ProviderDetails providerDetails)

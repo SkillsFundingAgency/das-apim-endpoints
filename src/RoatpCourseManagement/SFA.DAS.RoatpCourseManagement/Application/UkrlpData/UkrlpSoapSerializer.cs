@@ -65,11 +65,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             var soapDocument = XDocument.Parse(soapXml);
             var queryResponses = soapDocument.XPathSelectElements("//MatchingProviderRecords");
 
-            if (queryResponses == null)
-            {
-                return new List<MatchingProviderRecords>();
-            }
-
             var matches = new List<MatchingProviderRecords>();
 
             foreach (var queryResponse in queryResponses)
