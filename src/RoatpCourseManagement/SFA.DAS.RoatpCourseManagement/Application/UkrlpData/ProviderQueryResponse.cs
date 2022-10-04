@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
-    [ExcludeFromCodeCoverage]
     [Serializable]
     public class MatchingProviderRecords
     {
