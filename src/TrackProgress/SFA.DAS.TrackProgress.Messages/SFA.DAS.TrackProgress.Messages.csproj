@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+
+    <Description>Track Progress integration messages</Description>
+    <Authors>ESFA</Authors>
+    <Company>ESFA</Company>
+    <PackageLicense>https://github.com/SkillsFundingAgency/das-trackprogress-api/main/LICENSE</PackageLicense>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-trackprogress-api</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(SolutionDir)..\..\NugetPackages</PackageOutputPath>
+  </PropertyGroup>  
+
+</Project>
