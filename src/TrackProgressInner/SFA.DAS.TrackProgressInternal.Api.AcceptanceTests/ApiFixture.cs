@@ -1,19 +1,18 @@
 ﻿using AutoFixture;
 using SFA.DAS.TrackProgressInternal.Api.AcceptanceTests;
-using SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.ApiTests;
 
 namespace SFA.DAS.TrackProgressInternal.Tests;
 
 public class ApiFixture
 {
-    protected TrackProgressApiFactory factory = null!;
+    protected ApiFactory factory = null!;
     protected Fixture fixture = null!;
     protected HttpClient client = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        factory = new TrackProgressApiFactory();
+        factory = new ApiFactory();
         fixture = new Fixture();
     }
 

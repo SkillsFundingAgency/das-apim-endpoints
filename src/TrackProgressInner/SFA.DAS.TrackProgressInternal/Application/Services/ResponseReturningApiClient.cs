@@ -14,6 +14,9 @@ public class ResponseReturningApiClient
     public async Task<IActionResult> Get(string url)
         => await Request(new HttpRequestMessage(HttpMethod.Get, url));
 
+    public async Task<IActionResult> Post(string url)
+        => await Request(new HttpRequestMessage(HttpMethod.Post, url) { Content = null });
+
     public async Task<IActionResult> Post<T>(string url, T? data)
         => await Request(new HttpRequestMessage(HttpMethod.Post, url) { Content = CreateJsonContent(data) });
 

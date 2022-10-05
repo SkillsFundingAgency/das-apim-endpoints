@@ -6,13 +6,12 @@ namespace SFA.DAS.TrackProgressInternal.Api.Controllers;
 [ApiController]
 public class TrackProgressController : ControllerBase
 {
-    private readonly ResponseReturningApiClient _client;
-
-    public TrackProgressController(ResponseReturningApiClient client)
-        => _client = client;
-
     [HttpPost]
-    [Route("/apprenticeships/{commitmentsApprenticeshipId}/AggregateProgress")]
-    public async Task<IActionResult> AggregateProgress(long commitmentsApprenticeshipId)
-        => await _client.Post<object>($"apprenticeships/{commitmentsApprenticeshipId}/AggregateProgress", null);
+    [Route("/apprenticeships/{commitmentsApprenticeshipId}/snapshot")]
+    public async Task<IActionResult> CreateProgressSnapshot(
+        [FromServices] ResponseReturningApiClient client,
+        long commitmentsApprenticeshipId)
+    {
+        return await client.Post($"apprenticeships/{commitmentsApprenticeshipId}/AggregateProgress");
+    }
 }

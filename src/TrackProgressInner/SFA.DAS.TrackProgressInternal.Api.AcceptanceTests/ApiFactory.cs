@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests;
 
-public class TrackProgressApiFactory : WebApplicationFactory<Program>
+public class ApiFactory : WebApplicationFactory<Program>
 {
     public MockApi InnerApis { get; } = new();
     public MockApi TrackProgressInnerApi { get; } = new();

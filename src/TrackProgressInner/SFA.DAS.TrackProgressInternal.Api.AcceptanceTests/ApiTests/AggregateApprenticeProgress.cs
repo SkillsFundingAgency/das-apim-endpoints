@@ -5,7 +5,7 @@ using WireMock.FluentAssertions;
 
 namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.ApiTests;
 
-public class CallApi : ApiFixture
+public class AggregateApprenticeProgress : ApiFixture
 {
     [Test]
     public async Task Accepts_aggreateprogress_for_apprenticeship()
@@ -18,7 +18,7 @@ public class CallApi : ApiFixture
             .WithCourse(course);
 
         var response = await client.PostAsync(
-            $"/apprenticeships/{apprenticeship.CommitmentsApprenticeshipId}/aggregateprogress", null);
+            $"/apprenticeships/{apprenticeship.CommitmentsApprenticeshipId}/snapshot", null);
 
         response.Should().Be200Ok();
     }
@@ -29,7 +29,7 @@ public class CallApi : ApiFixture
         factory.WithApprenticeship(An.Apprenticeship.WithId(5));
 
         _ = await client.PostAsync(
-            $"/apprenticeships/5/aggregateprogress", null);
+            $"/apprenticeships/5/snapshot", null);
 
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
             .AtUrl(InnerApiUrl("apprenticeships/5/AggregateProgress"));
@@ -39,8 +39,8 @@ public class CallApi : ApiFixture
     public async Task Inner_api_not_found_is_returned_to_caller()
     {
         var response = await client.PostAsync(
-            $"/apprenticeships/77/aggregateprogress", null);
+            $"/apprenticeships/77/snapshot", null);
 
         response.Should().Be404NotFound();
-    } 
+    }
 }

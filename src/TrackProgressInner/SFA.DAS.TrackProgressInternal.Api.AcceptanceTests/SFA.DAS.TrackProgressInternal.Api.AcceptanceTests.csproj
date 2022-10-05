@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+  	<PackageReference Include="Faker.Net" />
   	<PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="AutoFixture" />
     <PackageReference Include="AutoFixture.NUnit3" />

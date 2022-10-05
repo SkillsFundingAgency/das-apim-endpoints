@@ -1,23 +1,24 @@
-﻿using AutoFixture;
-
-namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.TestModels;
+﻿namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.TestModels;
 
 public sealed record Course(string Standard, params string[] Options)
 {
-    public sealed record Ksb(string Type, Guid Id);
+    public sealed record Ksb(string Description, Guid Id)
+    {
+        public Ksb() : this("") { }
+        public Ksb(string Type) : this(Type, Guid.NewGuid()) { }
+    }
 
-    private static readonly Fixture _fixture = new();
+    public IEnumerable<Ksb> Ksbs { get; init; } =
+        Faker.Extensions.EnumerableExtensions.Times(3, _ =>
+            new Ksb(Faker.Lorem.Words(1).First()));
 
-    public IEnumerable<Ksb> Ksbs { get; init; } = _fixture.CreateMany<Ksb>();
+    public IEnumerable<Guid> KsbIds => Ksbs.Select(x => x.Id);
 
     internal Course WithStandard(string standard)
         => new Course(this) with { Standard = standard };
-
-    internal Course WithOptions(params string[] options)
-        => new Course(this) with { Options = options };
-
-    internal Course WithoutOptions()
-        => new Course(this) with { Options = Array.Empty<string>() };
+    
+    internal Course WithKsbs(params Ksb[] ksbs)
+        => new Course(this) with { Ksbs = ksbs };
 
     internal string[] CoreAndOptions => Options.Any() ? Options : new[] { "core" };
 

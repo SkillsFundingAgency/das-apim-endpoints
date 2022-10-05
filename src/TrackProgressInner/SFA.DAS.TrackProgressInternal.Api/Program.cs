@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackProgressInternalOuterApi", Version = "v1" });
 });
-builder.Services.AddMediatR(typeof(AggregateProgressCommand));
+builder.Services.AddMediatR(typeof(PopulateKsbsCommand));
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
