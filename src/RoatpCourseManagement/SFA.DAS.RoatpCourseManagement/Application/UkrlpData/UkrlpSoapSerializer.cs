@@ -69,12 +69,11 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
             foreach (var queryResponse in queryResponses)
             {
-                // UKRLP SOAP service doesn't return contacts and verification details arrays in a 
+                // UKRLP SOAP service doesn't return contacts arrays in a 
                 // wrapping tag, so can't serialize using XmlArray
                 var matchingRecordsSerializer = new XmlSerializer(typeof(MatchingProviderRecords));
                 var contactSerializer = new XmlSerializer(typeof(ProviderContactStructure));
-                var verificationDetailsSerializer = new XmlSerializer(typeof(VerificationDetailsStructure));
-
+           
                 MatchingProviderRecords matchingProviderRecords =
                     (MatchingProviderRecords)matchingRecordsSerializer.Deserialize(queryResponse.CreateReader());
 
@@ -90,18 +89,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                     }
                 }
 
-                var verificationElements = queryResponse.Descendants(XName.Get("VerificationDetails"));
-                if (verificationElements != null)
-                {
-                    matchingProviderRecords.VerificationDetails = new List<VerificationDetailsStructure>();
-                    foreach (var verificationElement in verificationElements)
-                    {
-                        var verification =
-                            (VerificationDetailsStructure)verificationDetailsSerializer.Deserialize(verificationElement
-                                .CreateReader());
-                        matchingProviderRecords.VerificationDetails.Add(verification);
-                    }
-                }
                 matches.Add(matchingProviderRecords);
             }
 

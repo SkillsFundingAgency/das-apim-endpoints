@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
@@ -32,7 +30,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
         public async Task<List<ProviderAddress>> GetAddresses(UkrlpDataCommand command)
         {
             string request;
-
+        
             if (command.ProvidersUpdatedSince != null)
                 request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest((DateTime)command.ProvidersUpdatedSince, _ukrlpConfiguration.StakeholderId,
                     _ukrlpConfiguration.QueryId);
@@ -41,37 +39,18 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                 request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(command.Ukprns,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
             }
-
+        
             var response = await GetUkprnLookupResponse(request);
             _logger.LogInformation("response gathered from ukrlp");
-
+        
             if (response != null  && response.Success)
             {
-                return response.Results.Select(GetProviderAddressFromProviderDetails).ToList();
+                return response.Results;
 
             }
-
+        
             _logger.LogWarning("The response from UKRLP was failure");
             return null;
-        }
-
-        static ProviderAddress GetProviderAddressFromProviderDetails(ProviderDetails providerDetails)
-        {
-            const string legalContactDetailsIdentifier = "L"; // equivalent to 'Legal Address'
-
-            var legalContactAddress = providerDetails.ContactDetails.FirstOrDefault(c => c.ContactType == legalContactDetailsIdentifier)!.ContactAddress;
-
-            var providerAddress = new ProviderAddress
-            {
-                Address1 = legalContactAddress.Address1,
-                Address2 = legalContactAddress.Address2,
-                Address3 = legalContactAddress.Address3,
-                Address4 = legalContactAddress.Address4,
-                Postcode = legalContactAddress.PostCode,
-                Town = legalContactAddress.Town,
-                Ukprn = int.Parse(providerDetails.UKPRN)
-            };
-            return providerAddress;
         }
 
         private async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
@@ -89,7 +68,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                 var failureResponse = new UkprnLookupResponse
                 {
                     Success = false,
-                    Results = new List<ProviderDetails>()
+                    Results = new List<ProviderAddress>()
                 };
                 return await Task.FromResult(failureResponse);
             }
@@ -98,8 +77,8 @@ namespace SFA.DAS.RoatpCourseManagement.Services
             var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
 
             if (matchingProviderRecords != null)
-            {
-                var result = matchingProviderRecords.Select(Mapper.Map<ProviderDetails>).ToList();
+            { 
+                var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider).ToList();
 
                 var resultsFound = new UkprnLookupResponse
                 {
@@ -113,7 +92,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                 var noResultsFound = new UkprnLookupResponse
                 {
                     Success = true,
-                    Results = new List<ProviderDetails>()
+                    Results = new List<ProviderAddress>()
                 };
                 return await Task.FromResult(noResultsFound);
             }

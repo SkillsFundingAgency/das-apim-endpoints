@@ -14,8 +14,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.RoatpCourseManagement.Configuration;
-using AutoMapper;
-
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
 {
     [TestFixture]
@@ -25,21 +23,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
         private const string QueryId = "2";
         private const string StakeholderId = "3";
 
-        [SetUp]
-        public void Before_each_test()
-        {
-            Mapper.Reset();
-
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<UkrlpVerificationDetailsProfile>();
-                cfg.AddProfile<UkrlpContactPersonalDetailsProfile>();
-                cfg.AddProfile<UkrlpContactAddressProfile>();
-                cfg.AddProfile<UkrlpProviderAliasProfile>();
-                cfg.AddProfile<UkrlpProviderContactProfile>();
-                cfg.AddProfile<UkrlpProviderDetailsProfile>();
-            });
-        }
 
         [Test]
         public async Task GetProviderAddressesUsingProviderUpdatedSince_OkResponse_ReturnsContent()
@@ -143,7 +126,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
 
             addresses.Count.Should().Be(2);
 
-            var address1 = addresses.First(x => x.Ukprn.ToString() == ukprn1);
+            var address1 = addresses.First(x => x.Ukprn == ukprn1);
             address1.Address1.Should().Be(address1_1);
             address1.Address2.Should().Be(address2_1);
             address1.Address3.Should().Be(address3_1);
@@ -264,7 +247,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
 
             addresses.Count.Should().Be(2);
 
-            var address1 = addresses.First(x => x.Ukprn == ukprn1);
+            var address1 = addresses.First(x => x.Ukprn == ukprn1.ToString());
             address1.Address1.Should().Be(address1_1);
             address1.Address2.Should().Be(address2_1);
             address1.Address3.Should().Be(address3_1);
@@ -272,7 +255,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             address1.Town.Should().Be(town_1);
             address1.Postcode.Should().Be(postcode_1);
 
-            var address2 = addresses.First(x => x.Ukprn == ukprn2);
+            var address2 = addresses.First(x => x.Ukprn == ukprn2.ToString());
 
             address2.Address1.Should().Be(address1_2);
             mockSerializer.Verify(x => x.BuildGetAllUkrlpsFromUkprnsSoapRequest(new List<long>{ukprn1,ukprn2}, StakeholderId, QueryId), Times.Once);

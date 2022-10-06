@@ -87,8 +87,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api
                 app.UseHsts();
             }
 
-            MappingStartup.AddMappings();
-
             app.ConfigureExceptionHandler(logger);
 
             app.UseHttpsRedirection()
