@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             var result = await _mediator.Send(new CreateOverlappingTrainingDateRequestCommand()
             {
                 ProviderId = request.ProviderId,
-                DraftApprneticeshipId = request.DraftApprenticeshipId,
+                DraftApprenticeshipId = request.DraftApprenticeshipId,
                 UserInfo = request.UserInfo
             });
 
@@ -55,6 +55,18 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 Uln = uln,
                 StartDate = startDate,
                 EndDate = endDate
+            });
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{draftApprenticeshipId}/getOverlapRequest")]
+        public async Task<IActionResult> GetOverlapRequest(long draftApprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetOverlapRequestQuery
+            {
+                DraftApprenticeshipId = draftApprenticeshipId
             });
 
             return Ok(result);
