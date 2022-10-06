@@ -65,7 +65,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetApprenticeFeedbackTargetsQuery { ApprenticeId = apprenticeId });
-                return Ok(result);
+                return Ok(result.FeedbackTargets);
             }
             catch (Exception e)
             {
@@ -80,7 +80,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetExitSurveyForApprenticeFeedbackTargetQuery { ApprenticeFeedbackTargetId = id });
-                return Ok(result);
+                return Ok(result.ExitSurvey);
             }
             catch (Exception e)
             {
