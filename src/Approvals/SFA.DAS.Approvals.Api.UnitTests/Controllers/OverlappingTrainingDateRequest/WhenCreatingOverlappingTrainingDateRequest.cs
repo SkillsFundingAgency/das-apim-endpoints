@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.OverlappingTrainingDateReq
                 .Setup(mediator => mediator.Send(
                     It.Is<CreateOverlappingTrainingDateRequestCommand>(x => 
                     x.ProviderId == request.ProviderId 
-                    && x.DraftApprneticeshipId == request.DraftApprenticeshipId
+                    && x.DraftApprenticeshipId == request.DraftApprenticeshipId
                     && x.UserInfo == request.UserInfo),
                     It.IsAny<CancellationToken>())).ReturnsAsync(result);
 

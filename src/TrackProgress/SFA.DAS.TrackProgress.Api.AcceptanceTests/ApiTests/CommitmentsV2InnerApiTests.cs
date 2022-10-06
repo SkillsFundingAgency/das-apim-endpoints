@@ -1,7 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
-using System;
 
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
 
@@ -31,6 +29,5 @@ namespace SFA.DAS.TrackProgress.OuterApi.Tests.ApiTests
             var instance = new GetProviderRequest(providerId);
             instance.GetUrl.Should().Be($"api/providers/12345");
         }
-        
     }
 }
