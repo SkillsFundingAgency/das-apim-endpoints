@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -15,11 +14,10 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
         {
             _innerApiClient = innerApiClient;
         }
-
+    
         public async Task<Unit> Handle(UpdateContactDetailsCommand command, CancellationToken cancellationToken)
         {
-            var providerCourse = await _innerApiClient.Get<GetProviderCourseResponse>(new GetProviderCourseRequest(command.Ukprn, command.LarsCode));
-            var updateProviderCourse = new ProviderCourseUpdateModel
+            var patchUpdateProviderCourse = new ProviderCourseUpdateModel
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
@@ -27,12 +25,11 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
                 ContactUsEmail = command.ContactUsEmail,
                 ContactUsPhoneNumber = command.ContactUsPhoneNumber,
                 ContactUsPageUrl = command.ContactUsPageUrl,
-                StandardInfoUrl = command.StandardInfoUrl,
-                IsApprovedByRegulator = providerCourse.IsApprovedByRegulator
+                StandardInfoUrl = command.StandardInfoUrl
             };
-
-            var request = new ProviderCourseUpdateRequest(updateProviderCourse);
-            await _innerApiClient.Put(request);
+    
+            var patchRequest = new PatchProviderCourseRequest(patchUpdateProviderCourse);
+            await _innerApiClient.PatchWithResponseCode(patchRequest);
             return Unit.Value;
         }
     }

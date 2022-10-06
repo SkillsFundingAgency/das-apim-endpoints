@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostCreateProviderInterestsResponse>(responseBody, HttpStatusCode.Created, null);
             mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(It.IsAny<PostCreateProviderInterestsRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(It.IsAny<PostCreateProviderInterestsRequest>(),true))
                 .ReturnsAsync(apiResponse);
             mockNotificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
@@ -87,7 +87,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.ProviderInterest.Commands
             //Arrange
             var apiResponse = new ApiResponse<PostCreateProviderInterestsResponse>(responseBody, HttpStatusCode.Accepted, null);
             mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(It.IsAny<PostCreateProviderInterestsRequest>()))
+                .Setup(client => client.PostWithResponseCode<PostCreateProviderInterestsResponse>(It.IsAny<PostCreateProviderInterestsRequest>(),true))
                 .ReturnsAsync(apiResponse);
             mockNotificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))

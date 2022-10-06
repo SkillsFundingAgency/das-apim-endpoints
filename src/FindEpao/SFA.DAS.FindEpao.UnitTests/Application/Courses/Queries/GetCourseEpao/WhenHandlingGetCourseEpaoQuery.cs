@@ -39,7 +39,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<ValidationException>()
+            act.Should().ThrowAsync<ValidationException>()
                 .WithMessage($"*{propertyName}*");
         }
 
@@ -56,7 +56,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<NotFoundException<GetCourseEpaoResult>>();
+            act.Should().ThrowAsync<NotFoundException<GetCourseEpaoResult>>();
         }
 
         [Test, MoqAutoData]
@@ -88,7 +88,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<NotFoundException<GetCourseEpaoResult>>();
+            act.Should().ThrowAsync<NotFoundException<GetCourseEpaoResult>>();
         }
 
         [Test, MoqAutoData]

@@ -1,20 +1,14 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacanciesManage.Configuration;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
@@ -63,7 +57,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
 
             }
 
-            var result = await _recruitApiClient.PostWithResponseCode<string>(apiRequest);
+            var result = await _recruitApiClient.PostWithResponseCode<long?>(apiRequest);
 
             if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
             {
@@ -78,7 +72,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             
             return new CreateVacancyCommandResponse
             {
-                VacancyReference = result.Body
+                VacancyReference = result.Body.ToString()
             };
         }
     }

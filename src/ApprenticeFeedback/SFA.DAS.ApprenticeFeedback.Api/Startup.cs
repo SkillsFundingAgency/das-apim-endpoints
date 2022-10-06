@@ -75,7 +75,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             {
                 options.LowercaseUrls = true;
                 options.LowercaseQueryStrings = true;
-            }).AddMvc().AddNewtonsoftJson();
+            }).AddMvc();
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 

@@ -13,5 +13,6 @@ namespace SFA.DAS.ApprenticePortal.Models
         public DateTime? LastViewed { get; set; }
         public DateTime? StoppedReceivedOn { get; set; }
         public bool IsStopped { get; set; }
+        public bool HasBeenConfirmedAtLeastOnce { get; set; }
     }
 }

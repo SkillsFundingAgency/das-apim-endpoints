@@ -103,7 +103,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 
                 return StatusCode((int) e.StatusCode, content);
             }
-            catch (SecurityException e)
+            catch (SecurityException)
             {
                 return new StatusCodeResult((int)HttpStatusCode.Forbidden);
             }

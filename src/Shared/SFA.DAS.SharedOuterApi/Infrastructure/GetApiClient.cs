@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -26,7 +26,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             var result = await GetWithResponseCode<TResponse>(request);
-            
+
             if (IsNot200RangeResponseCode(result.StatusCode))
             {
                 return default;
@@ -40,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             httpRequestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(httpRequestMessage);
-            
+
             var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             return response.StatusCode;
@@ -51,28 +51,37 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             httpRequestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(httpRequestMessage);
-            
+
             var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            
+
             var errorContent = "";
             var responseBody = (TResponse)default;
-            
-            if(IsNot200RangeResponseCode(response.StatusCode))
+
+            if (IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
             }
+            else if (string.IsNullOrWhiteSpace(json))
+            {
+                // 204 No Content from a potential returned null
+                // Will throw if attempts to deserialise but didn't
+                // feel right making it part of the error if branch
+                // even if there is no content.
+            }
             else
             {
-                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                options.Converters.Add(new JsonStringEnumConverter());
+                responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
             }
 
             var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
-            
+
             return getWithResponseCode;
         }
-        
+
         private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
         {
             return !((int)statusCode >= 200 && (int)statusCode <= 299);

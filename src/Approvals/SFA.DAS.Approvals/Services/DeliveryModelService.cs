@@ -16,7 +16,7 @@ namespace SFA.DAS.Approvals.Services
 {
     public interface IDeliveryModelService
     {
-        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null);
+        Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -25,20 +25,18 @@ namespace SFA.DAS.Approvals.Services
         private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ILogger<DeliveryModelService> _logger;
-        private readonly FeatureToggles _featureToggles;
 
-        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, FeatureToggles featureToggles)
+        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger)
         {
             _apiClient = apiClient;
             _fjaaClient = fjaaClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _logger = logger;
-            _featureToggles = featureToggles;
         }
 
-        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? apprenticeshipId = null)
+        public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null)
         {
-            var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(apprenticeshipId);
+            var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
             var isOnRegisterTask = IsLegalEntityOnFjaaRegister(accountLegalEntityId);
 
@@ -53,7 +51,7 @@ namespace SFA.DAS.Approvals.Services
                 return isOnRegister ? new List<string>() : new List<string> { DeliveryModelStringTypes.PortableFlexiJob };
             }
 
-            if (isOnRegister || apprenticeshipId.HasValue)
+            if (isOnRegister || continuationOfId.HasValue)
             {
                 courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
             }
@@ -68,21 +66,33 @@ namespace SFA.DAS.Approvals.Services
 
         private async Task<List<string>> GetCourseDeliveryModels(long providerId, string trainingCode)
         {
-            _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
-            var result = await _apiClient.Get<GetDeliveryModelsResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
-
-            if (result?.DeliveryModels == null || !result.DeliveryModels.Any())
+            var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
+            if (string.IsNullOrWhiteSpace(trainingCode))
             {
-                _logger.LogInformation($"No information found for Provider {providerId} and Course {trainingCode}");
-                return new List<string> { DeliveryModelStringTypes.Regular };
+                _logger.LogInformation($"Defaulting DeliveryModels to Regular because code is blank");
+                return deliveryModels;
             }
 
-            return result.DeliveryModels;
+            _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
+            var result = await _apiClient.Get<GetHasPortableFlexiJobOptionResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
+         
+
+            if (result == null)
+            {
+                _logger.LogInformation($"No information found for Provider {providerId} and Course {trainingCode}");
+            }
+            else
+            {
+                if (result.HasPortableFlexiJobOption)
+                    deliveryModels.Add(DeliveryModelStringTypes.PortableFlexiJob);
+            }
+
+            return deliveryModels;
         }
 
         private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
         {
-            if (accountLegalEntityId == 0 || !_featureToggles.ApprovalsFeatureToggleFjaaEnabled) return false;
+            if (accountLegalEntityId == 0) return false;
 
             _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
             var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));

@@ -27,9 +27,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
 
             var reservationValidationResult = new BulkReservationValidationResults();
             var reservationApiResponse = new ApiResponse<BulkReservationValidationResults>(reservationValidationResult, System.Net.HttpStatusCode.OK, "");
-            reservationApiClient.Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<PostValidateReservationRequest>())).ReturnsAsync(() => reservationApiResponse);
+            reservationApiClient.Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<PostValidateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
 
-            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateBulkUploadRequest>())).ReturnsAsync(response);
+            apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateBulkUploadRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
             Assert.IsNotNull(actual);
         }

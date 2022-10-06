@@ -47,7 +47,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         }
 
         [Test, MoqAutoData]
-        public async Task Then_RequestForAllApprenticeFeedbackTargetsIsSent_ButNoResults_ReturnsFalseSuccess(UpdateApprenticeFeedbackTargetCommand command)
+        public async Task Then_RequestForAllApprenticeFeedbackTargetsIsSent_ButNoResults_ReturnsEmptyResponse(UpdateApprenticeFeedbackTargetCommand command)
         {
             // Arrange
             var response = new List<ApprenticeFeedbackTarget>();
@@ -58,21 +58,24 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 
             // Assert
             _mockFeedbackApiClient.Verify(c => c.GetAll<ApprenticeFeedbackTarget>(It.Is<GetAllApprenticeFeedbackTargetsRequest>(x => x.ApprenticeId == command.ApprenticeId)), Times.Once);
-            result.Success.Should().BeFalse();
-            result.Message.Should().Be($"No ApprenticeFeedbackTargets found for ApprenticeId: {command.ApprenticeId}");
-
+            result.Should().BeOfType<UpdateApprenticeFeedbackTargetResponse>();
         }
 
         [Test, MoqAutoData]
         public async Task Then_RequestForLearnersCount_EqualsReturnedApprenticeFeedbackTargets(
             UpdateApprenticeFeedbackTargetCommand command,
             IEnumerable<ApprenticeFeedbackTarget> feedbackApiResponse,
-            ApiResponse<GetApprenticeLearnerResponse> apiResponse)
+            GetApprenticeLearnerResponse apprenticeLearnerResponse,
+            ApprenticeFeedbackTarget apprenticeFeedbackTarget)
         {
             // Arrange
+            var apiResponse = new ApiResponse<GetApprenticeLearnerResponse>(apprenticeLearnerResponse, HttpStatusCode.OK, string.Empty);
             _mockFeedbackApiClient.Setup(c => c.GetAll<ApprenticeFeedbackTarget>(It.Is<GetAllApprenticeFeedbackTargetsRequest>(x => x.ApprenticeId == command.ApprenticeId))).ReturnsAsync(feedbackApiResponse);
             // Don't care about responses here, just to pass the test.
             _mockAssessorApiClient.Setup(c => c.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>())).ReturnsAsync(apiResponse);
+
+            _mockFeedbackApiClient.Setup(a => a.PostWithResponseCode<ApprenticeFeedbackTarget>(It.IsAny<UpdateApprenticeFeedbackTargetRequest>(), true))
+                .ReturnsAsync(new ApiResponse<ApprenticeFeedbackTarget>(apprenticeFeedbackTarget, HttpStatusCode.OK, string.Empty));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -107,8 +110,8 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 
             // Don't care about update response, just that values are returned.
             var updateRequests = new List<UpdateApprenticeFeedbackTargetRequest>();
-            _mockFeedbackApiClient.Setup(c => c.PostWithResponseCode<ApprenticeFeedbackTarget>(It.IsAny<UpdateApprenticeFeedbackTargetRequest>()))
-                .Callback<IPostApiRequest>(request => updateRequests.Add((UpdateApprenticeFeedbackTargetRequest)request))
+            _mockFeedbackApiClient.Setup(c => c.PostWithResponseCode<ApprenticeFeedbackTarget>(It.IsAny<UpdateApprenticeFeedbackTargetRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest, bool>((request, includeResponse) => updateRequests.Add((UpdateApprenticeFeedbackTargetRequest)request))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -132,17 +135,15 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
                     learnerResponse.StandardReference,
                     learnerResponse.StandardName,
                     learnerResponse.CompletionStatus,
-                    learnerResponse.Outcome,
                     learnerResponse.ApprovalsStopDate,
                     learnerResponse.ApprovalsPauseDate,
-                    learnerResponse.AchievementDate,
+                    learnerResponse.LearnActEndDate,
                     learnerResponse.EstimatedEndDate
 
                 });
             }
 
-            result.Success.Should().BeTrue();
-            result.Message.Should().BeNullOrEmpty();
+            result.Should().BeOfType<UpdateApprenticeFeedbackTargetResponse>();
         }
     }
 }

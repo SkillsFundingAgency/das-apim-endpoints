@@ -11,9 +11,10 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.RoatpCourseManagement.Api.AppStart;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllCoursesQuery;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
@@ -45,7 +46,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-            services.AddMediatR(GetType().Assembly, typeof(GetAllCoursesQueryHandler).Assembly);
+            services.AddMediatR(GetType().Assembly, typeof(GetAllProviderCoursesQueryHandler).Assembly);
             services.AddHealthChecks();
             services.AddServiceRegistration(_configuration);
 
@@ -61,6 +62,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

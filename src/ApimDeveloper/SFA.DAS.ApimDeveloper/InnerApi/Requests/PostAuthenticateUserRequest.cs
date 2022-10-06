@@ -1,6 +1,5 @@
 using System;
-using System.Web;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
@@ -23,26 +22,26 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
 
     public class PostAuthenticateUserRequestData
     {
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
-        [JsonProperty("password")]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
         
     }
 
     public class PostAuthenticateUserResult
     {
-        [JsonProperty("firstName")]
+        [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
-        [JsonProperty("lastName")]
+        [JsonPropertyName("lastName")]
         public string LastName { get; set; }
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public Guid Id { get; set; }
-        [JsonProperty("state")]
+        [JsonPropertyName("state")]
         public string State { get; set; }
-        [JsonProperty("authenticated")]
+        [JsonPropertyName("authenticated")]
         public bool Authenticated { get; set; }
     }
 }

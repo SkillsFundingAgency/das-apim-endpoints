@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.VacanciesManage", "SFA.DAS.VacanciesManage\SFA.DAS.VacanciesManage.csproj", "{844C3452-EC65-4D3F-9290-53F1CD81E738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage", "SFA.DAS.VacanciesManage\SFA.DAS.VacanciesManage.csproj", "{844C3452-EC65-4D3F-9290-53F1CD81E738}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.VacanciesManage.Api", "SFA.DAS.VacanciesManage.Api\SFA.DAS.VacanciesManage.Api.csproj", "{B4D16C00-AA17-4B04-B0A6-82EC1ECBACB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.Api", "SFA.DAS.VacanciesManage.Api\SFA.DAS.VacanciesManage.Api.csproj", "{B4D16C00-AA17-4B04-B0A6-82EC1ECBACB7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.VacanciesManage.Api.UnitTests", "SFA.DAS.VacanciesManage.Api.UnitTests\SFA.DAS.VacanciesManage.Api.UnitTests.csproj", "{D6000757-7790-48DE-81EF-3CE1050B597D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.Api.UnitTests", "SFA.DAS.VacanciesManage.Api.UnitTests\SFA.DAS.VacanciesManage.Api.UnitTests.csproj", "{D6000757-7790-48DE-81EF-3CE1050B597D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.VacanciesManage.UnitTests", "SFA.DAS.VacanciesManage.UnitTests\SFA.DAS.VacanciesManage.UnitTests.csproj", "{ADDDE928-7824-4388-9060-7986BE7BD62B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Manage.UnitTests", "SFA.DAS.VacanciesManage.UnitTests\SFA.DAS.VacanciesManage.UnitTests.csproj", "{ADDDE928-7824-4388-9060-7986BE7BD62B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{612FF7D2-F182-4744-A3E5-1160158C8327}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{612FF7D2-F182-4744-A3E5-1160158C8327}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{612FF7D2-F182-4744-A3E5-1160158C8327}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{612FF7D2-F182-4744-A3E5-1160158C8327}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

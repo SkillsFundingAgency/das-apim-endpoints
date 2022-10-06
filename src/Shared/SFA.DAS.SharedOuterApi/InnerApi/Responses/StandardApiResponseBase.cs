@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
@@ -9,12 +9,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public StandardDate StandardDates { get; set; }
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
-        
+
         [JsonIgnore]
         public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
         [JsonIgnore]
         public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
-        [JsonIgnore] 
+        [JsonIgnore]
         public bool IsActive => IsStandardActive();
 
         public int MaxFundingOn(DateTime effectiveDate)
@@ -44,7 +44,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
                        ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
                        ?? 0;
             }
-                
+
             return funding?.Duration
                    ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
                    ?? 0;
@@ -56,10 +56,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
             return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
                    && (!StandardDates.EffectiveTo.HasValue ||
-                       StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date);
+                       StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
+                   && (!StandardDates.LastDateStarts.HasValue ||
+                       StandardDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
         }
     }
-    
+
     public class StandardDate
     {
         public DateTime? LastDateStarts { get; set; }
@@ -68,7 +70,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         public DateTime EffectiveFrom { get; set; }
     }
-    
+
     public class ApprenticeshipFunding
     {
         public int MaxEmployerLevyCap { get; set; }

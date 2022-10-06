@@ -1,42 +1,41 @@
-using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses
 {
     public class GetVacancyApiResponse : GetVacanciesListItem
     {
-        [JsonProperty("longDescription")]
+        [JsonPropertyName("longDescription")]
         public string LongDescription { get; set; }
 
-        [JsonProperty("outcomeDescription")]
+        [JsonPropertyName("outcomeDescription")]
         public string OutcomeDescription { get; set; }
 
-        [JsonProperty("trainingDescription")]
+        [JsonPropertyName("trainingDescription")]
         public string TrainingDescription { get; set; }
 
-        [JsonProperty("employerDescription")]
+        [JsonPropertyName("employerDescription")]
         public string EmployerDescription { get; set; }
         
-        [JsonProperty("thingsToConsider")]
+        [JsonPropertyName("thingsToConsider")]
         public string ThingsToConsider { get; set; }
         
-        [JsonProperty("skills")]
+        [JsonPropertyName("skills")]
         public List<string> Skills { get; set; }
 
-        [JsonProperty("qualifications")]
+        [JsonPropertyName("qualifications")]
         public List<GetVacancyQualificationResponseItem> Qualifications { get; set; }
     }
 
     public class GetVacancyQualificationResponseItem
     {
-        [JsonProperty("weighting")]
+        [JsonPropertyName("weighting")]
         public QualificationWeighting Weighting { get ; set ; }
-        [JsonProperty("qualificationType")]
+        [JsonPropertyName("qualificationType")]
         public string QualificationType { get ; set ; }
-        [JsonProperty("subject")]
+        [JsonPropertyName("subject")]
         public string Subject { get ; set ; }
-        [JsonProperty("grade")]
+        [JsonPropertyName("grade")]
         public string Grade { get ; set ; }
     }
     
