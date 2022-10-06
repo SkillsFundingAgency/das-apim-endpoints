@@ -27,7 +27,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
+                .Be($"api/v2/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
         }
 
         [Test, AutoData]
@@ -47,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/datalock?page={PageNumber}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
+                .Be($"api/v2/datalock?page={PageNumber}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
         }
 
         [Test, AutoData]
@@ -67,7 +67,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-          .Be($"api/datalock?page={PageNumber}&sinceEventId={SinceEventId}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
+          .Be($"api/v2/datalock?page={PageNumber}&sinceEventId={SinceEventId}&employerAccountId={EmployerAccountId}&ukprn={Ukprn}");
         }
 
         [Test, AutoData]
@@ -87,7 +87,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&ukprn={Ukprn}");
+                .Be($"api/v2/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&ukprn={Ukprn}");
         }
 
         [Test, AutoData]
@@ -107,7 +107,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             };
 
             actual.GetUrl.Should()
-                .Be($"api/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}");
+                .Be($"api/v2/datalock?page={PageNumber}&sinceEventId={SinceEventId}&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}&employerAccountId={EmployerAccountId}");
         }
     }
 }
