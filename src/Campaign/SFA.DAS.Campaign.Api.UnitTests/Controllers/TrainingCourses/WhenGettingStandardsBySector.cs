@@ -14,6 +14,7 @@ using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Sectors;
 using SFA.DAS.Campaign.Application.Queries.Standards;
+using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
@@ -61,7 +62,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
                 .Setup(mediator => mediator.Send(
                     It.Is<GetStandardsQuery>(c => c.Sector.Equals(sector)),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetStandardsQueryResult());
+                .ReturnsAsync(new GetStandardsQueryResult() { Standards = new List<GetStandardsListItem>() });
 
             var controllerResult = await controller.GetStandards(sector) as ObjectResult;
 
