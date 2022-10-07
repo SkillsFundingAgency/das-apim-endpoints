@@ -34,6 +34,11 @@ namespace SFA.DAS.Campaign.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStandardsQuery { Sector = sector });
 
+                if (result.Standards == null)
+                {
+                    return NotFound();
+                }
+
                 return Ok(new GetStandardsResponse
                 {
                     Standards = result.Standards != null ? result.Standards.Select(c => (GetStandardsResponseItem)c).ToList()
@@ -54,14 +59,19 @@ namespace SFA.DAS.Campaign.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetStandardQuery { StandardUId = standardUId });
-                //add 404
-                var item = (GetStandardByStandardUIdResponse)result.Standard;
 
-                return Ok(item);
+                if (result.Standard == null)
+                {
+                    return NotFound();
+                }
+
+                var standard = (GetStandardByStandardUIdResponse)result.Standard;
+
+                return Ok(standard);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting standards by StandardUId {standardUId}");
+                _logger.LogError(e, $"Error getting standard by StandardUId {standardUId}");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

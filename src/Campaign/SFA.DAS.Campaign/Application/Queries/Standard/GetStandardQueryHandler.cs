@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GetStandardRequest = SFA.DAS.Campaign.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.Campaign.Application.Queries.Standard
 {

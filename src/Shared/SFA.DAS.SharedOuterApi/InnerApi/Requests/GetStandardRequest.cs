@@ -4,12 +4,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetStandardRequest : IGetApiRequest
     {
-        public GetStandardRequest(string standardUId)
+        public GetStandardRequest(int id)
         {
-            StandardId = standardUId;
+            StandardId = id;
         }
 
-        public string StandardId { get; }
+        public int StandardId { get; }
         public string GetUrl => $"api/courses/standards/{StandardId}";
     }
 }
