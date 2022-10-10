@@ -104,7 +104,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                         Content = new StringContent(request, Encoding.UTF8, "text/xml")
                     };
 
-                var responseMessage = await _httpClient.SendAsync(requestMessage);
+                var responseMessage = await _httpClient.SendAsync(requestMessage, CancellationToken.None);
 
                 if (!responseMessage.IsSuccessStatusCode)
                 {
@@ -116,7 +116,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                     return await Task.FromResult(failureResponse);
                 }
 
-                var soapXml = await responseMessage.Content.ReadAsStringAsync();
+                var soapXml = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
                 var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
 
                 if (matchingProviderRecords != null)
