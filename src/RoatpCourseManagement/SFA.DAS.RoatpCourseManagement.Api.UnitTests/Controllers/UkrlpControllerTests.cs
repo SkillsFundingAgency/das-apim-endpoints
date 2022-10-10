@@ -73,7 +73,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
         [Test]
         [MoqAutoData]
-        public async Task GetProviderAddresses_NoContentFromService_ReturnsBadRequest(
+        public async Task GetProviderAddresses_NoContentFromService_ReturnsNotFound(
             [Frozen] Mock<IUkrlpService> serviceMock,
             [Greedy] UkrlpDataController sut)
         {
@@ -81,8 +81,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             serviceMock.Setup(s => s.GetAddresses(command)).ReturnsAsync((List<ProviderAddress>)null);
             var response = await sut.GetProvidersData(command);
 
-            var badRequestResult = response as BadRequestResult;
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
+            var notFoundResult = response as NotFoundResult;
+            Assert.AreEqual((int)HttpStatusCode.NotFound, notFoundResult.StatusCode);
         }
     }
 }

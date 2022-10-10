@@ -42,7 +42,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             if (results == null)
             {
                 _logger.LogWarning("No results returned from ukrlpService");
-                return BadRequest();
+                return NotFound();
             }
 
             return Ok(results);
