@@ -1,9 +1,10 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+﻿using MediatR;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
-    public class AddNationalLocationToProviderCourseLocationsRequest : IPostApiRequest
+    public class AddNationalLocationToProviderCourseLocationsRequest : IPostApiRequest, IRequest<Unit>
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }

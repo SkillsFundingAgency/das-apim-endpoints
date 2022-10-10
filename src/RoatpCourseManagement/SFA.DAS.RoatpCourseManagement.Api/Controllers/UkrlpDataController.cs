@@ -6,18 +6,20 @@ using SFA.DAS.RoatpCourseManagement.Services;
 using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using NLog;
+using MediatR;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
     [ApiController]
     public class UkrlpDataController : ControllerBase
     {
-        private readonly IUkrlpService _ukrlpService;
         private readonly ILogger<UkrlpDataController> _logger;
+        private readonly IMediator _mediator;
 
-        public UkrlpDataController(IUkrlpService ukrlpService, ILogger<UkrlpDataController> logger)
+        public UkrlpDataController( IMediator mediator, ILogger<UkrlpDataController> logger)
         {
-            _ukrlpService = ukrlpService;
+            _mediator = mediator; 
             _logger = logger;
         }
 
@@ -38,14 +40,16 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             }
 
             _logger.LogInformation("Request to retrieve course directory data received");
-            var results = await _ukrlpService.GetAddresses(command);
-            if (results == null)
+            
+            var response = await _mediator.Send(command);
+
+            if (response.Results == null || !response.Success)
             {
-                _logger.LogWarning("No results returned from ukrlpService");
+                _logger.LogWarning("No results returned from ukrlp data handler");
                 return NotFound();
             }
 
-            return Ok(results);
+            return Ok(response.Results);
         }
     }
 }

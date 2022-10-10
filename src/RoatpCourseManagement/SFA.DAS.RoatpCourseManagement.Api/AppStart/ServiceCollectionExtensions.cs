@@ -37,8 +37,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<IZipArchiveHelper, ZipArchiveHelper>();
             services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
             ConfigureCourseDirectoryHttpClient(services, configuration);
-            ConfigureUkrlpHttpClient(services, configuration);
-
         }
 
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
@@ -71,21 +69,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
                 config.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiconfiguration.Key);
             })
            .SetHandlerLifetime(handlerLifeTime);
-        }
-
-        private static void ConfigureUkrlpHttpClient(IServiceCollection services, IConfiguration configuration)
-        {
-            var handlerLifeTime = TimeSpan.FromMinutes(5);
-            services.AddHttpClient<IUkrlpService, UkrlpService>(config =>
-                {
-                    var apiConfiguration = configuration
-                        .GetSection(nameof(UkrlpApiConfiguration))
-                        .Get<UkrlpApiConfiguration>();
-
-                    config.BaseAddress = new Uri(apiConfiguration.ApiBaseAddress, UriKind.Absolute);
-                    
-                })
-                .SetHandlerLifetime(handlerLifeTime);
         }
     }
 }

@@ -3,43 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.RoatpCourseManagement.Configuration;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
+using SFA.DAS.RoatpCourseManagement.Services;
 
-namespace SFA.DAS.RoatpCourseManagement.Services
+namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
-    public class UkrlpService : IUkrlpService
+    public class GetUkrlpAddressesHandler : IRequestHandler<UkrlpDataCommand, UkprnLookupResponse>
     {
         private readonly IUkrlpSoapSerializer _serializer;
         private readonly HttpClient _httpClient;
-        private readonly ILogger<UkrlpService> _logger;
+        private readonly ILogger<GetUkrlpAddressesHandler> _logger;
         private readonly UkrlpApiConfiguration _ukrlpConfiguration;
         private const int MaximumRecords = 500;
 
-        public UkrlpService(HttpClient httpClient, ILogger<UkrlpService> logger, IUkrlpSoapSerializer serializer, IOptions<UkrlpApiConfiguration> options)
+        public GetUkrlpAddressesHandler(IUkrlpSoapSerializer serializer, HttpClient httpClient,
+            ILogger<GetUkrlpAddressesHandler> logger, IOptions<UkrlpApiConfiguration> options)
         {
+            _serializer = serializer;
             _httpClient = httpClient;
             _logger = logger;
-            _serializer = serializer;
             _ukrlpConfiguration = options.Value;
         }
 
-        public async Task<List<ProviderAddress>> GetAddresses(UkrlpDataCommand command)
+        public async Task<UkprnLookupResponse> Handle(UkrlpDataCommand command, CancellationToken cancellationToken)
         {
             if (command.ProvidersUpdatedSince != null)
             {
-                var request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest((DateTime)command.ProvidersUpdatedSince,
+                var request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest(
+                    (DateTime)command.ProvidersUpdatedSince,
                     _ukrlpConfiguration.StakeholderId,
                     _ukrlpConfiguration.QueryId);
 
                 var response = await GetUkprnLookupResponse(request);
                 _logger.LogInformation("response gathered from ukrlp from UpdatedSince");
 
-                if (response != null && response.Success) return response.Results;
+                if (response != null && response.Success) return response;
                 _logger.LogWarning("The response from UKRLP was failure");
                 return null;
             }
@@ -53,7 +57,8 @@ namespace SFA.DAS.RoatpCourseManagement.Services
 
                 var response = new UkprnLookupResponse
                 {
-                    Results = new List<ProviderAddress>()
+                    Results = new List<ProviderAddress>(),
+                    Success = true
                 };
 
                 while (maximumToSet <= ukprnsToProcess.Count && startValue < ukprnsToProcess.Count)
@@ -63,6 +68,7 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                     {
                         ukprnsToCheck.Add(ukprnsToProcess[i]);
                     }
+
                     startValue = maximumToSet;
                     maximumToSet += MaximumRecords;
                     if (maximumToSet > ukprnsToProcess.Count)
@@ -75,7 +81,11 @@ namespace SFA.DAS.RoatpCourseManagement.Services
                     if (ukprnResponse == null || !ukprnResponse.Success)
                     {
                         _logger.LogWarning("The response from UKRLP was failure");
-                        return null;
+                        new UkprnLookupResponse
+                        {
+                            Results = new List<ProviderAddress>(),
+                            Success = false
+                        };
                     }
 
                     response.Results.AddRange(ukprnResponse.Results);
@@ -83,52 +93,53 @@ namespace SFA.DAS.RoatpCourseManagement.Services
 
                 _logger.LogInformation("response gathered from ukrlp using ukprns");
 
-                return response.Results;
-            }
-        }
-
-        private async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
-        {
-            var requestMessage =
-                new HttpRequestMessage(HttpMethod.Post, _httpClient.BaseAddress)
-                {
-                    Content = new StringContent(request, Encoding.UTF8, "text/xml")
-                };
-
-            var responseMessage = await _httpClient.SendAsync(requestMessage);
-
-            if (!responseMessage.IsSuccessStatusCode)
-            {
-                var failureResponse = new UkprnLookupResponse
-                {
-                    Success = false,
-                    Results = new List<ProviderAddress>()
-                };
-                return await Task.FromResult(failureResponse);
+                return response;
             }
 
-            var soapXml = await responseMessage.Content.ReadAsStringAsync();
-            var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
-
-            if (matchingProviderRecords != null)
+            async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
             {
-                var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider).ToList();
+                var requestMessage =
+                    new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
+                    {
+                        Content = new StringContent(request, Encoding.UTF8, "text/xml")
+                    };
 
-                var resultsFound = new UkprnLookupResponse
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    var failureResponse = new UkprnLookupResponse
+                    {
+                        Success = false,
+                        Results = new List<ProviderAddress>()
+                    };
+                    return await Task.FromResult(failureResponse);
+                }
+
+                var soapXml = await responseMessage.Content.ReadAsStringAsync();
+                var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
+
+                if (matchingProviderRecords != null)
+                {
+                    var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider)
+                        .ToList();
+
+                    var resultsFound = new UkprnLookupResponse
+                    {
+                        Success = true,
+                        Results = result
+                    };
+                    return await Task.FromResult(resultsFound);
+                }
+
+                var noResultsFound = new UkprnLookupResponse
                 {
                     Success = true,
-                    Results = result
+                    Results = new List<ProviderAddress>()
                 };
-                return await Task.FromResult(resultsFound);
+                return await Task.FromResult(noResultsFound);
             }
-
-            var noResultsFound = new UkprnLookupResponse
-            {
-                Success = true,
-                Results = new List<ProviderAddress>()
-            };
-            return await Task.FromResult(noResultsFound);
-
         }
     }
 }
+
