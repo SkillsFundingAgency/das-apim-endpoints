@@ -16,7 +16,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp
         public string Town { get; set; }
         public string Postcode { get; set; }
 
-        public static implicit operator ProviderAddress(MatchingProviderRecords source) =>
+        public static implicit operator ProviderAddress(Provider source) =>
             new ProviderAddress
             {
                 Ukprn = source.UnitedKingdomProviderReferenceNumber,

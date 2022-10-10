@@ -60,36 +60,36 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             return soapEnvelope.ToString();
         }
 
-        public List<MatchingProviderRecords> DeserialiseMatchingProviderRecordsResponse(string soapXml)
+        public List<Provider> DeserialiseMatchingProviderRecordsResponse(string soapXml)
         {
             var soapDocument = XDocument.Parse(soapXml);
             var queryResponses = soapDocument.XPathSelectElements("//MatchingProviderRecords");
 
-            var matches = new List<MatchingProviderRecords>();
+            var matches = new List<Provider>();
 
             foreach (var queryResponse in queryResponses)
             {
                 // UKRLP SOAP service doesn't return contacts arrays in a 
                 // wrapping tag, so can't serialize using XmlArray
-                var matchingRecordsSerializer = new XmlSerializer(typeof(MatchingProviderRecords));
-                var contactSerializer = new XmlSerializer(typeof(ProviderContactStructure));
+                var matchingRecordsSerializer = new XmlSerializer(typeof(Provider));
+                var contactSerializer = new XmlSerializer(typeof(ProviderContact));
            
-                MatchingProviderRecords matchingProviderRecords =
-                    (MatchingProviderRecords)matchingRecordsSerializer.Deserialize(queryResponse.CreateReader());
+                Provider provider =
+                    (Provider)matchingRecordsSerializer.Deserialize(queryResponse.CreateReader());
 
                 var contactElements = queryResponse.Descendants(XName.Get("ProviderContact"));
                 if (contactElements != null)
                 {
-                    matchingProviderRecords.ProviderContacts = new List<ProviderContactStructure>();
+                    provider.ProviderContacts = new List<ProviderContact>();
                     foreach (var contactElement in contactElements)
                     {
                         var contact =
-                            (ProviderContactStructure)contactSerializer.Deserialize(contactElement.CreateReader());
-                        matchingProviderRecords.ProviderContacts.Add(contact);
+                            (ProviderContact)contactSerializer.Deserialize(contactElement.CreateReader());
+                        provider.ProviderContacts.Add(contact);
                     }
                 }
 
-                matches.Add(matchingProviderRecords);
+                matches.Add(provider);
             }
 
             return matches;

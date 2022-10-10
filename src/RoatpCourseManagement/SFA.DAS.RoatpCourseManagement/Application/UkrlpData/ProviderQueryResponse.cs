@@ -5,7 +5,8 @@ using System.Xml.Serialization;
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
     [Serializable]
-    public class MatchingProviderRecords
+    [XmlRoot(ElementName = "MatchingProviderRecords")]
+    public class Provider
     {
         [XmlElement]
         public string UnitedKingdomProviderReferenceNumber { get; set; }
@@ -14,12 +15,12 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
         public string ProviderName { get; set; }
 
         [XmlArray(ElementName = "ProviderContact")]
-        public List<ProviderContactStructure> ProviderContacts { get; set; }
+        public List<ProviderContact> ProviderContacts { get; set; }
     }
 
     [Serializable]
     [XmlRoot(ElementName = "ProviderContact")]
-    public class ProviderContactStructure
+    public class ProviderContact
     {
         [XmlElement]
         public string ContactType { get; set; }

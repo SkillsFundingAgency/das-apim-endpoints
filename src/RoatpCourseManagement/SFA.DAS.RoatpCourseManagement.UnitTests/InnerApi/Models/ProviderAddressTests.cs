@@ -13,7 +13,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Models
         private const string LegalIdentifier = "L";
 
         [Test, AutoData]
-        public void Operator_ConvertsToProviderAddress(MatchingProviderRecords source)
+        public void Operator_ConvertsToProviderAddress(Provider source)
         {
             source.ProviderContacts[0].ContactType = LegalIdentifier;
 

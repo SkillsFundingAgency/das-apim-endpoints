@@ -40,12 +40,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             var request = "string request";
             var mockMessageHandler = new Mock<HttpMessageHandler>();
 
-            var matchingProviderRecords = new List<MatchingProviderRecords>
+            var matchingProviderRecords = new List<Provider>
             {
                 new()
                 {
                     UnitedKingdomProviderReferenceNumber = ukprn1,
-                    ProviderContacts = new List<ProviderContactStructure>
+                    ProviderContacts = new List<ProviderContact>
                     {
                         new()
                         {
@@ -73,7 +73,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
                 new()
                 {
                     UnitedKingdomProviderReferenceNumber = ukprn2,
-                    ProviderContacts = new List<ProviderContactStructure>
+                    ProviderContacts = new List<ProviderContact>
                     {
                         new()
                         {
@@ -157,12 +157,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
             var request = "string request";
             var mockMessageHandler = new Mock<HttpMessageHandler>();
 
-            var matchingProviderRecords = new List<MatchingProviderRecords>
+            var matchingProviderRecords = new List<Provider>
             {
                 new()
                 {
                     UnitedKingdomProviderReferenceNumber = ukprn1.ToString(),
-                    ProviderContacts = new List<ProviderContactStructure>
+                    ProviderContacts = new List<ProviderContact>
                     {
                         new()
                         {
@@ -190,7 +190,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
                 new()
                 {
                     UnitedKingdomProviderReferenceNumber = ukprn2.ToString(),
-                    ProviderContacts = new List<ProviderContactStructure>
+                    ProviderContacts = new List<ProviderContact>
                     {
                         new()
                         {
@@ -327,7 +327,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
 
             mockSerializer
                 .Setup(x => x.DeserialiseMatchingProviderRecordsResponse(content))
-                .Returns((List <MatchingProviderRecords>) null);
+                .Returns((List <Provider>) null);
 
             var ukrlpApiConfiguration = new UkrlpApiConfiguration
             {
