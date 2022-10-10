@@ -23,7 +23,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
     {
         [Test]
         [MoqAutoData]
-        public async Task GetProviderAddresses_ReturnsContent(
+        public async Task GetProviderAddressesFromProvidersUpdatedSince_ReturnsContent(
             [Frozen] Mock<IUkrlpService> serviceMock,
             [Greedy] UkrlpDataController sut)
         {
@@ -43,6 +43,32 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var actualResponse = okResult.Value;
             Assert.AreSame(actualResponse, providerAddresses);
             Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
+            serviceMock.Verify(x => x.GetAddresses(It.IsAny<UkrlpDataCommand>()), Times.Once);
+        }
+
+        [Test]
+        [MoqAutoData]
+        public async Task GetProviderAddressesFromUkprns_ReturnsContent(
+            [Frozen] Mock<IUkrlpService> serviceMock,
+            [Greedy] UkrlpDataController sut)
+        {
+            var command = new UkrlpDataCommand { ProvidersUpdatedSince = null, Ukprns = new List<long> { 12345678 } };
+            var providerAddresses = new List<ProviderAddress>
+            {
+                new()
+                {
+                    Address1 = "1 Green Road"
+                }
+            };
+
+            serviceMock.Setup(s => s.GetAddresses(command)).ReturnsAsync(providerAddresses);
+            var response = await sut.GetProvidersData(command);
+
+            var okResult = response as OkObjectResult;
+            var actualResponse = okResult.Value;
+            Assert.AreSame(actualResponse, providerAddresses);
+            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
+            serviceMock.Verify(x => x.GetAddresses(It.IsAny<UkrlpDataCommand>()), Times.Once);
         }
 
         [Test]
