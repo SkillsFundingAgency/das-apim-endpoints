@@ -81,7 +81,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                     if (ukprnResponse == null || !ukprnResponse.Success)
                     {
                         _logger.LogWarning("The response from UKRLP was failure");
-                        new UkprnLookupResponse
+                        return new UkprnLookupResponse
                         {
                             Results = new List<ProviderAddress>(),
                             Success = false
