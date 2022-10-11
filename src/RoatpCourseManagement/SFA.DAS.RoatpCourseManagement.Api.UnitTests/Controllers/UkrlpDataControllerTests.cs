@@ -38,7 +38,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddressesFromProvidersUpdatedSince_ReturnsContent()
         {
-            var command = new UkrlpDataCommand {ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>()};
+            var command = new UkrlpDataQuery {ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>()};
             var providerAddresses = new List<ProviderAddress>
             {
                 new()
@@ -46,7 +46,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
                     Address1 = "1 Green Road"
                 }
             };
-            var lookupResponse = new UkprnLookupResponse
+            var lookupResponse = new GetUkrlpDataQueryResponse
             {
                 Results = providerAddresses,
                 Success = true
@@ -60,14 +60,14 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var actualResponse = okResult.Value;
             Assert.AreSame(actualResponse, providerAddresses);
             Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
-            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         [MoqAutoData]
         public async Task GetProviderAddressesFromUkprns_ReturnsContent()
         {
-            var command = new UkrlpDataCommand { ProvidersUpdatedSince = null, Ukprns = new List<long> { 12345678 } };
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long> { 12345678 } };
             var providerAddresses = new List<ProviderAddress>
             {
                 new()
@@ -75,7 +75,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
                     Address1 = "1 Green Road"
                 }
             };
-            var lookupResponse = new UkprnLookupResponse
+            var lookupResponse = new GetUkrlpDataQueryResponse
             {
                 Results = providerAddresses,
                 Success = true
@@ -88,14 +88,14 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var actualResponse = okResult.Value;
             Assert.AreSame(actualResponse, providerAddresses);
             Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
-            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         [MoqAutoData]
         public async Task GetProviderAddresses_TwoParameters_ReturnsBadRequest()
         {
-            var command = new UkrlpDataCommand { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long> {12345678} };
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long> {12345678} };
             var response = await _sut.GetProvidersData(command);
         
             var badRequestResult = response as BadRequestResult;
@@ -106,7 +106,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddresses_NoParameters_ReturnsBadRequest()
         {
-            var command = new UkrlpDataCommand { ProvidersUpdatedSince = null, Ukprns = new List<long> () };
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long> () };
             var response = await _sut.GetProvidersData(command);
         
             var badRequestResult = response as BadRequestResult;
@@ -117,8 +117,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddresses_NoContentFromService_ReturnsNotFound()
         {
-            var command = new UkrlpDataCommand { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
-            var lookupResponse = new UkprnLookupResponse
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
+            var lookupResponse = new GetUkrlpDataQueryResponse
             {
                 Results = null,
                 Success = true
@@ -135,8 +135,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddresses_UnsuccessfulFromService_ReturnsNotFound()
         {
-            var command = new UkrlpDataCommand { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
-            var lookupResponse = new UkprnLookupResponse
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
+            var lookupResponse = new GetUkrlpDataQueryResponse
             {
                 Results = new List<ProviderAddress>(),
                 Success = false

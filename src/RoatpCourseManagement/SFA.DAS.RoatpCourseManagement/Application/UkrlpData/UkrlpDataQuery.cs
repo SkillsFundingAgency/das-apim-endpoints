@@ -5,7 +5,7 @@ using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
-    public class UkrlpDataCommand : IRequest<UkprnLookupResponse>
+    public class UkrlpDataQuery : IRequest<GetUkrlpDataQueryResponse>
     {
        public List<long> Ukprns { get; set; }
        public DateTime? ProvidersUpdatedSince { get; set; }

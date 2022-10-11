@@ -14,16 +14,16 @@ using SFA.DAS.RoatpCourseManagement.Services;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
-    public class GetUkrlpAddressesHandler : IRequestHandler<UkrlpDataCommand, UkprnLookupResponse>
+    public class GetUkrlpDataQueryHandler : IRequestHandler<UkrlpDataQuery, GetUkrlpDataQueryResponse>
     {
         private readonly IUkrlpSoapSerializer _serializer;
         private readonly HttpClient _httpClient;
-        private readonly ILogger<GetUkrlpAddressesHandler> _logger;
+        private readonly ILogger<GetUkrlpDataQueryHandler> _logger;
         private readonly UkrlpApiConfiguration _ukrlpConfiguration;
         private const int MaximumRecords = 500;
 
-        public GetUkrlpAddressesHandler(IUkrlpSoapSerializer serializer, HttpClient httpClient,
-            ILogger<GetUkrlpAddressesHandler> logger, IOptions<UkrlpApiConfiguration> options)
+        public GetUkrlpDataQueryHandler(IUkrlpSoapSerializer serializer, HttpClient httpClient,
+            ILogger<GetUkrlpDataQueryHandler> logger, IOptions<UkrlpApiConfiguration> options)
         {
             _serializer = serializer;
             _httpClient = httpClient;
@@ -31,14 +31,14 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             _ukrlpConfiguration = options.Value;
         }
 
-        public async Task<UkprnLookupResponse> Handle(UkrlpDataCommand command, CancellationToken cancellationToken)
+        public async Task<GetUkrlpDataQueryResponse> Handle(UkrlpDataQuery query, CancellationToken cancellationToken)
         {
-            if (command.ProvidersUpdatedSince != null)
+            if (query.ProvidersUpdatedSince != null)
             {
-                return await ProcessUkrlpSinceLastUpdated(command);
+                return await ProcessUkrlpSinceLastUpdated(query);
             }
 
-            var response = new UkprnLookupResponse
+            var response = new GetUkrlpDataQueryResponse
             {
                 Results = new List<ProviderAddress>(),
                 Success = true
@@ -48,17 +48,17 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
             while (true)
             {
-                var ukprnsToCheck = command.Ukprns.Skip(fetched).Take(MaximumRecords).ToList();
+                var ukprnsToCheck = query.Ukprns.Skip(fetched).Take(MaximumRecords).ToList();
                 if (!ukprnsToCheck.Any()) break;
                 fetched += ukprnsToCheck.Count;
                 var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
-                var ukprnResponse = await GetUkprnLookupResponse(request);
+                var ukprnResponse = await GetUkrlpResponse(request);
                 
                 if (ukprnResponse == null || !ukprnResponse.Success)
                 {
                     _logger.LogWarning("The response from UKRLP was failure");
-                    return new UkprnLookupResponse
+                    return new GetUkrlpDataQueryResponse
                     {
                         Results = new List<ProviderAddress>(),
                         Success = false
@@ -67,7 +67,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 
                 response.Results.AddRange(ukprnResponse.Results);
 
-                Console.WriteLine($"Total fetched {fetched} off {command.Ukprns.Count}");
+                Console.WriteLine($"Total fetched {fetched} off {query.Ukprns.Count}");
             }
 
             _logger.LogInformation("response gathered from ukrlp using ukprns");
@@ -75,14 +75,14 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             return response;
         }
 
-        private async Task<UkprnLookupResponse> ProcessUkrlpSinceLastUpdated(UkrlpDataCommand command)
+        private async Task<GetUkrlpDataQueryResponse> ProcessUkrlpSinceLastUpdated(UkrlpDataQuery query)
         {
             var request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest(
-                (DateTime)command.ProvidersUpdatedSince,
+                (DateTime)query.ProvidersUpdatedSince,
                 _ukrlpConfiguration.StakeholderId,
                 _ukrlpConfiguration.QueryId);
 
-            var response = await GetUkprnLookupResponse(request);
+            var response = await GetUkrlpResponse(request);
             _logger.LogInformation("response gathered from ukrlp from UpdatedSince");
 
             if (response != null && response.Success) return response;
@@ -90,7 +90,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
             return null;
         }
 
-        private async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
+        private async Task<GetUkrlpDataQueryResponse> GetUkrlpResponse(string request)
         {
             var requestMessage =
                 new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
@@ -102,7 +102,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
             if (!responseMessage.IsSuccessStatusCode)
             {
-                var failureResponse = new UkprnLookupResponse
+                var failureResponse = new GetUkrlpDataQueryResponse
                 {
                     Success = false,
                     Results = new List<ProviderAddress>()
@@ -118,7 +118,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider)
                     .ToList();
 
-                var resultsFound = new UkprnLookupResponse
+                var resultsFound = new GetUkrlpDataQueryResponse
                 {
                     Success = true,
                     Results = result
@@ -126,7 +126,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 return await Task.FromResult(resultsFound);
             }
 
-            var noResultsFound = new UkprnLookupResponse
+            var noResultsFound = new GetUkrlpDataQueryResponse
             {
                 Success = true,
                 Results = new List<ProviderAddress>()

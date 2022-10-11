@@ -17,7 +17,7 @@ using SFA.DAS.RoatpCourseManagement.Configuration;
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 {
     [TestFixture]
-    public class GetUkrlpAddressesHandlerTests
+    public class GetUkrlpDataQueryHandlerTests
     {
         private const string LegalIdentifier = "L";
         private const string QueryId = "2";
@@ -116,9 +116,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 ProvidersUpdatedSince = DateTime.Today
             };
@@ -236,9 +236,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 Ukprns = new List<long>
             {
@@ -313,9 +313,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 Ukprns = listOfUkprns
             };
@@ -353,9 +353,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
             var mockSerializer = new Mock<IUkrlpSoapSerializer>();
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 ProvidersUpdatedSince = DateTime.Today
             };
@@ -394,9 +394,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
             var mockSerializer = new Mock<IUkrlpSoapSerializer>();
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 ProvidersUpdatedSince = null,
                 Ukprns = new List<long> { 12345678 }
@@ -448,9 +448,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 
             var optionsConfiguration = Options.Create(ukrlpApiConfiguration);
 
-            var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+            var sut = new GetUkrlpDataQueryHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpDataQueryHandler>>(), optionsConfiguration);
 
-            var command = new UkrlpDataCommand
+            var command = new UkrlpDataQuery
             {
                 ProvidersUpdatedSince = DateTime.Today
             };

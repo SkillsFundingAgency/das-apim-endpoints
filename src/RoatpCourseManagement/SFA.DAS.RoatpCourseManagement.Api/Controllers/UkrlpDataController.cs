@@ -25,15 +25,15 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpPost]
         [Route("lookup/providers-address")]
-        public async Task<IActionResult> GetProvidersData(UkrlpDataCommand command)
+        public async Task<IActionResult> GetProvidersData(UkrlpDataQuery query)
         {
-            if (command.ProvidersUpdatedSince == null && !command.Ukprns.Any())
+            if (query.ProvidersUpdatedSince == null && !query.Ukprns.Any())
             {
                 _logger.LogWarning("No parameter entered for providers address lookup");
                 return BadRequest();
             }
 
-            if (command.ProvidersUpdatedSince != null && command.Ukprns.Any())
+            if (query.ProvidersUpdatedSince != null && query.Ukprns.Any())
             {
                 _logger.LogWarning("Two parameters entered for providers address lookup");
                 return BadRequest();
@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
             _logger.LogInformation("Request to retrieve course directory data received");
             
-            var response = await _mediator.Send(command);
+            var response = await _mediator.Send(query);
 
             if (response.Results == null || !response.Success)
             {
