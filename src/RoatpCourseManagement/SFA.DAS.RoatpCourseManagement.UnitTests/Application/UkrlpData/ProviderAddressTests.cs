@@ -4,8 +4,7 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
 
-
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpAddresses
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 {
     [TestFixture]
     public class ProviderAddressTests

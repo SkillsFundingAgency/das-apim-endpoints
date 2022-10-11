@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services.UkrlpSoapSerializer
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData.UkrlpSoapSerializer
 {
     [TestFixture]
     public class UkrlpSoapSerializerTests
