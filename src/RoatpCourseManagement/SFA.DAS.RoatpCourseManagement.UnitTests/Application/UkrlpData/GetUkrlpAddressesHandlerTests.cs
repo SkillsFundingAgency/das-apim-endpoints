@@ -268,7 +268,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
         }
 
         [Test]
-        public async Task GetProviderAddressesUsing501UkprnsCallsClientTwice_OkResponse_ReturnsContent()
+        public async Task GetProviderAddresses_BiggerBatch_CallsUkrlpClientMultipleTimes_OkResponse_ReturnsContent()
         {
             var content = "xml that comes back";
             var request = "string request 500";

@@ -50,23 +50,17 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 Success = true
             };
 
-            while (maximumToSet <= ukprnsToProcess.Count && startValue < ukprnsToProcess.Count)
+            var fetched = 0;
+
+            while (true)
             {
-                var ukprnsToCheck = new List<long>();
-                for (var i = startValue; i < maximumToSet; i++)
-                {
-                    ukprnsToCheck.Add(ukprnsToProcess[i]);
-                }
-
-                startValue = maximumToSet;
-                maximumToSet += MaximumRecords;
-                if (maximumToSet > ukprnsToProcess.Count)
-                    maximumToSet = ukprnsToProcess.Count;
-
+                var ukprnsToCheck = ukprnsToProcess.Skip(fetched).Take(MaximumRecords).ToList();
+                if (!ukprnsToCheck.Any()) break;
+                fetched += ukprnsToCheck.Count();
                 var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
                 var ukprnResponse = await GetUkprnLookupResponse(request);
-
+                
                 if (ukprnResponse == null || !ukprnResponse.Success)
                 {
                     _logger.LogWarning("The response from UKRLP was failure");
@@ -76,8 +70,10 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                         Success = false
                     };
                 }
-
+                
                 response.Results.AddRange(ukprnResponse.Results);
+
+                Console.WriteLine($"Total fetched {fetched} off {ukprnsToProcess.Count()}");
             }
 
             _logger.LogInformation("response gathered from ukrlp using ukprns");
