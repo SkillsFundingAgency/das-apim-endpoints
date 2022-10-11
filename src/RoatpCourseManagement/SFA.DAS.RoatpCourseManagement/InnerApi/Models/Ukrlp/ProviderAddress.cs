@@ -27,7 +27,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp
                 Address4 = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.Address4,
                 Town = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.Town,
                 Postcode = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.PostCode
-
             };
     }
 }

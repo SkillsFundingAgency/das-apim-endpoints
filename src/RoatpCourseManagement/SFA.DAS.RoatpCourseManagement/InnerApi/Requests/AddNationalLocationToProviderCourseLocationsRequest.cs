@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
-    public class AddNationalLocationToProviderCourseLocationsRequest : IPostApiRequest, IRequest<Unit>
+    public class AddNationalLocationToProviderCourseLocationsRequest : IPostApiRequest
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
