@@ -35,110 +35,113 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
         {
             if (command.ProvidersUpdatedSince != null)
             {
-                var request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest(
-                    (DateTime)command.ProvidersUpdatedSince,
-                    _ukrlpConfiguration.StakeholderId,
-                    _ukrlpConfiguration.QueryId);
-
-                var response = await GetUkprnLookupResponse(request);
-                _logger.LogInformation("response gathered from ukrlp from UpdatedSince");
-
-                if (response != null && response.Success) return response;
-                _logger.LogWarning("The response from UKRLP was failure");
-                return null;
+                return await ProcessUkrlpSinceLastUpdated(command);
             }
-            else
+
+            var ukprnsToProcess = command.Ukprns;
+            var startValue = 0;
+            var maximumToSet = MaximumRecords;
+            if (maximumToSet > ukprnsToProcess.Count)
+                maximumToSet = ukprnsToProcess.Count;
+
+            var response = new UkprnLookupResponse
             {
-                var ukprnsToProcess = command.Ukprns;
-                var startValue = 0;
-                var maximumToSet = MaximumRecords;
+                Results = new List<ProviderAddress>(),
+                Success = true
+            };
+
+            while (maximumToSet <= ukprnsToProcess.Count && startValue < ukprnsToProcess.Count)
+            {
+                var ukprnsToCheck = new List<long>();
+                for (var i = startValue; i < maximumToSet; i++)
+                {
+                    ukprnsToCheck.Add(ukprnsToProcess[i]);
+                }
+
+                startValue = maximumToSet;
+                maximumToSet += MaximumRecords;
                 if (maximumToSet > ukprnsToProcess.Count)
                     maximumToSet = ukprnsToProcess.Count;
 
-                var response = new UkprnLookupResponse
+                var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
+                    _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
+                var ukprnResponse = await GetUkprnLookupResponse(request);
+
+                if (ukprnResponse == null || !ukprnResponse.Success)
                 {
-                    Results = new List<ProviderAddress>(),
-                    Success = true
-                };
-
-                while (maximumToSet <= ukprnsToProcess.Count && startValue < ukprnsToProcess.Count)
-                {
-                    var ukprnsToCheck = new List<long>();
-                    for (var i = startValue; i < maximumToSet; i++)
+                    _logger.LogWarning("The response from UKRLP was failure");
+                    return new UkprnLookupResponse
                     {
-                        ukprnsToCheck.Add(ukprnsToProcess[i]);
-                    }
-
-                    startValue = maximumToSet;
-                    maximumToSet += MaximumRecords;
-                    if (maximumToSet > ukprnsToProcess.Count)
-                        maximumToSet = ukprnsToProcess.Count;
-
-                    var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
-                        _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
-                    var ukprnResponse = await GetUkprnLookupResponse(request);
-
-                    if (ukprnResponse == null || !ukprnResponse.Success)
-                    {
-                        _logger.LogWarning("The response from UKRLP was failure");
-                        return new UkprnLookupResponse
-                        {
-                            Results = new List<ProviderAddress>(),
-                            Success = false
-                        };
-                    }
-
-                    response.Results.AddRange(ukprnResponse.Results);
+                        Results = new List<ProviderAddress>(),
+                        Success = false
+                    };
                 }
 
-                _logger.LogInformation("response gathered from ukrlp using ukprns");
-
-                return response;
+                response.Results.AddRange(ukprnResponse.Results);
             }
 
-            async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
+            _logger.LogInformation("response gathered from ukrlp using ukprns");
+
+            return response;
+        }
+
+        private async Task<UkprnLookupResponse> ProcessUkrlpSinceLastUpdated(UkrlpDataCommand command)
+        {
+            var request = _serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest(
+                (DateTime)command.ProvidersUpdatedSince,
+                _ukrlpConfiguration.StakeholderId,
+                _ukrlpConfiguration.QueryId);
+
+            var response = await GetUkprnLookupResponse(request);
+            _logger.LogInformation("response gathered from ukrlp from UpdatedSince");
+
+            if (response != null && response.Success) return response;
+            _logger.LogWarning("The response from UKRLP was failure");
+            return null;
+        }
+
+        private async Task<UkprnLookupResponse> GetUkprnLookupResponse(string request)
+        {
+            var requestMessage =
+                new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
+                {
+                    Content = new StringContent(request, Encoding.UTF8, "text/xml")
+                };
+
+            var responseMessage = await _httpClient.SendAsync(requestMessage, CancellationToken.None);
+
+            if (!responseMessage.IsSuccessStatusCode)
             {
-                var requestMessage =
-                    new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
-                    {
-                        Content = new StringContent(request, Encoding.UTF8, "text/xml")
-                    };
-
-                var responseMessage = await _httpClient.SendAsync(requestMessage, CancellationToken.None);
-
-                if (!responseMessage.IsSuccessStatusCode)
+                var failureResponse = new UkprnLookupResponse
                 {
-                    var failureResponse = new UkprnLookupResponse
-                    {
-                        Success = false,
-                        Results = new List<ProviderAddress>()
-                    };
-                    return await Task.FromResult(failureResponse);
-                }
-
-                var soapXml = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
-                var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
-
-                if (matchingProviderRecords != null)
-                {
-                    var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider)
-                        .ToList();
-
-                    var resultsFound = new UkprnLookupResponse
-                    {
-                        Success = true,
-                        Results = result
-                    };
-                    return await Task.FromResult(resultsFound);
-                }
-
-                var noResultsFound = new UkprnLookupResponse
-                {
-                    Success = true,
+                    Success = false,
                     Results = new List<ProviderAddress>()
                 };
-                return await Task.FromResult(noResultsFound);
+                return await Task.FromResult(failureResponse);
             }
+
+            var soapXml = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+            var matchingProviderRecords = _serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
+
+            if (matchingProviderRecords != null)
+            {
+                var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider)
+                    .ToList();
+
+                var resultsFound = new UkprnLookupResponse
+                {
+                    Success = true,
+                    Results = result
+                };
+                return await Task.FromResult(resultsFound);
+            }
+
+            var noResultsFound = new UkprnLookupResponse
+            {
+                Success = true,
+                Results = new List<ProviderAddress>()
+            };
+            return await Task.FromResult(noResultsFound);
         }
     }
 }
