@@ -328,7 +328,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
     }
     
     [Test]
-    public async Task GetProviderAddresses_UnsuccessfulResponse_ReturnsNull()
+    public async Task GetProviderAddressesWithProvidersUpdatedSince_UnsuccessfulResponse_ReturnsNull()
     {
         var request = "string request";
         var mockMessageHandler = new Mock<HttpMessageHandler>();
@@ -367,9 +367,52 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
         var addresses = response?.Results;
         addresses.Should().BeNull();
     }
-    
+
     [Test]
-    public async Task GetProviderAddresses_NoMAtchingRecords_OkResponse_ReturnsNoContent()
+    public async Task GetProviderAddressesWithUkprns_UnsuccessfulResponse_ReturnsNull()
+    {
+        var request = "string request";
+        var mockMessageHandler = new Mock<HttpMessageHandler>();
+        mockMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                RequestMessage = new HttpRequestMessage()
+            });
+        HttpClient httpClient = new HttpClient(mockMessageHandler.Object);
+        httpClient.BaseAddress = new Uri("https://test");
+
+        var ukrlpApiConfiguration = new UkrlpApiConfiguration
+        {
+            ApiBaseAddress = "https://test",
+            QueryId = QueryId,
+            StakeholderId = StakeholderId
+        };
+
+        var optionsConfiguration = Options.Create<UkrlpApiConfiguration>(ukrlpApiConfiguration);
+        var mockSerializer = new Mock<IUkrlpSoapSerializer>();
+
+        var sut = new GetUkrlpAddressesHandler(mockSerializer.Object, httpClient, Mock.Of<ILogger<GetUkrlpAddressesHandler>>(), optionsConfiguration);
+
+        var command = new UkrlpDataCommand
+        {
+            ProvidersUpdatedSince = null,
+            Ukprns = new List<long> {12345678}
+        };
+
+        mockSerializer
+            .Setup(x => x.BuildGetAllUkrlpsFromUkprnsSoapRequest(command.Ukprns, StakeholderId, QueryId))
+            .Returns(request);
+
+        var response = await sut.Handle(command, new CancellationToken());
+        
+        response.Results.Should().BeEmpty();
+        response.Success.Should().BeFalse();
+    }
+
+        [Test]
+    public async Task GetProviderAddresses_NoMatchingRecords_OkResponse_ReturnsNoContent()
     {
         var content = "xml that comes back";
         var request = "string request";
