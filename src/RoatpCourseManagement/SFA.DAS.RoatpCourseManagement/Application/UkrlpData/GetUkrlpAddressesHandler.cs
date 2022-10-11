@@ -38,12 +38,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 return await ProcessUkrlpSinceLastUpdated(command);
             }
 
-            var ukprnsToProcess = command.Ukprns;
-            var startValue = 0;
-            var maximumToSet = MaximumRecords;
-            if (maximumToSet > ukprnsToProcess.Count)
-                maximumToSet = ukprnsToProcess.Count;
-
             var response = new UkprnLookupResponse
             {
                 Results = new List<ProviderAddress>(),
@@ -54,9 +48,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
             while (true)
             {
-                var ukprnsToCheck = ukprnsToProcess.Skip(fetched).Take(MaximumRecords).ToList();
+                var ukprnsToCheck = command.Ukprns.Skip(fetched).Take(MaximumRecords).ToList();
                 if (!ukprnsToCheck.Any()) break;
-                fetched += ukprnsToCheck.Count();
+                fetched += ukprnsToCheck.Count;
                 var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
                 var ukprnResponse = await GetUkprnLookupResponse(request);
@@ -73,7 +67,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 
                 response.Results.AddRange(ukprnResponse.Results);
 
-                Console.WriteLine($"Total fetched {fetched} off {ukprnsToProcess.Count()}");
+                Console.WriteLine($"Total fetched {fetched} off {command.Ukprns.Count}");
             }
 
             _logger.LogInformation("response gathered from ukrlp using ukprns");
