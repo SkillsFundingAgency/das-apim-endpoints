@@ -65,8 +65,8 @@ namespace SFA.DAS.EmployerAccounts.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<AccountsApiHealthCheck>("Accounts API health check")
-                    .AddCheck<FinanceApiHealthCheck>("Finance API health check");
+                    .AddCheck<AccountsApiHealthCheck>($"{AccountsApiHealthCheck.AccountsApiHealthCheckDescription} health check")
+                    .AddCheck<FinanceApiHealthCheck>($"{FinanceApiHealthCheck.FinanceApiHealthCheckDescription} health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
