@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
             // 1.a If none, we do nothing, but potential for in future to make it smarter.
             if (apprenticeFeedbackTargets == null || apprenticeFeedbackTargets.Any() == false)
             {
-                var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: { command.ApprenticeId}";
+                var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: {command.ApprenticeId}";
                 _logger.LogWarning(responseMessage);
 
                 // No feedback targets for the signed in apprentice id
@@ -49,11 +49,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 // Raised to potentially query apprentice commitments / account api 
                 // For now we should return an error to allow the UX to show a relevant page.
 
-                return new UpdateApprenticeFeedbackTargetResponse
-                {
-                    Success = false,
-                    Message = responseMessage
-                };
+                return new UpdateApprenticeFeedbackTargetResponse { };
             }
 
             // 2. Setup Learner aggregate object holder to contain information from external systems to supply to Inner Api.
@@ -66,10 +62,15 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 _logger.LogDebug($"Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}");
                 var learnerResponse = await _assessorsApiClient.GetWithResponseCode<GetApprenticeLearnerResponse>(new GetApprenticeLearnerRequest(feedbackTarget.ApprenticeshipId));
 
-                if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK && learnerResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
                 {
-                    _logger.LogError($"Error Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}, Content: {learnerResponse.ErrorContent}");
-                    continue;
+                    var errorMsg = $"Error retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}";
+                    if (!string.IsNullOrWhiteSpace(learnerResponse.ErrorContent))
+                    {
+                        errorMsg += $", Content: {learnerResponse.ErrorContent}";
+                    }
+                    _logger.LogError(errorMsg);
+                    return new UpdateApprenticeFeedbackTargetResponse();
                 }
 
                 learnerAggregate.Add(new ApprenticeLearnerAggregate
@@ -99,10 +100,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 }
             }
 
-            return new UpdateApprenticeFeedbackTargetResponse
-            {
-                Success = true
-            };
+            return new UpdateApprenticeFeedbackTargetResponse();
         }
     }
 }

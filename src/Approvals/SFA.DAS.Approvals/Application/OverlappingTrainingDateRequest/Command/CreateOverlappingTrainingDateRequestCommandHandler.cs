@@ -22,7 +22,7 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
         public async Task<CreateOverlappingTrainingDateResult> Handle(CreateOverlappingTrainingDateRequestCommand request, CancellationToken cancellationToken)
         {
            var result = await _apiClient.PostWithResponseCode<CreateOverlappingTrainingDateResult>(
-                 new PostCreateOverlappingTrainingDateRequest(request.ProviderId, request.DraftApprneticeshipId, request.UserInfo));
+                 new PostCreateOverlappingTrainingDateRequest(request.ProviderId, request.DraftApprenticeshipId, request.UserInfo));
 
             result.EnsureSuccessStatusCode();
 

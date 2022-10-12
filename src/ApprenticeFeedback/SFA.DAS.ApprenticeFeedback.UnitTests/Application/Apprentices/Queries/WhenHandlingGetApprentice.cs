@@ -9,10 +9,12 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
+using SFA.DAS.ApprenticeFeedback.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
@@ -29,12 +31,12 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
             GetApprenticePreferencesResponse apprenticePreferencesResponse)
         {
             apiClient.Setup(x =>
-                    x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
-                .ReturnsAsync(apprenticeResponse);
+                    x.GetWithResponseCode<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeResponse>(apprenticeResponse, System.Net.HttpStatusCode.OK, string.Empty));
             apiClient.Setup(x =>
-                    x.Get<GetApprenticePreferencesResponse>(
+                    x.GetWithResponseCode<GetApprenticePreferencesResponse>(
                         It.Is<GetApprenticePreferencesRequest>(x => x.ApprenticeId == query.ApprenticeId)))
-                .ReturnsAsync(apprenticePreferencesResponse);
+                .ReturnsAsync(new ApiResponse<GetApprenticePreferencesResponse>(apprenticePreferencesResponse, System.Net.HttpStatusCode.OK, string.Empty));
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -58,13 +60,13 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
         )
         {
             apiClient.Setup(x =>
-                    x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
-                .ReturnsAsync((GetApprenticeResponse)null);
+                    x.GetWithResponseCode<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeResponse>(null, System.Net.HttpStatusCode.OK, string.Empty));
 
             apiClient.Setup(x =>
-                    x.Get<GetApprenticePreferencesResponse>(
+                    x.GetWithResponseCode<GetApprenticePreferencesResponse>(
                         It.Is<GetApprenticePreferencesRequest>(x => x.ApprenticeId == query.ApprenticeId)))
-                .Returns(Task.FromResult(response));
+                .ReturnsAsync(new ApiResponse<GetApprenticePreferencesResponse>(response, System.Net.HttpStatusCode.OK, string.Empty));
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -80,13 +82,13 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
             [Greedy] GetApprenticeResponse response)
         {
             apiClient.Setup(x =>
-                    x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
-                .ReturnsAsync((response));
+                    x.GetWithResponseCode<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeResponse>(response, System.Net.HttpStatusCode.OK, string.Empty));
 
             apiClient.Setup(x =>
-                    x.Get<GetApprenticePreferencesResponse>(
+                    x.GetWithResponseCode<GetApprenticePreferencesResponse>(
                         It.Is<GetApprenticePreferencesRequest>(x => x.ApprenticeId == query.ApprenticeId)))
-                .ReturnsAsync((GetApprenticePreferencesResponse)null);
+                .ReturnsAsync(new ApiResponse<GetApprenticePreferencesResponse>(null, System.Net.HttpStatusCode.OK, string.Empty));
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -108,17 +110,33 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
                 GetApprenticeQueryHandler handler)
         {
             apiClient.Setup(x =>
-                    x.Get<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
-                .ReturnsAsync((GetApprenticeResponse)null);
+                    x.GetWithResponseCode<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeResponse>(null, System.Net.HttpStatusCode.OK, string.Empty));
 
             apiClient.Setup(x =>
-                    x.Get<GetApprenticePreferencesResponse>(
+                    x.GetWithResponseCode<GetApprenticePreferencesResponse>(
                         It.Is<GetApprenticePreferencesRequest>(x => x.ApprenticeId == query.ApprenticeId)))
-                .ReturnsAsync((GetApprenticePreferencesResponse)null);
+                .ReturnsAsync(new ApiResponse<GetApprenticePreferencesResponse>(null, System.Net.HttpStatusCode.OK, string.Empty));
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Should().BeNull();
+        }
+
+        [Test]
+        [MoqAutoData]
+        public void Then_The_Api_Is_Called_With_The_Request_And_ApprenticeNotFound_ThrowsException(
+        GetApprenticeQuery query,
+        [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClient,
+        GetApprenticeQueryHandler handler)
+        {
+            apiClient.Setup(x =>
+                    x.GetWithResponseCode<GetApprenticeResponse>(It.Is<GetApprenticeRequest>(x => x.Id == query.ApprenticeId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeResponse>(null, System.Net.HttpStatusCode.NotFound, string.Empty));
+
+            Func<Task> invocation = async () => await handler.Handle(query, CancellationToken.None);
+
+            invocation.Should().ThrowAsync<ApprenticeNotFoundException>();
         }
     }
 }
