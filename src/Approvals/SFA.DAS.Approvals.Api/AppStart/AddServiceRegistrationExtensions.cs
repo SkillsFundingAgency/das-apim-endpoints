@@ -31,9 +31,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
                 services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, CommitmentsApiInternalApiClient>();
             }
         }
-      
 
-        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration )
+        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
