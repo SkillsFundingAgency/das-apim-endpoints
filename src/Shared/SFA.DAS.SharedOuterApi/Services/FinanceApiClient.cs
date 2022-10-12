@@ -2,11 +2,13 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class FinanceApiClient : IFinanceApiClient<FinanceApiConfiguration>
     {
         private readonly IInternalApiClient<FinanceApiConfiguration> _client;

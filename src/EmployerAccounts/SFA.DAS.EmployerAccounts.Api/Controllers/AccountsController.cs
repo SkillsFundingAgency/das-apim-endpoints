@@ -28,13 +28,18 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetEnglishFractionHistoryQuery()
+                var result = await _mediator.Send(new GetEnglishFractionHistoryQuery()
                 {
                     HashedAccountId = hashedAccountId,
                     EmpRef = empRef
                 });
 
-                var model = (GetEnglishFractionResponse)response;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var model = (GetEnglishFractionResponse)result;
 
                 return Ok(model);
             }
@@ -51,13 +56,18 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetEnglishFractionCurrentQuery()
+                var result = await _mediator.Send(new GetEnglishFractionCurrentQuery()
                 {
                     HashedAccountId = hashedAccountId,
                     EmpRefs = empRefs
                 });
 
-                var model = (GetEnglishFractionResponse)response;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var model = (GetEnglishFractionResponse)result;
 
                 return Ok(model);
             }

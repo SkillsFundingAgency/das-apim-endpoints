@@ -8,9 +8,11 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
+    [ExcludeFromCodeCoverage]
     public class FinanceApiHealthCheck : IHealthCheck
     {
         private const string HealthCheckResultDescription = "Finance Api Health Check";

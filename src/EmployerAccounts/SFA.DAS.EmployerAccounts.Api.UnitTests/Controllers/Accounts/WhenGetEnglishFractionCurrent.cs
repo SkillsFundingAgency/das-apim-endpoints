@@ -1,44 +1,73 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerFinance.Api.Controllers;
+using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
 {
     public class WhenGetEnglishFractionCurrent
     {
-        private Mock<IMediator> _mediator;
-        private Mock<ILogger<AccountsController>> _logger;
-
-        private AccountsController _sut;
-
-        [SetUp]
-        public void Arrange()
+        [Test, MoqAutoData]
+        public async Task Then_Gets_EnglishFractionCurrent_From_Mediator(
+            string hashedAccountId,
+            string[] empRefs,
+            GetEnglishFractionCurrentQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] AccountsController controller)
         {
-            _mediator = new Mock<IMediator>();
-            _logger = new Mock<ILogger<AccountsController>>();
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetEnglishFractionCurrentQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRefs == empRefs),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
 
-            _sut = new AccountsController(_mediator.Object, _logger.Object);
+            var controllerResult = await controller.GetEnglishFractionCurrent(hashedAccountId, empRefs) as ObjectResult;
+
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetEnglishFractionResponse;
+            Assert.IsNotNull(model);
+            model.Should().BeEquivalentTo((GetEnglishFractionResponse)mediatorResult);
         }
 
-        [Test]
-        public async Task Then_The_Query_Is_Sent_With_CorrectParameters()
+        [Test, MoqAutoData]
+        public async Task And_Then_No_EnglishFractionCurrent_Are_Returned_From_Mediator(
+            string hashedAccountId,
+            string[] empRefs,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] AccountsController controller)
         {
-            //Arrange
-            var hashedAccountId = "6D8LY9";
-            var empRefs = new string[] { "333/4444L", "222/3333L" };
+            var controllerResult = await controller.GetEnglishFractionCurrent(hashedAccountId, empRefs) as NotFoundResult;
 
-            //Act
-            await _sut.GetEnglishFractionCurrent(hashedAccountId, empRefs);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
 
-            //Assert
-            _mediator.Verify(v => v.Send(
-                It.Is<GetEnglishFractionCurrentQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRefs == empRefs), 
-                It.IsAny<CancellationToken>()), Times.Once);
+        [Test, MoqAutoData]
+        public async Task And_Exception_Then_Returns_Bad_Request(
+            string hashedAccountId,
+            string[] empRefs,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] AccountsController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetEnglishFractionCurrentQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws<InvalidOperationException>();
+
+            var controllerResult = await controller.GetEnglishFractionCurrent(hashedAccountId, empRefs) as BadRequestResult;
+
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }
