@@ -64,8 +64,7 @@ namespace SFA.DAS.FindEpao.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                }).AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
 
             if (_configuration.IsLocalOrDev())
             {

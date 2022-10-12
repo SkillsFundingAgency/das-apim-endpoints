@@ -36,7 +36,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<ValidationException>()
+            act.Should().ThrowAsync<ValidationException>()
                 .WithMessage($"*{propertyName}*");
         }
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<NotFoundException<GetEpaoResult>>();
+            act.Should().ThrowAsync<NotFoundException<GetEpaoResult>>();
         }
 
         [Test, MoqAutoData]
