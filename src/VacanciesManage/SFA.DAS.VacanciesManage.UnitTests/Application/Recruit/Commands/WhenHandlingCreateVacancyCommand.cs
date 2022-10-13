@@ -150,6 +150,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                         It.Is<PostValidateVacancyRequest>(c => 
                             c.PostUrl.Contains($"{command.Id.ToString()}/validate?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
                             && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
+                            && ((PostVacancyRequestData)c.Data).AccountType.Equals(command.PostVacancyRequestData.AccountType)
                         ),true))
                 .ReturnsAsync(apiResponse);
 
