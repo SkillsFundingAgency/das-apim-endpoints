@@ -18,10 +18,6 @@ pr:
       - src/Shared*
       - Directory.Packages.props
 
-variables:
-- group: Release Management Resources
-- group: RELEASE das-apim-endpoints
-
 resources:
   repositories:
   - repository: self
