@@ -8,8 +8,6 @@ trigger:
     - azure
     - pipeline-templates
     - src/ApimDeveloper
-    - src/Shared*
-    - Directory.Packages.props
 
 pr:
   autoCancel: true
@@ -21,8 +19,6 @@ pr:
     - azure
     - pipeline-templates
     - src/ApimDeveloper
-    - src/Shared*
-    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources

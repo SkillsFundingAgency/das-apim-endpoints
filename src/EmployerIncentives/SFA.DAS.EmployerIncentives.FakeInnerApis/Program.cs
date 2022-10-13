@@ -27,19 +27,19 @@ namespace SFA.DAS.EmployerIncentives.FakeInnerApis
         {
             try
             {
-                _fakeCommitmentsApi = WireMockServer.Start(new FluentMockServerSettings
+                _fakeCommitmentsApi = WireMockServer.Start(new WireMockServerSettings
                 {
                     Urls = new[] {"http://*:6011"},
                     StartAdminInterface = true,
                 });
 
-                _fakeAccountsApi = WireMockServer.Start(new FluentMockServerSettings
+                _fakeAccountsApi = WireMockServer.Start(new WireMockServerSettings
                 {
                     Urls = new[] { "http://*:6012" },
                     StartAdminInterface = true,
                 });
 
-                _fakeCustomerEngagementApi = WireMockServer.Start(new FluentMockServerSettings
+                _fakeCustomerEngagementApi = WireMockServer.Start(new WireMockServerSettings
                 {
                     Urls = new[] { "http://*:6013" },
                     StartAdminInterface = true,
