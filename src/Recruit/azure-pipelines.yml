@@ -8,8 +8,6 @@ trigger:
     - azure
     - pipeline-templates
     - src/Recruit
-    - src/Shared*
-    - Directory.Packages.props
 
 pr:
   branches:
@@ -20,8 +18,6 @@ pr:
     - azure
     - pipeline-templates
     - src/Recruit
-    - src/Shared*
-    - Directory.Packages.props
 
 
 variables:
