@@ -16,9 +16,9 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-        private readonly IEmployerUsersApiClient<EmployerUsersConfiguration> _employerUsersApiClient;
+        private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
 
-        public GetAccountsQueryHandler (IAccountsApiClient<AccountsConfiguration> accountsApiClient, IEmployerUsersApiClient<EmployerUsersConfiguration> employerUsersApiClient)
+        public GetAccountsQueryHandler (IAccountsApiClient<AccountsConfiguration> accountsApiClient, IEmployerUsersApiClient<EmployerUsersApiConfiguration> employerUsersApiClient)
         {
             _accountsApiClient = accountsApiClient;
             _employerUsersApiClient = employerUsersApiClient;

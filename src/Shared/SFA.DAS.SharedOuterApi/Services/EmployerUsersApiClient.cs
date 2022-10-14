@@ -7,10 +7,10 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class EmployerUsersApiClient : IEmployerUsersApiClient<EmployerUsersConfiguration>
+    public class EmployerUsersApiClient : IEmployerUsersApiClient<EmployerUsersApiConfiguration>
     {
-        private readonly IInternalApiClient<EmployerUsersConfiguration> _apiClient;
-        public EmployerUsersApiClient(IInternalApiClient<EmployerUsersConfiguration> apiClient)
+        private readonly IInternalApiClient<EmployerUsersApiConfiguration> _apiClient;
+        public EmployerUsersApiClient(IInternalApiClient<EmployerUsersApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }

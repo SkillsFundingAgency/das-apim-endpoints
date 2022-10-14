@@ -54,7 +54,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
             EmployerUsersApiResponse userResponse,
-            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersConfiguration>> employerUsersApiClient,
+            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             GetAccountsQueryHandler handler)
         {
