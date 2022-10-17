@@ -68,7 +68,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
             employerUsersApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
-                    It.Is<PutUpsertEmployerUserAccount>(c =>
+                    It.Is<PutUpsertEmployerUserAccountRequest>(c =>
                         c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.Email)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.Created, ""));
 

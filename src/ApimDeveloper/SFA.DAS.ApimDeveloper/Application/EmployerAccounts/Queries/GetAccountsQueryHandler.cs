@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +30,7 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
             {
                 var employerUserResponse =
                     await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                        new PutUpsertEmployerUserAccount(request.UserId, request.Email, "", ""));
+                        new PutUpsertEmployerUserAccountRequest(request.UserId, request.Email, "", ""));
 
                 userId = employerUserResponse.Body.Id;
             }
