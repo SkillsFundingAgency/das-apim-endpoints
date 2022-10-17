@@ -49,7 +49,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_The_Id_Is_Not_A_Guid_Then_User_Account_Is_Upserted(
+        public async Task Then_If_The_Id_Is_Not_A_Guid_Then_User_Account_Is_Retrieved(
             GetAccountsQuery query,
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
@@ -67,6 +67,41 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
+            employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+                    It.Is<GetEmployerUserAccountRequest>(c =>
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.OK, ""));
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.UserAccountResponse.First().Role.Should().Be(teamResponse.Role);
+            actual.UserAccountResponse.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
+            actual.UserAccountResponse.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Id_Is_Not_A_Guid_Then_User_Account_IsNot_Found_Then_Upserted(
+            GetAccountsQuery query,
+            List<GetUserAccountsResponse> apiResponse,
+            GetAccountTeamMembersResponse teamResponse,
+            EmployerUsersApiResponse userResponse,
+            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            GetAccountsQueryHandler handler)
+        {
+            teamResponse.UserRef = userResponse.Id;
+            accountsApiClient
+                .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{userResponse.Id}/accounts"))))
+                .ReturnsAsync(apiResponse);
+            accountsApiClient
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
+                    It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
+                .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
+            employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+                    It.Is<GetEmployerUserAccountRequest>(c =>
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
             employerUsersApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<PutUpsertEmployerUserAccountRequest>(c =>
                         c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.Email)}"))))

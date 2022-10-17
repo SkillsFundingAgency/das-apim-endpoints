@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,13 +27,26 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
             var userId = request.UserId;
+            
             if (!Guid.TryParse(request.UserId, out _))
             {
-                var employerUserResponse =
-                    await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                        new PutUpsertEmployerUserAccountRequest(request.UserId, request.Email, "", ""));
+                var userResponse =
+                    await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
+                        new GetEmployerUserAccountRequest(userId));
 
-                userId = employerUserResponse.Body.Id;
+                if (userResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    var employerUserResponse =
+                        await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
+                            new PutUpsertEmployerUserAccountRequest(request.UserId, request.Email, "", ""));
+
+                    userId = employerUserResponse.Body.Id;    
+                }
+                else
+                {
+                    userId = userResponse.Body.Id;
+                }
+                
             }
             
             var result =
