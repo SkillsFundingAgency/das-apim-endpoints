@@ -7,7 +7,7 @@ trigger:
     include:
     - azure
     - pipeline-templates
-    - src/TrackProgressInner
+    - src/TrackProgressInternal
 
 pr:
   branches:
@@ -17,7 +17,7 @@ pr:
     include:
     - azure
     - pipeline-templates
-    - src/TrackProgressInner
+    - src/TrackProgressInternal
 
 variables:
 - group: Release Management Resources
