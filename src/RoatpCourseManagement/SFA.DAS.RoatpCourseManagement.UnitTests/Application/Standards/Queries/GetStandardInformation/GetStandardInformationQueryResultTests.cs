@@ -18,6 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
             {
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.ApprovalBody, m => m.RegulatorName);
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.Route, m => m.Sector);
+                option.Excluding(s => s.SectorSubjectAreaTier2Description);
                 return option;
             });
         }
