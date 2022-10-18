@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Com
                     && ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
                     && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
                     && ((PostShortlistData)c.Data).Larscode.Equals(command.StandardId)
-                    && ((PostShortlistData)c.Data).ShortlistUserId.Equals(command.ShortlistUserId)), true));
+                    && ((PostShortlistData)c.Data).ShortlistUserId.Equals(command.ShortlistUserId)), false));
         }
     }
 }
