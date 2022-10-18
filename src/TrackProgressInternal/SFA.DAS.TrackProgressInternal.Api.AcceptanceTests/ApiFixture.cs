@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
-using SFA.DAS.TrackProgressInternal.Api.AcceptanceTests;
 
-namespace SFA.DAS.TrackProgressInternal.Tests;
+namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests;
 
 public class ApiFixture
 {
