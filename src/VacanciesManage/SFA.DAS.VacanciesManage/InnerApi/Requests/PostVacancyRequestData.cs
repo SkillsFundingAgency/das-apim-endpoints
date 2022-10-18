@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests
 {
@@ -66,6 +67,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public ContactDetails ProviderContact { get; set; }
         [JsonPropertyName("ownerType")]
         public OwnerType OwnerType { get ; set ; }
+        [JsonPropertyName("accountType")]
+        public AccountType AccountType { get; set; }
     }
     
     public class PostVacancyUserData

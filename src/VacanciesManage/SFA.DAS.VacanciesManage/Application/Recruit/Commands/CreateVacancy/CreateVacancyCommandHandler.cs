@@ -1,19 +1,14 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacanciesManage.Configuration;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
@@ -58,15 +53,8 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             }
             else
             {
-                if (request.AccountIdentifier.AccountType == AccountType.Provider)
-                {
-                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, "", request.PostVacancyRequestData);
-                }
-                else
-                {
-                    apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, request.PostVacancyRequestData.User.Email, request.PostVacancyRequestData);    
-                }
-                
+                apiRequest = new PostVacancyRequest(request.Id, request.PostVacancyRequestData.User.Ukprn, request.PostVacancyRequestData.User.Email, request.PostVacancyRequestData);
+
             }
 
             var result = await _recruitApiClient.PostWithResponseCode<long?>(apiRequest);
