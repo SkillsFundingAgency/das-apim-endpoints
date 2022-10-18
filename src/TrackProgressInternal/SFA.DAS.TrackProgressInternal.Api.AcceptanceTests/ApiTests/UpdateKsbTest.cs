@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgressInternal.Tests;
 using WireMock.FluentAssertions;
@@ -15,7 +15,7 @@ public class UpdateKsbTest : ApiFixture
         factory.WithCourse(course);
 
         var response = await client.PostAsJsonAsync(
-            $"/courses/the_course/populateksbs", new { course.KsbIds });
+            $"/courses/the_course/ksbs", new { course.KsbIds });
 
         response.Should().Be200Ok();
     }
@@ -30,15 +30,15 @@ public class UpdateKsbTest : ApiFixture
 
         // When
         var response = await client.PostAsJsonAsync(
-            $"/courses/{course.Standard}/populateksbs", new { course.KsbIds });
+            $"/courses/{course.Standard}/ksbs", new { course.KsbIds });
 
         // Then
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
-            .AtUrl(InnerApiUrl($"courses/{course.Standard}/populateksbs"));
+            .AtUrl(InnerApiUrl($"courses/{course.Standard}/ksbs"));
 
         var request = factory.TrackProgressInnerApi.Server.LogEntries
             .Select(x => x.RequestMessage)
-            .Where(x => x.Url.EndsWith("/populateksbs"));
+            .Where(x => x.Url.EndsWith("/ksbs"));
 
         request.First().Body.Should().BeValidJson<KsbHolder>()
             .Which.Should().BeEquivalentTo(
@@ -56,15 +56,15 @@ public class UpdateKsbTest : ApiFixture
 
         // When
         var response = await client.PostAsJsonAsync(
-            $"/courses/{course.Standard}/populateksbs", new { course.KsbIds });
+            $"/courses/{course.Standard}/ksbs", new { course.KsbIds });
 
         // Then
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
-            .AtUrl(InnerApiUrl($"courses/{course.Standard}/populateksbs"));
+            .AtUrl(InnerApiUrl($"courses/{course.Standard}/ksbs"));
 
         var request = factory.TrackProgressInnerApi.Server.LogEntries
             .Select(x => x.RequestMessage)
-            .Where(x => x.Url.EndsWith("/populateksbs"));
+            .Where(x => x.Url.EndsWith("/ksbs"));
 
         request.First().Body.Should().BeValidJson<KsbHolder>()
             .Which.Should().BeEquivalentTo(
