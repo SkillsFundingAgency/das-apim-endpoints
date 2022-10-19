@@ -49,10 +49,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             actual.FeedbackRatings.Should().NotBeNull();
             actual.FeedbackRatings.Any().Should().BeTrue();
-            actual.FeedbackRatings.Where(x => x.FeedbackName == "ReviewCount").Count().Should().Equals(1);
-            actual.FeedbackRatings.Where(x => x.FeedbackName == "Stars").Count().Should().Equals(1);
-            actual.FeedbackRatings.FirstOrDefault(x => x.FeedbackName == "ReviewCount").FeedbackCount.Should().Equals(source.ReviewCount);
-            actual.FeedbackRatings.FirstOrDefault(x => x.FeedbackName == "Stars").FeedbackCount.Should().Equals(source.Stars);
+            actual.FeedbackRatings.Where(x => x.FeedbackName == "ReviewCount").Count().Should().Be(1);
+            actual.FeedbackRatings.Where(x => x.FeedbackName == "Stars").Count().Should().Be(1);
+            actual.FeedbackRatings.FirstOrDefault(x => x.FeedbackName == "ReviewCount").FeedbackCount.Should().Be(source.ReviewCount);
+            actual.FeedbackRatings.FirstOrDefault(x => x.FeedbackName == "Stars").FeedbackCount.Should().Be(source.Stars);
         }
     }
 }
