@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Interfaces
+namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
     public interface IShortlistService
     {
