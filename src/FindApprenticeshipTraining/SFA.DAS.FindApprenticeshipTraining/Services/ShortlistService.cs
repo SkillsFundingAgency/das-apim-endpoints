@@ -2,17 +2,16 @@
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Services
+namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
     public class ShortlistService : IShortlistService
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
 
-        public ShortlistService (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public ShortlistService(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
         }
@@ -22,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Service
             {
                 return 0;
             }
-            
+
             var result =
                 await _courseDeliveryApiClient.Get<GetShortlistUserItemCountResponse>(
                     new GetShortlistUserItemCountRequest(userId.Value));
