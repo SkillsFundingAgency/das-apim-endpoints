@@ -12,9 +12,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
     public class PostShortlistData
     {
         public Guid ShortlistUserId { get ; set ; }
-        public float? Lat { get ; set ; }
-        public float? Lon { get ; set ; }
-        public int StandardId { get ; set ; }
+        public float? Latitude { get ; set ; }
+        public float? Longitude { get ; set ; }
+        public int Larscode { get ; set ; }
         public string LocationDescription { get ; set ; }
         public int Ukprn { get ; set ; }
         public string SectorSubjectArea { get ; set ; }

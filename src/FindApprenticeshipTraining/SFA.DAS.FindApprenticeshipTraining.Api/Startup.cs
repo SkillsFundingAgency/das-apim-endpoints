@@ -59,7 +59,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             var configuration = _configuration
                 .GetSection("FindApprenticeshipTrainingConfiguration")
@@ -87,7 +87,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
             }
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
