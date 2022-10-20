@@ -14,9 +14,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
