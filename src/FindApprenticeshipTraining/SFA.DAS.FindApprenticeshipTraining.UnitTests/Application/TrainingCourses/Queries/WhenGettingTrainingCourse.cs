@@ -15,6 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
