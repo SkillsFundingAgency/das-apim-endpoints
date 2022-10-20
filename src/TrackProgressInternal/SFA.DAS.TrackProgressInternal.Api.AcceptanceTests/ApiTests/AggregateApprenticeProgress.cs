@@ -1,6 +1,5 @@
 using FluentAssertions;
 using SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.TestModels;
-using SFA.DAS.TrackProgressInternal.Tests;
 using WireMock.FluentAssertions;
 
 namespace SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.ApiTests;
