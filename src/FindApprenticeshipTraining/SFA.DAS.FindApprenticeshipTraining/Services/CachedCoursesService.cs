@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Services
+namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
     public class CachedCoursesService : ICachedCoursesService
     {
@@ -26,10 +25,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Service
         {
             var courses = await _cacheStorageService
                 .RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse));
-            
-            if (courses != null) 
+
+            if (courses != null)
                 return courses;
-            
+
             courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
             await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, DeliveryAreaCacheDurationInHours);
 
