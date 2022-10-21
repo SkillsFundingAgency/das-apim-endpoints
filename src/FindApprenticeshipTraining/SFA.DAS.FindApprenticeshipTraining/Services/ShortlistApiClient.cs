@@ -34,7 +34,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
 
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.Get<TResponse>(request);
         }
 
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
