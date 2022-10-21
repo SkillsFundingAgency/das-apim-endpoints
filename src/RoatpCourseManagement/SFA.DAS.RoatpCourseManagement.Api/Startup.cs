@@ -15,9 +15,11 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProvider
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
