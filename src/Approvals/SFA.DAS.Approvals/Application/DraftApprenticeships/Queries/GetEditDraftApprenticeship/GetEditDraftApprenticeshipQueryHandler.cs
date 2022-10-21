@@ -91,8 +91,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 DurationReducedBy = apprenticeship.DurationReducedBy,
                 PriceReducedBy = apprenticeship.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
-                IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
-                IsProviderOnFlexiPaymentPilot = apprenticeship.IsProviderOnFlexiPaymentPilot
+                IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot
             };
         }
 
