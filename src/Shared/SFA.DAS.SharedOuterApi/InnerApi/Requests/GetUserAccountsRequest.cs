@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetUserAccountsRequest : IGetAllApiRequest
     {
