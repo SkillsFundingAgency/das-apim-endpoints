@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ApimDeveloper.Models;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
@@ -17,7 +18,11 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var returnList = await _employerAccountService.GetEmployerAccounts(request.UserId, request.Email);
+            var returnList = await _employerAccountService.GetEmployerAccounts(new EmployerProfile
+            {
+                Email = request.Email,
+                UserId = request.UserId
+            });
             
             return new GetAccountsQueryResult
             {

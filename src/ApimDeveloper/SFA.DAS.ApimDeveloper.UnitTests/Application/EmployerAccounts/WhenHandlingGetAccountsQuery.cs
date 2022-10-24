@@ -23,8 +23,11 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
             GetAccountsQueryHandler handler)
         {
             query.UserId = Guid.NewGuid().ToString();
-            
-            accountsApiClient.Setup(x => x.GetEmployerAccounts(query.UserId, query.Email)).ReturnsAsync(teamResponse);
+
+            accountsApiClient.Setup(x =>
+                    x.GetEmployerAccounts(It.Is<EmployerProfile>(c =>
+                        c.Email.Equals(query.Email) && c.UserId.Equals(query.UserId))))
+                .ReturnsAsync(teamResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
