@@ -69,7 +69,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
             employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
-                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.UserId)}"))))
+                        c.GetUrl.Contains($"api/users/govuk/?id={HttpUtility.UrlEncode(query.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.OK, ""));
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -100,11 +100,11 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
             employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
-                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.UserId)}"))))
+                        c.GetUrl.Contains($"api/users/govuk/?id={HttpUtility.UrlEncode(query.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
             employerUsersApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<PutUpsertEmployerUserAccountRequest>(c =>
-                        c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(query.Email)}"))))
+                        c.PutUrl.Contains($"api/users"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.Created, ""));
 
             var actual = await handler.Handle(query, CancellationToken.None);

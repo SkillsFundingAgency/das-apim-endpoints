@@ -13,12 +13,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new PutUpsertEmployerUserAccountRequest(id, email, firstName, lastName);
 
-            actual.PutUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(email)}");
+            actual.PutUrl.Should().Be($"api/users");
             actual.Data.Should().BeEquivalentTo(new
             {
                 GovUkIdentifier = id,
                 FirstName = firstName, 
-                LastName = lastName
+                LastName = lastName,
+                Email = email
             });
         }
     }

@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             
             var actual = new GetEmployerUserAccountRequest(id);
 
-            actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(id)}");
+            actual.GetUrl.Should().Be($"api/users/govuk/?id={HttpUtility.UrlEncode(id)}");
         }
     }
 }
