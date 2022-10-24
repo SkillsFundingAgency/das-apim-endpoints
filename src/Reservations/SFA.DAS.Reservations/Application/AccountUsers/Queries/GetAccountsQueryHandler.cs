@@ -1,24 +1,23 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.ApimDeveloper.Models;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
+namespace SFA.DAS.Reservations.Application.AccountUsers.Queries
 {
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
-        private readonly IEmployerAccountsService _employerAccountService;
+        private readonly IEmployerAccountsService _employerAccountsService;
 
-        public GetAccountsQueryHandler (IEmployerAccountsService employerAccountService)
+        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountsService)
         {
-            _employerAccountService = employerAccountService;
+            _employerAccountsService = employerAccountsService;
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var employerAccounts = await _employerAccountService.GetEmployerAccounts(new EmployerProfile
+            var employerAccounts = await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
             {
                 Email = request.Email,
                 UserId = request.UserId
