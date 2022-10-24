@@ -133,6 +133,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 return BadRequest();
             }
         }
-
     }
 }

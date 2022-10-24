@@ -1,23 +1,23 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser
 {
     public class DeleteShortlistForUserCommandHandler : IRequestHandler<DeleteShortlistForUserCommand, Unit>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
 
-        public DeleteShortlistForUserCommandHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public DeleteShortlistForUserCommandHandler (IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
+            _shortlistApiClient = shortlistApiClient;
         }
         public async Task<Unit> Handle(DeleteShortlistForUserCommand request, CancellationToken cancellationToken)
         {
-            await _courseDeliveryApiClient.Delete(new DeleteShortlistForUserRequest(request.UserId));
+            await _shortlistApiClient.Delete(new DeleteShortlistForUserRequest(request.UserId));
 
             return new Unit();
         }
