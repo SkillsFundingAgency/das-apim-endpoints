@@ -13,9 +13,9 @@ namespace SFA.DAS.SharedOuterApi.Services
 {
     public interface IEmployerAccountsService
     {
-        Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(string userId, string email);
+        Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
     }
-    
+
     public class EmployerAccountsService : IEmployerAccountsService
     {
         private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
@@ -27,20 +27,20 @@ namespace SFA.DAS.SharedOuterApi.Services
             _accountsApiClient = accountsApiClient;
         }
 
-        public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(string userId, string email)
+        public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile)
         {
-            
-            if (!Guid.TryParse(userId, out _))
+            var userId = employerProfile.UserId;
+            if (!Guid.TryParse(employerProfile.UserId, out _))
             {
                 var userResponse =
                     await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
-                        new GetEmployerUserAccountRequest(userId));
+                        new GetEmployerUserAccountRequest(employerProfile.UserId));
 
                 if (userResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     var employerUserResponse =
                         await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                            new PutUpsertEmployerUserAccountRequest(userId, email, "", ""));
+                            new PutUpsertEmployerUserAccountRequest(employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
                     userId = employerUserResponse.Body.Id;    
                 }
