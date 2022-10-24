@@ -12,6 +12,7 @@ using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
 {
@@ -23,6 +24,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
         [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
         [TestCase(typeof(IApimApiService))]
         [TestCase(typeof(ICacheStorageService))]
+        [TestCase(typeof(IEmployerAccountsService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();

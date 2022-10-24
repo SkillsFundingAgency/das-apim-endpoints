@@ -1,80 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.ApimDeveloper.InnerApi.Requests;
-using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
 {
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
-        private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-        private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
+        private readonly IEmployerAccountsService _employerAccountService;
 
-        public GetAccountsQueryHandler (IAccountsApiClient<AccountsConfiguration> accountsApiClient, IEmployerUsersApiClient<EmployerUsersApiConfiguration> employerUsersApiClient)
+        public GetAccountsQueryHandler (IEmployerAccountsService employerAccountService)
         {
-            _accountsApiClient = accountsApiClient;
-            _employerUsersApiClient = employerUsersApiClient;
+            _employerAccountService = employerAccountService;
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var userId = request.UserId;
-            
-            if (!Guid.TryParse(request.UserId, out _))
-            {
-                var userResponse =
-                    await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
-                        new GetEmployerUserAccountRequest(userId));
-
-                if (userResponse.StatusCode == HttpStatusCode.NotFound)
-                {
-                    var employerUserResponse =
-                        await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                            new PutUpsertEmployerUserAccountRequest(request.UserId, request.Email, "", ""));
-
-                    userId = employerUserResponse.Body.Id;    
-                }
-                else
-                {
-                    userId = userResponse.Body.Id;
-                }
-                
-            }
-            
-            var result =
-                await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
-
-            
-            var returnList = new List<AccountUser>();
-            foreach(var account in result)
-            {
-                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(account.EncodedAccountId));
-                
-                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
-                
-                if(member != null)
-                {
-                    returnList.Add(new AccountUser
-                    {
-                        Role = member.Role,
-                        DasAccountName = account.DasAccountName,
-                        EncodedAccountId = account.EncodedAccountId
-                    });
-                }
-            }
-            
+            var returnList = await _employerAccountService.GetEmployerAccounts(request.UserId, request.Email);
             
             return new GetAccountsQueryResult
             {
-                UserAccountResponse = returnList
+                UserAccountResponse = returnList.Select(c=> new AccountUser
+                {
+                    DasAccountName = c.DasAccountName,
+                    EncodedAccountId = c.EncodedAccountId,
+                    Role = c.Role
+                })
             };
         }
     }
