@@ -13,8 +13,10 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddOptions();
             services.Configure<AccountsConfiguration>(configuration.GetSection(nameof(AccountsConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.Configure<ReservationApiConfiguration>(configuration.GetSection(nameof(ReservationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ReservationApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);            
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
         }
     }
 }

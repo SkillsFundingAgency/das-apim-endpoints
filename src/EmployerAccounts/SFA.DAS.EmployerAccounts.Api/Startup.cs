@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetReservations;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -45,10 +46,11 @@ namespace SFA.DAS.EmployerAccounts.Api
                 {
                     {"default", "APIM"}
                 };
-
+               
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-            
+
+            services.AddMediatR(typeof(GetReservationsQuery).Assembly);
             services.AddServiceRegistration();
 
             services
