@@ -17,7 +17,6 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Models
 
             //Assert
             actual.Should().BeEquivalentTo(source);
-            ////Assert
         }
     }
 }
