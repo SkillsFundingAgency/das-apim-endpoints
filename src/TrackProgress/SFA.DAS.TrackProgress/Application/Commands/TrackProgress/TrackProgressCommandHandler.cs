@@ -55,6 +55,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
             StartDate = request.PlannedStartDate,
             CommitmentsApprenticeshipId = apprenticeship.Id,
             CommitmentsContinuationId = apprenticeship.ContinuationOfId,
+            StandardUId = apprenticeship.StandardUId,
             Ksbs = request!.Progress!.Progress!.Ksbs!.ToArray()
         });
 

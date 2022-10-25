@@ -21,5 +21,6 @@ public class KsbProgress
     public DateTime StartDate { get; set; }
     public long CommitmentsApprenticeshipId { get; set; }
     public long? CommitmentsContinuationId { get; set; }
+    public string StandardUId { get; set; } = null!;
     public ProgressDto.Ksb[] Ksbs { get; set; } = null!;
 }
