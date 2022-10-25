@@ -3,11 +3,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
+    [ExcludeFromCodeCoverage]
     public class ShortlistApiClient : IShortlistApiClient<ShortlistApiConfiguration>
     {
         private readonly IInternalApiClient<ShortlistApiConfiguration> _apiClient;
@@ -34,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
 
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.Get<TResponse>(request);
         }
 
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
