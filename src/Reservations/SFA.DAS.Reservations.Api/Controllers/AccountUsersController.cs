@@ -9,6 +9,8 @@ using SFA.DAS.Reservations.Application.AccountUsers.Queries;
 
 namespace SFA.DAS.Reservations.Api.Controllers
 {
+    [ApiController]
+    [Route("[controller]/")]
     public class AccountUsersController : ControllerBase
     {
         private readonly IMediator _mediator;
