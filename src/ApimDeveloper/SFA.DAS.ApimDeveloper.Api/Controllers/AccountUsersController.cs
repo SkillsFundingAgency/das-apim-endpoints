@@ -24,13 +24,14 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId)
+        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
         {
             try
             {
                 var result = await _mediator.Send(new GetAccountsQuery
                 {
-                    UserId = userId
+                    UserId = userId,
+                    Email = email
                 });
 
                 return Ok((UserAccountsApiResponse) result);

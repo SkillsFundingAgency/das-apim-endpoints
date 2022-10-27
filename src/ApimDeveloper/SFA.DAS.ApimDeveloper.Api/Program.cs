@@ -22,7 +22,7 @@ namespace SFA.DAS.ApimDeveloper.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights()
+                    webBuilder
                         .UseStartup<Startup>()
                         .UseNLog();
                 }).UseNServiceBusContainer();
