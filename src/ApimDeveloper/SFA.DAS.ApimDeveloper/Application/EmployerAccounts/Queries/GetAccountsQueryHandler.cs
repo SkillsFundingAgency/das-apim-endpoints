@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +9,7 @@ using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
@@ -15,15 +17,40 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
+        private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
 
-        public GetAccountsQueryHandler (IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public GetAccountsQueryHandler (IAccountsApiClient<AccountsConfiguration> accountsApiClient, IEmployerUsersApiClient<EmployerUsersApiConfiguration> employerUsersApiClient)
         {
             _accountsApiClient = accountsApiClient;
+            _employerUsersApiClient = employerUsersApiClient;
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
+            var userId = request.UserId;
+            
+            if (!Guid.TryParse(request.UserId, out _))
+            {
+                var userResponse =
+                    await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
+                        new GetEmployerUserAccountRequest(userId));
+
+                if (userResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    var employerUserResponse =
+                        await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
+                            new PutUpsertEmployerUserAccountRequest(request.UserId, request.Email, "", ""));
+
+                    userId = employerUserResponse.Body.Id;    
+                }
+                else
+                {
+                    userId = userResponse.Body.Id;
+                }
+                
+            }
+            
             var result =
-                await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(request.UserId));
+                await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
 
             
             var returnList = new List<AccountUser>();
@@ -31,7 +58,7 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
             {
                 var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(account.EncodedAccountId));
                 
-                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(request.UserId, StringComparison.CurrentCultureIgnoreCase));
+                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
                 
                 if(member != null)
                 {

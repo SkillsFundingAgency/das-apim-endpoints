@@ -57,6 +57,11 @@ namespace SFA.DAS.LevyTransferMatching.Clients
             throw new System.NotImplementedException();
         }
 
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             throw new System.NotImplementedException();

@@ -75,12 +75,16 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
