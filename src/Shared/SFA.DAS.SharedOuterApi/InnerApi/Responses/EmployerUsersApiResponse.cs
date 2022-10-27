@@ -1,4 +1,4 @@
-namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class EmployerUsersApiResponse
     {
