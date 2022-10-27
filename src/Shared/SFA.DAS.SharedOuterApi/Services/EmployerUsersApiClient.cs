@@ -7,15 +7,14 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class ProviderRelationshipsApiClient : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
+    public class EmployerUsersApiClient : IEmployerUsersApiClient<EmployerUsersApiConfiguration>
     {
-        private readonly IInternalApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
-
-        public ProviderRelationshipsApiClient (IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+        private readonly IInternalApiClient<EmployerUsersApiConfiguration> _apiClient;
+        public EmployerUsersApiClient(IInternalApiClient<EmployerUsersApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
-
+        
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -53,7 +52,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Delete(request);
         }
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)
@@ -73,16 +72,17 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.PostWithResponseCode<TResponse>(request);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.PatchWithResponseCode(request);
         }
+
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.PutWithResponseCode<TResponse>(request);
         }
     }
 }
