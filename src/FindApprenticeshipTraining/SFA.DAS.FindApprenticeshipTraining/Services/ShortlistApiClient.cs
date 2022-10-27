@@ -74,13 +74,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
             throw new NotImplementedException();
         }
 
-        
         public Task Put(IPutApiRequest request)
         {
             throw new NotImplementedException();
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
             throw new NotImplementedException();
         }
