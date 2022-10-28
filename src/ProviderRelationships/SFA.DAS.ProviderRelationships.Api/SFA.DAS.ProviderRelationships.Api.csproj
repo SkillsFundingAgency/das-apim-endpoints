@@ -6,4 +6,54 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Content Remove="nlog.Debug.config" />
+        <Content Remove="nlog.Release.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="nlog.Debug.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+        <None Include="nlog.Release.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Update="appsettings.Development.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Update="nlog.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TransformOnBuild>true</TransformOnBuild>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="NLog.Web.AspNetCore" />
+        <PackageReference Include="SFA.DAS.Api.Common" />
+        <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SFA.DAS.ProviderRelationships\SFA.DAS.ProviderRelationships.csproj" />
+    </ItemGroup>
+
 </Project>
