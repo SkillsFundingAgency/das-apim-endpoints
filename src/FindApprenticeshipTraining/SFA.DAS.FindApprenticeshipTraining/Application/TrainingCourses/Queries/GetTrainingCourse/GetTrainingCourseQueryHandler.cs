@@ -1,51 +1,39 @@
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Options;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse
 {
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IShortlistService _shortlistService;
-        private readonly ILocationLookupService _locationLookupService;
-        private readonly FindApprenticeshipTrainingConfiguration _config;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCourseQueryHandler (
-            ICoursesApiClient<CoursesApiConfiguration> apiClient, 
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
+        public GetTrainingCourseQueryHandler(
+            ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
             IShortlistService shortlistService,
-            ILocationLookupService locationLookupService,
-            IOptions<FindApprenticeshipTrainingConfiguration> config)
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
         {
             _apiClient = apiClient;
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _shortlistService = shortlistService;
-            _locationLookupService = locationLookupService;
-            _config = config.Value;
             _cacheHelper = new CacheHelper(cacheStorageService);
-
+            _roatpV2ApiClient = roatpV2ApiClient;
         }
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
-            var location = await _locationLookupService.GetLocationInformation(request.LocationName, request.Lat, request.Lon);
-            
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
-            var providersTask = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(new GetUkprnsForStandardAndLocationRequest(request.Id, location?.GeoPoint?.First() ?? 0, location?.GeoPoint?.Last() ?? 0));
+            var providersTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(new GetTotalProvidersForStandardRequest(request.Id));
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
@@ -64,8 +52,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
-                ProvidersCount = providersTask.Result.UkprnsByStandard.ToList().Count,
-                ProvidersCountAtLocation = providersTask.Result.UkprnsByStandardAndLocation.ToList().Count,
+                ProvidersCount = providersTask.Result.ProvidersCount,
+                ProvidersCountAtLocation = providersTask.Result.ProvidersCount,
                 ShortlistItemCount = shortlistTask.Result
             };
         }
