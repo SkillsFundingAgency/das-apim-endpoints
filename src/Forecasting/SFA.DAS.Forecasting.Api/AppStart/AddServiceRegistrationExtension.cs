@@ -23,6 +23,9 @@ namespace SFA.DAS.Forecasting.Api.AppStart
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<ICourseLookupService, CourseLookupService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IEmployerUsersApiClient<EmployerUsersApiConfiguration>, EmployerUsersApiClient>();
+            services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }
 }
