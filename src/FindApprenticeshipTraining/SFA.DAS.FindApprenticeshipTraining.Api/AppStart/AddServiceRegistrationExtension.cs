@@ -8,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
-
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
 {
     public static class AddServiceRegistrationExtension
@@ -30,6 +29,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddTransient<IShortlistService, ShortlistService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<IShortlistApiClient<ShortlistApiConfiguration>, ShortlistApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         }
     }
 }
