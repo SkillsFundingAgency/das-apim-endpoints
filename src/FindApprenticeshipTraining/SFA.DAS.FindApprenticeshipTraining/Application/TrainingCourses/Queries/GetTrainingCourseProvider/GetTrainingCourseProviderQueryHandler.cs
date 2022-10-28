@@ -15,6 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseProviderQueryHandler : IRequestHandler<GetTrainingCourseProviderQuery, GetTrainingCourseProviderResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -28,8 +29,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             ICacheStorageService cacheStorageService,
-            IShortlistService shortlistService, 
-            ILocationLookupService locationLookupService)
+            IShortlistService shortlistService,
+            ILocationLookupService locationLookupService,
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
@@ -38,6 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
             _cacheHelper = new CacheHelper(cacheStorageService);
+            _roatpV2ApiClient = roatpV2ApiClient;
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
@@ -46,9 +49,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
 
-            var ukprnsCount = _courseDeliveryApiClient.Get<GetUkprnsForStandardAndLocationResponse>(
-                new GetUkprnsForStandardAndLocationRequest(request.CourseId, locationTask.Result?.GeoPoint?.FirstOrDefault() ?? 0,
-                    locationTask.Result?.GeoPoint?.LastOrDefault() ?? 0));
+            var ukprnsCount = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
+                new GetTotalProvidersForStandardRequest(request.CourseId));
             var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(
                 new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.ShortlistUserId));
             var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
@@ -98,7 +100,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new CacheHelper.SaveToCache { Levels = false, Sectors = false, Standards = saveToCache });
 
             var additionalCourses = providerCoursesTask.Result.StandardIds.Any() 
-                ? BuildAdditionalCoursesResponse(request, providerCoursesTask, coursesTask) 
+                ? BuildAdditionalCoursesResponse(providerCoursesTask, coursesTask) 
                 : new List<GetAdditionalCourseListItem>();
 
             return new GetTrainingCourseProviderResult
@@ -107,14 +109,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
-                TotalProviders = ukprnsCount.Result.UkprnsByStandard.Count(),
-                TotalProvidersAtLocation = ukprnsCount.Result.UkprnsByStandardAndLocation.Count(),
+                TotalProviders = ukprnsCount.Result.ProvidersCount,
+                TotalProvidersAtLocation = ukprnsCount.Result.ProvidersCount,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result
             };
         }
 
-        private static IEnumerable<GetAdditionalCourseListItem> BuildAdditionalCoursesResponse(GetTrainingCourseProviderQuery request, Task<GetProviderAdditionalStandardsItem> providerCoursesTask, Task<GetStandardsListResponse> coursesTask)
+        private static IEnumerable<GetAdditionalCourseListItem> BuildAdditionalCoursesResponse(Task<GetProviderAdditionalStandardsItem> providerCoursesTask, Task<GetStandardsListResponse> coursesTask)
         {
             return providerCoursesTask
                 .Result
