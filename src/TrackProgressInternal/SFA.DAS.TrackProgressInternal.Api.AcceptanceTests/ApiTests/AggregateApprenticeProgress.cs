@@ -31,7 +31,7 @@ public class AggregateApprenticeProgress : ApiFixture
             $"/apprenticeships/5/snapshot", null);
 
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
-            .AtUrl(InnerApiUrl("apprenticeships/5/AggregateProgress"));
+            .AtUrl(InnerApiUrl("apprenticeships/5/snapshot"));
     }
 
     [Test]

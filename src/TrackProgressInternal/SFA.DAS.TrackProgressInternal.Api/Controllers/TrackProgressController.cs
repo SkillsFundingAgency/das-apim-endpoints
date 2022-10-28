@@ -12,6 +12,6 @@ public class TrackProgressController : ControllerBase
         [FromServices] ResponseReturningApiClient client,
         long commitmentsApprenticeshipId)
     {
-        return await client.Post($"apprenticeships/{commitmentsApprenticeshipId}/AggregateProgress");
+        return await client.Post($"apprenticeships/{commitmentsApprenticeshipId}/snapshot");
     }
 }

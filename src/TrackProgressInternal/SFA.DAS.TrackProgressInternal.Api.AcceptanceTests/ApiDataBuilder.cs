@@ -20,7 +20,7 @@ public static class ApiDataBuilder
         factory.TrackProgressInnerApi
             .Given(
                 Request.Create()
-                    .WithPath($"/apprenticeships/{apprenticeship.CommitmentsApprenticeshipId}/AggregateProgress")
+                    .WithPath($"/apprenticeships/{apprenticeship.CommitmentsApprenticeshipId}/snapshot")
                     .UsingPost()
                     .WithBody(x => true))
             .RespondWith(
