@@ -6,12 +6,12 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
+using SFA.DAS.Reservations.Application.AccountUsers.Queries;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
+namespace SFA.DAS.Reservations.UnitTests.Application.AccountUsers
 {
     public class WhenHandlingGetAccountsQuery
     {

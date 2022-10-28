@@ -7,23 +7,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ApimDeveloper.Api.AppStart;
-using SFA.DAS.ApimDeveloper.Configuration;
-using SFA.DAS.ApimDeveloper.Interfaces;
+using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
+namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
 {
     public class WhenAddingServicesToTheContainer
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
-        [TestCase(typeof(IApimDeveloperApiClient<ApimDeveloperApiConfiguration>))]
         [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
-        [TestCase(typeof(IApimApiService))]
-        [TestCase(typeof(ICacheStorageService))]
+        [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>))]
         [TestCase(typeof(IEmployerAccountsService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
@@ -51,7 +48,9 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:4"),
+                    new KeyValuePair<string, string>("CourseDeliveryApiConfiguration:url", "http://localhost:5")
                 }
             };
 

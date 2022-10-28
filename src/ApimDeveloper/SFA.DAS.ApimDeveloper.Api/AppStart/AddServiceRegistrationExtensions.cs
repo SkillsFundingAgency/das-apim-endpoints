@@ -27,6 +27,7 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IApimApiService, ApimApiService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }
 }
