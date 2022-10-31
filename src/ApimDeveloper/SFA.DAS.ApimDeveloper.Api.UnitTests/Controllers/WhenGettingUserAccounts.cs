@@ -20,17 +20,18 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_Gets_UserAccounts_From_Mediator(
             string userId,
+            string email,
             GetAccountsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountUsersController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAccountsQuery>(c => c.UserId.Equals(userId)),
+                    It.Is<GetAccountsQuery>(c => c.UserId.Equals(userId) && c.Email.Equals(email)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetUserAccounts(userId) as ObjectResult;
+            var controllerResult = await controller.GetUserAccounts(userId,email) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -42,6 +43,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Internal_Server_Error(
             string userId,
+            string email,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountUsersController controller)
         {
@@ -51,7 +53,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetUserAccounts(userId) as StatusCodeResult;
+            var controllerResult = await controller.GetUserAccounts(userId, email) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
