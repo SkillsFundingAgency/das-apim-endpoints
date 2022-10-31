@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace SFA.DAS.TrackProgressInternal.Application.Commands.TrackProgress;
 
-public record PopulateKsbsCommand(string Standard, Guid[] KsbIds) : IRequest;
+public record PopulateKsbsCommand(string Standard) : IRequest;
 
 public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
 {
@@ -28,17 +28,16 @@ public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
     {
         var standard = await _coursesApi
             .GetWithResponseCode<GetCourseResponse>(new GetCourseRequest(request.Standard));
-
         standard.EnsureSuccessStatusCode();
 
-        var newKsbs = standard.Body.Ksbs.Where(x => request.KsbIds.Contains(x.Id));
-
-        PopulateKsbsRequest.Payload ksbs = new(newKsbs.Select(x =>
-            new PopulateKsbsRequest.Ksb(x.Id, x.Description)).ToArray());
+        PopulateKsbsRequest.Payload ksbs = new(standard.Body.Ksbs.Select(ToPayloadKsb).ToArray());
 
         var response = await _trackProgressApi.PostWithResponseCode<object>(
             new PopulateKsbsRequest(request.Standard, ksbs));
 
         return Unit.Value;
+
+        static PopulateKsbsRequest.Ksb ToPayloadKsb(KsbResponse x)
+            => new(x.Id, x.Description);
     }
 }

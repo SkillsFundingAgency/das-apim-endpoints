@@ -15,9 +15,9 @@ public class CourseController : ControllerBase
 
     [HttpPost]
     [Route("/courses/{standard}/ksbs")]
-    public async Task<IActionResult> PopulateKsbs(string standard, [FromBody] PopulateKsbsRequest request)
+    public async Task<IActionResult> PopulateKsbs(string standard)
     {
-        await mediator.Send(new PopulateKsbsCommand(standard, request.KsbIds));
+        await mediator.Send(new PopulateKsbsCommand(standard));
         return Ok();
     }
 }
