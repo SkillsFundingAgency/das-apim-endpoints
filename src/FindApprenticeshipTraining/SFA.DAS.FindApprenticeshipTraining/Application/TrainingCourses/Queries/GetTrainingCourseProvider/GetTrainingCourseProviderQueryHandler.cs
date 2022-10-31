@@ -19,14 +19,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IShortlistService _shortlistService;
-        private readonly CacheHelper _cacheHelper;
         private readonly ILocationLookupService _locationLookupService;
 
         public GetTrainingCourseProviderQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ICacheStorageService cacheStorageService,
             IShortlistService shortlistService,
             ILocationLookupService locationLookupService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
@@ -36,7 +34,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             _coursesApiClient = coursesApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
-            _cacheHelper = new CacheHelper(cacheStorageService);
             _roatpV2ApiClient = roatpV2ApiClient;
         }
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
@@ -50,19 +47,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetTotalProvidersForStandardRequest(request.CourseId));
             var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(
                 new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.ShortlistUserId));
-            var providerCoursesTask = _courseDeliveryApiClient.Get<GetProviderAdditionalStandardsItem>(
+            var providerCoursesTask = _roatpV2ApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
             var overallAchievementRatesTask = _courseDeliveryApiClient.Get<GetOverallAchievementRateResponse>(
                 new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
 
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
 
-            var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
-                new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
-
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
             
-            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask);
+            await Task.WhenAll(providerTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask);
 
             if (providerTask.Result == null && locationTask.Result != null)
             {
@@ -87,12 +81,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
             }
 
-            await _cacheHelper.UpdateCachedItems(null, null, coursesTask,
-                new CacheHelper.SaveToCache { Levels = false, Sectors = false, Standards = saveToCache });
-
-            var additionalCourses = providerCoursesTask.Result.StandardIds.Any() 
-                ? BuildAdditionalCoursesResponse(providerCoursesTask, coursesTask) 
-                : new List<GetAdditionalCourseListItem>();
+            var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result);
 
             return new GetTrainingCourseProviderResult
             {
@@ -107,18 +96,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             };
         }
 
-        private static IEnumerable<GetAdditionalCourseListItem> BuildAdditionalCoursesResponse(Task<GetProviderAdditionalStandardsItem> providerCoursesTask, Task<GetStandardsListResponse> coursesTask)
+        private static IEnumerable<GetAdditionalCourseListItem> BuildAdditionalCoursesResponse(List<GetProviderAdditionalStandardsItem> providerCourses)
         {
-            return providerCoursesTask
-                .Result
-                .StandardIds.Select(courseId =>
-                    coursesTask.Result.Standards.SingleOrDefault(c => c.LarsCode.Equals(courseId)))
-                .Where(c => c != null)
+            return providerCourses
                 .Select(course => new GetAdditionalCourseListItem
                 {
                     Id = course.LarsCode,
                     Level = course.Level,
-                    Title = course.Title
+                    Title = course.CourseName
                 })
                 .OrderBy(c => c.Title)
                 .ToList();
