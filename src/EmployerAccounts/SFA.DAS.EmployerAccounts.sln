@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAccounts.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAccounts.UnitTests", "SFA.DAS.EmployerAccounts.UnitTests\SFA.DAS.EmployerAccounts.UnitTests.csproj", "{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAccounts.FakeApis", "SFA.DAS.Approvals.FakeApis\SFA.DAS.EmployerAccounts.FakeApis.csproj", "{0AA892CB-16B0-438F-8550-22447DA4129D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA892CB-16B0-438F-8550-22447DA4129D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA892CB-16B0-438F-8550-22447DA4129D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA892CB-16B0-438F-8550-22447DA4129D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA892CB-16B0-438F-8550-22447DA4129D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

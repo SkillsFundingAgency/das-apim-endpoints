@@ -10,7 +10,6 @@ namespace SFA.DAS.EmployerAccounts.InnerApi.Requests
         {
             _accountId = accountId;
         }
-
         public string GetAllUrl => $"/api/accounts/{_accountId}/reservations";
     }
 }

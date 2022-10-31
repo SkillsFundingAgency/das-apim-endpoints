@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Reservations
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetReservationsQuery>(),
+                    It.Is<GetReservationsQuery>(o => o.AccountId == accountId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Reservations
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetReservationsQuery>(),
+                    It.Is<GetReservationsQuery>(o => o.AccountId == accountId),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
