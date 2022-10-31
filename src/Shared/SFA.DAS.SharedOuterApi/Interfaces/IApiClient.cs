@@ -19,5 +19,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task Put<TData>(IPutApiRequest<TData> request);
         Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true);
         Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request);
+        Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request);
     }
 }

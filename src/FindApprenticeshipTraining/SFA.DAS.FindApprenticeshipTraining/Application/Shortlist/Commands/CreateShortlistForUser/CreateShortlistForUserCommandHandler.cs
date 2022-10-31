@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Crea
         }
         public async Task<Unit> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
         {
-            var result = await _shortlistApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
+            await _shortlistApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
