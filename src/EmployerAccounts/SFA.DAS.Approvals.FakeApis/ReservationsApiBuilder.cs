@@ -49,9 +49,8 @@ namespace SFA.DAS.EmployerAccounts.FakeApis
 
         public ReservationsApiBuilder WithReservations(string accountId)
         {
-            var fixture = new Fixture();
             IEnumerable<GetReservationsResponseListItem> reservations =
-                fixture.Build<GetReservationsResponseListItem>().CreateMany(5);
+                _fixture.Build<GetReservationsResponseListItem>().CreateMany(5);
 
             _server
                 .Given(
