@@ -3,9 +3,9 @@ using static SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi.PopulateKs
 
 namespace SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi;
 
-public record PopulateKsbsRequest(string Standard, Payload Ksbs) : IPostApiRequest
+public record PopulateKsbsRequest(Payload Ksbs) : IPostApiRequest
 {
-    public string PostUrl => $"/courses/{Standard}/ksbs";
+    public string PostUrl => $"/courses/ksbs";
 
     public object Data { get => Ksbs; set => throw new Exception(); }
 

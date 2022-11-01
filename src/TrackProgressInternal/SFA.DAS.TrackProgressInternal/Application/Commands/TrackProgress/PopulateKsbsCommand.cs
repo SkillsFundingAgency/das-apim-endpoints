@@ -33,7 +33,7 @@ public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
         PopulateKsbsRequest.Payload ksbs = new(standard.Body.Ksbs.Select(ToPayloadKsb).ToArray());
 
         var response = await _trackProgressApi.PostWithResponseCode<object>(
-            new PopulateKsbsRequest(request.Standard, ksbs));
+            new PopulateKsbsRequest(ksbs));
 
         return Unit.Value;
 
