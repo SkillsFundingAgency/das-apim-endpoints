@@ -84,7 +84,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 }
             }
 
-            if(providerTask.Result != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK)
+            if(providerTask.Result != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
             {
                 providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
             }

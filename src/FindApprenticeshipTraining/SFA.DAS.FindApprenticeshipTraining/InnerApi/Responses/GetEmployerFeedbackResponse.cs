@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using SFA.DAS.FindApprenticeshipTraining.Application;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -9,7 +7,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public long Ukprn { get; set; }
         public int Stars { get; set; }
         public int ReviewCount { get; set; }
-        public IEnumerable<GetEmployerFeedbackResponseDetailItem> ProviderAttribute { get; set; }
+        public IEnumerable<GetEmployerFeedbackAttributeItem> ProviderAttribute { get; set; }
 
         public static implicit operator GetEmployerFeedbackResponse(GetEmployerFeedbackSummaryItem item)
         {
@@ -21,12 +19,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
                 Ukprn = item.Ukprn,
                 Stars = item.Stars,
                 ReviewCount = item.ReviewCount,
-                ProviderAttribute = new List<GetEmployerFeedbackResponseDetailItem>()
+                ProviderAttribute = new List<GetEmployerFeedbackAttributeItem>()
             };
         }
     }
 
-    public class GetEmployerFeedbackResponseDetailItem
+    public class GetEmployerFeedbackAttributeItem
     {
         public string Name { get; set; }
         public int Strength { get; set; }
