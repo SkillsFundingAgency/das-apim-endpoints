@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using AutoFixture;
 using SFA.DAS.EmployerAccounts.InnerApi.Responses;
@@ -9,6 +10,7 @@ using WireMock.Server;
 
 namespace SFA.DAS.EmployerAccounts.FakeApis
 {
+    [ExcludeFromCodeCoverage]
     public class ReservationsApiBuilder
     {
         private readonly WireMockServer _server;
