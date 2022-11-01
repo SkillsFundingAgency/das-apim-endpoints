@@ -9,7 +9,6 @@ namespace SFA.DAS.Recruit.Application.AccountUsers;
 
 public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
 {
-    {
     private readonly IEmployerAccountsService _employerAccountsService;
 
     public GetAccountsQueryHandler(IEmployerAccountsService employerAccountsService)
@@ -34,5 +33,5 @@ public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAcco
             })
         };
     }
-}
+
 }
