@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -33,7 +33,7 @@ public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
         PopulateKsbsRequest.Payload ksbs = new(standard.Body.Ksbs.Select(ToPayloadKsb).ToArray());
 
         var response = await _trackProgressApi.PostWithResponseCode<object>(
-            new PopulateKsbsRequest(ksbs));
+            new PopulateKsbsRequest(ksbs), includeResponse: false);
 
         return Unit.Value;
 
