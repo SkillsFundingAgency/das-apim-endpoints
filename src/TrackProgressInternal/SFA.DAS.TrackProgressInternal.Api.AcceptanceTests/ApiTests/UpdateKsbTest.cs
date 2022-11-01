@@ -33,7 +33,7 @@ public class UpdateKsbTest : ApiFixture
 
         // Then
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
-            .AtUrl(InnerApiUrl($"courses/{course.Standard}/ksbs"));
+            .AtUrl(InnerApiUrl($"courses/ksbs"));
 
         var request = factory.TrackProgressInnerApi.Server.LogEntries
             .Select(x => x.RequestMessage)
@@ -59,7 +59,7 @@ public class UpdateKsbTest : ApiFixture
 
         // Then
         factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
-            .AtUrl(InnerApiUrl($"courses/{course.Standard}/ksbs"));
+            .AtUrl(InnerApiUrl($"courses/ksbs"));
 
         var request = factory.TrackProgressInnerApi.Server.LogEntries
             .Select(x => x.RequestMessage)
