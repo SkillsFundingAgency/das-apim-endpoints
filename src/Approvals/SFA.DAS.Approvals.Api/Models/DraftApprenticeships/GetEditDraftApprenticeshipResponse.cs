@@ -24,6 +24,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string TrainingCourseOption { get; set; }
 
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
@@ -46,6 +47,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -64,6 +66,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 StandardUId = source.StandardUId,
                 CourseName = source.CourseName,
                 StartDate = source.StartDate,
+                ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
                 Cost = source.Cost,
                 EmploymentPrice = source.EmploymentPrice,
@@ -80,7 +83,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 RecognisePriorLearning = source.RecognisePriorLearning,
                 DurationReducedBy = source.DurationReducedBy,
                 PriceReducedBy = source.PriceReducedBy,
-                RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered
+                RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }
