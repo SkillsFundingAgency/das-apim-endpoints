@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticePortal.Application.Extensions;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeCommitments.Requests;
 using SFA.DAS.ApprenticePortal.Models;
