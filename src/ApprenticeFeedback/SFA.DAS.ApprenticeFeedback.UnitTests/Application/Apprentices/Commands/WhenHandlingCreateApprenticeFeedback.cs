@@ -41,7 +41,6 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 
             await _handler.Handle(command, CancellationToken.None);
 
-            _mockApiClient.Verify(c => c.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), true));
             (submittedRequest.Data).Should().BeEquivalentTo(new
             {
                 command.ApprenticeFeedbackTargetId,

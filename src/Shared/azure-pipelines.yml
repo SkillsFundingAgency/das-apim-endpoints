@@ -1,0 +1,32 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - src/Shared*
+    - Directory.Packages.props
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+      - src/Shared*
+      - Directory.Packages.props
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/2.0.0
+    endpoint: SkillsFundingAgency
+steps:
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloud: false

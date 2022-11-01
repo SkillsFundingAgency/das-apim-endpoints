@@ -21,6 +21,7 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" />
     <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 
   <ItemGroup>

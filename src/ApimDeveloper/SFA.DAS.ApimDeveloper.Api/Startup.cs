@@ -88,7 +88,7 @@ namespace SFA.DAS.ApimDeveloper.Api
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
                 });
             }
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
