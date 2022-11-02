@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
@@ -9,6 +5,11 @@ using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -46,43 +47,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
 
-            var ukprnsCount = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
+            var ukprnsCountTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
                 new GetTotalProvidersForStandardRequest(request.CourseId));
-            var providerTask = _courseDeliveryApiClient.Get<GetProviderStandardItem>(
-                new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description,locationTask.Result?.GeoPoint?.FirstOrDefault(), locationTask.Result?.GeoPoint?.LastOrDefault(), request.ShortlistUserId));
+
             var providerCoursesTask = _roatpV2ApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
+
             var overallAchievementRatesTask = _roatpV2ApiClient.Get<GetOverallAchievementRateResponse>(
                 new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
 
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
             var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackResponse>(new GetEmployerFeedbackDetailsRequest(request.ProviderId));
 
-            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            var shortlistCountTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
             
-            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
+            await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistCountTask, apprenticeFeedbackTask, employerFeedbackTask);
 
-            if (providerTask.Result == null && locationTask.Result != null)
+            var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result);
+
+            if(providerDetails != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
             {
-                providerTask = Task.FromResult(
-                    await _courseDeliveryApiClient.Get<GetProviderStandardItem>(
-                        new GetProviderByCourseAndUkPrnRequest(request.ProviderId, request.CourseId, courseTask.Result.SectorSubjectAreaTier2Description, null, null, request.ShortlistUserId)));
-
-                if (providerTask.Result != null)
-                {
-                    providerTask.Result.DeliveryTypes = new List<GetDeliveryTypeItem> 
-                    {
-                        new GetDeliveryTypeItem
-                        {
-                            DeliveryModes = "NotFound"
-                        } 
-                    };    
-                }
-            }
-
-            if(providerTask.Result != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
-            {
-                providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
+                providerDetails.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
             }
             
             if(providerTask.Result != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
@@ -94,14 +79,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             return new GetTrainingCourseProviderResult
             {
-                ProviderStandard = providerTask.Result,
+                ProviderStandard = providerDetails,
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
-                TotalProviders = ukprnsCount.Result.ProvidersCount,
-                TotalProvidersAtLocation = ukprnsCount.Result.ProvidersCount,
+                TotalProviders = ukprnsCountTask.Result.ProvidersCount,
+                TotalProvidersAtLocation = ukprnsCountTask.Result.ProvidersCount,
                 Location = locationTask.Result,
-                ShortlistItemCount = shortlistTask.Result
+                ShortlistItemCount = shortlistCountTask.Result
             };
         }
 
@@ -116,6 +101,58 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 })
                 .OrderBy(c => c.Title)
                 .ToList();
+        }
+
+        private async Task<GetProviderStandardItem> GetProviderDetails(int providerId, int courseId, LocationItem locationItem)
+        {
+            var request = new GetProviderByCourseAndUkPrnRequest(providerId, courseId, locationItem?.GeoPoint?.FirstOrDefault(), locationItem?.GeoPoint?.LastOrDefault());
+            var apiResponse = await _courseDeliveryApiClient.Get<GetProviderDetailsForCourse>(request); 
+
+            if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
+            {
+                if (apiResponse != null)
+                {
+                    //provider found without location
+                    GetProviderStandardItem providerDetails = new();
+                    providerDetails.DeliveryTypes = new List<GetDeliveryTypeItem>
+                    {
+                        new GetDeliveryTypeItem
+                        {
+                            DeliveryModes = "NotFound"
+                        }
+                    };
+                    return providerDetails;
+                }
+            }
+
+            if (apiResponse == null) return null;
+
+            var result = new GetProviderStandardItem()
+            {
+                Ukprn = apiResponse.Ukprn,
+                Name = apiResponse.Name,
+                TradingName = apiResponse.TradingName,
+                MarketingInfo = apiResponse.MarketingInfo,
+                StandardInfoUrl = apiResponse.StandardInfoUrl,
+                Email = apiResponse.Email,
+                Phone = apiResponse.Phone,
+                StandardId = apiResponse.LarsCode,
+                //ShortlistId
+                AchievementRates = apiResponse.AchievementRates
+            };
+
+            result.ProviderAddress = new GetProviderStandardItemAddress
+            {
+                Address1 = apiResponse.Address1,
+                Address2 = apiResponse.Address2,
+                Address3 = apiResponse.Address3,
+                Address4 = apiResponse.Address4,
+                Town = apiResponse.Town,
+                Postcode = apiResponse.Postcode,
+                DistanceInMiles = apiResponse.ProviderHeadOfficeDistanceInMiles ?? 0
+            };
+
+            return result;
         }
     }
 }
