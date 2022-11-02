@@ -169,6 +169,27 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             Assert.AreEqual(_draftApprenticeship.IsContinuation, result.IsContinuation);
         }
 
+        [Test]
+        public async Task Handle_StartDate_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.StartDate, result.StartDate);
+        }
+
+        [Test]
+        public async Task Handle_ActualStartDate_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.ActualStartDate, result.ActualStartDate);
+        }
+
+        [Test]
+        public async Task Handle_IsOnFlexiPaymentPilot_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
+
         [TestCase(0, false)]
         [TestCase(1, false)]
         [TestCase(2, true)]
