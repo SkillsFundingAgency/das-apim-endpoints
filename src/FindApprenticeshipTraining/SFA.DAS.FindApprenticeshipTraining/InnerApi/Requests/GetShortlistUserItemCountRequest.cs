@@ -12,6 +12,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
             _userId = userId;
         }
 
-        public string GetUrl => $"api/Shortlist/count/users/{_userId}";
+        public string GetUrl => $"api/Shortlist/users/{_userId}/count";
     }
 }
