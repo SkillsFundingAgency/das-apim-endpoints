@@ -2,15 +2,15 @@
 
 public sealed record Course(string Standard, params string[] Options)
 {
-    public sealed record Ksb(string Description, Guid Id)
+    public sealed record Ksb(string Type, string Description, Guid Id)
     {
-        public Ksb() : this("") { }
-        public Ksb(string Type) : this(Type, Guid.NewGuid()) { }
+        public Ksb() : this("", "") { }
+        public Ksb(string Type, string Description) : this(Type, Description, Guid.NewGuid()) { }
     }
 
     public IEnumerable<Ksb> Ksbs { get; init; } =
         Faker.Extensions.EnumerableExtensions.Times(3, _ =>
-            new Ksb(Faker.Lorem.Words(1).First()));
+            new Ksb(Faker.Lorem.GetFirstWord(), Faker.Lorem.Words(1).First()));
 
     public IEnumerable<Guid> KsbIds => Ksbs.Select(x => x.Id);
 

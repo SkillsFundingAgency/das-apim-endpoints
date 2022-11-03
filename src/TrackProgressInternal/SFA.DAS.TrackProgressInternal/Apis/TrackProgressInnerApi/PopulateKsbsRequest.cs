@@ -9,6 +9,6 @@ public record PopulateKsbsRequest(Payload Ksbs) : IPostApiRequest
 
     public object Data { get => Ksbs; set => throw new Exception(); }
 
-    public record Ksb(Guid Id, string Description);
+    public record Ksb(Guid Id, string Type, string Description);
     public record Payload(Ksb[] Ksbs);
 }

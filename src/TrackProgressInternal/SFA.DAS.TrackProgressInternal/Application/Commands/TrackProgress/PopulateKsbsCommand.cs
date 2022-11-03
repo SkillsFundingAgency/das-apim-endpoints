@@ -45,6 +45,6 @@ public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
         return Unit.Value;
 
         static PopulateKsbsRequest.Ksb ToPayloadKsb(KsbResponse x)
-            => new(x.Id, x.Description);
+            => new(x.Id, x.Type, x.Description);
     }
 }

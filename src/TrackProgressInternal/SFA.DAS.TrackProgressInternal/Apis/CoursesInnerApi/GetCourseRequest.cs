@@ -1,6 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
-using static SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi.PopulateKsbsRequest;
 
 namespace SFA.DAS.TrackProgressInternal.Apis.CoursesInnerApi;
 
@@ -13,9 +11,9 @@ public class GetCourseResponse
 {
     public string StandardUId { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
-    public List<string> Options { get; set; } = new List<string>();
-    public List<string> Skills { get; set; } = new List<string>();
-    public List<KsbResponse> Ksbs { get; set; } = new List<KsbResponse>();
+    public List<string> Options { get; set; } = new ();
+    public List<string> Skills { get; set; } = new ();
+    public List<KsbResponse> Ksbs { get; set; } = new ();
 }
 
 public class KsbResponse

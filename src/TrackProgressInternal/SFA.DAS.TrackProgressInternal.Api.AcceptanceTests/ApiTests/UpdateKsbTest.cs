@@ -23,7 +23,7 @@ public class UpdateKsbTest : ApiFixture
     public async Task Pass_all_ksb_ids_for_course_to_inner()
     {
         // Given
-        var course = A.Course.WithKsbs(new("one"), new("two"), new("three"));
+        var course = A.Course.WithKsbs(new("K", "one"), new("S", "two"), new("B", "three"));
 
         factory.WithCourse(course);
 
@@ -46,10 +46,10 @@ public class UpdateKsbTest : ApiFixture
     }
 
     [Test]
-    public async Task Pass_all_ksb_descriptions_for_course_to_inner()
+    public async Task Pass_all_ksb_types_and_descriptions_for_course_to_inner()
     {
         // Given
-        var course = A.Course.WithKsbs(new("one"), new("two"), new("three"));
+        var course = A.Course.WithKsbs(new("K", "one"), new("B", "two"), new("S", "three"));
 
         factory.WithCourse(course);
 
