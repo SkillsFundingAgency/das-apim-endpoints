@@ -6,7 +6,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.TrackProgressInternal.Apis.CoursesInnerApi;
 using SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SFA.DAS.TrackProgressInternal.Application.Commands.TrackProgress;
 
