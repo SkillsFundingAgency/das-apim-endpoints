@@ -6,5 +6,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Querie
     public class GetAccountsQueryResult
     {
         public IEnumerable<AccountUser> UserAccountResponse { get ; set ; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

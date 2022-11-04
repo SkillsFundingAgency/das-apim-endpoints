@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -31,7 +32,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse);
+            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse,
+                options => options
+                    .Excluding(c => c.FirstName)
+                    .Excluding(c => c.LastName));
+            actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
+            actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
         }
     }
 }

@@ -50,6 +50,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
+            actual.First().FirstName.Should().Be(userResponse.FirstName);
+            actual.First().LastName.Should().Be(userResponse.LastName);
         }
         
         [Test, MoqAutoData]
@@ -85,6 +87,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
+            actual.First().FirstName.Should().Be(userResponse.FirstName);
+            actual.First().LastName.Should().Be(userResponse.LastName);
         }
         
         [Test, MoqAutoData]
@@ -92,7 +96,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfile employerProfile,
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
-            EmployerUsersApiResponse userResponse,
             [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
@@ -113,6 +116,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
+            actual.First().FirstName.Should().BeEmpty();
+            actual.First().LastName.Should().BeEmpty();
             employerUsersApiClient.Verify(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                 It.IsAny<GetEmployerUserAccountRequest>( )), Times.Never);
             employerUsersApiClient.Verify(x => x.PutWithResponseCode<EmployerUsersApiResponse>(

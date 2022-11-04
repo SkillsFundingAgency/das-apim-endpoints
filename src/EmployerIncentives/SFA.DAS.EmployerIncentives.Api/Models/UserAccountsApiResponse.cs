@@ -8,6 +8,9 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
     public class UserAccountsApiResponse
     {
         public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+
         public static implicit operator UserAccountsApiResponse(GetAccountsQueryResult source)
         {
             if (source?.UserAccountResponse == null)
@@ -19,6 +22,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Models
             }
             return new UserAccountsApiResponse
             {
+                FirstName = source.FirstName,
+                LastName = source.LastName,
                 UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
             };
         }

@@ -18,14 +18,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Querie
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var employerAccounts = await _employerAccountService.GetEmployerAccounts(new EmployerProfile
+            var employerAccounts = (await _employerAccountService.GetEmployerAccounts(new EmployerProfile
             {
                 Email = request.Email,
                 UserId = request.UserId
-            });
+            })).ToList();
             
             return new GetAccountsQueryResult
             {
+                FirstName = employerAccounts.FirstOrDefault()?.FirstName,
+                LastName = employerAccounts.FirstOrDefault()?.LastName,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser
                 {
                     DasAccountName = c.DasAccountName,
