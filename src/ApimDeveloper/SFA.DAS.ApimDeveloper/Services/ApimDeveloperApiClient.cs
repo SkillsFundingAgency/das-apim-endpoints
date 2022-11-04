@@ -81,6 +81,10 @@ namespace SFA.DAS.ApimDeveloper.Services
         {
             throw new System.NotImplementedException();
         }
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
             
