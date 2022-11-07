@@ -15,7 +15,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
             var actual = (GetStandardsResponseItem) source;
 
             //Assert
-            actual.Id.Should().Be(source.LarsCode);
+            actual.LarsCode.Should().Be(source.LarsCode);
         }
     }
 }
