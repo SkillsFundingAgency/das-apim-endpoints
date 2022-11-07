@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
@@ -8,7 +7,6 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer
@@ -16,13 +14,11 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
     public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
-        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly IFjaaService _fjaaService;
 
-        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, IFjaaService fjaaService)
+        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaService fjaaService)
         {
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
-            _fjaaClient = fjaaClient;
             _fjaaService = fjaaService;
         }
 
@@ -36,7 +32,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
             var apprenticeship = apprenticeshipTask.Result;
             var accountLegalEntity = accountLegalEntityTask.Result;
 
-            var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
+            var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
 
             if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
