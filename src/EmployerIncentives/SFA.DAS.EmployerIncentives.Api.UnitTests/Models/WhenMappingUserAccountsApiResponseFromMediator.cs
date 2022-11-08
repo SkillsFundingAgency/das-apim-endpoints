@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
             actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
             actual.FirstName.Should().Be(source.FirstName);
             actual.LastName.Should().Be(source.LastName);
+            actual.EmployerUserId.Should().Be(source.EmployerUserId);
         }
         
         
@@ -27,6 +28,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
             actual.UserAccounts.Should().BeEmpty();
             actual.FirstName.Should().BeNullOrEmpty();
             actual.LastName.Should().BeNullOrEmpty();
+            actual.EmployerUserId.Should().BeNullOrEmpty();
         }
     }
 }

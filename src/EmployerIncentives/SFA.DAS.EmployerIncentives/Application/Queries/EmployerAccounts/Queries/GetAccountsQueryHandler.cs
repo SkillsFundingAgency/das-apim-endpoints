@@ -26,6 +26,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Querie
             
             return new GetAccountsQueryResult
             {
+                EmployerUserId = employerAccounts.FirstOrDefault()?.UserId,
                 FirstName = employerAccounts.FirstOrDefault()?.FirstName,
                 LastName = employerAccounts.FirstOrDefault()?.LastName,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser

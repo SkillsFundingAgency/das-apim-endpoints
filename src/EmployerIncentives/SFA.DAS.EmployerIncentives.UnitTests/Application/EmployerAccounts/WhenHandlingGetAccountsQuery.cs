@@ -40,6 +40,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
                 );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
+            actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
         }
     }
 }
