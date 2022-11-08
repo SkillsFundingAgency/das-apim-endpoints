@@ -8,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
-    //Needs to be renamed to /Attributes and corresponding endpoint in 
-    //AppFeedback Web when both projects are next changed
     [ApiController]
     [Route("[controller]/")]
-    public class ProviderAttributesController : ControllerBase
+    public class AttributesController : ControllerBase
     {
-        private readonly ILogger<ProviderAttributesController> _logger;
+        private readonly ILogger<AttributesController> _logger;
         private readonly IMediator _mediator;
 
-        public ProviderAttributesController(
-            ILogger<ProviderAttributesController> logger,
+        public AttributesController(
+            ILogger<AttributesController> logger,
             IMediator mediator)
         {
             _logger = logger;
@@ -30,7 +28,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAttributesQuery());
+                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "Feedback" });
 
                 if(result.Attributes?.Count == 0)
                 {
@@ -42,6 +40,27 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting provider attributes.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("/exitsurvey-attributes")]
+        public async Task<IActionResult> GetExitSurveyAttributes()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "ExitSurvey_v2" });
+
+                if (result.Attributes?.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result.Attributes);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting exit survey attributes.");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
