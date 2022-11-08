@@ -75,7 +75,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                         DasAccountName = account.DasAccountName,
                         EncodedAccountId = account.EncodedAccountId,
                         FirstName = firstName,
-                        LastName = lastName
+                        LastName = lastName,
+                        UserId = userId
                     });
                 }
             }
