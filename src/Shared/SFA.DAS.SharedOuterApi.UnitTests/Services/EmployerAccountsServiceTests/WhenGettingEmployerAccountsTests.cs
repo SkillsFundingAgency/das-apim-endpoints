@@ -50,8 +50,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().FirstName.Should().Be(userResponse.FirstName);
-            actual.First().LastName.Should().Be(userResponse.LastName);
+            actual.TrueForAll(c => c.UserId.Equals(userResponse.Id)).Should().BeTrue();
+            actual.TrueForAll(c => c.FirstName.Equals(userResponse.FirstName)).Should().BeTrue();
+            actual.TrueForAll(c => c.LastName.Equals(userResponse.LastName)).Should().BeTrue();
         }
         
         [Test, MoqAutoData]
@@ -87,8 +88,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().FirstName.Should().Be(userResponse.FirstName);
-            actual.First().LastName.Should().Be(userResponse.LastName);
+            actual.TrueForAll(c => c.UserId.Equals(userResponse.Id)).Should().BeTrue();
+            actual.TrueForAll(c => c.FirstName.Equals(userResponse.FirstName)).Should().BeTrue();
+            actual.TrueForAll(c => c.LastName.Equals(userResponse.LastName)).Should().BeTrue();
         }
         
         [Test, MoqAutoData]
@@ -118,6 +120,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
             actual.First().FirstName.Should().BeEmpty();
             actual.First().LastName.Should().BeEmpty();
+            actual.TrueForAll(c => c.UserId.Equals(employerProfile.UserId)).Should().BeTrue();
             employerUsersApiClient.Verify(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                 It.IsAny<GetEmployerUserAccountRequest>( )), Times.Never);
             employerUsersApiClient.Verify(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
