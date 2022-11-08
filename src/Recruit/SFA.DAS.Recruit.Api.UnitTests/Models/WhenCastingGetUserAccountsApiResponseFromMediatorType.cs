@@ -14,6 +14,7 @@ public class WhenCastingGetUserAccountsApiResponseFromMediatorType
         var actual = (GetUserAccountsApiResponse)source;
 
         actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
+        actual.EmployerUserId.Should().BeEquivalentTo(source.UserId);
     }
 
 

@@ -35,7 +35,9 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
             actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse,
                 options => options
                     .Excluding(c => c.FirstName)
-                    .Excluding(c => c.LastName));
+                    .Excluding(c => c.LastName)
+                    .Excluding(c => c.UserId)
+                );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
         }
