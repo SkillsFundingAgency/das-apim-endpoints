@@ -35,8 +35,10 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
                 new WithdrawRequest
                 {
                     WithdrawalType = WithdrawalType.Employer,
-                    AccountLegalEntityId = _fixture.Create<long>(),
-                    ULN = _fixture.Create<long>(),
+                    Applications = new []
+                    {
+                        new InnerApi.Requests.Application { AccountLegalEntityId = _fixture.Create<long>(), ULN = _fixture.Create<long>() }
+                    },
                     ServiceRequest = _fixture.Create<ServiceRequest>()
                 });
         }

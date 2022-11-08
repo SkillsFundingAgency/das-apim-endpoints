@@ -11,6 +11,7 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -50,19 +51,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
-        }
-
-        [Test]
-        public async Task Then_FlexiJobAgency_Functionality_Is_Subject_To_Toggle()
-        {
-            var fixture = new DeliveryModelServiceTestFixture()
-                .WithResponseHasPortableFlexiJobOptionFromProviderCoursesApi(false)
-                .WithFlexiJobAgencyToggleOff()
-                .WithFlexiJobAgencyEmployer();
-
-            await fixture.GetDeliveryModels();
-
             fixture.VerifyResult(DeliveryModelStringTypes.Regular);
         }
 
@@ -75,7 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
+            fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.PortableFlexiJob);
         }
 
         [Test]
@@ -100,7 +88,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             await fixture.GetDeliveryModels();
 
-            fixture.VerifyEmptyResult();
+            fixture.VerifyResult(DeliveryModelStringTypes.PortableFlexiJob);
         }
 
         [TestCase(DeliveryModelStringTypes.Regular)]
@@ -135,7 +123,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             private readonly Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _apiClient;
             private readonly Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
             private readonly Mock<IFjaaApiClient<FjaaApiConfiguration>> _fjaaApiClient;
-            private readonly FeatureToggles _featureToggles;
+            private readonly Mock<IFjaaService> _fjaaService;
 
             private readonly GetHasPortableFlexiJobOptionResponse _apiResponse;
             private readonly GetAccountLegalEntityResponse _accountLegalEntityResponse;
@@ -152,7 +140,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 _apiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
                 _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
                 _fjaaApiClient = new Mock<IFjaaApiClient<FjaaApiConfiguration>>();
-                _featureToggles = new FeatureToggles { ApprovalsFeatureToggleFjaaEnabled = true };
+                _fjaaService = new Mock<IFjaaService>();
 
                 _apiResponse = fixture.Create<GetHasPortableFlexiJobOptionResponse>();
                 _accountLegalEntityResponse = fixture.Create<GetAccountLegalEntityResponse>();
@@ -172,11 +160,14 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                         .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                     .ReturnsAsync(_flexiJobAgencyResponse);
 
+                _fjaaService = new Mock<IFjaaService>();
+
                 _handler = new Approvals.Services.DeliveryModelService(_apiClient.Object,
                     _fjaaApiClient.Object,
                     _commitmentsApiClient.Object,
                     Mock.Of<ILogger<Approvals.Services.DeliveryModelService>>(),
-                    _featureToggles);
+                    _fjaaService.Object
+                    );
             }
 
             public DeliveryModelServiceTestFixture WithCurrentApprenticeship(string deliveryModel)
@@ -203,12 +194,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                         .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
                     .ReturnsAsync(_flexiJobAgencyResponse);
 
-                return this;
-            }
-
-            public DeliveryModelServiceTestFixture WithFlexiJobAgencyToggleOff()
-            {
-                _featureToggles.ApprovalsFeatureToggleFjaaEnabled = false;
                 return this;
             }
 

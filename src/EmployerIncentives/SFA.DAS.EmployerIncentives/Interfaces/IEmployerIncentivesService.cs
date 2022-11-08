@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<ApprenticeshipIncentiveDto[]> GetApprenticeshipIncentives(long accountId, long accountLegalEntityId);
         Task RecalculateEarnings(RecalculateEarningsRequest recalculateEarningsRequest);
         Task RevertPayments(RevertPaymentsRequest revertPaymentsRequest);
+        Task ReinstatePayments(ReinstatePaymentsRequest reinstatePaymentsRequest);
     }
 }

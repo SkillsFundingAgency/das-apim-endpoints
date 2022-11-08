@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -9,9 +8,9 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeEmployer
 {
@@ -21,7 +20,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         private GetConfirmEmployerQueryHandler _handler;
         private GetConfirmEmployerQuery _query;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
-        private Mock<IFjaaApiClient<FjaaApiConfiguration>> _flexiJobAgencyApiClient;
+        private Mock<IFjaaService> _fjaaService;
         private GetAccountLegalEntityResponse _accountLegalEntityApiResponse;
         private GetApprenticeshipResponse _apprenticeshipApiResponse;
 
@@ -50,14 +49,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
                             x.ApprenticeshipId == _query.ApprenticeshipId)))
                 .ReturnsAsync(_apprenticeshipApiResponse);
 
-            _flexiJobAgencyApiClient = new Mock<IFjaaApiClient<FjaaApiConfiguration>>();
-            _flexiJobAgencyApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(null, HttpStatusCode.NotFound, string.Empty));
+            _fjaaService = new Mock<IFjaaService>();
+            _fjaaService.Setup(x =>
+                    x.IsAccountLegalEntityOnFjaaRegister(It.Is<long>(ale => ale == _query.AccountLegalEntityId)))
+                .ReturnsAsync(false);
 
-            var featureToggles = new FeatureToggles { ApprovalsFeatureToggleFjaaEnabled = true };
-
-            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _flexiJobAgencyApiClient.Object, featureToggles);
+            _handler = new GetConfirmEmployerQueryHandler(_commitmentsApiClient.Object, _fjaaService.Object);
         }
 
         [Test]
@@ -91,9 +88,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         [Test]
         public async Task Handle_Returns_IsFlexiJobAgency_True_When_On_Register()
         {
-            _flexiJobAgencyApiClient.Setup(x => x
-                    .GetWithResponseCode<GetAgencyResponse>(It.IsAny<GetAgencyRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAgencyResponse>(new GetAgencyResponse{ LegalEntityId = 123}, HttpStatusCode.OK, string.Empty));
+            _fjaaService.Setup(x =>
+                    x.IsAccountLegalEntityOnFjaaRegister(It.Is<long>(ale => ale == _query.AccountLegalEntityId)))
+                .ReturnsAsync(true);
 
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.IsTrue(result.IsFlexiJobAgency);
