@@ -30,6 +30,8 @@ namespace SFA.DAS.SharedOuterApi.Services
         public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile)
         {
             var userId = employerProfile.UserId;
+            var firstName = string.Empty;
+            var lastName = string.Empty;
             if (!Guid.TryParse(employerProfile.UserId, out _))
             {
                 var userResponse =
@@ -42,13 +44,16 @@ namespace SFA.DAS.SharedOuterApi.Services
                         await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
                             new PutUpsertEmployerUserAccountRequest(employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
-                    userId = employerUserResponse.Body.Id;    
+                    userId = employerUserResponse.Body.Id;
+                    firstName = employerUserResponse.Body.FirstName;
+                    lastName = employerUserResponse.Body.LastName;
                 }
                 else
                 {
                     userId = userResponse.Body.Id;
+                    firstName = userResponse.Body.FirstName;
+                    lastName = userResponse.Body.LastName;
                 }
-                
             }
             
             var result =
@@ -68,7 +73,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                     {
                         Role = member.Role,
                         DasAccountName = account.DasAccountName,
-                        EncodedAccountId = account.EncodedAccountId
+                        EncodedAccountId = account.EncodedAccountId,
+                        FirstName = firstName,
+                        LastName = lastName
                     });
                 }
             }
