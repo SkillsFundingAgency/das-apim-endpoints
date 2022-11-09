@@ -18,6 +18,7 @@ public class KsbProgress
 {
     public long ProviderId { get; set; }
     public long Uln { get; set; }
+    public string StandardUid { get; set; } = null!;
     public DateTime StartDate { get; set; }
     public long CommitmentsApprenticeshipId { get; set; }
     public long? CommitmentsContinuationId { get; set; }
