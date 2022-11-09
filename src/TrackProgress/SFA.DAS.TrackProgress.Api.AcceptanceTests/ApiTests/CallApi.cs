@@ -1,6 +1,7 @@
 using FluentAssertions;
 using SFA.DAS.TrackProgress.Api.AcceptanceTests.TestModels;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
+using SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;
 using SFA.DAS.TrackProgress.Application.DTOs;
 using SFA.DAS.TrackProgress.Tests;
 using System.Text;
@@ -81,6 +82,34 @@ public class CallApi : ApiFixture
             factory.TrackProgressInnerApi.Server.Should().HaveReceivedACall()
                 .UsingPost().And.AtAbsoluteUrl($"{factory.TrackProgressInnerApi.BaseAddress}progress");
         }
+    }
+
+    [Test]
+    public async Task Apprenticeship_details_are_passed_to_inner_API()
+    {
+        // Given
+        var course = A.Course;
+        var apprenticeship = An.Apprenticeship.WithCourse(course);
+        var validDto = BuildValidProgressDtoContentFromCourseResponse(course);
+
+        factory.WithApprenticeship(apprenticeship).WithCourse(course);
+
+        // When
+        var response = await client.PostAsync(
+            $"/apprenticeships/{1}/2020-01/progress", validDto);
+        response.Should().Be201Created();
+
+        // Then
+        var request = factory.TrackProgressInnerApi.Server.LogEntries
+            .Select(x => x.RequestMessage);
+
+        request.First().Body.Should().BeValidJson<KsbProgress>()
+        .Which.Should().BeEquivalentTo(new
+        {
+            apprenticeship.ProviderId,
+            apprenticeship.Uln,
+            StandardUid = course.Standard,
+        });
     }
 
     [Test]

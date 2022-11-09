@@ -22,7 +22,7 @@
       </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="MediatR"  />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
