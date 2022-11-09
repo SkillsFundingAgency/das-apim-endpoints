@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SFA.DAS.TrackProgress.Api.AcceptanceTests.v3.ncrunchproject" />
+  </ItemGroup>
+
+  <ItemGroup>
+  	<PackageReference Include="Faker.Net" />
+  	<PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="AutoFixture.NUnit3" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="FluentAssertions.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="WireMock.Net.FluentAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.TrackProgressInternal.Api\SFA.DAS.TrackProgressInternal.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.TrackProgressInternal\SFA.DAS.TrackProgressInternal.csproj" />
+  </ItemGroup>
+
+</Project>
