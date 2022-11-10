@@ -12,7 +12,7 @@ namespace SFA.DAS.Funding.FakeInnerApis
         {
             try
             {
-                _fakeAccountsApi = WireMockServer.Start(new FluentMockServerSettings
+                _fakeAccountsApi = WireMockServer.Start(new WireMockServerSettings
                 {
                     Urls = new[] { "http://*:6012" },
                     StartAdminInterface = true,

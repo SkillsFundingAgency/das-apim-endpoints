@@ -76,6 +76,11 @@ namespace SFA.DAS.Funding.Clients
             return _client.PatchWithResponseCode(request);
         }
 
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            return _client.PutWithResponseCode<TResponse>(request);
+        }
+
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
             return _client.GetPaged<TResponse>(request);
