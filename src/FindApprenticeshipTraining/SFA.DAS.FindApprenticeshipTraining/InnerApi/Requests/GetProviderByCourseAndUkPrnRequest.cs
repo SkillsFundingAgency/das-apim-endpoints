@@ -2,14 +2,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class GetProviderByCourseAndUkPrnRequest : IGetApiRequest
+    public class GetProviderByCourseAndUkprnRequest : IGetApiRequest
     {
         private readonly int _providerId;
         private readonly int _courseId;
         private readonly double? _latitude;
         private readonly double? _longitude;
 
-        public GetProviderByCourseAndUkPrnRequest(int providerId, int courseId, double? latitude = null, double? longitude = null)
+        public GetProviderByCourseAndUkprnRequest(int providerId, int courseId, double? latitude = null, double? longitude = null)
         {
             _providerId = providerId;
             _courseId = courseId;
