@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.AspNetCore.Server.HttpSys;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -15,31 +17,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 {
     public class GetTrainingCourseProviderQueryHandler : IRequestHandler<GetTrainingCourseProviderQuery, GetTrainingCourseProviderResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly IShortlistService _shortlistService;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly ILocationLookupService _locationLookupService;
 
         public GetTrainingCourseProviderQueryHandler(
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            IShortlistService shortlistService,
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient,
             ILocationLookupService locationLookupService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
-            _shortlistService = shortlistService;
+            _shortlistApiClient = shortlistApiClient;
             _locationLookupService = locationLookupService;
             _roatpV2ApiClient = roatpV2ApiClient;
         }
+
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
@@ -59,11 +59,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
             var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackResponse>(new GetEmployerFeedbackDetailsRequest(request.ProviderId));
 
-            var shortlistCountTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
-            
+            var shortlistTask = request.ShortlistUserId.HasValue
+                ? _shortlistApiClient.Get<List<ShortlistItem>>(new GetShortlistForUserRequest(request.ShortlistUserId.Value))
+                : Task.FromResult(new List<ShortlistItem>());
+
             await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistCountTask, apprenticeFeedbackTask, employerFeedbackTask);
 
-            var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result);
+            var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result, shortlistTask.Result);
 
             if(providerDetails != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
             {
@@ -86,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 TotalProviders = ukprnsCountTask.Result.ProvidersCount,
                 TotalProvidersAtLocation = ukprnsCountTask.Result.ProvidersCount,
                 Location = locationTask.Result,
-                ShortlistItemCount = shortlistCountTask.Result
+                ShortlistItemCount = shortlistTask.Result?.Count ?? 0
             };
         }
 
@@ -103,29 +105,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 .ToList();
         }
 
-        private async Task<GetProviderStandardItem> GetProviderDetails(int providerId, int courseId, LocationItem locationItem)
+        private async Task<GetProviderStandardItem> GetProviderDetails(int providerId, int courseId, LocationItem locationItem, List<ShortlistItem> shortlistItems)
         {
-            var request = new GetProviderByCourseAndUkPrnRequest(providerId, courseId, locationItem?.GeoPoint?.FirstOrDefault(), locationItem?.GeoPoint?.LastOrDefault());
-            var apiResponse = await _courseDeliveryApiClient.Get<GetProviderDetailsForCourse>(request); 
+            var latitude = locationItem?.GeoPoint?.FirstOrDefault();
+            var longitude = locationItem?.GeoPoint?.LastOrDefault();
+
+            var request = new GetProviderByCourseAndUkprnRequest(providerId, courseId, latitude, longitude);
+            var apiResponse = await _roatpV2ApiClient.Get<GetProviderDetailsForCourse>(request);
+
+            if (apiResponse == null) return null;
 
             if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
             {
-                if (apiResponse != null)
+                //provider found without location
+                return new GetProviderStandardItem()
                 {
-                    //provider found without location
-                    GetProviderStandardItem providerDetails = new();
-                    providerDetails.DeliveryTypes = new List<GetDeliveryTypeItem>
+                    DeliveryTypes = new List<GetDeliveryTypeItem>
                     {
                         new GetDeliveryTypeItem
                         {
                             DeliveryModes = "NotFound"
                         }
-                    };
-                    return providerDetails;
-                }
+                    }
+                };
             }
 
-            if (apiResponse == null) return null;
+            var matchingShortlistItem = 
+                // match the shortlist item by location first
+                shortlistItems.FirstOrDefault(s => s.Ukprn == providerId && s.Larscode == courseId && s.Latitude == latitude && s.Longitude == longitude) 
+                //if not found try to match without location
+                ?? shortlistItems.FirstOrDefault(s => s.Ukprn == providerId && s.Larscode == courseId);
 
             var result = new GetProviderStandardItem()
             {
@@ -137,7 +146,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Email = apiResponse.Email,
                 Phone = apiResponse.Phone,
                 StandardId = apiResponse.LarsCode,
-                //ShortlistId
+                ShortlistId = matchingShortlistItem?.Id,
                 AchievementRates = apiResponse.AchievementRates
             };
 
@@ -150,6 +159,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Town = apiResponse.Town,
                 Postcode = apiResponse.Postcode,
                 DistanceInMiles = apiResponse.ProviderHeadOfficeDistanceInMiles ?? 0
+            };
+
+            result.DeliveryTypes = new List<GetDeliveryTypeItem>()
+            {
+
             };
 
             return result;
