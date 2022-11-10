@@ -5,12 +5,12 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingTheGetProviderByCourseAndUkPrnRequest
+    public class WhenBuildingTheGetProviderByCourseAndUkprnRequest
     {
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Build(int providerId, int courseId, double lat, double lon)
         {
-            var actual = new GetProviderByCourseAndUkPrnRequest(providerId, courseId, lat,lon);
+            var actual = new GetProviderByCourseAndUkprnRequest(providerId, courseId, lat,lon);
 
             actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?lat={lat}&lon={lon}");
         }
@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Built_With_No_Location_Or_ShortListUserId(int providerId, int courseId)
         {
-            var actual = new GetProviderByCourseAndUkPrnRequest(providerId, courseId);
+            var actual = new GetProviderByCourseAndUkprnRequest(providerId, courseId);
 
             actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?lat=&lon=");
         }

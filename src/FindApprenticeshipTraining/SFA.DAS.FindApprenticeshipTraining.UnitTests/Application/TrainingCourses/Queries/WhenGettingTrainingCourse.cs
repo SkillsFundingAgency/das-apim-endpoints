@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationItem);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
@@ -86,7 +86,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             //Arrange
             locationLookupService
-                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem)null);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;

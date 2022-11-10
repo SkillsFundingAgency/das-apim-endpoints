@@ -1,5 +1,5 @@
-using System;
 using MediatR;
+using System;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {

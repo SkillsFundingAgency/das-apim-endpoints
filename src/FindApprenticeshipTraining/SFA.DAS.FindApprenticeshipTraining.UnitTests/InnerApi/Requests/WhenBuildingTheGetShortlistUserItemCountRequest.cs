@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
             var actual = new GetShortlistUserItemCountRequest(userId);
             
             //Assert
-            actual.GetUrl.Should().Be($"api/Shortlist/count/users/{userId}");
+            actual.GetUrl.Should().Be($"api/Shortlist/users/{userId}/count");
         }
     }
 }
