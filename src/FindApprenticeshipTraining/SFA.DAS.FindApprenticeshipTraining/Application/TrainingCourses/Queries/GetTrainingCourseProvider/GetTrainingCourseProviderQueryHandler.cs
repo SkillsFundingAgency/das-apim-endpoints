@@ -116,10 +116,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
             {
-                //provider found without location
+                //MFCMFC provider found without location
                 return new GetProviderStandardItem();
             }
-
+            
             var matchingShortlistItem = (ShortlistItem) null;
             if (shortlistItems != null)
             {
