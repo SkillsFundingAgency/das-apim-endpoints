@@ -52,6 +52,7 @@ public class TrackProgressCommandHandler : IRequestHandler<TrackProgressCommand,
         {
             ProviderId = request.ProviderContext.ProviderId,
             Uln = request.Uln,
+            StandardUid = apprenticeship.StandardUId,
             StartDate = request.PlannedStartDate,
             CommitmentsApprenticeshipId = apprenticeship.Id,
             CommitmentsContinuationId = apprenticeship.ContinuationOfId,
