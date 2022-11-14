@@ -9,6 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{065756A9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{36044239-1080-47A5-A856-12C67ADBAC10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Roatp.ProviderModeration.Api", "SFA.DAS.Roatp.ProviderModeration.Api\SFA.DAS.Roatp.ProviderModeration.Api.csproj", "{BB6FA8FF-160C-4E6F-AB40-A59D458A54E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Roatp.ProviderModeration.Application", "SFA.DAS.Roatp.ProviderModeration.Application\SFA.DAS.Roatp.ProviderModeration.Application.csproj", "{4518D6F4-23EF-4242-98AD-708892D967A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,14 @@ Global
 		{36044239-1080-47A5-A856-12C67ADBAC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36044239-1080-47A5-A856-12C67ADBAC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36044239-1080-47A5-A856-12C67ADBAC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB6FA8FF-160C-4E6F-AB40-A59D458A54E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB6FA8FF-160C-4E6F-AB40-A59D458A54E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB6FA8FF-160C-4E6F-AB40-A59D458A54E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB6FA8FF-160C-4E6F-AB40-A59D458A54E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4518D6F4-23EF-4242-98AD-708892D967A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4518D6F4-23EF-4242-98AD-708892D967A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4518D6F4-23EF-4242-98AD-708892D967A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4518D6F4-23EF-4242-98AD-708892D967A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
