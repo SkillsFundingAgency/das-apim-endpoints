@@ -8,25 +8,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
     {
         public int TotalEmployerResponses { get ; set ; }
         public int TotalFeedbackRating { get ; set ; }
-        public IEnumerable<GetEmployerFeedbackItem> FeedbackDetail { get ; set ; }
         public IEnumerable<GetEmployerFeedbackAttributeItem> FeedbackAttributes { get; set; }
     }
-
-    public class GetEmployerFeedbackItem
-    {
-        public string FeedbackName { get; set; }
-        public int FeedbackCount { get;set; }
-
-        public static implicit operator GetEmployerFeedbackItem(GetEmployerFeedbackRatingItem source)
-        {
-            return new GetEmployerFeedbackItem
-            {
-                FeedbackCount = source.FeedbackCount,
-                FeedbackName = source.FeedbackName
-            };
-        }
-    }
-
     public class GetEmployerFeedbackAttributeItem
     {
         public int Weakness { get ; set ; }
@@ -41,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetEmployerFeedbackAttributeItem
             {
-                AttributeName = source.AttributeName,
+                AttributeName = source.Name,
                 Strength = source.Strength,
                 Weakness = source.Weakness,
                 Rating = source.Strength - source.Weakness,
