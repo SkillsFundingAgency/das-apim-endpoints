@@ -13,23 +13,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_Returns_Empty_Employer_Feedback_Attribute_Lists_If_Totals_Are_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
+            source.EmployerFeedback.ProviderAttribute = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "First Attribute",
+                    Name = "First Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Second Attribute",
+                    Name = "Second Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Third Attribute",
+                    Name = "Third Attribute",
                     Strength = 0,
                     Weakness = 0
                 }
@@ -43,23 +43,23 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_No_Strengths_Returns_Zero_Count(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
+            source.EmployerFeedback.ProviderAttribute = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "First Attribute",
+                    Name = "First Attribute",
                     Strength = 0,
                     Weakness = 12
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Second Attribute",
+                    Name = "Second Attribute",
                     Strength = 0,
                     Weakness = 13
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Third Attribute",
+                    Name = "Third Attribute",
                     Strength = 0,
                     Weakness = 14
                 }
@@ -68,30 +68,30 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(0);
-            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.ProviderAttribute.Select(c => c.Name).ToList());
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(39);
         }
 
         [Test, AutoData]
         public void Then_No_Weaknesses_Returns_Zero_Count(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
+            source.EmployerFeedback.ProviderAttribute = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "First Attribute",
+                    Name = "First Attribute",
                     Strength = 12,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Second Attribute",
+                    Name = "Second Attribute",
                     Strength = 13,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Third Attribute",
+                    Name = "Third Attribute",
                     Strength = 14,
                     Weakness = 0
                 }
@@ -100,7 +100,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(0);
-            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.FeedbackAttributes.Select(c => c.AttributeName).ToList());
+            response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.ProviderAttribute.Select(c => c.Name).ToList());
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(39);
         }
 
@@ -108,65 +108,65 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_Returns_All_Available_Employer_Feedback_Attribute_Strengths_And_Weaknesses_Where_Strengths_Weaknesses_Greater_Than_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
         {
-            source.EmployerFeedback.FeedbackAttributes = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
+            source.EmployerFeedback.ProviderAttribute = new List<InnerApi.Responses.GetEmployerFeedbackAttributeItem>
             {
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "First Attribute",
+                    Name = "First Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Second Attribute",
+                    Name = "Second Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Third Attribute",
+                    Name = "Third Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Fourth Attribute",
+                    Name = "Fourth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Fifth Attribute",
+                    Name = "Fifth Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Sixth Attribute",
+                    Name = "Sixth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Seventh Attribute",
+                    Name = "Seventh Attribute",
                     Strength = 1,
                     Weakness = 1
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Eighth Attribute",
+                    Name = "Eighth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Ninth Attribute",
+                    Name = "Ninth Attribute",
                     Strength = 0,
                     Weakness = 0
                 },
                 new InnerApi.Responses.GetEmployerFeedbackAttributeItem
                 {
-                    AttributeName = "Tenth Attribute",
+                    Name = "Tenth Attribute",
                     Strength = 1,
                     Weakness = 1
                 }
