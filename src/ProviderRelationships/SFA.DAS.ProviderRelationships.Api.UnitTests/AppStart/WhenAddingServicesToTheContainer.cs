@@ -41,8 +41,7 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
-                //new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2"),
+                new KeyValuePair<string, string>("AccountsInnerApiConfiguration:url", "http://localhost:1"),
                 new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3")
             }
         };
