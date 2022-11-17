@@ -20,7 +20,7 @@ namespace SFA.DAS.Funding.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/{ukprn}/summary")]
+        [Route("/earnings/{ukprn}/summary")]
         public async Task<IActionResult> GetSummary(long ukprn)
         {
             var result = await _mediator.Send(new GetProviderEarningsSummaryQuery
