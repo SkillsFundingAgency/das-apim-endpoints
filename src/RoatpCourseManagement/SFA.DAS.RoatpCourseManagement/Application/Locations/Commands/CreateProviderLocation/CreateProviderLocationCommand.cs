@@ -6,6 +6,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreatePro
     {
         public int Ukprn { get; set; }
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
         public string LocationName { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
