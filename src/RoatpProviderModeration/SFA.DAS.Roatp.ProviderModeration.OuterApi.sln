@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A5FC33C6-45D6-45C7-8E6C-44AB24599D7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{065756A9-7B57-4C4D-8A86-EE93F22C0D21}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{36044239-1080-47A5-A856-12C67ADBAC10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application", "SFA.DAS.RoatpProviderModeration.Application\SFA.DAS.RoatpProviderModeration.Application.csproj", "{145F8BF3-63F4-4EF0-A149-470D7D0778EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.OuterApi", "SFA.DAS.RoatpProviderModeration.OuterApi\SFA.DAS.RoatpProviderModeration.OuterApi.csproj", "{A1E5C2E0-E05A-4DAF-A386-1A6A96579FCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5FC33C6-45D6-45C7-8E6C-44AB24599D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5FC33C6-45D6-45C7-8E6C-44AB24599D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5FC33C6-45D6-45C7-8E6C-44AB24599D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5FC33C6-45D6-45C7-8E6C-44AB24599D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36044239-1080-47A5-A856-12C67ADBAC10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36044239-1080-47A5-A856-12C67ADBAC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36044239-1080-47A5-A856-12C67ADBAC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36044239-1080-47A5-A856-12C67ADBAC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{145F8BF3-63F4-4EF0-A149-470D7D0778EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{145F8BF3-63F4-4EF0-A149-470D7D0778EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{145F8BF3-63F4-4EF0-A149-470D7D0778EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{145F8BF3-63F4-4EF0-A149-470D7D0778EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1E5C2E0-E05A-4DAF-A386-1A6A96579FCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1E5C2E0-E05A-4DAF-A386-1A6A96579FCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1E5C2E0-E05A-4DAF-A386-1A6A96579FCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1E5C2E0-E05A-4DAF-A386-1A6A96579FCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{36044239-1080-47A5-A856-12C67ADBAC10} = {065756A9-7B57-4C4D-8A86-EE93F22C0D21}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED830135-C259-49CA-80D3-50BFB40EBBB1}
+	EndGlobalSection
+EndGlobal
