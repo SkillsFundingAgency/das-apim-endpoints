@@ -6,6 +6,9 @@ namespace SFA.DAS.ProviderRelationships.Api.Models;
 public class GetUserAccountsApiResponse
 {
     public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+    public string EmployerUserId { get; set; }
     
     public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
     {
@@ -19,6 +22,9 @@ public class GetUserAccountsApiResponse
         
         return new GetUserAccountsApiResponse
         {
+            EmployerUserId = source.EmployerUserId,
+            FirstName = source.FirstName,
+            LastName = source.LastName,
             UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
         };
     }

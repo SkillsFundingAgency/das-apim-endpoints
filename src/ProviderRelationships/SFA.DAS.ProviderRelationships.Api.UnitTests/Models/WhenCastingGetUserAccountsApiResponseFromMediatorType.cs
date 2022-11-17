@@ -13,14 +13,19 @@ public class WhenCastingGetUserAccountsApiResponseFromMediatorType
         var actual = (GetUserAccountsApiResponse) source;
             
         actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
+        actual.FirstName.Should().Be(source.FirstName);
+        actual.LastName.Should().Be(source.LastName);
+        actual.EmployerUserId.Should().Be(source.EmployerUserId);
     }
-        
-        
+    
     [Test]
     public void Then_If_Null_Then_Empty_Returned()
     {
         var actual = (GetUserAccountsApiResponse) (GetAccountsQueryResult)null;
             
         actual.UserAccounts.Should().BeEmpty();
+        actual.FirstName.Should().BeNullOrEmpty();
+        actual.LastName.Should().BeNullOrEmpty();
+        actual.EmployerUserId.Should().BeNullOrEmpty();
     }
 }
