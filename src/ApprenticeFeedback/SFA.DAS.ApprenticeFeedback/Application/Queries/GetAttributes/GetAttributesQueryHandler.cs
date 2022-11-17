@@ -28,7 +28,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetAttributes
             {
                 Attributes = apiResponse
             };
-
-    }
+        }
     }
 }
