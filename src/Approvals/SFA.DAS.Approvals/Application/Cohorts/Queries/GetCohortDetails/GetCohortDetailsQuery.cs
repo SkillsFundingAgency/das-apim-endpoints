@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -21,44 +26,55 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
     {
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
+        public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
     }
 
     public class GetCohortDetailsQueryHandler : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
+        private readonly IFjaaService _fjaaService;
 
-        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters)
+        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService)
         {
             _apiClient = apiClient;
             _serviceParameters = serviceParameters;
+            _fjaaService = fjaaService;
         }
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
         {
+            var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
 
-            var cohortResponseTask = await _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
+            var apiResponseTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
+            var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
 
+            await Task.WhenAll(apiResponseTask, cohortResponseTask);
 
-            if (cohortResponseTask.StatusCode == HttpStatusCode.NotFound)
+            if (apiResponseTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
 
-            cohortResponseTask.EnsureSuccessStatusCode();
+            apiResponseTask.Result.EnsureSuccessStatusCode();
+            cohortResponseTask.Result.EnsureSuccessStatusCode();
 
-            var cohort = cohortResponseTask.Body;
+            var apprenticeships = apiResponseTask.Result.Body;
+            var cohort = cohortResponseTask.Result.Body;
 
             if (!CheckParty(cohort))
             {
                 return null;
             }
 
+            var isOnRegister = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+
             return new GetCohortDetailsQueryResult
             {
                 LegalEntityName = cohort.LegalEntityName,
-                ProviderName = cohort.ProviderName
+                ProviderName = cohort.ProviderName,
+                HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency))
             };
         }
 

@@ -80,5 +80,9 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _client.GetPaged<TResponse>(request);
         }
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

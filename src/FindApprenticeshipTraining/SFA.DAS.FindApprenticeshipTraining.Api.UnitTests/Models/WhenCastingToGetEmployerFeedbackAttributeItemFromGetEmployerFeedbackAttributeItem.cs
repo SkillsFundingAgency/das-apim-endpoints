@@ -10,8 +10,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         public void Then_The_Fields_Are_Mapped(InnerApi.Responses.GetEmployerFeedbackAttributeItem source)
         {
             var actual = (Api.Models.GetEmployerFeedbackAttributeItem) source;
-            
-            actual.Should().BeEquivalentTo(source);
+
+            actual.Should().BeEquivalentTo(new
+            {
+                AttributeName = source.Name,
+                source.Strength,
+                source.Weakness
+            });
         }
         [Test, AutoData]
         public void Then_The_Totals_Are_Added(InnerApi.Responses.GetEmployerFeedbackAttributeItem source)

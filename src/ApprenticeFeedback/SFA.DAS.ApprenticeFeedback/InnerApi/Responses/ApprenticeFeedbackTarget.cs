@@ -24,5 +24,6 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Responses
             Active = 2,
             Complete = 3,
         }
+        public bool Withdrawn { get; set; }
     }
 }

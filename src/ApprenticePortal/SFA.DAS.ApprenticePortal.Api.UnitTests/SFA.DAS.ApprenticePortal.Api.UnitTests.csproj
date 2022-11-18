@@ -24,6 +24,7 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>
