@@ -13,30 +13,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetTrainingCourseProviderResult providerStandardItem)
         {
-            providerStandardItem.ProviderStandard.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
-            {
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Good",
-                    FeedbackCount = 92,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Excellent",
-                    FeedbackCount = 29,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Poor",
-                    FeedbackCount = 7,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Very Poor",
-                    FeedbackCount = 1,
-                }
-            };
-
+            providerStandardItem.ProviderStandard.EmployerFeedback.ReviewCount = 129;
+            providerStandardItem.ProviderStandard.EmployerFeedback.Stars = 3;
             providerStandardItem.ProviderStandard.ApprenticeFeedback.ReviewCount = 129;
             providerStandardItem.ProviderStandard.ApprenticeFeedback.Stars = 3;
 

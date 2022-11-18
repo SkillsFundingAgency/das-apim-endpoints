@@ -6,13 +6,16 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
     {
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
+        public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
+
 
         public static implicit operator GetCohortDetailsResponse(GetCohortDetailsQueryResult source)
         {
             return new GetCohortDetailsResponse
             {
                 LegalEntityName = source.LegalEntityName,
-                ProviderName = source.ProviderName
+                ProviderName = source.ProviderName,
+                HasUnavailableFlexiJobAgencyDeliveryModel = source.HasUnavailableFlexiJobAgencyDeliveryModel
             };
         }
     }

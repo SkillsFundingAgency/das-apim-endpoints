@@ -16,6 +16,8 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
             services.Configure<ApimDeveloperApiConfiguration>(configuration.GetSection(nameof(ApimDeveloperApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApimDeveloperApiConfiguration>>().Value);
             services.Configure<ApimDeveloperMessagingConfiguration>(configuration.GetSection(nameof(ApimDeveloperMessagingConfiguration)));

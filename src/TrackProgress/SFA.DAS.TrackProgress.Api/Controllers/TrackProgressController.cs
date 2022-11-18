@@ -29,7 +29,7 @@ public class TrackProgressController : ControllerBase
             if (items.Length >= 2)
                 _providerId = items[1];
             else
-                _providerId = "No providerId supplied";
+                _providerId = $"{value} is not a valid providerId";
         }
     }
 
