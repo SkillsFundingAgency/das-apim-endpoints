@@ -12,30 +12,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
-            shortlistItem.ProviderDetails.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
-            {
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Good",
-                    FeedbackCount = 92,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Excellent",
-                    FeedbackCount = 29,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Poor",
-                    FeedbackCount = 7,
-                },
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Very Poor",
-                    FeedbackCount = 1,
-                }
-            };
 
+            shortlistItem.ProviderDetails.EmployerFeedback.ReviewCount = 129;
+            shortlistItem.ProviderDetails.EmployerFeedback.Stars = 3;
             shortlistItem.ProviderDetails.ApprenticeFeedback.ReviewCount = 129;
             shortlistItem.ProviderDetails.ApprenticeFeedback.Stars = 3;
 

@@ -24,6 +24,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string TrainingCourseOption { get; set; }
 
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
@@ -41,10 +42,12 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
 
         public bool IsContinuation { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool HasUnavailableDeliveryModel { get; set; }
         public bool? RecognisePriorLearning { get; set; }
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -63,6 +66,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 StandardUId = source.StandardUId,
                 CourseName = source.CourseName,
                 StartDate = source.StartDate,
+                ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
                 Cost = source.Cost,
                 EmploymentPrice = source.EmploymentPrice,
@@ -75,10 +79,12 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 LegalEntityName = source.LegalEntityName,
                 IsContinuation = source.IsContinuation,
                 HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions,
+                HasUnavailableDeliveryModel = source.HasUnavailableDeliveryModel,
                 RecognisePriorLearning = source.RecognisePriorLearning,
                 DurationReducedBy = source.DurationReducedBy,
                 PriceReducedBy = source.PriceReducedBy,
-                RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered
+                RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }

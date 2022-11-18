@@ -47,6 +47,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             {
                 s.ApprenticeFeedback.ReviewCount = 0;
                 s.ApprenticeFeedback.Stars = 0;
+                s.EmployerFeedback.ReviewCount = 0;
+                s.EmployerFeedback.Stars = 0;
             });
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
@@ -92,6 +94,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             }).ToList();
             provider1.ApprenticeFeedback.ReviewCount = 0;
             provider1.ApprenticeFeedback.Stars = 0;
+            provider1.EmployerFeedback.ReviewCount = 0;
+            provider1.EmployerFeedback.Stars = 0;
             provider2.DeliveryTypes = provider2.DeliveryTypes.Select(c =>
             {
                 c.DeliveryModes = "DayRelease";
@@ -99,6 +103,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             }).ToList();
             provider2.ApprenticeFeedback.ReviewCount = 0;
             provider2.ApprenticeFeedback.Stars = 0;
+            provider2.EmployerFeedback.ReviewCount = 0;
+            provider2.EmployerFeedback.Stars = 0;
             mediatorResult.Providers = new List<GetProvidersListItem> { provider1, provider2 };
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -136,30 +142,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             };
             request.ApprenticeProviderRatings = new List<FeedbackRatingType>();
             request.DeliveryModes = null;
-            provider1.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
-            {
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Excellent",
-                    FeedbackCount = 1,
-                }
-            };
-            provider2.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
-            {
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Poor",
-                    FeedbackCount = 1,
-                }
-            };
-            provider3.EmployerFeedback.FeedbackRatings = new List<GetEmployerFeedbackRatingItem>
-            {
-                new GetEmployerFeedbackRatingItem
-                {
-                    FeedbackName = "Good",
-                    FeedbackCount = 1,
-                }
-            };
+            provider1.EmployerFeedback.ReviewCount = 3;
+            provider1.EmployerFeedback.Stars = 3;
+
+            provider2.EmployerFeedback.ReviewCount = 1;
+            provider2.EmployerFeedback.Stars = 1;
+
+            provider3.EmployerFeedback.ReviewCount = 1;
+            provider3.EmployerFeedback.Stars = 3;
+
             mediatorResult.Providers = new List<GetProvidersListItem> { provider1, provider2, provider3 };
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -195,6 +186,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                 FeedbackRatingType.Excellent,
                 FeedbackRatingType.Good
             };
+            request.EmployerProviderRatings = new List<FeedbackRatingType>();
 
             request.DeliveryModes = null;
             provider1.ApprenticeFeedback.Stars = 4;

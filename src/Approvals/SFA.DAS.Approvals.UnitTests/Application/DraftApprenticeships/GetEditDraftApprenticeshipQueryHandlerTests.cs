@@ -11,7 +11,6 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -55,7 +54,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x => x.GetDeliveryModels(
                 It.Is<long>(p => p == _cohort.ProviderId),
-                It.Is<string>(s => s == _draftApprenticeship.CourseCode),
+                It.Is<string>(s => s == _query.CourseCode),
                 It.Is<long>(ale => ale == _cohort.AccountLegalEntityId),
                 It.Is<long?>(a => a == _draftApprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
@@ -170,6 +169,27 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             Assert.AreEqual(_draftApprenticeship.IsContinuation, result.IsContinuation);
         }
 
+        [Test]
+        public async Task Handle_StartDate_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.StartDate, result.StartDate);
+        }
+
+        [Test]
+        public async Task Handle_ActualStartDate_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.ActualStartDate, result.ActualStartDate);
+        }
+
+        [Test]
+        public async Task Handle_IsOnFlexiPaymentPilot_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
+
         [TestCase(0, false)]
         [TestCase(1, false)]
         [TestCase(2, true)]
@@ -181,6 +201,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
 
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Handle_HasUnavailableDeliveryModel_Is_Mapped(bool hasUnavailableDeliveryModel)
+        {
+            _deliveryModels.Clear();
+            if (!hasUnavailableDeliveryModel)
+            {
+                _deliveryModels.Add(_draftApprenticeship.DeliveryModel.ToString());
+            }
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(hasUnavailableDeliveryModel, result.HasUnavailableDeliveryModel);
         }
 
         [Test]

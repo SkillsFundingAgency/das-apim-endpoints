@@ -1,13 +1,12 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer
@@ -15,14 +14,12 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
     public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
-        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
-        private readonly FeatureToggles _featureToggles;
+        private readonly IFjaaService _fjaaService;
 
-        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, FeatureToggles featureToggles)
+        public GetConfirmEmployerQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFjaaService fjaaService)
         {
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
-            _fjaaClient = fjaaClient;
-            _featureToggles = featureToggles;
+            _fjaaService = fjaaService;
         }
 
         public async Task<GetConfirmEmployerQueryResult> Handle(GetConfirmEmployerQuery request, CancellationToken cancellationToken)
@@ -35,7 +32,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
             var apprenticeship = apprenticeshipTask.Result;
             var accountLegalEntity = accountLegalEntityTask.Result;
 
-            var isFlexiJobAgency = await IsLegalEntityOnFjaaRegister(accountLegalEntity.MaLegalEntityId);
+            var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
 
             if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
@@ -50,24 +47,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
                 IsFlexiJobAgency = isFlexiJobAgency,
                 DeliveryModel = apprenticeship.DeliveryModel
             };
-        }
-
-        private async Task<bool> IsLegalEntityOnFjaaRegister(long legalEntityId)
-        {
-            if (!_featureToggles.ApprovalsFeatureToggleFjaaEnabled)
-            {
-                return false;
-            }
-
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(legalEntityId));
-
-            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
-
-            agencyRequest.EnsureSuccessStatusCode();
-            return true;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
-            act.Should().Throw<ArgumentException>();
+            act.Should().ThrowAsync<ArgumentException>();
         }
 
         [Test, MoqAutoData]

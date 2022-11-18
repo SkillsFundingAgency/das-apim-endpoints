@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -16,23 +17,31 @@ namespace SFA.DAS.Campaign.Application.Queries.Standards
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly ICourseService _courseService;
 
-        public GetStandardsQueryHandler (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICourseService courseService)
+        public GetStandardsQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICourseService courseService)
         {
             _coursesApiClient = coursesApiClient;
             _courseService = courseService;
         }
         public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
-        {
-            var sector = await GetSectorId(request.Sector);
+       {
+            var apiRequest = new GetAvailableToStartStandardsListRequest();
 
-            if (sector == null)
+            if (!string.IsNullOrWhiteSpace(request.Sector))
             {
-                return new GetStandardsQueryResult();
-            }
+                var sector = await GetSectorId(request.Sector);
+
+                if (sector == null)
+                {
+                    return new GetStandardsQueryResult();
+                }
+
+                apiRequest.RouteIds = new List<int> { sector.Value };
+
+            }     
             
             var standardsResponse =
-                await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest {RouteIds = new List<int> {sector.Value}});
-            
+                await _coursesApiClient.Get<GetStandardsListResponse>(apiRequest);
+
             return new GetStandardsQueryResult
             {
                 Standards = standardsResponse.Standards

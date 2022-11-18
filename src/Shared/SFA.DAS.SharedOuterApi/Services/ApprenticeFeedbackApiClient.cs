@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
@@ -66,7 +66,10 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.Delete(request);
         }
-
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        {
+            throw new NotImplementedException();
+        }
         
         // Methods Now Obsolete.
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)

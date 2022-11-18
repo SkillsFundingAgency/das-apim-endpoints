@@ -15,34 +15,27 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Configuration;
 
 namespace SFA.DAS.VacanciesManage.Api
 {
-    public class Startup
+    public static class Startup
     {
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _env;
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public static void ConfigureServices(
+            IServiceCollection services, 
+            IWebHostEnvironment environment, 
+            IConfigurationRoot configuration)
         {
-            _env = env;
-            _configuration = configuration.BuildSharedConfiguration();
-        }
+            services.AddSingleton(environment);
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton(_env);
+            services.AddConfigurationOptions(configuration);
 
-            services.AddConfigurationOptions(_configuration);
-
-            if (!_configuration.IsLocalOrDev())
+            if (!configuration.IsLocalOrDev())
             {
-                var azureAdConfiguration = _configuration
+                var azureAdConfiguration = configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
                 var policies = new Dictionary<string, string>
@@ -62,36 +55,42 @@ namespace SFA.DAS.VacanciesManage.Api
                     options.LowercaseQueryStrings = true;
                 }).AddMvc(o =>
                 {
-                    if (!_configuration.IsLocalOrDev())
+                    if (!configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true)
-                .AddJsonOptions(options=>options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
-            if (_configuration["Environment"] != "DEV")
+            if (configuration["Environment"] != "DEV")
             {
-                services.AddHealthChecks();
+                services.AddHealthChecks()
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
             
-            if (_configuration.IsLocalOrDev())
+            if (configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
             }
             else
             {
-                var configuration = _configuration
+                var vacanciesManageConfiguration = configuration
                     .GetSection("VacanciesManageConfiguration")
                     .Get<VacanciesManageConfiguration>();
 
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                    options.Configuration = vacanciesManageConfiguration.ApimEndpointsRedisConnectionString;
                 });
             }
             
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560
+            //services.AddApplicationInsightsTelemetry(options => options.ConnectionString = configuration.GetConnectionString("ApplicationInsights"));
+            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
@@ -100,18 +99,12 @@ namespace SFA.DAS.VacanciesManage.Api
                 c.IncludeXmlComments(filePath);
             });
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        
+        public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseAuthentication();
 
-            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
             {
                 app.UseHealthChecks();
             }

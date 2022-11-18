@@ -8,7 +8,6 @@ trigger:
     - azure
     - pipeline-templates
     - src/Forecasting
-    - src/Shared*
 
 pr:
   autoCancel: true
@@ -20,7 +19,6 @@ pr:
     - azure
     - pipeline-templates
     - src/Forecasting
-    - src/Shared*
 
 
 variables:
@@ -33,7 +31,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.62
+    ref: refs/tags/1.0.5
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github

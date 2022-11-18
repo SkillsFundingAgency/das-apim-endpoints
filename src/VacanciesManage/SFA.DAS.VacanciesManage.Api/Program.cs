@@ -1,23 +1,14 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using NLog.Web;
+using Microsoft.AspNetCore.Builder;
+using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.VacanciesManage.Api;
 
-namespace SFA.DAS.VacanciesManage.Api
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseNLog();
+var configuration = builder.Configuration.BuildSharedConfiguration();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>()
-                        .UseNLog();
-                });
-    }
-}
+Startup.ConfigureServices(builder.Services, builder.Environment, configuration);
+var app = builder.Build();
+Startup.ConfigureApp(app, configuration);
+
+app.Run();

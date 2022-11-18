@@ -15,9 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="6.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.283" />
+      <PackageReference Include="MediatR"  />
+      <PackageReference Include="Newtonsoft.Json" />
+      <PackageReference Include="SFA.DAS.Common.Domain" />
     </ItemGroup>
 
 </Project>

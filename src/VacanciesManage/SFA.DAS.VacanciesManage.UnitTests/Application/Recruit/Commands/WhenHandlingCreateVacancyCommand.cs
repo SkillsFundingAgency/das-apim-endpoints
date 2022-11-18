@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -151,6 +150,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                         It.Is<PostValidateVacancyRequest>(c => 
                             c.PostUrl.Contains($"{command.Id.ToString()}/validate?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
                             && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
+                            && ((PostVacancyRequestData)c.Data).AccountType.Equals(command.PostVacancyRequestData.AccountType)
                         ),true))
                 .ReturnsAsync(apiResponse);
 
@@ -210,8 +210,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
-                .Which.ErrorContent.Should().Be(errorContent);
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Result.Which.ErrorContent.Should().Be(errorContent);
         }
         
         [Test, MoqAutoData]
@@ -238,7 +238,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<Exception>()
+            act.Should().ThrowAsync<Exception>()
                 .WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})");
         }
     }
