@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SFA.DAS.Roatp.ProviderModeration.OuterApi": {
+    "SFA.DAS.RoatpProviderModeration.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
