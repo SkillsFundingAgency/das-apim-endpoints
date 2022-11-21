@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 ? _shortlistApiClient.Get<List<ShortlistItem>>(new GetShortlistForUserRequest(request.ShortlistUserId.Value))
                 : Task.FromResult(new List<ShortlistItem>());
 
-            await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistCountTask, apprenticeFeedbackTask, employerFeedbackTask);
+            await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
 
             var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result, shortlistTask.Result);
 
@@ -72,9 +72,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 providerDetails.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
             }
             
-            if(providerTask.Result != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
+            if(providerDetails != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
             {
-                providerTask.Result.EmployerFeedback = employerFeedbackTask.Result.Body;
+                providerDetails.EmployerFeedback = employerFeedbackTask.Result.Body;
             }
 
             var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result);
