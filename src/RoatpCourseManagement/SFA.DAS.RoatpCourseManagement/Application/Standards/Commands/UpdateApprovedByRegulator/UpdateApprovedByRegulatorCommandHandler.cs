@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -23,6 +22,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApp
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 IsApprovedByRegulator = command.IsApprovedByRegulator
             };
 
