@@ -1,0 +1,49 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
+    - src/RoatpProviderModeration
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - azure
+    - pipeline-templates
+    - src/RoatpProviderModeration
+
+variables:
+- group: Release Management Resources
+- group: RELEASE das-apim-endpoints
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.7
+    endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/5.0.8
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
+
+stages:
+- template: ../../pipeline-templates/stage/outerapi-pipeline.yml
+  parameters:
+    OuterApiName: RoatpProviderModeration
