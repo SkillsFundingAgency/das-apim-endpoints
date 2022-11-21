@@ -11,14 +11,14 @@ namespace SFA.DAS.Reservations.Application.Transfers.Queries.GetTransferValidity
 {
     public class GetTransferValidityQueryHandler : IRequestHandler<GetTransferValidityQuery, GetTransferValidityQueryResult>
     {
-        private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
+        private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
         private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
 
         private const string PledgeApplicationAcceptedStatus = "Accepted";
 
-        public GetTransferValidityQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+        public GetTransferValidityQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
         {
-            _accountsApiClient = accountsApiClient;
+            _financeApiClient = financeApiClient;
             _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
         }
         public async Task<GetTransferValidityQueryResult> Handle(GetTransferValidityQuery request, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace SFA.DAS.Reservations.Application.Transfers.Queries.GetTransferValidity
             }
 
             var apiRequest = new GetTransferConnectionsRequest(request.ReceiverId);
-            var connections = await _accountsApiClient.GetAll<TransferConnection>(apiRequest);
+            var connections = await _financeApiClient.GetAll<TransferConnection>(apiRequest);
             return new GetTransferValidityQueryResult
             {
                 IsValid = connections.Any(x => x.FundingEmployerAccountId == request.SenderId)

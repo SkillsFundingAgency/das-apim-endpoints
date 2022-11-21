@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.AddNation
 
         public async Task<Unit> Handle(AddNationalLocationToProviderCourseLocationsCommand request, CancellationToken cancellationToken)
         {
-            var apiRequest = new AddNationalLocationToProviderCourseLocationsRequest(request.Ukprn, request.LarsCode, request.UserId);
+            var apiRequest = new AddNationalLocationToProviderCourseLocationsRequest(request.Ukprn, request.LarsCode, request.UserId, request.UserDisplayName);
             await _innerApiClient.PostWithResponseCode<int>(apiRequest);
             return Unit.Value;
         }
