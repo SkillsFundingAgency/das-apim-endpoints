@@ -41,7 +41,9 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
         {
             return new GetEnglishFractionResponse
             {
-                Fractions = source.Fractions?.Select(x => (DasEnglishFraction)x)
+                Fractions = source.Fractions?
+                    .Where(x => x != null)
+                    .Select(x => (DasEnglishFraction)x)
             };
         }
     }
