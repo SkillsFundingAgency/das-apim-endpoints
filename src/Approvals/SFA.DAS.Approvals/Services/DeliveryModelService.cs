@@ -14,6 +14,7 @@ namespace SFA.DAS.Approvals.Services
     public interface IDeliveryModelService
     {
         Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
+        Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship);
     }
 
     public class DeliveryModelService : IDeliveryModelService
@@ -59,6 +60,24 @@ namespace SFA.DAS.Approvals.Services
             }
 
             return courseDeliveryModels;
+        }
+
+        public async Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship)
+        {
+            if (apprenticeship.HasHadDataLockSuccess)
+            {
+                return new List<string> { apprenticeship.DeliveryModel };
+            }
+
+            var result = await GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode,
+                apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+
+            if (apprenticeship.DeliveryModel == DeliveryModelStringTypes.FlexiJobAgency && !result.Contains(apprenticeship.DeliveryModel))
+            {
+                result.Add(DeliveryModelStringTypes.FlexiJobAgency);
+            }
+
+            return result;
         }
 
         private async Task<List<string>> GetCourseDeliveryModels(long providerId, string trainingCode)
