@@ -8,17 +8,17 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDelet
     {
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
-
         public string UserId { get; set; }
+
         public DeleteProviderCourseLocationOption DeleteProviderCourseLocationOption { get; set; }
 
         public static implicit operator ProviderCourseLocationsBulkDeleteRequest(BulkDeleteProviderCourseLocationsCommand command) 
             => new ProviderCourseLocationsBulkDeleteRequest
             {
                 DeleteProviderCourseLocationOption = command.DeleteProviderCourseLocationOption,
-                UserId = command.UserId,
+                Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
-                Ukprn = command.Ukprn
+                UserId = command.UserId,
             };
     }
 }
