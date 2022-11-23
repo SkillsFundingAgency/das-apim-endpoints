@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
@@ -9,7 +7,6 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Services
@@ -22,15 +19,13 @@ namespace SFA.DAS.Approvals.Services
     public class DeliveryModelService : IDeliveryModelService
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _apiClient;
-        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ILogger<DeliveryModelService> _logger;
         private readonly IFjaaService _fjaaService;
 
-        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, IFjaaService fjaaService)
+        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, IFjaaService fjaaService)
         {
             _apiClient = apiClient;
-            _fjaaClient = fjaaClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _logger = logger;
             _fjaaService = fjaaService;
