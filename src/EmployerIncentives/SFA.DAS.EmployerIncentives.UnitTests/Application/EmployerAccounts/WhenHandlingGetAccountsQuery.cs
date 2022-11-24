@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
+using SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Queries;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
+namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
 {
     public class WhenHandlingGetAccountsQuery
     {
@@ -31,10 +32,15 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse, options => options.Excluding(x => x.FirstName)
-                .Excluding(x => x.LastName)
-                .Excluding(x => x.UserId)
-            );
+            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse,
+                options => options
+                    .Excluding(c => c.FirstName)
+                    .Excluding(c => c.LastName)
+                    .Excluding(c => c.UserId)
+                );
+            actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
+            actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
+            actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
         }
     }
 }
