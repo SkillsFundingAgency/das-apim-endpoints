@@ -32,6 +32,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
         [TestCase(ProviderCoursesApiResponse.Null)]
         [TestCase(ProviderCoursesApiResponse.NullResponse)]
+        [TestCase(ProviderCoursesApiResponse.EmptyList)]
         public async Task Then_Default_Is_Returned_When_ProviderCoursesApi_Returns_Unexpected_Result(ProviderCoursesApiResponse apiResponse)
         {
             var fixture = new DeliveryModelServiceTestFixture()
@@ -136,9 +137,9 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
         }
 
-        //[TestCase(DeliveryModelStringTypes.Regular)]
+        [TestCase(DeliveryModelStringTypes.Regular)]
         [TestCase(DeliveryModelStringTypes.FlexiJobAgency)]
-        //[TestCase(DeliveryModelStringTypes.PortableFlexiJob)]
+        [TestCase(DeliveryModelStringTypes.PortableFlexiJob)]
         public async Task Then_Post_Approval_After_DataLockSuccess_Delivery_Model_Cannot_Be_Changed(string currentDeliveryModel)
         {
             var fixture = new DeliveryModelServiceTestFixture()
@@ -160,8 +161,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
 
             private readonly GetHasPortableFlexiJobOptionResponse _apiResponse;
             private readonly GetAccountLegalEntityResponse _accountLegalEntityResponse;
-            private long _providerId;
-            private long _accountLegalEntityId;
+            private readonly long _providerId;
+            private readonly long _accountLegalEntityId;
             private long? _apprenticeshipId;
             private string _trainingCode;
             private string _currentDeliveryModel;
