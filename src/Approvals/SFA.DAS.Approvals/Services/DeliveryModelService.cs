@@ -13,7 +13,20 @@ namespace SFA.DAS.Approvals.Services
 {
     public interface IDeliveryModelService
     {
+        /// <summary>
+        /// Gets valid delivery model options for given Draft Apprenticeship details (pre approval)
+        /// </summary>
+        /// <param name="providerId"></param>
+        /// <param name="trainingCode"></param>
+        /// <param name="accountLegalEntityId"></param>
+        /// <param name="continuationOfId"></param>
+        /// <returns></returns>
         Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
+        /// <summary>
+        /// Gets valid delivery model options for an Apprenticeship (post approval)
+        /// </summary>
+        /// <param name="apprenticeship"></param>
+        /// <returns></returns>
         Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship);
     }
 
