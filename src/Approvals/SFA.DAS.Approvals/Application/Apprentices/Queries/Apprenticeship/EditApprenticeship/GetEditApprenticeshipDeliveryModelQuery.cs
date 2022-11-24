@@ -22,6 +22,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
     {
         public long ApprenticeshipId { get; set; }
         public string LegalEntityName { get; set; }
+        public string DeliveryModel { get; set; }
         public List<string> DeliveryModels { get; set; }
     }
 
@@ -61,6 +62,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
             return new GetEditApprenticeshipDeliveryModelQueryResult
             {
                 ApprenticeshipId = request.ApprenticeshipId,
+                DeliveryModel = apprenticeship.DeliveryModel,
                 LegalEntityName = apprenticeship.EmployerName,
                 DeliveryModels = deliveryModels
             };

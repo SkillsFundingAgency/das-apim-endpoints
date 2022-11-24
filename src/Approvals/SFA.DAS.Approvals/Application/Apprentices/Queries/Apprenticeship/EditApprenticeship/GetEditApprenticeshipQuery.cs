@@ -55,8 +55,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
                 return null;
             }
 
-            var deliveryModel = await _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
-                apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+            var deliveryModel = await _deliveryModelService.GetDeliveryModels(apprenticeship);
 
             return new GetEditApprenticeshipQueryResult
             {

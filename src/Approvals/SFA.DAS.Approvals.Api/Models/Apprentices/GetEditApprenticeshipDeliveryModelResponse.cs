@@ -6,6 +6,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
     public class GetEditApprenticeshipDeliveryModelResponse
     {
         public string LegalEntityName { get; set; }
+        public string DeliveryModel { get; set; }
         public List<string> DeliveryModels { get; set; }
 
         public static implicit operator GetEditApprenticeshipDeliveryModelResponse(GetEditApprenticeshipDeliveryModelQueryResult source)
@@ -13,6 +14,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             return new GetEditApprenticeshipDeliveryModelResponse
             {
                 LegalEntityName = source.LegalEntityName,
+                DeliveryModel = source.DeliveryModel,
                 DeliveryModels = source.DeliveryModels
             };
         }
