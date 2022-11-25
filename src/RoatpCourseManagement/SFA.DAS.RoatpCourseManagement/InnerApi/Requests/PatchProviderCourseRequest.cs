@@ -12,7 +12,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         private readonly string _userId;
         private readonly string _userDisplayName;
 
-        public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}/?userId={HttpUtility.UrlEncode(_userId)}&userDisplayName={HttpUtility.UrlEncode(_userDisplayName)}";
+        public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}?userId={HttpUtility.UrlEncode(_userId)}&userDisplayName={HttpUtility.UrlEncode(_userDisplayName)}";
 
         public List<PatchOperation> Data { get; set; }
 

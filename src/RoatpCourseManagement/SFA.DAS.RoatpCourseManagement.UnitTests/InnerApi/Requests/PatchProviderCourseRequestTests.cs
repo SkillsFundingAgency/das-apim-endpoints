@@ -21,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
             Assert.IsTrue(request.Data.Any(x => x.Path == "ContactUsPhoneNumber"));
             Assert.IsTrue(request.Data.Any(x => x.Path == "StandardInfoUrl"));
             Assert.IsTrue(request.Data.Any(x => x.Path == "IsApprovedByRegulator"));
-            request.PatchUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}/?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
+            request.PatchUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
         }
 
         [TestCase("test@test.com", "1234567890", "http://www.google.com/contact.us", "http://www.google.com", true, 5)]
