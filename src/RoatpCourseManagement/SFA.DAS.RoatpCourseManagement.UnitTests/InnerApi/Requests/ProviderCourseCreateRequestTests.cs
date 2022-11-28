@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
 
             request.Ukprn.Should().Be(data.Ukprn);
             request.LarsCode.Should().Be(data.LarsCode);
-            request.PostUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
+            request.PostUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}/?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
             request.Data.Should().Be(data);
         }
     }
