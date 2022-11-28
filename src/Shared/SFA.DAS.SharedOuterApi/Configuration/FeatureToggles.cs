@@ -6,6 +6,6 @@ namespace SFA.DAS.SharedOuterApi.Configuration
 {
     public class FeatureToggles
     {
-        public bool FeatureToggleRoatpStandardsEnabled { get; set; }
+        public bool RoatpStandardsEnabled { get; set; }
     }
 }

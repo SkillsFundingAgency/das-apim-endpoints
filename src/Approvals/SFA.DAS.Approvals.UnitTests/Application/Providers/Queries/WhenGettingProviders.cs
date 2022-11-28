@@ -24,7 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
             FeatureToggles featureToggles
         )
         {
-            featureToggles.FeatureToggleRoatpStandardsEnabled = false;
+            featureToggles.RoatpStandardsEnabled = false;
             GetProvidersQueryHandler handler = new GetProvidersQueryHandler(apiClient.Object, roatpApiClient.Object, featureToggles);
             apiClient.Setup(x => x.Get<GetProvidersListResponse>(It.IsAny<GetProvidersRequest>())).ReturnsAsync(apiResponse);
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
             FeatureToggles featureToggles
         )
         {
-            featureToggles.FeatureToggleRoatpStandardsEnabled = true;
+            featureToggles.RoatpStandardsEnabled = true;
             GetProvidersQueryHandler handler = new GetProvidersQueryHandler(apiClient.Object, roatpApiClient.Object, featureToggles);
             roatpApiClient.Setup(x => x.Get<GetRoatpProvidersListResponse>(It.IsAny<GetProvidersRequest>())).ReturnsAsync(apiResponse);
 

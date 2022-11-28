@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
 
         public async Task<GetProvidersResult> Handle(GetProvidersQuery request, CancellationToken cancellationToken)
         {
-            if (_featureToggles.FeatureToggleRoatpStandardsEnabled)
+            if (_featureToggles.RoatpStandardsEnabled)
             {
                 var result = await _roatpApiClient.Get<GetRoatpProvidersListResponse>(new GetProvidersRequest());
 
