@@ -23,4 +23,26 @@
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.PublicSectorReporting\SFA.DAS.PublicSectorReporting.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="nlog.Debug.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+        <None Include="nlog.Release.config">
+            <IsTransformFile>true</IsTransformFile>
+            <DependentUpon>nlog.config</DependentUpon>
+        </None>
+        <Content Update="nlog.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TransformOnBuild>true</TransformOnBuild>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="appsettings.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Update="appsettings.Development.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
 </Project>
