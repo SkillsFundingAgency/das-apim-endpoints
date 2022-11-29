@@ -9,6 +9,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDelet
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
 
         public DeleteProviderCourseLocationOption DeleteProviderCourseLocationOption { get; set; }
 
@@ -19,6 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.BulkDelet
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName
             };
     }
 }
