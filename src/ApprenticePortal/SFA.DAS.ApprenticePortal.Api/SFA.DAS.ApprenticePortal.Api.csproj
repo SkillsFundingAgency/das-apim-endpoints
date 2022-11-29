@@ -11,8 +11,8 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" />
-        <PackageReference Include="MediatR" VersionOverride="10.0.1" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" VersionOverride="10.0.1" />
+        <PackageReference Include="MediatR" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
