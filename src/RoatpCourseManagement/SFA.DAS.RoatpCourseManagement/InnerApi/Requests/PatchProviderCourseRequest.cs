@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
@@ -8,8 +9,10 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         private const string Replace = "replace";
         private readonly int _ukprn;
         private readonly int _larsCode;
+        private readonly string _userId;
+        private readonly string _userDisplayName;
 
-        public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}";
+        public string PatchUrl => $"providers/{_ukprn}/courses/{_larsCode}?userId={HttpUtility.UrlEncode(_userId)}&userDisplayName={HttpUtility.UrlEncode(_userDisplayName)}";
 
         public List<PatchOperation> Data { get; set; }
 
@@ -17,6 +20,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         {
             _ukprn = model.Ukprn;
             _larsCode = model.LarsCode;
+            _userId = model.UserId; 
+            _userDisplayName = model.UserDisplayName;
             Data = BuildDataPatchFromModel(model);
         }
 
