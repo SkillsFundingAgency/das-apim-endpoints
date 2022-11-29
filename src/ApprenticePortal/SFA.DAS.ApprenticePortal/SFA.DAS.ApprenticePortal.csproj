@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MediatR" VersionOverride="10.0.1" />
+	<PackageReference Include="MediatR" />
     <PackageReference Include="SFA.DAS.Common.Domain" />
   </ItemGroup>
 
