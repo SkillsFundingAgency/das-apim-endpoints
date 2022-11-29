@@ -28,7 +28,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
         {
             IEnumerable<GetProvidersListItem> providers;
 
-            if (_featureToggles.RoatpStandardsEnabled)
+            if (_featureToggles.RoatpProvidersEnabled)
             {
                 var result = await _roatpApiClient.Get<GetRoatpProvidersListResponse>(new GetProvidersRequest());
 
