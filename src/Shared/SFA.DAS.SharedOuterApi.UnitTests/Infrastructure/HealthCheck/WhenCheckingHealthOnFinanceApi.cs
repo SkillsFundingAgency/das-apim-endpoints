@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
@@ -18,18 +18,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
     {
         [Test, MoqAutoData]
         public async Task Then_Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> apiClient,
-         HealthCheckContext context,
-         FinanceApiHealthCheck healthCheck)
+            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> apiClient,
+            HealthCheckContext context,
+            FinanceApiHealthCheck healthCheck)
         {
-            //Arrange
-            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
+            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
                 .ReturnsAsync(HttpStatusCode.OK);
 
-            //Act
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
-            //Assert
             actual.Status.Should().Be(HealthStatus.Healthy);
         }
 
@@ -39,14 +36,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             HealthCheckContext context,
             FinanceApiHealthCheck healthCheck)
         {
-            //Arrange
-            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetHealthCheckRequest>()))
+            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
                 .ReturnsAsync(HttpStatusCode.InternalServerError);
 
-            //Act
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
-            //Assert
             actual.Status.Should().Be(HealthStatus.Unhealthy);
         }
     }

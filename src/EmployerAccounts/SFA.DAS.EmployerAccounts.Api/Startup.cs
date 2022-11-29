@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -48,7 +49,8 @@ namespace SFA.DAS.EmployerAccounts.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-            
+
+            services.AddMediatR(typeof(GetEnglishFractionCurrentQuery).Assembly);
             services.AddServiceRegistration();
 
             services
@@ -63,7 +65,8 @@ namespace SFA.DAS.EmployerAccounts.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
+                    .AddCheck<AccountsApiHealthCheck>($"{AccountsApiHealthCheck.AccountsApiHealthCheckDescription} health check")
+                    .AddCheck<FinanceApiHealthCheck>($"{FinanceApiHealthCheck.FinanceApiHealthCheckDescription} health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
@@ -72,7 +75,6 @@ namespace SFA.DAS.EmployerAccounts.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerAccountsOuterApi", Version = "v1" });
             });
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -93,8 +95,8 @@ namespace SFA.DAS.EmployerAccounts.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                   name: "default",
-                   pattern: "{controller?}/{action?}/{id?}");
+                    name: "default",
+                    pattern: "{controller?}/{action?}/{id?}");
 
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions
                 {
