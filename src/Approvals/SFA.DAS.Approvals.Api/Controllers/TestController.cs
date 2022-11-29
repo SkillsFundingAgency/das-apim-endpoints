@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -9,6 +10,13 @@ namespace SFA.DAS.Approvals.Api.Controllers
         
         [HttpGet]
         public IActionResult Index()
+        {
+            return Ok(this.User.Identity.IsAuthenticated);
+        }
+
+        [HttpGet("auth")]
+        [Authorize]
+        public IActionResult Auth()
         {
             return Ok(this.User.Identity.IsAuthenticated);
         }
