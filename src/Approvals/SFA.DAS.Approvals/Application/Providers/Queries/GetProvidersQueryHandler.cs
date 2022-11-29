@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -25,24 +26,26 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
 
         public async Task<GetProvidersResult> Handle(GetProvidersQuery request, CancellationToken cancellationToken)
         {
+            IEnumerable<GetProvidersListItem> providers;
+
             if (_featureToggles.RoatpStandardsEnabled)
             {
                 var result = await _roatpApiClient.Get<GetRoatpProvidersListResponse>(new GetProvidersRequest());
 
-                return new GetProvidersResult
-                {
-                    Providers = result.RegisteredProviders
-                };
+                providers = result.RegisteredProviders;
             }
             else
             {
                 var result = await _apiClient.Get<GetProvidersListResponse>(new GetProvidersRequest());
 
-                return new GetProvidersResult
-                {
-                    Providers = result.Providers
-                };
+                providers = result.Providers;
+
             }
+
+            return new GetProvidersResult
+            {
+                Providers = providers
+            };
         }
     }
 }
