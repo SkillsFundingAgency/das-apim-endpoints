@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         public async Task<IActionResult> GetAll(long cohortId)
         {
             try
-            {
+            { 
                 var result = await _mediator.Send(new GetDraftApprenticeshipsQuery(cohortId));
                 if (result == null)
                 {
