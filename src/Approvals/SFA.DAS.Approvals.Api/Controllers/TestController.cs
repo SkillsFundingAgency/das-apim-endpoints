@@ -11,7 +11,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return Ok(this.User.Identity.IsAuthenticated);
+            return Ok(this.User.Identity);
         }
 
         [HttpGet("auth")]
