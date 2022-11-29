@@ -8,6 +8,7 @@ using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -25,6 +26,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("[controller]/{cohortId}")]
         public async Task<IActionResult> GetAll(long cohortId)
         {
