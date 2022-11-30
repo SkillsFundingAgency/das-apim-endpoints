@@ -64,26 +64,26 @@ namespace SFA.DAS.Approvals.Api
 
             IEnumerable<Claim> claims = from s in list[0].Value.Split(' ')
                                         select new Claim("http://schemas.microsoft.com/identity/claims/scope", s);
-            return Task.FromResult(new ClaimsPrincipal((System.Security.Principal.IIdentity)new ClaimsIdentity(principal.Identity, claims)));
+            return Task.FromResult(new ClaimsPrincipal(new ClaimsIdentity(principal.Identity, claims)));
         }
 
         private void AddProviderOrEmployerClaim(ClaimsPrincipal principal)
         {
-            var role = _httpContextAccessor.HttpContext.Request.Headers["RoleClaim"].FirstOrDefault();
-            if (!string.IsNullOrWhiteSpace(role) && (role.ToLower() == "provider" || role.ToLower() == "employer"))
+            var userParty = _httpContextAccessor.HttpContext.Request.Headers["x-party"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(userParty) && (userParty.ToLower() == "provider" || userParty.ToLower() == "employer"))
             {
                 // Remove existing claim for Role of Provider or Employer
                 var claimsIdentity = principal.Identity as ClaimsIdentity;
                 var claimsToRemove = claimsIdentity.Claims.Where(x => x.Type == ClaimTypes.Role && (x.Value.ToLower() == "provider" || x.Value.ToLower() == "employer"));
-                foreach (var c in claimsToRemove)
+                foreach (var c in claimsToRemove.ToList())
                 {
                     claimsIdentity.RemoveClaim(c);
                 }
 
                 // Add a new claim with provider or employer for role
-                var roleEmployerOrProvider = role.ToLower() == "provider" ? "Provider" : "Employer";
-                var roleClaim = new Claim(ClaimTypes.Role, roleEmployerOrProvider);
-                claimsIdentity.AddClaim(roleClaim);
+                var userPartyEmployerOrProvider = userParty.ToLower() == "provider" ? "Provider" : "Employer";
+                var userPartyClaim = new Claim(ClaimTypes.Role, userPartyEmployerOrProvider);
+                claimsIdentity.AddClaim(userPartyClaim);
             }
         }
     }
