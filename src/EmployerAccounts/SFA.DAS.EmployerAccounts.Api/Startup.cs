@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -14,12 +15,14 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetReservations;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerAccounts.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
@@ -46,7 +49,7 @@ namespace SFA.DAS.EmployerAccounts.Api
                 {
                     {"default", "APIM"}
                 };
-
+               
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 

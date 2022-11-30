@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Application\InnerApi\Requests\" />
       <Folder Include="Application\Services\" />
     </ItemGroup>
 
