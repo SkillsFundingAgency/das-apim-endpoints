@@ -14,7 +14,7 @@
         <PackageReference Include="AutoFixture.NUnit3" />
         <PackageReference Include="CompareNETObjects" />
         <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="MediatR"  />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Moq" />
         <PackageReference Include="nunit" />
         <PackageReference Include="NUnit3TestAdapter" />
