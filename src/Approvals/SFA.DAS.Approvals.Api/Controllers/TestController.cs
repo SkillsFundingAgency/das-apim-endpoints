@@ -22,7 +22,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 result += $"Issuer:{claim.Issuer} - value:{claim.Value} - subject:{claim.Subject} - originalIs:{claim.OriginalIssuer}" + Environment.NewLine;
             }
 
-            return Ok(this.User.Identity);
+            return Ok(result);
         }
 
         [HttpGet("auth")]
