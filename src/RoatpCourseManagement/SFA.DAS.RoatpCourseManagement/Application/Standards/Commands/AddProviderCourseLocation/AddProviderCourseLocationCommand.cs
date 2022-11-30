@@ -8,6 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreatePro
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
         public Guid LocationNavigationId { get; set; }
         public bool? HasDayReleaseDeliveryOption { get; set; }
         public bool? HasBlockReleaseDeliveryOption { get; set; }

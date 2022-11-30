@@ -43,6 +43,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
             services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
+            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
         }
     }
 }
