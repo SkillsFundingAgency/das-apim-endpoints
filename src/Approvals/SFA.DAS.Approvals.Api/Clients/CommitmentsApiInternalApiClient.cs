@@ -6,20 +6,47 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Api.Clients
 {
     public class CommitmentsApiInternalApiClient : InternalApiClient<CommitmentsV2ApiConfiguration>
     {
+        public const string Employer = nameof(Employer);
+        public const string Provider = nameof(Provider);
+
+        private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
         private ILogger<CommitmentsApiInternalApiClient> _logger;
 
         public CommitmentsApiInternalApiClient(IHttpClientFactory httpClientFactory, 
             CommitmentsV2ApiConfiguration apiConfiguration, 
             IAzureClientCredentialHelper azureClientCredentialHelper,
+            Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor,
             ILogger<CommitmentsApiInternalApiClient> logger) 
             : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper)
         {
+            _httpContextAccessor = httpContextAccessor;
             _logger = logger;
+        }
+
+        protected override async Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
+        {
+            await base.AddAuthenticationHeader(httpRequestMessage);
+            var isEmployer = IsUserInRole(Employer);
+            var isProvider = IsUserInRole(Provider);
+
+            if (!isEmployer && !isProvider)
+            {
+                throw new Exception("User must be either provider or employer");
+            }
+
+
+            httpRequestMessage.Headers.Add("RoleClaim", isEmployer ? Employer : Provider);
+        }
+
+        public bool IsUserInRole(string role)
+        {
+            return _httpContextAccessor.HttpContext.User.IsInRole(role);
         }
 
         public override string HandleException(HttpResponseMessage response, string content)
