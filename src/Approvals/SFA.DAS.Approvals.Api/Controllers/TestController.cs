@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Security.Claims;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -11,6 +13,15 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            var result = string.Empty;
+            var claims = this.User.Identity as ClaimsIdentity;
+
+            result = this.User.Identity.AuthenticationType + Environment.NewLine;
+            foreach (var claim in claims.Claims)
+            {
+                result += $"Issuer:{claim.Issuer} - value:{claim.Value} - subject:{claim.Subject} - originalIs:{claim.OriginalIssuer}" + Environment.NewLine;
+            }
+
             return Ok(this.User.Identity);
         }
 
