@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             result = this.User.Identity.AuthenticationType + Environment.NewLine;
             foreach (var claim in claims.Claims)
             {
-                result += $"Issuer:{claim.Issuer} - value:{claim.Value} - subject:{claim.Subject} - originalIs:{claim.OriginalIssuer}" + Environment.NewLine;
+                result += $"Type:{claim.Type} - value:{claim.Value} - subject:{claim.Subject} -Issuer:{claim.Issuer} - originalIs:{claim.OriginalIssuer}" + Environment.NewLine;
             }
 
             return Ok(result);

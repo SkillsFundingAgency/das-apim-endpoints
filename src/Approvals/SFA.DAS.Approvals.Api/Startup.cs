@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Api.Common.Infrastructure.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
 using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
@@ -41,7 +44,7 @@ namespace SFA.DAS.Approvals.Api
 
             services.AddConfigurationOptions(_configuration);
 
-            if (!_configuration.IsLocalOrDev())
+          //  if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
@@ -51,7 +54,7 @@ namespace SFA.DAS.Approvals.Api
                     {"default", "APIM"}
                 };
 
-                services.AddAuthentication(azureAdConfiguration, policies);
+                services.AddAuthentication2(azureAdConfiguration, policies);
             }
 
             services.AddMediatR(typeof(GetStandardsQuery).Assembly);
@@ -66,8 +69,10 @@ namespace SFA.DAS.Approvals.Api
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddControllers().AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            services.AddControllers().AddJsonOptions(options => {
+                
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -96,9 +101,10 @@ namespace SFA.DAS.Approvals.Api
             }
 
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
+           // app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
