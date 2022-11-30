@@ -11,23 +11,44 @@ namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpServiceApiClient<RoatpConfiguration> _roatpApiClient;
+        private readonly FeatureToggles _featureToggles;
 
-        public GetProviderQueryHandler(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public GetProviderQueryHandler(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
+            IRoatpServiceApiClient<RoatpConfiguration> roatpApiClient,
+            FeatureToggles featureToggles)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _roatpApiClient = roatpApiClient;
+            _featureToggles = featureToggles;
         }
 
         public async Task<GetProviderResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            var provider = await _courseDeliveryApiClient.Get<GetProviderResponse>(
-                new GetProviderRequest
-                {
-                    Ukprn = request.Ukprn
-                });
+            GetProviderResponse providers=null;
+
+            if (_featureToggles.RoatpProvidersEnabled)
+            {
+                var provider = await _roatpApiClient.Get<GetRoatpProviderResponseSummary>(
+                    new GetProviderRequest
+                    {
+                        Ukprn = request.Ukprn
+                    });
+
+                if (provider != null) providers = (GetProviderResponse)provider.ProviderSummary;
+            }
+            else
+            {
+                providers = await _courseDeliveryApiClient.Get<GetProviderResponse>(
+                    new GetProviderRequest
+                    {
+                        Ukprn = request.Ukprn
+                    });
+            }
 
             return new GetProviderResult
             {
-                Provider = provider
+                Provider = providers
             };
         }
     }
