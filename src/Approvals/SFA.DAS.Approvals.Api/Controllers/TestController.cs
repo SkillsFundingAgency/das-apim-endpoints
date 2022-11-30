@@ -39,7 +39,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet("Call/Commitment")]
         public async Task<IActionResult> CallCommitmment([FromServices] ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> v2ApiClient)
         {
-            var result = await v2ApiClient.GetWithResponseCode<string>(new CallTestCommitmentApi());
+            var result = await v2ApiClient.GetWithResponseCode<ResponseRole>(new CallTestCommitmentApi());
 
             if (ApiResponseErrorChecking.IsSuccessStatusCode(result.StatusCode))
             {
@@ -48,6 +48,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
             return BadRequest(result);
         }
+    }
+
+    public class ResponseRole
+    {
+        public string Role { get; set; }
     }
 
     public class CallTestCommitmentApi : IGetApiRequest

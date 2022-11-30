@@ -40,8 +40,7 @@ namespace SFA.DAS.Approvals.Api.Clients
                 throw new Exception("User must be either provider or employer");
             }
 
-
-            httpRequestMessage.Headers.Add("RoleClaim", isEmployer ? Employer : Provider);
+            httpRequestMessage.Headers.Add("x-party", isEmployer ? Employer : Provider);
         }
 
         public bool IsUserInRole(string role)
