@@ -1,12 +1,15 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class FinanceApiClient : IFinanceApiClient<FinanceApiConfiguration>
     {
         private readonly IInternalApiClient<FinanceApiConfiguration> _client;
@@ -72,7 +75,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            return _client.PostWithResponseCode<TResponse>(request, includeResponse);
+            return _client.PostWithResponseCode<TResponse>(request);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
