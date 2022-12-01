@@ -26,7 +26,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [Route("[controller]/{cohortId}")]
         public async Task<IActionResult> GetAll(long cohortId)
         {
