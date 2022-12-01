@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, new TrainingProviderResponse[0]);
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>()
+                .Should().ThrowAsync<HttpRequestContentException>()
                 .WithMessage($"Training Provider Id {trainingProviderId} not found");
         }
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, results);
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>()
+                .Should().ThrowAsync<HttpRequestContentException>()
                 .WithMessage($"Training Provider Id {trainingProviderId} finds multiple matches");
         }
 
@@ -62,7 +62,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, null, HttpStatusCode.InternalServerError, "some internal error");
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>().WithMessage("some internal error");
+                .Should().ThrowAsync<HttpRequestContentException>().WithMessage("some internal error");
         }
 
         private void ClientReturnsSearchWith(

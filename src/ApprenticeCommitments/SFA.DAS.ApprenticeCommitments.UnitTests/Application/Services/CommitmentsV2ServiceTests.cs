@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
                 .ReturnsAsync(new ApiResponse<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>(
                     null, HttpStatusCode.NotFound, ""));
             var sut = new CommitmentsV2Service(client.Object);
-            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().ThrowAsync<HttpRequestContentException>();
         }
 
         [Test, AutoData]
@@ -40,7 +40,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsApprenticeshipWith(client, accountId - 1, apprenticeshipId);
 
             var sut = new CommitmentsV2Service(client.Object);
-            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().Throw<HttpRequestContentException>();
+            sut.Invoking((s) => s.GetApprenticeshipDetails(accountId, apprenticeshipId)).Should().ThrowAsync<HttpRequestContentException>();
         }
 
         [Test, AutoData]
