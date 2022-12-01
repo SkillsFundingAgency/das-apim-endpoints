@@ -44,7 +44,7 @@ namespace SFA.DAS.Approvals.Api
 
             services.AddConfigurationOptions(_configuration);
 
-          //  if (!_configuration.IsLocalOrDev())
+            if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
@@ -69,10 +69,9 @@ namespace SFA.DAS.Approvals.Api
                     }
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddControllers().AddJsonOptions(options => {
-                
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            services.AddControllers().AddJsonOptions(options =>                 
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -101,10 +100,8 @@ namespace SFA.DAS.Approvals.Api
             }
 
             app.UseAuthentication();
-
             app.UseRouting();
             app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
-           // app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
