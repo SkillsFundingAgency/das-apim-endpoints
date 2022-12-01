@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using NLog.Web;
 using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
@@ -13,7 +14,7 @@ builder.WebHost.UseNLog();
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services.AddAuthentication(configuration);
-
+builder.Services.AddConfigurationOptions(configuration);
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -25,11 +26,10 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services
-    .AddMediatR(typeof(GetProviderQuery).Assembly)
-    .AddSwaggerGen()
-    .AddMediatR(typeof(GetProviderQuery).Assembly);
-
-builder.Services.AddHealthChecks();
+       .AddMediatR(typeof(GetProviderQuery).Assembly)
+       .AddSwaggerGen()
+       .AddHealthChecks();
+builder.Services.AddServiceRegistration();
 
 var app = builder.Build();
 
