@@ -31,7 +31,8 @@ namespace SFA.DAS.Reservations.UnitTests.Application.AccountUsers
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse);
+            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse,
+                options => options.Excluding(x => x.FirstName).Excluding(x => x.LastName).Excluding(c=>c.UserId));
         }
     }
 }

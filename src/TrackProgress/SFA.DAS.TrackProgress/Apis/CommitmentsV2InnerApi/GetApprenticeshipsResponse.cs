@@ -14,6 +14,7 @@ public class GetApprenticeshipsResponse
     {
         public long Id { get; set; }
         public string Uln { get; set; } = string.Empty;
+        public string StandardUId { get; set; } = String.Empty;
         public DateTime StartDate { get; set; }
         public DateTime? StopDate { get; set; }
         public DeliveryModel DeliveryModel { get; set; }

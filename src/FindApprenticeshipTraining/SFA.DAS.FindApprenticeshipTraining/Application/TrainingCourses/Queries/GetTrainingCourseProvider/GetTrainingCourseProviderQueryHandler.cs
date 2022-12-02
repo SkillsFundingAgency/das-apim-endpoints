@@ -16,6 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
+        private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IShortlistService _shortlistService;
         private readonly CacheHelper _cacheHelper;
@@ -24,6 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         public GetTrainingCourseProviderQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
+            IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             ICacheStorageService cacheStorageService,
             IShortlistService shortlistService, 
@@ -31,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
+            _employerFeedbackApiClient = employerFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
             _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
@@ -54,13 +57,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
 
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
+            var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackResponse>(new GetEmployerFeedbackDetailsRequest(request.ProviderId));
 
             var coursesTask = _cacheHelper.GetRequest<GetStandardsListResponse>(_coursesApiClient,
                 new GetAvailableToStartStandardsListRequest(), nameof(GetStandardsListResponse), out var saveToCache);
 
             var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
             
-            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask);
+            await Task.WhenAll(providerTask, coursesTask, providerCoursesTask, ukprnsCount, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
 
             if (providerTask.Result == null && locationTask.Result != null)
             {
@@ -79,10 +83,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                     };    
                 }
             }
-            
-            if(providerTask.Result != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK)
+
+            if(providerTask.Result != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
             {
                 providerTask.Result.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
+            }
+            
+            if(providerTask.Result != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
+            {
+                providerTask.Result.EmployerFeedback = employerFeedbackTask.Result.Body;
             }
 
             await _cacheHelper.UpdateCachedItems(null, null, coursesTask,
