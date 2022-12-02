@@ -45,8 +45,15 @@ app
     .UseSwaggerUI()
     .UseHttpsRedirection()
     .UseAuthentication()
-    .UseAuthorization();
+    .UseAuthorization()
+    .UseRouting();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "api/{controller=Home}/{action=index}");
+
+});
 
 app.Run();
