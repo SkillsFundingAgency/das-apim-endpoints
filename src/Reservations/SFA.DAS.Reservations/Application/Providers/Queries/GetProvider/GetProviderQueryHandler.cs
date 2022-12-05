@@ -25,21 +25,21 @@ namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
 
         public async Task<GetProviderResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            GetProviderResponse providers=null;
+            GetProviderResponse provider=null;
 
             if (_featureToggles.RoatpProvidersEnabled)
             {
-                var provider = await _roatpApiClient.Get<GetRoatpProviderResponseSummary>(
+                var result = await _roatpApiClient.Get<GetRoatpProviderResponseSummary>(
                     new GetProviderRequest
                     {
                         Ukprn = request.Ukprn
                     });
 
-                if (provider != null) providers = (GetProviderResponse)provider.ProviderSummary;
+                if (result != null) provider = (GetProviderResponse)result.ProviderSummary;
             }
             else
             {
-                providers = await _courseDeliveryApiClient.Get<GetProviderResponse>(
+                provider = await _courseDeliveryApiClient.Get<GetProviderResponse>(
                     new GetProviderRequest
                     {
                         Ukprn = request.Ukprn
@@ -48,7 +48,7 @@ namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
 
             return new GetProviderResult
             {
-                Provider = providers
+                Provider = provider
             };
         }
     }
