@@ -57,7 +57,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             response.Id.Should().Be(apprenticeshipId);
         }
 
-        private void ClientReturnsApprenticeshipWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
+        private static void ClientReturnsApprenticeshipWith(Mock<IInternalApiClient<CommitmentsV2Configuration>> client, long accountId, long apprenticeshipId)
         {
             client
                 .Setup(x =>
