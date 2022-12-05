@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="SpecFlow" />
+    <PackageReference Include="SpecFlow.NUnit" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" />
+    <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="coverlet.msbuild">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Funding.Api\SFA.DAS.Funding.Api.csproj" />
+  </ItemGroup>
+
+</Project>
