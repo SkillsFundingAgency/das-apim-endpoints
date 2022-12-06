@@ -25,7 +25,10 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
             var existingProviderLocation = await _innerApiClient.Get<List<ProviderLocationModel>>(new GetAllProviderLocationsQuery(command.Ukprn));
             var existingSubregions = existingProviderLocation.FindAll(l => l.LocationType == LocationType.Regional);
             List<int> newSubregionIdsToAdd = GetProviderLocationsToAdd(command, existingSubregions);
-            await CreateProviderLocations(command, newSubregionIdsToAdd);
+            if(newSubregionIdsToAdd.Count > 0)
+            {
+                await CreateProviderLocations(command, newSubregionIdsToAdd);
+            }
             await DeleteExistingProviderCourseLocationRegions(command);
             await CreateProviderCourseLocationRegions(command);
             await CleanUpUnusedProviderLocations(command);
@@ -40,6 +43,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
             };
 
             var providerLocationBulkDeleteRequest = new ProviderLocationBulkDeleteRequest(providerLocationBulkDeleteModel);
@@ -53,6 +57,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 SelectedSubregionIds = command.SelectedSubRegions,
             };
 
@@ -67,6 +72,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 DeleteProviderCourseLocationOption = DeleteProviderCourseLocationOption.DeleteEmployerLocations
             };
             await _innerApiClient.Delete(providerCourseLocationsBulkDeleteRequest);
@@ -79,6 +85,7 @@ namespace SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateSt
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 SelectedSubregionIds = newSubregionIdsToAdd,
             };
 

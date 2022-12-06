@@ -15,11 +15,11 @@ namespace SFA.DAS.Funding.UnitTests.HealthChecks
     {
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-            [Frozen] Mock<IFundingApprenticeshipEarningsService> employerIncentivesService,
+            [Frozen] Mock<IFundingApprenticeshipEarningsService> fundingService,
             HealthCheckContext context,
             FundingApprenticeshipEarningsHealthCheck healthCheck)
         {
-            employerIncentivesService.Setup(x => x.IsHealthy()).ReturnsAsync(true);
+            fundingService.Setup(x => x.IsHealthy()).ReturnsAsync(true);
             
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
@@ -28,11 +28,11 @@ namespace SFA.DAS.Funding.UnitTests.HealthChecks
         
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
-            [Frozen] Mock<IFundingApprenticeshipEarningsService> employerIncentivesService,
+            [Frozen] Mock<IFundingApprenticeshipEarningsService> fundingService,
             HealthCheckContext context,
             FundingApprenticeshipEarningsHealthCheck healthCheck)
         {
-            employerIncentivesService.Setup(x => x.IsHealthy()).ReturnsAsync(false);
+            fundingService.Setup(x => x.IsHealthy()).ReturnsAsync(false);
             
             var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
 
