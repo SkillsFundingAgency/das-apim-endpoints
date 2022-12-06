@@ -33,6 +33,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Querie
             var result = await sut.Handle(query, new CancellationToken());
             result.Should().NotBeNull();
             result.MarketingInfo.Should().BeEquivalentTo(apiResponseProvider.MarketingInfo);
+            result.ProviderType.Should().Be(apiResponseProvider.ProviderType);
         }
 
         [Test, RecursiveMoqAutoData]
@@ -49,6 +50,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Querie
             var result = await sut.Handle(query, new CancellationToken());
             result.Should().NotBeNull();
             result.MarketingInfo.Should().BeEquivalentTo(apiResponseProvider.MarketingInfo);
+            result.ProviderType.Should().Be(apiResponseProvider.ProviderType);
         }
 
         [Test, RecursiveMoqAutoData]
