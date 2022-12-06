@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpProviderModeration.Api.Controllers;
+using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Models;
 using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +16,13 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
     {
         private const int ValidUkprn = 10000001;
         private const string MarketingInfo = "Marketing info";
+        private const ProviderType mainProvider = ProviderType.MainProvider;
 
         [TestCase(ValidUkprn)]
         public async Task GetProviderCourse_ReturnsExpectedState(int ukprn)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult { MarketingInfo = MarketingInfo});
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult { MarketingInfo = MarketingInfo, ProviderType = mainProvider });
 
             var controller = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
 
@@ -28,7 +30,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual(200, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.AreEqual(200, statusCodeResult?.StatusCode.GetValueOrDefault());
         }
 
         [Test]
@@ -43,7 +45,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
         
             var statusCodeResult = response as IStatusCodeActionResult;
         
-            Assert.AreEqual(404, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.AreEqual(404, statusCodeResult?.StatusCode.GetValueOrDefault());
         }
     }
 }
