@@ -61,6 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         .Excluding(c=>c.EmployerFeedback)
                         .Excluding(c=>c.ApprenticeFeedback)
                         .Excluding(c=>c.ProviderAddress)
+                        .Excluding(c=>c.DeliveryModels)
                 );
             
             model.AdditionalCourses.Courses.Should().BeEquivalentTo(mediatorResult.AdditionalCourses);
