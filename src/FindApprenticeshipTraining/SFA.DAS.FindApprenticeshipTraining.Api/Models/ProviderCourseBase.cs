@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -116,7 +118,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
 
-
+        //TODO This function should be removed in story CSP-282
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
         {
             var hasWorkPlace = false;
@@ -163,6 +165,69 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 }
             }
             return filterDeliveryModes;
+
+        }
+
+
+        protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<DeliveryModel> deliveryModels)
+        {
+            var deliveryTypes = new List<GetDeliveryType>();
+
+            if (deliveryModels == null || deliveryModels.Any() == false)
+            {
+                deliveryTypes.Add(
+                    new GetDeliveryType
+                        {
+                            DeliveryModeType = DeliveryModeType.NotFound
+                        });
+
+                return deliveryTypes;
+            }
+
+            foreach (var deliveryModel in deliveryModels)
+            {
+                var deliveryType = new GetDeliveryType
+                {
+                    Address1 = deliveryModel.Address1,
+                    Address2 = deliveryModel.Address2,
+                    Town = deliveryModel.Town,
+                    County = deliveryModel.County,
+                    Postcode = deliveryModel.Postcode,
+                    DistanceInMiles = 0
+                };
+
+                if (deliveryModel.DistanceInMiles.HasValue)
+                    deliveryType.DistanceInMiles = deliveryModel.DistanceInMiles.Value;
+
+                if (deliveryModel.LocationType == LocationType.National)
+                {
+                    deliveryType.National = true;
+                    deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
+                    deliveryTypes.Add(deliveryType);
+                }
+
+
+                if (deliveryModel.LocationType == LocationType.Regional)
+                {
+                    deliveryType.National = false;
+                    deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
+                    deliveryTypes.Add(deliveryType);
+                }
+
+
+                if (deliveryModel.LocationType == LocationType.Provider)
+                {
+                    deliveryType.National = false;
+                    if (deliveryModel.DayRelease is true)
+                        deliveryType.DeliveryModeType = DeliveryModeType.DayRelease;
+
+                    if (deliveryModel.BlockRelease is true)
+                        deliveryType.DeliveryModeType = DeliveryModeType.BlockRelease;
+                    deliveryTypes.Add(deliveryType);
+                }
+            }
+
+            return deliveryTypes;
 
         }
 

@@ -12,6 +12,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.Extensions.Azure;
+using Microsoft.Azure.Amqp.Framing;
+using System.Diagnostics.Metrics;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -118,23 +123,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
             {
                 //provider found without location
-                return new GetProviderStandardItem()
-                {
-                    DeliveryTypes = new List<GetDeliveryTypeItem>
-                    {
-                        new GetDeliveryTypeItem
-                        {
-                            DeliveryModes = "NotFound"
-                        }
-                    }
-                };
+                return new GetProviderStandardItem();
             }
 
-            var matchingShortlistItem = 
+            var matchingShortlistItem = (ShortlistItem) null;
+            if (shortlistItems != null)
+            {
                 // match the shortlist item by location first
-                shortlistItems.FirstOrDefault(s => s.Ukprn == providerId && s.Larscode == courseId && s.Latitude == latitude && s.Longitude == longitude) 
-                //if not found try to match without location
-                ?? shortlistItems.FirstOrDefault(s => s.Ukprn == providerId && s.Larscode == courseId);
+                matchingShortlistItem = shortlistItems.FirstOrDefault(s =>
+                                            s.Ukprn == providerId && s.Larscode == courseId && s.Latitude == latitude &&
+                                            s.Longitude == longitude)
+                                        //if not found try to match without location
+                                        ?? shortlistItems.FirstOrDefault(s =>
+                                            s.Ukprn == providerId && s.Larscode == courseId);
+            }
+
 
             var result = new GetProviderStandardItem()
             {
@@ -161,11 +164,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 DistanceInMiles = apiResponse.ProviderHeadOfficeDistanceInMiles ?? 0
             };
 
-            result.DeliveryTypes = new List<GetDeliveryTypeItem>()
-            {
 
-            };
 
+            result.DeliveryModels = apiResponse.DeliveryModels;
             return result;
         }
     }

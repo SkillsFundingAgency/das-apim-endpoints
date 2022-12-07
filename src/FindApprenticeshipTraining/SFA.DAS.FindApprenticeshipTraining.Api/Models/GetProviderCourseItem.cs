@@ -21,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
             var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, sectorSubjectArea, level);
-            var deliveryModes = FilterDeliveryModes(source.ProviderStandard.DeliveryTypes);
+            var deliveryModes = FilterDeliveryModes(source.ProviderStandard.DeliveryModels);
             var employerFeedbackResponse = EmployerFeedbackResponse(source.ProviderStandard.EmployerFeedback);
             var apprenticeFeedbackResponse = ApprenticeFeedbackResponse(source.ProviderStandard.ApprenticeFeedback);
                         
@@ -49,7 +49,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public GetProviderCourseItem Map(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
             var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
+            // TODO: CSP-282 will update this to use 'DeliveryModels' instead of 'DeliveryTypes
             var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
+
             var getEmployerFeedbackResponse = EmployerFeedbackResponse(shortlistItem.ProviderDetails.EmployerFeedback);
             var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(shortlistItem.ProviderDetails.ApprenticeFeedback);
             

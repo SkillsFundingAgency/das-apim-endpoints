@@ -1,5 +1,6 @@
 ﻿namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
+    //MFCMFC this is disappearing
     public class CouseLocationModel
     {
         public LocationType LocationType { get; set; }
@@ -13,6 +14,7 @@
         public double? Longitude { get; set; }
     }
 
+    //MFCMFC this is probably going
     public class LocationAddress
     {
         public string Address1 { get; set; }
@@ -26,5 +28,19 @@
         Provider = 0,
         National = 1,
         Regional = 2
+    }
+
+
+    public class DeliveryModel
+    {
+        public LocationType LocationType { get; set; }
+        public bool? DayRelease { get; set; }
+        public bool? BlockRelease { get; set; }
+        public decimal? DistanceInMiles { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Town { get; set; }
+        public string County { get; set; }
+        public string Postcode { get; set; }
     }
 }
