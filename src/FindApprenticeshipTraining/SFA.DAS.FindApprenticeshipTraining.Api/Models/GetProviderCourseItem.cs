@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         public GetProviderCourseItem Map(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
             var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
-            // TODO: CSP-282 will update this to use 'DeliveryModels' instead of 'DeliveryTypes
+
             var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
 
             var getEmployerFeedbackResponse = EmployerFeedbackResponse(shortlistItem.ProviderDetails.EmployerFeedback);

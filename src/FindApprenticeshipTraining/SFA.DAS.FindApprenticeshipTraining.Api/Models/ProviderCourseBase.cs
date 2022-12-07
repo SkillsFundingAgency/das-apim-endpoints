@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -118,7 +116,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
 
-        //TODO This function should be removed in story CSP-282
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
         {
             var hasWorkPlace = false;

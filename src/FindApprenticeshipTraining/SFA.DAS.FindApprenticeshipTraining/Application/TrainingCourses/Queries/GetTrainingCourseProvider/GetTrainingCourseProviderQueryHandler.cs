@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Server.HttpSys;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
@@ -12,11 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using Microsoft.Extensions.Azure;
-using Microsoft.Azure.Amqp.Framing;
-using System.Diagnostics.Metrics;
-using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -129,17 +123,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var matchingShortlistItem = (ShortlistItem) null;
             if (shortlistItems != null)
             {
-                // match the shortlist item by location first
                 matchingShortlistItem = shortlistItems.FirstOrDefault(s =>
                                             s.Ukprn == providerId && s.Larscode == courseId && s.Latitude == latitude &&
                                             s.Longitude == longitude)
-                                        //if not found try to match without location
                                         ?? shortlistItems.FirstOrDefault(s =>
                                             s.Ukprn == providerId && s.Larscode == courseId);
             }
 
 
-            var result = new GetProviderStandardItem()
+            var result = new GetProviderStandardItem
             {
                 Ukprn = apiResponse.Ukprn,
                 Name = apiResponse.Name,
@@ -150,23 +142,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Phone = apiResponse.Phone,
                 StandardId = apiResponse.LarsCode,
                 ShortlistId = matchingShortlistItem?.Id,
-                AchievementRates = apiResponse.AchievementRates
+                AchievementRates = apiResponse.AchievementRates,
+                ProviderAddress = new GetProviderStandardItemAddress
+                {
+                    Address1 = apiResponse.Address1,
+                    Address2 = apiResponse.Address2,
+                    Address3 = apiResponse.Address3,
+                    Address4 = apiResponse.Address4,
+                    Town = apiResponse.Town,
+                    Postcode = apiResponse.Postcode,
+                    DistanceInMiles = apiResponse.ProviderHeadOfficeDistanceInMiles ?? 0
+                },
+                DeliveryModels = apiResponse.DeliveryModels
             };
 
-            result.ProviderAddress = new GetProviderStandardItemAddress
-            {
-                Address1 = apiResponse.Address1,
-                Address2 = apiResponse.Address2,
-                Address3 = apiResponse.Address3,
-                Address4 = apiResponse.Address4,
-                Town = apiResponse.Town,
-                Postcode = apiResponse.Postcode,
-                DistanceInMiles = apiResponse.ProviderHeadOfficeDistanceInMiles ?? 0
-            };
-
-
-
-            result.DeliveryModels = apiResponse.DeliveryModels;
             return result;
         }
     }
