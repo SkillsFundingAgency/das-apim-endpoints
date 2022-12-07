@@ -29,6 +29,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public List<GetAchievementRateItem> AchievementRates { get; set; } = new List<GetAchievementRateItem>();
 
+        //MFCMFC this is probably going
         public List<CouseLocationModel> LocationDetails { get; set; } = new List<CouseLocationModel>();
+
+
+        public List<DeliveryModel> DeliveryModels { get; set; } = new List<DeliveryModel>();
+
+
     }
 }
