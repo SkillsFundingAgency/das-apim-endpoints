@@ -17,22 +17,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortListApiClient;
         private readonly ICachedCoursesService _cachedCoursesService;
 
         public GetShortlistForUserQueryHandler(
             ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
-            ICachedCoursesService cachedCoursesService)
+            ICachedCoursesService cachedCoursesService, IShortlistApiClient<ShortlistApiConfiguration> shortListApiClient)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _cachedCoursesService = cachedCoursesService;
+            _shortListApiClient = shortListApiClient;
         }
 
         public async Task<GetShortlistForUserResult> Handle(GetShortlistForUserQuery request, CancellationToken cancellationToken)
-        {
+        { 
+            var shortlists = await _shortListApiClient.GetAll<ShortlistItem>(new GetShortlistForUserIdRequest(request.ShortlistUserId));
+
             var apiShortlistRequest = new GetShortlistForUserRequest(request.ShortlistUserId);
             var shortListTask = _courseDeliveryApiClient.Get<GetShortlistForUserResponse>(apiShortlistRequest);
             var coursesTask = _cachedCoursesService.GetCourses();

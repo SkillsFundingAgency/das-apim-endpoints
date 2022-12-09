@@ -3,6 +3,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
+
+    //MFCMFC this might go
     public class GetShortlistForUserRequest : IGetApiRequest
     {
         private readonly Guid _shortlistUserId;
