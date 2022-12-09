@@ -16,7 +16,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
     {
         private const int ValidUkprn = 10000001;
         private const string MarketingInfo = "Marketing info";
-        private const ProviderType mainProvider = ProviderType.MainProvider;
+        private const ProviderType mainProvider = ProviderType.Main;
 
         [TestCase(ValidUkprn)]
         public async Task GetProviderCourse_ReturnsExpectedState(int ukprn)

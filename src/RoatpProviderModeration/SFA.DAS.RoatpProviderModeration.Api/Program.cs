@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.OpenApi.Models;
 using NLog.Web;
 using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
