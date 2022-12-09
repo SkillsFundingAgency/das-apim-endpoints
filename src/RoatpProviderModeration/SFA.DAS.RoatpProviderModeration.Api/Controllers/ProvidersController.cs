@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
 
             if (providerResult == null)
             {
-                _logger.LogError($"Provider not found for ukprn {ukprn}");
+                _logger.LogError("Provider not found for ukprn {ukprn}", ukprn);
                 return NotFound();
             }
 

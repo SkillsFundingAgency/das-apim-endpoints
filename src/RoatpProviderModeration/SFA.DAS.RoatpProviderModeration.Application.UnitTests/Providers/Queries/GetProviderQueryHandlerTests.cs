@@ -48,9 +48,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Querie
                 ReturnsAsync(new ApiResponse<GetProviderResponse>(apiResponseProvider, HttpStatusCode.NotFound, ""));
 
             var result = await sut.Handle(query, new CancellationToken());
-            result.Should().NotBeNull();
-            result.MarketingInfo.Should().BeEquivalentTo(apiResponseProvider.MarketingInfo);
-            result.ProviderType.Should().Be(apiResponseProvider.ProviderType);
+            result.Should().BeNull();
         }
 
         [Test, RecursiveMoqAutoData]

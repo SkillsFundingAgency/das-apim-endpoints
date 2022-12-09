@@ -8,7 +8,7 @@ using System.Net;
 
 namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
 {
-    public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderResult>
+    public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
         private readonly ILogger<GetProviderQueryHandler> _logger;
@@ -19,17 +19,23 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
             _logger = logger;
         }
 
-        public async Task<GetProviderResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
+        public async Task<GetProviderQueryResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get Provider request received for ukprn {ukprn}", request.Ukprn);
 
             var response = await _courseManagementApiClient.GetWithResponseCode<GetProviderResponse>(new GetProviderRequest(request.Ukprn));
-            if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NotFound)
+
+            GetProviderQueryResult provider; 
+
+            if (response.StatusCode == HttpStatusCode.OK) provider = response?.Body;
+
+            else if (response.StatusCode == HttpStatusCode.NotFound) provider = null;
+
+            else
             {
                 _logger.LogError("Response status code does not indicate success: {statusCode} - Provider details not found for ukprn: {ukprn}", (int)response.StatusCode, request.Ukprn);
                 throw new InvalidOperationException($"Response status code does not indicate success: {(int)response.StatusCode} - Provider details not found for ukprn: {request.Ukprn}");
             }
-            var provider = response?.Body;
 
             return provider;
         }

@@ -4,7 +4,7 @@ using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Responses;
 
 namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
 {
-    public class GetProviderResult
+    public class GetProviderQueryResult
     {
         public int Ukprn { get; set; }
         public string LegalName { get; set; }
@@ -14,8 +14,8 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
         public DateTime? ProviderStatusUpdatedDate { get; set; }
         public bool IsProviderHasStandard { get; set; } = false;
 
-        public static implicit operator GetProviderResult(GetProviderResponse source) =>
-            new GetProviderResult
+        public static implicit operator GetProviderQueryResult(GetProviderResponse source) =>
+            new GetProviderQueryResult
             {
                 Ukprn = source.Ukprn,
                 LegalName = source.LegalName,
