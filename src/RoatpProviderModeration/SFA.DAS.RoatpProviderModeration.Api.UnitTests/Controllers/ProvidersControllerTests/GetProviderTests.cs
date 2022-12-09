@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
         public async Task GetProviderCourse_ReturnsExpectedState(int ukprn)
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderResult { MarketingInfo = MarketingInfo, ProviderType = mainProvider });
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q =>  q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderQueryResult { MarketingInfo = MarketingInfo, ProviderType = mainProvider });
 
             var controller = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.UnitTests.Controllers.ProvidersCon
         public async Task GetProviderCourse_Null_ResultReturnsNotFound()
         {
             var mediatorMock = new Mock<IMediator>();
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((GetProviderResult)null);
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((GetProviderQueryResult)null);
         
             var controller = new ProvidersController(Mock.Of<ILogger<ProvidersController>>(), mediatorMock.Object);
         

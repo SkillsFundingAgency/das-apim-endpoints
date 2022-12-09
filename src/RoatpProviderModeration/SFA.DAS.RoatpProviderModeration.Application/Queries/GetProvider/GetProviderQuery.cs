@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
 {
-    public class GetProviderQuery : IRequest<GetProviderResult>
+    public class GetProviderQuery : IRequest<GetProviderQueryResult>
     {
         public int Ukprn { get; }
       
