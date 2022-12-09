@@ -4,7 +4,7 @@ using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 
 namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
 {
-    [ApiController]
+    [Route("[controller]")]
     public class ProvidersController : ControllerBase
     {
         private readonly ILogger<ProvidersController> _logger;
@@ -17,7 +17,7 @@ namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
         }
 
         [HttpGet]
-        [Route("providers/{ukprn}")]
+        [Route("{ukprn}")]
         public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
         {
             var providerResult = await _mediator.Send(new GetProviderQuery(ukprn));

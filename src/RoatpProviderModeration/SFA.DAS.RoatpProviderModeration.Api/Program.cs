@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
 using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
@@ -44,15 +45,9 @@ app
     .UseSwaggerUI()
     .UseHttpsRedirection()
     .UseAuthentication()
-    .UseAuthorization()
-    .UseRouting();
+    .UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "api/{controller=Home}/{action=index}");
+    app.MapControllers();
 
-});
 
 app.Run();
