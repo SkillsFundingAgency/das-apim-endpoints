@@ -4,6 +4,7 @@ using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 
 namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class ProvidersController : ControllerBase
     {

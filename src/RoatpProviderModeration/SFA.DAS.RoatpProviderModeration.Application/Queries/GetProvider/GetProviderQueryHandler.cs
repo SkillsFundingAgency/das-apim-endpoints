@@ -25,19 +25,16 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
 
             var response = await _courseManagementApiClient.GetWithResponseCode<GetProviderResponse>(new GetProviderRequest(request.Ukprn));
 
-            GetProviderQueryResult provider; 
-
-            if (response.StatusCode == HttpStatusCode.OK) provider = response?.Body;
-
-            else if (response.StatusCode == HttpStatusCode.NotFound) provider = null;
-
-            else
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
+                return null;
+            }
+            else if(response.StatusCode == HttpStatusCode.OK)
+            {
+                return response?.Body;
+            }
                 _logger.LogError("Response status code does not indicate success: {statusCode} - Provider details not found for ukprn: {ukprn}", (int)response.StatusCode, request.Ukprn);
                 throw new InvalidOperationException($"Response status code does not indicate success: {(int)response.StatusCode} - Provider details not found for ukprn: {request.Ukprn}");
-            }
-
-            return provider;
         }
     }
 }
