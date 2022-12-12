@@ -428,6 +428,9 @@ You will then see the swagger definition with the available operations.
 
 The Apprentice Feedback outer API relies on the following inner APIs:
 * [das-apprentice-feedback-api](https://github.com/SkillsFundingAgency/das-apprentice-feedback-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service/)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 
 You are able to run the API by doing the following:
 * In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
