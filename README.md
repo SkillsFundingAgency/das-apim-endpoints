@@ -21,7 +21,6 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
 
-
 You are able to run the API by doing the following:
 
 
@@ -467,8 +466,24 @@ Data:
 }
 ```
 
-* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger UI with all of the available operations. 
-
-### EPAO Register
+* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger definition with all of the available operations. 
 
 ### Assessors
+
+The Assessors outer API relies on the following inner APIs:
+* [das-commitments/src/CommitmentsV2](https://github.com/SkillsFundingAgency/das-commitments/tree/master/src/CommitmentsV2)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+
+You are able to run the API by doing the following:
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+
+```
+PartitionKey: LOCAL
+RowKey: 
+Data:
+{
+    fill out
+}
+```
+
+* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. 
