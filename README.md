@@ -467,8 +467,7 @@ Data:
 }
 ```
 
-* Start the API project `SFA.DAS.ApprenticeFeedback.Api`
-Starting the API will load up a Swagger UI with all of the available operations. 
+* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger UI with all of the available operations. 
 
 ### EPAO Register
 
