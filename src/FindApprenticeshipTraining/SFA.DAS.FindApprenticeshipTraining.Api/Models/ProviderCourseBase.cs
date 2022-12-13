@@ -123,11 +123,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             var hasBlockRelease = false;
             var isNotFound = false;
             var filterDeliveryModes = new List<GetDeliveryType>();
-
+        
             foreach (var deliveryTypeItem in getDeliveryTypeItems)
             {
                 var deliveryTypeItemSplit = deliveryTypeItem.DeliveryModes.Split("|").ToList();
-
+        
                 foreach (var mappedType in deliveryTypeItemSplit.Select(MapDeliveryType))
                 {
                     var item = CreateDeliveryTypeItem(deliveryTypeItem);
@@ -155,14 +155,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                             break;
                     }
                 }
-
+        
                 if (hasBlockRelease && hasDayRelease && hasWorkPlace)
                 {
                     break;
                 }
             }
             return filterDeliveryModes;
-
+        
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
