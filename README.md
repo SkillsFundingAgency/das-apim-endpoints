@@ -466,7 +466,7 @@ Data:
 }
 ```
 
-* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger definition with all of the available operations. 
+* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger definition with all of the available operations. This service allows apprentices to provide feedback on their training providers. 
 
 ### Assessors
 
@@ -482,8 +482,19 @@ PartitionKey: LOCAL
 RowKey: 
 Data:
 {
-    fill out
+    "AzureAd": {
+        "identifier": "https://******.onmicrosoft.com/******",
+        "tenant": "******.onmicrosoft.com"
+    },
+    "CoursesApiConfiguration": {
+        "identifier": "https://******.onmicrosoft.com/******",
+        "url": "https://localhost:5001"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://localhost:5011/",
+        "identifier": "https://******.onmicrosoft.com/******"
+    }
 }
 ```
 
-* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. 
+* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. This sevice is an API which allows an EPAO (end-point assessment organisation) to access ''Record a grade'' functionality programmatically.
