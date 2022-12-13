@@ -1,10 +1,9 @@
-﻿using SFA.DAS.AANApprentice.Api.AppStart;
-using SFA.DAS.Api.Common.AppStart;
+﻿using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.AANApprentice.Api.AppStart;
+namespace SFA.DAS.ApprenticeAan.Api.AppStart;
 
 [ExcludeFromCodeCoverage]
 public static class AuthenticationServiceExtension

@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SFA.DAS.AANApprentice.Api": {
+    "SFA.DAS.ApprenticeAan.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

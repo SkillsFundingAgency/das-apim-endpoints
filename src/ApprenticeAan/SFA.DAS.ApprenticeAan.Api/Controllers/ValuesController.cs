@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SFA.DAS.AANApprentice.Api.Controllers;
+namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

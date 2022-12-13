@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.AANApprentice.Api.Configuration;
+namespace SFA.DAS.ApprenticeAan.Api.Configuration;
 
 [ExcludeFromCodeCoverage]
 public class AanHubApiConfiguration : IInternalApiConfiguration

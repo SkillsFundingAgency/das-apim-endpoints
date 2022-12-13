@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-    <ProjectReference Include="..\SFA.DAS.AanApprentice.Applicaiton\SFA.DAS.AanApprentice.Applicaiton.csproj" />
+    <ProjectReference Include="..\SFA.DAS.AanApprentice.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj" />
   </ItemGroup>
 
 </Project>
