@@ -33,8 +33,4 @@
       <ProjectReference Include="..\SFA.DAS.Funding\SFA.DAS.Funding.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Models\" />
-    </ItemGroup>
 </Project>

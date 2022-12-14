@@ -12,6 +12,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
             ProviderId = providerId;
             TrainingCode = courseCode;
         }
-        public string GetUrl => $"providers/{ProviderId}/courses/{TrainingCode}";
+        public string GetUrl => $"api/providers/{ProviderId}/courses/{TrainingCode}";
     }
 }
