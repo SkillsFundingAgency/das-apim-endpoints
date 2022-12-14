@@ -18,25 +18,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
 {
     public class WhenCallingGetAllForUser
     {
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Shortlist_For_User_From_Mediator(
-            Guid shortlistUserId,
-            GetShortlistForUserResult mediatorResult,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetShortlistForUserQuery>(query => query.ShortlistUserId == shortlistUserId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorResult);
-
-            var controllerResult = await controller.GetAllForUser(shortlistUserId) as ObjectResult;
-
-            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetShortlistForUserResponse;
-            model!.Shortlist.Should().BeEquivalentTo(mediatorResult.Shortlist.Select(item => (GetShortlistItem)item));
-        }
+        //MFCMFC
+        // [Test, MoqAutoData]
+        // public async Task Then_Gets_Shortlist_For_User_From_Mediator(
+        //     Guid shortlistUserId,
+        //     GetShortlistForUserResult mediatorResult,
+        //     [Frozen] Mock<IMediator> mockMediator,
+        //     [Greedy] ShortlistController controller)
+        // {
+        //     mockMediator
+        //         .Setup(mediator => mediator.Send(
+        //             It.Is<GetShortlistForUserQuery>(query => query.ShortlistUserId == shortlistUserId),
+        //             It.IsAny<CancellationToken>()))
+        //         .ReturnsAsync(mediatorResult);
+        //
+        //     var controllerResult = await controller.GetAllForUser(shortlistUserId) as ObjectResult;
+        //
+        //     controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        //     var model = controllerResult.Value as GetShortlistForUserResponse;
+        //     model!.Shortlist.Should().BeEquivalentTo(mediatorResult.Shortlist.Select(item => (GetShortlistItem)item));
+        // }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
