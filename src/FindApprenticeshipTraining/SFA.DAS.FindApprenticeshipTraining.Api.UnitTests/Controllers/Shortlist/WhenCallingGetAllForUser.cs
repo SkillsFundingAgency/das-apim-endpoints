@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
 {
     public class WhenCallingGetAllForUser
     {
-        //MFCMFC
+        //TODO: uncomment and fix
         // [Test, MoqAutoData]
         // public async Task Then_Gets_Shortlist_For_User_From_Mediator(
         //     Guid shortlistUserId,

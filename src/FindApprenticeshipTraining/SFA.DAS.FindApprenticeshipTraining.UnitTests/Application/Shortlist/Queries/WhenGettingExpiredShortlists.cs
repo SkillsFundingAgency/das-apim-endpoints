@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
 {
     public class WhenGettingExpiredShortlists
     {
-        //MFCMFC
+        //TODO: uncomment and fix
         // [Test, MoqAutoData]
         // public async Task Then_The_Request_Is_Made_And_Ids_Returned_In_The_Response(
         //     GetExpiredShortlistsQuery query,

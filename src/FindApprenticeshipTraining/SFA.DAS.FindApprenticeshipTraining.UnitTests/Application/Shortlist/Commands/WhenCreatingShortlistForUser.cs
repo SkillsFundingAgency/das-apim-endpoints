@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Commands
 {
     public class WhenCreatingShortlistForUser
-    {
-        //MFCMFC
+    {        
+        //TODO: uncomment and fix
         // [Test, MoqAutoData]
         // public async Task Then_Creates_The_Shortlist_From_The_Request_Calling_Shortlist_Api(
         //     PostShortListResponse apiResponse,
