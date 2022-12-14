@@ -37,11 +37,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetShortlistForUserQuery {ShortlistUserId = userId});
-                //var shortlist = result.Shortlist.OrderBy(x => x.ProviderDetails.ProviderAddress.DistanceInMiles);
-                var shortlist = result.Shortlist.OrderBy(x => x.ProviderDetails.ProviderAddress.DistanceInMiles)
+              
+                var shortlist = result.Shortlist.OrderBy(x => x.ProviderDetails.DeliveryModels.MinBy(d=>d.DistanceInMiles))
                     .ThenByDescending(x=>x.ProviderDetails.DeliveryModels.Any(d=>d.LocationType==LocationType.National));
-               // var shortlist = result.Shortlist.OrderByDescending(x => x.ProviderDetails.DeliveryModels.Any(d => d.LocationType == LocationType.National));
-
+               
                 var response = new GetShortlistForUserResponse
                 {
                     Shortlist = shortlist.Select(item => (GetShortlistItem)item)
