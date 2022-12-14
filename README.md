@@ -497,4 +497,4 @@ Data:
 }
 ```
 
-* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. This sevice is an API which allows an EPAO (end-point assessment organisation) to access ''Record a grade'' functionality programmatically.
+* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. This sevice allows `das-assessor-service` to have a standards cache locally and for it to access the data in the table `ApprovalsExtract`.
