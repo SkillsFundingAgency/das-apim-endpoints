@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.AanApprentice.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj" />
   </ItemGroup>
 
 </Project>

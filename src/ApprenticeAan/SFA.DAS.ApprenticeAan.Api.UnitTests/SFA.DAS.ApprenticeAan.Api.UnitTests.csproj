@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.AANApprentice.Api\SFA.DAS.ApprenticeAan.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Api\SFA.DAS.ApprenticeAan.Api.csproj" />
   </ItemGroup>
 
 </Project>
