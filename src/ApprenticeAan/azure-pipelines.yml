@@ -7,7 +7,7 @@ trigger:
     include:
     - azure
     - pipeline-templates
-    - src/AanApprentice
+    - src/ApprenticeAan
 
 pr:
   autoCancel: true
@@ -18,7 +18,7 @@ pr:
     include:
     - azure
     - pipeline-templates
-    - src/AanApprentice
+    - src/ApprenticeAan
 
 variables:
 - group: Release Management Resources
@@ -46,4 +46,4 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: AanApprentice
+    OuterApiName: ApprenticeAan
