@@ -24,6 +24,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IEmployerUsersApiClient<EmployerUsersApiConfiguration>, EmployerUsersApiClient>();
+            services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }
 }

@@ -37,6 +37,8 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
         public DateTime? ApprovalsPauseDate { get; set; }
         public DateTime? LearnActEndDate { get; set; }
         public DateTime? EstimatedEndDate { get; set; }
+        public bool IsTransfer { get; set; }
+        public DateTime? DateTransferIdentified { get; set; }
 
         public static implicit operator LearnerData(GetApprenticeLearnerResponse source)
         {
@@ -59,7 +61,9 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
                 StandardCode = source.StandardCode,
                 StandardName = source.StandardName,
                 StandardReference = source.StandardReference,
-                StandardUId = source.StandardUId
+                StandardUId = source.StandardUId,
+                IsTransfer = source.IsTransfer,
+                DateTransferIdentified = source.DateTransferIdentified
             };
         }
     }

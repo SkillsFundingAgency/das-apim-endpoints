@@ -8,6 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         public int Ukprn { get; }
         public Guid Id { get; }
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
         public string PutUrl => $"providers/{Ukprn}/locations/{Id}/";
 
         public ProviderLocationUpdateRequest(ProviderLocationUpdateModel data)
@@ -15,6 +16,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
             Ukprn = data.Ukprn;
             Id = data.Id;
             UserId = data.UserId;
+            UserDisplayName = data.UserDisplayName;
             Data = data;
         }
 
