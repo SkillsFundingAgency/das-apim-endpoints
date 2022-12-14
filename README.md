@@ -21,7 +21,6 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
 
-
 You are able to run the API by doing the following:
 
 
@@ -424,3 +423,78 @@ Download the repo and load into Visual Studio the project '..\dev\das-apim-endpo
 
 You will then see the swagger definition with the available operations.
 
+### Apprentice Feedback
+
+The Apprentice Feedback outer API relies on the following inner APIs:
+* [das-apprentice-feedback-api](https://github.com/SkillsFundingAgency/das-apprentice-feedback-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service/)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+
+You are able to run the API by doing the following:
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.ApprenticeFeedback.OuterApi_1.0
+Data:
+{
+    "ApprenticeFeedbackInnerApi": {
+        "url": "https://localhost:5601/",
+        "identifier": ""
+    },
+    "ApprenticeAccountsInnerApi": {
+        "url": "https://localhost:5801/",
+        "identifier": ""
+    },
+    "AssessorServiceInnerApi": {
+        "url": "https://localhost:5501/",
+        "identifier": "https://**********.onmicrosoft.com/**********"
+    },
+    "CoursesApi": {
+        "url": "https://localhost:5001/",
+        "identifier": "https://**********.onmicrosoft.com/**********"
+    },
+    "TrainingProviderApi": {
+        "url": "https://localhost:37952/",
+        "identifier": "https://**********.onmicrosoft.com/**********"
+    },
+    "AzureAd": {
+        "tenant": "**********.onmicrosoft.com",
+        "identifier": "https://**********.onmicrosoft.com/**********"
+    }
+}
+```
+
+* Start the API project `SFA.DAS.ApprenticeFeedback.Api`. Starting the API will load up a Swagger definition with all of the available operations. This service allows apprentices to provide feedback on their training providers. 
+
+### Assessors
+
+The Assessors outer API relies on the following inner APIs:
+* [das-commitments/src/CommitmentsV2](https://github.com/SkillsFundingAgency/das-commitments/tree/master/src/CommitmentsV2)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+
+You are able to run the API by doing the following:
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+
+```
+PartitionKey: LOCAL
+RowKey: 
+Data:
+{
+    "AzureAd": {
+        "identifier": "https://******.onmicrosoft.com/******",
+        "tenant": "******.onmicrosoft.com"
+    },
+    "CoursesApiConfiguration": {
+        "identifier": "https://******.onmicrosoft.com/******",
+        "url": "https://localhost:5001"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://localhost:5011/",
+        "identifier": "https://******.onmicrosoft.com/******"
+    }
+}
+```
+
+* Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. This sevice allows `das-assessor-service` to have a standards cache locally and for it to be able to populate the approvals extract table from the Commitments API.
