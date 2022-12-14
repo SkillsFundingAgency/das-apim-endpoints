@@ -1,10 +1,10 @@
-﻿using SFA.DAS.AANApprentice.Api.Configuration;
+﻿using SFA.DAS.ApprenticeAan.Api.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-namespace SFA.DAS.AANApprentice.Api.Services;
+namespace SFA.DAS.ApprenticeAan.Api.Services;
 
 [ExcludeFromCodeCoverage]
 public class AanHubApiClient : IAanHubApiClient<AanHubApiConfiguration>

@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AANApprentice.Api.Services;
+namespace SFA.DAS.ApprenticeAan.Api.Services;
 
 public interface IAanHubApiClient<T>: IInternalApiClient<T>
 {

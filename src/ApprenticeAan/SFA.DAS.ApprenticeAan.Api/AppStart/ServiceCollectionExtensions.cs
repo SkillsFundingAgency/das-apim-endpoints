@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
-using SFA.DAS.AANApprentice.Api.Configuration;
-using SFA.DAS.AANApprentice.Api.Services;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.ApprenticeAan.Api.Configuration;
+using SFA.DAS.ApprenticeAan.Api.Services;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.AANApprentice.Api.AppStart;
+namespace SFA.DAS.ApprenticeAan.Api.AppStart;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
