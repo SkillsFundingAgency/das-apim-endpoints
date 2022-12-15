@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -20,51 +21,97 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
 {
     public class WhenGettingShortlistForUser
     {
-        //TODO: uncomment and fix
-        // [Test, MoqAutoData]
-        // public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
-        //     GetShortlistForUserQuery query,
-        //     GetShortlistForUserResponse apiResponse,
-        //     List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
-        //     GetStandardsListResponse cachedCourses,
-        //     List<GetStandardsListItem> standards,
-        //     [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
-        //     [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
-        //     [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
-        //     GetShortlistForUserQueryHandler handler)
-        // {
-        //     var shortlistFromApi = apiResponse.Shortlist.ToList();
-        //     for (var i = 0; i < shortlistFromApi.Count; i++)
-        //     {
-        //         standards[i].LarsCode = shortlistFromApi[i].CourseId;
-        //         apprenticeFeedbackResponse[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn;
-        //     }
-        //     cachedCourses.Standards = standards;
-        //     mockCourseDeliveryApiClient
-        //         .Setup(client => client.Get<GetShortlistForUserResponse>(
-        //             It.Is<GetShortlistForUserRequest>(request =>
-        //                 request.ShortlistUserId == query.ShortlistUserId)))
-        //         .ReturnsAsync(apiResponse);
-        //     mockCachedCoursesService
-        //         .Setup(service => service.GetCourses())
-        //         .ReturnsAsync(cachedCourses);
-        //     mockApprenticeFeedbackClient
-        //         .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
-        //         .ReturnsAsync(apprenticeFeedbackResponse);
-        //
-        //
-        //     var result = await handler.Handle(query, CancellationToken.None);
-        //
-        //     result.Shortlist.Should().BeEquivalentTo(apiResponse.Shortlist,
-        //         options => options.Excluding(item => item.Course).Excluding(item => item.ProviderDetails.ApprenticeFeedback));
-        //     foreach (var item in result.Shortlist)
-        //     {
-        //         item.Course.Should().NotBeNull();
-        //         item.Course.Should().BeEquivalentTo(cachedCourses.Standards.Single(listItem => listItem.LarsCode == item.CourseId));
-        //
-        //         item.ProviderDetails.ApprenticeFeedback.Should().NotBeNull();
-        //         item.ProviderDetails.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse.First(s => s.Ukprn == item.ProviderDetails.Ukprn));
-        //     }
-        // }
+        [Test, MoqAutoData]
+         public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
+             GetShortlistForUserQuery query,
+             GetShortlistForUserResponse apiResponse,
+             List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
+             GetStandardsListResponse cachedCourses,
+             List<GetStandardsListItem> standards,
+             List<ShortlistItem> shortlistItems,
+             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
+             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+             [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
+             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortListApiClient,
+             GetShortlistForUserQueryHandler handler)
+         {
+            var shortlistFromApi = apiResponse.Shortlist.ToList();
+             for (var i = 0; i < shortlistFromApi.Count; i++)
+             {
+                 standards[i].LarsCode = shortlistFromApi[i].CourseId;
+                 apprenticeFeedbackResponse[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn;
+                 shortlistItems[i].Larscode = shortlistFromApi[i].CourseId;
+                 shortlistItems[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn;
+                 shortlistItems[i].Id = shortlistFromApi[i].Id;
+                 shortlistItems[i].ShortlistUserId = query.ShortlistUserId;
+                 shortlistFromApi[i].ShortlistUserId = query.ShortlistUserId;
+                 shortlistItems[i].LocationDescription = shortlistFromApi[i].LocationDescription;
+                 shortlistItems[i].CreatedDate = shortlistFromApi[i].CreatedDate;
+                 shortlistFromApi[i].ProviderDetails.StandardId = standards[i].LarsCode;
+             }
+
+             cachedCourses.Standards = standards;
+
+            mockShortListApiClient
+                .Setup(client => client.GetAll<ShortlistItem>(
+                    It.Is<GetShortlistForUserIdRequest>(request =>
+                        request.ShortlistUserId == query.ShortlistUserId)))
+                .ReturnsAsync(shortlistItems);
+
+            mockCachedCoursesService
+                 .Setup(service => service.GetCourses())
+                 .ReturnsAsync(cachedCourses);
+            mockApprenticeFeedbackClient
+                 .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
+                 .ReturnsAsync(apprenticeFeedbackResponse);
+
+            mockRoatpV2ApiClient.Setup(x =>
+                    x.Get<GetProviderDetailsForCourse>(It.IsAny<GetProviderByCourseAndUkprnRequest>()))
+                .ReturnsAsync(new GetProviderDetailsForCourse());
+
+            foreach (var shortlistItem in shortlistItems)
+            {
+                var providerDetails = shortlistFromApi.First(s =>
+                    s.CourseId == shortlistItem.Larscode && s.ProviderDetails.Ukprn == shortlistItem.Ukprn).ProviderDetails;
+                mockRoatpV2ApiClient.Setup(x =>
+                        x.Get<GetProviderDetailsForCourse>( It.Is<GetProviderByCourseAndUkprnRequest>(request=>request.ProviderId == shortlistItem.Ukprn && request.CourseId == shortlistItem.Larscode && request.Latitude == shortlistItem.Latitude && request.Longitude==shortlistItem.Longitude)))
+                    .ReturnsAsync(new GetProviderDetailsForCourse
+                    {
+                        Ukprn = shortlistItem.Ukprn, 
+                        LarsCode = shortlistItem.Larscode, 
+                        Latitude = shortlistItem.Latitude, 
+                        Longitude = shortlistItem.Longitude,
+                        Name = providerDetails.Name,
+                        TradingName = providerDetails.TradingName,
+                        MarketingInfo = providerDetails.MarketingInfo,
+                        StandardInfoUrl = providerDetails.StandardInfoUrl,
+                        Email = providerDetails.Email,
+                        Phone = providerDetails.Phone
+                    });
+            }
+
+            var result = await handler.Handle(query, CancellationToken.None);
+        
+             result.Shortlist.Should().BeEquivalentTo(apiResponse.Shortlist,
+                 options => options
+                     .Excluding(item => item.Course)
+                     .Excluding(item => item.ProviderDetails.ApprenticeFeedback)
+                     .Excluding(item => item.ProviderDetails.ShortlistId)
+                     .Excluding(item => item.ProviderDetails.AchievementRates)
+                     .Excluding(item => item.ProviderDetails.DeliveryTypes)
+                     .Excluding(item => item.ProviderDetails.DeliveryModels)
+                     .Excluding(item => item.ProviderDetails.EmployerFeedback)
+                     .Excluding(item => item.ProviderDetails.ProviderAddress)
+             );
+
+             foreach (var item in result.Shortlist)
+             {
+                 item.Course.Should().NotBeNull();
+                 item.Course.Should().BeEquivalentTo(cachedCourses.Standards.Single(listItem => listItem.LarsCode == item.CourseId));
+             
+                 item.ProviderDetails.ApprenticeFeedback.Should().NotBeNull();
+                 item.ProviderDetails.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse.First(s => s.Ukprn == item.ProviderDetails.Ukprn));
+             }
+         }
     }
 }

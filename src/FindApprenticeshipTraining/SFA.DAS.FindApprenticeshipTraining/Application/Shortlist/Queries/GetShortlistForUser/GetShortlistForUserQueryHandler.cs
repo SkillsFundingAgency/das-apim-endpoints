@@ -44,7 +44,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
                 };
             }
 
-            var providerDetailsTaskList = shortlistForUserId.Select(shortlistItem => new GetProviderByCourseAndUkprnRequest(shortlistItem.Ukprn, shortlistItem.Larscode, shortlistItem.Latitude, shortlistItem.Longitude)).Select(req => _roatpV2ApiClient.Get<GetProviderDetailsForCourse>(req)).Cast<Task>().ToList();
+            var providerDetailsTaskList = shortlistForUserId.Select(shortlistItem => new GetProviderByCourseAndUkprnRequest(shortlistItem.Ukprn, shortlistItem.Larscode, shortlistItem.Latitude, shortlistItem.Longitude))
+                .Select(req => _roatpV2ApiClient.Get<GetProviderDetailsForCourse>(req)).Cast<Task>().ToList();
 
             await Task.WhenAll(providerDetailsTaskList);
 
