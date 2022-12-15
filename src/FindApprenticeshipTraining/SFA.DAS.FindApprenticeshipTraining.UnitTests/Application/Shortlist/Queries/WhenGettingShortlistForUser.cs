@@ -26,10 +26,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
              GetShortlistForUserQuery query,
              GetShortlistForUserResponse apiResponse,
              List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
+             List<GetEmployerFeedbackSummaryItem> employerFeedbackResponse,
              GetStandardsListResponse cachedCourses,
              List<GetStandardsListItem> standards,
              List<ShortlistItem> shortlistItems,
              [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
+             [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> mockEmployerFeedbackClient,
              [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
              [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
              [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortListApiClient,
@@ -40,6 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
              {
                  standards[i].LarsCode = shortlistFromApi[i].CourseId;
                  apprenticeFeedbackResponse[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn;
+                 employerFeedbackResponse[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn; 
                  shortlistItems[i].Larscode = shortlistFromApi[i].CourseId;
                  shortlistItems[i].Ukprn = shortlistFromApi[i].ProviderDetails.Ukprn;
                  shortlistItems[i].Id = shortlistFromApi[i].Id;
@@ -61,9 +64,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
             mockCachedCoursesService
                  .Setup(service => service.GetCourses())
                  .ReturnsAsync(cachedCourses);
+
             mockApprenticeFeedbackClient
                  .Setup(s => s.GetAll<GetApprenticeFeedbackSummaryItem>(It.IsAny<GetApprenticeFeedbackSummaryRequest>()))
                  .ReturnsAsync(apprenticeFeedbackResponse);
+
+            mockEmployerFeedbackClient
+                .Setup(s => s.GetAll<GetEmployerFeedbackSummaryItem>(It.IsAny<GetEmployerFeedbackSummaryRequest>()))
+                .ReturnsAsync(employerFeedbackResponse);
 
             mockRoatpV2ApiClient.Setup(x =>
                     x.Get<GetProviderDetailsForCourse>(It.IsAny<GetProviderByCourseAndUkprnRequest>()))
@@ -86,7 +94,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
                         MarketingInfo = providerDetails.MarketingInfo,
                         StandardInfoUrl = providerDetails.StandardInfoUrl,
                         Email = providerDetails.Email,
-                        Phone = providerDetails.Phone
+                        Phone = providerDetails.Phone,
+                        AchievementRates = shortlistFromApi.First(x=>x.ProviderDetails.Ukprn==shortlistItem.Ukprn && x.ProviderDetails.StandardId==shortlistItem.Larscode).ProviderDetails.AchievementRates.ToList(),
+                        DeliveryModels = shortlistFromApi.First(x => x.ProviderDetails.Ukprn == shortlistItem.Ukprn && x.ProviderDetails.StandardId == shortlistItem.Larscode).ProviderDetails.DeliveryModels.ToList(),
+                        Address1 = providerDetails.ProviderAddress.Address1,
+                        Address2 = providerDetails.ProviderAddress.Address2,
+                        Address3 = providerDetails.ProviderAddress.Address3,
+                        Address4 = providerDetails.ProviderAddress.Address4, 
+                        Town = providerDetails.ProviderAddress.Town, 
+                        Postcode = providerDetails.ProviderAddress.Postcode, 
+                        ProviderHeadOfficeDistanceInMiles = providerDetails.ProviderAddress.DistanceInMiles
                     });
             }
 
@@ -97,22 +114,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
                      .Excluding(item => item.Course)
                      .Excluding(item => item.ProviderDetails.ApprenticeFeedback)
                      .Excluding(item => item.ProviderDetails.ShortlistId)
-                     .Excluding(item => item.ProviderDetails.AchievementRates)
                      .Excluding(item => item.ProviderDetails.DeliveryTypes)
-                     .Excluding(item => item.ProviderDetails.DeliveryModels)
                      .Excluding(item => item.ProviderDetails.EmployerFeedback)
-                     .Excluding(item => item.ProviderDetails.ProviderAddress)
                      .Excluding(item=>item.ProviderDetails.DeliveryModelsShortestDistance)
              );
 
              foreach (var item in result.Shortlist)
              {
+                 item.ProviderDetails.DeliveryTypes.Should().BeNull();
                  item.Course.Should().NotBeNull();
                  item.Course.Should().BeEquivalentTo(cachedCourses.Standards.Single(listItem => listItem.LarsCode == item.CourseId));
              
                  item.ProviderDetails.ApprenticeFeedback.Should().NotBeNull();
                  item.ProviderDetails.ApprenticeFeedback.Should().BeEquivalentTo(apprenticeFeedbackResponse.First(s => s.Ukprn == item.ProviderDetails.Ukprn));
-             }
-         }
+
+                 item.ProviderDetails.EmployerFeedback.Should().NotBeNull();
+                 item.ProviderDetails.EmployerFeedback.Should().BeEquivalentTo(employerFeedbackResponse.First(s => s.Ukprn == item.ProviderDetails.Ukprn));
+
+            }
+        }
     }
 }
