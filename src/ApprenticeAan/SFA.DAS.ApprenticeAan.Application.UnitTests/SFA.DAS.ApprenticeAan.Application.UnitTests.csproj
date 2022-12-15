@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -11,20 +13,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AutoFixture.NUnit3" />
-    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" VersionOverride="4.16.1" /> <!-- TODO: Align with central package versions -->
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
     <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="SFA.DAS.Testing" />
-    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ApprenticeFeedback\SFA.DAS.ApprenticeFeedback.csproj" />
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj" />
   </ItemGroup>
 
 </Project>
