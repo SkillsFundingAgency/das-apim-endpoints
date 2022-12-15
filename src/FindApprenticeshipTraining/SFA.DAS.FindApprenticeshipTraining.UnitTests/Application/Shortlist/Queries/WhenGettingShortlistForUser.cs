@@ -102,6 +102,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
                      .Excluding(item => item.ProviderDetails.DeliveryModels)
                      .Excluding(item => item.ProviderDetails.EmployerFeedback)
                      .Excluding(item => item.ProviderDetails.ProviderAddress)
+                     .Excluding(item=>item.ProviderDetails.DeliveryModelsShortestDistance)
              );
 
              foreach (var item in result.Shortlist)
