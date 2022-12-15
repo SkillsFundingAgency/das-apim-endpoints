@@ -21,7 +21,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public GetEmployerFeedbackResponse EmployerFeedback { get; set; }
         public GetApprenticeFeedbackResponse ApprenticeFeedback { get; set; }
         public GetProviderStandardItemAddress ProviderAddress { get; set; }
-
         public decimal? DeliveryModelsShortestDistance => !DeliveryModels.Any() ? null : DeliveryModels.MinBy(x => x.DistanceInMiles)?.DistanceInMiles;
     }
 }
