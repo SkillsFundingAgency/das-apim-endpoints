@@ -3,6 +3,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
+    //MFCMFC to be removed
     public class GetProvidersByCourseRequest : IGetApiRequest
     {
         private readonly double? _latitude;

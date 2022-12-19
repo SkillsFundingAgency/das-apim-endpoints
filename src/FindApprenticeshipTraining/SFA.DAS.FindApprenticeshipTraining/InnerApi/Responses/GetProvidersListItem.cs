@@ -11,6 +11,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public Guid? ShortlistId { get; set; }
         public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
+
+        public IEnumerable<DeliveryModel> DeliveryModels { get; set; }
         public GetEmployerFeedbackResponse EmployerFeedback { get; set; }
         public GetApprenticeFeedbackResponse ApprenticeFeedback { get; set; }
     }

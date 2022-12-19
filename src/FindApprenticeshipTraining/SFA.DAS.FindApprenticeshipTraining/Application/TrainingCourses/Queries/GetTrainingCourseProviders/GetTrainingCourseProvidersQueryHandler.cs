@@ -49,8 +49,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
-            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            //var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
 
+            var shortlistTask =  request.ShortlistUserId.HasValue
+                ? _shortlistApiClient.Get<int>(new GetShortlistUserItemCountRequest(request.ShortlistUserId.Value))
+                : Task.FromResult(0);
+            
             var apprenticeFeedbackSummaryTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
 
             var employerFeedbackSummaryTask = _employerFeedbackApiClient.GetAll<GetEmployerFeedbackSummaryItem>(new GetEmployerFeedbackSummaryRequest());
@@ -65,6 +69,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 locationTask.Result?.GeoPoint?.LastOrDefault(),
                 request.SortOrder,
                 request.ShortlistUserId));
+
+            var providers2 = await _roatpV2ApiClient.Get<GetProvidersListFromCourseIdResponse> (new GetProvidersByCourseIdRequest(
+                request.Id, locationTask.Result?.GeoPoint?.FirstOrDefault(),
+                locationTask.Result?.GeoPoint?.LastOrDefault()));
 
             if (providers?.Providers.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
             {
