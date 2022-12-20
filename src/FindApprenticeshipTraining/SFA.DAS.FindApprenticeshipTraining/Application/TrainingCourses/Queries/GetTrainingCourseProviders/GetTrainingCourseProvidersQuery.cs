@@ -7,7 +7,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         public int Id { get ; set ; }
         public string Location { get ; set ; }
-        public short SortOrder { get ; set ; }
         public double Lat { get ; set ; }
         public double Lon { get ; set ; }
         public Guid? ShortlistUserId { get ; set ; }

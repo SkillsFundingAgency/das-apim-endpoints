@@ -114,13 +114,24 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
                 {
                     Id = id, 
-                    Location = request.Location, 
-                    SortOrder = (short)request.SortOrder,
+                    Location = request.Location,
                     Lat = request.Lat,
                     Lon = request.Lon,
                     ShortlistUserId = request.ShortlistUserId
                 });
-                var mappedProviders = result.Providers
+
+                var sortedProviders = result.Providers.OrderBy(x => x.DeliveryModelsShortestDistance)
+                    .ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
+
+                var sortOrder = (short)request.SortOrder;
+
+                if (sortOrder == 1 || request.Lat==0) 
+                {
+                    sortedProviders = result.Providers.OrderBy(x => x.Name)
+                        .ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
+                }   
+                
+                var mappedProviders = sortedProviders
                     .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.EmployerProviderRatings, request.ApprenticeProviderRatings, result.Location?.GeoPoint != null))
                     .Where(x=>x!=null)
                     .OrderByProviderScore(request.DeliveryModes)
