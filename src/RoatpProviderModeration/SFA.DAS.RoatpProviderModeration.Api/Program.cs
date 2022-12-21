@@ -13,6 +13,13 @@ builder.WebHost.UseNLog();
 
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
+var logger = LoggerFactory.Create(config =>
+{
+    config.AddConsole();
+}).CreateLogger("Program");
+
+logger.LogWarning($"The current environment is {configuration["Environment"]}");
+
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services
