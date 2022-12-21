@@ -3,7 +3,7 @@ using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Commands.UpdateProviderDescription
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription
 {
     public class UpdateProviderDescriptionCommandHandler : IRequestHandler<UpdateProviderDescriptionCommand, Unit>
     {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.RoatpProviderModeration.Application.Commands.UpdateProviderDescription;
-using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.RoatpProviderModeration.Api.Controllers

@@ -1,6 +1,6 @@
 using MediatR;
 using NLog.Web;
-using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;

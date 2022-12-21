@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Commands.UpdateProviderDescription
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription
 {
     public class UpdateProviderDescriptionCommand : IRequest<Unit>
     {

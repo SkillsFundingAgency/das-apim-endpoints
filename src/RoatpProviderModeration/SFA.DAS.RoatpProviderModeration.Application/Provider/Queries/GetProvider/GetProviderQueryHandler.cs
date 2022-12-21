@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider
 {
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
@@ -29,12 +29,12 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
             {
                 return null;
             }
-            else if(response.StatusCode == HttpStatusCode.OK)
+            else if (response.StatusCode == HttpStatusCode.OK)
             {
                 return response?.Body;
             }
-                _logger.LogError("Response status code does not indicate success: {statusCode} - Provider details not found for ukprn: {ukprn}", (int)response.StatusCode, request.Ukprn);
-                throw new InvalidOperationException($"Response status code does not indicate success: {(int)response.StatusCode} - Provider details not found for ukprn: {request.Ukprn}");
+            _logger.LogError("Response status code does not indicate success: {statusCode} - Provider details not found for ukprn: {ukprn}", (int)response.StatusCode, request.Ukprn);
+            throw new InvalidOperationException($"Response status code does not indicate success: {(int)response.StatusCode} - Provider details not found for ukprn: {request.Ukprn}");
         }
     }
 }
