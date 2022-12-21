@@ -11,6 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string TradingName { get; set; }
         public Guid? ShortlistId { get; set; }
         public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
+        //MFC this should disappear from usage?
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
 
         public IEnumerable<DeliveryModel> DeliveryModels { get; set; }

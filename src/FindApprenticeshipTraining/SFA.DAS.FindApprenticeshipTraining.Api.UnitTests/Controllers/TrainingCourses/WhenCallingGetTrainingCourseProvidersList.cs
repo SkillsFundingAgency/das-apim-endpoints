@@ -62,8 +62,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     options => options.Excluding(c => c.Ukprn)
                         .Excluding(c => c.AchievementRates)
                         .Excluding(c => c.DeliveryTypes)
+                        .Excluding(c=>c.DeliveryModels)
                         .Excluding(c => c.EmployerFeedback)
                         .Excluding(c => c.ApprenticeFeedback)
+                        .Excluding(c=>c.DeliveryModelsShortestDistance)
                     );
             model.Total.Should().Be(mediatorResult.Total);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
@@ -77,7 +79,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             GetCourseProvidersRequest request,
             GetProvidersListItem provider1,
             GetProvidersListItem provider2,
-            ProviderCourseSortOrder.SortOrder sortOrder,
             GetTrainingCourseProvidersResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
@@ -86,18 +87,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             {
                 DeliveryModeType.Workplace
             };
-            provider1.DeliveryTypes = provider1.DeliveryTypes.Select(c =>
+
+            provider1.DeliveryTypes = null;
+            provider1.DeliveryModels = provider1.DeliveryModels.Select(c =>
             {
-                c.DeliveryModes = "100PercentEmployer";
+                c.LocationType = LocationType.Regional;
+                c.BlockRelease = false;
+                c.DayRelease = false;
                 return c;
             }).ToList();
             provider1.ApprenticeFeedback.ReviewCount = 0;
             provider1.ApprenticeFeedback.Stars = 0;
             provider1.EmployerFeedback.ReviewCount = 0;
             provider1.EmployerFeedback.Stars = 0;
-            provider2.DeliveryTypes = provider2.DeliveryTypes.Select(c =>
+
+            provider2.DeliveryTypes = null;
+            provider2.DeliveryModels = provider2.DeliveryModels.Select(c =>
             {
-                c.DeliveryModes = "DayRelease";
+                c.LocationType = LocationType.Provider;
+                c.DayRelease = true;
+                c.BlockRelease = false;
                 return c;
             }).ToList();
             provider2.ApprenticeFeedback.ReviewCount = 0;

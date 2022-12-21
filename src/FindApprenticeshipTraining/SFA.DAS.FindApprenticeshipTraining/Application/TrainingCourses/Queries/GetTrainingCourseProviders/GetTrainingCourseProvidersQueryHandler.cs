@@ -14,31 +14,27 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 {
     public class GetTrainingCourseProvidersQueryHandler : IRequestHandler<GetTrainingCourseProvidersQuery, GetTrainingCourseProvidersResult>
     {
-       private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;  //MFCMFC coming out
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
 
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly IShortlistService _shortlistService; // MFCMFC coming out
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
 
         private readonly ILocationLookupService _locationLookupService;
 
        
         public GetTrainingCourseProvidersQueryHandler(
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            IShortlistService shortlistService,
-            ILocationLookupService locationLookupService, IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
+            ILocationLookupService locationLookupService, 
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
-            _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
             _roatpV2ApiClient = roatpV2ApiClient;
             _shortlistApiClient = shortlistApiClient;
@@ -49,6 +45,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, request.Lat, request.Lon);
 
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
+
+            var x = await _shortlistApiClient.GetAll<ShortlistItem>(
+                new GetShortlistForUserIdRequest(request.ShortlistUserId.Value));
 
             var shortlistTask = request.ShortlistUserId.HasValue
                 ? _shortlistApiClient.GetAll<ShortlistItem>(
