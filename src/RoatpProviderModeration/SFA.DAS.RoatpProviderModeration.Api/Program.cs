@@ -27,7 +27,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services
        .AddMediatR(typeof(GetProviderQuery).Assembly)
-       .AddSwaggerGen()
+       .AddSwaggerGen(c =>
+       {
+           c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpProviderModerationOuterApi", Version = "v1" });
+       })
        .AddHealthChecks();
 builder.Services.AddServiceRegistration();
 
@@ -42,7 +45,11 @@ if (app.Environment.IsDevelopment())
 app
     .UseHealthChecks()
     .UseSwagger()
-    .UseSwaggerUI()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RoatpProviderModerationOuterApi");
+        c.RoutePrefix = string.Empty;
+    })
     .UseHttpsRedirection()
     .UseAuthentication()
     .UseAuthorization();
