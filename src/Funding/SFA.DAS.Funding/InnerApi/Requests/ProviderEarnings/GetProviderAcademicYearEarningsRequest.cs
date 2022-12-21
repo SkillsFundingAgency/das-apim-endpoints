@@ -11,6 +11,6 @@ namespace SFA.DAS.Funding.InnerApi.Requests.ProviderEarnings
             _ukprn = ukprn;
         }
 
-        public string GetUrl => $"{_ukprn}";
+        public string GetUrl => $"{_ukprn}/GenerateCSV";
     }
 }

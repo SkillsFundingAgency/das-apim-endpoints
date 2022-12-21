@@ -8,13 +8,16 @@ namespace SFA.DAS.Funding.Api.Models
         public decimal TotalLevyEarningsForCurrentAcademicYear { get; set; }
         public decimal TotalNonLevyEarningsForCurrentAcademicYear { get; set; }
 
+        public long Ukprn { get; set; }
+
         public static implicit operator ProviderEarningsSummaryDto(ProviderEarningsSummary source)
         {
             return new ProviderEarningsSummaryDto
             {
                 TotalEarningsForCurrentAcademicYear = source.TotalEarningsForCurrentAcademicYear,
                 TotalLevyEarningsForCurrentAcademicYear = source.TotalLevyEarningsForCurrentAcademicYear,
-                TotalNonLevyEarningsForCurrentAcademicYear = source.TotalNonLevyEarningsForCurrentAcademicYear
+                TotalNonLevyEarningsForCurrentAcademicYear = source.TotalNonLevyEarningsForCurrentAcademicYear,
+                Ukprn = source.Ukprn
             };
         }
     }
