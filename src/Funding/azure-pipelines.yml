@@ -8,7 +8,6 @@ trigger:
     - azure
     - pipeline-templates
     - src/Funding
-    - src/Shared*
 
 pr:
   autoCancel: true
