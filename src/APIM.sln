@@ -313,13 +313,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerFeedback", "EmployerFeedback", "{43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback", "SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj", "{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback", "EmployerFeedback\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj", "{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api", "SFA.DAS.EmployerFeedback.Api\SFA.DAS.EmployerFeedback.Api.csproj", "{25E57A14-3240-47EF-817C-0D87303B2206}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api\SFA.DAS.EmployerFeedback.Api.csproj", "{25E57A14-3240-47EF-817C-0D87303B2206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.UnitTests", "SFA.DAS.EmployerFeedback.UnitTests\SFA.DAS.EmployerFeedback.UnitTests.csproj", "{34B290AD-28AB-4A81-A118-87FE86180105}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.UnitTests\SFA.DAS.EmployerFeedback.UnitTests.csproj", "{34B290AD-28AB-4A81-A118-87FE86180105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api.UnitTests", "SFA.DAS.EmployerFeedback.Api.UnitTests\SFA.DAS.EmployerFeedback.Api.UnitTests.csproj", "{1374D61E-A576-4D41-BFE1-61141339D2F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api.UnitTests\SFA.DAS.EmployerFeedback.Api.UnitTests.csproj", "{1374D61E-A576-4D41-BFE1-61141339D2F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
