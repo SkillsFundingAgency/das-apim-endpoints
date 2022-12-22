@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
 using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
@@ -13,7 +14,7 @@ builder.WebHost.UseNLog();
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services.AddAuthentication(configuration);
-
+builder.Services.AddConfigurationOptions(configuration);
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -25,11 +26,13 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services
-    .AddMediatR(typeof(GetProviderQuery).Assembly)
-    .AddSwaggerGen()
-    .AddMediatR(typeof(GetProviderQuery).Assembly);
-
-builder.Services.AddHealthChecks();
+       .AddMediatR(typeof(GetProviderQuery).Assembly)
+       .AddSwaggerGen(c =>
+       {
+           c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpProviderModerationOuterApi", Version = "v1" });
+       })
+       .AddHealthChecks();
+builder.Services.AddServiceRegistration();
 
 var app = builder.Build();
 
@@ -42,11 +45,16 @@ if (app.Environment.IsDevelopment())
 app
     .UseHealthChecks()
     .UseSwagger()
-    .UseSwaggerUI()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RoatpProviderModerationOuterApi");
+        c.RoutePrefix = string.Empty;
+    })
     .UseHttpsRedirection()
     .UseAuthentication()
     .UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

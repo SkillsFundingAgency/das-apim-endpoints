@@ -18,6 +18,9 @@ pr:
       - src/Shared*
       - Directory.Packages.props
 
+pool:
+  name: DAS - Continuous Integration Agents
+
 resources:
   repositories:
   - repository: self
