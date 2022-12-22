@@ -47,9 +47,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
-            var x = await _shortlistApiClient.GetAll<ShortlistItem>(
-                new GetShortlistForUserIdRequest(request.ShortlistUserId.Value));
-
             var shortlistTask = request.ShortlistUserId.HasValue
                 ? _shortlistApiClient.GetAll<ShortlistItem>(
                     new GetShortlistForUserIdRequest(request.ShortlistUserId.Value))

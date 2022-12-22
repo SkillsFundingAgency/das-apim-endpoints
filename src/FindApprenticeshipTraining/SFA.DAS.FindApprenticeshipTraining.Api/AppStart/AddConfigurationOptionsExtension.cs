@@ -31,7 +31,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ShortlistApiConfiguration>>().Value);
             services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
-
         }
     }
 }
