@@ -1,7 +1,8 @@
+using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseNLog();
@@ -15,13 +16,18 @@ builder.Services
     .AddServiceRegistration()
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen()
+    .AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAanOuterApi", Version = "v1" });
+    })
     .AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddHealthChecks();
 
@@ -35,8 +41,13 @@ if (app.Environment.IsDevelopment())
 app
     .UseHealthChecks()
     .UseSwagger()
-    .UseSwaggerUI()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeAanOuterApi");
+        c.RoutePrefix = string.Empty;
+    })
     .UseHttpsRedirection()
+    .UseHealthChecks()
     .UseRouting()
     .UseAuthentication()
     .UseAuthorization();
