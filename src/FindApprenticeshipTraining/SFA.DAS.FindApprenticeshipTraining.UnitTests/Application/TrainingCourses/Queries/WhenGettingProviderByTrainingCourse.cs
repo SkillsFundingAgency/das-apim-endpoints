@@ -1,6 +1,5 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Azure;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;

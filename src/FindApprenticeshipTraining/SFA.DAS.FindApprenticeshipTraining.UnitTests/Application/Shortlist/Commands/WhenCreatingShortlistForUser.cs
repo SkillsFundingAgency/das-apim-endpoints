@@ -7,7 +7,7 @@ using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Commands
 {
