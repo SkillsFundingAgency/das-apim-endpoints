@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                             r.CaseId == @case.CaseId &&
                             r.HashedLegalEntityId == @case.ApprenticeshipLegalEntityId &&
                             r.Status == @case.CaseStatus &&
-                            r.CaseStatusLastUpdatedDate == @case.CaseStatusLastUpdatedDate)),
+                            r.CaseStatusLastUpdatedDate.ToString() == @case.CaseStatusLastUpdatedDate)),
                     Times.Once());
             }
         }

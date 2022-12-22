@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                         CaseId = @case.CaseId,
                         HashedLegalEntityId = @case.ApprenticeshipLegalEntityId,
                         Status = @case.CaseStatus,
-                        CaseStatusLastUpdatedDate = @case.CaseStatusLastUpdatedDate
+                        CaseStatusLastUpdatedDate = DateTime.Parse(@case.CaseStatusLastUpdatedDate)
                     });
             }
 
