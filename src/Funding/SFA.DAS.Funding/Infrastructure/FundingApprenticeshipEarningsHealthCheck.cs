@@ -10,7 +10,7 @@ namespace SFA.DAS.Funding.Infrastructure
 {
     public class FundingApprenticeshipEarningsHealthCheck : IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Employer Incentives Api Health Check";
+        private const string HealthCheckResultDescription = "Funding Api Health Check";
         private readonly IFundingApprenticeshipEarningsService _fundingApprenticeshipEarningsService;
 
         public FundingApprenticeshipEarningsHealthCheck(IFundingApprenticeshipEarningsService fundingApprenticeshipEarningsService)
