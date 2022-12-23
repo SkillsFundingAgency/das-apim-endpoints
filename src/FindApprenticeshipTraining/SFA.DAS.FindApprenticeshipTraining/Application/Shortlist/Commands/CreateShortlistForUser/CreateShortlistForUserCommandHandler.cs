@@ -3,7 +3,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
 {
