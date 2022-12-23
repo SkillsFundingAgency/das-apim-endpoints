@@ -2,8 +2,8 @@
 {
     public enum ProviderType
     {
-        MainProvider = 1,
-        EmployerProvider = 2,
-        SupportingProvider = 3
+        Main = 1,
+        Employer = 2,
+        Supporting = 3
     }
 }
