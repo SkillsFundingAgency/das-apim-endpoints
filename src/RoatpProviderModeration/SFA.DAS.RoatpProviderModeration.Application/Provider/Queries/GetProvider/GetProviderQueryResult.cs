@@ -1,8 +1,7 @@
-﻿
-using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Models;
+﻿using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Models;
 using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Responses;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider
 {
     public class GetProviderQueryResult
     {
@@ -23,7 +22,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
                 ProviderType = source.ProviderType,
                 ProviderStatusType = source.ProviderStatusType,
                 ProviderStatusUpdatedDate = source.ProviderStatusUpdatedDate,
-                IsProviderHasStandard = source.IsProviderHasStandard 
+                IsProviderHasStandard = source.IsProviderHasStandard
             };
     }
 }

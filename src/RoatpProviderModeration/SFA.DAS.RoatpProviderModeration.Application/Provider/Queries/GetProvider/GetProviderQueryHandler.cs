@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider
 {
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
@@ -29,7 +29,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider
             {
                 return null;
             }
-            else if(response.StatusCode == HttpStatusCode.OK)
+            else if (response.StatusCode == HttpStatusCode.OK)
             {
                 return response?.Body;
             }

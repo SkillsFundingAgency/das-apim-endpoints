@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
-using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 
