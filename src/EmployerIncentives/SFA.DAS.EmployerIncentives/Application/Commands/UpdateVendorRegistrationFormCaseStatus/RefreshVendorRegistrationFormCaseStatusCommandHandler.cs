@@ -61,13 +61,25 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrati
                         CaseId = @case.CaseId,
                         HashedLegalEntityId = @case.ApprenticeshipLegalEntityId,
                         Status = @case.CaseStatus,
-                        CaseStatusLastUpdatedDate = DateTime.Parse(@case.CaseStatusLastUpdatedDate)
+                        CaseStatusLastUpdatedDate = ParseCaseStatusLastUpdatedDate(@case.CaseStatusLastUpdatedDate)
                     });
             }
 
             await Task.WhenAll(response.RegistrationCases
                 .Where(c => !string.IsNullOrEmpty(c.ApprenticeshipLegalEntityId) && c.CaseType?.ToUpper() == "NEW")
                 .Select(UpdateVendorRegistrationCaseStatus));
+        }
+
+        private DateTime ParseCaseStatusLastUpdatedDate(string caseStatusLastUpdatedDate)
+        {
+            try
+            {
+                return DateTime.Parse(caseStatusLastUpdatedDate);
+            }
+            catch (FormatException)
+            {
+                return DateTime.Now;
+            }
         }
 
         private async Task<GetVendorRegistrationCaseStatusUpdateResponse> GetUpdatesFromFinanceApi(RefreshVendorRegistrationFormCaseStatusCommand request, string skipCode)

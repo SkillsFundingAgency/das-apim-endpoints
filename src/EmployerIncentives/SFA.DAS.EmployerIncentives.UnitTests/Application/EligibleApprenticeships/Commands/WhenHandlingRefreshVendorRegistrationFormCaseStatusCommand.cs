@@ -9,9 +9,11 @@ using SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeships.Commands
 {
@@ -143,6 +145,43 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
             await handler.Handle(command, CancellationToken.None);
 
             financeService.Verify(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Exactly(5));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_case_status_last_updated_date_defaults_to_current_date_time_if_invalid_response_received_from_finance_API(
+            [Frozen] Mock<ICustomerEngagementFinanceService> financeService,
+            [Frozen] Mock<IVendorRegistrationService> vendorRegistrationService,
+            RefreshVendorRegistrationFormCaseStatusCommandHandler handler)
+        {
+            var command = new RefreshVendorRegistrationFormCaseStatusCommand(DateTime.Now.AddHours(-1));
+            var fixture = new Fixture();
+            var vendorResponse = new GetVendorRegistrationCaseStatusUpdateResponse
+            {
+                RegistrationCases = new List<VendorRegistrationCase>
+                {
+                    new VendorRegistrationCase 
+                    { 
+                        CaseStatusLastUpdatedDate = "12/12/2022 12;34", 
+                        ApprenticeshipLegalEntityId = fixture.Create<string>(),
+                        CaseId = fixture.Create<string>(),
+                        CaseStatus = fixture.Create<string>(),
+                        CaseType = "NEW"
+                    }
+                }
+            };
+
+            financeService.Setup(x => x.GetVendorRegistrationCasesByLastStatusChangeDate(command.FromDateTime, command.FromDateTime.AddDays(1), null))
+                .ReturnsAsync(vendorResponse);
+
+            await handler.Handle(command, CancellationToken.None);
+
+            vendorRegistrationService.Verify(
+                x => x.UpdateVendorRegistrationCaseStatus(It.Is<UpdateVendorRegistrationCaseStatusRequest>(r =>
+                    r.CaseId == vendorResponse.RegistrationCases[0].CaseId &&
+                    r.HashedLegalEntityId == vendorResponse.RegistrationCases[0].ApprenticeshipLegalEntityId &&
+                    r.Status == vendorResponse.RegistrationCases[0].CaseStatus &&
+                    r.CaseStatusLastUpdatedDate.Date == DateTime.Today.Date)),
+                Times.Once());
         }
     }
 }
