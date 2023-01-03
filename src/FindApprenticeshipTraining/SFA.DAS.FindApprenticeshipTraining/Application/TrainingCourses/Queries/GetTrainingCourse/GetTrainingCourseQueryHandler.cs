@@ -1,4 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -15,17 +22,22 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly IShortlistService _shortlistService;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly CacheHelper _cacheHelper;
 
         public GetTrainingCourseQueryHandler(
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
-            IShortlistService shortlistService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
+        //    IOptions<FindApprenticeshipTrainingConfiguration> config, 
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
-            _shortlistService = shortlistService;
+            _roatpV2ApiClient = roatpV2ApiClient;
+            _shortlistApiClient = shortlistApiClient;
+        //    _config = config.Value;
             _cacheHelper = new CacheHelper(cacheStorageService);
             _roatpV2ApiClient = roatpV2ApiClient;
         }
@@ -33,14 +45,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
-            var providersTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(new GetTotalProvidersForStandardRequest(request.Id));
+            var ukprnsCountTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
+                new GetTotalProvidersForStandardRequest(request.Id));
+
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
 
-            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            var shortlistTask =  request.ShortlistUserId.HasValue
+                ? _shortlistApiClient.Get<int>(new GetShortlistUserItemCountRequest(request.ShortlistUserId.Value))
+                : Task.FromResult(0);
 
-            await Task.WhenAll(standardTask, providersTask, levelsTask, shortlistTask);
+            await Task.WhenAll(standardTask, ukprnsCountTask,  levelsTask, shortlistTask);
 
             if (standardTask.Result == null)
             {
@@ -52,8 +68,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
-                ProvidersCount = providersTask.Result.ProvidersCount,
-                ProvidersCountAtLocation = providersTask.Result.ProvidersCount,
+                ProvidersCount = 0,
+                ProvidersCountAtLocation = ukprnsCountTask.Result.ProvidersCount,
                 ShortlistItemCount = shortlistTask.Result
             };
         }
