@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.WebHost.UseNLog();
 
 // Add services to the container.
@@ -12,11 +15,21 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
     .AddConfigurationOptions(configuration)
+    .AddApplicationInsightsTelemetry()
     .AddServiceRegistration()
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen()
-    .AddControllers()
+    .AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAanOuterApi", Version = "v1" });
+    })
+    .AddControllers(o =>
+    {
+        if (!configuration.IsLocalOrDev())
+        {
+            o.Filters.Add(new AuthorizeFilter("default"));
+        }
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -27,19 +40,23 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
 app
-    .UseHealthChecks()
     .UseSwagger()
-    .UseSwaggerUI()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeAanOuterApi");
+        c.RoutePrefix = string.Empty;
+    })
     .UseHttpsRedirection()
-    .UseRouting()
-    .UseAuthentication()
-    .UseAuthorization();
+    .UseHealthChecks()
+    .UseAuthentication();
 
 app.MapControllers();
 

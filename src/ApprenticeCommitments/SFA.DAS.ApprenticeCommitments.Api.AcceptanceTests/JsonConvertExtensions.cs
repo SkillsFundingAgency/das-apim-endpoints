@@ -17,18 +17,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests
             return new JsonConvertAssertions(instance.Subject).DeserialiseTo<T>();
         }
 
-        public class JsonConvertAssertions :
-            ReferenceTypeAssertions<string, JsonConvertAssertions>
+        public class JsonConvertAssertions : ReferenceTypeAssertions<string, JsonConvertAssertions>
         {
-            public JsonConvertAssertions(string instance)
-            {
-                Subject = instance;
-            }
+            public JsonConvertAssertions(string instance) : base(instance) { }
 
             protected override string Identifier => "string";
 
-            public AndWhichConstraint<JsonConvertAssertions, T> DeserialiseTo<T>(
-                string because = "", params object[] becauseArgs)
+            public AndWhichConstraint<JsonConvertAssertions, T> DeserialiseTo<T>(string because = "", params object[] becauseArgs)
             {
                 var deserialised = JsonConvert.DeserializeObject<T>(Subject);
 
