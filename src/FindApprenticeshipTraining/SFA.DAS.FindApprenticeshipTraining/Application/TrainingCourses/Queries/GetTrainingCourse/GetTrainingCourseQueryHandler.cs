@@ -30,14 +30,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
-        //    IOptions<FindApprenticeshipTrainingConfiguration> config, 
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
             _roatpV2ApiClient = roatpV2ApiClient;
             _shortlistApiClient = shortlistApiClient;
-        //    _config = config.Value;
             _cacheHelper = new CacheHelper(cacheStorageService);
             _roatpV2ApiClient = roatpV2ApiClient;
         }
