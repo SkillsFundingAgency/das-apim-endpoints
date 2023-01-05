@@ -137,7 +137,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/select-delivery-model")]
         public async Task<IActionResult> ChangeEmployerSelectDeliveryModel(long providerId, long apprenticeshipId, [FromQuery] long accountLegalEntityId)
@@ -191,6 +190,29 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/delivery-model")]
+        [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/delivery-model")]
+        public async Task<IActionResult> EditApprenticeshipDeliveryModel(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEditApprenticeshipDeliveryModelQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetEditApprenticeshipDeliveryModelResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/details")]
         [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/details")]
         public async Task<IActionResult> ApprenticeshipDetails(long apprenticeshipId)
@@ -212,6 +234,5 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
-
     }
 }
