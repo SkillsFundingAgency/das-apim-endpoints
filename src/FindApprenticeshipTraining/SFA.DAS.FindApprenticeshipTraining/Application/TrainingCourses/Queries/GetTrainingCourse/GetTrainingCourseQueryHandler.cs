@@ -66,7 +66,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
-                ProvidersCount = 0,
+                ProvidersCount = ukprnsCountTask.Result.ProvidersCount, 
                 ProvidersCountAtLocation = ukprnsCountTask.Result.ProvidersCount,
                 ShortlistItemCount = shortlistTask.Result
             };
