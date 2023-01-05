@@ -19,7 +19,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             _logger = logger;
         }
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larsCode}/update-standardsubregions")]
+        [Route("providers/{ukprn}/courses/{larsCode}/locations/regions")]
         public async Task<IActionResult> UpdateStandardSubRegions(int ukprn, int larsCode, UpdateStandardSubRegionsCommand command)
         {
             _logger.LogInformation("Outer API: Request to update standard subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
