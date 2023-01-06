@@ -8,6 +8,7 @@ using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
+using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -77,6 +78,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 var command = new PostDetailsCommand
                 {
+                    CohortId = cohortId,
                     SubmissionType = request.SubmissionType,
                     Message = request.Message,
                     UserInfo = request.UserInfo
@@ -85,6 +87,10 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 await _mediator.Send(command);
 
                 return Ok();
+            }
+            catch (ResourceNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {

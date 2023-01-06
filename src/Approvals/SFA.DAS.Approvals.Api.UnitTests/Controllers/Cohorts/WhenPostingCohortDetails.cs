@@ -54,6 +54,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             _mediator.Verify(x => x.Send(It.Is<PostDetailsCommand>(x =>
                         x.Message == _request.Message
                         && x.SubmissionType == _request.SubmissionType
+                        && x.CohortId == _cohortId
                         && x.UserInfo.UserDisplayName == _request.UserInfo.UserDisplayName
                         && x.UserInfo.UserEmail == _request.UserInfo.UserEmail
                         && x.UserInfo.UserId == _request.UserInfo.UserId
