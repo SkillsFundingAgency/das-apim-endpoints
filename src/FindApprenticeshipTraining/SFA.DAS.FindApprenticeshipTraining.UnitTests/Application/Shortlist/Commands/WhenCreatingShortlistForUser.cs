@@ -2,12 +2,12 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Commands
 {
@@ -21,10 +21,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Com
             CreateShortlistForUserCommandHandler handler)
         {
             //Arrange
-
+        
             //Act
             await handler.Handle(command, CancellationToken.None);
-
+        
             //Assert
             shortlistApiClient.Verify(x => x
                 .PostWithResponseCode<PostShortListResponse>(It.Is<PostShortlistForUserRequest>(c =>
