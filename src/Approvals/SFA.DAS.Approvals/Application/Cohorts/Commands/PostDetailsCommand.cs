@@ -1,11 +1,10 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
-namespace SFA.DAS.Approvals.Application.Cohort.Commands
+namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 {
     public class PostDetailsCommand : IRequest
     {

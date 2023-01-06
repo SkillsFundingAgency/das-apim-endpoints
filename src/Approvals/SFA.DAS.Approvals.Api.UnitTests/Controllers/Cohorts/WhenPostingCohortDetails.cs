@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
-using SFA.DAS.Approvals.Application.Cohort.Commands;
+using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts

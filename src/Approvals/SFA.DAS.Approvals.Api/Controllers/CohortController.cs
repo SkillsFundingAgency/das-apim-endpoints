@@ -5,7 +5,7 @@ using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
-using SFA.DAS.Approvals.Application.Cohort.Commands;
+using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
