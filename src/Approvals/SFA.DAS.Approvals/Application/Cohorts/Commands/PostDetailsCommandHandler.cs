@@ -52,6 +52,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
                 apiRequest = new ApproveCohortRequest(request.CohortId);
                 apiRequest.Data = new ApproveCohortRequest.Body
                 {
+                    RequestingParty = (Shared.Enums.Party) _serviceParameters.CallingParty,
                     Message = request.Message,
                     UserInfo = request.UserInfo
                 };
@@ -61,6 +62,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
                 apiRequest = new SendCohortRequest(request.CohortId);
                 apiRequest.Data = new SendCohortRequest.Body
                 {
+                    RequestingParty = (Shared.Enums.Party)_serviceParameters.CallingParty,
                     Message = request.Message,
                     UserInfo = request.UserInfo
                 };

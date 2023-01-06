@@ -16,7 +16,6 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Cohorts;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
-using NServiceBus.Features;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 {
@@ -93,6 +92,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             var requestBody =_approveCohortRequest.Data as ApproveCohortRequest.Body;
 
             Assert.AreEqual(_approveCohortRequest.CohortId, _request.CohortId);
+            Assert.AreEqual(Approvals.Application.Shared.Enums.Party.Employer, requestBody.RequestingParty);
             Assert.AreEqual(_request.Message, requestBody.Message);
             Assert.AreEqual(_request.UserInfo.UserId, requestBody.UserInfo.UserId);
             Assert.AreEqual(_request.UserInfo.UserDisplayName, requestBody.UserInfo.UserDisplayName);
@@ -109,6 +109,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             var requestBody = _sendCohortRequest.Data as SendCohortRequest.Body;
 
             Assert.AreEqual(_sendCohortRequest.CohortId, _request.CohortId);
+            Assert.AreEqual(Approvals.Application.Shared.Enums.Party.Employer, requestBody.RequestingParty);
             Assert.AreEqual(_request.Message, requestBody.Message);
             Assert.AreEqual(_request.UserInfo.UserId, requestBody.UserInfo.UserId);
             Assert.AreEqual(_request.UserInfo.UserDisplayName, requestBody.UserInfo.UserDisplayName);
