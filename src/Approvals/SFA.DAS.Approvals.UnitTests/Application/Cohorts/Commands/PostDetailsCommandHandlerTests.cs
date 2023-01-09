@@ -15,7 +15,6 @@ using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Cohorts;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 {
@@ -35,7 +34,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         {
             var fixture = new Fixture();
             _request = fixture.Create<PostDetailsCommand>();
-            _serviceParameters = new ServiceParameters(Party.Employer, fixture.Create<long>());
+            _serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Employer, fixture.Create<long>());
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
@@ -75,7 +74,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         [Test]
         public void Handle_When_Cohort_Does_Not_Belong_To_Provider_ResourceNotFoundException_Is_Thrown()
         {
-            _serviceParameters = new ServiceParameters(Party.Provider, 1);
+            _serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Provider, 1);
             _handler = new PostDetailsCommandHandler(_commitmentsApiClient.Object, _serviceParameters);
 
             _cohort.ProviderId = 2;

@@ -71,7 +71,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _fjaaService = new Mock<IFjaaService>();
 
-            _serviceParameters = new ServiceParameters(_cohort.WithParty, _cohort.AccountId);
+            _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
             _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object);
         }

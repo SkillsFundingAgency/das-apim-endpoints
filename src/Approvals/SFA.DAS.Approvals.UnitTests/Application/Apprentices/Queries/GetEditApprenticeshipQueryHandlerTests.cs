@@ -54,7 +54,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 It.Is<long?>(a => a == _apprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
 
-            _serviceParameters = new ServiceParameters(Party.Employer, 123);
+            _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)Party.Employer, 123);
 
             _handler = new GetEditApprenticeshipQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
         }

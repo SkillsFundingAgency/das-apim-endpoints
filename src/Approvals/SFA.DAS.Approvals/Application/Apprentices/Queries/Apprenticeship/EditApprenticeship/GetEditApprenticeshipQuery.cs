@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -50,7 +51,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
             innerApiResponse.EnsureSuccessStatusCode();
             var apprenticeship = innerApiResponse.Body;
 
-            if (!CheckParty(apprenticeship))
+            if (!apprenticeship.CheckParty(_serviceParameters))
             {
                 return null;
             }
@@ -64,35 +65,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
                 IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue,
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
             };
-        }
-
-        private bool CheckParty(GetApprenticeshipResponse apprenticeship)
-        {
-            switch (_serviceParameters.CallingParty)
-            {
-                case Party.Employer:
-                {
-                    if (apprenticeship.EmployerAccountId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                case Party.Provider:
-                {
-                    if (apprenticeship.ProviderId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                default:
-                    return false;
-            }
-
-            return true;
         }
     }
 }

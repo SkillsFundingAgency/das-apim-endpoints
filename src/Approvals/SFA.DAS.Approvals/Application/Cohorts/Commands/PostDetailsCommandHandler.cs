@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.Exceptions;
+using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Cohorts;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -11,7 +12,6 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 {
@@ -40,7 +40,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 
             var cohort = cohortResponse.Body;
 
-            if (!CheckParty(cohort))
+            if (!cohort.CheckParty(_serviceParameters))
             {
                 throw new ResourceNotFoundException();
             }
@@ -72,35 +72,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
             response.EnsureSuccessStatusCode();
  
             return Unit.Value;
-        }
-
-        private bool CheckParty(GetCohortResponse cohort)
-        {
-            switch (_serviceParameters.CallingParty)
-            {
-                case Party.Employer:
-                {
-                    if (cohort.AccountId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                case Party.Provider:
-                {
-                    if (cohort.ProviderId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                default:
-                    return false;
-            }
-
-            return true;
         }
     }
 }

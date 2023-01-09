@@ -1,6 +1,8 @@
-﻿namespace SFA.DAS.Approvals.InnerApi.Responses
+﻿using SFA.DAS.Approvals.InnerApi.Interfaces;
+
+namespace SFA.DAS.Approvals.InnerApi.Responses
 {
-    public class GetCohortResponse
+    public class GetCohortResponse : IPartyResource
     {
         public long AccountId { get; set; }
         public TransferApprovalStatus? TransferApprovalStatus { get; set; }
