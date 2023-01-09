@@ -55,8 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         public void Then_Maps_Fields_Appropriately_Returning_Null_For_AchievementRate_Data_If_No_AchievementRates_And_Empty_List_For_DeliveryModes_If_No_Delivery_Modes(string sectorSubjectArea, GetProvidersListItem source)
         {
             source.AchievementRates = null;
-           // source.DeliveryTypes = new List<GetDeliveryTypeItem>();
-           source.DeliveryModels = new List<DeliveryModel>();
+            source.DeliveryModels = new List<DeliveryModel>();
 
             var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
@@ -143,7 +142,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_Maps_All_DeliveryType_Fields_And_Sets_At_WorkPlace_Distance_To_Zero(string sectorSubjectArea, GetProvidersListItem source,DeliveryModel item) //, GetDeliveryTypeItem item)
+        public void Then_Maps_All_DeliveryType_Fields_And_Sets_At_WorkPlace_Distance_To_Zero(string sectorSubjectArea, GetProvidersListItem source,DeliveryModel item) 
         {
             source.AchievementRates = null;
             item.LocationType = LocationType.Regional;
