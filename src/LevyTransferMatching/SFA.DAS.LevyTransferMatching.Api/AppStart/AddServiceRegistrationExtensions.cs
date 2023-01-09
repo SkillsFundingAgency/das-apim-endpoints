@@ -36,6 +36,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+            services.AddTransient<IEmployerUsersApiClient<EmployerUsersApiConfiguration>, EmployerUsersApiClient>();
+            services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }
 }

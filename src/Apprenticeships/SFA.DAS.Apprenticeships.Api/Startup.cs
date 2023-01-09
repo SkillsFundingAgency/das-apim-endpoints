@@ -83,6 +83,7 @@ public class Startup
         }
 
         app.UseAuthentication();
+        app.UseHealthChecks();
 
         app.UseRouting();
         app.UseEndpoints(endpoints =>

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
@@ -9,36 +7,49 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Services
 {
     public interface IDeliveryModelService
     {
+        /// <summary>
+        /// Gets valid delivery model options for given Draft Apprenticeship details (pre approval)
+        /// </summary>
+        /// <param name="providerId"></param>
+        /// <param name="trainingCode"></param>
+        /// <param name="accountLegalEntityId"></param>
+        /// <param name="continuationOfId"></param>
+        /// <returns></returns>
         Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null);
+        /// <summary>
+        /// Gets valid delivery model options for an Apprenticeship (post approval)
+        /// </summary>
+        /// <param name="apprenticeship"></param>
+        /// <returns></returns>
+        Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship);
     }
 
     public class DeliveryModelService : IDeliveryModelService
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _apiClient;
-        private readonly IFjaaApiClient<FjaaApiConfiguration> _fjaaClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ILogger<DeliveryModelService> _logger;
+        private readonly IFjaaService _fjaaService;
 
-        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, IFjaaApiClient<FjaaApiConfiguration> fjaaClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger)
+        public DeliveryModelService(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> apiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ILogger<DeliveryModelService> logger, IFjaaService fjaaService)
         {
             _apiClient = apiClient;
-            _fjaaClient = fjaaClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _logger = logger;
+            _fjaaService = fjaaService;
         }
 
         public async Task<List<string>> GetDeliveryModels(long providerId, string trainingCode, long accountLegalEntityId, long? continuationOfId = null)
         {
             var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
-            var isOnRegisterTask = IsLegalEntityOnFjaaRegister(accountLegalEntityId);
+            var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntityId);
 
             await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask, isOnPortableFlexiJobTask);
 
@@ -62,6 +73,24 @@ namespace SFA.DAS.Approvals.Services
             }
 
             return courseDeliveryModels;
+        }
+
+        public async Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship)
+        {
+            if (apprenticeship.HasHadDataLockSuccess)
+            {
+                return new List<string> { apprenticeship.DeliveryModel };
+            }
+
+            var result = await GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode,
+                apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+
+            if (apprenticeship.DeliveryModel == DeliveryModelStringTypes.FlexiJobAgency && !result.Contains(apprenticeship.DeliveryModel))
+            {
+                result.Add(DeliveryModelStringTypes.FlexiJobAgency);
+            }
+
+            return result;
         }
 
         private async Task<List<string>> GetCourseDeliveryModels(long providerId, string trainingCode)
@@ -88,25 +117,6 @@ namespace SFA.DAS.Approvals.Services
             }
 
             return deliveryModels;
-        }
-
-        private async Task<bool> IsLegalEntityOnFjaaRegister(long accountLegalEntityId)
-        {
-            if (accountLegalEntityId == 0) return false;
-
-            _logger.LogInformation($"Requesting AccountLegalEntity {accountLegalEntityId} from Commitments v2 Api");
-            var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-
-            _logger.LogInformation($"Requesting fjaa agency for LegalEntityId {accountLegalEntity.MaLegalEntityId}");
-            var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
-
-            if (agencyRequest.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
-
-            agencyRequest.EnsureSuccessStatusCode();
-            return true;
         }
 
         private async Task<bool> IsApprenticeshipOnPortableFlexiJob(long? apprenticeshipId)

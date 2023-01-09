@@ -16,7 +16,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetDeliveryModelsRequest(providerId, trainingCode);
             
             //Assert
-            actual.GetUrl.Should().Be($"providers/{providerId}/courses/{trainingCode}");
+            actual.GetUrl.Should().Be($"api/providers/{providerId}/courses/{trainingCode}");
         }
     }
 }

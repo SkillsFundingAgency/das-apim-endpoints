@@ -51,39 +51,37 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return item;
         }
 
-        protected GetEmployerFeedbackResponse EmployerFeedbackResponse(InnerApi.Responses.GetEmployerFeedbackItem employerFeedback)
+        protected GetEmployerFeedbackResponse EmployerFeedbackResponse(InnerApi.Responses.GetEmployerFeedbackResponse employerFeedback)
         {
-            if (employerFeedback?.FeedbackRatings == null)
+            if (employerFeedback == null || employerFeedback.ReviewCount == 0)
             {
                 return new GetEmployerFeedbackResponse
                 {
                     TotalEmployerResponses = 0,
                     TotalFeedbackRating = 0,
-                    FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>(),
-                    FeedbackDetail = new List<GetEmployerFeedbackItem>()
+                    FeedbackAttributes = new List<GetEmployerFeedbackAttributeItem>()
                 };
             }
 
-            var feedbackRatingItems = employerFeedback.FeedbackRatings.ToList();
-            var totalRatings = feedbackRatingItems.Sum(c => c.FeedbackCount);
+            IEnumerable<GetEmployerFeedbackAttributeItem> feedbackAttrItems;
 
-            var ratingScore = GetRatingScore(feedbackRatingItems.Select(s => (Rating: s.FeedbackName, Score: s.FeedbackCount)));
-
-            var ratingAverage = Math.Round((double)ratingScore / totalRatings, 1);
-
-            var ratingResponse = GetOverallEmployerRatingResponse(ratingAverage);
-
-            var feedbackAttrItems = employerFeedback.FeedbackAttributes
-                .Where(c => c.Strength + c.Weakness != 0)
-                .Select(c => (GetEmployerFeedbackAttributeItem)c).ToList();
+            if (employerFeedback?.ProviderAttribute == null)
+            {
+                feedbackAttrItems = new List<GetEmployerFeedbackAttributeItem>();
+            }
+            else
+            {
+                feedbackAttrItems = employerFeedback.ProviderAttribute
+                    .Where(c => c.Strength + c.Weakness != 0)
+                    .Select(c => (GetEmployerFeedbackAttributeItem)c).ToList();
+            }
 
             return new GetEmployerFeedbackResponse
             {
-                TotalFeedbackRating = ratingResponse,
-                TotalEmployerResponses = totalRatings,
-                FeedbackDetail = feedbackRatingItems.Select(c => (GetEmployerFeedbackItem)c).ToList(),
+                TotalFeedbackRating = employerFeedback.Stars,
+                TotalEmployerResponses = employerFeedback.ReviewCount,
                 FeedbackAttributes = feedbackAttrItems,
-            };
+            };            
         }
 
         protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
@@ -199,55 +197,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Town = deliveryTypeItem.Town,
                 National = deliveryTypeItem.National
             };
-        }
-
-        private static int GetRatingScore(IEnumerable<(string Rating, int Count)> feedbackRatingItems)
-        {
-            var ratingScore = 0;
-            foreach (var feedbackRatingItem in feedbackRatingItems)
-            {
-                switch (feedbackRatingItem.Rating.ToLower())
-                {
-                    case "very poor":
-                    case "verypoor":
-                        ratingScore += feedbackRatingItem.Count * 1;
-                        break;
-                    case "poor":
-                        ratingScore += feedbackRatingItem.Count * 2;
-                        break;
-                    case "good":
-                        ratingScore += feedbackRatingItem.Count * 3;
-                        break;
-                    case "excellent":
-                        ratingScore += feedbackRatingItem.Count * 4;
-                        break;
-                }
-            }
-
-            return ratingScore;
-        }
-
-        private static int GetOverallEmployerRatingResponse(double ratingAverage)
-        {
-            var ratingResponse = 0;
-            if (ratingAverage >= 1 && ratingAverage < 1.3)
-            {
-                ratingResponse = 1;
-            }
-            else if (ratingAverage >= 1.3 && ratingAverage < 2.3)
-            {
-                ratingResponse = 2;
-            }
-            else if (ratingAverage >= 2.3 && ratingAverage < 3.3)
-            {
-                ratingResponse = 3;
-            }
-            else if (ratingAverage >= 3.3 && ratingAverage <= 4)
-            {
-                ratingResponse = 4;
-            }
-
-            return ratingResponse;
         }
     }
 }
