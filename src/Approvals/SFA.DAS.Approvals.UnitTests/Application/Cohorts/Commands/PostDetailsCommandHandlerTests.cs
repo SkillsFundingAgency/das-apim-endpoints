@@ -44,11 +44,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             _commitmentsApiClient.Setup(x => x.GetWithResponseCode<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
                 .ReturnsAsync(new ApiResponse<GetCohortResponse>(_cohort, HttpStatusCode.OK, string.Empty));
 
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<ApproveCohortRequest>(), true))
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<ApproveCohortRequest>(), false))
                 .Callback((IPostApiRequest request, bool includeResponse) => _approveCohortRequest = request as ApproveCohortRequest)
                 .ReturnsAsync(new ApiResponse<EmptyResponse>(null, HttpStatusCode.OK, string.Empty));
 
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<SendCohortRequest>(), true))
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<SendCohortRequest>(), false))
                 .Callback((IPostApiRequest request, bool includeResponse) => _sendCohortRequest = request as SendCohortRequest)
                 .ReturnsAsync(new ApiResponse<EmptyResponse>(null, HttpStatusCode.OK, string.Empty));
 

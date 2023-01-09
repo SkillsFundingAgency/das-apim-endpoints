@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
                 };
             }
             
-            var response = await _apiClient.PostWithResponseCode<EmptyResponse>(apiRequest);
+            var response = await _apiClient.PostWithResponseCode<EmptyResponse>(apiRequest, false);
             response.EnsureSuccessStatusCode();
  
             return Unit.Value;
