@@ -84,7 +84,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };            
         }
 
-        protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
+        protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(
+            InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
         {
             if (apprenticeFeedback == null || apprenticeFeedback.ReviewCount == 0)
             {
@@ -115,56 +116,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 FeedbackAttributes = feedbackAttrItems,
             };
         }
-
-        protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
-        {
-            var hasWorkPlace = false;
-            var hasDayRelease = false;
-            var hasBlockRelease = false;
-            var isNotFound = false;
-            var filterDeliveryModes = new List<GetDeliveryType>();
-
-            foreach (var deliveryTypeItem in getDeliveryTypeItems)
-            {
-                var deliveryTypeItemSplit = deliveryTypeItem.DeliveryModes.Split("|").ToList();
-
-                foreach (var mappedType in deliveryTypeItemSplit.Select(MapDeliveryType))
-                {
-                    var item = CreateDeliveryTypeItem(deliveryTypeItem);
-                    switch (mappedType)
-                    {
-                        case DeliveryModeType.Workplace when !hasWorkPlace:
-                            item.DeliveryModeType = DeliveryModeType.Workplace;
-                            item.DistanceInMiles = 0m;
-                            filterDeliveryModes.Add(item);
-                            hasWorkPlace = true;
-                            break;
-                        case DeliveryModeType.BlockRelease when !hasBlockRelease:
-                            item.DeliveryModeType = DeliveryModeType.BlockRelease;
-                            filterDeliveryModes.Add(item);
-                            hasBlockRelease = true;
-                            break;
-                        case DeliveryModeType.DayRelease when !hasDayRelease:
-                            item.DeliveryModeType = DeliveryModeType.DayRelease;
-                            filterDeliveryModes.Add(item);
-                            hasDayRelease = true;
-                            break;
-                        case DeliveryModeType.NotFound when !isNotFound:
-                            filterDeliveryModes.Add(item);
-                            isNotFound = true;
-                            break;
-                    }
-                }
-
-                if (hasBlockRelease && hasDayRelease && hasWorkPlace)
-                {
-                    break;
-                }
-            }
-            return filterDeliveryModes;
-
-        }
-
 
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<DeliveryModel> deliveryModels)
         {

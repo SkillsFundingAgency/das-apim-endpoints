@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
 
-            var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryTypes);
+            var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryModels);
 
             var getEmployerFeedbackResponse = EmployerFeedbackResponse(shortlistItem.ProviderDetails.EmployerFeedback);
             var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(shortlistItem.ProviderDetails.ApprenticeFeedback);

@@ -1,5 +1,7 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
-{
+﻿using System;
+
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
+{ 
     public class DeliveryModel
     {
         public LocationType LocationType { get; set; }

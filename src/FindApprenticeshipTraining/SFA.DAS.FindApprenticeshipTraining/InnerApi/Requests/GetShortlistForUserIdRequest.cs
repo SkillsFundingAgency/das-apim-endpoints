@@ -10,7 +10,6 @@ public class GetShortlistForUserIdRequest : IGetAllApiRequest
     {
         _shortlistUserId = shortlistUserId;
     }
-
     public Guid ShortlistUserId => _shortlistUserId;
 
     public string GetAllUrl => $"api/shortlist/{_shortlistUserId}";
