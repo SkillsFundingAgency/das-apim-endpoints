@@ -16,5 +16,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
         public string CourseName { get; set; }
         public long? ContinuationOfId { get; set; }
         public long? TransferSenderId { get; set; }
+        public bool HasHadDataLockSuccess { get; set; }
     }
 }
