@@ -4,7 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Requests;
 using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Responses;
-using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;

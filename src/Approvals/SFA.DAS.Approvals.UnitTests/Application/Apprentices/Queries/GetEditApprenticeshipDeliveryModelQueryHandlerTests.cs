@@ -1,49 +1,51 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeEmployer
+namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
     [TestFixture]
     public class GetEditApprenticeshipDeliveryModelQueryHandlerTests
     {
-        private GetSelectDeliveryModelQueryHandler _handler;
+        private GetEditApprenticeshipDeliveryModelQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
         private Mock<IDeliveryModelService> _deliveryModelService;
         private static readonly Fixture _fixture = new Fixture();
-        private readonly GetSelectDeliveryModelQuery _query = _fixture.Create<GetSelectDeliveryModelQuery>();
+        private readonly GetEditApprenticeshipDeliveryModelQuery _query = _fixture.Create<GetEditApprenticeshipDeliveryModelQuery>();
         private readonly GetApprenticeshipResponse _apprenticeshipResponse = _fixture.Create<GetApprenticeshipResponse>();
         private readonly List<string> _deliveryModels = _fixture.Create<List<string>>();
 
         [SetUp]
         public void Setup()
         {
-            _apprenticeshipResponse.ProviderId = _query.ProviderId;
+            var serviceParameters = new ServiceParameters(Party.Employer, _apprenticeshipResponse.EmployerAccountId);
+
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _commitmentsApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipResponse>(
+                    x.GetWithResponseCode<GetApprenticeshipResponse>(
                         It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
-                .ReturnsAsync(_apprenticeshipResponse);
+                .ReturnsAsync(() => new ApiResponse<GetApprenticeshipResponse>(_apprenticeshipResponse, HttpStatusCode.OK, string.Empty));
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x =>
-                    x.GetDeliveryModels(It.Is<long>(p => p == _apprenticeshipResponse.ProviderId),
-                        It.Is<string>(c => c == _apprenticeshipResponse.CourseCode),
-                        It.Is<long>(ale => ale == _query.AccountLegalEntityId), 
-                        It.Is<long>(a => a == _query.ApprenticeshipId)))
+                    x.GetDeliveryModels(It.Is<GetApprenticeshipResponse>(r => r == _apprenticeshipResponse)))
                 .ReturnsAsync(_deliveryModels);
 
-            _handler = new GetSelectDeliveryModelQueryHandler(_commitmentsApiClient.Object,
-                _deliveryModelService.Object);
+            _handler = new GetEditApprenticeshipDeliveryModelQueryHandler(_commitmentsApiClient.Object,
+                _deliveryModelService.Object, serviceParameters);
         }
 
         [Test]
@@ -66,9 +68,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         public async Task Handle_Returns_Null_If_Apprentice_Is_Not_Found()
         {
             _commitmentsApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipResponse>(
+                    x.GetWithResponseCode<GetApprenticeshipResponse>(
                         It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
-                .ReturnsAsync(() => null);
+                    .ReturnsAsync(() => new ApiResponse<GetApprenticeshipResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
@@ -78,7 +80,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         [Test]
         public async Task Handle_Returns_Null_If_Apprentice_Does_Not_Belong_To_Provider()
         {
-            _apprenticeshipResponse.ProviderId = _query.ProviderId + 1;
+            _apprenticeshipResponse.EmployerAccountId++;
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.IsNull(result);
         }

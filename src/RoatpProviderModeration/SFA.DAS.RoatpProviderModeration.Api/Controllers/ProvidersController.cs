@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.RoatpProviderModeration.Application.Queries.GetProvider;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription;
+using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
 {
@@ -30,6 +32,24 @@ namespace SFA.DAS.RoatpProviderModeration.Api.Controllers
             }
 
             return Ok(providerResult);
+        }
+
+        [HttpPost]
+        [Route("{ukprn}/update-provider-description")]
+        public async Task<IActionResult> UpdateProviderDescription([FromRoute] int ukprn, UpdateProviderDescriptionCommand command)
+        {
+            _logger.LogInformation("Outer API: Request to update provider description for ukprn: {ukprn}", ukprn);
+            command.Ukprn = ukprn;
+            try
+            {
+                await _mediator.Send(command);
+            }
+            catch (HttpRequestContentException ex)
+            {
+                _logger.LogError(ex, "Outer API: Failed request to update provider description for ukprn: {ukprn} with HttpStatusCode: {httpstatuscode}", ukprn, ex.StatusCode);
+                return new StatusCodeResult((int)ex.StatusCode);
+            }
+            return NoContent();
         }
     }
 }
