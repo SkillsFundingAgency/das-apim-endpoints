@@ -14,6 +14,10 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
             var actual = (GetUserAccountsApiResponse) source;
             
             actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
+            actual.Email.Should().Be(source.Email);
+            actual.FirstName.Should().Be(source.FirstName);
+            actual.LastName.Should().Be(source.LastName);
+            actual.EmployerUserId.Should().Be(source.EmployerUserId);
         }
         
         

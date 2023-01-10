@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -31,7 +32,15 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.AccountUsers.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse);
+            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse, options => options
+                .Excluding(c=>c.FirstName)
+                .Excluding(c=>c.LastName)
+                .Excluding(c=>c.UserId)
+            );
+            actual.Email.Should().BeEquivalentTo(query.Email);
+            actual.FirstName.Should().BeEquivalentTo(teamResponse.First().FirstName);
+            actual.LastName.Should().BeEquivalentTo(teamResponse.First().LastName);
+            actual.EmployerUserId.Should().BeEquivalentTo(teamResponse.First().UserId);
         }
     }
 }

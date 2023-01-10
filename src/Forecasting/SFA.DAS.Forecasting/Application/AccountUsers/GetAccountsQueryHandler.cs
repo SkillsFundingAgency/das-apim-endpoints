@@ -25,6 +25,10 @@ namespace SFA.DAS.Forecasting.Application.AccountUsers
             
             return new GetAccountsQueryResult
             {
+                EmployerUserId = employerAccounts.FirstOrDefault()?.UserId,
+                FirstName = employerAccounts.FirstOrDefault()?.FirstName,
+                LastName = employerAccounts.FirstOrDefault()?.LastName,
+                Email = request.Email,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser
                 {
                     DasAccountName = c.DasAccountName,
