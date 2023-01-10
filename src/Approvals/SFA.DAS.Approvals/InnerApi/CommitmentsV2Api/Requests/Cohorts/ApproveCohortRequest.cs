@@ -7,7 +7,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Cohorts
     public class ApproveCohortRequest : IPostApiRequest
     {
         public long CohortId { get; }
-        public string PostUrl => $"api/cohorts/{CohortId}/send";
+        public string PostUrl => $"api/cohorts/{CohortId}/approve";
         public object Data { get; set; }
 
         public ApproveCohortRequest(long cohortId)
