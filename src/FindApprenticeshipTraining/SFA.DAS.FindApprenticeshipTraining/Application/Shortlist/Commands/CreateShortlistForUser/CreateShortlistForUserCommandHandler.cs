@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 
+
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
 {
     public class CreateShortlistForUserCommandHandler : IRequestHandler<CreateShortlistForUserCommand, Unit>
