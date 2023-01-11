@@ -423,6 +423,28 @@ Download the repo and load into Visual Studio the project '..\dev\das-apim-endpo
 
 You will then see the swagger definition with the available operations.
 
+### Provider Moderation
+
+The Provider Moderation outer api relies on the following inner apis, which must all be set up according to their own readme setups:
+
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+
+You are able to run the API by doing the following:
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.Roatp.ProviderModeration.OuterApi_1.0
+Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.Roatp.ProviderModeration.OuterApi.json
+```
+
+* Start the api project ```SFA.DAS.RoatpProviderModeration.Api``` within apim
+
+Download the repo and load into Visual Studio the project '..\dev\das-apim-endpoints\src\RoatpProviderModeration\SFA.DAS.RoatpProviderModeration.Api.sln' and run the project SFA.DAS.RoatpProviderModeration.Api
+
+You will then see the swagger definition with the available operations.
+
 ### Apprentice Feedback
 
 The Apprentice Feedback outer API relies on the following inner APIs:
