@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 
+
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists
 {
     public class GetExpiredShortlistsQueryHandler : IRequestHandler<GetExpiredShortlistsQuery, GetExpiredShortlistsQueryResult>

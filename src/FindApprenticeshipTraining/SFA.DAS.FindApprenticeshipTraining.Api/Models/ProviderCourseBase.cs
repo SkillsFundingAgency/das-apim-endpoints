@@ -84,7 +84,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };            
         }
 
-        protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
+        protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(
+            InnerApi.Responses.GetApprenticeFeedbackResponse apprenticeFeedback)
         {
             if (apprenticeFeedback == null || apprenticeFeedback.ReviewCount == 0)
             {
@@ -116,58 +117,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             };
         }
 
-        protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<GetDeliveryTypeItem> getDeliveryTypeItems)
-        {
-            var hasWorkPlace = false;
-            var hasDayRelease = false;
-            var hasBlockRelease = false;
-            var isNotFound = false;
-            var filterDeliveryModes = new List<GetDeliveryType>();
-
-            foreach (var deliveryTypeItem in getDeliveryTypeItems)
-            {
-                var deliveryTypeItemSplit = deliveryTypeItem.DeliveryModes.Split("|").ToList();
-        
-                foreach (var mappedType in deliveryTypeItemSplit.Select(MapDeliveryType))
-                {
-                    var item = CreateDeliveryTypeItem(deliveryTypeItem);
-                    switch (mappedType)
-                    {
-                        case DeliveryModeType.Workplace when !hasWorkPlace:
-                            item.DeliveryModeType = DeliveryModeType.Workplace;
-                            item.DistanceInMiles = 0m;
-                            filterDeliveryModes.Add(item);
-                            hasWorkPlace = true;
-                            break;
-                        case DeliveryModeType.BlockRelease when !hasBlockRelease:
-                            item.DeliveryModeType = DeliveryModeType.BlockRelease;
-                            filterDeliveryModes.Add(item);
-                            hasBlockRelease = true;
-                            break;
-                        case DeliveryModeType.DayRelease when !hasDayRelease:
-                            item.DeliveryModeType = DeliveryModeType.DayRelease;
-                            filterDeliveryModes.Add(item);
-                            hasDayRelease = true;
-                            break;
-                        case DeliveryModeType.NotFound when !isNotFound:
-                            filterDeliveryModes.Add(item);
-                            isNotFound = true;
-                            break;
-                    }
-                }
-
-                if (hasBlockRelease && hasDayRelease && hasWorkPlace)
-                {
-                    break;
-                }
-            }
-            return filterDeliveryModes;
-        }
-
-
         protected List<GetDeliveryType> FilterDeliveryModes(IEnumerable<DeliveryModel> deliveryModels)
         {
             var deliveryTypes = new List<GetDeliveryType>();
+            var hasNational = false;
+            var hasRegional = false;
+            var hasDayRelease = false;
+            var hasBlockRelease = false;
 
             if (deliveryModels == null || deliveryModels.Any() == false)
             {
@@ -180,7 +136,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 return deliveryTypes;
             }
 
-            foreach (var deliveryModel in deliveryModels)
+            foreach (var deliveryModel in deliveryModels.OrderBy(c=>c.DistanceInMiles))
             {
                 var deliveryType = new GetDeliveryType
                 {
@@ -195,31 +151,51 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 if (deliveryModel.DistanceInMiles.HasValue)
                     deliveryType.DistanceInMiles = deliveryModel.DistanceInMiles.Value;
 
-                if (deliveryModel.LocationType == LocationType.National)
+                if (!hasNational)
                 {
-                    deliveryType.National = true;
-                    deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
-                    deliveryTypes.Add(deliveryType);
+                    if (deliveryModel.LocationType == LocationType.National)
+                    {
+                        deliveryType.National = true;
+                        deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
+                        deliveryType.DistanceInMiles = 0m;
+                        hasNational = true;
+                        deliveryTypes.Add(deliveryType);
+                    }
                 }
 
-
-                if (deliveryModel.LocationType == LocationType.Regional)
+                if (!hasRegional)
                 {
-                    deliveryType.National = false;
-                    deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
-                    deliveryTypes.Add(deliveryType);
+                    if (deliveryModel.LocationType == LocationType.Regional)
+                    {
+                        deliveryType.National = false;
+                        deliveryType.DeliveryModeType = DeliveryModeType.Workplace;
+                        deliveryType.DistanceInMiles = 0m;
+                        hasRegional = true;
+                        deliveryTypes.Add(deliveryType);
+                    }
                 }
 
-
-                if (deliveryModel.LocationType == LocationType.Provider)
+                switch (deliveryModel.LocationType)
                 {
-                    deliveryType.National = false;
-                    if (deliveryModel.DayRelease is true)
-                        deliveryType.DeliveryModeType = DeliveryModeType.DayRelease;
+                    case LocationType.Provider:
+                    {
+                        deliveryType.National = false;
+                        if (deliveryModel.DayRelease is true && !hasDayRelease)
+                        {
+                            deliveryType.DeliveryModeType = DeliveryModeType.DayRelease;
+                            hasDayRelease = true;
+                            deliveryTypes.Add(deliveryType);
+                        }
 
-                    if (deliveryModel.BlockRelease is true)
-                        deliveryType.DeliveryModeType = DeliveryModeType.BlockRelease;
-                    deliveryTypes.Add(deliveryType);
+                        if (deliveryModel.BlockRelease is true && !hasBlockRelease)
+                        {
+                            deliveryType.DeliveryModeType = DeliveryModeType.BlockRelease;
+                            hasBlockRelease = true;
+                            deliveryTypes.Add(deliveryType);
+                        }
+
+                        break;
+                    }
                 }
             }
 
