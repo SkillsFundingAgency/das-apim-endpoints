@@ -87,7 +87,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ShortlistUserId = shortlistRequest.ShortlistUserId
                 });
 
-                return Created("users", new { userid = shortlistRequest.ShortlistUserId });
+                return Created("users", shortlistRequest.ShortlistUserId );
             }
             catch (HttpRequestContentException e)
             {
