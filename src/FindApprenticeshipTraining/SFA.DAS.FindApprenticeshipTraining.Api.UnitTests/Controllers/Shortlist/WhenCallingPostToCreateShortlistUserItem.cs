@@ -38,7 +38,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
                     ), It.IsAny<CancellationToken>()));
 
             controllerResult.As<CreatedResult>().Should().NotBeNull();
-            controllerResult.Value.Should().BeEquivalentTo(new { userid = shortlistRequest.ShortlistUserId});
+            controllerResult.Value.Should().BeEquivalentTo(shortlistRequest.ShortlistUserId);
 
         }
 
