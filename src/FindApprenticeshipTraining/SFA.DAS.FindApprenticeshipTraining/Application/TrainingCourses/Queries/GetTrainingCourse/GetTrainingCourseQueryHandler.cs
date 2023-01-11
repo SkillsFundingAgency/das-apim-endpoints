@@ -22,14 +22,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly CacheHelper _cacheHelper;
 
         public GetTrainingCourseQueryHandler(
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {

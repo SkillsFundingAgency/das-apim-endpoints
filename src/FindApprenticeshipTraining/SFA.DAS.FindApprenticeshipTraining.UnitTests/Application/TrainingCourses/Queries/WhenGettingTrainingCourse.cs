@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationItem);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
@@ -61,8 +61,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockCoursesApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
-            mockShortlistApiClient.Setup(client=>client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(
-                c=>c.GetUrl.Equals(shortlistUrl)))).ReturnsAsync(shortlistItemCount);
+            mockShortlistApiClient.Setup(client => client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(
+                c => c.GetUrl.Equals(shortlistUrl)))).ReturnsAsync(shortlistItemCount);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -91,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         {
             //Arrange
             locationLookupService
-                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem)null);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
@@ -122,17 +122,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
-            result.Course.LevelEquivalent.Should().Be("GCSE"); 
+            result.Course.LevelEquivalent.Should().Be("GCSE");
             result.ProvidersCount.Should().Be(getTotalProvidersForStandardResponse.ProvidersCount);
             result.ProvidersCountAtLocation.Should().Be(getTotalProvidersForStandardResponse.ProvidersCount);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_No_Standard_Found_Returns_Empty_Response(
             GetTrainingCourseQuery query,
             GetLevelsListResponse levelsApiResponse,
-            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
             GetTrainingCourseQueryHandler handler)
@@ -141,16 +140,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Arrange
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
-                .ReturnsAsync((GetStandardsListItem) null);
-
-
-            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
-            mockCourseDeliveryApiClient
-                .Setup(client =>
-                    client.Get<GetUkprnsForStandardAndLocationResponse>(
-                        It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
-                            c.GetUrl.Equals(url)))))
-                .ReturnsAsync(courseDirectoryApiResponse);
+                .ReturnsAsync((GetStandardsListItem)null);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
