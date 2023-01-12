@@ -34,9 +34,7 @@ namespace SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary
             {
                 TotalEarningsForCurrentAcademicYear = summaryDto.TotalEarningsForCurrentAcademicYear,
                 TotalLevyEarningsForCurrentAcademicYear = summaryDto.TotalLevyEarningsForCurrentAcademicYear,
-                TotalNonLevyEarningsForCurrentAcademicYear = summaryDto.TotalNonLevyEarningsForCurrentAcademicYear,
-                Ukprn = summaryDto.Ukprn
-
+                TotalNonLevyEarningsForCurrentAcademicYear = summaryDto.TotalNonLevyEarningsForCurrentAcademicYear
             };
         }
     }

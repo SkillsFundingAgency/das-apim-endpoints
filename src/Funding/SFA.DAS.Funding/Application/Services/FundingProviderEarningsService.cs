@@ -24,7 +24,6 @@ namespace SFA.DAS.Funding.Application.Services
 
         public async Task<AcademicYearEarningsDto> GetAcademicYearEarnings(long ukprn)
         {
-            
             var response = await _client.Get<AcademicYearEarningsDto>(new GetProviderAcademicYearEarningsRequest(ukprn));
 
             return response;

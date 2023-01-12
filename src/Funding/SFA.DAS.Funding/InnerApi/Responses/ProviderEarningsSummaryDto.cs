@@ -4,7 +4,6 @@
     {
         public decimal TotalEarningsForCurrentAcademicYear { get; set; }
         public decimal TotalLevyEarningsForCurrentAcademicYear { get; set; }
-        public decimal TotalNonLevyEarningsForCurrentAcademicYear { get; set; }        
-        public long Ukprn { get; set; }
+        public decimal TotalNonLevyEarningsForCurrentAcademicYear { get; set; }
     }
 }

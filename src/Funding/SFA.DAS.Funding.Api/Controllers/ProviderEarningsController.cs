@@ -35,8 +35,8 @@ namespace SFA.DAS.Funding.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/{ukprn}/GenerateCSV")]
-        public async Task<IActionResult> GenerateCSV(long ukprn)
+        [Route("/{ukprn}")]
+        public async Task<IActionResult> GetDetail(long ukprn)
         {
             var result = await _mediator.Send(new GetProviderAcademicYearEarningsQuery
             {
