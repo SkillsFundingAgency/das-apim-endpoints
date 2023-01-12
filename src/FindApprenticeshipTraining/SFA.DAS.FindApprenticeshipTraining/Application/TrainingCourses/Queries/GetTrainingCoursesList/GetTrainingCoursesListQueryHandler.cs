@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -16,15 +17,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCoursesListQueryHandler : IRequestHandler<GetTrainingCoursesListQuery, GetTrainingCoursesListResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly IShortlistService _shortlistService;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient, 
-            IShortlistService shortlistService, 
-            ICacheStorageService cacheStorageService)
+        public GetTrainingCoursesListQueryHandler(ICoursesApiClient<CoursesApiConfiguration> apiClient,
+            ICacheStorageService cacheStorageService, IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
-            _shortlistService = shortlistService;
+            _shortlistApiClient = shortlistApiClient;
             _cacheHelper = new CacheHelper(cacheStorageService);
         }
 
@@ -75,7 +75,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetLevelsListRequest(), nameof(GetLevelsListResponse), out var saveLevelsToCache);
             taskList.Add(levelsTask);
 
-            var shortlistItemCountTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            var shortlistItemCountTask = request.ShortlistUserId.HasValue
+                ? _shortlistApiClient.Get<int>(new GetShortlistUserItemCountRequest(request.ShortlistUserId.Value))
+                : Task.FromResult(0);
             taskList.Add(shortlistItemCountTask);
             
             await Task.WhenAll(taskList);
