@@ -3,6 +3,11 @@
     public class AddNationalLocationToProviderCourseModel 
     {
         public string UserId { get; }
-        public AddNationalLocationToProviderCourseModel(string userId) => UserId = userId;
+        public string UserDisplayName { get; }
+        public AddNationalLocationToProviderCourseModel(string userId, string userDisplayName)
+        {
+            UserId = userId;
+            UserDisplayName = userDisplayName;
+        }
     }
 }

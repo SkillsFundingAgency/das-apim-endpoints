@@ -18,5 +18,6 @@ namespace SFA.DAS.EmployerIncentives.Models
         public PaymentStatus SecondPaymentStatus { get; set; }
         public ClawbackStatus FirstClawbackStatus { get; set; }
         public ClawbackStatus SecondClawbackStatus { get; set; }
+        public bool IncentiveCompleted { get; set; }
     }
 }

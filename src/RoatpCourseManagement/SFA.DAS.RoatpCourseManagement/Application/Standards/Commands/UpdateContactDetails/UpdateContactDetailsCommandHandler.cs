@@ -22,6 +22,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 ContactUsEmail = command.ContactUsEmail,
                 ContactUsPhoneNumber = command.ContactUsPhoneNumber,
                 ContactUsPageUrl = command.ContactUsPageUrl,

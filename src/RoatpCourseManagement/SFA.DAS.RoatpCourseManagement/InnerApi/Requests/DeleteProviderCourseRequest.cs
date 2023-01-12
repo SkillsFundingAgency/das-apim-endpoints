@@ -1,5 +1,4 @@
-﻿using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeleteProviderCourse;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Web;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
@@ -9,8 +8,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
 
-       
-        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/?userId={HttpUtility.UrlEncode(UserId)}";
+        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}?userId={HttpUtility.UrlEncode(UserId)}&userDisplayName={HttpUtility.UrlEncode(UserDisplayName)}";
     }
 }

@@ -10,7 +10,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         public int LarsCode { get; set; }
         public Guid Id { get; set; }
         public string UserId { get; set; }
-
-        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/location/{Id}?userId={HttpUtility.UrlEncode(UserId)}";
+        public string UserDisplayName { get; set; }
+        public string DeleteUrl => $"/providers/{Ukprn}/courses/{LarsCode}/location/{Id}?userId={HttpUtility.UrlEncode(UserId)}&userDisplayName={HttpUtility.UrlEncode(UserDisplayName)}";
     }
 }

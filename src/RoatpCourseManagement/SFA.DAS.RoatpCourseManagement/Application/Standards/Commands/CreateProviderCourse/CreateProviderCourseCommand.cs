@@ -6,6 +6,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreatePro
     public class CreateProviderCourseCommand : IRequest<Unit>
     {
         public string UserId { get; set; }
+        public string UserDisplayName { get; set; }
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
