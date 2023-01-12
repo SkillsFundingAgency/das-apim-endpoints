@@ -12,33 +12,35 @@ using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse
 {
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
+        private readonly ILocationLookupService _locationLookupService;
         private readonly CacheHelper _cacheHelper;
 
-        public GetTrainingCourseQueryHandler(
+        public GetTrainingCourseQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
+            ILocationLookupService locationLookupService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
+            _locationLookupService = locationLookupService;
             _roatpV2ApiClient = roatpV2ApiClient;
             _shortlistApiClient = shortlistApiClient;
             _cacheHelper = new CacheHelper(cacheStorageService);
-            _roatpV2ApiClient = roatpV2ApiClient;
+
         }
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
+            var location = await _locationLookupService.GetLocationInformation(request.LocationName, request.Lat, request.Lon);
+            
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
             var ukprnsCountTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
