@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
     public class WhenGettingShortlistForUser
     {
         [Test, MoqAutoData]
-         public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
+         public async Task Then_Gets_The_Shortlist_From_ShortlistApi_And_Course_From_CoursesApi(
              GetShortlistForUserQuery query,
              GetShortlistForUserResponse apiResponse,
              List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
@@ -30,7 +30,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
              List<ShortlistItem> shortlistItems,
              [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
              [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> mockEmployerFeedbackClient,
-             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+             [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
              [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
              [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortListApiClient,
              GetShortlistForUserQueryHandler handler)

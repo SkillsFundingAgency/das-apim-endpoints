@@ -13,9 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
         {
             services.AddOptions();
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value); 
             services.Configure<FindApprenticeshipTrainingConfiguration>(configuration.GetSection(nameof(FindApprenticeshipTrainingConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));

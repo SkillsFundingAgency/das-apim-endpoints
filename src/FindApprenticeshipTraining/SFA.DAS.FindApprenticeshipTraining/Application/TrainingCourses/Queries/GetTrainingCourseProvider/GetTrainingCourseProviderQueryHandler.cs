@@ -16,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 {
     public class GetTrainingCourseProviderQueryHandler : IRequestHandler<GetTrainingCourseProviderQuery, GetTrainingCourseProviderResult>
     {
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpV2ApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -29,7 +29,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient,
             ILocationLookupService locationLookupService,
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
+            IRoatpV2ApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
         {
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;

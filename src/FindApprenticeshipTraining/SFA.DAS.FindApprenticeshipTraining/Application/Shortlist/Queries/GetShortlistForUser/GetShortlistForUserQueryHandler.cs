@@ -14,14 +14,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
 {
     public class GetShortlistForUserQueryHandler : IRequestHandler<GetShortlistForUserQuery, GetShortlistForUserResult>
     {
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpV2ApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortListApiClient;
         private readonly ICachedCoursesService _cachedCoursesService;
 
         public GetShortlistForUserQueryHandler(
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient,
+            IRoatpV2ApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICachedCoursesService cachedCoursesService, IShortlistApiClient<ShortlistApiConfiguration> shortListApiClient)

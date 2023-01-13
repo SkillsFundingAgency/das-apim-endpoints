@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.Configuration
 {
-    public class RoatpV2ApiConfiguration : IInternalApiConfiguration
+    public class RoatpCourseManagementApiConfiguration : IInternalApiConfiguration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }

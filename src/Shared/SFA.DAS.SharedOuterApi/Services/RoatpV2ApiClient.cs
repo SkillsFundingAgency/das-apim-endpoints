@@ -9,11 +9,11 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.SharedOuterApi.Services
 {
     [ExcludeFromCodeCoverage]
-    public class RoatpCourseManagementApiClient : IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>
+    public class RoatpV2ApiClient : IRoatpV2ApiClient<RoatpV2ApiConfiguration>
     {
         private readonly IInternalApiClient<RoatpV2ApiConfiguration> _apiClient;
 
-        public RoatpCourseManagementApiClient(IInternalApiClient<RoatpV2ApiConfiguration> apiClient)
+        public RoatpV2ApiClient(IInternalApiClient<RoatpV2ApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }

@@ -19,16 +19,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-            services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>, ApprenticeFeedbackApiClient>();
             services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
             services.AddTransient<IShortlistApiClient<ShortlistApiConfiguration>, ShortlistApiClient>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedCoursesService, CachedCoursesService>();
-            services.AddTransient<IShortlistService, ShortlistService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+            services.AddTransient<IRoatpV2ApiClient<RoatpV2ApiConfiguration>, RoatpV2ApiClient>();
         }
     }
 }

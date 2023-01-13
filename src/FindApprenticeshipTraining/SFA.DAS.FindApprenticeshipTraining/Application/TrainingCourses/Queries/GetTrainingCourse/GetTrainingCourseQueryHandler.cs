@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpV2ApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly ILocationLookupService _locationLookupService;
         private readonly CacheHelper _cacheHelper;
@@ -27,7 +27,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
             ILocationLookupService locationLookupService,
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
+            IRoatpV2ApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
