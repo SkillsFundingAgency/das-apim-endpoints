@@ -8,6 +8,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -18,6 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>))]
+        [TestCase(typeof(IShortlistApiClient<ShortlistApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICacheStorageService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
@@ -46,7 +49,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("RoatpV2ApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("ShortlistApiConfiguration:url", "http://localhost:4")
                 }
             };
 
