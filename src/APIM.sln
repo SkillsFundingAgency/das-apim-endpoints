@@ -311,6 +311,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporting.Api.UnitTests", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.Api.UnitTests\SFA.DAS.PublicSectorReporting.Api.UnitTests.csproj", "{75D9AE34-1364-4039-AA32-805C1A95377B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerFeedback", "EmployerFeedback", "{43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback", "EmployerFeedback\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj", "{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api\SFA.DAS.EmployerFeedback.Api.csproj", "{25E57A14-3240-47EF-817C-0D87303B2206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.UnitTests\SFA.DAS.EmployerFeedback.UnitTests.csproj", "{34B290AD-28AB-4A81-A118-87FE86180105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api.UnitTests\SFA.DAS.EmployerFeedback.Api.UnitTests.csproj", "{1374D61E-A576-4D41-BFE1-61141339D2F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -813,6 +823,22 @@ Global
 		{75D9AE34-1364-4039-AA32-805C1A95377B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75D9AE34-1364-4039-AA32-805C1A95377B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75D9AE34-1364-4039-AA32-805C1A95377B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25E57A14-3240-47EF-817C-0D87303B2206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25E57A14-3240-47EF-817C-0D87303B2206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25E57A14-3240-47EF-817C-0D87303B2206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25E57A14-3240-47EF-817C-0D87303B2206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34B290AD-28AB-4A81-A118-87FE86180105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34B290AD-28AB-4A81-A118-87FE86180105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34B290AD-28AB-4A81-A118-87FE86180105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34B290AD-28AB-4A81-A118-87FE86180105}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1374D61E-A576-4D41-BFE1-61141339D2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1374D61E-A576-4D41-BFE1-61141339D2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1374D61E-A576-4D41-BFE1-61141339D2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1374D61E-A576-4D41-BFE1-61141339D2F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -942,6 +968,10 @@ Global
 		{ADA49D2B-EC89-4707-8415-BD5B57B73520} = {58FCDBD9-68B4-438C-919A-44397BA80E7B}
 		{ECD8C27D-33FC-4BDD-A82F-A605765D2680} = {58FCDBD9-68B4-438C-919A-44397BA80E7B}
 		{75D9AE34-1364-4039-AA32-805C1A95377B} = {58FCDBD9-68B4-438C-919A-44397BA80E7B}
+		{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82} = {43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}
+		{25E57A14-3240-47EF-817C-0D87303B2206} = {43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}
+		{34B290AD-28AB-4A81-A118-87FE86180105} = {43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}
+		{1374D61E-A576-4D41-BFE1-61141339D2F6} = {43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2353A4D0-2859-4472-B2D4-BBD8087B4E22}
