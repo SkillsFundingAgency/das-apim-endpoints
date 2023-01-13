@@ -17,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
-        [TestCase(typeof(IRoatpV2ApiClient<RoatpV2ApiConfiguration>))]
+        [TestCase(typeof(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICacheStorageService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)

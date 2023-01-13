@@ -30,7 +30,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
              List<ShortlistItem> shortlistItems,
              [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
              [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> mockEmployerFeedbackClient,
-             [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
              [Frozen] Mock<ICachedCoursesService> mockCachedCoursesService,
              [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortListApiClient,
              GetShortlistForUserQueryHandler handler)

@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedCoursesService, CachedCoursesService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
-            services.AddTransient<IRoatpV2ApiClient<RoatpV2ApiConfiguration>, RoatpV2ApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         }
     }
 }

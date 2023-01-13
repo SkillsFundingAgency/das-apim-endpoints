@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, apprenticeFeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             query.ShortlistUserId = null;
@@ -89,7 +89,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-           [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+           [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
            GetTrainingCourseProviderQueryHandler handler)
         {
             List<ShortlistItem> shortlistItems = new();
@@ -115,7 +115,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, apprenticeFeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
@@ -141,7 +141,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             mockLookupService
@@ -179,7 +179,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             query.Location = null;
@@ -217,7 +217,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             query.Lat = 0;
@@ -241,7 +241,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             mockShortlistApiClient
@@ -286,7 +286,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, appfeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
@@ -314,7 +314,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, appfeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
@@ -339,7 +339,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             query.ShortlistUserId = null;
@@ -376,7 +376,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, apiFeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
@@ -407,7 +407,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             query.Location = $"{locationName}, {authorityName} ";
@@ -444,7 +444,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
             [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-            [Frozen] Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseProviderQueryHandler handler)
         {
             mockShortlistApiClient
@@ -498,7 +498,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetApprenticeFeedbackResponse apprenticeFeedbackResponse,
             Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackClient,
-            Mock<IRoatpV2ApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
+            Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             List<ShortlistItem> shortlistItems,
             Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient)
         {

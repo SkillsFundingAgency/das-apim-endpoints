@@ -15,10 +15,10 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     {
         private const string HealthCheckResultDescription = "Roatp Course Management Api check";
 
-        private readonly IRoatpV2ApiClient<RoatpCourseManagementApiConfiguration> _apiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _apiClient;
         private readonly ILogger<RoatpCourseManagementApiHealthCheck> _logger;
 
-        public RoatpCourseManagementApiHealthCheck(IRoatpV2ApiClient<RoatpCourseManagementApiConfiguration> apiClient, ILogger<RoatpCourseManagementApiHealthCheck> logger)
+        public RoatpCourseManagementApiHealthCheck(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> apiClient, ILogger<RoatpCourseManagementApiHealthCheck> logger)
         {
             _apiClient = apiClient;
             _logger = logger;

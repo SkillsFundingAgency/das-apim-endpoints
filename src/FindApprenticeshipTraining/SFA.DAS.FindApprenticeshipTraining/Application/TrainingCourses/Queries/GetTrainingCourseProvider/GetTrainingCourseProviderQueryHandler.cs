@@ -16,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 {
     public class GetTrainingCourseProviderQueryHandler : IRequestHandler<GetTrainingCourseProviderQuery, GetTrainingCourseProviderResult>
     {
-        private readonly IRoatpV2ApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -29,14 +29,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient,
             ILocationLookupService locationLookupService,
-            IRoatpV2ApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient)
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
         {
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
             _shortlistApiClient = shortlistApiClient;
             _locationLookupService = locationLookupService;
-            _roatpV2ApiClient = roatpV2ApiClient;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
         }
 
         public async Task<GetTrainingCourseProviderResult> Handle(GetTrainingCourseProviderQuery request, CancellationToken cancellationToken)
@@ -46,13 +46,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
 
-            var ukprnsCountTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
+            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
                 new GetTotalProvidersForStandardRequest(request.CourseId));
 
-            var providerCoursesTask = _roatpV2ApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
+            var providerCoursesTask = _roatpCourseManagementApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
 
-            var overallAchievementRatesTask = _roatpV2ApiClient.Get<GetOverallAchievementRateResponse>(
+            var overallAchievementRatesTask = _roatpCourseManagementApiClient.Get<GetOverallAchievementRateResponse>(
                 new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
 
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
@@ -110,7 +110,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var longitude = locationItem?.GeoPoint?.LastOrDefault();
 
             var request = new GetProviderByCourseAndUkprnRequest(providerId, courseId, latitude, longitude);
-            var apiResponse = await _roatpV2ApiClient.Get<GetProviderDetailsForCourse>(request);
+            var apiResponse = await _roatpCourseManagementApiClient.Get<GetProviderDetailsForCourse>(request);
 
             if (apiResponse == null) return null;
 
