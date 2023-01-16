@@ -35,7 +35,7 @@ namespace SFA.DAS.Funding.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/{ukprn}")]
+        [Route("/{ukprn}/detail")]
         public async Task<IActionResult> GetDetail(long ukprn)
         {
             var result = await _mediator.Send(new GetProviderAcademicYearEarningsQuery
