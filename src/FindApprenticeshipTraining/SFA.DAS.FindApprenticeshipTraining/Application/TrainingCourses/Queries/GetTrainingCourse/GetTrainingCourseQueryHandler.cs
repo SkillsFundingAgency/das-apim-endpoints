@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
     public class GetTrainingCourseQueryHandler : IRequestHandler<GetTrainingCourseQuery,GetTrainingCourseResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly ILocationLookupService _locationLookupService;
         private readonly CacheHelper _cacheHelper;
@@ -27,12 +27,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
             ILocationLookupService locationLookupService,
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient, 
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
             _locationLookupService = locationLookupService;
-            _roatpV2ApiClient = roatpV2ApiClient;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _shortlistApiClient = shortlistApiClient;
             _cacheHelper = new CacheHelper(cacheStorageService);
 
@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
-            var ukprnsCountTask = _roatpV2ApiClient.Get<GetTotalProvidersForStandardResponse>(
+            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
                 new GetTotalProvidersForStandardRequest(request.Id));
 
 

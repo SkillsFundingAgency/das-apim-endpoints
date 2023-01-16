@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Que
     public class WhenGettingShortlistForUser
     {
         [Test, MoqAutoData]
-         public async Task Then_Gets_The_Shortlist_From_CourseDeliveryApi_And_Course_From_CoursesApi(
+         public async Task Then_Gets_The_Shortlist_From_ShortlistApi_And_Course_From_CoursesApi(
              GetShortlistForUserQuery query,
              GetShortlistForUserResponse apiResponse,
              List<GetApprenticeFeedbackSummaryItem> apprenticeFeedbackResponse,
