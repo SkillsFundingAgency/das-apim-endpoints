@@ -14,19 +14,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
 {
     public class GetShortlistForUserQueryHandler : IRequestHandler<GetShortlistForUserQuery, GetShortlistForUserResult>
     {
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortListApiClient;
         private readonly ICachedCoursesService _cachedCoursesService;
 
         public GetShortlistForUserQueryHandler(
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpV2ApiClient,
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICachedCoursesService cachedCoursesService, IShortlistApiClient<ShortlistApiConfiguration> shortListApiClient)
         {
-            _roatpV2ApiClient = roatpV2ApiClient;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _cachedCoursesService = cachedCoursesService;
@@ -46,7 +46,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
             }
 
             var providerDetailsTaskList = shortlistForUserId.Select(shortlistItem => new GetProviderByCourseAndUkprnRequest(shortlistItem.Ukprn, shortlistItem.Larscode, shortlistItem.Latitude, shortlistItem.Longitude))
-                .Select(req => _roatpV2ApiClient.Get<GetProviderDetailsForCourse>(req)).Cast<Task>().ToList();
+                .Select(req => _roatpCourseManagementApiClient.Get<GetProviderDetailsForCourse>(req)).Cast<Task>().ToList();
 
             await Task.WhenAll(providerDetailsTaskList);
 
