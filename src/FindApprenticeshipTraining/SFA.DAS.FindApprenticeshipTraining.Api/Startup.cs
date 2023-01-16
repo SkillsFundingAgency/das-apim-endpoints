@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -84,7 +85,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check")
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
+                    .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
             }
 

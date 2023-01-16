@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -12,9 +11,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
-    public class RoatpCourseManagementApiHealthCheck : IHealthCheck
+    public class RoatpCourseManagementApiHealthCheck :IHealthCheck
     {
-        public const string HealthCheckResultDescription = "Course Management Api health check";
+        private const string HealthCheckResultDescription = "Roatp Course Management Api check";
 
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _apiClient;
         private readonly ILogger<RoatpCourseManagementApiHealthCheck> _logger;
@@ -25,9 +24,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
             _logger = logger;
         }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Pinging CourseManagement API");
+            _logger.LogInformation("Pinging Roatp Course Management API");
 
             var timer = Stopwatch.StartNew();
             var response = await _apiClient.GetResponseCode(new GetPingRequest());
@@ -37,13 +36,13 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
             {
                 var durationString = timer.Elapsed.ToHumanReadableString();
 
-                _logger.LogInformation($"CourseManagement API ping successful and took {durationString}");
+                _logger.LogInformation($"Roatp Course Management ping successful and took {durationString}");
 
                 return HealthCheckResult.Healthy(HealthCheckResultDescription,
                     new Dictionary<string, object> { { "Duration", durationString } });
             }
 
-            _logger.LogWarning($"CourseManagement API ping failed : [Code: {response}]");
+            _logger.LogWarning($"Roatp Course Management API ping failed : [Code: {response}]");
             return HealthCheckResult.Unhealthy(HealthCheckResultDescription);
         }
     }
