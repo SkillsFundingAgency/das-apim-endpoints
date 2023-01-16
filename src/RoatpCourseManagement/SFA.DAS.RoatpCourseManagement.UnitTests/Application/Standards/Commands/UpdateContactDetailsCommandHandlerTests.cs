@@ -28,7 +28,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
         {
             var apiResponse = new ApiResponse<string>(string.Empty, HttpStatusCode.NoContent, string.Empty);
             apiClientMock.Setup(c => c.PatchWithResponseCode(It.IsAny<PatchProviderCourseRequest>())).ReturnsAsync(apiResponse);
+
             await sut.Handle(command, cancellationToken);
+
             apiClientMock.Verify(a => a.PatchWithResponseCode(It.IsAny<PatchProviderCourseRequest>()), Times.Once);
         }
 
