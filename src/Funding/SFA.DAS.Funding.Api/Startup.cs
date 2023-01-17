@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Funding.Api.AppStart;
 using SFA.DAS.Funding.Api.ErrorHandler;
+using SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary;
 using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -56,7 +57,7 @@ namespace SFA.DAS.Funding.Api
             services.AddHealthChecks()
                 .AddCheck<FundingApprenticeshipEarningsHealthCheck>(nameof(FundingApprenticeshipEarningsHealthCheck));
 
-            //services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
+            services.AddMediatR(typeof(GetProviderEarningsSummaryQuery).Assembly);
             services.AddServiceRegistration();
 
             services

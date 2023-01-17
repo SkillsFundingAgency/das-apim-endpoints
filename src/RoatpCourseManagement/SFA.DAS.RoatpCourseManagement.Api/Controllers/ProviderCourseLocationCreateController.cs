@@ -21,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/courses/{larsCode}/add-national-location")]
+        [Route("providers/{ukprn}/courses/{larsCode}/locations/national")]
         public async Task<IActionResult> AddNationalLocationToProviderCourseLocations([FromRoute] int ukprn, [FromRoute] int larsCode, [FromBody] AddNationalLocationToProviderCourseLocationsCommand command)
         {
             _logger.LogInformation("Outer API: Request received to add national location for ukprn: {ukprn} larscode: {larscode} by user: {userId}", ukprn, larsCode, command.UserId);

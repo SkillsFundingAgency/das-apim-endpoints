@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         public async Task Then_The_Attributes_Are_Returned_From_Mediator(
             GetAttributesResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ProviderAttributesController controller)
+            [Greedy] AttributesController controller)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetAttributesQuery>(), CancellationToken.None))
@@ -36,7 +36,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] ProviderAttributesController controller)
+            [Greedy] AttributesController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetAttributesQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
