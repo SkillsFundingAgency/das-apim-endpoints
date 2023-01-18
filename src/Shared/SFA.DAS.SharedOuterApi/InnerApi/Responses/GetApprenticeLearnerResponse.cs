@@ -24,5 +24,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         public string GivenNames { get; set; }
         public string FamilyName { get; set; }
+
+        public bool IsTransfer { get; set; }
+        public DateTime? DateTransferIdentified { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdatePro
                 Ukprn = command.Ukprn,
                 Id = command.Id,
                 UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName,
                 LocationName = command.LocationName,
                 Website = command.Website,
                 Email = command.Email,

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoFixture.NUnit3" />
+        <PackageReference Include="coverlet.msbuild">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="nunit" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj" />
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    </ItemGroup>
+
+</Project>
