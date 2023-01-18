@@ -8,6 +8,7 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -21,10 +22,10 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             long trainingProviderId,
             [Frozen] Mock<IInternalApiClient<TrainingProviderConfiguration>> client)
         {
-            ClientReturnsSearchWith(client, new TrainingProviderResponse[0]);
+            ClientReturnsSearchWith(client, Array.Empty<TrainingProviderResponse>());
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>()
+                .Should().ThrowAsync<HttpRequestContentException>()
                 .WithMessage($"Training Provider Id {trainingProviderId} not found");
         }
 
@@ -37,7 +38,7 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, results);
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>()
+                .Should().ThrowAsync<HttpRequestContentException>()
                 .WithMessage($"Training Provider Id {trainingProviderId} finds multiple matches");
         }
 
@@ -62,10 +63,10 @@ namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
             ClientReturnsSearchWith(client, null, HttpStatusCode.InternalServerError, "some internal error");
             var sut = new TrainingProviderService(client.Object);
             sut.Invoking((s) => s.GetTrainingProviderDetails(trainingProviderId))
-                .Should().Throw<HttpRequestContentException>().WithMessage("some internal error");
+                .Should().ThrowAsync<HttpRequestContentException>().WithMessage("some internal error");
         }
 
-        private void ClientReturnsSearchWith(
+        public static void ClientReturnsSearchWith(
             Mock<IInternalApiClient<TrainingProviderConfiguration>> client,
             TrainingProviderResponse[] results,
             HttpStatusCode statusCode = HttpStatusCode.OK,
