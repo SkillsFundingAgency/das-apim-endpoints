@@ -40,6 +40,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Lat = 0;
             query.Lon = 0;
 
+            foreach (var provider in apiResponse.Providers)
+            {
+                provider.IsApprovedByRegulator = null;
+            }
+
             var providerUkprns = apiResponse.Providers.Select(s => s.Ukprn);
             for (var i = 0; i < apprenticeFeedbackResponse.Count(); i++)
             {
@@ -101,6 +106,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             query.Location = $"{locationName}, {authorityName} ";
             query.Lat = 0;
             query.Lon = 0;
+            
+            foreach (var provider in apiResponse.Providers)
+            {
+                provider.IsApprovedByRegulator = null;
+            }
 
             var providerUkprns = apiResponse.Providers.Select(s => s.Ukprn);
             for (var i = 0; i < apprenticeFeedbackResponse.Count(); i++)

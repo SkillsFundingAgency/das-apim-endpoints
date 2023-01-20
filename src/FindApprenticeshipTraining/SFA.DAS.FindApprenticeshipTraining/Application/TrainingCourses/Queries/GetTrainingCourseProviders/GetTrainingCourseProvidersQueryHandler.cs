@@ -61,28 +61,30 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 request.Id, locationTask.Result?.GeoPoint?.FirstOrDefault(),
                 locationTask.Result?.GeoPoint?.LastOrDefault()));
 
-            if (providers?.Providers.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
+            var filteredProviders = providers?.Providers.Where(x => x.IsApprovedByRegulator != false).ToList();
+
+            if (filteredProviders?.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
             {
                 var summaries = apprenticeFeedbackSummaryTask.Result;
-                foreach (var provider in providers.Providers)
+                foreach (var provider in filteredProviders)
                 {
                     provider.ApprenticeFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
                 }
             }
 
-            if (providers?.Providers.Any() == true && employerFeedbackSummaryTask.Result?.Any() == true)
+            if (filteredProviders?.Any() == true && employerFeedbackSummaryTask.Result?.Any() == true)
             {
                 var summaries = employerFeedbackSummaryTask.Result;
-                foreach (var provider in providers.Providers)
+                foreach (var provider in filteredProviders)
                 {
                     provider.EmployerFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
                 }
             }
 
-            if (providers?.Providers.Any() == true && shortlistTask.Result?.Any() == true)
+            if (filteredProviders?.Any() == true && shortlistTask.Result?.Any() == true)
             {
                 var summaries = shortlistTask.Result;
-                foreach (var provider in providers.Providers)
+                foreach (var provider in filteredProviders)
                 {
                     provider.ShortlistId = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn)?.Id;
                 }
@@ -91,8 +93,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providers?.Providers,
-                Total = providers?.Providers?.Count() ?? 0,
+                Providers = filteredProviders,
+                Total = filteredProviders?.Count() ?? 0,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask?.Result?.Count() ?? 0
             };
