@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Approvals.Application;
-using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.AppStart
 {
@@ -16,7 +15,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
                 {
                     if (long.TryParse((string)httpContext.Request.RouteValues["accountId"], out var accountId))
                     {
-                        return new ServiceParameters(Party.Employer, accountId);
+                        return new ServiceParameters(Application.Shared.Enums.Party.Employer, accountId);
                     }
                 }
 
@@ -24,7 +23,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
                 {
                     if (long.TryParse((string)httpContext.Request.RouteValues["providerId"], out var providerId))
                     {
-                        return new ServiceParameters(Party.Provider, providerId);
+                        return new ServiceParameters(Application.Shared.Enums.Party.Provider, providerId);
                     }
                 }
 
@@ -32,11 +31,11 @@ namespace SFA.DAS.Approvals.Api.AppStart
                 {
                     if (long.TryParse((string)httpContext.Request.RouteValues["transferSenderId"], out var transferSenderId))
                     {
-                        return new ServiceParameters(Party.TransferSender, transferSenderId);
+                        return new ServiceParameters(Application.Shared.Enums.Party.TransferSender, transferSenderId);
                     }
                 }
 
-                return new ServiceParameters(Party.None, 0);
+                return new ServiceParameters(Application.Shared.Enums.Party.None, 0);
 
             });
 
