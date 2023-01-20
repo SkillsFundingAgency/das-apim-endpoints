@@ -19,11 +19,11 @@ namespace SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance
         }
         public async Task<GetAccountBalanceQueryResult> Handle(GetAccountBalanceQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetAccountBalanceResponse>(new GetAccountBalanceRequest(request.AccountId));
+            var result = await _apiClient.PostWithResponseCode<GetAccountBalanceResponse[]>(new PostAccountBalanceRequest(request.AccountId));
 
             return new GetAccountBalanceQueryResult
             {
-                AccountBalance = result.Accounts.FirstOrDefault()
+                AccountBalance = result.Body.FirstOrDefault()
             };
         }
     }

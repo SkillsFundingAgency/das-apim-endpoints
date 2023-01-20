@@ -4,6 +4,6 @@ namespace SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance
 {
     public class GetAccountBalanceQueryResult
     {
-        public GetAccountBalanceResponseItem AccountBalance { get; set; }
+        public GetAccountBalanceResponse AccountBalance { get; set; }
     }
 }
