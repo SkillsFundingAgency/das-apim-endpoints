@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         [SetUp]
         public void Setup()
         {
-            var serviceParameters = new ServiceParameters(Party.Employer, _apprenticeshipResponse.EmployerAccountId);
+            var serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Employer, _apprenticeshipResponse.EmployerAccountId);
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _commitmentsApiClient.Setup(x =>

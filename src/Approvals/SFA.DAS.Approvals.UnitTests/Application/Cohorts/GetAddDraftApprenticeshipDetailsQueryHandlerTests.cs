@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
                 It.Is<long?>(a => a == null)))
             .ReturnsAsync(_deliveryModels);
 
-            _serviceParameters = new ServiceParameters(Party.Employer, _accountLegalEntity.AccountId);
+            _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)Party.Employer, _accountLegalEntity.AccountId);
 
             _handler = new GetAddDraftApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
         }

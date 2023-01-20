@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _deliveryModelService.Setup(x => x.GetDeliveryModels(It.Is<GetApprenticeshipResponse>(r => r == _apprenticeship)))
             .ReturnsAsync(_deliveryModels);
 
-            _serviceParameters = new ServiceParameters(Party.Employer, 123);
+            _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)Party.Employer, 123);
 
             _handler = new GetEditApprenticeshipQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
         }
