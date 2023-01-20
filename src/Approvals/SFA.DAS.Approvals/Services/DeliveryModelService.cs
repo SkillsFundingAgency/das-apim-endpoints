@@ -77,11 +77,6 @@ namespace SFA.DAS.Approvals.Services
 
         public async Task<List<string>> GetDeliveryModels(GetApprenticeshipResponse apprenticeship)
         {
-            if (apprenticeship.HasHadDataLockSuccess)
-            {
-                return new List<string> { apprenticeship.DeliveryModel };
-            }
-
             var result = await GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode,
                 apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 

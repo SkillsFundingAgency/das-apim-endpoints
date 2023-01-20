@@ -5,8 +5,10 @@ using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
+using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
+using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -63,6 +65,36 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error in Get Cohort Details - cohort id {cohortId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("employer/{accountId}/unapproved/{cohortId}")]
+        [Route("provider/{providerId}/unapproved/{cohortId}")]
+        public async Task<IActionResult> Details(long cohortId, [FromBody] DetailsPostRequest request)
+        {
+            try
+            {
+                var command = new PostDetailsCommand
+                {
+                    CohortId = cohortId,
+                    SubmissionType = request.SubmissionType,
+                    Message = request.Message,
+                    UserInfo = request.UserInfo
+                };
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (ResourceNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in Post Cohort Details - cohort id {cohortId}");
                 return BadRequest();
             }
         }
