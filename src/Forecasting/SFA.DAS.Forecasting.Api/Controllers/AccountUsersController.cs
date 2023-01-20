@@ -38,7 +38,7 @@ namespace SFA.DAS.Forecasting.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e, $"Error getting account information for {userId}");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
