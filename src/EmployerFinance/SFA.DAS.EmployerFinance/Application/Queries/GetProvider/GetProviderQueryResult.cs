@@ -1,9 +1,11 @@
-﻿using SFA.DAS.EmployerFinance.InnerApi.Responses;
-
-namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
+﻿namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
 {
     public class GetProviderQueryResult
     {
-        public GetProvidersListItem Provider { get; set; }
+        public int Ukprn { get; set; }
+        public string Name { get; set; }
+        public string ContactUrl { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
     }
 }

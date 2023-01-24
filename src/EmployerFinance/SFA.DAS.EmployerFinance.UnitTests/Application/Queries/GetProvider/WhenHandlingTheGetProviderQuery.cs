@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Provider.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(apiResponse);
         }
     }
 }

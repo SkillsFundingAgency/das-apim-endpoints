@@ -1,23 +1,8 @@
-﻿using SFA.DAS.EmployerFinance.InnerApi.Responses;
+﻿using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
 
-namespace SFA.DAS.EmployerFinance.Api.Models
+namespace SFA.DAS.EmployerFinance.Api.Models.Providers
 {
-    public class GetProviderResponse : ProviderResponse
-    {
-        public static implicit operator GetProviderResponse(GetProvidersListItem source)
-        {
-            return new GetProviderResponse
-            {
-                Ukprn = source.Ukprn,
-                Name = source.Name,
-                Email = source.Email,
-                Phone = source.Phone,
-                ContactUrl = source.ContactUrl
-            };
-        }
-    }
-
-    public class ProviderResponse
+    public class GetProviderResponse
     {
         public int Ukprn { get; set; }
         public string Name { get; set; }
@@ -25,9 +10,9 @@ namespace SFA.DAS.EmployerFinance.Api.Models
         public string Email { get; set; }
         public string Phone { get; set; }
         
-        public static implicit operator ProviderResponse(GetProvidersListItem source)
+        public static implicit operator GetProviderResponse(GetProviderQueryResult source)
         {
-            return new ProviderResponse
+            return new GetProviderResponse
             {
                 Ukprn =  source.Ukprn,
                 Name = source.Name,

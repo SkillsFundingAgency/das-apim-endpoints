@@ -22,7 +22,11 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
             
             return new GetProviderQueryResult
             {
-                Provider = response
+                Ukprn = response.Ukprn,
+                Name = response.Name,
+                ContactUrl= response.ContactUrl,
+                Email = response.Email,
+                Phone = response.Phone
             };
         }
     }
