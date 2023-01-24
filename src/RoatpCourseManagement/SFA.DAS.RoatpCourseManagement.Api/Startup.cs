@@ -16,6 +16,8 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
@@ -49,7 +51,16 @@ namespace SFA.DAS.RoatpCourseManagement.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
             services.AddMediatR(GetType().Assembly, typeof(GetAllProviderCoursesQueryHandler).Assembly);
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                    .AddCheck<CourseManagementApiHealthCheck>(CourseManagementApiHealthCheck.HealthCheckResultDescription,
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { "ready" })
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { "ready" })
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { "ready" });
             services.AddServiceRegistration(_configuration);
 
             services
