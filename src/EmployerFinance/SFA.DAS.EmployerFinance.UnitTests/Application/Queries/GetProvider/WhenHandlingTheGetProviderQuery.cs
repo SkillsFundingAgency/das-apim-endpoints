@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -9,28 +9,40 @@ using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
 {
     public class WhenHandlingTheGetProviderQuery
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_Providers_Returned(
-            GetProviderQuery query,
-            GetProvidersListItem apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> apiClient,
-            GetProviderQueryHandler handler
-        )
+        private GetProviderQueryHandler _handler;
+        private GetProviderQuery _query;
+        private Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> _courseDeliveryApiClient;
+        private GetProvidersListItem _apiResponse;
+
+        [SetUp]
+        public void Setup()
         {
-            apiClient.Setup(x =>
+            var fixture = new Fixture();
+
+            _query = fixture.Create<GetProviderQuery>();
+            _apiResponse = fixture.Create<GetProvidersListItem>();
+
+            _courseDeliveryApiClient = new Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>>();
+            _courseDeliveryApiClient.Setup(x =>
                     x.Get<GetProvidersListItem>(
-                        It.Is<GetProviderRequest>(c => c.GetUrl.Equals($"api/providers/{query.Id}"))))
-                .ReturnsAsync(apiResponse);
+                        It.Is<GetProviderRequest>(c => c.GetUrl.Equals($"api/providers/{_query.Id}"))))
+                .ReturnsAsync(_apiResponse);
 
-            var actual = await handler.Handle(query, CancellationToken.None);
+            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object);
+        }
 
-            actual.Should().BeEquivalentTo(apiResponse);
+        [Test]
+        public async Task Then_Providers_Are_Returned()
+        {
+            var actual = await _handler.Handle(_query, CancellationToken.None);
+
+            actual.Should().BeEquivalentTo(_apiResponse);
         }
     }
 }
