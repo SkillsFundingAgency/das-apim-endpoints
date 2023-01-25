@@ -20,6 +20,7 @@ namespace SFA.DAS.EmployerFinance.Api.AppStart
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
             services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>();
+            services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
             services.AddTransient<IForecastingApiClient<ForecastingApiConfiguration>, ForecastingApiClient>();
         }
     }

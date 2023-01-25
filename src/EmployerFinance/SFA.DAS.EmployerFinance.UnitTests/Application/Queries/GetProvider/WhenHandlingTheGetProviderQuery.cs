@@ -8,17 +8,21 @@ using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
 using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
 {
+    [TestFixture]
     public class WhenHandlingTheGetProviderQuery
     {
         private GetProviderQueryHandler _handler;
         private GetProviderQuery _query;
         private Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> _courseDeliveryApiClient;
-        private GetProvidersListItem _apiResponse;
+        private GetProvidersListItem _courseDeliveryApiResponse;
+        private Mock<IRoatpServiceApiClient<RoatpConfiguration>> _roatpServiceApiClient;
+        private GetProviderResponse _roatpServiceApiResponse;
+        private FeatureToggles _featureToggles;
 
         [SetUp]
         public void Setup()
@@ -26,23 +30,44 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
             var fixture = new Fixture();
 
             _query = fixture.Create<GetProviderQuery>();
-            _apiResponse = fixture.Create<GetProvidersListItem>();
+            _courseDeliveryApiResponse = fixture.Create<GetProvidersListItem>();
+            _roatpServiceApiResponse = fixture.Create<GetProviderResponse>();
 
             _courseDeliveryApiClient = new Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>>();
             _courseDeliveryApiClient.Setup(x =>
                     x.Get<GetProvidersListItem>(
                         It.Is<GetProviderRequest>(c => c.GetUrl.Equals($"api/providers/{_query.Id}"))))
-                .ReturnsAsync(_apiResponse);
+                .ReturnsAsync(_courseDeliveryApiResponse);
 
-            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object);
+            _roatpServiceApiClient = new Mock<IRoatpServiceApiClient<RoatpConfiguration>>();
+            _roatpServiceApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.RoatpService.GetProviderRequest>(r => r.GetUrl.Equals($"providers/{_query.Id}"))))
+                .ReturnsAsync(_roatpServiceApiResponse);
+
+            _featureToggles = new FeatureToggles();
+
+            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object, _roatpServiceApiClient.Object, _featureToggles);
         }
 
         [Test]
-        public async Task Then_Providers_Are_Returned()
+        public async Task Then_Providers_Are_Returned_From_Course_Delivery_Api()
         {
             var actual = await _handler.Handle(_query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(_apiResponse);
+            actual.Should().BeEquivalentTo(_courseDeliveryApiResponse);
+        }
+
+        [Test]
+        public async Task When_Roatp_Toggle_Is_On_Then_Providers_Are_Returned_From_RoatpServiceApi()
+        {
+            _featureToggles.RoatpProvidersEnabled = true;
+
+            var actual = await _handler.Handle(_query, CancellationToken.None);
+
+            Assert.AreEqual(_roatpServiceApiResponse.Ukprn, actual.Ukprn);
+            Assert.AreEqual(_roatpServiceApiResponse.LegalName, actual.Name);
+            Assert.AreEqual(_roatpServiceApiResponse.Website, actual.ContactUrl);
+            Assert.AreEqual(_roatpServiceApiResponse.Phone, actual.Phone);
+            Assert.AreEqual(_roatpServiceApiResponse.Email, actual.Email);
         }
     }
 }
