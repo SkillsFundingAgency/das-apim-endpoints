@@ -12,6 +12,5 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public string contactUrl { get; set; }
-        public string address { get; set; }
     }
 }
