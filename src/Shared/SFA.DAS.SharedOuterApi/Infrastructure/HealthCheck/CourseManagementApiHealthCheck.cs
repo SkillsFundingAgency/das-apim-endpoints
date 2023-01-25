@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -32,7 +33,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
             var response = await _apiClient.GetResponseCode(new GetPingRequest());
             timer.Stop();
 
-            if ((int)response == 200)
+            if (response == HttpStatusCode.OK)
             {
                 var durationString = timer.Elapsed.ToHumanReadableString();
 
