@@ -27,5 +27,16 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Models
            actual.Address3.Should().Be(source.AddressLine3); 
            actual.Address4.Should().Be(source.AddressLine4);
         }
+
+        [Test]
+        public void Then_Null_Address_Is_Mapped_To_Empty_Model()
+        {
+            var source = (GetProvidersListItemAddress)null;
+            //Arrange
+            var actual = (GetProviderAddress)source;
+
+            //Assert
+            actual.Should().BeEquivalentTo(new GetProviderAddress());
+        }
     }
 }

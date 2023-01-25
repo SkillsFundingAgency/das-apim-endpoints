@@ -13,14 +13,17 @@ namespace SFA.DAS.Recruit.Api.Models
 
         public static implicit operator GetProviderAddress(GetProvidersListItemAddress source)
         {
+            if (source==null)
+                return new GetProviderAddress();
+            
             return new GetProviderAddress
             {
-                Address1 = source?.AddressLine1,
-                Address2 = source?.AddressLine2,
-                Address3 = source?.AddressLine3,
-                Address4 = source?.AddressLine4,
-                Town = source?.Town,
-                Postcode = source?.Postcode
+                Address1 = source.AddressLine1,
+                Address2 = source.AddressLine2,
+                Address3 = source.AddressLine3,
+                Address4 = source.AddressLine4,
+                Town = source.Town,
+                Postcode = source.Postcode
             };
         }
     }
