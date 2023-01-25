@@ -12,14 +12,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
-    public class CourseManagementApiHealthCheck : IHealthCheck
+    public class RoatpCourseManagementApiHealthCheck : IHealthCheck
     {
         public const string HealthCheckResultDescription = "Course Management Api health check";
 
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _apiClient;
-        private readonly ILogger<CourseManagementApiHealthCheck> _logger;
+        private readonly ILogger<RoatpCourseManagementApiHealthCheck> _logger;
 
-        public CourseManagementApiHealthCheck(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> apiClient, ILogger<CourseManagementApiHealthCheck> logger)
+        public RoatpCourseManagementApiHealthCheck(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> apiClient, ILogger<RoatpCourseManagementApiHealthCheck> logger)
         {
             _apiClient = apiClient;
             _logger = logger;

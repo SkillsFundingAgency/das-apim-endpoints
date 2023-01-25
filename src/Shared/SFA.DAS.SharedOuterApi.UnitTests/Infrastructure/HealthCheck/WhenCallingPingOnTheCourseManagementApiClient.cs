@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         public async Task Then_The_Ping_Endpoint_Is_Called_For_CourseManagementApi(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            CourseManagementApiHealthCheck healthCheck)
+            RoatpCourseManagementApiHealthCheck healthCheck)
         {
             //Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -31,7 +31,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         public async Task Then_If_It_Is_Successful_200_Is_Returned(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            CourseManagementApiHealthCheck healthCheck)
+            RoatpCourseManagementApiHealthCheck healthCheck)
         {
             //Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
@@ -46,7 +46,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         public async Task And_CourseDeliveryApi_Ping_Not_Found_Then_Unhealthy(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            CourseManagementApiHealthCheck healthCheck)
+            RoatpCourseManagementApiHealthCheck healthCheck)
         {
             //Arrange
             client.Setup(x => x.GetResponseCode(new GetPingRequest()))

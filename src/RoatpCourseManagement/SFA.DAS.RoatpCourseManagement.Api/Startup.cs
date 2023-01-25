@@ -52,7 +52,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api
             }
             services.AddMediatR(GetType().Assembly, typeof(GetAllProviderCoursesQueryHandler).Assembly);
             services.AddHealthChecks()
-                    .AddCheck<CourseManagementApiHealthCheck>(CourseManagementApiHealthCheck.HealthCheckResultDescription,
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription,
                         failureStatus: HealthStatus.Unhealthy,
                         tags: new[] { "ready" })
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
