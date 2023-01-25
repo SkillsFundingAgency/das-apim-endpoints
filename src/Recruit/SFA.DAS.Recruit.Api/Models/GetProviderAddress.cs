@@ -15,12 +15,12 @@ namespace SFA.DAS.Recruit.Api.Models
         {
             return new GetProviderAddress
             {
-                Address1 = source.Address1,
-                Address2 = source.Address2,
-                Address3 = source.Address3,
-                Address4 = source.Address4,
-                Town = source.Town,
-                Postcode = source.Postcode
+                Address1 = source?.AddressLine1,
+                Address2 = source?.AddressLine2,
+                Address3 = source?.AddressLine3,
+                Address4 = source?.AddressLine4,
+                Town = source?.Town,
+                Postcode = source?.Postcode
             };
         }
     }
