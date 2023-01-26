@@ -12,15 +12,15 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
     public class GetProvidersQueryHandler : IRequestHandler<GetProvidersQuery, GetProvidersResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _apiClient;
-        private readonly IRoatpServiceApiClient<RoatpConfiguration> _roatpApiClient;
+        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly FeatureToggles _featureToggles;
 
         public GetProvidersQueryHandler(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> apiClient,
-            IRoatpServiceApiClient<RoatpConfiguration> roatpApiClient,
+            IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
             FeatureToggles featureToggles)
         {
             _apiClient = apiClient;
-            _roatpApiClient = roatpApiClient;
+            _providerCoursesApiClient = providerCoursesApiClient;
             _featureToggles = featureToggles;
         }
 
@@ -30,7 +30,7 @@ namespace SFA.DAS.Approvals.Application.Providers.Queries
 
             if (_featureToggles.RoatpProvidersEnabled)
             {
-                var result = await _roatpApiClient.Get<GetRoatpProvidersListResponse>(new GetProvidersRequest());
+                var result = await _providerCoursesApiClient.Get<GetRoatpProvidersListResponse>(new GetProvidersRequest());
 
                 providers = result.RegisteredProviders;
             }
