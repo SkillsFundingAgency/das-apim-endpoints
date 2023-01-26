@@ -69,6 +69,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                         .Excluding(c => c.EmployerFeedback)
                         .Excluding(c => c.ApprenticeFeedback)
                         .Excluding(c => c.DeliveryModelsShortestDistance)
+                        .Excluding(c=>c.IsApprovedByRegulator)
                 );
             model.Total.Should().Be(mediatorResult.Total);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
