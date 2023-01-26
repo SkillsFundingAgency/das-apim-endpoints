@@ -18,19 +18,17 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly ILocationLookupService _locationLookupService;
-        private readonly ILogger<GetEmployerCourseProviderDemandQueryHandler> _logger;
 
         public GetEmployerCourseProviderDemandQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, 
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
             ILocationLookupService locationLookupService, 
-            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient, ILogger<GetEmployerCourseProviderDemandQueryHandler> logger)
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
         {
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
             _locationLookupService = locationLookupService;
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
-            _logger = logger;
         }
         public async Task<GetEmployerCourseProviderDemandQueryResult> Handle(GetEmployerCourseProviderDemandQuery request, CancellationToken cancellationToken)
         {
@@ -40,15 +38,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
                 _roatpCourseManagementApiClient.Get<GetProviderCourseInformation>(
                     new GetProviderCourseInformationRequest(request.Ukprn, request.CourseId));
 
-           // await Task.WhenAll(courseTask, locationTask, providerCourseInfoTask);
-            _logger.LogInformation("inner apis being called");
-            
-             await Task.WhenAll(courseTask);
-             _logger.LogInformation("courses api successfully called");
-             await Task.WhenAll(locationTask);
-             _logger.LogInformation("locations api successfully called");
-             await Task.WhenAll(providerCourseInfoTask);
-             _logger.LogInformation("roatp course management api successfully called");
+            await Task.WhenAll(courseTask, locationTask, providerCourseInfoTask);
 
             var radius = locationTask.Result != null ? request.LocationRadius : null;
             
