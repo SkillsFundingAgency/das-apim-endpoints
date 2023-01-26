@@ -76,7 +76,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 providerDetails.EmployerFeedback = employerFeedbackTask.Result.Body;
             }
 
-            var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result);
+      
+            var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result
+                .Where(x => x.IsApprovedByRegulator != false || string.IsNullOrEmpty(x.ApprovalBody)).ToList());
 
             return new GetTrainingCourseProviderResult
             {

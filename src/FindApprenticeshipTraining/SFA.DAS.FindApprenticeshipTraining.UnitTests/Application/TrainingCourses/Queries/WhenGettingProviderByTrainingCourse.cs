@@ -294,9 +294,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             var result = await handler.Handle(query, CancellationToken.None);
 
+            var filteredProvidersStandardResponse = allProviderStandardsResponse
+                .Where(x => x.IsApprovedByRegulator != false || string.IsNullOrEmpty(x.ApprovalBody)).ToList();
             result.AdditionalCourses.Should().BeInAscendingOrder(c => c.Title);
-            result.AdditionalCourses.Should().BeEquivalentTo(allProviderStandardsResponse, options =>
+            result.AdditionalCourses.Should().BeEquivalentTo(filteredProvidersStandardResponse, options =>
                 options
+                    .Excluding(c => c.IsApprovedByRegulator)
+                    .Excluding(c => c.ApprovalBody)
                     .WithMapping<GetAdditionalCourseListItem>(c => c.LarsCode, s => s.Id)
                     .WithMapping<GetAdditionalCourseListItem>(c => c.CourseName, s => s.Title)
                     );
@@ -353,10 +357,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             });
             ArrangeClients(query, apiProviderDetailsResponse, apiCourseResponse, apiAchievementRateResponse, allProviderStandardsResponse, ukprnsCountResponse, apiFeedbackResponse, mockCoursesApiClient, mockApprenticeFeedbackApiClient, mockRoatpV2ApiClient, shortlistItems, mockShortlistApiClient);
 
+            var filteredProvidersStandardResponse = allProviderStandardsResponse
+                .Where(x => x.IsApprovedByRegulator != false || string.IsNullOrEmpty(x.ApprovalBody)).ToList();
+
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.AdditionalCourses.Should().BeEquivalentTo(allProviderStandardsResponse, options => 
+            result.AdditionalCourses.Should().BeEquivalentTo(filteredProvidersStandardResponse, options => 
                 options
+                    .Excluding(c => c.IsApprovedByRegulator)
+                    .Excluding(c => c.ApprovalBody)
                     .WithMapping<GetAdditionalCourseListItem>(c => c.LarsCode, s => s.Id)
                     .WithMapping<GetAdditionalCourseListItem>(c => c.CourseName, s => s.Title)
                     );
