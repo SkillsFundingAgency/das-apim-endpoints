@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
         private GetProviderQuery _query;
         private Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> _courseDeliveryApiClient;
         private GetProvidersListItem _courseDeliveryApiResponse;
-        private Mock<IRoatpServiceApiClient<RoatpConfiguration>> _roatpServiceApiClient;
+        private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _providerCoursesApiClient;
         private GetProviderResponse _roatpServiceApiResponse;
         private FeatureToggles _featureToggles;
 
@@ -39,13 +39,13 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
                         It.Is<GetProviderRequest>(c => c.GetUrl.Equals($"api/providers/{_query.Id}"))))
                 .ReturnsAsync(_courseDeliveryApiResponse);
 
-            _roatpServiceApiClient = new Mock<IRoatpServiceApiClient<RoatpConfiguration>>();
-            _roatpServiceApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"providers/{_query.Id}"))))
+            _providerCoursesApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
+            _providerCoursesApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"api/providers/{_query.Id}"))))
                 .ReturnsAsync(_roatpServiceApiResponse);
 
             _featureToggles = new FeatureToggles();
 
-            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object, _roatpServiceApiClient.Object, _featureToggles);
+            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object, _providerCoursesApiClient.Object, _featureToggles);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
         }
 
         [Test]
-        public async Task When_Roatp_Toggle_Is_On_Then_Providers_Are_Returned_From_RoatpServiceApi()
+        public async Task When_Roatp_Toggle_Is_On_Then_Providers_Are_Returned_From_ProviderCoursesApi()
         {
             _featureToggles.RoatpProvidersEnabled = true;
 
