@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpService
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCourses
 {
     public class GetProviderRequest : IGetApiRequest
     {

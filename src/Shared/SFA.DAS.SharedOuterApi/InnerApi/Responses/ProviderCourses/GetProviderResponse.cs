@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpService
+﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCourses
 {
     public class GetProviderResponse
     {

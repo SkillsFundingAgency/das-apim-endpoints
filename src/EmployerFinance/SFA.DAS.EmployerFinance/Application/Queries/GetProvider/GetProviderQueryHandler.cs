@@ -4,7 +4,7 @@ using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
@@ -12,10 +12,10 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
-        private readonly IRoatpServiceApiClient<RoatpConfiguration> _roatpServiceApiClient;
+        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _roatpServiceApiClient;
         private readonly FeatureToggles _featureToggles;
 
-        public GetProviderQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, IRoatpServiceApiClient<RoatpConfiguration> roatpServiceApiClient, FeatureToggles featureToggles)
+        public GetProviderQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, IProviderCoursesApiClient<ProviderCoursesApiConfiguration> roatpServiceApiClient, FeatureToggles featureToggles)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
             _roatpServiceApiClient = roatpServiceApiClient;
@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
             if (_featureToggles.RoatpProvidersEnabled)
             {
                 var response = await _roatpServiceApiClient.Get<GetProviderResponse>(
-                    new SharedOuterApi.InnerApi.Requests.RoatpService.GetProviderRequest(request.Id));
+                    new SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
 
                 return new GetProviderQueryResult
                 {
