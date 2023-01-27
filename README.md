@@ -20,6 +20,7 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 
 You are able to run the API by doing the following:
 
@@ -40,6 +41,13 @@ Data: {
     "LocationApiConfiguration" : {
         "url":"https://localhost:5008/",
         "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "ProviderCoursesApiConfiguration": {
+        "url":"https://localhost:5111/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "FeatureToggles": {
+        "RoatpProvidersEnabled": true
     }
 }
 ```
