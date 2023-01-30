@@ -7,6 +7,8 @@ namespace SFA.DAS.Funding.Api.Models
         public decimal TotalEarningsForCurrentAcademicYear { get; set; }
         public decimal TotalLevyEarningsForCurrentAcademicYear { get; set; }
         public decimal TotalNonLevyEarningsForCurrentAcademicYear { get; set; }
+        public decimal TotalNonLevyEarningsForCurrentAcademicYearGovernment { get; set; }
+        public decimal TotalNonLevyEarningsForCurrentAcademicYearEmployer { get; set; }
 
         public static implicit operator ProviderEarningsSummaryDto(ProviderEarningsSummary source)
         {
@@ -14,7 +16,9 @@ namespace SFA.DAS.Funding.Api.Models
             {
                 TotalEarningsForCurrentAcademicYear = source.TotalEarningsForCurrentAcademicYear,
                 TotalLevyEarningsForCurrentAcademicYear = source.TotalLevyEarningsForCurrentAcademicYear,
-                TotalNonLevyEarningsForCurrentAcademicYear = source.TotalNonLevyEarningsForCurrentAcademicYear
+                TotalNonLevyEarningsForCurrentAcademicYear = source.TotalNonLevyEarningsForCurrentAcademicYear,
+                TotalNonLevyEarningsForCurrentAcademicYearGovernment = source.TotalNonLevyEarningsForCurrentAcademicYearGovernment,
+                TotalNonLevyEarningsForCurrentAcademicYearEmployer = source.TotalNonLevyEarningsForCurrentAcademicYearEmployer
             };
         }
     }
