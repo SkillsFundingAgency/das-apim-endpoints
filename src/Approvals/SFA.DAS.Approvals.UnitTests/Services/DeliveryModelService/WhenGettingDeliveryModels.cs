@@ -137,21 +137,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
             fixture.VerifyResult(DeliveryModelStringTypes.Regular, DeliveryModelStringTypes.FlexiJobAgency);
         }
 
-        [TestCase(DeliveryModelStringTypes.Regular)]
-        [TestCase(DeliveryModelStringTypes.FlexiJobAgency)]
-        [TestCase(DeliveryModelStringTypes.PortableFlexiJob)]
-        public async Task Then_Post_Approval_After_DataLockSuccess_Delivery_Model_Cannot_Be_Changed(string currentDeliveryModel)
-        {
-            var fixture = new DeliveryModelServiceTestFixture()
-                .WithApprovalStatus(ApprenticeshipApprovalStatus.Approved)
-                .WithDeliveryModel(currentDeliveryModel)
-                .WithDataLockSuccess(true);
-
-            await fixture.GetDeliveryModels();
-
-            fixture.VerifyResult(currentDeliveryModel);
-        }
-
         private class DeliveryModelServiceTestFixture
         {
             private readonly Approvals.Services.DeliveryModelService _handler;

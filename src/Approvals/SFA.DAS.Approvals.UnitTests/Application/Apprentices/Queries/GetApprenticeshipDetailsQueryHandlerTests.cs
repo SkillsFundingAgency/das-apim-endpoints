@@ -9,7 +9,6 @@ using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -54,7 +53,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 It.Is<long?>(a => a == _apprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
 
-            _serviceParameters = new ServiceParameters(Party.Employer, 123);
+            _serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Employer, 123);
 
             _handler = new GetApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
         }

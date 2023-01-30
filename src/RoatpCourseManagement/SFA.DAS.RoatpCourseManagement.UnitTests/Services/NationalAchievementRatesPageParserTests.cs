@@ -18,6 +18,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
         [Test]
         public async Task GetCurrentDownloadFilePath_FoundPath_ReturnsDownloadFilePath()
         {
+            var yearTo = DateTime.Today.Year;
+            var yearFrom = DateTime.Today.AddYears(-1).Year;
+            var currentDownloadFile = $"{yearFrom} to {yearTo} apprenticeship NARTs overall CSVs";
             var nationalAchievementRatesDownloadPageUrl = "http://test.com";
 
             var content = @"<!DOCTYPE html>
@@ -29,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Services
                                <div>
                                 <h3>
 	                            <a aria-describedby=""attachment-4178384-accessibility-help"" class=""govuk-link"" 
-                                href=""https://test/202122_App_NARTs_Overall.zip"">2021 to 2022 apprenticeship NARTs overall CSVs
+                                href=""https://test/202122_App_NARTs_Overall.zip"">" + currentDownloadFile + @"
                                 </a>
 	                            </h3>
                             </body>
