@@ -40,7 +40,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
 
         public async Task<GetAddDraftApprenticeshipDetailsQueryResult> Handle(GetAddDraftApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
         {
-            var providerId = _serviceParameters.CallingParty == Party.Employer
+            var providerId = _serviceParameters.CallingParty == Shared.Enums.Party.Employer
                 ? request.ProviderId.Value
                 : _serviceParameters.CallingPartyId;
 
@@ -82,7 +82,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
         {
             switch (_serviceParameters.CallingParty)
             {
-                case Party.Employer:
+                case Shared.Enums.Party.Employer:
                     {
                         if (accountLegalEntity.AccountId != _serviceParameters.CallingPartyId)
                         {
@@ -91,7 +91,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
 
                         break;
                     }
-                case Party.Provider:
+                case Shared.Enums.Party.Provider:
                 {
                     return true;
                 }
