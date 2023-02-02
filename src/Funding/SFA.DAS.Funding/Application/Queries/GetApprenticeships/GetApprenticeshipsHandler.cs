@@ -2,29 +2,28 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary;
 using SFA.DAS.Funding.InnerApi.Responses;
 using SFA.DAS.Funding.Interfaces;
 using SFA.DAS.Funding.Models;
 
-namespace SFA.DAS.Funding.Application.Queries.GetAllApprenticeships
+namespace SFA.DAS.Funding.Application.Queries.GetApprenticeships
 {
-    public class GetAllApprenticeshipsHandler : IRequestHandler<GetAllApprenticeshipsQuery, GetAllApprenticeshipsResult>
+    public class GetApprenticeshipsHandler : IRequestHandler<GetApprenticeshipsQuery, GetApprenticeshipsResult>
     {
         private readonly IApprenticeshipsService _apprenticeshipsService;
 
-        public GetAllApprenticeshipsHandler(IApprenticeshipsService apprenticeshipsService)
+        public GetApprenticeshipsHandler(IApprenticeshipsService apprenticeshipsService)
         {
             _apprenticeshipsService = apprenticeshipsService;
         }
 
-        public async Task<GetAllApprenticeshipsResult> Handle(GetAllApprenticeshipsQuery request, CancellationToken cancellationToken)
+        public async Task<GetApprenticeshipsResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
             var apprenticeships = await _apprenticeshipsService.GetAll(request.Ukprn);
 
             var apprenticeshipsToReturn = MapApprenticeships(apprenticeships);
 
-            return new GetAllApprenticeshipsResult
+            return new GetApprenticeshipsResult
             {
                 Apprenticeships = apprenticeshipsToReturn
             };
@@ -35,7 +34,7 @@ namespace SFA.DAS.Funding.Application.Queries.GetAllApprenticeships
             List<Apprenticeship> result = new();
             foreach (var apprenticeship in apprenticeshipsDto)
             {
-                result.Add(new Apprenticeship() { Uln = apprenticeship.Uln, FirstName= apprenticeship.FirstName,LastName= apprenticeship.LastName });
+                result.Add(new Apprenticeship() { Uln = apprenticeship.Uln, FirstName = apprenticeship.FirstName, LastName = apprenticeship.LastName });
             }
             return result;
         }
