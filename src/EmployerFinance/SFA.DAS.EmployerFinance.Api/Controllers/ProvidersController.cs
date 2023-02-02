@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerFinance.Api.Models;
+using SFA.DAS.EmployerFinance.Api.Models.Providers;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProviders;
 
@@ -30,11 +29,7 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
             try
             {
                 var response = await _mediator.Send(new GetProvidersQuery());
-                var model = new GetProvidersResponse
-                {
-                    Providers = response.Providers.Select(c=>(ProviderResponse)c)
-                };
-                
+                var model = (GetProvidersResponse)response;
                 return Ok(model);
             }
             catch (Exception e)
@@ -54,7 +49,7 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
                 {
                     Id = id
                 });
-                var model = (GetProviderResponse) response.Provider;
+                var model = (GetProviderResponse) response;
                 
                 return Ok(model);
             }
