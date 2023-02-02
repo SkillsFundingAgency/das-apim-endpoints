@@ -21,6 +21,10 @@ namespace SFA.DAS.Reservations.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
+            services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
         }
     }
 }
