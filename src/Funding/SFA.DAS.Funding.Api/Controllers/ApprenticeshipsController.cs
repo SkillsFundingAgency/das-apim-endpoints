@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Funding.Api.Models;
-using SFA.DAS.Funding.Application.Queries.GetAllApprenticeships;
+using SFA.DAS.Funding.Application.Queries.GetApprenticeships;
 
 namespace SFA.DAS.Funding.Api.Controllers
 {
@@ -23,7 +23,7 @@ namespace SFA.DAS.Funding.Api.Controllers
         [Route("/{ukprn}/apprenticeships")]
         public async Task<IActionResult> GetAll(long ukprn)
         {
-            var result = await _mediator.Send(new GetAllApprenticeshipsQuery
+            var result = await _mediator.Send(new GetApprenticeshipsQuery
             {
                 Ukprn = ukprn
             });
