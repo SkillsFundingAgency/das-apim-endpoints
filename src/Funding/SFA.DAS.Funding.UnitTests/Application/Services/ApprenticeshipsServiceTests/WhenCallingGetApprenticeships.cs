@@ -11,7 +11,7 @@ using SFA.DAS.Funding.InnerApi.Responses;
 using SFA.DAS.Funding.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Funding.UnitTests.Application.Services.FundingProviderEarningsServiceTests
+namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceTests
 {
     public class WhenCallingGetApprenticeships
     {
