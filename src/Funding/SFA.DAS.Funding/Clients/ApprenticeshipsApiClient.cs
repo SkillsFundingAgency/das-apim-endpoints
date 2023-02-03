@@ -22,70 +22,69 @@ namespace SFA.DAS.Funding.Clients
             return _client.GetAll<TResponse>(request);
         }
 
-        public Task Delete(IDeleteApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            throw new System.NotImplementedException(); //TODO: check how to handle this for now
-        }
-
-
-        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
-        {
-            throw new System.NotImplementedException(); //TODO: check how to handle this for now
+            return _client.Get<TResponse>(request);
         }
 
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.GetResponseCode(request);
         }
 
         public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task Patch<TData>(IPatchApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
+            return _client.GetWithResponseCode<TResponse>(request);
         }
 
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.Post<TResponse>(request);
         }
 
         public Task Post<TData>(IPostApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _client.Post(request);
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+        public Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.Delete(request);
+        }
+
+        public Task Patch<TData>(IPatchApiRequest<TData> request)
+        {
+            return _client.Patch(request);
         }
 
         public Task Put(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.Put(request);
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _client.Put(request);
+        }
+
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+        {
+            return _client.PostWithResponseCode<TResponse>(request, includeResponse);
+        }
+
+        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+        {
+            return _client.PatchWithResponseCode(request);
         }
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.PutWithResponseCode<TResponse>(request);
+        }
+
+        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+        {
+            return _client.GetPaged<TResponse>(request);
         }
     }
 }
