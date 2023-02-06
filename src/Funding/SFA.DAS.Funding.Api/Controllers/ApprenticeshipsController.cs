@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Funding.Api.Models;
 using SFA.DAS.Funding.Application.Queries.GetApprenticeships;
 
@@ -11,12 +10,10 @@ namespace SFA.DAS.Funding.Api.Controllers
     public class ApprenticeshipsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ApprenticeshipsController> _logger;
 
-        public ApprenticeshipsController(IMediator mediator, ILogger<ApprenticeshipsController> logger)
+        public ApprenticeshipsController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
