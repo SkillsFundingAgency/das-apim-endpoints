@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
 
-namespace SFA.DAS.Funding.UnitTests.InnerApi.Requests.ProviderEarnings
+namespace SFA.DAS.Funding.UnitTests.InnerApi.Requests.Apprenticeships
 {
     public class WhenBuildingTheGetApprenticeshipsRequest
     {
