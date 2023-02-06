@@ -10,8 +10,6 @@ namespace SFA.DAS.Funding.Api.Models
 
         public GetApprenticeshipsResponse(List<Apprenticeship> source)
         {
-            List<ApprenticeshipDto> apprenticeships = new();
-
             Apprenticeships = source.Select(x => new ApprenticeshipDto { FirstName = x.FirstName, LastName = x.LastName, Uln = x.Uln });
         }
     }
