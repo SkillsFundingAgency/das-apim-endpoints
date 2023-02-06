@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Funding.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Funding.Api.Models
 {
@@ -10,17 +11,8 @@ namespace SFA.DAS.Funding.Api.Models
         public GetApprenticeshipsResponse(List<Apprenticeship> source)
         {
             List<ApprenticeshipDto> apprenticeships = new();
-            foreach (var apprenticeship in source)
-            {
-                apprenticeships.Add(new ApprenticeshipDto()
-                {
-                    Uln = apprenticeship.Uln,
-                    FirstName = apprenticeship.FirstName,
-                    LastName = apprenticeship.LastName
-                });
-            }
 
-            Apprenticeships = apprenticeships;
+            Apprenticeships = source.Select(x => new ApprenticeshipDto { FirstName = x.FirstName, LastName = x.LastName, Uln = x.Uln });
         }
     }
 }

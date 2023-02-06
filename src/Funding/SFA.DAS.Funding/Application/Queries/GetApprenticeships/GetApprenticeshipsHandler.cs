@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -31,11 +32,9 @@ namespace SFA.DAS.Funding.Application.Queries.GetApprenticeships
 
         private static List<Apprenticeship> MapApprenticeships(IEnumerable<ApprenticeshipDto> apprenticeshipsDto)
         {
-            List<Apprenticeship> result = new();
-            foreach (var apprenticeship in apprenticeshipsDto)
-            {
-                result.Add(new Apprenticeship() { Uln = apprenticeship.Uln, FirstName = apprenticeship.FirstName, LastName = apprenticeship.LastName });
-            }
+            var result = apprenticeshipsDto
+                .Select(x => new Apprenticeship { Uln = x.Uln, FirstName = x.FirstName, LastName = x.LastName })
+                .ToList();
             return result;
         }
     }
