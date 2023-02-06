@@ -37,6 +37,7 @@ namespace SFA.DAS.PublicSectorReporting.UnitTests.Application.AccountUsers
                     .Excluding(c => c.FirstName)
                     .Excluding(c => c.LastName)
                     .Excluding(c => c.UserId)
+                    .Excluding(c => c.IsSuspended)
             );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
