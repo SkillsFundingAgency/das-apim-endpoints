@@ -44,7 +44,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
                 ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
                 DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
-                EmployerWebsiteUrl = source.EmployerWebsiteUrl
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2,
             };
         }
 
@@ -193,7 +195,21 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// </summary>
         [JsonPropertyName("employerWebsiteUrl")]
         public string EmployerWebsiteUrl { get; set; }
-        
+
+        /// <summary>
+        /// Add an extra question to the advert’s application form on Find an apprenticeship. Must include a question mark. Must not exceed 250 characters.
+        /// </summary>
+        /// <example>Do you have a driving licence?</example>
+        [JsonPropertyName("additionalQuestion1")]
+        public string AdditionalQuestion1 { get; set; }
+
+        /// <summary>
+        /// Adds another extra question to the advert’s application form on Find an apprenticeship. Must include a question mark. Must not exceed 250 characters.
+        /// </summary>
+        /// <example>What interests you about this industry?</example>
+        [JsonPropertyName("additionalQuestion2")]
+        public string AdditionalQuestion2 { get; set; }
+
         public static PostVacancyUserData Map(SubmitterContactDetails submitterContactDetails, ContractingParties contractingParties)
         {
             return new PostVacancyUserData
