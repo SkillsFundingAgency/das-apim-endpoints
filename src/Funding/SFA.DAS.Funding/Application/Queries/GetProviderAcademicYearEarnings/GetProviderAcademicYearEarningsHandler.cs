@@ -55,7 +55,9 @@ namespace SFA.DAS.Funding.Application.Queries.GetProviderAcademicYearEarnings
             {
                 AcademicYear = earningDto.AcademicYear,
                 Amount = earningDto.Amount,
-                DeliveryPeriod = earningDto.DeliveryPeriod
+                DeliveryPeriod = earningDto.DeliveryPeriod,
+                EmployerContribution = earningDto.EmployerContribution,
+                GovernmentContribution = earningDto.GovernmentContribution
             };
         }
     }
