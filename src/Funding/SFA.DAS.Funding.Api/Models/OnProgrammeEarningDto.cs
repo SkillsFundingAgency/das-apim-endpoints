@@ -7,6 +7,8 @@ namespace SFA.DAS.Funding.Api.Models
         public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
+        public decimal? GovernmentContribution { get; set; }
+        public decimal? EmployerContribution { get; set; }
 
         public static implicit operator OnProgrammeEarningDto(OnProgrammeEarning source)
         {
@@ -14,7 +16,9 @@ namespace SFA.DAS.Funding.Api.Models
             {
                 AcademicYear = source.AcademicYear,
                 DeliveryPeriod = source.DeliveryPeriod,
-                Amount = source.Amount
+                Amount = source.Amount,
+                EmployerContribution = source.EmployerContribution,
+                GovernmentContribution = source.GovernmentContribution
             };
         }
     }
