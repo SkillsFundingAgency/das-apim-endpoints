@@ -12,5 +12,27 @@
         public string Email { get; set; }
         public string Website { get; set; }
         public string Phone { get; set; }
+
+        public static implicit operator GetProviderResponse(
+            InnerApi.Responses.GetRoatpProviderResponse source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            return new GetProviderResponse
+            {
+                Id = source.Id,
+                Ukprn = source.Ukprn,
+                NationalProvider = source.NationalProvider,
+                LearnerSatisfaction = source.LearnerSatisfaction,
+                Name = source.Name,
+                EmployerSatisfaction = source.EmployerSatisfaction,
+                TradingName = source.TradingName,
+                Email = source.Email,
+                Website = source.contactUrl,
+                Phone = source.Phone,
+            };
+        }
     }
 }

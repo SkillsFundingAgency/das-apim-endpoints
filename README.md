@@ -20,6 +20,7 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 
 You are able to run the API by doing the following:
 
@@ -40,6 +41,13 @@ Data: {
     "LocationApiConfiguration" : {
         "url":"https://localhost:5008/",
         "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "ProviderCoursesApiConfiguration": {
+        "url":"https://localhost:5111/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "FeatureToggles": {
+        "RoatpProvidersEnabled": true
     }
 }
 ```
@@ -296,6 +304,7 @@ The Reservations outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 * [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 
 You are able to run the API by doing the following:
 
@@ -313,6 +322,13 @@ Data: {
         "url":"https://localhost:5006/",
         "identifier":"https://**********.onmicrosoft.com/*******"
     },
+    "RoatpConfiguration" : {
+        "url":"https://localhost:5111/",
+        "identifier":"https://**********.onmicrosoft.com/*******"
+    },
+    "FeatureToggles": {
+        "RoatpProvidersEnabled": true
+    }
 }
 ```
 * Start the api project ```SFA.DAS.Reservations.Api```
@@ -420,6 +436,28 @@ Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-conf
 * Start the api project ```SFA.DAS.RoatpCourseManagement.Api``` within apim
 
 Download the repo and load into Visual Studio the project '..\dev\das-apim-endpoints\src\RoatpCourseManagement\SFA.DAS.Roatp.CourseManagement.sln' and run the project SFA.DAS.RoatpCourseManagement.Api
+
+You will then see the swagger definition with the available operations.
+
+### Provider Moderation
+
+The Provider Moderation outer api relies on the following inner apis, which must all be set up according to their own readme setups:
+
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+
+You are able to run the API by doing the following:
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.Roatp.ProviderModeration.OuterApi_1.0
+Data: copy contents of: https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.Roatp.ProviderModeration.OuterApi.json
+```
+
+* Start the api project ```SFA.DAS.RoatpProviderModeration.Api``` within apim
+
+Download the repo and load into Visual Studio the project '..\dev\das-apim-endpoints\src\RoatpProviderModeration\SFA.DAS.RoatpProviderModeration.Api.sln' and run the project SFA.DAS.RoatpProviderModeration.Api
 
 You will then see the swagger definition with the available operations.
 

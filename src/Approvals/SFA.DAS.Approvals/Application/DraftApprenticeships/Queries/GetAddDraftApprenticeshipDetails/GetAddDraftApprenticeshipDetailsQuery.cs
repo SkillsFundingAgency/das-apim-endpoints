@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -52,7 +53,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
 
             var cohort = cohortResponse.Body;
 
-            if (!CheckParty(cohort))
+            if (!cohort.CheckParty(_serviceParameters))
             {
                 return null;
             }
@@ -67,35 +68,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
                 ProviderName = cohort.ProviderName,
                 HasMultipleDeliveryModelOptions = deliveryModels.Count > 1
             };
-        }
-
-        private bool CheckParty(GetCohortResponse cohort)
-        {
-            switch (_serviceParameters.CallingParty)
-            {
-                case Party.Employer:
-                {
-                    if (cohort.AccountId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                case Party.Provider:
-                {
-                    if (cohort.ProviderId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                default:
-                    return false;
-            }
-
-            return true;
         }
     }
 }

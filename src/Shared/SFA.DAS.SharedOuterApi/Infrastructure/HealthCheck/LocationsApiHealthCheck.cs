@@ -14,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class LocationsApiHealthCheck : IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Location API Health Check";
+        public const string HealthCheckResultDescription = "Location API Health Check";
         
         private readonly ILocationApiClient<LocationApiConfiguration> _apiClient;
         private readonly ILogger<LocationsApiHealthCheck> _logger;

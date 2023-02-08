@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Funding.Api.Models;
+using SFA.DAS.Funding.Application.Queries.GetProviderAcademicYearEarnings;
 using SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary;
 
 namespace SFA.DAS.Funding.Api.Controllers
@@ -29,6 +30,20 @@ namespace SFA.DAS.Funding.Api.Controllers
             });
 
             var response = new GetProviderEarningsSummaryResponse { Summary = result.Summary };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("/{ukprn}/detail")]
+        public async Task<IActionResult> GetDetail(long ukprn)
+        {
+            var result = await _mediator.Send(new GetProviderAcademicYearEarningsQuery
+            {
+                Ukprn = ukprn
+            });
+
+            var response = new GetProviderAcademicYearEarningsResponse { AcademicYearEarnings = result.AcademicYearEarnings };
 
             return Ok(response);
         }

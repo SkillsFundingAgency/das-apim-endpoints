@@ -14,7 +14,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeEmployer
 {
     [TestFixture]
-    public class GetSelectDeliveryQueryHandlerTests
+    public class GetEditApprenticeshipDeliveryModelQueryHandlerTests
     {
         private GetSelectDeliveryModelQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
