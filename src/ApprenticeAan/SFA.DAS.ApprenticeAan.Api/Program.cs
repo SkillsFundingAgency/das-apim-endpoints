@@ -19,14 +19,16 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAanOuterApi", Version = "v1" });
+        c.SwaggerDoc("v1",
+            new OpenApiInfo
+            {
+                Title = "ApprenticeAanOuterApi",
+                Version = "v1"
+            });
     })
     .AddControllers(o =>
     {
-        if (!configuration.IsLocalOrDev())
-        {
-            o.Filters.Add(new AuthorizeFilter("default"));
-        }
+        if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
     })
     .AddJsonOptions(options =>
     {
@@ -40,10 +42,6 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
 
 app
     .UseSwagger()
