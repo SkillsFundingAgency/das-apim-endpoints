@@ -18,19 +18,14 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(GetRegionsQueryResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRegions()
         {
-            try
-            {
-                var result = await _mediator.Send(new GetRegionsQuery());
+            var result = await _mediator.Send(new GetRegionsQuery());
 
-                if (result == null) return NotFound();
+            if (result == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
-                return Ok(result);
-            }
-            catch { return BadRequest(); }
+            return Ok(result);
         }
     }
 }

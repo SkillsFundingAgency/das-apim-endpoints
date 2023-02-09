@@ -31,7 +31,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers
 
         [Test]
         [MoqAutoData]
-        public async Task And_NoRegionssReturnedFromMediator_Then_ReturnNotFound(
+        public async Task And_NoRegionsReturnedFromMediator_Then_Return500(
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] RegionsController controller)
         {
@@ -40,24 +40,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetRegions() as NotFoundResult;
 
-            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-        }
-
-        [Test]
-        [MoqAutoData]
-        public async Task And_MediatorThrowsException_Then_ReturnBadRequest(
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] RegionsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetRegionsQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
-
-            var controllerResult = await controller.GetRegions() as BadRequestResult;
-
-            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }

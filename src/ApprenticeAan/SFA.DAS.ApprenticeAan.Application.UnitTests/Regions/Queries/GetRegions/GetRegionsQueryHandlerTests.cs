@@ -2,10 +2,10 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using SFA.DAS.ApprenticeAan.Api.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions.Requests;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.ApprenticeAan.Application.Services;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -38,8 +38,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Regions.Queries.GetRegions
             GetRegionsQuery query,
             [Frozen] Mock<IAanHubApiClient<AanHubApiConfiguration>> apiClient,
             [Frozen(Matching.ImplementedInterfaces)]
-            GetRegionsQueryHandler handler,
-            GetRegionsQueryResult response)
+            GetRegionsQueryHandler handler)
         {
             apiClient.Setup(x =>
                     x.GetWithResponseCode<GetRegionsQueryResult>(It.IsAny<GetRegionsQueryRequest>()))

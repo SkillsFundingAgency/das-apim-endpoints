@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using MediatR;
+using SFA.DAS.ApprenticeAan.Api.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.ApprenticeAan.Application.Services;
 
 namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions
 {
