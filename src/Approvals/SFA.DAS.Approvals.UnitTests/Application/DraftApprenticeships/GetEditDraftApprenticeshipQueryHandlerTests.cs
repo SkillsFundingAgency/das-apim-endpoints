@@ -244,5 +244,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
         }
+
+        [Test]
+        public async Task Handle_EmailAddressConfirmed_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.EmailAddressConfirmed, result.EmailAddressConfirmed);
+        }
     }
 }
