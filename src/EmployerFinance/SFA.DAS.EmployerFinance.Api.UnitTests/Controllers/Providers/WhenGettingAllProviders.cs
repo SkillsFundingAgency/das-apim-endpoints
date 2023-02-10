@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Api.Controllers;
-using SFA.DAS.EmployerFinance.Api.Models;
+using SFA.DAS.EmployerFinance.Api.Models.Providers;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProviders;
 using SFA.DAS.Testing.AutoFixture;
 

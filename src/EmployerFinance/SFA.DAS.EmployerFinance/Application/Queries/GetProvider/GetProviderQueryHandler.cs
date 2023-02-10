@@ -4,6 +4,7 @@ using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
@@ -11,19 +12,44 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
         private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _roatpServiceApiClient;
+        private readonly FeatureToggles _featureToggles;
 
-        public GetProviderQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public GetProviderQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, IProviderCoursesApiClient<ProviderCoursesApiConfiguration> roatpServiceApiClient, FeatureToggles featureToggles)
         {
             _courseDeliveryApiClient = courseDeliveryApiClient;
+            _roatpServiceApiClient = roatpServiceApiClient;
+            _featureToggles = featureToggles;
         }
         public async Task<GetProviderQueryResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            var response = await _courseDeliveryApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.Id));
-            
-            return new GetProviderQueryResult
+            if (_featureToggles.RoatpProvidersEnabled)
             {
-                Provider = response
-            };
+                var response = await _roatpServiceApiClient.Get<GetProviderResponse>(
+                    new SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
+
+                return new GetProviderQueryResult
+                {
+                    Ukprn = response.Ukprn,
+                    Name = response.LegalName,
+                    ContactUrl = response.Website,
+                    Email = response.Email,
+                    Phone = response.Phone
+                };
+            }
+            else
+            {
+                var response = await _courseDeliveryApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.Id));
+
+                return new GetProviderQueryResult
+                {
+                    Ukprn = response.Ukprn,
+                    Name = response.Name,
+                    ContactUrl = response.ContactUrl,
+                    Email = response.Email,
+                    Phone = response.Phone
+                };
+            }
         }
     }
 }
