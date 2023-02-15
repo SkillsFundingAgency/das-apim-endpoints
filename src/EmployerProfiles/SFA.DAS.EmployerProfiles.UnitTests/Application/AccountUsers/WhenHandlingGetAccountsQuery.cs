@@ -7,12 +7,12 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Queries;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Queries;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
+namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
 {
     public class WhenHandlingGetAccountsQuery
     {
@@ -37,11 +37,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
                     .Excluding(c => c.FirstName)
                     .Excluding(c => c.LastName)
                     .Excluding(c => c.UserId)
-                    .Excluding(x => x.IsSuspended)
-                );
+                    .Excluding(c => c.IsSuspended)
+            );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
             actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
+            actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
         }
     }
 }

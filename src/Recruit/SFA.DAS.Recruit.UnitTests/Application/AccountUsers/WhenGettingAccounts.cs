@@ -36,6 +36,7 @@ public class WhenGettingAccounts
             .Excluding(c=>c.UserId)
             .Excluding(c=>c.FirstName)
             .Excluding(c=>c.LastName)
+            .Excluding(x => x.IsSuspended)
         );
         actual.UserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
     }

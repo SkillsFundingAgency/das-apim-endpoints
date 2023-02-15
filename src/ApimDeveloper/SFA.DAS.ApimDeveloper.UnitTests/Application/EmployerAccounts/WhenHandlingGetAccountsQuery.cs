@@ -34,6 +34,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
             actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse, options => options.Excluding(x => x.FirstName)
                 .Excluding(x => x.LastName)
                 .Excluding(x => x.UserId)
+                .Excluding(x => x.IsSuspended)
             );
         }
     }
