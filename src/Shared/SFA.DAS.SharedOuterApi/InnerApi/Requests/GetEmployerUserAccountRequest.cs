@@ -12,6 +12,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             _id = id;
         }
 
-        public string GetUrl => $"api/users/govuk/?id={HttpUtility.UrlEncode(_id)}";
+        public string GetUrl => $"api/users/{HttpUtility.UrlEncode(_id)}";
     }
 }
