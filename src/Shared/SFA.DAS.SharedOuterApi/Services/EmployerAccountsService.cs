@@ -18,12 +18,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
     public class EmployerAccountsService : IEmployerAccountsService
     {
-        private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
+        private readonly IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> _employerProfilesApiClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
 
-        public EmployerAccountsService(IEmployerUsersApiClient<EmployerUsersApiConfiguration> employerUsersApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public EmployerAccountsService(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> employerProfilesApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
-            _employerUsersApiClient = employerUsersApiClient;
+            _employerProfilesApiClient = employerProfilesApiClient;
             _accountsApiClient = accountsApiClient;
         }
 
@@ -35,14 +35,14 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (!Guid.TryParse(employerProfile.UserId, out _))
             {
                 var userResponse =
-                    await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
+                    await _employerProfilesApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
                         new GetEmployerUserAccountRequest(employerProfile.UserId));
 
                 if (userResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     var employerUserResponse =
-                        await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                            new PutUpsertEmployerUserAccountRequest(employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
+                        await _employerProfilesApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
+                            new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(),employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
                     userId = employerUserResponse.Body.Id;
                     firstName = employerUserResponse.Body.FirstName;

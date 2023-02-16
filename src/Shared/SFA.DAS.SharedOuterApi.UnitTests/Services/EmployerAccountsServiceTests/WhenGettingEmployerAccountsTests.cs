@@ -27,7 +27,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
             EmployerUsersApiResponse userResponse,
-            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
+            [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
@@ -40,9 +40,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
-            employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
-                        c.GetUrl.Contains($"api/users/govuk/?id={HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.OK, ""));
 
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
@@ -61,7 +61,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
             EmployerUsersApiResponse userResponse,
-            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
+            [Frozen] Mock<IEmployerProfilesApiClient<EmployerUsersApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
@@ -74,13 +74,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
-            employerUsersApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
-                        c.GetUrl.Contains($"api/users/govuk/?id={HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
-            employerUsersApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
                     It.Is<PutUpsertEmployerUserAccountRequest>(c =>
-                        c.PutUrl.Contains($"api/users"))))
+                        c.PutUrl.Contains($"api/users/"))))
                 .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.Created, ""));
 
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
