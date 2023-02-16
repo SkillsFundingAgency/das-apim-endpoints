@@ -39,13 +39,15 @@ namespace SFA.DAS.SharedOuterApi.Services
                 await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     new GetEmployerUserAccountRequest(employerProfile.UserId));
             
-            if (!Guid.TryParse(employerProfile.UserId, out _))
+            
+            if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                if (userResponse.StatusCode == HttpStatusCode.NotFound)
+                if (!Guid.TryParse(employerProfile.UserId, out _))
                 {
                     var employerUserResponse =
                         await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
-                            new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(),employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
+                            new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(), employerProfile.UserId,
+                                employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
                     userId = employerUserResponse.Body.Id;
                     firstName = employerUserResponse.Body.FirstName;
