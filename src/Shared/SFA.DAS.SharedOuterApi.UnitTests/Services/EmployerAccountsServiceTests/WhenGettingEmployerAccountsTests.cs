@@ -26,33 +26,35 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfile employerProfile,
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
-            EmployerUsersApiResponse userResponse,
+            EmployerProfileUsersApiResponse profileUserResponse,
             [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
-            teamResponse.UserRef = userResponse.Id;
+            teamResponse.UserRef = profileUserResponse.Id;
             accountsApiClient
                 .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{userResponse.Id}/accounts"))))
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{profileUserResponse.Id}/accounts"))))
                 .ReturnsAsync(apiResponse);
             accountsApiClient
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
-            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
                         c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
-                .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.OK, ""));
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
 
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
 
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.TrueForAll(c => c.UserId.Equals(userResponse.Id)).Should().BeTrue();
-            actual.TrueForAll(c => c.FirstName.Equals(userResponse.FirstName)).Should().BeTrue();
-            actual.TrueForAll(c => c.LastName.Equals(userResponse.LastName)).Should().BeTrue();
+            actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
+            actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
+            actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
+            actual.TrueForAll(c => c.DisplayName.Equals(profileUserResponse.DisplayName)).Should().BeTrue();
+            actual.TrueForAll(c => c.IsSuspended.Equals(profileUserResponse.IsSuspended)).Should().BeTrue();
         }
         
         [Test, MoqAutoData]
@@ -60,37 +62,39 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfile employerProfile,
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
-            EmployerUsersApiResponse userResponse,
-            [Frozen] Mock<IEmployerProfilesApiClient<EmployerUsersApiConfiguration>> employerProfilesApiClient,
+            EmployerProfileUsersApiResponse profileUserResponse,
+            [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
-            teamResponse.UserRef = userResponse.Id;
+            teamResponse.UserRef = profileUserResponse.Id;
             accountsApiClient
                 .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{userResponse.Id}/accounts"))))
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{profileUserResponse.Id}/accounts"))))
                 .ReturnsAsync(apiResponse);
             accountsApiClient
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
-            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
                         c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
-                .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
-            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
+            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<PutUpsertEmployerUserAccountRequest>(c =>
                         c.PutUrl.Contains($"api/users/"))))
-                .ReturnsAsync(new ApiResponse<EmployerUsersApiResponse>(userResponse, HttpStatusCode.Created, ""));
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.Created, ""));
 
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
 
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.TrueForAll(c => c.UserId.Equals(userResponse.Id)).Should().BeTrue();
-            actual.TrueForAll(c => c.FirstName.Equals(userResponse.FirstName)).Should().BeTrue();
-            actual.TrueForAll(c => c.LastName.Equals(userResponse.LastName)).Should().BeTrue();
+            actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
+            actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
+            actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
+            actual.TrueForAll(c => c.DisplayName.Equals(profileUserResponse.DisplayName)).Should().BeTrue();
+            actual.TrueForAll(c => c.IsSuspended.Equals(profileUserResponse.IsSuspended)).Should().BeTrue();
         }
         
         [Test, MoqAutoData]
@@ -98,11 +102,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfile employerProfile,
             List<GetUserAccountsResponse> apiResponse,
             GetAccountTeamMembersResponse teamResponse,
-            [Frozen] Mock<IEmployerUsersApiClient<EmployerUsersApiConfiguration>> employerUsersApiClient,
+            EmployerProfileUsersApiResponse profileUserResponse,
+            [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
             employerProfile.UserId = Guid.NewGuid().ToString();
+            profileUserResponse.Id = employerProfile.UserId;
             teamResponse.UserRef = employerProfile.UserId;
             accountsApiClient
                 .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -112,18 +118,23 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>{teamResponse});
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                It.Is<GetEmployerUserAccountRequest>(c =>
+                    c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
             
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
 
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().FirstName.Should().BeEmpty();
-            actual.First().LastName.Should().BeEmpty();
+            actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
+            actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
+            actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
+            actual.TrueForAll(c => c.DisplayName.Equals(profileUserResponse.DisplayName)).Should().BeTrue();
+            actual.TrueForAll(c => c.IsSuspended.Equals(profileUserResponse.IsSuspended)).Should().BeTrue();
             actual.TrueForAll(c => c.UserId.Equals(employerProfile.UserId)).Should().BeTrue();
-            employerUsersApiClient.Verify(x => x.GetWithResponseCode<EmployerUsersApiResponse>(
-                It.IsAny<GetEmployerUserAccountRequest>( )), Times.Never);
-            employerUsersApiClient.Verify(x => x.PutWithResponseCode<EmployerUsersApiResponse>(
+            employerProfilesApiClient.Verify(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 It.IsAny<PutUpsertEmployerUserAccountRequest>()), Times.Never);
         }
     }

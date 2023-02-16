@@ -9,5 +9,6 @@ namespace SFA.DAS.SharedOuterApi.Models
         public string LastName { get; set; }
         public string UserId { get; set; }
         public bool IsSuspended { get; set; }
+        public string DisplayName { get; set; }
     }
 }

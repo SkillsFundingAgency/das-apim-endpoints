@@ -32,28 +32,35 @@ namespace SFA.DAS.SharedOuterApi.Services
             var userId = employerProfile.UserId;
             var firstName = string.Empty;
             var lastName = string.Empty;
+            var displayName = string.Empty;
+            var isSuspended = false;
+            
+            var userResponse =
+                await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                    new GetEmployerUserAccountRequest(employerProfile.UserId));
+            
             if (!Guid.TryParse(employerProfile.UserId, out _))
             {
-                var userResponse =
-                    await _employerProfilesApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
-                        new GetEmployerUserAccountRequest(employerProfile.UserId));
-
                 if (userResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     var employerUserResponse =
-                        await _employerProfilesApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
+                        await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                             new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(),employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
                     userId = employerUserResponse.Body.Id;
                     firstName = employerUserResponse.Body.FirstName;
                     lastName = employerUserResponse.Body.LastName;
+                    displayName = employerUserResponse.Body.DisplayName;
+                    isSuspended = employerUserResponse.Body.IsSuspended;
                 }
-                else
-                {
-                    userId = userResponse.Body.Id;
-                    firstName = userResponse.Body.FirstName;
-                    lastName = userResponse.Body.LastName;
-                }
+            }
+            else
+            {
+                userId = userResponse.Body.Id;
+                firstName = userResponse.Body.FirstName;
+                lastName = userResponse.Body.LastName;
+                displayName = userResponse.Body.DisplayName;
+                isSuspended = userResponse.Body.IsSuspended;
             }
             
             var result =
@@ -76,7 +83,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                         EncodedAccountId = account.EncodedAccountId,
                         FirstName = firstName,
                         LastName = lastName,
-                        UserId = userId
+                        UserId = userId,
+                        DisplayName = displayName,
+                        IsSuspended = isSuspended
                     });
                 }
             }
