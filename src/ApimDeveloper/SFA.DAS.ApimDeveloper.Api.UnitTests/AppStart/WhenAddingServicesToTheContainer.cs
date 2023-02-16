@@ -51,7 +51,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3")
                 }
             };
 

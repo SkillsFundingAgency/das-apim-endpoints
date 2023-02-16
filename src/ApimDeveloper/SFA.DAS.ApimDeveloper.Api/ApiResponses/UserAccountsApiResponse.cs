@@ -8,18 +8,24 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
     public class UserAccountsApiResponse
     {
         public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string EmployerUserId { get; set; }
+        public bool IsSuspended { get; set; }
+
         public static implicit operator UserAccountsApiResponse(GetAccountsQueryResult source)
         {
-            if (source?.UserAccountResponse == null)
-            {
-                return new UserAccountsApiResponse
-                {
-                    UserAccounts = new List<UserAccountsApiResponseItem>()
-                };
-            }
+            var accounts = source?.UserAccountResponse == null 
+                ? new List<UserAccountsApiResponseItem>() 
+                : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
+            
             return new UserAccountsApiResponse
             {
-                UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
+                FirstName = source?.FirstName,
+                LastName = source?.LastName,
+                IsSuspended = source?.IsSuspended ?? false,
+                EmployerUserId = source?.EmployerUserId,
+                UserAccounts = accounts
             };
         }
     }
