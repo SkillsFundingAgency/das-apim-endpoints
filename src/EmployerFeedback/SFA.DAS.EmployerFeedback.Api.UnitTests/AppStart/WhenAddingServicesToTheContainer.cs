@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.AppStart
                 InitialData = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3")
                 }
             };
 
