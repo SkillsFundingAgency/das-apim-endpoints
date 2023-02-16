@@ -36,11 +36,14 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.AccountUsers.Queries
                 .Excluding(c=>c.FirstName)
                 .Excluding(c=>c.LastName)
                 .Excluding(c=>c.UserId)
+                .Excluding(c=>c.IsSuspended)
+                .Excluding(c=>c.DisplayName)
             );
             actual.Email.Should().BeEquivalentTo(query.Email);
             actual.FirstName.Should().BeEquivalentTo(teamResponse.First().FirstName);
             actual.LastName.Should().BeEquivalentTo(teamResponse.First().LastName);
             actual.EmployerUserId.Should().BeEquivalentTo(teamResponse.First().UserId);
+            actual.IsSuspended.Should().Be(teamResponse.First().IsSuspended);
         }
     }
 }

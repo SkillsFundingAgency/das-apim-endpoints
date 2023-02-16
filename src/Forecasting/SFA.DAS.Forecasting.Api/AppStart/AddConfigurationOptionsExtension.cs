@@ -21,8 +21,8 @@ namespace SFA.DAS.Forecasting.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
-            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<FinanceApiConfiguration>(configuration.GetSection(nameof(FinanceApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
         }

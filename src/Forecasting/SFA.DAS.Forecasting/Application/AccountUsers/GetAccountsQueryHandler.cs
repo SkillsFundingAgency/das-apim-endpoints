@@ -17,11 +17,11 @@ namespace SFA.DAS.Forecasting.Application.AccountUsers
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var employerAccounts = await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
+            var employerAccounts = (await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
             {
                 Email = request.Email,
                 UserId = request.UserId
-            });
+            })).ToList();
             
             return new GetAccountsQueryResult
             {
@@ -29,6 +29,7 @@ namespace SFA.DAS.Forecasting.Application.AccountUsers
                 FirstName = employerAccounts.FirstOrDefault()?.FirstName,
                 LastName = employerAccounts.FirstOrDefault()?.LastName,
                 Email = request.Email,
+                IsSuspended = employerAccounts.FirstOrDefault()?.IsSuspended ?? false,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser
                 {
                     DasAccountName = c.DasAccountName,

@@ -18,6 +18,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
             actual.FirstName.Should().Be(source.FirstName);
             actual.LastName.Should().Be(source.LastName);
             actual.EmployerUserId.Should().Be(source.EmployerUserId);
+            actual.IsSuspended.Should().Be(source.IsSuspended);
         }
         
         
@@ -27,6 +28,11 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Models
             var actual = (GetUserAccountsApiResponse) (GetAccountsQueryResult)null;
             
             actual.UserAccounts.Should().BeEmpty();
+            actual.Email.Should().BeNullOrEmpty();
+            actual.FirstName.Should().BeNullOrEmpty();
+            actual.LastName.Should().BeNullOrEmpty();
+            actual.EmployerUserId.Should().BeNullOrEmpty();
+            actual.IsSuspended.Should().BeFalse();
         }
     }
 }

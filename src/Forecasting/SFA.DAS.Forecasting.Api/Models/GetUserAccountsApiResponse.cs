@@ -11,26 +11,21 @@ namespace SFA.DAS.Forecasting.Api.Models
         public string FirstName { get; set; }
         public string EmployerUserId { get; set; }
         public string Email { get; set; }
+        public bool IsSuspended { get; set; }
+
         public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
         {
-            if (source?.UserAccountResponse == null)
-            {
-                return new GetUserAccountsApiResponse
-                {
-                    Email = source?.Email,
-                    FirstName = source?.FirstName,
-                    LastName = source?.LastName,
-                    EmployerUserId = source?.EmployerUserId,
-                    UserAccounts = new List<UserAccountsApiResponseItem>()
-                };
-            }
+            var accounts = source?.UserAccountResponse == null
+                ? new List<UserAccountsApiResponseItem>()
+                : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
             return new GetUserAccountsApiResponse
             {
-                Email = source.Email,
-                FirstName = source.FirstName,
-                LastName = source.LastName,
-                EmployerUserId = source.EmployerUserId,
-                UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
+                Email = source?.Email,
+                FirstName = source?.FirstName,
+                LastName = source?.LastName,
+                EmployerUserId = source?.EmployerUserId,
+                IsSuspended = source?.IsSuspended ?? false,
+                UserAccounts = accounts
             };
         }
     }
