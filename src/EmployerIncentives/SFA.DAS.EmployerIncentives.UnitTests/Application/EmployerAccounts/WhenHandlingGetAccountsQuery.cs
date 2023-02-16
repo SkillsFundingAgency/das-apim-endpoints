@@ -38,10 +38,12 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EmployerAccounts
                     .Excluding(c => c.LastName)
                     .Excluding(c => c.UserId)
                     .Excluding(x => x.IsSuspended)
+                    .Excluding(x => x.DisplayName)
                 );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
             actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
+            actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
         }
     }
 }
