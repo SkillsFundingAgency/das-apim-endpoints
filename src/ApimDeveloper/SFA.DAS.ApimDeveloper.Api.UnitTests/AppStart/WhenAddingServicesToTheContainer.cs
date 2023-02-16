@@ -21,7 +21,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         [TestCase(typeof(IApimDeveloperApiClient<ApimDeveloperApiConfiguration>))]
-        [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
+        [TestCase(typeof(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>))]
         [TestCase(typeof(IApimApiService))]
         [TestCase(typeof(ICacheStorageService))]
         [TestCase(typeof(IEmployerAccountsService))]

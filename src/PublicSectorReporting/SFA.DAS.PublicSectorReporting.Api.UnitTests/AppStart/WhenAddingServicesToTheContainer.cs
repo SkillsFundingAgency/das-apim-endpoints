@@ -18,7 +18,7 @@ namespace SFA.DAS.PublicSectorReporting.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
-        [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
+        [TestCase(typeof(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>))]
         [TestCase(typeof(IEmployerAccountsService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
