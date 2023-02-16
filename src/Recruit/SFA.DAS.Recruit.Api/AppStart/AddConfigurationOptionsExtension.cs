@@ -24,8 +24,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<RecruitConfiguration>(configuration.GetSection(nameof(RecruitConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitConfiguration>>().Value);
-            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
         }
     }
 }
