@@ -57,6 +57,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
                 TrainingProviderName = IsNullOrWhiteSpace(provider.TradingName) ? provider.LegalName : provider.TradingName,
                 DeliveryModel = apprenticeship.DeliveryModel,
                 CourseName = course.Title,
+                CourseOption = apprenticeship.Option,
                 CourseLevel = course.Level,
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprenticeship.StartDate,
