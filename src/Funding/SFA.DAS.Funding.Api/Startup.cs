@@ -39,7 +39,9 @@ namespace SFA.DAS.Funding.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));
+            services.Configure<ApprenticeshipsConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingApprenticeshipEarningsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
