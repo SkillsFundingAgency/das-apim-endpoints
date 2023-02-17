@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,41 +13,49 @@ namespace SFA.DAS.Funding.Application.Queries.GetProviderAcademicYearEarnings
     public class GetProviderAcademicYearEarningsHandler : IRequestHandler<GetProviderAcademicYearEarningsQuery, GetProviderAcademicYearEarningsResult>
     {
         private readonly IFundingProviderEarningsService _providerEarningsService;
+        private readonly IApprenticeshipsService _apprenticeshipsService;
 
-        public GetProviderAcademicYearEarningsHandler(IFundingProviderEarningsService providerEarningsService)
+        public GetProviderAcademicYearEarningsHandler(IFundingProviderEarningsService providerEarningsService, IApprenticeshipsService apprenticeshipsService)
         {
             _providerEarningsService = providerEarningsService;
+            _apprenticeshipsService = apprenticeshipsService;
         }
 
         public async Task<GetProviderAcademicYearEarningsResult> Handle(GetProviderAcademicYearEarningsQuery request, CancellationToken cancellationToken)
         {
             var academicYearEarnings = await _providerEarningsService.GetAcademicYearEarnings(request.Ukprn);
+            var apprenticeships = await _apprenticeshipsService.GetAll(request.Ukprn);
 
-            var earningsToReturn = MapAcademicYearEarnings(academicYearEarnings);
+            var earningsResult = MapAcademicYearEarnings(academicYearEarnings, apprenticeships);
 
             return new GetProviderAcademicYearEarningsResult
             {
-                AcademicYearEarnings = earningsToReturn
+                AcademicYearEarnings = earningsResult
             };
         }
 
-        private AcademicYearEarnings MapAcademicYearEarnings(AcademicYearEarningsDto earningsDto)
+        private AcademicYearEarnings MapAcademicYearEarnings(AcademicYearEarningsDto earningsDto, ApprenticeshipsDto apprenticeshipDto)
         {
-            return new AcademicYearEarnings
+            var earnings = new AcademicYearEarnings() { Learners = new List<Learner>()};
+            foreach (var learner in earningsDto.Learners)
             {
-                Learners = earningsDto.Learners.Select(MapLearner).ToList()
-            };
-        }
+                var apprenticeship = apprenticeshipDto.Apprenticeships.Find(x => x.Uln == learner.Uln);
+                if (apprenticeship is null)
+                {
+                    continue;
+                }
 
-        private Learner MapLearner(LearnerDto learnerDto)
-        {
-            return new Learner
-            {
-                FundingType = (Models.FundingType)Enum.Parse(typeof(Models.FundingType), learnerDto.FundingType.ToString()),
-                OnProgrammeEarnings = learnerDto.OnProgrammeEarnings.Select(MapOnProgrammeEarnings).ToList(),
-                TotalOnProgrammeEarnings = learnerDto.TotalOnProgrammeEarnings,
-                Uln = learnerDto.Uln
-            };
+                earnings.Learners.Add(new Learner()
+                {
+                    FundingType = (Models.FundingType)Enum.Parse(typeof(Models.FundingType), learner.FundingType.ToString()),
+                    OnProgrammeEarnings = learner.OnProgrammeEarnings.Select(MapOnProgrammeEarnings).ToList(),
+                    TotalOnProgrammeEarnings = learner.TotalOnProgrammeEarnings,
+                    Uln = learner.Uln,
+                    FirstName = apprenticeship.FirstName,
+                    LastName = apprenticeship.LastName
+                });
+            }
+            return earnings;
         }
 
         private OnProgrammeEarning MapOnProgrammeEarnings(OnProgrammeEarningDto earningDto)
