@@ -83,10 +83,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             if (filteredProviders?.Any() == true && shortlistTask.Result?.Any() == true)
             {
-                var summaries = shortlistTask.Result;
+                var shortlistItems = shortlistTask.Result;
                 foreach (var provider in filteredProviders)
                 {
-                    provider.ShortlistId = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn)?.Id;
+                    provider.ShortlistId = shortlistItems.FirstOrDefault(s => s.Ukprn == provider.Ukprn && s.Larscode == request.Id 
+                        && s.LocationDescription == request.Location)?.Id;
                 }
             }
 
