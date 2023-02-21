@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApprenticeAan.Api.Configuration;
+using SFA.DAS.ApprenticeAan.Application.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions.Requests;
 using SFA.DAS.ApprenticeAan.Application.Services;
 

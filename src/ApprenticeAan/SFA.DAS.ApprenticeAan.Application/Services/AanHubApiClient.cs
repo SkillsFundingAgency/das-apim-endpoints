@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using SFA.DAS.ApprenticeAan.Api.Configuration;
+using SFA.DAS.ApprenticeAan.Application.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
