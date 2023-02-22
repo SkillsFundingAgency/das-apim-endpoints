@@ -3,45 +3,104 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser
 {
     public class GetShortlistForUserQueryHandler : IRequestHandler<GetShortlistForUserQuery, GetShortlistForUserResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortListApiClient;
         private readonly ICachedCoursesService _cachedCoursesService;
 
         public GetShortlistForUserQueryHandler(
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
-            ICachedCoursesService cachedCoursesService)
+            ICachedCoursesService cachedCoursesService, IShortlistApiClient<ShortlistApiConfiguration> shortListApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _cachedCoursesService = cachedCoursesService;
+            _shortListApiClient = shortListApiClient;
+
         }
 
         public async Task<GetShortlistForUserResult> Handle(GetShortlistForUserQuery request, CancellationToken cancellationToken)
-        {
-            var apiShortlistRequest = new GetShortlistForUserRequest(request.ShortlistUserId);
-            var shortListTask = _courseDeliveryApiClient.Get<GetShortlistForUserResponse>(apiShortlistRequest);
+        { 
+            var shortlistForUserId = await _shortListApiClient.GetAll<ShortlistItem>(new GetShortlistForUserIdRequest(request.ShortlistUserId));
+            if (shortlistForUserId == null || !shortlistForUserId.Any())
+            {
+                return new GetShortlistForUserResult
+                {
+                    Shortlist = new List<GetShortlistItem>()
+                };
+            }
+
+            var providerDetailsTaskList = shortlistForUserId.Select(shortlistItem => new GetProviderByCourseAndUkprnRequest(shortlistItem.Ukprn, shortlistItem.Larscode, shortlistItem.Latitude, shortlistItem.Longitude))
+                .Select(req => _roatpCourseManagementApiClient.Get<GetProviderDetailsForCourse>(req)).Cast<Task>().ToList();
+
+            await Task.WhenAll(providerDetailsTaskList);
+
+            var providerDetailsList = providerDetailsTaskList.Select(providerDetailsTask => ((Task<GetProviderDetailsForCourse>)providerDetailsTask).Result).ToList();
+
+            var shortlist = new List<GetShortlistItem>();
+            foreach (var sl in shortlistForUserId)
+            {
+                var shortlistItem = new GetShortlistItem
+                {
+                    Id = sl.Id,
+                    ShortlistUserId = sl.ShortlistUserId,
+                    CourseId = sl.Larscode,
+                    LocationDescription = sl.LocationDescription,
+                    CreatedDate = sl.CreatedDate
+                };
+
+                var providerDetails = providerDetailsList.First(x=>x.Ukprn==sl.Ukprn && x.LarsCode==sl.Larscode);
+
+                var provider = new GetProviderStandardItem
+                {
+                    Ukprn = providerDetails.Ukprn,
+                    Name = providerDetails.Name,
+                    TradingName = providerDetails.TradingName,
+                    MarketingInfo = providerDetails.MarketingInfo,
+                    StandardInfoUrl = providerDetails.StandardInfoUrl,
+                    Email = providerDetails.Email,
+                    Phone = providerDetails.Phone,
+                    StandardId = sl.Larscode,
+                    ShortlistId = request.ShortlistUserId,
+                    ProviderAddress = new GetProviderStandardItemAddress
+                    {
+                        Address1 = providerDetails.Address1,
+                        Address2 = providerDetails.Address2,
+                        Address3 = providerDetails.Address3,
+                        Address4 = providerDetails.Address4,
+                        Town = providerDetails.Town,
+                        Postcode = providerDetails.Postcode,
+                        DistanceInMiles = providerDetails.ProviderHeadOfficeDistanceInMiles ?? 0
+                    },
+                    AchievementRates = providerDetails.AchievementRates,
+                    DeliveryModels = providerDetails.DeliveryModels
+                };
+
+                shortlistItem.ProviderDetails = provider;
+                shortlist.Add(shortlistItem);
+            }
+
             var coursesTask = _cachedCoursesService.GetCourses();
             var appFeedbackTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
             var employerFeedbackTask = _employerFeedbackApiClient.GetAll<GetEmployerFeedbackSummaryItem>(new GetEmployerFeedbackSummaryRequest());
 
-            await Task.WhenAll(shortListTask, coursesTask, appFeedbackTask, employerFeedbackTask);
+            await Task.WhenAll(coursesTask, appFeedbackTask, employerFeedbackTask);
 
-            var shortlist = shortListTask.Result.Shortlist.ToList();
             var appFeedbackResult = appFeedbackTask.Result ?? new List<GetApprenticeFeedbackSummaryItem>();
             var employerFeedbackResult = employerFeedbackTask.Result ?? new List<GetEmployerFeedbackSummaryItem>();
 

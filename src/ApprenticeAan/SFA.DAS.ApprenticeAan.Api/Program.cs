@@ -1,13 +1,11 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
-using NLog.Web;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseNLog();
 
 // Add services to the container.
 

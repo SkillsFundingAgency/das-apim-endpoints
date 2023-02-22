@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Extensions
                 .ToList();
 
             _filteredDeliveryMode = DeliveryModeType.NotFound;
-            if (requestDeliveryModes !=null  && requestDeliveryModes.Count(c => c!=DeliveryModeType.National) == 1) //TODO need to exclude national
+            if (requestDeliveryModes !=null  && requestDeliveryModes.Count(c => c!=DeliveryModeType.National) == 1) 
             {
                 _filteredDeliveryMode = requestDeliveryModes.First(c => c!=DeliveryModeType.National);
             }
