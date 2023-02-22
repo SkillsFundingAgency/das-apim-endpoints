@@ -15,7 +15,7 @@ public class WhenAddingServicesToTheContainer
 {
     [TestCase(typeof(IAzureClientCredentialHelper))]
     [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
-    [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
+    [TestCase(typeof(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>))]
     [TestCase(typeof(IEmployerAccountsService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
@@ -42,7 +42,7 @@ public class WhenAddingServicesToTheContainer
             InitialData = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("AccountsInnerApiConfiguration:url", "http://localhost:1"),
-                new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3")
+                new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3")
             }
         };
 

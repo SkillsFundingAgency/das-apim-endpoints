@@ -9,23 +9,20 @@ public class GetUserAccountsApiResponse
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public string EmployerUserId { get; set; }
-    
+    public bool IsSuspended { get; set; }
     public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
     {
-        if (source?.UserAccountResponse == null)
-        {
-            return new GetUserAccountsApiResponse
-            {
-                UserAccounts = new List<UserAccountsApiResponseItem>()
-            };
-        }
+        var userAccounts = source?.UserAccountResponse == null
+            ? new List<UserAccountsApiResponseItem>()
+            : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
         
         return new GetUserAccountsApiResponse
         {
-            EmployerUserId = source.EmployerUserId,
-            FirstName = source.FirstName,
-            LastName = source.LastName,
-            UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
+            EmployerUserId = source?.EmployerUserId,
+            FirstName = source?.FirstName,
+            LastName = source?.LastName,
+            IsSuspended = source?.IsSuspended ?? false,
+            UserAccounts = userAccounts
         };
     }
 }

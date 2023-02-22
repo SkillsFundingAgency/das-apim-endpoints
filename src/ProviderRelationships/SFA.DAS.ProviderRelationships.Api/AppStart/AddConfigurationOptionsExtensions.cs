@@ -13,7 +13,7 @@ public static class AddConfigurationOptionsExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>()!.Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
-        services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>()!.Value);
+        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>()!.Value);
     }
 }

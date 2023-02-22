@@ -31,9 +31,12 @@ public class WhenHandlingGetAccountsQuery
                 .Excluding(c => c.FirstName)
                 .Excluding(c => c.LastName)
                 .Excluding(c => c.UserId)
+                .Excluding(c => c.DisplayName)
+                .Excluding(c => c.IsSuspended)
         );
         actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
         actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
         actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
+        actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
     }
 }
