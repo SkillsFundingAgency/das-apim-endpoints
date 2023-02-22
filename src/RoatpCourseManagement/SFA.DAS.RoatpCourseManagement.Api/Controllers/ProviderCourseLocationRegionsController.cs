@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             _logger = logger;
         }
         [HttpGet]
-        [Route("providers/{ukprn}/courses/{larsCode}/standardsubregions")]
+        [Route("providers/{ukprn}/courses/{larsCode}/locations/regions")]
         public async Task<IActionResult> GetAllStandardSubRegions(int ukprn, int larsCode)
         {
             _logger.LogInformation("Outer API: Request to get all standard subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);

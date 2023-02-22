@@ -69,6 +69,10 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public OwnerType OwnerType { get ; set ; }
         [JsonPropertyName("accountType")]
         public AccountType AccountType { get; set; }
+        [JsonPropertyName("additionalQuestion1")]
+        public string AdditionalQuestion1 { get; set; }
+        [JsonPropertyName("additionalQuestion2")]
+        public string AdditionalQuestion2 { get; set; }
     }
     
     public class PostVacancyUserData

@@ -8,6 +8,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
@@ -16,6 +17,8 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
+using GetApprenticeFeedbackResponse = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetApprenticeFeedbackResponse;
+using StandardDate = SFA.DAS.SharedOuterApi.InnerApi.Responses.StandardDate;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingCourses
 {
@@ -35,11 +38,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     It.Is<GetTrainingCourseProvidersQuery>(c =>
                         c.Id.Equals(id)
                         && c.Location.Equals(request.Location)
-                        && c.SortOrder == (short)request.SortOrder
                         && c.Lat.Equals(request.Lat)
                         && c.Lon.Equals(request.Lon)
                         && c.ShortlistUserId.Equals(request.ShortlistUserId)
-                        ),
+                    ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -63,9 +65,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
                     options => options.Excluding(c => c.Ukprn)
                         .Excluding(c => c.AchievementRates)
                         .Excluding(c => c.DeliveryTypes)
+                        .Excluding(c => c.DeliveryModels)
                         .Excluding(c => c.EmployerFeedback)
                         .Excluding(c => c.ApprenticeFeedback)
-                    );
+                        .Excluding(c => c.DeliveryModelsShortestDistance)
+                        .Excluding(c=>c.IsApprovedByRegulator)
+                );
             model.Total.Should().Be(mediatorResult.Total);
             model.Location.Location.GeoPoint.Should().BeEquivalentTo(mediatorResult.Location.GeoPoint);
             model.Location.Name.Should().Be(mediatorResult.Location.Name);
@@ -78,7 +83,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             GetCourseProvidersRequest request,
             GetProvidersListItem provider1,
             GetProvidersListItem provider2,
-            ProviderCourseSortOrder.SortOrder sortOrder,
             GetTrainingCourseProvidersResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
@@ -87,18 +91,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             {
                 DeliveryModeType.Workplace
             };
-            provider1.DeliveryTypes = provider1.DeliveryTypes.Select(c =>
+
+            provider1.DeliveryTypes = null;
+            provider1.DeliveryModels = provider1.DeliveryModels.Select(c =>
             {
-                c.DeliveryModes = "100PercentEmployer";
+                c.LocationType = LocationType.Regional;
+                c.BlockRelease = false;
+                c.DayRelease = false;
                 return c;
             }).ToList();
             provider1.ApprenticeFeedback.ReviewCount = 0;
             provider1.ApprenticeFeedback.Stars = 0;
             provider1.EmployerFeedback.ReviewCount = 0;
             provider1.EmployerFeedback.Stars = 0;
-            provider2.DeliveryTypes = provider2.DeliveryTypes.Select(c =>
+
+            provider2.DeliveryTypes = null;
+            provider2.DeliveryModels = provider2.DeliveryModels.Select(c =>
             {
-                c.DeliveryModes = "DayRelease";
+                c.LocationType = LocationType.Provider;
+                c.DayRelease = true;
+                c.BlockRelease = false;
                 return c;
             }).ToList();
             provider2.ApprenticeFeedback.ReviewCount = 0;
@@ -233,6 +245,101 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             var controllerResult = await controller.GetProviders(id, request) as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        }
+
+        [TestCase(ProviderCourseSortOrder.SortOrder.Name,"NameB","NameA",2,1,56, LocationType.Provider, LocationType.Provider, "NameA",1,false)]
+        [TestCase(ProviderCourseSortOrder.SortOrder.Name, "NameA", "NameB", 2, 1, 56, LocationType.Provider, LocationType.Provider, "NameA",2,false)]
+        [TestCase(ProviderCourseSortOrder.SortOrder.Distance, "NameA", "NameB", 2, 1, 56,LocationType.Provider, LocationType.Provider, "NameA", 2, false)]
+        [TestCase(ProviderCourseSortOrder.SortOrder.Distance, "NameB", "NameB", 2, 1, 56, LocationType.Provider, LocationType.Provider, "NameB", 1, false)]
+        [TestCase(ProviderCourseSortOrder.SortOrder.Name, "NameA", "NameA", 2, 3, 56, LocationType.Provider, LocationType.National, "NameA", 0, true)]
+        [TestCase(ProviderCourseSortOrder.SortOrder.Distance, "NameA", "NameA", 2, 3, 0, LocationType.Provider, LocationType.National, "NameA", 0, true)]
+        public async Task Then_Expected_Sort_Order_Is_Applied(ProviderCourseSortOrder.SortOrder sortOrder, string name1, string name2, decimal distance1, decimal distance2, double latLong, LocationType locationType1,LocationType locationType2, string expectedFirstName, decimal expectedDistanceInMiles, bool expectedNational)
+        {
+            const int id = 1;
+            var deliveryModes = new List<DeliveryModeType> { DeliveryModeType.DayRelease };
+
+            if (locationType1==LocationType.National || locationType2 == LocationType.National)
+            {
+                deliveryModes = new List<DeliveryModeType> { DeliveryModeType.DayRelease, DeliveryModeType.Workplace};
+            }
+
+            var request = new GetCourseProvidersRequest
+            {
+                DeliveryModes = deliveryModes,
+                Lat = latLong,
+                Lon=latLong
+            };
+
+            var provider1 = new GetProvidersListItem();
+            var provider2 = new GetProvidersListItem();
+            var mediatorResult = new GetTrainingCourseProvidersResult();
+            var mockMediator = new Mock<IMediator>();
+            var mockLogger = new Mock<ILogger<TrainingCoursesController>>();
+            
+            var controller = new TrainingCoursesController(mockLogger.Object,mockMediator.Object);
+
+            request.SortOrder = sortOrder;
+
+            request.ApprenticeProviderRatings = new List<FeedbackRatingType>();
+          
+            request.EmployerProviderRatings = new List<FeedbackRatingType>();
+
+            provider1.Name = name1;
+            provider1.Ukprn = 1;
+            provider1.DeliveryModels = new List<DeliveryModel>
+            {
+                new()
+                {
+                    DistanceInMiles = distance1,
+                    LocationType = locationType1,
+                    DayRelease = (locationType1!=LocationType.National),
+                }
+            };
+
+            provider2.Name = name2;
+            provider2.Ukprn = 2;
+            provider2.DeliveryModels = new List<DeliveryModel>
+            {
+                new()
+                {
+                    DistanceInMiles = distance2,
+                    LocationType = locationType2,
+                    DayRelease = (locationType2!=LocationType.National)
+                }
+            };
+
+            provider1.ApprenticeFeedback = new GetApprenticeFeedbackResponse
+            {
+                Stars = 4,
+                ReviewCount = 1
+            };
+
+            provider2.ApprenticeFeedback = new GetApprenticeFeedbackResponse
+            {
+                Stars = 4,
+                ReviewCount = 1
+            };
+
+            mediatorResult.Providers = new List<GetProvidersListItem> { provider1, provider2 };
+            mediatorResult.Course = new GetStandardsListItem {TypicalJobTitles = string.Empty, StandardDates = new StandardDate()};
+            
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTrainingCourseProvidersQuery>(c => c.Id.Equals(id)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
+
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
+            Assert.IsNotNull(model);
+            model.TrainingCourseProviders.First().Name.Should().Be(expectedFirstName);
+            model.TrainingCourseProviders.First().DeliveryModes.First().DistanceInMiles.Should()
+                .Be(expectedDistanceInMiles);
+            model.TrainingCourseProviders.First().DeliveryModes.First().National.Should().Be(expectedNational);
+
         }
     }
 }

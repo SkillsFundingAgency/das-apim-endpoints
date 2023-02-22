@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Api.Controllers;
-using SFA.DAS.EmployerFinance.Api.Models;
+using SFA.DAS.EmployerFinance.Api.Models.Providers;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,9 +34,9 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as ProviderResponse;
+            var model = controllerResult.Value as GetProviderResponse;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo(mediatorResult.Provider);
+            model.Should().BeEquivalentTo(mediatorResult);
         }
 
         [Test, MoqAutoData]

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses;
+﻿using SFA.DAS.Approvals.Application.Shared.Enums;
 
 namespace SFA.DAS.Approvals.Application
 {

@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Funding.Api.AppStart;
 using SFA.DAS.Funding.Api.ErrorHandler;
+using SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary;
 using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -38,7 +39,9 @@ namespace SFA.DAS.Funding.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));
+            services.Configure<ApprenticeshipsConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingApprenticeshipEarningsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -56,7 +59,7 @@ namespace SFA.DAS.Funding.Api
             services.AddHealthChecks()
                 .AddCheck<FundingApprenticeshipEarningsHealthCheck>(nameof(FundingApprenticeshipEarningsHealthCheck));
 
-            //services.AddMediatR(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly);
+            services.AddMediatR(typeof(GetProviderEarningsSummaryQuery).Assembly);
             services.AddServiceRegistration();
 
             services

@@ -1,26 +1,26 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Services;
+
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists
 {
     public class GetExpiredShortlistsQueryHandler : IRequestHandler<GetExpiredShortlistsQuery, GetExpiredShortlistsQueryResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
 
-        public GetExpiredShortlistsQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public GetExpiredShortlistsQueryHandler (IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
+            _shortlistApiClient = shortlistApiClient;
         }
         public async Task<GetExpiredShortlistsQueryResult> Handle(GetExpiredShortlistsQuery request, CancellationToken cancellationToken)
         {
             var apiResult =
-                await _courseDeliveryApiClient.Get<GetExpiredShortlistsResponse>(
+                await _shortlistApiClient.Get<GetExpiredShortlistsResponse>(
                     new GetExpiredShortlistsRequest(request.ExpiryInDays));
 
             return new GetExpiredShortlistsQueryResult

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -46,7 +46,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             var apprenticeship = innerApiResponseTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
-            if (!CheckParty(cohort))
+            if (!cohort.CheckParty(_serviceParameters))
             {
                 return null;
             }
@@ -91,37 +91,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 DurationReducedBy = apprenticeship.DurationReducedBy,
                 PriceReducedBy = apprenticeship.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
-                IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot
+                IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
+                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed
             };
-        }
-
-        private bool CheckParty(GetCohortResponse cohort)
-        {
-            switch (_serviceParameters.CallingParty)
-            {
-                case Party.Employer:
-                {
-                    if (cohort.AccountId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                case Party.Provider:
-                {
-                    if (cohort.ProviderId != _serviceParameters.CallingPartyId)
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-                default:
-                    return false;
-            }
-
-            return true;
         }
     }
 }
