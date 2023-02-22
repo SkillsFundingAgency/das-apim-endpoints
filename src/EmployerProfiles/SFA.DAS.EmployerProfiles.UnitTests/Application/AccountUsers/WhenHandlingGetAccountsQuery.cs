@@ -38,6 +38,7 @@ namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
                     .Excluding(c => c.LastName)
                     .Excluding(c => c.UserId)
                     .Excluding(c => c.IsSuspended)
+                    .Excluding(c => c.DisplayName)
             );
             actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
