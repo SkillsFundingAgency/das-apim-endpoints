@@ -3,20 +3,18 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
@@ -27,35 +25,36 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQuery query,
             GetStandardsListItem coursesApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            GetTotalProvidersForStandardResponse providersCountResponse,
             int shortlistItemCount,
             LocationItem locationItem,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
-            [Frozen] Mock<IShortlistService> shortlistService,
+            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseQueryHandler handler)
         {
             //Arrange
-            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+            locationLookupService.Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync(locationItem);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
-            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, locationItem.GeoPoint.First(), locationItem.GeoPoint.Last()).GetUrl;
+            var url = new GetTotalProvidersForStandardRequest(query.Id).GetUrl;
 
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync(coursesApiResponse);
-            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+            mockShortlistApiClient
+                .Setup(client=>client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(c => c.GetUrl.Contains($"api/Shortlist/users/{query.ShortlistUserId}/count"))))
                 .ReturnsAsync(shortlistItemCount);
-            mockCourseDeliveryApiClient
+            mockRoatpV2ApiClient
                 .Setup(client =>
-                    client.Get<GetUkprnsForStandardAndLocationResponse>(
-                        It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
+                    client.Get<GetTotalProvidersForStandardResponse>(
+                        It.Is<GetTotalProvidersForStandardRequest>((c =>
                             c.GetUrl.Equals(url)))))
-                .ReturnsAsync(courseDirectoryApiResponse);
+                .ReturnsAsync(providersCountResponse);
             mockCoursesApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
@@ -66,8 +65,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.Course.LevelEquivalent.Should().Be("GCSE");
-            result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
-            result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
+            result.ProvidersCount.Should().Be(providersCountResponse.ProvidersCount);
+            result.ProvidersCountAtLocation.Should().Be(providersCountResponse.ProvidersCount);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
 
@@ -76,36 +75,37 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQuery query,
             GetStandardsListItem coursesApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            GetTotalProvidersForStandardResponse providersCountApiResponse,
             int shortlistItemCount,
             LocationItem locationItem,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
-            [Frozen] Mock<IShortlistService> shortlistService,
+            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseQueryHandler handler)
         {
             //Arrange
             locationLookupService
-                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon,false))
+                .Setup(x => x.GetLocationInformation(query.LocationName, query.Lat, query.Lon, false))
                 .ReturnsAsync((LocationItem)null);
             levelsApiResponse.Levels.First().Name = "GCSE";
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
-            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, 0, 0).GetUrl;
+            var url = new GetTotalProvidersForStandardRequest(query.Id).GetUrl;
 
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync(coursesApiResponse);
-            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+            mockShortlistApiClient
+                .Setup(client => client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(c => c.GetUrl.Contains($"api/Shortlist/users/{query.ShortlistUserId}/count"))))
                 .ReturnsAsync(shortlistItemCount);
-            mockCourseDeliveryApiClient
+            mockRoatpV2ApiClient
                 .Setup(client =>
-                    client.Get<GetUkprnsForStandardAndLocationResponse>(
-                        It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
+                    client.Get<GetTotalProvidersForStandardResponse>(
+                        It.Is<GetTotalProvidersForStandardRequest>((c =>
                             c.GetUrl.Equals(url)))))
-                .ReturnsAsync(courseDirectoryApiResponse);
+                .ReturnsAsync(providersCountApiResponse);
             mockCoursesApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
@@ -116,8 +116,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.Course.LevelEquivalent.Should().Be("GCSE");
-            result.ProvidersCount.Should().Be(courseDirectoryApiResponse.UkprnsByStandard.ToList().Count);
-            result.ProvidersCountAtLocation.Should().Be(courseDirectoryApiResponse.UkprnsByStandardAndLocation.ToList().Count);
+            result.ProvidersCount.Should().Be(providersCountApiResponse.ProvidersCount);
+            result.ProvidersCountAtLocation.Should().Be(providersCountApiResponse.ProvidersCount);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
         
@@ -125,9 +125,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_If_No_Standard_Found_Returns_Empty_Response(
             GetTrainingCourseQuery query,
             GetLevelsListResponse levelsApiResponse,
-            GetUkprnsForStandardAndLocationResponse courseDirectoryApiResponse,
+            GetTotalProvidersForStandardResponse courseDirectoryApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockCourseDeliveryApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseQueryHandler handler)
         {
 
@@ -137,11 +137,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .ReturnsAsync((GetStandardsListItem) null);
 
 
-            var url = new GetUkprnsForStandardAndLocationRequest(query.Id, query.Lat, query.Lon).GetUrl;
-            mockCourseDeliveryApiClient
+            var url = new GetTotalProvidersForStandardRequest(query.Id).GetUrl;
+            mockRoatpV2ApiClient
                 .Setup(client =>
-                    client.Get<GetUkprnsForStandardAndLocationResponse>(
-                        It.Is<GetUkprnsForStandardAndLocationRequest>((c =>
+                    client.Get<GetTotalProvidersForStandardResponse>(
+                        It.Is<GetTotalProvidersForStandardRequest>((c =>
                             c.GetUrl.Equals(url)))))
                 .ReturnsAsync(courseDirectoryApiResponse);
 

@@ -15,7 +15,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Models
             var actual = (GetProviderResponse) source;
             
             //Assert
-            actual.Should().BeEquivalentTo(source);
+            actual.Should().BeEquivalentTo(source, options => options
+                .Excluding(x => x.Address.AddressLine1)
+                .Excluding(x => x.Address.AddressLine2)
+                .Excluding(x => x.Address.AddressLine3)
+                .Excluding(x => x.Address.AddressLine4)
+            );
+
+            actual.Address.Address1.Should().Be(source.Address.AddressLine1);
+            actual.Address.Address2.Should().Be(source.Address.AddressLine2);
+            actual.Address.Address3.Should().Be(source.Address.AddressLine3);
+            actual.Address.Address4.Should().Be(source.Address.AddressLine4);
         }
     }
 }

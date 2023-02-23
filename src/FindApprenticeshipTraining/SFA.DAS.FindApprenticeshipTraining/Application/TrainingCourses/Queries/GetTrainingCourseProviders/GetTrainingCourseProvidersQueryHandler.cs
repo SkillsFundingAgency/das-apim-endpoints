@@ -1,43 +1,43 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Options;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders
 {
     public class GetTrainingCourseProvidersQueryHandler : IRequestHandler<GetTrainingCourseProvidersQuery, GetTrainingCourseProvidersResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
+
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly IShortlistService _shortlistService;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
         private readonly ILocationLookupService _locationLookupService;
 
+       
         public GetTrainingCourseProvidersQueryHandler(
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
             IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            IShortlistService shortlistService,
-            ILocationLookupService locationLookupService)
+            ILocationLookupService locationLookupService, 
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient, 
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
             _employerFeedbackApiClient = employerFeedbackApiClient;
             _coursesApiClient = coursesApiClient;
-            _shortlistService = shortlistService;
             _locationLookupService = locationLookupService;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
+            _shortlistApiClient = shortlistApiClient;
         }
 
         public async Task<GetTrainingCourseProvidersResult> Handle(GetTrainingCourseProvidersQuery request, CancellationToken cancellationToken)
@@ -46,7 +46,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
 
-            var shortlistTask = _shortlistService.GetShortlistItemCount(request.ShortlistUserId);
+            var shortlistTask = request.ShortlistUserId.HasValue
+                ? _shortlistApiClient.GetAll<ShortlistItem>(
+                    new GetShortlistForUserIdRequest(request.ShortlistUserId.Value))
+                : Task.FromResult<IEnumerable<ShortlistItem>>(new List<ShortlistItem>());
 
             var apprenticeFeedbackSummaryTask = _apprenticeFeedbackApiClient.GetAll<GetApprenticeFeedbackSummaryItem>(new GetApprenticeFeedbackSummaryRequest());
 
@@ -54,40 +57,47 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask, shortlistTask, apprenticeFeedbackSummaryTask, employerFeedbackSummaryTask);
 
-            var providers = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersByCourseRequest(
-                request.Id,
-                courseTask.Result.SectorSubjectAreaTier2Description,
-                courseTask.Result.Level,
-                locationTask.Result?.GeoPoint?.FirstOrDefault(),
-                locationTask.Result?.GeoPoint?.LastOrDefault(),
-                request.SortOrder,
-                request.ShortlistUserId));
+            var providers = await _roatpCourseManagementApiClient.Get<GetProvidersListFromCourseIdResponse> (new GetProvidersByCourseIdRequest(
+                request.Id, locationTask.Result?.GeoPoint?.FirstOrDefault(),
+                locationTask.Result?.GeoPoint?.LastOrDefault()));
 
-            if (providers?.Providers.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
+            var filteredProviders = providers?.Providers.Where(x => x.IsApprovedByRegulator != false).ToList();
+
+            if (filteredProviders?.Any() == true && apprenticeFeedbackSummaryTask.Result?.Any() == true)
             {
                 var summaries = apprenticeFeedbackSummaryTask.Result;
-                foreach (var provider in providers.Providers)
+                foreach (var provider in filteredProviders)
                 {
                     provider.ApprenticeFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
                 }
             }
 
-            if (providers?.Providers.Any() == true && employerFeedbackSummaryTask.Result?.Any() == true)
+            if (filteredProviders?.Any() == true && employerFeedbackSummaryTask.Result?.Any() == true)
             {
                 var summaries = employerFeedbackSummaryTask.Result;
-                foreach (var provider in providers.Providers)
+                foreach (var provider in filteredProviders)
                 {
                     provider.EmployerFeedback = summaries.FirstOrDefault(s => s.Ukprn == provider.Ukprn);
+                }
+            }
+
+            if (filteredProviders?.Any() == true && shortlistTask.Result?.Any() == true)
+            {
+                var shortlistItems = shortlistTask.Result;
+                foreach (var provider in filteredProviders)
+                {
+                    provider.ShortlistId = shortlistItems.FirstOrDefault(s => s.Ukprn == provider.Ukprn && s.Larscode == request.Id 
+                        && s.LocationDescription == request.Location)?.Id;
                 }
             }
 
             return new GetTrainingCourseProvidersResult
             {
                 Course = courseTask.Result,
-                Providers = providers?.Providers,
-                Total = providers?.TotalResults ?? 0,
+                Providers = filteredProviders,
+                Total = filteredProviders?.Count() ?? 0,
                 Location = locationTask.Result,
-                ShortlistItemCount = shortlistTask.Result
+                ShortlistItemCount = shortlistTask?.Result?.Count() ?? 0
             };
         }
     }

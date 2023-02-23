@@ -5,13 +5,15 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
-using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using GetShortlistForUserResponse = SFA.DAS.FindApprenticeshipTraining.Api.Models.GetShortlistForUserResponse;
+using GetShortlistItem = SFA.DAS.FindApprenticeshipTraining.Api.Models.GetShortlistItem;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -35,16 +37,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetShortlistForUserQuery {ShortlistUserId = userId});
+                
+                var shortlist = result.Shortlist.OrderBy(x => x.ProviderDetails.DeliveryModelsShortestDistance)
+                    .ThenByDescending(x=>x.ProviderDetails.DeliveryModels.Any(d=>d.LocationType==LocationType.National));
 
                 var response = new GetShortlistForUserResponse
                 {
-                    Shortlist = result.Shortlist.Select(item => (GetShortlistItem)item)
+                    Shortlist = shortlist.Select(item => (GetShortlistItem)item)
                 };
                 return Ok(response);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get shortlist for user:{userId}");
+                _logger.LogError(e, "Error attempting to get shortlist for user:{userId}", userId);
                 return BadRequest();
             }
         }
@@ -72,7 +77,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new CreateShortlistForUserCommand
+                await _mediator.Send(new CreateShortlistForUserCommand
                 {
                     Lat = shortlistRequest.Lat,
                     Lon = shortlistRequest.Lon,
@@ -82,7 +87,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     ShortlistUserId = shortlistRequest.ShortlistUserId
                 });
 
-                return Created("", result);
+                return Created("users", shortlistRequest.ShortlistUserId );
             }
             catch (HttpRequestContentException e)
             {

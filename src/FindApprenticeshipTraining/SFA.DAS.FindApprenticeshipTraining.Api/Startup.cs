@@ -1,24 +1,26 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.Api.Common.AppStart;
-using SFA.DAS.Api.Common.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
@@ -59,7 +61,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             var configuration = _configuration
                 .GetSection("FindApprenticeshipTrainingConfiguration")
@@ -83,11 +85,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check")
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
+                    .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
                     .AddCheck<LocationsApiHealthCheck>("Location API health check");
             }
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
