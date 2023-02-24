@@ -10,7 +10,6 @@ using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
-using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
