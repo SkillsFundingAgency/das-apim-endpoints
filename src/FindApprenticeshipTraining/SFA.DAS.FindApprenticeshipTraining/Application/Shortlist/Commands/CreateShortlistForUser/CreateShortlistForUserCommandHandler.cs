@@ -1,46 +1,38 @@
-﻿using System;
+﻿using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
+using SFA.DAS.FindApprenticeshipTraining.Services;
+
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
 {
-    public class CreateShortlistForUserCommandHandler : IRequestHandler<CreateShortlistForUserCommand, Guid>
+    public class CreateShortlistForUserCommandHandler : IRequestHandler<CreateShortlistForUserCommand, Unit>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
 
-        public CreateShortlistForUserCommandHandler (
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, 
-            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        public CreateShortlistForUserCommandHandler(
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
-            _coursesApiClient = coursesApiClient;
+            _shortlistApiClient = shortlistApiClient;
         }
-        public async Task<Guid> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
         {
-            var course = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.StandardId));
-            
-            var result = await _courseDeliveryApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
+            await _shortlistApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
-                    Lat = request.Lat,
-                    Lon = request.Lon,
+                    Latitude = request.Lat,
+                    Longitude = request.Lon,
                     Ukprn = request.Ukprn,
                     LocationDescription = request.LocationDescription,
-                    StandardId = request.StandardId,
-                    SectorSubjectArea = course.SectorSubjectAreaTier2Description,
+                    Larscode = request.StandardId,
                     ShortlistUserId = request.ShortlistUserId
                 } 
-            });
+            },false);
             
-            return result.Body.Id;
+            return Unit.Value;
         }
     }
 }

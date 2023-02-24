@@ -19,7 +19,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetProviders
         public async Task Then_The_Api_Is_Called_With_The_Request_And_Providers_Returned(
             GetProvidersQuery query,
             GetProvidersListResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> apiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
             GetProvidersQueryHandler handler
         )
         {
@@ -27,7 +27,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetProviders
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            actual.Providers.Should().BeEquivalentTo(apiResponse.RegisteredProviders);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -30,7 +31,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(129);
             actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
             actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
+            actual.DeliveryModes.Count.Should().Be(providerStandardItem.ProviderStandard.DeliveryModels.ToList().Count);
+            Assert.IsTrue(actual.DeliveryModes.Any(x => x.Address1.Contains(providerStandardItem.ProviderStandard.DeliveryModels.ToList().First().Address1)));
         }
+
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level_Higher_Than_Three(string sectorSubjectArea,
             GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2)

@@ -13,7 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         {
             var actual = new GetShortlistForUserRequest(shortlistUserId);
 
-            actual.GetUrl.Should().Be($"api/shortlist/users/{shortlistUserId}");
+            actual.GetUrl.Should().Be($"api/shortlist/{shortlistUserId}");
         }
     }
 }
