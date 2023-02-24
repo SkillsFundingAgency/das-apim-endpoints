@@ -8,6 +8,8 @@ namespace SFA.DAS.Funding.Api.Models
     public class LearnerDto
     {
         public string Uln { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public FundingType FundingType { get; set; }
         public List<OnProgrammeEarningDto> OnProgrammeEarnings { get; set; }
         public decimal TotalOnProgrammeEarnings { get; set; }
@@ -19,6 +21,8 @@ namespace SFA.DAS.Funding.Api.Models
                 FundingType = (FundingType)Enum.Parse(typeof(FundingType), source.FundingType.ToString()),
                 TotalOnProgrammeEarnings = source.TotalOnProgrammeEarnings,
                 Uln = source.Uln,
+                FirstName= source.FirstName,
+                LastName= source.LastName,
                 OnProgrammeEarnings = source.OnProgrammeEarnings.Select(x => (OnProgrammeEarningDto)x).ToList(),
             };
         }
