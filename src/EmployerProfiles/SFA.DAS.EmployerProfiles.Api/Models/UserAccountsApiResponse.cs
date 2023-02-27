@@ -11,23 +11,23 @@ namespace SFA.DAS.EmployerProfiles.Api.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string EmployerUserId { get; set; }
+        public bool IsSuspended { get; set; }
+
 
 
         public static implicit operator UserAccountsApiResponse(GetAccountsQueryResult source)
         {
-            if (source?.UserAccountResponse == null)
-            {
-                return new UserAccountsApiResponse
-                {
-                    UserAccounts = new List<UserAccountsApiResponseItem>()
-                };
-            }
+            var accounts = source?.UserAccountResponse == null
+                ? new List<UserAccountsApiResponseItem>()
+                : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
+            
             return new UserAccountsApiResponse
             {
-                EmployerUserId = source.EmployerUserId,
-                FirstName = source.FirstName,
-                LastName = source.LastName,
-                UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
+                EmployerUserId = source?.EmployerUserId,
+                FirstName = source?.FirstName,
+                LastName = source?.LastName,
+                UserAccounts = accounts,
+                IsSuspended = source?.IsSuspended ?? false
             };
         }
     }

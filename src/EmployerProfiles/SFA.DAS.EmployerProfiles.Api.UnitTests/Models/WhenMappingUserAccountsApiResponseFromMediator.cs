@@ -17,8 +17,8 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Models
             actual.FirstName.Should().Be(source.FirstName);
             actual.LastName.Should().Be(source.LastName);
             actual.EmployerUserId.Should().Be(source.EmployerUserId);
+            actual.IsSuspended.Should().Be(source.IsSuspended);
         }
-        
         
         [Test]
         public void Then_If_Null_Then_Empty_Returned()
@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Models
             actual.FirstName.Should().BeNullOrEmpty();
             actual.LastName.Should().BeNullOrEmpty();
             actual.EmployerUserId.Should().BeNullOrEmpty();
+            actual.IsSuspended.Should().BeFalse();
         }
     }
 }
