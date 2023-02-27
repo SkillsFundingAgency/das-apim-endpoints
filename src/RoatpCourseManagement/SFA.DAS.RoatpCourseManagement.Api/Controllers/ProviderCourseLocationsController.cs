@@ -29,7 +29,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             var providerCourselocationsResult = await _mediator.Send(new GetProviderCourseLocationQuery(ukprn, larsCode));
             if (providerCourselocationsResult == null)
             {
-                _logger.LogError($"Provider Course Locations not found for ukprn {ukprn} and lars code {larsCode}");
+                _logger.LogInformation($"Provider Course Locations not found for ukprn {ukprn} and lars code {larsCode}");
                 return NotFound();
             }
 
