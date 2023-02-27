@@ -72,7 +72,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task CreateAccount(CreateAccountRequest request)
         {
-            await _levyTransferMatchingApiClient.PostWithResponseCode<CreateAccountRequest>(request);
+            await _levyTransferMatchingApiClient.PostWithResponseCode<CreateAccountRequest>(request, false);
         }
 
         public async Task<Pledge> GetPledge(int id)
