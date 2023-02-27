@@ -154,6 +154,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                     _request.CommitmentsApprenticeshipId,
                     _request.CommitmentsApprovedOn,
                     expectedCommitment.CourseName,
+                    CourseOption = expectedCommitment.Option,
                     PlannedStartDate = expectedCommitment.StartDate,
                 });
         }
