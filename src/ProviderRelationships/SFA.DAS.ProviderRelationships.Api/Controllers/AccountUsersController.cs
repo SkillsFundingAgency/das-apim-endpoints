@@ -19,7 +19,7 @@ public class AccountUsersController : ControllerBase
     
     [HttpGet]
     [Route("{userId}/accounts")]
-    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
+    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string? email)
     {
         try
         {
