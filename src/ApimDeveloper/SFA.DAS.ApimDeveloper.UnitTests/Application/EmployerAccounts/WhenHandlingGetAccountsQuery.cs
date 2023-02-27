@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -31,10 +32,17 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse, options => options.Excluding(x => x.FirstName)
+            actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse, options => options
+                .Excluding(x => x.FirstName)
                 .Excluding(x => x.LastName)
+                .Excluding(x => x.DisplayName)
                 .Excluding(x => x.UserId)
+                .Excluding(x => x.IsSuspended)
             );
+            actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
+            actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
+            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
+            actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault().UserId);
         }
     }
 }

@@ -36,16 +36,9 @@ namespace SFA.DAS.Forecasting.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
+            
             services.AddSingleton(_env);
-            services.Configure<CoursesApiConfiguration>(_configuration.GetSection("CoursesApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            services.Configure<LevyTransferMatchingApiConfiguration>(_configuration.GetSection("LevyTransferMatchingApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
-            services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
+            services.AddConfigurationOptions(_configuration);
 
             if (!_configuration.IsLocalOrDev())
             {

@@ -26,6 +26,10 @@ namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries
             
             return new GetAccountsQueryResult
             {
+                EmployerUserId = employerAccounts.FirstOrDefault()?.UserId,
+                FirstName = employerAccounts.FirstOrDefault()?.FirstName,
+                LastName = employerAccounts.FirstOrDefault()?.LastName,
+                IsSuspended = employerAccounts.FirstOrDefault()?.IsSuspended ?? false,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser
                 {
                     DasAccountName = c.DasAccountName,

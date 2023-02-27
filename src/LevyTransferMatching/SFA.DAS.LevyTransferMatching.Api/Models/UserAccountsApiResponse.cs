@@ -10,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string EmployerUserId { get; set; }
-
+        public bool IsSuspended { get; set; }
 
         public static implicit operator UserAccountsApiResponse(GetAccountsQueryResult source)
         {
@@ -26,9 +26,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
                 EmployerUserId = source.EmployerUserId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
+                IsSuspended = source.IsSuspended,
                 UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
             };
         }
+
     }
 
     public class UserAccountsApiResponseItem

@@ -8,20 +8,23 @@ namespace SFA.DAS.Reservations.Api.Models
     public class GetUserAccountsApiResponse
     {
         public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
+        public bool IsSuspended { get; set; }
+        public string UserId { get; set; }
         public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
         {
-            if (source?.UserAccountResponse == null)
-            {
-                return new GetUserAccountsApiResponse
-                {
-                    UserAccounts = new List<UserAccountsApiResponseItem>()
-                };
-            }
+            var accounts = source?.UserAccountResponse == null
+                ? new List<UserAccountsApiResponseItem>()
+                : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
+            
             return new GetUserAccountsApiResponse
             {
-                UserAccounts = source.UserAccountResponse.Select(c=>(UserAccountsApiResponseItem)c).ToList()
+                IsSuspended = source?.IsSuspended ?? false,
+                UserId = source?.UserId,
+                UserAccounts = accounts
             };
         }
+
+        
     }
 
     public class UserAccountsApiResponseItem
