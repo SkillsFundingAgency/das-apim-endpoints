@@ -5,15 +5,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Application\ValidateDraftApprenticeship\**" />
+      <EmbeddedResource Remove="Application\ValidateDraftApprenticeship\**" />
+      <None Remove="Application\ValidateDraftApprenticeship\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="MediatR" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Application\ValidateDraftApprenticeship\" />
     </ItemGroup>
 
 </Project>

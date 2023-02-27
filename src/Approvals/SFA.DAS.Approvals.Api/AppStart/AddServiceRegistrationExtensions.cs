@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LearnerServiceClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -6,6 +7,7 @@ using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.ConnectedServices.LearnerWebService;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
@@ -53,6 +55,10 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
             services.AddTransient<IFjaaService, FjaaService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<ILearnerValidationService, LearnerValidationService>();
+            services.AddTransient<ILearnerServiceClientProvider<LearnerPortTypeClient>, LearnerServiceClientProvider<LearnerPortTypeClient>>();
+            services.AddTransient<IClientTypeFactory<LearnerPortTypeClient>, LearnerPortTypeClientFactory>();
+            services.AddTransient<ICertificateProvider, CertificateProvider>();
             services.AddServiceParameters();
         }
     }

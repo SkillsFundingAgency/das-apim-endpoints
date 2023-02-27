@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.ConnectedServices.LearnerWebService;
 
 namespace SFA.DAS.Approvals.Api.AppStart
 {
@@ -45,6 +46,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
             services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<LrsApiWcfSettings>(configuration.GetSection("LrsApiWcfSettings"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LrsApiWcfSettings>>().Value);
         }
     }
 }

@@ -5,6 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Azure.Identity" />
+        <PackageReference Include="Azure.Security.KeyVault.Certificates" />
         <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
@@ -17,6 +19,10 @@
         <PackageReference Include="SFA.DAS.Notifications.Messages" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
+        <PackageReference Include="System.ServiceModel.Duplex" />
+        <PackageReference Include="System.ServiceModel.Http" />
+        <PackageReference Include="System.ServiceModel.NetTcp" />
+        <PackageReference Include="System.ServiceModel.Security" />
     </ItemGroup>
 
 </Project>
