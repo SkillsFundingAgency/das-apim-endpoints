@@ -19,13 +19,14 @@ namespace SFA.DAS.SharedOuterApi.Services
             try
             {
                 var service = _lrsClientProvider.GetServiceAsync();
+                ///TODO: Should we be using the 'Find by ULN endpoint' instead here? (reccomended by Hal in LRS)
                 var learnerVerificationResponse = await service.verifyLearnerAsync(
                     new verifyLearnerRequest(
                         new VerifyLearnerRqst(){ 
                             LearnerToVerify = new MIAPLearnerToVerify() { ULN = uln, GivenName = firstName, FamilyName = lastName }
                         }));
 
-                await service.CloseAsync();
+                await service.CloseAsync(); //TODO: Is this necessary?
 
                 return learnerVerificationResponse.VerifyLearnerResponse.VerifiedLearner;
             }

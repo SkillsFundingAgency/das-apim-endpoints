@@ -49,6 +49,7 @@ namespace SFA.DAS.SharedOuterApi.ConnectedServices.LearnerWebService
             }
             catch (Exception ex)
             {
+                //TODO: Logging?
                 throw;
             }
         }
