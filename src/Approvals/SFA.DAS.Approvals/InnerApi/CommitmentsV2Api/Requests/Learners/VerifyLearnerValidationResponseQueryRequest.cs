@@ -9,7 +9,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Learners
             Data = body;
         }
 
-        public string PostUrl => $"api/learners/validate-learner-verification";
+        public string PostUrl => $"api/learners/validate-learner-details";
 
         public object Data { get; set; }
 
