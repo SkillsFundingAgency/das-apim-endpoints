@@ -17,14 +17,16 @@ namespace SFA.DAS.Reservations.Application.AccountUsers.Queries
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var employerAccounts = await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
+            var employerAccounts = (await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
             {
                 Email = request.Email,
                 UserId = request.UserId
-            });
+            })).ToList();
             
             return new GetAccountsQueryResult
             {
+                UserId = employerAccounts.FirstOrDefault()?.UserId,
+                IsSuspended = employerAccounts.FirstOrDefault()?.IsSuspended ?? false,
                 UserAccountResponse = employerAccounts.Select(c=> new AccountUser
                 {
                     DasAccountName = c.DasAccountName,

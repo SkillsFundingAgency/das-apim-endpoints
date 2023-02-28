@@ -15,6 +15,7 @@ public class WhenCastingGetUserAccountsApiResponseFromMediatorType
 
         actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
         actual.EmployerUserId.Should().BeEquivalentTo(source.UserId);
+        actual.IsSuspended.Should().Be(source.IsSuspended);
     }
 
 
@@ -24,5 +25,7 @@ public class WhenCastingGetUserAccountsApiResponseFromMediatorType
         var actual = (GetUserAccountsApiResponse)(GetAccountsQueryResult)null;
 
         actual.UserAccounts.Should().BeEmpty();
+        actual.EmployerUserId.Should().BeNullOrEmpty();
+        actual.IsSuspended.Should().BeFalse();
     }
 }

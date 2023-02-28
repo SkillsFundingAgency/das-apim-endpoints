@@ -18,7 +18,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
-        [TestCase(typeof(IEmployerUsersApiClient<EmployerUsersApiConfiguration>))]
+        [TestCase(typeof(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>))]
         [TestCase(typeof(IEmployerAccountsService))]
@@ -48,7 +48,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("EmployerUsersApiConfiguration:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3"),
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:4"),
                     new KeyValuePair<string, string>("CourseDeliveryApiConfiguration:url", "http://localhost:5")
                 }

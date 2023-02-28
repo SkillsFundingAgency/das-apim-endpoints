@@ -14,6 +14,8 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
             var actual = (GetUserAccountsApiResponse) source;
             
             actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
+            actual.UserId.Should().Be(source.UserId);
+            actual.IsSuspended.Should().Be(source.IsSuspended);
         }
         
         
@@ -23,6 +25,8 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
             var actual = (GetUserAccountsApiResponse) (GetAccountsQueryResult)null;
             
             actual.UserAccounts.Should().BeEmpty();
+            actual.UserId.Should().BeNullOrEmpty();
+            actual.IsSuspended.Should().BeFalse();
         }
     }
 }
