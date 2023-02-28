@@ -23,12 +23,12 @@ namespace SFA.DAS.Approvals.Application.ValidateDraftLearnerDetails.Queries
         public async Task<ValidateDraftLearnerDetailsQueryResult> Handle(ValidateDraftLearnerDetailsQuery request, CancellationToken cancellationToken)
         {
             var learnerValidationResponse = await _learnerValidationService.ValidateLearner(request.Uln, request.FirstName, request.LastName);
+
             var verifyLearnerValidationResponseQueryRequestBody = new VerifyLearnerValidationResponseQueryRequest.Body()
             {
                 SearchedULN = learnerValidationResponse.SearchedULN,
                 ResponseCode = learnerValidationResponse.ResponseCode,
-                Uln = request.Uln,
-                FailureFlag = learnerValidationResponse.FailureFlag
+                Uln = request.Uln
             };
             var verifyLearnerValidationResponseQueryRequest = new VerifyLearnerValidationResponseQueryRequest(verifyLearnerValidationResponseQueryRequestBody);
             var response = await _commitmentsApiClient.PostWithResponseCode<VerifyLearnerValidationResponseQueryResponse>(verifyLearnerValidationResponseQueryRequest);

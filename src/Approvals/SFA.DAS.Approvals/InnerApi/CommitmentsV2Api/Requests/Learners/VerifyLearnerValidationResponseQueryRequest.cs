@@ -18,7 +18,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Learners
             public string SearchedULN { get; set; }
             public string ResponseCode { get; set; }
             public string Uln { get; set; }
-            public string[] FailureFlag { get; set; }
         }
     }
 }
