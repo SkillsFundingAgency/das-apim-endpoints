@@ -6,12 +6,12 @@ Feature: AddApproval
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model   | Employment End Date |
-	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Regular          |                     |
-	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   | Regular          |                     |
-	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org | Regular          |                     |
-	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | PortableFlexiJob | 2022-05-01          |
-	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               | Regular          |                     |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model   | Employment End Date | Option        |
+	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Regular          |                     | DataLearning  |
+	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   | Regular          |                     |               |
+	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org | Regular          |                     | Preindustrial |
+	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | PortableFlexiJob | 2022-05-01          | Primates      |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               | Regular          |                     |               |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |

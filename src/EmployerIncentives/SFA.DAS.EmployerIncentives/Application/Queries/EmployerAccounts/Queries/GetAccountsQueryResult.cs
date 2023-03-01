@@ -9,5 +9,6 @@ namespace SFA.DAS.EmployerIncentives.Application.Queries.EmployerAccounts.Querie
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmployerUserId { get; set; }
+        public bool IsSuspended { get; set; }
     }
 }

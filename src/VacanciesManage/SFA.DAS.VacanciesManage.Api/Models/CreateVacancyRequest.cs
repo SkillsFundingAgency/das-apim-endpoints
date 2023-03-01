@@ -403,12 +403,13 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         ThroughFindAnApprenticeship,
         ThroughExternalApplicationSite
     }
-    
+
     /// <summary>
     /// Choose from:
-    /// `WageType.FixedWage` This must be more than the [National Minimum Wage for apprentices](https://www.gov.uk/national-minimum-wage-rates). From 1 April 2021, the National Minimum Wage for apprentices is £4.30 an hour. Based on 16 working hours a week, you'll need to pay a yearly wage of at least £3,577.60.
-    /// `WageType.NationalMinimumWageForApprentices` From 1 April 2021, the National Minimum Wage for apprentices is £4.30 an hour. On the advert, this will be displayed as a yearly wage of £3,577.60.
-    /// `WageType.NationalMinimumWage` From 1 April 2021, the National Minimum Wage is between £4.62 and £8.91 an hour, depending on the candidate's age. On the advert, this will be displayed as a yearly wage of £3,843.84 to £7,413.12.
+    /// `WageType.FixedWage` Allows you to set a wage, but wage must be more than the [National Minimum Wage for apprentices](https://www.gov.uk/national-minimum-wage-rates) for your advert’s closing date.
+    /// `WageType.NationalMinimumWageForApprentices` Sets the wage to the correct [National Minimum Wage for apprentices](https://www.gov.uk/national-minimum-wage-rates) for your advert’s closing date.
+    /// `WageType.NationalMinimumWage` Sets the wage to the correct [National Minimum Wage](https://www.gov.uk/national-minimum-wage-rates) for your advert’s closing date. 
+    /// Note that the National Minimum Wage and National Minimum Wage for apprentices change every 1 April.
     /// </summary>
     public enum WageType
     {

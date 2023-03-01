@@ -17,6 +17,7 @@ namespace SFA.DAS.PublicSectorReporting.Api.UnitTests.Models
             actual.FirstName.Should().Be(source.FirstName);
             actual.LastName.Should().Be(source.LastName);
             actual.EmployerUserId.Should().Be(source.EmployerUserId);
+            actual.IsSuspended.Should().Be(source.IsSuspended);
         }
         
         
@@ -29,6 +30,7 @@ namespace SFA.DAS.PublicSectorReporting.Api.UnitTests.Models
             actual.FirstName.Should().BeNullOrEmpty();
             actual.LastName.Should().BeNullOrEmpty();
             actual.EmployerUserId.Should().BeNullOrEmpty();
+            actual.IsSuspended.Should().BeFalse();
         }
     }
 }

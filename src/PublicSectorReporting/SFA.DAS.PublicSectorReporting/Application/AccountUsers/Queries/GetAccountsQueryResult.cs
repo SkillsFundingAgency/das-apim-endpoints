@@ -8,5 +8,6 @@ namespace SFA.DAS.PublicSectorReporting.Application.AccountUsers.Queries
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmployerUserId { get; set; }
+        public bool IsSuspended { get; set; }
     }
 }

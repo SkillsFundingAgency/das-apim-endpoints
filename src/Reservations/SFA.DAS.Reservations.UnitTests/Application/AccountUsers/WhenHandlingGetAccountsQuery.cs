@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -32,7 +33,13 @@ namespace SFA.DAS.Reservations.UnitTests.Application.AccountUsers
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.UserAccountResponse.Should().BeEquivalentTo(teamResponse,
-                options => options.Excluding(x => x.FirstName).Excluding(x => x.LastName).Excluding(c=>c.UserId));
+                options => options.Excluding(x => x.FirstName).Excluding(x => x.LastName)
+                    .Excluding(c=>c.UserId)
+                    .Excluding(c => c.IsSuspended)
+                    .Excluding(c => c.DisplayName)
+                );
+            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
+            actual.UserId.Should().Be(teamResponse.FirstOrDefault().UserId);
         }
     }
 }

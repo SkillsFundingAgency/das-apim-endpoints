@@ -64,6 +64,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 DeliveryModel = apprentice.DeliveryModel,
                 CourseName = course.Title,
                 CourseLevel = course.Level,
+                CourseOption = apprentice.Option,
                 CourseDuration = course.TypicalDuration,
                 PlannedStartDate = apprentice.StartDate,
                 PlannedEndDate = apprentice.EndDate,

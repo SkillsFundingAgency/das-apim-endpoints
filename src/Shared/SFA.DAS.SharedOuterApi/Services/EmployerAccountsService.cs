@@ -18,12 +18,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
     public class EmployerAccountsService : IEmployerAccountsService
     {
-        private readonly IEmployerUsersApiClient<EmployerUsersApiConfiguration> _employerUsersApiClient;
+        private readonly IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> _employerProfilesApiClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
 
-        public EmployerAccountsService(IEmployerUsersApiClient<EmployerUsersApiConfiguration> employerUsersApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public EmployerAccountsService(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> employerProfilesApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
-            _employerUsersApiClient = employerUsersApiClient;
+            _employerProfilesApiClient = employerProfilesApiClient;
             _accountsApiClient = accountsApiClient;
         }
 
@@ -32,28 +32,37 @@ namespace SFA.DAS.SharedOuterApi.Services
             var userId = employerProfile.UserId;
             var firstName = string.Empty;
             var lastName = string.Empty;
-            if (!Guid.TryParse(employerProfile.UserId, out _))
+            var displayName = string.Empty;
+            var isSuspended = false;
+            
+            var userResponse =
+                await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                    new GetEmployerUserAccountRequest(employerProfile.UserId));
+            
+            
+            if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                var userResponse =
-                    await _employerUsersApiClient.GetWithResponseCode<EmployerUsersApiResponse>(
-                        new GetEmployerUserAccountRequest(employerProfile.UserId));
-
-                if (userResponse.StatusCode == HttpStatusCode.NotFound)
+                if (!Guid.TryParse(employerProfile.UserId, out _))
                 {
                     var employerUserResponse =
-                        await _employerUsersApiClient.PutWithResponseCode<EmployerUsersApiResponse>(
-                            new PutUpsertEmployerUserAccountRequest(employerProfile.UserId, employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
+                        await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                            new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(), employerProfile.UserId,
+                                employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
 
                     userId = employerUserResponse.Body.Id;
                     firstName = employerUserResponse.Body.FirstName;
                     lastName = employerUserResponse.Body.LastName;
+                    displayName = employerUserResponse.Body.DisplayName;
+                    isSuspended = employerUserResponse.Body.IsSuspended;
                 }
-                else
-                {
-                    userId = userResponse.Body.Id;
-                    firstName = userResponse.Body.FirstName;
-                    lastName = userResponse.Body.LastName;
-                }
+            }
+            else
+            {
+                userId = userResponse.Body.Id;
+                firstName = userResponse.Body.FirstName;
+                lastName = userResponse.Body.LastName;
+                displayName = userResponse.Body.DisplayName;
+                isSuspended = userResponse.Body.IsSuspended;
             }
             
             var result =
@@ -76,7 +85,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                         EncodedAccountId = account.EncodedAccountId,
                         FirstName = firstName,
                         LastName = lastName,
-                        UserId = userId
+                        UserId = userId,
+                        DisplayName = displayName,
+                        IsSuspended = isSuspended
                     });
                 }
             }

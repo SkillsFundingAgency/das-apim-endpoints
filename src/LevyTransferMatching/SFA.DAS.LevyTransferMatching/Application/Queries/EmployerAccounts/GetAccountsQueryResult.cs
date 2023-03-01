@@ -8,6 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.EmployerAccounts
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<AccountUser> UserAccountResponse { get; set; }
+        public bool IsSuspended { get; set; }
     }
     public class AccountUser
     {
