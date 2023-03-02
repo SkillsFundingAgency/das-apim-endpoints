@@ -25,4 +25,8 @@
         <PackageReference Include="System.ServiceModel.Security" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="ConnectedServices\" />
+    </ItemGroup>
+
 </Project>
