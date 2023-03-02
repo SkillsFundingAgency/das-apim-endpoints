@@ -19,8 +19,8 @@ namespace SFA.DAS.Reservations.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
             services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
