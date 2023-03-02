@@ -49,6 +49,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public bool? IsChangeOfProviderScenario { get; set; }
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -86,7 +87,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 PriceReducedBy = source.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = source.EmailAddressConfirmed
+                EmailAddressConfirmed = source.EmailAddressConfirmed,
+                IsChangeOfProviderScenario = source.IsChangeOfProviderScenario
             };
         }
     }

@@ -61,5 +61,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public bool? IsChangeOfProviderScenario { get; set; }
     }
 }

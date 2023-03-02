@@ -46,5 +46,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public bool? IsChangeOfProviderScenario { get; set; }
     }
 }

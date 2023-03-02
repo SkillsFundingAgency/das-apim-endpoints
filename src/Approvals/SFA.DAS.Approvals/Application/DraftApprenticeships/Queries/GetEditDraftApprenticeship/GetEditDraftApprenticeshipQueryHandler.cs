@@ -92,7 +92,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 PriceReducedBy = apprenticeship.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed
+                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
+                IsChangeOfProviderScenario = apprenticeship.IsChangeOfProviderScenario
             };
         }
     }
