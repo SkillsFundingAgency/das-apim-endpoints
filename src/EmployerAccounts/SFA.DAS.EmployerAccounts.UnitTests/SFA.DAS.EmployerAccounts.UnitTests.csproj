@@ -21,8 +21,4 @@
       <ProjectReference Include="..\SFA.DAS.EmployerAccounts\SFA.DAS.EmployerAccounts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Application\Services\" />
-    </ItemGroup>
-
 </Project>
