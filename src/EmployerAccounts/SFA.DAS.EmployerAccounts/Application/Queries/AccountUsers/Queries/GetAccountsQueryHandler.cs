@@ -2,6 +2,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerAccounts.InnerApi.Requests;
+using SFA.DAS.EmployerAccounts.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -10,10 +14,12 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers.Queries
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
         private readonly IEmployerAccountsService _employerAccountService;
+        private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
 
-        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountService)
+        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountService, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
             _employerAccountService = employerAccountService;
+            _accountsApiClient = accountsApiClient;
         }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
@@ -22,6 +28,21 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers.Queries
                 Email = request.Email,
                 UserId = request.UserId
             })).ToList();
+
+
+            var userAccountResponse = employerAccounts.Select(async (c)=>
+            {
+                var user =  new AccountUser
+                {
+                    DasAccountName = c.DasAccountName,
+                    EncodedAccountId = c.EncodedAccountId,
+                    Role = c.Role,
+                    MinimumSignedAgreementVersion = await GetSignedAgreementVersion(c.EncodedAccountId)
+                };
+                return user;
+            }).ToList();
+
+            await Task.WhenAll(userAccountResponse);
             
             return new GetAccountsQueryResult
             {
@@ -29,13 +50,15 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers.Queries
                 FirstName = employerAccounts.FirstOrDefault()?.FirstName,
                 LastName = employerAccounts.FirstOrDefault()?.LastName,
                 IsSuspended = employerAccounts.FirstOrDefault()?.IsSuspended ?? false,
-                UserAccountResponse = employerAccounts.Select(c=> new AccountUser
-                {
-                    DasAccountName = c.DasAccountName,
-                    EncodedAccountId = c.EncodedAccountId,
-                    Role = c.Role
-                })
+                UserAccountResponse = userAccountResponse.Select(c=>c.Result)
             };
+        }
+
+        private async Task<int> GetSignedAgreementVersion(string encodedAccountId)
+        {
+            var result = await _accountsApiClient.GetWithResponseCode<GetSignedAgreementVersionResponse>(new GetSignedAgreementVersionRequest(encodedAccountId));
+
+            return result.Body.MinimumSignedAgreementVersion;
         }
     }
 }
