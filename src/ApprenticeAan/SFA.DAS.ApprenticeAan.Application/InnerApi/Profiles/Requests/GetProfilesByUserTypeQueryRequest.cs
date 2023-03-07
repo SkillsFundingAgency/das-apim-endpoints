@@ -3,14 +3,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Profiles.Requests
 {
-    public class GetProfilesQueryRequest : IGetApiRequest
+    public class GetProfilesByUserTypeQueryRequest : IGetApiRequest
     {
-        public string GetUrl => Constants.AanHubApiUrls.GetProfilesUrl;
+        public string GetUrl => Constants.AanHubApiUrls.GetProfilesUrl + UserType;
         private string UserType { get; }
-        public GetProfilesQueryRequest(string userType) => UserType = userType;
+        public GetProfilesByUserTypeQueryRequest(string userType) => UserType = userType;
 
         //remove this and use the above one with userType
-        public GetProfilesQueryRequest()
+        public GetProfilesByUserTypeQueryRequest()
         {
 
         }
