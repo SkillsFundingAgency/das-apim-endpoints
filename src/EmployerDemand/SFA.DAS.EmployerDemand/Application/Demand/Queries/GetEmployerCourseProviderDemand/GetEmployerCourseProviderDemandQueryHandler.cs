@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -14,26 +16,26 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Queries.GetEmployerCoursePro
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _employerDemandApiClient;
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly ILocationLookupService _locationLookupService;
 
         public GetEmployerCourseProviderDemandQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, 
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> employerDemandApiClient,
-            ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient,
-            ILocationLookupService locationLookupService)
+            ILocationLookupService locationLookupService, 
+            IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
         {
             _coursesApiClient = coursesApiClient;
             _employerDemandApiClient = employerDemandApiClient;
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _locationLookupService = locationLookupService;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
         }
         public async Task<GetEmployerCourseProviderDemandQueryResult> Handle(GetEmployerCourseProviderDemandQuery request, CancellationToken cancellationToken)
         {
             var courseTask = _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.CourseId));
             var locationTask = _locationLookupService.GetLocationInformation(request.LocationName,0, 0, true);
             var providerCourseInfoTask =
-                _courseDeliveryApiClient.Get<GetProviderCourseInformation>(
+                _roatpCourseManagementApiClient.Get<GetProviderCourseInformation>(
                     new GetProviderCourseInformationRequest(request.Ukprn, request.CourseId));
 
             await Task.WhenAll(courseTask, locationTask, providerCourseInfoTask);

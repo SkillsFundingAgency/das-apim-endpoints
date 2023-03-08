@@ -60,7 +60,7 @@ public static class Startup
         {
             services.AddHealthChecks()
                 .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
+                .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check");
         }
         
         //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560

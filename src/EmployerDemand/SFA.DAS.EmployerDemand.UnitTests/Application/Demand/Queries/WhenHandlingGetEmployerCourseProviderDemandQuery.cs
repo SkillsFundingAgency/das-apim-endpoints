@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> employerDemandApiClient,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> courseDeliveryApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
             GetEmployerCourseProviderDemandQueryHandler handler)
         {
             //Arrange
@@ -41,11 +41,11 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
                 .Setup(x => x.Get<GetEmployerCourseProviderListResponse>(
                     It.Is<GetCourseProviderDemandsRequest>(c => c.GetUrl.Contains($"providers/{query.Ukprn}/courses/{query.CourseId}?lat={locationResult.GeoPoint.First()}&lon={locationResult.GeoPoint.Last()}&radius={query.LocationRadius}"))))
                 .ReturnsAsync(demandResponse);
-            courseDeliveryApiClient.Setup(x =>
+            courseManagementApiClient.Setup(x =>
                 x.Get<GetProviderCourseInformation>(
-                    It.Is<GetProviderCourseInformationRequest>(c => c.GetUrl.Contains($"courses/{query.CourseId}/providers/{query.Ukprn}"))))
+                    It.Is<GetProviderCourseInformationRequest>(c => c.GetUrl.Contains($"api/courses/{query.CourseId}/providers/{query.Ukprn}"))))
                 .ReturnsAsync(courseProviderResponse);
-            
+
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
             

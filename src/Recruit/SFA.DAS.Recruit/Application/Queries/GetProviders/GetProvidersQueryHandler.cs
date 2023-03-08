@@ -10,19 +10,19 @@ namespace SFA.DAS.Recruit.Application.Queries.GetProviders
 {
     public class GetProvidersQueryHandler : IRequestHandler<GetProvidersQuery, GetProvidersQueryResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
 
-        public GetProvidersQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public GetProvidersQueryHandler (IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
+            _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
         }
         public async Task<GetProvidersQueryResult> Handle(GetProvidersQuery request, CancellationToken cancellationToken)
         {
-            var response = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersRequest());
+            var response = await _roatpCourseManagementApiClient.Get<GetProvidersListResponse>(new GetProvidersRequest());
             
             return new GetProvidersQueryResult
             {
-                Providers = response.Providers
+                Providers = response.RegisteredProviders
             };
         }
     }

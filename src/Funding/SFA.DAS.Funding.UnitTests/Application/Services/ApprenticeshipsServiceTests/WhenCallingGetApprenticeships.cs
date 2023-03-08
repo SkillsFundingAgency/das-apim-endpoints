@@ -30,7 +30,7 @@ namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceT
 
             var actual = await service.GetAll(ukprn);
 
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.Apprenticeships.Should().BeEquivalentTo(apiResponse);
         }
     }
 }

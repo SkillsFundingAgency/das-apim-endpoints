@@ -14,8 +14,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddOptions();
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
@@ -24,8 +24,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<RecruitConfiguration>(configuration.GetSection(nameof(RecruitConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitConfiguration>>().Value);
-            services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+            services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
         }
     }
 }

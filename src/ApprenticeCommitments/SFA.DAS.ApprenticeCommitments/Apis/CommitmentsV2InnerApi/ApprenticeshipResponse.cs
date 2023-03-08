@@ -16,6 +16,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public string StandardUId { get; set; }
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
+        public string Option { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime? EmploymentEndDate { get; set; }

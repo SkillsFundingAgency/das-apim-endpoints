@@ -4,7 +4,7 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
 {
     public class GetProvidersListResponse
     {
-        public IEnumerable<GetProvidersListItem> Providers { get; set; }
+        public IEnumerable<GetProvidersListItem> RegisteredProviders { get; set; }
         
     }
 }
