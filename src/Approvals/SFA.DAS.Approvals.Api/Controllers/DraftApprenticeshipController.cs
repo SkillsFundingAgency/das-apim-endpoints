@@ -5,6 +5,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
@@ -112,6 +113,43 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails cohort {cohortId}");
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        [Route("cohorts/{cohortId}/draft-apprenticeships")]
+        public async Task<IActionResult> AddDraftApprenticeship(long cohortId, [FromBody] AddDraftApprenticeshipRequest request)
+        {
+            var command = new AddDraftApprenticeshipCommand
+            {
+                ActualStartDate = request.ActualStartDate,
+                StartDate = request.StartDate,
+                Cost = request.Cost,
+                CourseCode = request.CourseCode,
+                DateOfBirth = request.DateOfBirth,
+                DeliveryModel = request.DeliveryModel,
+                Email = request.Email,
+                ReservationId = request.ReservationId,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                EndDate = request.EndDate,
+                FirstName = request.FirstName,
+                IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
+                LastName = request.LastName,
+                IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
+                OriginatorReference = request.OriginatorReference,
+                ProviderId = request.ProviderId,
+                Uln = request.Uln,
+                UserInfo = request.UserInfo,
+                UserId = request.UserId,
+                CohortId = cohortId
+            };
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new AddDraftApprenticeshipResponse
+            {
+                DraftApprenticeshipId = result.DraftApprenticeshipId
+            });
         }
     }
 }
