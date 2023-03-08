@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Profiles.Requests;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.InnerApi.Profiles.Requests
@@ -8,8 +9,10 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.InnerApi.Profiles.Requests
         [Test]
         public void CheckRequestUrl()
         {
-            var request = new GetProfilesByUserTypeQueryRequest();
-            request.GetUrl.Should().Be("/api/profiles?userType=");
+            const string userType = "apprentice";
+            var request = new GetProfilesByUserTypeQueryRequest(userType);
+            var expectedURL = Constants.AanHubApiUrls.GetProfilesUrl + userType;
+            request.GetUrl.Should().Be(expectedURL);
         }
     }
 }

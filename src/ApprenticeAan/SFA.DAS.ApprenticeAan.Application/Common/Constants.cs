@@ -6,7 +6,7 @@
         {
             private const string ApiPrefix = "/api";
             public const string GetRegionsUrl = $"{ApiPrefix}/regions";
-            public const string GetProfilesUrl = $"{ApiPrefix}/profiles?userType=";
+            public const string GetProfilesUrl = $"{ApiPrefix}/profiles/";
         }
     }
 }
