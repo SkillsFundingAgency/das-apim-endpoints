@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerProfiles.Api.Models;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands.UpsertEmployer;
 using SFA.DAS.EmployerProfiles.Application.AccountUsers.Queries;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers
 {
@@ -37,6 +39,34 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
             {
                 Console.WriteLine(e);
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("{id}/upsert-user")]
+        public async Task<IActionResult> UpsertUserAccount([FromQuery] Guid id, [FromBody] UpsertAccountRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UpsertAccountCommand
+                {
+                    Id = id,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    GovIdentifier = request.GovIdentifier
+                });
+
+                return Ok(result);
+            }
+            catch (HttpRequestContentException e)
+            {
+                return StatusCode((int)e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

@@ -4,16 +4,16 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Api.ApiRequests;
-using SFA.DAS.ApimDeveloper.Api.Controllers;
-using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Commands.UpsertEmployer;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerProfiles.Api.Controllers;
+using SFA.DAS.EmployerProfiles.Api.Models;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands.UpsertEmployer;
 
-namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
+namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.AccountUsers
 {
     public class WhenUpsertingUserAccounts
     {

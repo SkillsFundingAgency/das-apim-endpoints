@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             _userId = userId;
             Data = new
             {
-                GovUkIdentifier = id,
+                GovIdentifier = id,
                 FirstName = firstName,
                 LastName = lastName,
                 Email = email

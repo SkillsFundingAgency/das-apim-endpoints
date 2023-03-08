@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SFA.DAS.ApimDeveloper.Api.ApiRequests
+namespace SFA.DAS.EmployerProfiles.Api.Models
 {
     public class UpsertAccountRequest
     {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Commands.UpsertEmployer
+namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands.UpsertEmployer
 {
     public class UpsertAccountCommand : IRequest<UpsertAccountCommandResult>
     {

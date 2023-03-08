@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Commands.UpsertEmployer
+namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands.UpsertEmployer
 {
     public class UpsertAccountCommandHandler : IRequestHandler<UpsertAccountCommand, UpsertAccountCommandResult>
     {

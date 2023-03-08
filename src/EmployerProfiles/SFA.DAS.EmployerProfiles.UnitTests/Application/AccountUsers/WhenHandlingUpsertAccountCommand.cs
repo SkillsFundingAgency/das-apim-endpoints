@@ -2,15 +2,15 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Commands.UpsertEmployer;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands.UpsertEmployer;
 
-namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
+namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
 {
     public class WhenHandlingUpsertAccountCommand
     {
