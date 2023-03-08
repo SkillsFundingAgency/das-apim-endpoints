@@ -14,6 +14,7 @@ namespace SFA.DAS.SharedOuterApi.Services
     public interface IEmployerAccountsService
     {
         Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
+        Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile);
     }
 
     public class EmployerAccountsService : IEmployerAccountsService
@@ -93,6 +94,35 @@ namespace SFA.DAS.SharedOuterApi.Services
             }
 
             return returnList;
+        }
+
+        /// <summary>
+        /// Method to insert/update the user information.
+        /// </summary>
+        /// <param name="employerProfile">typeof EmployerProfile.</param>
+        /// <returns>typeof EmployerProfile.</returns>
+        public async Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile)
+        {
+            var employerUserResponse = await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                new PutUpsertEmployerUserAccountRequest(
+                    new Guid(employerProfile.UserId),
+                    employerProfile.UserId,
+                    employerProfile.Email,
+                    employerProfile.FirstName,
+                    employerProfile.LastName));
+
+            if (employerUserResponse?.Body != null)
+            {
+                return new EmployerProfile
+                {
+                    Email = employerUserResponse.Body.Email,
+                    FirstName = employerUserResponse.Body.FirstName,
+                    LastName = employerUserResponse.Body.LastName,
+                    UserId = employerUserResponse.Body.GovUkIdentifier
+                };
+            };
+
+            return null;
         }
     }
 }
