@@ -1,16 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship
 {
-    public class UpdateDraftApprenticeshipCommandHandler : IRequestHandler<UpdateDraftApprenticeshipCommand, UpdateDraftApprenticeshipResult>
+    public class UpdateDraftApprenticeshipCommandHandler : IRequestHandler<UpdateDraftApprenticeshipCommand>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         
@@ -19,7 +17,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
             _apiClient = apiClient;
         }
 
-        public async Task<UpdateDraftApprenticeshipResult> Handle(UpdateDraftApprenticeshipCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateDraftApprenticeshipCommand request, CancellationToken cancellationToken)
         {
             var updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest
             {
@@ -43,14 +41,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
                 CourseOption = request.CourseOption,
                 Reference = request.Reference
             };
-            var response = await _apiClient.PutWithResponseCode<UpdateDraftApprenticeshipResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
-            response.EnsureSuccessStatusCode();
+            
+            await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
 
-            return new UpdateDraftApprenticeshipResult
-            {
-                ApprenticeshipId = response.Body.ApprenticeshipId,
-                Id = response.Body.Id
-            };
+            return Unit.Value;
         }
     }
 }

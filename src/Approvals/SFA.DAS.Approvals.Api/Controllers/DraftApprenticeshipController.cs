@@ -182,13 +182,9 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ApprenticeshipId = apprenticeshipId
             };
 
-            var result = await _mediator.Send(command);
+            await _mediator.Send(command);
 
-            return Ok(new UpdateDraftApprenticeshipResponse
-            {
-                ApprenticeshipId = result.ApprenticeshipId,
-                Id = result.Id
-            });
+            return Ok();
         }
     }
 }

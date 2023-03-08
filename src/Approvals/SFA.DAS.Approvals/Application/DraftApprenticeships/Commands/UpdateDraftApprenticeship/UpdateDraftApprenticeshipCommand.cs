@@ -5,7 +5,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship
 {
-    public class UpdateDraftApprenticeshipCommand : IRequest<UpdateDraftApprenticeshipResult>
+    public class UpdateDraftApprenticeshipCommand : IRequest
     {
         public long CohortId { get; set; }
         public long ApprenticeshipId { get; set; }

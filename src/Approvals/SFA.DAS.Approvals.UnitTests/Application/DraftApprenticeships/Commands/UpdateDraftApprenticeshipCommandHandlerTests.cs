@@ -9,6 +9,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApp
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -34,10 +35,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         }
 
         [Test]
-        public async Task Handle_Cohort_Created()
+        public async Task Handle_Update_Draft_Apprenticeship()
         {
-            var expectedResponse = _fixture.Create<UpdateDraftApprenticeshipResponse>();
-            _commitmentsApiClient.Setup(x => x.PutWithResponseCode<UpdateDraftApprenticeshipResponse>(
+            await _handler.Handle(_request, CancellationToken.None);
+
+            _commitmentsApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutUpdateDraftApprenticeshipRequest>(r =>
                             r.CohortId == _request.CohortId &&
                             r.ApprenticeshipId == _request.ApprenticeshipId &&
@@ -61,11 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                             ((UpdateDraftApprenticeshipRequest)r.Data).Uln == _request.Uln &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).UserInfo == _request.UserInfo
                         )
-                )).ReturnsAsync(new ApiResponse<UpdateDraftApprenticeshipResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
-
-            var response = await _handler.Handle(_request, CancellationToken.None);
-
-            response.Should().BeEquivalentTo(expectedResponse);
+                ), Times.Once);
         }
     }
 }
