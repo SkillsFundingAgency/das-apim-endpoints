@@ -1,27 +1,23 @@
-using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
-    public class GetProviderByCourseAndUkPrnRequest : IGetApiRequest
+    public class GetProviderByCourseAndUkprnRequest : IGetApiRequest
     {
-        private readonly int _providerId;
-        private readonly int _courseId;
-        private readonly string _sectorSubjectArea;
-        private readonly double? _latitude;
-        private readonly double? _longitude;
-        private readonly Guid? _shortlistUserId;
+        public int ProviderId { get; set; }
+        public int CourseId { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
 
-        public GetProviderByCourseAndUkPrnRequest(int providerId, int courseId, string sectorSubjectArea, double? latitude = null, double? longitude = null, Guid? shortlistUserId = null)
+        public GetProviderByCourseAndUkprnRequest(int providerId, int courseId, double? latitude = null, double? longitude = null)
         {
-            _providerId = providerId;
-            _courseId = courseId;
-            _sectorSubjectArea = sectorSubjectArea;
-            _latitude = latitude;
-            _longitude = longitude;
-            _shortlistUserId = shortlistUserId;
+            ProviderId = providerId;
+            CourseId = courseId;
+            Latitude = latitude;
+            Longitude = longitude;
         }
 
-        public string GetUrl => $"api/courses/{_courseId}/providers/{_providerId}?lat={_latitude}&lon={_longitude}&sectorSubjectArea={_sectorSubjectArea}&shortlistUserId={_shortlistUserId}";
+        public string GetUrl => $"api/courses/{CourseId}/providers/{ProviderId}?lat={Latitude}&lon={Longitude}";
     }
 }

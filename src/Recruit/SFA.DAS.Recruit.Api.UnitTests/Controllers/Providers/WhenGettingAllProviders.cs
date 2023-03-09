@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProvidersListResponse;
             Assert.IsNotNull(model);
-            model.Providers.Should().BeEquivalentTo(mediatorResult.Providers);
+            model.Providers.Should().BeEquivalentTo(mediatorResult.Providers, options=>options
+                .Excluding(x=>x.Address.AddressLine1)
+                .Excluding(x => x.Address.AddressLine2)
+                .Excluding(x => x.Address.AddressLine3)
+                .Excluding(x => x.Address.AddressLine4)
+            );
+
+            model.Providers.First().Address.Address1.Should().Be(mediatorResult.Providers.First().Address.AddressLine1);
+            model.Providers.First().Address.Address2.Should().Be(mediatorResult.Providers.First().Address.AddressLine2);
+            model.Providers.First().Address.Address3.Should().Be(mediatorResult.Providers.First().Address.AddressLine3);
+            model.Providers.First().Address.Address4.Should().Be(mediatorResult.Providers.First().Address.AddressLine4);
         }
 
         [Test, MoqAutoData]

@@ -13,9 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
         {
             services.AddOptions();
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value); 
             services.Configure<FindApprenticeshipTrainingConfiguration>(configuration.GetSection(nameof(FindApprenticeshipTrainingConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
@@ -24,9 +22,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeFeedbackApiConfiguration>>().Value);
             services.Configure<EmployerFeedbackApiConfiguration>(configuration.GetSection(nameof(EmployerFeedbackApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerFeedbackApiConfiguration>>().Value);
-
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+            services.Configure<ShortlistApiConfiguration>(configuration.GetSection(nameof(ShortlistApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ShortlistApiConfiguration>>().Value);
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
         }
     }
 }

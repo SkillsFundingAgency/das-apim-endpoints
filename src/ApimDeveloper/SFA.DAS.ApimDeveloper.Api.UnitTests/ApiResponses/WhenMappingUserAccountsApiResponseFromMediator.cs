@@ -14,6 +14,10 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses
             var actual = (UserAccountsApiResponse) source;
             
             actual.UserAccounts.Should().BeEquivalentTo(source.UserAccountResponse);
+            actual.FirstName.Should().BeEquivalentTo(source.FirstName);
+            actual.LastName.Should().BeEquivalentTo(source.LastName);
+            actual.EmployerUserId.Should().BeEquivalentTo(source.EmployerUserId);
+            actual.IsSuspended.Should().Be(source.IsSuspended);
         }
         
         

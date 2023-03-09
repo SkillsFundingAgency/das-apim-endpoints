@@ -1,12 +1,15 @@
-using System.Web;
+using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class PutUpsertEmployerUserAccountRequest : IPutApiRequest
     {
-        public PutUpsertEmployerUserAccountRequest(string id, string email, string firstName, string lastName)
+        private readonly Guid _userId;
+
+        public PutUpsertEmployerUserAccountRequest(Guid userId, string id, string email, string firstName, string lastName)
         {
+            _userId = userId;
             Data = new
             {
                 GovUkIdentifier = id,
@@ -17,7 +20,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         }
 
 
-        public string PutUrl => "api/users";
+        public string PutUrl => $"api/users/{_userId}";
         public object Data { get; set; }
     }
 }

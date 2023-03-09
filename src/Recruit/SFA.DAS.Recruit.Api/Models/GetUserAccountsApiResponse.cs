@@ -8,20 +8,19 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public string EmployerUserId { get; set; }
         public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
+        public bool IsSuspended { get; set; }
+
         public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
         {
-            if (source?.UserAccountResponse == null)
-            {
-                return new GetUserAccountsApiResponse
-                {
-                    UserAccounts = new List<UserAccountsApiResponseItem>()
-                };
-            }
+            var accounts = source?.UserAccountResponse == null
+                ? new List<UserAccountsApiResponseItem>()
+                : source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem) c).ToList();
             
             return new GetUserAccountsApiResponse
             {
-                EmployerUserId = source.UserId,
-                UserAccounts = source.UserAccountResponse.Select(c => (UserAccountsApiResponseItem)c).ToList()
+                EmployerUserId = source?.UserId,
+                IsSuspended = source?.IsSuspended ?? false,
+                UserAccounts = accounts
             };
         }
     }

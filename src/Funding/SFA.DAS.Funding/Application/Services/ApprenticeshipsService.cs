@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
@@ -16,11 +16,11 @@ namespace SFA.DAS.Funding.Application.Services
             _client = client;
         }
 
-        public async Task<IEnumerable<ApprenticeshipDto>> GetAll(long ukprn)
+        public async Task<ApprenticeshipsDto> GetAll(long ukprn)
         {
             var response = await _client.GetAll<ApprenticeshipDto>(new GetApprenticeshipsRequest(ukprn));
 
-            return response;
+            return new ApprenticeshipsDto() { Apprenticeships = response.ToList()};
         }
     }
 }

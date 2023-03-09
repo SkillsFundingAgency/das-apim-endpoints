@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -9,12 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
 using FluentAssertions;
-using SFA.DAS.Approvals.Application;
-using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
-using SFA.DAS.Approvals.Application.Shared.Enums;
-using SFA.DAS.Approvals.Exceptions;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Cohorts;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 

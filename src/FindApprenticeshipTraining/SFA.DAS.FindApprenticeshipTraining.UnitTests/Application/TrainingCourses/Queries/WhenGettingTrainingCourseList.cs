@@ -8,9 +8,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.FindApprenticeshipTraining.Interfaces;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -29,7 +30,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetLevelsListResponse levelsApiResponse,
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IShortlistService> shortlistService,
+            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>?> mockShortlistApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
             var sectorsApiResponse = new GetRoutesListResponse
@@ -56,9 +57,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApiClient
                 .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
-            shortlistService.Setup(x => x.GetShortlistItemCount(query.ShortlistUserId))
+        
+            mockShortlistApiClient
+                .Setup(client => client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(c => c.GetUrl.Contains($"api/Shortlist/users/{query.ShortlistUserId}/count"))))
                 .ReturnsAsync(shortlistItemCount);
-            
+
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().BeEquivalentTo(apiResponse.Standards);

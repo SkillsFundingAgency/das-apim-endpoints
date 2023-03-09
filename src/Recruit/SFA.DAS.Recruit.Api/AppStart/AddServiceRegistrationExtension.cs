@@ -18,13 +18,13 @@ namespace SFA.DAS.Recruit.Api.AppStart
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-            services.AddTransient<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>, CourseDeliveryApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<IEmployerUsersApiClient<EmployerUsersApiConfiguration>, EmployerUsersApiClient>();
+            services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }

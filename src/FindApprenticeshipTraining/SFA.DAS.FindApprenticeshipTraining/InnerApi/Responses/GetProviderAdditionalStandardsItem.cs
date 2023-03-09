@@ -1,9 +1,11 @@
-using System.Collections.Generic;
-
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetProviderAdditionalStandardsItem
     {
-        public IEnumerable<int> StandardIds { get; set; }
+        public int LarsCode { get; set; }
+        public string CourseName { get; set; }
+        public int Level { get; set; }
+        public bool? IsApprovedByRegulator { get; set; }
+        public string ApprovalBody { get; set; }
     }
 }

@@ -46,8 +46,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
             services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection(nameof(EmployerUsersApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
-            services.Configure<LrsApiWcfSettings>(configuration.GetSection("LrsApiWcfSettings"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<LrsApiWcfSettings>>().Value);
+            services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
         }
     }
 }
