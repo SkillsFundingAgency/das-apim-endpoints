@@ -17,7 +17,7 @@ namespace SFA.DAS.Approvals.Application.ValidateDraftLearnerDetails.Queries
         private readonly ILearnerVerificationApiClient<LearnerVerificationApiConfiguration> _learnerVerificationApiClient;
 
         public ValidateDraftLearnerDetailsQueryHandler(
-            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient, 
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
             ILearnerVerificationApiClient<LearnerVerificationApiConfiguration> learnerVerificationApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.Application.ValidateDraftLearnerDetails.Queries
 
         public async Task<ValidateDraftLearnerDetailsQueryResult> Handle(ValidateDraftLearnerDetailsQuery request, CancellationToken cancellationToken)
         {
-            var learnerValidationResponse = await _learnerVerificationApiClient.Get<VerifyLearnerResponse>(new GetVerifyLearnerRequest(request.Uln, request.FirstName, request.LastName))
+            var learnerValidationResponse = await _learnerVerificationApiClient.Get<VerifyLearnerResponse>(new GetVerifyLearnerRequest(request.Uln, request.FirstName, request.LastName));
 
             //TODO: Need to amend object types passed between methods/components
             var verifyLearnerValidationResponseQueryRequestBody = new VerifyLearnerValidationResponseQueryRequest.Body()

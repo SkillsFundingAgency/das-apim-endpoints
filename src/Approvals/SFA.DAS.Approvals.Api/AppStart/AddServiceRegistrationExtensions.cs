@@ -1,5 +1,4 @@
-﻿using LearnerServiceClient;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -7,7 +6,6 @@ using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.ConnectedServices.LearnerWebService;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
@@ -16,21 +14,6 @@ namespace SFA.DAS.Approvals.Api.AppStart
 {
     public static class AddServiceRegistrationExtensions
     {
-        private static void AddCommitmentApiInternalClient(IServiceCollection services, IConfiguration configuration)
-        {
-            bool useLocalDevClient =
-                    configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
-
-            if (useLocalDevClient)
-            {
-                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
-            }
-            else
-            {
-                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, CommitmentsApiInternalApiClient>();
-            }
-        }
-
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
@@ -55,11 +38,22 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
             services.AddTransient<IFjaaService, FjaaService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-            services.AddTransient<ILearnerValidationService, LearnerValidationService>();
-            services.AddTransient<ILearnerServiceClientProvider<LearnerPortTypeClient>, LearnerServiceClientProvider<LearnerPortTypeClient>>();
-            services.AddTransient<IClientTypeFactory<LearnerPortTypeClient>, LearnerPortTypeClientFactory>();
-            services.AddTransient<ICertificateProvider, CertificateProvider>();
             services.AddServiceParameters();
+        }
+
+        private static void AddCommitmentApiInternalClient(IServiceCollection services, IConfiguration configuration)
+        {
+            bool useLocalDevClient =
+                    configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
+
+            if (useLocalDevClient)
+            {
+                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, LocalCommitmentsApiInternalApiClient>();
+            }
+            else
+            {
+                services.AddTransient<IInternalApiClient<CommitmentsV2ApiConfiguration>, CommitmentsApiInternalApiClient>();
+            }
         }
     }
 }
