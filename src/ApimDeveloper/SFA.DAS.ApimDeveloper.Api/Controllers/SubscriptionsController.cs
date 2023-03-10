@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.DeleteSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription;
@@ -122,6 +124,31 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             catch (HttpRequestContentException e)
             {
                 return StatusCode((int) e.StatusCode, e.ErrorContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}/delete/{productId}")]
+        public async Task<IActionResult> DeleteSubscription([FromRoute] string id, [FromRoute] string productId)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteSubscriptionKeyCommand
+                {
+                    AccountIdentifier = id,
+                    ProductId = productId
+                });
+
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.ValidationResult.ErrorMessage);
             }
             catch (Exception e)
             {
