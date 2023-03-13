@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -42,7 +43,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
                 Reference = request.Reference
             };
             
-            await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
+            var response = await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
+            response.EnsureSuccessStatusCode();
 
             return Unit.Value;
         }
