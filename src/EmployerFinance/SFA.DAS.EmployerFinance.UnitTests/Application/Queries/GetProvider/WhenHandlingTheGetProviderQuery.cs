@@ -5,8 +5,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
-using SFA.DAS.EmployerFinance.InnerApi.Requests;
-using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -20,7 +18,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
         private GetProviderQuery _query;
         private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _providerCoursesApiClient;
         private GetProviderResponse _roatpServiceApiResponse;
-        private FeatureToggles _featureToggles;
 
         [SetUp]
         public void Setup()
@@ -32,8 +29,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
             _providerCoursesApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
             _providerCoursesApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"api/providers/{_query.Id}"))))
                 .ReturnsAsync(_roatpServiceApiResponse);
-
-            _featureToggles = new FeatureToggles();
 
             _handler = new GetProviderQueryHandler( _providerCoursesApiClient.Object);
         }
@@ -49,7 +44,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
         [Test]
         public async Task When_Roatp_Toggle_Is_On_Then_Providers_Are_Returned_From_ProviderCoursesApi()
         {
-            _featureToggles.RoatpProvidersEnabled = true;
 
             var actual = await _handler.Handle(_query, CancellationToken.None);
 
