@@ -13,6 +13,24 @@ public class LocationsControllerTests
 {
     [Test]
     [MoqAutoData]
+    public async Task GetAddress_InvokesMediator(
+        GetAddressesQueryResult response,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LocationsController sut,
+        string query)
+    {
+        mockMediator
+            .Setup(m => m.Send(It.Is<GetAddressesQuery>(q => q.Query == query), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        await sut.GetAddresses(query);
+
+        mockMediator
+            .Verify(m => m.Send(It.Is<GetAddressesQuery>(q => q.Query == query), It.IsAny<CancellationToken>()));
+    }
+
+    [Test]
+    [MoqAutoData]
     public async Task GetAddresses_ReturnsAddresses(
         GetAddressesQueryResult response,
         [Frozen] Mock<IMediator> mockMediator,
