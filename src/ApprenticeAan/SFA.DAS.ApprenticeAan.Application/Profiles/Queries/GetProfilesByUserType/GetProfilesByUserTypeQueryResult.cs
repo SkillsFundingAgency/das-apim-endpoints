@@ -5,10 +5,5 @@ namespace SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserTy
     public class GetProfilesByUserTypeQueryResult
     {
         public List<ProfileModel> ProfileModels { get; set; } = new();
-
-        public static implicit operator GetProfilesByUserTypeQueryResult(List<ProfileModel> profiles) => new()
-        {
-            ProfileModels = profiles
-        };
     }
 }
