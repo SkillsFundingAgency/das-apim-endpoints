@@ -10,19 +10,19 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProviders
 {
     public class GetProvidersQueryHandler : IRequestHandler<GetProvidersQuery, GetProvidersQueryResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
+        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _roatpServiceApiClient;
 
-        public GetProvidersQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient)
+        public GetProvidersQueryHandler ( IProviderCoursesApiClient<ProviderCoursesApiConfiguration> roatpServiceApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
+            _roatpServiceApiClient = roatpServiceApiClient;
         }
         public async Task<GetProvidersQueryResult> Handle(GetProvidersQuery request, CancellationToken cancellationToken)
         {
-            var response = await _courseDeliveryApiClient.Get<GetProvidersListResponse>(new GetProvidersRequest());
+            var response = await _roatpServiceApiClient.Get<GetProvidersListResponse>(new GetProvidersRequest());
             
             return new GetProvidersQueryResult
             {
-                Providers = response.Providers
+                Providers = response.RegisteredProviders
             };
         }
     }

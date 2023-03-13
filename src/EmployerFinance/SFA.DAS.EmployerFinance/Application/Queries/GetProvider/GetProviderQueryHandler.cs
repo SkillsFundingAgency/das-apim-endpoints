@@ -11,45 +11,26 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
 {
     public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
     {
-        private readonly ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> _courseDeliveryApiClient;
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _roatpServiceApiClient;
-        private readonly FeatureToggles _featureToggles;
 
-        public GetProviderQueryHandler (ICourseDeliveryApiClient<CourseDeliveryApiConfiguration> courseDeliveryApiClient, IProviderCoursesApiClient<ProviderCoursesApiConfiguration> roatpServiceApiClient, FeatureToggles featureToggles)
+        public GetProviderQueryHandler (IProviderCoursesApiClient<ProviderCoursesApiConfiguration> roatpServiceApiClient)
         {
-            _courseDeliveryApiClient = courseDeliveryApiClient;
             _roatpServiceApiClient = roatpServiceApiClient;
-            _featureToggles = featureToggles;
         }
         public async Task<GetProviderQueryResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            if (_featureToggles.RoatpProvidersEnabled)
-            {
-                var response = await _roatpServiceApiClient.Get<GetProviderResponse>(
-                    new SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
 
-                return new GetProviderQueryResult
-                {
-                    Ukprn = response.Ukprn,
-                    Name = response.LegalName,
-                    ContactUrl = response.Website,
-                    Email = response.Email,
-                    Phone = response.Phone
-                };
-            }
-            else
-            {
-                var response = await _courseDeliveryApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.Id));
+            var response = await _roatpServiceApiClient.Get<GetProviderResponse>(
+                new SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
 
-                return new GetProviderQueryResult
-                {
-                    Ukprn = response.Ukprn,
-                    Name = response.Name,
-                    ContactUrl = response.ContactUrl,
-                    Email = response.Email,
-                    Phone = response.Phone
-                };
-            }
+            return new GetProviderQueryResult
+            {
+                Ukprn = response.Ukprn,
+                Name = response.Name,
+                ContactUrl = response.ContactUrl,
+                Email = response.Email,
+                Phone = response.Phone
+            };
         }
     }
 }

@@ -18,8 +18,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
     {
         private GetProviderQueryHandler _handler;
         private GetProviderQuery _query;
-        private Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> _courseDeliveryApiClient;
-        private GetProvidersListItem _courseDeliveryApiResponse;
         private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _providerCoursesApiClient;
         private GetProviderResponse _roatpServiceApiResponse;
         private FeatureToggles _featureToggles;
@@ -30,22 +28,14 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
             var fixture = new Fixture();
 
             _query = fixture.Create<GetProviderQuery>();
-            _courseDeliveryApiResponse = fixture.Create<GetProvidersListItem>();
             _roatpServiceApiResponse = fixture.Create<GetProviderResponse>();
-
-            _courseDeliveryApiClient = new Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>>();
-            _courseDeliveryApiClient.Setup(x =>
-                    x.Get<GetProvidersListItem>(
-                        It.Is<GetProviderRequest>(c => c.GetUrl.Equals($"api/providers/{_query.Id}"))))
-                .ReturnsAsync(_courseDeliveryApiResponse);
-
             _providerCoursesApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
             _providerCoursesApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"api/providers/{_query.Id}"))))
                 .ReturnsAsync(_roatpServiceApiResponse);
 
             _featureToggles = new FeatureToggles();
 
-            _handler = new GetProviderQueryHandler(_courseDeliveryApiClient.Object, _providerCoursesApiClient.Object, _featureToggles);
+            _handler = new GetProviderQueryHandler( _providerCoursesApiClient.Object);
         }
 
         [Test]
@@ -53,7 +43,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
         {
             var actual = await _handler.Handle(_query, CancellationToken.None);
 
-            actual.Should().BeEquivalentTo(_courseDeliveryApiResponse);
+            actual.Should().BeEquivalentTo(_roatpServiceApiResponse);
         }
 
         [Test]
@@ -64,8 +54,8 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
             var actual = await _handler.Handle(_query, CancellationToken.None);
 
             Assert.AreEqual(_roatpServiceApiResponse.Ukprn, actual.Ukprn);
-            Assert.AreEqual(_roatpServiceApiResponse.LegalName, actual.Name);
-            Assert.AreEqual(_roatpServiceApiResponse.Website, actual.ContactUrl);
+            Assert.AreEqual(_roatpServiceApiResponse.Name, actual.Name);
+            Assert.AreEqual(_roatpServiceApiResponse.ContactUrl, actual.ContactUrl);
             Assert.AreEqual(_roatpServiceApiResponse.Phone, actual.Phone);
             Assert.AreEqual(_roatpServiceApiResponse.Email, actual.Email);
         }

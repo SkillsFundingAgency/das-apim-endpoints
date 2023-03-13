@@ -19,15 +19,15 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProviders
         public async Task Then_The_Api_Is_Called_With_The_Request_And_Providers_Returned(
             GetProvidersQuery query,
             GetProvidersListResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> apiClient,
-            GetProvidersQueryHandler handler
+            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> apiClient,
+        GetProvidersQueryHandler handler
         )
         {
             apiClient.Setup(x => x.Get<GetProvidersListResponse>(It.IsAny<GetProvidersRequest>())).ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            actual.Providers.Should().BeEquivalentTo(apiResponse.RegisteredProviders);
         }
     }
 }
