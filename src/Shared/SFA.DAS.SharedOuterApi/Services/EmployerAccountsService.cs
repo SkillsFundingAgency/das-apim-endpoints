@@ -59,6 +59,13 @@ namespace SFA.DAS.SharedOuterApi.Services
             }
             else
             {
+                // logic to check if the email address is the different/changed for the user account.
+                // if true then update the EmployerAccount with latest information.
+                if (!Guid.TryParse(employerProfile.UserId, out _) && userResponse.Body.Email != employerProfile.Email)
+                {
+                    await PutEmployerAccount(employerProfile);
+                }
+
                 userId = userResponse.Body.Id;
                 firstName = userResponse.Body.FirstName;
                 lastName = userResponse.Body.LastName;
@@ -110,9 +117,16 @@ namespace SFA.DAS.SharedOuterApi.Services
                     employerProfile.Email,
                     employerProfile.FirstName,
                     employerProfile.LastName));
-
+            
             if (employerUserResponse?.Body != null)
             {
+                // external api call to update the employer_account repo with latest information.
+                await _accountsApiClient.Put(new PutAccountUserRequest(
+                    employerProfile.UserId,
+                    employerProfile.Email,
+                    employerProfile.FirstName,
+                    employerProfile.LastName));
+
                 return new EmployerProfile
                 {
                     Email = employerUserResponse.Body.Email,
