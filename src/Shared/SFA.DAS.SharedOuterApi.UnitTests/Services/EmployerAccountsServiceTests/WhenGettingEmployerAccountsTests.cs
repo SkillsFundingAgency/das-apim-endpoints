@@ -31,6 +31,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
+            employerProfile.UserId = new Guid().ToString();
             teamResponse.UserRef = profileUserResponse.Id;
             accountsApiClient
                 .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -43,6 +44,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
                         c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
+
+            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<PutUpsertEmployerUserAccountRequest>(c =>
+                        c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
 
             var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
