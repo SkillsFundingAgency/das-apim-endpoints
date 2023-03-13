@@ -53,7 +53,7 @@ public class LocationsControllerTests
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LocationsController sut)
     {
-        var response = new GetAddressesQueryResult();
+        var response = new GetAddressesQueryResult() { Addresses = Enumerable.Empty<AddressItem>() };
         mockMediator
             .Setup(m => m.Send(It.IsAny<GetAddressesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
