@@ -22,11 +22,7 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         [ProducesResponseType(typeof(GetProfilesByUserTypeQueryResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetProfilesByUserType([FromRoute] string userType)
         {
-            var result = await _mediator.Send(new GetProfilesByUserTypeQuery(userType));
-
-            if (result == null) return StatusCode(StatusCodes.Status500InternalServerError);
-
-            return Ok(result);
+            return Ok(await _mediator.Send(new GetProfilesByUserTypeQuery(userType)));
         }
     }
 }
