@@ -18,6 +18,7 @@ public class ApprenticesController : ControllerBase
     [HttpGet]
     [Route("account/{apprenticeId}")]
     [ProducesResponseType(typeof(GetApprenticeAccountQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAccount(Guid apprenticeId, CancellationToken cancellationToken)
     {
         var apprenticeAccountDetails = await _mediator.Send(new GetApprenticeAccountQuery { ApprenticeId = apprenticeId }, cancellationToken);
