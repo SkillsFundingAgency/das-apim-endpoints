@@ -42,6 +42,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         [Test]
         public async Task Handle_Details_Validator_Called()
         {
+            _commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<AddDraftApprenticeshipResponse>(It.IsAny<PostAddDraftApprenticeshipRequest>(), true))
+                .ReturnsAsync(_fixture.Create<ApiResponse<AddDraftApprenticeshipResponse>>());
+
             await _handler.Handle(_request, CancellationToken.None);
 
             _learnerDetailsValidator.Verify(x => x.Validate(

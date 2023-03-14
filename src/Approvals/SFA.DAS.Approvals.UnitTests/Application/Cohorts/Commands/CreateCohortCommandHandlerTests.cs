@@ -42,6 +42,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         [Test]
         public async Task Handle_Details_Validator_Called()
         {
+            _commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(It.IsAny<PostCreateCohortRequest>(), true))
+                .ReturnsAsync(_fixture.Create<ApiResponse<CreateCohortResponse>>());
+
             await _handler.Handle(_request, CancellationToken.None);
 
             _learnerDetailsValidator.Verify(x => x.Validate(
