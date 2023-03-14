@@ -16,8 +16,8 @@ public class ApprenticesControllerTests
     public async Task GetAccount_InvokesMediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,
-        CancellationToken cancellationToken,
-        Guid apprenticeId)
+        Guid apprenticeId,
+        CancellationToken cancellationToken)
     {
         await sut.GetAccount(apprenticeId, cancellationToken);
 
@@ -29,9 +29,9 @@ public class ApprenticesControllerTests
     public async Task GetAccount_ApprenticeFound_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,
-        CancellationToken cancellationToken,
         GetApprenticeAccountQueryResult getApprenticeAccountQueryResult,
-        Guid apprenticeId)
+        Guid apprenticeId,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetApprenticeAccountQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync(getApprenticeAccountQueryResult);
 
@@ -46,8 +46,8 @@ public class ApprenticesControllerTests
     public async Task GetAccount_ApprenticeNotFound_ReturnsNotFoundResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,
-        CancellationToken cancellationToken,
-        Guid apprenticeId)
+        Guid apprenticeId,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetApprenticeAccountQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync((GetApprenticeAccountQueryResult?)null);
 
