@@ -55,7 +55,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 LearnerVerificationResponse = validationResult
             };
             var createCohortResponse = await _apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));
-            createCohortResponse.EnsureSuccessStatusCode();
 
             return new CreateCohortResult
             {
