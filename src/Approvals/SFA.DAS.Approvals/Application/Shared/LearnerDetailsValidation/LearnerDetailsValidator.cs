@@ -10,8 +10,7 @@ namespace SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation
     {
         private readonly ILearnerVerificationApiClient<LearnerVerificationApiConfiguration> _learnerVerificationApiClient;
 
-        public LearnerDetailsValidator(
-            ILearnerVerificationApiClient<LearnerVerificationApiConfiguration> learnerVerificationApiClient)
+        public LearnerDetailsValidator(ILearnerVerificationApiClient<LearnerVerificationApiConfiguration> learnerVerificationApiClient)
         {
             _learnerVerificationApiClient = learnerVerificationApiClient;
         }
