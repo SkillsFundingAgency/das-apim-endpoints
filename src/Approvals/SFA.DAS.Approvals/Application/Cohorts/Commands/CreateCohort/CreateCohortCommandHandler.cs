@@ -15,14 +15,10 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ILearnerDetailsValidator _detailsValidator;
 
-        public CreateCohortCommandHandler(ILearnerDetailsValidator detailsValidator)
-        {
-            _detailsValidator = detailsValidator;
-        }
-
-        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ILearnerDetailsValidator detailsValidator)
         {
             _apiClient = apiClient;
+            _detailsValidator = detailsValidator;
         }
 
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
