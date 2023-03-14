@@ -47,7 +47,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 UserInfo = request.UserInfo
             };
             var createCohortResponse = await _apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));
-            createCohortResponse.EnsureSuccessStatusCode();
 
             return new CreateCohortResult
             {
