@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -21,6 +22,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         private UpdateDraftApprenticeshipCommandHandler _handler;
         private UpdateDraftApprenticeshipCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<ILearnerDetailsValidator> _learnerDetailsValidator;
         private Fixture _fixture;
 
         [SetUp]
@@ -30,8 +32,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             _request = _fixture.Create<UpdateDraftApprenticeshipCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
 
-            _handler = new UpdateDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object);
+            _handler = new UpdateDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
         }
 
         [Test]

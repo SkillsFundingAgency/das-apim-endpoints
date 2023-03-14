@@ -11,6 +11,7 @@ using FluentAssertions;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 {
@@ -20,6 +21,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         private CreateCohortCommandHandler _handler;
         private CreateCohortCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<ILearnerDetailsValidator> _learnerDetailsValidator;
         private Fixture _fixture;
 
         [SetUp]
@@ -29,8 +31,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             _request = _fixture.Create<CreateCohortCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
 
-            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object);
+            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
         }
 
         [Test]
