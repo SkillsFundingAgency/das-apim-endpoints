@@ -32,8 +32,24 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
+            _learnerDetailsValidator
+                .Setup(x => x.Validate(It.IsAny<ValidateLearnerDetailsRequest>()))
+                .ReturnsAsync(It.IsAny<LearnerVerificationResponse>());
 
             _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
+        }
+
+        [Test]
+        public async Task Handle_Details_Validator_Called()
+        {
+            await _handler.Handle(_request, CancellationToken.None);
+
+            _learnerDetailsValidator.Verify(x => x.Validate(
+                It.Is<ValidateLearnerDetailsRequest>(r =>
+                r.Uln == _request.Uln &&
+                r.FirstName == _request.FirstName &&
+                r.LastName == _request.LastName)
+                ), Times.Once);
         }
 
         [Test]
