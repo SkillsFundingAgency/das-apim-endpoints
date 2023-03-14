@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -12,14 +13,20 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
     public class UpdateDraftApprenticeshipCommandHandler : IRequestHandler<UpdateDraftApprenticeshipCommand>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
-        public UpdateDraftApprenticeshipCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        private readonly ILearnerDetailsValidator _detailsValidator;
+
+        public UpdateDraftApprenticeshipCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ILearnerDetailsValidator detailsValidator)
         {
             _apiClient = apiClient;
+            _detailsValidator = detailsValidator;
         }
 
         public async Task<Unit> Handle(UpdateDraftApprenticeshipCommand request, CancellationToken cancellationToken)
         {
+            //TODO: Verify if we need to add UKPRN to request?
+            var validateDetailsRequest = new ValidateLearnerDetailsRequest() { Uln = request.Uln, FirstName = request.FirstName, LastName = request.LastName };
+            var validationResult = await _detailsValidator.Validate(validateDetailsRequest);
+
             var updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest
             {
                 ActualStartDate = request.ActualStartDate,
@@ -40,9 +47,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
                 CourseOption = request.CourseOption,
-                Reference = request.Reference
+                Reference = request.Reference,
+                LearnerVerificationResponse = validationResult
             };
-            
+
             var response = await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
             response.EnsureSuccessStatusCode();
 

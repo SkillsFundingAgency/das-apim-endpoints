@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -13,14 +13,20 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
     public class AddDraftApprenticeshipCommandHandler : IRequestHandler<AddDraftApprenticeshipCommand, AddDraftApprenticeshipResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
-        public AddDraftApprenticeshipCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        private readonly ILearnerDetailsValidator _detailsValidator;
+
+        public AddDraftApprenticeshipCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ILearnerDetailsValidator detailsValidator)
         {
             _apiClient = apiClient;
+            _detailsValidator = detailsValidator;
         }
 
         public async Task<AddDraftApprenticeshipResult> Handle(AddDraftApprenticeshipCommand request, CancellationToken cancellationToken)
         {
+            //TODO: Verify if we need to add UKPRN to request?
+            var validateDetailsRequest = new ValidateLearnerDetailsRequest() { Uln = request.Uln, FirstName = request.FirstName, LastName = request.LastName };
+            var validationResult = await _detailsValidator.Validate(validateDetailsRequest);
+
             var addDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest
             {
                 ActualStartDate = request.ActualStartDate,
@@ -42,7 +48,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                 StartDate = request.StartDate,
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
-                UserId = request.UserId
+                UserId = request.UserId,
+                LearnerVerificationResponse = validationResult
             };
             var response = await _apiClient.PostWithResponseCode<AddDraftApprenticeshipResponse>(new PostAddDraftApprenticeshipRequest(request.CohortId, addDraftApprenticeshipRequest));
             response.EnsureSuccessStatusCode();
