@@ -7,12 +7,14 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public readonly long AccountLegalEntityId;
         public string GetUrl => $"api/LearnerDetails/verify?uln={Uln}&firstName={FirstName}&lastName={LastName}";
 
+        //TODO: Verify if we need to add UKPRN to request?
         public GetVerifyLearnerRequest(string uln, string firstName, string lastName)
         {
             Uln = uln;
             FirstName = firstName;
             LastName = lastName;
         }
+
         public string Uln { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -12,7 +13,13 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
     public class CreateCohortCommandHandler : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
+        private readonly ILearnerDetailsValidator _detailsValidator;
+
+        public CreateCohortCommandHandler(ILearnerDetailsValidator detailsValidator)
+        {
+            _detailsValidator = detailsValidator;
+        }
+
         public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
@@ -20,6 +27,10 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
 
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
         {
+            //TODO: Verify if we need to add UKPRN to request?
+            var validateDetailsRequest = new ValidateLearnerDetailsRequest() { Uln = request.Uln, FirstName = request.FirstName, LastName = request.LastName };
+            var validationResult = await _detailsValidator.Validate(validateDetailsRequest);
+
             var createCohortRequest = new CreateCohortRequest
             {
                 AccountId = request.AccountId,
@@ -44,7 +55,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 StartDate = request.StartDate,
                 TransferSenderId = request.TransferSenderId,
                 Uln = request.Uln,
-                UserInfo = request.UserInfo
+                UserInfo = request.UserInfo,
+                LearnerVerificationResponse = validationResult
             };
             var createCohortResponse = await _apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));
             createCohortResponse.EnsureSuccessStatusCode();
