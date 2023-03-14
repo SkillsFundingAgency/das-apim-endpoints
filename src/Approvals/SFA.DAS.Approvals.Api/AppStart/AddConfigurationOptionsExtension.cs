@@ -47,6 +47,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
+            services.Configure<LearnerVerificationApiConfiguration>(configuration.GetSection(nameof(LearnerVerificationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerVerificationApiConfiguration>>().Value);
         }
     }
 }
