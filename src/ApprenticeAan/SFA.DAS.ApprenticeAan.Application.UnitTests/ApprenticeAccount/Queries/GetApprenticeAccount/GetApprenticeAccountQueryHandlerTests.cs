@@ -15,6 +15,23 @@ public class GetApprenticeAccountQueryHandlerTests
 {
     [Test]
     [MoqAutoData]
+    public async Task Handle_InvokesApiClient(
+    [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClientMock,
+    GetApprenticeAccountQueryHandler sut,
+    GetApprenticeAccountQuery request,
+    GetApprenticeAccountQueryResult expectedResult,
+    CancellationToken cancellationToken)
+    {
+
+        apiClientMock.Setup(c => c.GetWithResponseCode<GetApprenticeAccountQueryResult>(It.Is<GetApprenticeRequest>(r => r.Id == request.ApprenticeId))).ReturnsAsync(new ApiResponse<GetApprenticeAccountQueryResult>(expectedResult, HttpStatusCode.OK, null));
+
+        await sut.Handle(request, cancellationToken);
+
+        apiClientMock.Verify(c => c.GetWithResponseCode<GetApprenticeAccountQueryResult>(It.Is<GetApprenticeRequest>(r => r.Id == request.ApprenticeId)));
+    }
+
+    [Test]
+    [MoqAutoData]
     public async Task Handle_ApprenticeFound_ReturnsApprentice(
         [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClientMock,
         GetApprenticeAccountQueryHandler sut,
