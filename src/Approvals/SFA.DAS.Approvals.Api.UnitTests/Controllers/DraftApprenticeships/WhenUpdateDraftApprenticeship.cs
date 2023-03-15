@@ -59,7 +59,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.Reference == _request.Reference &&
                 y.CourseOption == _request.CourseOption &&
                 y.Uln == _request.Uln &&
-                y.UserInfo == _request.UserInfo
+                y.UserInfo == _request.UserInfo &&
+                y.RequestingParty == _request.RequestingParty
             ), It.IsAny<CancellationToken>()), Times.Once);
 
             Assert.IsInstanceOf<OkResult>(result);

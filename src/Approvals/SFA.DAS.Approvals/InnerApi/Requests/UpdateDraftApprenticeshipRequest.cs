@@ -1,11 +1,13 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses;
 using System;
+using SFA.DAS.Approvals.Application.Shared.Enums;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
     public class UpdateDraftApprenticeshipRequest
     {
         public UserInfo UserInfo { get; set; }
+        public Party? RequestingParty { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
@@ -7,6 +8,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
 {
     public class CreateCohortCommand : IRequest<CreateCohortResult>
     {
+        public Party? RequestingParty { get; set; }
         public UserInfo UserInfo { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }

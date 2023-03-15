@@ -5,7 +5,6 @@ using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship
@@ -49,7 +48,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
                 UserId = request.UserId,
-                LearnerVerificationResponse = validationResult
+                LearnerVerificationResponse = validationResult,
+                RequestingParty = request.RequestingParty
             };
             var response = await _apiClient.PostWithResponseCode<AddDraftApprenticeshipResponse>(new PostAddDraftApprenticeshipRequest(request.CohortId, addDraftApprenticeshipRequest));
 

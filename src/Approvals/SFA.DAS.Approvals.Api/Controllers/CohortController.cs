@@ -152,7 +152,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ProviderId = request.ProviderId,
                 TransferSenderId = request.TransferSenderId,
                 Uln = request.Uln,
-                UserInfo = request.UserInfo
+                UserInfo = request.UserInfo,
+                RequestingParty = request.RequestingParty
             };
 
             var result = await _mediator.Send(command);

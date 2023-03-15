@@ -59,7 +59,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
                         y.ProviderId == _request.ProviderId &&
                         y.TransferSenderId == _request.TransferSenderId &&
                         y.Uln == _request.Uln &&
-                        y.UserInfo == _request.UserInfo
+                        y.UserInfo == _request.UserInfo &&
+                        y.RequestingParty == _request.RequestingParty
                         ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
 
             var result = await _controller.Create(_request);

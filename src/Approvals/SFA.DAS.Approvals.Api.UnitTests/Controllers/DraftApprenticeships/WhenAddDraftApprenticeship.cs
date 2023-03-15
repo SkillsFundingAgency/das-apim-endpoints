@@ -58,7 +58,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                         y.ProviderId == _request.ProviderId &&
                         y.Uln == _request.Uln &&
                         y.UserInfo == _request.UserInfo &&
-                        y.UserId == _request.UserId
+                        y.UserId == _request.UserId &&
+                        y.RequestingParty == _request.RequestingParty
                         ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
 
             var result = await _controller.AddDraftApprenticeship(cohortId, _request);

@@ -52,7 +52,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 TransferSenderId = request.TransferSenderId,
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
-                LearnerVerificationResponse = validationResult
+                LearnerVerificationResponse = validationResult,
+                RequestingParty = request.RequestingParty
             };
             var createCohortResponse = await _apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));
 

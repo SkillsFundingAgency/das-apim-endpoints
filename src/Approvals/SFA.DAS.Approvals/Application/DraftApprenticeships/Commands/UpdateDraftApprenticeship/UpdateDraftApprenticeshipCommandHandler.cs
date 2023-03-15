@@ -47,7 +47,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
                 UserInfo = request.UserInfo,
                 CourseOption = request.CourseOption,
                 Reference = request.Reference,
-                LearnerVerificationResponse = validationResult
+                LearnerVerificationResponse = validationResult,
+                RequestingParty = request.RequestingParty
             };
 
             await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));

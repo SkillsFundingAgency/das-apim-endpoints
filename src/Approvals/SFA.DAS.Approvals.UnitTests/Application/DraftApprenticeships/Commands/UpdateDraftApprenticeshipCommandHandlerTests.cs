@@ -1,18 +1,14 @@
-﻿using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
 using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
 {
@@ -80,7 +76,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                             ((UpdateDraftApprenticeshipRequest)r.Data).ReservationId == _request.ReservationId &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).StartDate == _request.StartDate &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).Uln == _request.Uln &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).UserInfo == _request.UserInfo
+                            ((UpdateDraftApprenticeshipRequest)r.Data).UserInfo == _request.UserInfo &&
+                            ((UpdateDraftApprenticeshipRequest)r.Data).RequestingParty == _request.RequestingParty
                         )
                 ), Times.Once);
         }
