@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
@@ -7,6 +8,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
     public class CreateCohortRequest
     {
         public UserInfo UserInfo { get; set; }
+        public Party? RequestingParty { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long ProviderId { get; set; }

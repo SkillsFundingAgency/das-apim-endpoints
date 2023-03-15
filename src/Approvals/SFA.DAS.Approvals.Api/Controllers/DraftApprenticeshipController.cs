@@ -142,7 +142,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
                 UserId = request.UserId,
-                CohortId = cohortId
+                CohortId = cohortId,
+                RequestingParty = request.RequestingParty
             };
 
             var result = await _mediator.Send(command);
@@ -179,7 +180,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 CourseOption = request.CourseOption,
                 Reference = request.Reference,
                 CohortId = cohortId,
-                ApprenticeshipId = apprenticeshipId
+                ApprenticeshipId = apprenticeshipId,
+                RequestingParty = request.RequestingParty
             };
 
             await _mediator.Send(command);

@@ -1,5 +1,6 @@
 ﻿using System;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
@@ -9,6 +10,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
     {
         public long CohortId { get; set; }
         public UserInfo UserInfo { get; set; }
+        public Party? RequestingParty { get; set; }
         public string UserId { get; set; }
         public long ProviderId { get; set; }
         public string FirstName { get; set; }

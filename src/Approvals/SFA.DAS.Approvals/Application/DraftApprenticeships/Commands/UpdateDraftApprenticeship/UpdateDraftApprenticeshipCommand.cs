@@ -1,5 +1,6 @@
 ﻿using System;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
@@ -8,6 +9,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
     public class UpdateDraftApprenticeshipCommand : IRequest
     {
         public long CohortId { get; set; }
+        public Party? RequestingParty { get; set; }
         public long ApprenticeshipId { get; set; }
         public UserInfo UserInfo { get; set; }
         public string FirstName { get; set; }
