@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation
 {
