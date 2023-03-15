@@ -47,6 +47,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
 
@@ -85,6 +86,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 DurationReducedBy = source.DurationReducedBy,
                 PriceReducedBy = source.PriceReducedBy,
                 RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
+                RecognisingPriorLearningExtendedStillNeedsToBeConsidered = source.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
                 EmailAddressConfirmed = source.EmailAddressConfirmed
             };
