@@ -28,8 +28,8 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Profiles.Queries.GetProfil
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result?.ProfileModels?.Count.Should().NotBe(0);
-            result?.ProfileModels?.Count.Should().Be(response.ProfileModels.Count);
+            result?.Profiles?.Count.Should().NotBe(0);
+            result?.Profiles?.Count.Should().Be(response.Profiles.Count);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Profiles.Queries.GetProfil
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Should().Be(null);
-            result?.ProfileModels.Should().BeNull();
+            result?.Profiles.Should().BeNull();
         }
     }
 }

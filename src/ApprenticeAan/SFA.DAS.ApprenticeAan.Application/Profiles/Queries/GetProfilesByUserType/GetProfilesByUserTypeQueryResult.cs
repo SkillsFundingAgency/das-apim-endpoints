@@ -4,6 +4,6 @@ namespace SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserTy
 {
     public class GetProfilesByUserTypeQueryResult
     {
-        public List<ProfileModel> ProfileModels { get; set; } = new();
+        public List<Profile> Profiles { get; set; } = new();
     }
 }

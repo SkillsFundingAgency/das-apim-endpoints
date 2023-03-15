@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.Entities
 {
-    public class ProfileModel
+    public class Profile
     {
         public long Id { get; set; }
         public string Description { get; set; } = null!;
