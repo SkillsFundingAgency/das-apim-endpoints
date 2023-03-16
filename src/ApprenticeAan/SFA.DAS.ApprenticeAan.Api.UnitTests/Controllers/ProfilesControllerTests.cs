@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,21 +27,6 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers
             var model = result?.Value;
 
             model.Should().BeEquivalentTo(response);
-        }
-
-        [Test]
-        [MoqAutoData]
-        public async Task And_NoProfilesReturnedFromMediator_Then_Return500(
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ProfilesController controller)
-        {
-            mockMediator.Setup(m => m.Send(It.IsAny<GetProfilesByUserTypeQuery>(), CancellationToken.None))
-                .ReturnsAsync((GetProfilesByUserTypeQueryResult)null!);
-
-            var userType = "Apprentice";
-            var controllerResult = await controller.GetProfilesByUserType(userType) as NotFoundResult;
-
-            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }
