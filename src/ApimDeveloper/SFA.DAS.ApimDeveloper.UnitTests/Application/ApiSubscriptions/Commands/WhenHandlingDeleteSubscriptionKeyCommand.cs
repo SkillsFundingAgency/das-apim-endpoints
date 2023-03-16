@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
+using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.DeleteSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.Interfaces;
@@ -11,21 +11,21 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
 {
-    public class WhenHandlingRenewSubscriptionKeyCommand
+    public class WhenHandlingDeleteSubscriptionKeyCommand
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called(
-            RenewSubscriptionKeyCommand command,
+            DeleteSubscriptionKeyCommand command,
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> mockApiClient,
-            RenewSubscriptionKeyCommandHandler handler)
+            DeleteSubscriptionKeyCommandHandler handler)
         {
             //Act
             await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            mockApiClient.Verify(x => x.PostWithResponseCode<string>(
-                    It.Is<PostRenewSubscriptionKeyRequest>(c =>
-                        c.PostUrl.Contains($"api/subscription/{command.AccountIdentifier}/renew/{command.ProductId}")), true),
+            mockApiClient.Verify(x => x.Delete(
+                    It.Is<DeleteSubscriptionKeyRequest>(c =>
+                        c.DeleteUrl.Contains($"api/subscription/{command.AccountIdentifier}/delete/{command.ProductId}"))),
                 Times.Once);
         }
     }
