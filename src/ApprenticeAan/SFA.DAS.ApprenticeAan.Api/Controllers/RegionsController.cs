@@ -21,11 +21,7 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         [ProducesResponseType(typeof(GetRegionsQueryResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRegions()
         {
-            var result = await _mediator.Send(new GetRegionsQuery());
-
-            if (result == null) return StatusCode(StatusCodes.Status500InternalServerError);
-
-            return Ok(result);
+            return Ok(await _mediator.Send(new GetRegionsQuery()));
         }
     }
 }
