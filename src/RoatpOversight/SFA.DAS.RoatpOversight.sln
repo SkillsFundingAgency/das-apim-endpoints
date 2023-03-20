@@ -11,7 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8C63B1FA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{BC853B29-B58E-4502-A419-0EE5951A9DFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpOversight.Api", "SFA.DAS.RoatpOversight.Api\SFA.DAS.RoatpOversight.Api.csproj", "{91F07E93-B12B-4B29-9CF7-1F6D2CF95093}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpOversight.Api", "SFA.DAS.RoatpOversight.Api\SFA.DAS.RoatpOversight.Api.csproj", "{91F07E93-B12B-4B29-9CF7-1F6D2CF95093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpOversight.Api.UnitTests", "SFA.DAS.RoatpOversight.Api.UnitTests\SFA.DAS.RoatpOversight.Api.UnitTests.csproj", "{8E159980-3566-4AAB-81C7-67709846DAC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpOversight.UnitTests", "SFA.DAS.RoatpOversight.UnitTests\SFA.DAS.RoatpOversight.UnitTests.csproj", "{D41B975C-6485-4241-A1AD-E91C64D18711}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +39,22 @@ Global
 		{91F07E93-B12B-4B29-9CF7-1F6D2CF95093}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F07E93-B12B-4B29-9CF7-1F6D2CF95093}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91F07E93-B12B-4B29-9CF7-1F6D2CF95093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E159980-3566-4AAB-81C7-67709846DAC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E159980-3566-4AAB-81C7-67709846DAC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E159980-3566-4AAB-81C7-67709846DAC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E159980-3566-4AAB-81C7-67709846DAC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D41B975C-6485-4241-A1AD-E91C64D18711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D41B975C-6485-4241-A1AD-E91C64D18711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D41B975C-6485-4241-A1AD-E91C64D18711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D41B975C-6485-4241-A1AD-E91C64D18711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BC853B29-B58E-4502-A419-0EE5951A9DFA} = {8C63B1FA-DAB3-4D84-A320-0082DB7D8306}
+		{8E159980-3566-4AAB-81C7-67709846DAC2} = {8C63B1FA-DAB3-4D84-A320-0082DB7D8306}
+		{D41B975C-6485-4241-A1AD-E91C64D18711} = {8C63B1FA-DAB3-4D84-A320-0082DB7D8306}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA6207CB-3C6B-4BD3-9484-15C66DC6A97D}

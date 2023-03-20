@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.RoatpOversight.Api.Extensions;
-using SFA.DAS.RoatpOversight.Application.Providers.Command.CreateProvider;
+using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
