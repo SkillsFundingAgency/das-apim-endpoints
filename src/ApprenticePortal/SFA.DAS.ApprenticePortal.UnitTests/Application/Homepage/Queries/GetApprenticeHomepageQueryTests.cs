@@ -1,4 +1,8 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
@@ -9,17 +13,14 @@ using SFA.DAS.ApprenticePortal.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Queries
+namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
 {
     public class GetApprenticeHomepageQueryTests
     {
         private readonly Fixture _fixture = new Fixture();
         private Apprentice _moqApprentice;
+        private CurrentApprenticeship _moqCurrentApprenticeship;
         private List<Apprenticeship> _moqApprenticeships;
 
         private Guid apprenticeId = Guid.NewGuid();
@@ -34,12 +35,16 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
         {
             //Arrange
             SetupMoqApprentice();
+            SetupMoqCurrentApprenticeship();
+            SetupMoqApprenticeships();
 
             accountsApiClient.Setup(client =>
                 client.Get<Apprentice>(It.IsAny<GetApprenticeRequest>()))
                 .ReturnsAsync(_moqApprentice);
 
-            SetupMoqApprenticeships();
+            accountsApiClient.Setup(client =>
+                    client.Get<CurrentApprenticeship>(It.IsAny<GetCurrentApprenticeshipRequest>()))
+                .ReturnsAsync(_moqCurrentApprenticeship);
 
             commitmentsApiClient.Setup(client =>
                 client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
@@ -55,6 +60,7 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
             Assert.AreEqual(result.ApprenticeHomepage.Apprentice.LastName, lastName);
             Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.CourseName, courseName);
             Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.EmployerName, employerName);
+            Assert.AreEqual(result.ApprenticeHomepage.CurrentApprenticeship.ApprenticeId, apprenticeId);
         }
 
         [Test, MoqAutoData]
@@ -94,6 +100,13 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.ApprenticeAccounts.Quer
                 .With(p => p.ApprenticeId, apprenticeId)
                 .With(p => p.FirstName, firstName)
                 .With(p => p.LastName, lastName)
+                .Create();
+        }
+
+        private void SetupMoqCurrentApprenticeship()
+        {
+            _moqCurrentApprenticeship = _fixture.Build<CurrentApprenticeship>()
+                .With(p => p.ApprenticeId, apprenticeId)
                 .Create();
         }
 

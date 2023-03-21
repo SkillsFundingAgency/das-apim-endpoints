@@ -25,6 +25,12 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             return this;
         }
 
+        public ApprenticeAccountsInnerApiMock WithoutCurrentApprenticeship()
+        {
+            WithoutCurrentApprenticeship(AnyApprentice);
+            return this;
+        }
+
         public ApprenticeAccountsInnerApiMock WithApprentice(Apprentice apprentice)
         {
             MockServer
@@ -39,6 +45,21 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 );
             return this;
         }
+        public ApprenticeAccountsInnerApiMock WithoutCurrentApprenticeship(Apprentice apprentice)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/apprenticeships/current")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create().WithNotFound()
+                );
+            return this;
+        }
+
+
 
         public ApprenticeAccountsInnerApiMock WithPing()
         {

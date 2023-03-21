@@ -34,6 +34,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 {
                     _fakeApprenticeAccountsApi = new ApprenticeAccountsInnerApiMock(PortAccountsApi, true)
                         .WithPing()
+                        .WithoutCurrentApprenticeship()
                         .WithAnyApprentice();
                 }
 
