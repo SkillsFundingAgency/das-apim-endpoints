@@ -22,7 +22,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
 
         public async Task<AddDraftApprenticeshipResult> Handle(AddDraftApprenticeshipCommand request, CancellationToken cancellationToken)
         {
-            //TODO: Verify if we need to add UKPRN to request?
             var validateDetailsRequest = new ValidateLearnerDetailsRequest() { Uln = request.Uln, FirstName = request.FirstName, LastName = request.LastName };
             var validationResult = await _detailsValidator.Validate(validateDetailsRequest);
 
