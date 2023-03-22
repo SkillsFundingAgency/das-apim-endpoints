@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticePortal.Interfaces;
 using System.Threading.Tasks;
 
 
-namespace SFA.DAS.EmployerIncentives.Application.Services
+namespace SFA.DAS.ApprenticePortal.Application.Services
 {
     public class ApprenticePortalService : IApprenticePortalService
     {
