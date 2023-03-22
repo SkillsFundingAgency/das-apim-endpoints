@@ -22,6 +22,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.1.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
@@ -68,7 +69,7 @@
     <PackageVersion Include="FluentAssertions" Version="6.7.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
-	<PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.8" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />

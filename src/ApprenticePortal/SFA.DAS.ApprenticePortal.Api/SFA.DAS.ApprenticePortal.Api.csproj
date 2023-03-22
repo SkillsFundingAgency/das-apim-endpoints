@@ -15,6 +15,7 @@
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
