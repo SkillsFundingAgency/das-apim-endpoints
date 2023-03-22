@@ -1,35 +1,35 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticePortal.Apis.ApprenticeAccountsApi;
-using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
-using SFA.DAS.ApprenticePortal.Application.Services;
+using SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate;
+using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticePortal.Api.Controllers
 {
-    public class TemporaryAccountsResponseReturningApiClient : ResponseReturningApiClient
-    {
-        public TemporaryAccountsResponseReturningApiClient(ApimClient client)
-            : base(client)
-        {
-        }
-    }
-
     [ApiController]
     public class ApprenticePortalController : ControllerBase
     {
-        private readonly ResponseReturningApiClient _client;
+        private readonly IMediator _mediator;
 
-        public ApprenticePortalController(TemporaryAccountsResponseReturningApiClient client) => _client = client;
-
-        [HttpGet("/apprentices/{id}")]
-        public Task<IActionResult> GetApprentice(Guid id)
-            => _client.Get($"apprentices/{id}");
-
+        public ApprenticePortalController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
         [HttpPatch("/apprentices/{apprenticeId}")]
-        public Task<IActionResult> UpdateApprentice(Guid apprenticeId, [FromBody] JsonPatchDocument<Apprentice> changes)
-            => _client.Patch($"apprentices/{apprenticeId}", changes);
+        public async Task<IActionResult> UpdateApprentice(Guid apprenticeId, UpdateApprenticeRequest request)
+        {
+            await _mediator.Send(new ApprenticeUpdateCommand
+            {
+                ApprenticeId = request.ApprenticeId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth
+            });
+
+            return NoContent();
+        }
     }
 }

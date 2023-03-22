@@ -8,7 +8,6 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.SharedOuterApi.Extensions;
-using GetLegalEntityRequest = SFA.DAS.EmployerIncentives.InnerApi.Requests.GetLegalEntityRequest;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {

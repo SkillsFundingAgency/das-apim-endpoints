@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
-namespace SFA.DAS.ApprenticePortal.Apis.ApprenticeAccountsApi
+namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate
 {
-    public class Apprentice
+    public class ApprenticeUpdateCommand : IRequest<Unit>
     {
         public Guid ApprenticeId { get; set; }
         public string FirstName { get; set; }
