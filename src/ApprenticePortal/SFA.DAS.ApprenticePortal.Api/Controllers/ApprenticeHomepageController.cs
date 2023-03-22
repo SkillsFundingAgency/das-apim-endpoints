@@ -25,16 +25,5 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
 
             return Ok(result.ApprenticeHomepage);
         }
-
-        [HttpGet("/apprentices/{id}")]
-        public async Task<IActionResult> GetApprentice(Guid id)
-        {
-            var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
-
-            if (result.Apprentice == null)
-                return NotFound();
-
-            return Ok(result.Apprentice);
-        }
     }
 }
