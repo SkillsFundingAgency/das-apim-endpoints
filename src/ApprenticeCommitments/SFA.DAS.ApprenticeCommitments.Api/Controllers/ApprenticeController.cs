@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading.Tasks;
@@ -23,5 +25,10 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpGet("/apprentices/{id}")]
         public Task<IActionResult> GetApprentice(Guid id)
             => _client.Get($"apprentices/{id}");
+
+
+        [HttpPatch("/apprentices/{apprenticeId}")]
+        public Task<IActionResult> UpdateApprentice(Guid apprenticeId, [FromBody] JsonPatchDocument<Apprentice> changes)
+            => _client.Patch($"apprentices/{apprenticeId}", changes);
     }
 }
