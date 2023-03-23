@@ -25,10 +25,7 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate
             var updateApprenticeRequest = new UpdateApprenticeRequest
             {
                 ApprenticeId = request.ApprenticeId,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                DateOfBirth = request.DateOfBirth,
+                Patch = request.Patch
             };
 
             await _apprenticePortalService.UpdateApprentice(updateApprenticeRequest);

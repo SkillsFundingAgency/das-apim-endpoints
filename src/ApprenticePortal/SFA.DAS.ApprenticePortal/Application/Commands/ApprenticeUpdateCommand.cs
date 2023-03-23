@@ -1,14 +1,13 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.ApprenticePortal.Models;
 using System;
 
 namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate
 {
     public class ApprenticeUpdateCommand : IRequest<Unit>
     {
+        public JsonPatchDocument<Apprentice> Patch { get; set; }
         public Guid ApprenticeId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public DateTime DateOfBirth { get; set; }
     }
 }
