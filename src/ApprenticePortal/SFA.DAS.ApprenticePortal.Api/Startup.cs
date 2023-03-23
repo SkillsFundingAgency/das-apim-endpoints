@@ -16,7 +16,6 @@ using SFA.DAS.ApprenticePortal.Api.ErrorHandler;
 using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
 using SFA.DAS.ApprenticePortal.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Linq;

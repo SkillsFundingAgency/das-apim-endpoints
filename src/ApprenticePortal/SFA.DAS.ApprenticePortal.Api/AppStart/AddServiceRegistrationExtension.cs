@@ -19,21 +19,11 @@ namespace SFA.DAS.ApprenticePortal.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();            
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
-
-
             services.AddTransient<IApprenticePortalApiClient<ApprenticePortalConfiguration>, ApprenticePortalApiClient>();
-
-
-
             services.AddTransient<ICommitmentsApiClient<CommitmentsConfiguration>, CommitmentsApiClient>();
             services.AddTransient<IApprenticePortalService, ApprenticePortalService>();
-
-
-
-
         }
     }
 }

@@ -30,7 +30,14 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
 
             var response = queryResult.Apprentice;
 
-            return Ok(response);
+            if (response == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(response);
+            }
         }
 
         [HttpPatch("/apprentices/{apprenticeId}")]
