@@ -38,12 +38,8 @@ namespace SFA.DAS.ApprenticePortal.Api
         {
             services.AddSingleton(_env);
 
-            services.Configure<CommitmentsConfiguration>(_configuration.GetSection("CommitmentsV2InnerApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsConfiguration>>().Value);
-
             services.Configure<ApprenticePortalConfiguration>(_configuration.GetSection(nameof(ApprenticePortalConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticePortalConfiguration>>().Value);
-
 
             services.AddConfigurationOptions(_configuration);           
 

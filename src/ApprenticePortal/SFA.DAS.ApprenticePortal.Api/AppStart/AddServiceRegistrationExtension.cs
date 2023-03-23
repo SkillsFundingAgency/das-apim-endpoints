@@ -22,7 +22,6 @@ namespace SFA.DAS.ApprenticePortal.Api.AppStart
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
             services.AddTransient<IApprenticePortalApiClient<ApprenticePortalConfiguration>, ApprenticePortalApiClient>();
-            services.AddTransient<ICommitmentsApiClient<CommitmentsConfiguration>, CommitmentsApiClient>();
             services.AddTransient<IApprenticePortalService, ApprenticePortalService>();
         }
     }
