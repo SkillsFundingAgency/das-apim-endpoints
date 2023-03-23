@@ -7,13 +7,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticePortal.Api.AppStart;
 using SFA.DAS.ApprenticePortal.Api.ErrorHandler;
 using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
+using SFA.DAS.ApprenticePortal.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +38,13 @@ namespace SFA.DAS.ApprenticePortal.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
+
+            services.Configure<CommitmentsConfiguration>(_configuration.GetSection("CommitmentsV2InnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsConfiguration>>().Value);
+
+            services.Configure<ApprenticePortalConfiguration>(_configuration.GetSection(nameof(ApprenticePortalConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticePortalConfiguration>>().Value);
+
 
             services.AddConfigurationOptions(_configuration);           
 

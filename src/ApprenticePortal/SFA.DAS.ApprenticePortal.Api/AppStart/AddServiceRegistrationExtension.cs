@@ -2,6 +2,8 @@
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticePortal.Application.Services;
+using SFA.DAS.ApprenticePortal.Clients;
+using SFA.DAS.ApprenticePortal.Configuration;
 using SFA.DAS.ApprenticePortal.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -20,7 +22,18 @@ namespace SFA.DAS.ApprenticePortal.Api.AppStart
 
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
+
+
+            services.AddTransient<IApprenticePortalApiClient<ApprenticePortalConfiguration>, ApprenticePortalApiClient>();
+
+
+
+            services.AddTransient<ICommitmentsApiClient<CommitmentsConfiguration>, CommitmentsApiClient>();
             services.AddTransient<IApprenticePortalService, ApprenticePortalService>();
+
+
+
+
         }
     }
 }
