@@ -29,13 +29,13 @@ namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
 
             if (_featureToggles.RoatpProvidersEnabled)
             {
-                var result = await _roatpApiClient.Get<GetRoatpProviderResponseSummary>(
+                var result = await _roatpApiClient.Get<GetRoatpProviderResponse>(
                     new GetProviderRequest
                     {
                         Ukprn = request.Ukprn
                     });
 
-                if (result != null) provider = (GetProviderResponse)result.ProviderSummary;
+                provider = result;
             }
             else
             {

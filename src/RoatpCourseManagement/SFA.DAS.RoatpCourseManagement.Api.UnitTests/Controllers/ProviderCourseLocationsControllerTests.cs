@@ -39,7 +39,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] ProviderCourseLocationsController sut)
         {
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseLocationQuery>(q => q.LarsCode == larsCode && q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderCourseLocationResult());
+            mediatorMock.Setup(m => m.Send(It.Is<GetProviderCourseLocationQuery>(q => q.LarsCode == larsCode && q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync((GetProviderCourseLocationResult)null);
 
             var response = await sut.GetProviderCourseLocations(ukprn, larsCode);
 
