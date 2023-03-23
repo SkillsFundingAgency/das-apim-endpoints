@@ -20,10 +20,11 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
     {
         private readonly Fixture _fixture = new Fixture();
         private Apprentice _moqApprentice;
-        private CurrentApprenticeship _moqCurrentApprenticeship;
+        private MyApprenticeshipData _moqMyApprenticeshipData;
         private List<Apprenticeship> _moqApprenticeships;
 
         private Guid apprenticeId = Guid.NewGuid();
+        private long apprenticeshipId = 12345;
         private string firstName = "testFirstName", lastName = "testLastName", courseName = "course1", employerName = "employer1";
         
         [Test, MoqAutoData]
@@ -43,8 +44,8 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
                 .ReturnsAsync(_moqApprentice);
 
             accountsApiClient.Setup(client =>
-                    client.Get<CurrentApprenticeship>(It.IsAny<GetCurrentApprenticeshipRequest>()))
-                .ReturnsAsync(_moqCurrentApprenticeship);
+                    client.Get<MyApprenticeshipData>(It.IsAny<GetMyApprenticeshipRequest>()))
+                .ReturnsAsync(_moqMyApprenticeshipData);
 
             commitmentsApiClient.Setup(client =>
                 client.Get<GetApprenticeApprenticeshipsResult>(It.IsAny<GetApprenticeApprenticeshipsRequest>()))
@@ -60,11 +61,11 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
             Assert.AreEqual(result.ApprenticeHomepage.Apprentice.LastName, lastName);
             Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.CourseName, courseName);
             Assert.AreEqual(result.ApprenticeHomepage.Apprenticeship.EmployerName, employerName);
-            Assert.AreEqual(result.ApprenticeHomepage.CurrentApprenticeship.ApprenticeId, apprenticeId);
+            Assert.AreEqual(result.ApprenticeHomepage.MyApprenticeshipData.ApprenticeshipId, apprenticeshipId);
         }
 
         [Test, MoqAutoData]
-        public async Task TestGetApprenticeHomepageQueryNoApprenticeships(
+        public async Task TestGetApprenticeHomepageQueryNoApprenticeshipsAndNoCurrentApprenticeship(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> accountsApiClient,
             [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> commitmentsApiClient,
             GetApprenticeHomepageQueryHandler sut
@@ -92,6 +93,7 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
             Assert.AreEqual(result.ApprenticeHomepage.Apprentice.FirstName, firstName);
             Assert.AreEqual(result.ApprenticeHomepage.Apprentice.LastName, lastName);
             Assert.IsNull(result.ApprenticeHomepage.Apprenticeship);            
+            Assert.IsNull(result.ApprenticeHomepage.MyApprenticeshipData);            
         }
 
         private void SetupMoqApprentice()
@@ -105,8 +107,8 @@ namespace SFA.DAS.ApprenticePortal.UnitTests.Application.Homepage.Queries
 
         private void SetupMoqCurrentApprenticeship()
         {
-            _moqCurrentApprenticeship = _fixture.Build<CurrentApprenticeship>()
-                .With(p => p.ApprenticeId, apprenticeId)
+            _moqMyApprenticeshipData = _fixture.Build<MyApprenticeshipData>()
+                .With(p => p.ApprenticeshipId, apprenticeshipId)
                 .Create();
         }
 

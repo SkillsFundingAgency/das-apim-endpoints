@@ -6,6 +6,6 @@ namespace SFA.DAS.ApprenticePortal.Models
     {
         public Apprentice Apprentice { get; set; }
         public Apprenticeship Apprenticeship { get; set; }
-        public CurrentApprenticeship CurrentApprenticeship { get; set; }
+        public MyApprenticeshipData MyApprenticeshipData { get; set; }
     }
 }

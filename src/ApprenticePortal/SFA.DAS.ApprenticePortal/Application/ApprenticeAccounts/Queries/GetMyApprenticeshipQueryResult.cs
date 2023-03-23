@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries
 {
-    public class GetCurrentApprenticeshipQueryResult
+    public class GetMyApprenticeshipQueryResult
     {
-        public CurrentApprenticeship Apprenticeship { get; set; }
+        public MyApprenticeshipData ApprenticeshipData { get; set; }
     }
 }

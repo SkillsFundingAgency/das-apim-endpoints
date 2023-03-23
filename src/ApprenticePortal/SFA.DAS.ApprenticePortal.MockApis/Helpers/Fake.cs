@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.Models;
 
 namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
 {
     public static class Fake
     {
-        public static Apprentice Apprentice => new Apprentice
+        public static Apprentice Apprentice => new()
         {
             ApprenticeId = Guid.Empty,
             FirstName = Faker.Name.First(),
@@ -37,5 +38,32 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
                 yield return ApprenticeshipForThisApprentice(Apprentice);
             }
         }
+        
+        public static MyApprenticeshipData MyApprenticeship => new()
+        {
+            ApprenticeshipId = Faker.RandomNumber.Next(),
+            Uln = Faker.RandomNumber.Next(10000000).ToString(),
+            EmployerName = Faker.Company.Name(),
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddYears(1),
+            TrainingProviderId = Faker.RandomNumber.Next(),
+            TrainingProviderName = Faker.Company.Name(),
+            TrainingCode = Faker.RandomNumber.Next().ToString(),
+            StandardUId = Faker.RandomNumber.Next().ToString()
+        };
+
+        public static ApprenticeshipDetailsResponse CommitmentsApprenticeship => new()
+        {
+            AccountLegalEntityId = Faker.RandomNumber.Next(),
+            CompletionDate = null,
+            CourseCode = Faker.RandomNumber.Next().ToString(),
+            CourseName = Faker.Finance.Ticker(),
+            DateOfBirth = DateTime.Today.AddYears(-19),
+            Email = Faker.NameFormats.Standard.ToString(),
+            EmployerAccountId = Faker.RandomNumber.Next(),
+            EmployerName = Faker.Company.Name(),
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddYears(1)
+        };
     }
 }

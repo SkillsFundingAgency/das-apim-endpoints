@@ -2,11 +2,10 @@
 
 namespace SFA.DAS.ApprenticePortal.Models
 {
-    public class CurrentApprenticeship
+    public class MyApprenticeshipData
     {
-        public Guid ApprenticeId { get; set; }
         public long ApprenticeshipId { get; set; }
-        public string ULN { get; set; }
+        public string Uln { get; set; }
         public string EmployerName { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -14,7 +13,5 @@ namespace SFA.DAS.ApprenticePortal.Models
         public string TrainingProviderName { get; set; }
         public string TrainingCode { get; set; }
         public string StandardUId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? UpdatedOn { get; set; }
     }
 }

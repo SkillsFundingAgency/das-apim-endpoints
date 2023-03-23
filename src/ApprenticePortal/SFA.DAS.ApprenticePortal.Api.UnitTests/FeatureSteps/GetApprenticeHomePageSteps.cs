@@ -14,6 +14,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
         private Apprentice _apprentice;
+        private MyApprenticeshipData _myApprenticeship;
         private GetApprenticeApprenticeshipsResult _apprenticeshipsResult;
 
         public GetApprenticeHomePageSteps(TestContext context)
@@ -21,6 +22,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
             _context = context;
             _apprentice = _fixture.Create<Apprentice>();
             _apprenticeshipsResult = _fixture.Create<GetApprenticeApprenticeshipsResult>();
+            _myApprenticeship = _fixture.Create<MyApprenticeshipData>();
         }
 
         [Given(@"there is an apprentice")]
@@ -45,23 +47,29 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
             _context.ApprenticeCommitmentsInnerApi.WithApprenticeshipsResponseForApprentice(_apprentice, _apprenticeshipsResult);
         }
 
+        [Given(@"my apprenticeship exists")]
+        public void GivenMyApprenticeshipExists()
+        {
+            _context.ApprenticeAccountsInnerApi.WithMyApprenticeship(_apprentice, _myApprenticeship);
+        }
+
         [When(@"the apprentice's homepage is requested")]
         public async Task WhenTheApprenticeSHomepageIsRequested()
         {
             await _context.OuterApiClient.Get($"/apprentices/{_apprentice.ApprenticeId}/homepage");
         }
         
-        [Then(@"the result should contain the apprentice data, but with no apprenticeship data")]
+        [Then(@"the result should contain the apprentice data, but with no apprenticeship data or my apprenticeship data")]
         public void ThenTheResultShouldContainTheApprenticeDataButWithNoApprenticeshipData()
         {
-            var homePageModel = new ApprenticeHomepage {Apprentice = _apprentice, Apprenticeship = null};
+            var homePageModel = new ApprenticeHomepage {Apprentice = _apprentice, Apprenticeship = null, MyApprenticeshipData = null};
             _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
         }
 
-        [Then(@"the result should have apprentice and first apprenticeship")]
-        public void ThenTheResultShouldHaveApprenticeAndFirstApprenticeship()
+        [Then(@"the result should have apprentice and first apprenticeship and MyApprenticeship")]
+        public void ThenTheResultShouldHaveApprenticeAndFirstApprenticeshipAndMyApprenticeship()
         {
-            var homePageModel = new ApprenticeHomepage { Apprentice = _apprentice, Apprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault() };
+            var homePageModel = new ApprenticeHomepage { Apprentice = _apprentice, Apprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault(), MyApprenticeshipData = _myApprenticeship };
             _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
         }
 
