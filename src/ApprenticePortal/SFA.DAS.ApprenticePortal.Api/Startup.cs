@@ -13,7 +13,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticePortal.Api.AppStart;
 using SFA.DAS.ApprenticePortal.Api.ErrorHandler;
-using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
+using SFA.DAS.ApprenticePortal.Application.Queries.Homepage;
 using SFA.DAS.ApprenticePortal.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
+namespace SFA.DAS.ApprenticePortal.Application.Queries.Homepage
 {
     public class GetApprenticeHomepageQueryHandler : IRequestHandler<GetApprenticeHomepageQuery, GetApprenticeHomepageQueryResult>
     {
@@ -30,10 +30,10 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
             return new GetApprenticeHomepageQueryResult
             {
                 ApprenticeHomepage = new ApprenticeHomepage
-                {                    
+                {
                     Apprentice = apprentice.Result,
                     Apprenticeship = apprenticeships.Result?.Apprenticeships.FirstOrDefault()
-                },                
+                },
             };
         }
     }

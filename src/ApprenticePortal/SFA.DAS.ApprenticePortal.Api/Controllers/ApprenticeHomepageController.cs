@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries;
 using SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate;
-using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
+using SFA.DAS.ApprenticePortal.Application.Queries.ApprenticeAccounts;
+using SFA.DAS.ApprenticePortal.Application.Queries.Homepage;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using System;
 using System.Threading.Tasks;
