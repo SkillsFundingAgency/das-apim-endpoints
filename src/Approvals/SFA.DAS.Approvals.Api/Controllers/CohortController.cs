@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands;
+using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
@@ -121,6 +122,47 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails ale {accountLegalEntityId}");
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        [Route("cohorts")]
+        public async Task<IActionResult> Create([FromBody] CreateCohortRequest request)
+        {
+            var command = new CreateCohortCommand
+            {
+                ActualStartDate = request.ActualStartDate,
+                StartDate = request.StartDate,
+                AccountId = request.AccountId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                Cost = request.Cost,
+                CourseCode = request.CourseCode,
+                DateOfBirth = request.DateOfBirth,
+                DeliveryModel = request.DeliveryModel,
+                Email = request.Email,
+                ReservationId = request.ReservationId,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                EndDate = request.EndDate,
+                FirstName = request.FirstName,
+                IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
+                LastName = request.LastName,
+                IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
+                OriginatorReference = request.OriginatorReference,
+                PledgeApplicationId = request.PledgeApplicationId,
+                ProviderId = request.ProviderId,
+                TransferSenderId = request.TransferSenderId,
+                Uln = request.Uln,
+                UserInfo = request.UserInfo,
+                RequestingParty = request.RequestingParty
+            };
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new CreateCohortResponse
+            {
+                CohortId = result.CohortId,
+                CohortReference = result.CohortReference
+            });
         }
     }
 }

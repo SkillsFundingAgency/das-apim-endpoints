@@ -170,8 +170,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             if(IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
+                HandleException(response, json);
             }
-            else
+            else if (typeof(TResponse) != typeof(NullResponse))
             {
                 var options = new JsonSerializerOptions
                 {
