@@ -38,9 +38,6 @@ namespace SFA.DAS.ApprenticePortal.Api
         {
             services.AddSingleton(_env);
 
-            services.Configure<ApprenticePortalConfiguration>(_configuration.GetSection(nameof(ApprenticePortalConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticePortalConfiguration>>().Value);
-
             services.AddConfigurationOptions(_configuration);           
 
             if (!_configuration.IsLocalOrDev())
