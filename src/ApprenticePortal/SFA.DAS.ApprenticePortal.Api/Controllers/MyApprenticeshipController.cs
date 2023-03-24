@@ -17,7 +17,7 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         [HttpPost("/apprentices/{id}/my-apprenticeship")]
         public async Task<IActionResult> Post(Guid id, [FromBody] MyApprenticeshipConfirmedRequest request)
         {
-            var result = await _mediator.Send(new AddOrUpdateMyApprenticeshipCommand
+            await _mediator.Send(new AddOrUpdateMyApprenticeshipCommand
             {
                 ApprenticeId = id, CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
                 CommitmentsApprovedOn = request.ApprovedOn

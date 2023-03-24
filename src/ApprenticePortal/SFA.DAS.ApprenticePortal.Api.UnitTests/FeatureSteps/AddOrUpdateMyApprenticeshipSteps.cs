@@ -84,14 +84,14 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
             _postedData.StandardUId.Should().Be(_apprenticeshipDetails.StandardUId);
         }
 
-        [Then(@"it contains all the providers trading name")]
-        public void ThenItContainsAllTheProvidersTradingName()
+        [Then(@"it contains the providers trading name")]
+        public void ThenItContainsTheProvidersTradingName()
         {
             _postedData.TrainingProviderName.Should().Be(_trainingProviderResponse.TradingName);
         }
 
-        [Then(@"it contains all the providers legal name")]
-        public void ThenItContainsAllTheProvidersLegalName()
+        [Then(@"it contains the providers legal name")]
+        public void ThenItContainsTheProvidersLegalName()
         {
             _postedData.TrainingProviderName.Should().Be(_trainingProviderResponse.LegalName);
         }

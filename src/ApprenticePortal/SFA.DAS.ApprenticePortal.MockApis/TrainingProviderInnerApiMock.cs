@@ -9,15 +9,11 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 {
     public class TrainingProviderInnerApiMock : ApiMock
     {
-        private readonly ApprenticeshipDetailsResponse _existingApprenticeship;
-
-
         public TrainingProviderInnerApiMock() : this(0) {}
 
         public TrainingProviderInnerApiMock(int port, bool ssl = false) : base(port, ssl)
         {
             Console.WriteLine($"Training Provider Fake Api Running ({BaseAddress})");
-            _existingApprenticeship = new ApprenticeshipDetailsResponse();
         }
 
         public TrainingProviderInnerApiMock WithPing()
@@ -38,12 +34,13 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
         public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, TrainingProviderResponse trainingProviderResponse)
         {
-            var response = new SearchResponse { SearchResults = new TrainingProviderResponse[] { trainingProviderResponse } };
+            var response = new SearchResponse { SearchResults = new [] { trainingProviderResponse } };
 
             MockServer
                 .Given(
                     Request.Create()
                         .WithPath($"/api/v1/search")
+                        .WithParam("searchterm", trainingProviderId.ToString())
                         .UsingGet()
                 )
                 .RespondWith(

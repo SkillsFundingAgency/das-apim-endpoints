@@ -12,7 +12,7 @@ Scenario: The confirmation message is processed successfully for provider with a
 	When the MyApprenticeshipConfirmedRequest is posted
 	Then the call to save MyApprenticeship is called
 	And it contains all the information
-	And it contains all the providers trading name
+	And it contains the providers trading name
 	
 Scenario: The confirmation message is processed successfully for provider without a trading name
 	Given there is an apprentice
@@ -22,4 +22,4 @@ Scenario: The confirmation message is processed successfully for provider withou
 	When the MyApprenticeshipConfirmedRequest is posted
 	Then the call to save MyApprenticeship is called
 	And it contains all the information
-	And it contains all the providers legal name
+	And it contains the providers legal name

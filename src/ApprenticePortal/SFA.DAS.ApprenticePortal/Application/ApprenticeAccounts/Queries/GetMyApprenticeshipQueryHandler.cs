@@ -18,8 +18,6 @@ namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries
         public async Task<GetMyApprenticeshipQueryResult> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
         {
             var myApprenticeship = _accountsApiClient.Get<MyApprenticeshipData>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-            await Task.WhenAll(myApprenticeship);
-
             return new GetMyApprenticeshipQueryResult { ApprenticeshipData = await myApprenticeship};
         }
     }
