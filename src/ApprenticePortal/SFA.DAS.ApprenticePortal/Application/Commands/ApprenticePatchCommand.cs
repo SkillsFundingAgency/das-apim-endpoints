@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.ApprenticePortal.Models;
 using System;
 
-namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeUpdate
+namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticePatch
 {
-    public class ApprenticeUpdateCommand : IRequest<Unit>
+    public class ApprenticePatchCommand : IRequest<Unit>
     {
         public JsonPatchDocument<Apprentice> Patch { get; set; }
         public Guid ApprenticeId { get; set; }
