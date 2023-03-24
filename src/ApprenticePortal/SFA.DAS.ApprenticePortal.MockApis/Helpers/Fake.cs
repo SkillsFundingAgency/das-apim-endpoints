@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
+using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
 using SFA.DAS.ApprenticePortal.Models;
 
 namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
@@ -9,7 +10,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
     {
         public static Apprentice Apprentice => new()
         {
-            ApprenticeId = Guid.Empty,
+            ApprenticeId = Guid.NewGuid(),
             FirstName = Faker.Name.First(),
             LastName = Faker.Name.Last(),
             TermsOfUseAccepted = global::Faker.Boolean.Random()
@@ -54,6 +55,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
 
         public static ApprenticeshipDetailsResponse CommitmentsApprenticeship => new()
         {
+            Id = Faker.RandomNumber.Next(),
             AccountLegalEntityId = Faker.RandomNumber.Next(),
             CompletionDate = null,
             CourseCode = Faker.RandomNumber.Next().ToString(),
@@ -64,6 +66,13 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
             EmployerName = Faker.Company.Name(),
             StartDate = DateTime.Today,
             EndDate = DateTime.Today.AddYears(1)
+        };
+
+        public static TrainingProviderResponse Provider => new()
+        {
+            Id = Guid.NewGuid(),
+            Ukprn = Faker.RandomNumber.Next(),
+            LegalName = Faker.Company.Name()
         };
     }
 }

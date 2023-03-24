@@ -63,7 +63,6 @@ namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Commands
                 TrainingProviderId = commitmentsApprenticeship.ProviderId,
                 TrainingProviderName = ProviderName(provider)
             };
-
         }
 
         private static string ProviderName(TrainingProviderResponse trainingProvider)
