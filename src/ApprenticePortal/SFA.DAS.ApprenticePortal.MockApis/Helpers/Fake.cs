@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
 using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.ApprenticePortal.Services;
 
 namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
 {
@@ -73,6 +74,11 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
             Id = Guid.NewGuid(),
             Ukprn = Faker.RandomNumber.Next(),
             LegalName = Faker.Company.Name()
+        };
+
+        public static StandardApiResponse StandardApiResponse => new()
+        {
+            Title = Faker.Lorem.Sentence(7)
         };
     }
 }

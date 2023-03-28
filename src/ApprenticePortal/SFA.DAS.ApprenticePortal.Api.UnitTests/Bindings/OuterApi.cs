@@ -28,6 +28,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.Bindings
                     {"ApprenticeCommitmentsInnerApi:url", _context?.ApprenticeCommitmentsInnerApi?.BaseAddress + "/"},
                     {"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/"},
                     {"TrainingProviderInnerApi:url", _context?.TrainingProviderInnerApi?.BaseAddress + "/"},
+                    {"CoursesInnerApi:url", _context?.CoursesInnerApi?.BaseAddress + "/"},
                     {"AzureAD:tenant", ""},
                     {"AzureAD:identifier", ""}
                 };

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using SFA.DAS.ApprenticePortal.MockApis.Helpers;
+using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.ApprenticePortal.Services;
 
 namespace SFA.DAS.ApprenticePortal.MockApis
 {
@@ -10,12 +12,14 @@ namespace SFA.DAS.ApprenticePortal.MockApis
         private const int PortCommitmentsV2InnerApi = 5011;
         private const int PortAccountsApi = 5801;
         private const int PortProviderInnerApi = 37951;
+        private const int PortCoursesInnerApi = 5001;
 
 
         private static ApprenticeCommitmentsInnerApiMock _fakeApprenticeCommitmentsApi;
         private static ApprenticeAccountsInnerApiMock _fakeApprenticeAccountsApi;
         private static CommitmentsV2InnerApiMock _fakeCommitmentsV2InnerApi;
         private static TrainingProviderInnerApiMock _fakeTrainingProviderInnerApi;
+        private static CoursesInnerApiMock _fakeCoursesInnerApi;
 
         static void Main(string[] args)
         {
@@ -28,6 +32,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !cmad !account     <-- excludes fake inner ApprenticeCommitments api and inner ApprenticeAccounts api");
                 Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !commitments       <-- excludes Commitments V2 api");
                 Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !provider          <-- excludes Provider Account api");
+                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !courses          <-- excludes Courses api");
 
                 Console.WriteLine("");
                 Console.WriteLine("");
@@ -39,6 +44,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             {
                 var apprentice = Fake.Apprentice;
                 var apprenticeship = Fake.CommitmentsApprenticeship;
+                var myApprenticeship = Fake.MyApprenticeship;
                 var provider = Fake.Provider;
                 provider.Ukprn = apprenticeship.ProviderId;
 
@@ -46,7 +52,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 {
                     _fakeApprenticeAccountsApi = new ApprenticeAccountsInnerApiMock(PortAccountsApi, true)
                         .WithPing()
-                        .WithoutMyApprenticeship()
+                        .WithMyApprenticeship(apprentice, myApprenticeship)
                         .WithApprentice(apprentice)
                         .WithPostMyApprenticeship(apprentice);
                 }
@@ -70,6 +76,13 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                     _fakeTrainingProviderInnerApi = new TrainingProviderInnerApiMock(PortProviderInnerApi, true)
                         .WithPing()
                         .WithValidSearch(apprenticeship.ProviderId, provider);
+                }
+
+                if (!args.Contains("!courses", StringComparer.CurrentCultureIgnoreCase))
+                {
+                    _fakeCoursesInnerApi = new CoursesInnerApiMock(PortCoursesInnerApi, true)
+                        .WithPing()
+                        .WithStandardCourse(myApprenticeship.StandardUId, Fake.StandardApiResponse);
                 }
 
                 Console.WriteLine($"Apprentice Id {apprentice.ApprenticeId}");

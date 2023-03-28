@@ -2,6 +2,11 @@
 
 namespace SFA.DAS.ApprenticePortal.Models
 {
+    public class MyApprenticeship : MyApprenticeshipData
+    {
+        public string Title { get; set; }
+    }
+
     public class MyApprenticeshipData
     {
         public long ApprenticeshipId { get; set; }

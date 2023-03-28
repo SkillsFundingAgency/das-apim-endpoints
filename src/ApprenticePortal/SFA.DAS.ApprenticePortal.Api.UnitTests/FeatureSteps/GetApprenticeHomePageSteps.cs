@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.ApprenticePortal.Services;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
@@ -14,15 +15,19 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
         private Apprentice _apprentice;
-        private MyApprenticeshipData _myApprenticeship;
+        private MyApprenticeship _myApprenticeship;
         private GetApprenticeApprenticeshipsResult _apprenticeshipsResult;
+        private StandardApiResponse _standardCourse;
+        private FrameworkApiResponse _frameworkCourse;
 
         public GetApprenticeHomePageSteps(TestContext context)
         {
             _context = context;
             _apprentice = _fixture.Create<Apprentice>();
             _apprenticeshipsResult = _fixture.Create<GetApprenticeApprenticeshipsResult>();
-            _myApprenticeship = _fixture.Create<MyApprenticeshipData>();
+            _myApprenticeship = _fixture.Create<MyApprenticeship>();
+            _standardCourse = _fixture.Create<StandardApiResponse>();
+            _frameworkCourse = _fixture.Create<FrameworkApiResponse>();
         }
 
         [Given(@"there is an apprentice")]
@@ -53,6 +58,19 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
             _context.ApprenticeAccountsInnerApi.WithMyApprenticeship(_apprentice, _myApprenticeship);
         }
 
+        [Given(@"my apprenticeship has a standard course")]
+        public void GivenMyApprenticeshipHasAStandardCourse()
+        {
+            _context.CoursesInnerApi.WithStandardCourse(_myApprenticeship.StandardUId, _standardCourse);
+        }
+
+        [Given(@"my apprenticeship has a framework course")]
+        public void GivenMyApprenticeshipHasAFrameworkCourse()
+        {
+            _myApprenticeship.StandardUId = null;
+            _context.CoursesInnerApi.WithFrameworkCourse(_myApprenticeship.TrainingCode, _frameworkCourse);
+        }
+
         [When(@"the apprentice's homepage is requested")]
         public async Task WhenTheApprenticeSHomepageIsRequested()
         {
@@ -62,15 +80,34 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         [Then(@"the result should contain the apprentice data, but with no apprenticeship data or my apprenticeship data")]
         public void ThenTheResultShouldContainTheApprenticeDataButWithNoApprenticeshipData()
         {
-            var homePageModel = new ApprenticeHomepage {Apprentice = _apprentice, Apprenticeship = null, MyApprenticeshipData = null};
+            var homePageModel = new ApprenticeHomepage {Apprentice = _apprentice, Apprenticeship = null, MyApprenticeship = null};
             _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
         }
 
-        [Then(@"the result should have apprentice and first apprenticeship and MyApprenticeship")]
+        [Then(@"the result should have apprentice and first apprenticeship")]
         public void ThenTheResultShouldHaveApprenticeAndFirstApprenticeshipAndMyApprenticeship()
         {
-            var homePageModel = new ApprenticeHomepage { Apprentice = _apprentice, Apprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault(), MyApprenticeshipData = _myApprenticeship };
-            _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
+            var homePageModel = new
+            {
+                Apprentice = _apprentice, Apprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault()
+            };
+            _context.OuterApiClient.Response.Should().BeEquivalentTo(homePageModel, o=>o.ExcludingMissingMembers());
+        }
+
+        [Then(@"a Framework MyApprenticeship course")]
+        public void ThenAFrameworkMyApprenticeshipCourse()
+        {
+            _myApprenticeship.Title = _frameworkCourse.Title;
+            _context.OuterApiClient.Response.Should().BeEquivalentTo(new { MyApprenticeship = _myApprenticeship},
+                o => o.ExcludingMissingMembers());
+        }
+
+        [Then(@"a Standard MyApprenticeship course")]
+        public void ThenAStandardMyApprenticeshipCourse()
+        {
+            _myApprenticeship.Title = _standardCourse.Title;
+            _context.OuterApiClient.Response.Should().BeEquivalentTo(new { MyApprenticeship = _myApprenticeship },
+                o => o.ExcludingMissingMembers());
         }
 
         [Then(@"no apprenticeship data")]

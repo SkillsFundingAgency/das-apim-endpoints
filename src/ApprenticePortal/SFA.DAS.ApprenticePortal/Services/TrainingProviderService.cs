@@ -1,18 +1,17 @@
 ﻿using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Requests;
 using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticePortal.Services
 {
     public class TrainingProviderService
     {
-        private readonly IProviderAccountApiClient<ProviderAccountApiConfiguration> _client;
+        private readonly ProviderAccountApiClient _client;
 
-        public TrainingProviderService(IProviderAccountApiClient<ProviderAccountApiConfiguration> client) => _client = client;
+        public TrainingProviderService(ProviderAccountApiClient client) => _client = client;
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
         {

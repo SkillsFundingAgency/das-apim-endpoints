@@ -7,36 +7,63 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticePortal.Services;
 
 namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
 {
     public class GetApprenticeHomepageQueryHandler : IRequestHandler<GetApprenticeHomepageQuery, GetApprenticeHomepageQueryResult>
     {
+        private readonly CoursesService _coursesService;
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
         private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _commitmentsApiClient;
 
         public GetApprenticeHomepageQueryHandler(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient,
-            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient)
-            => (_accountsApiClient, _commitmentsApiClient) = (accountsApiClient, commitmentsApiClient);
+            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient,
+            CoursesService coursesService)
+        {
+            _coursesService = coursesService;
+            _accountsApiClient = accountsApiClient;
+            _commitmentsApiClient= commitmentsApiClient;
+        }
 
         public async Task<GetApprenticeHomepageQueryResult> Handle(GetApprenticeHomepageQuery request, CancellationToken cancellationToken)
         {
-            var apprentice = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
-            var myApprenticeship = _accountsApiClient.Get<MyApprenticeshipData>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-            var apprenticeships = _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
+            var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
+            var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
+            var apprenticeshipsTask = _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
 
-            await Task.WhenAll(apprentice, apprenticeships, myApprenticeship);
+            await Task.WhenAll(apprenticeTask, apprenticeshipsTask, myApprenticeshipTask);
+
+            var myApprenticeship = await myApprenticeshipTask;
+            if (myApprenticeship != null)
+            {
+                await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
+            }
 
             return new GetApprenticeHomepageQueryResult
             {
                 ApprenticeHomepage = new ApprenticeHomepage
                 {                    
-                    Apprentice = await apprentice,
-                    Apprenticeship = (await apprenticeships)?.Apprenticeships.FirstOrDefault(),
-                    MyApprenticeshipData = await myApprenticeship
+                    Apprentice = await apprenticeTask,
+                    Apprenticeship = (await apprenticeshipsTask)?.Apprenticeships.FirstOrDefault(),
+                    MyApprenticeship = myApprenticeship
                 }                
             };
+        }
+        private async Task<MyApprenticeship> PopulateMyApprenticeshipWithCourseTitle(MyApprenticeship myApprenticeship)
+        {
+            if (string.IsNullOrWhiteSpace(myApprenticeship.StandardUId))
+            {
+                var course = await _coursesService.GetFrameworkCourse(myApprenticeship.TrainingCode);
+                myApprenticeship.Title = course.Title;
+            }
+            else
+            {
+                var course = await _coursesService.GetStandardCourse(myApprenticeship.StandardUId);
+                myApprenticeship.Title = course.Title;
+            }
+            return myApprenticeship;
         }
     }
 }
