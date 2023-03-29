@@ -18,9 +18,9 @@ public class EmployersController : ControllerBase
     [HttpGet]
     [Route("{userRef}")]
     [ProducesResponseType(typeof(GetEmployerMemberQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Index(Guid userRef)
+    public async Task<IActionResult> GetEmployerMember(Guid userRef, CancellationToken cancellationToken)
     {
-        var employer = await _mediator.Send(new GetEmployerMemberQuery(userRef));
-        return Ok(employer);
+        var employer = await _mediator.Send(new GetEmployerMemberQuery(userRef), cancellationToken);
+        return employer is null ? NotFound() : Ok(employer);
     }
 }

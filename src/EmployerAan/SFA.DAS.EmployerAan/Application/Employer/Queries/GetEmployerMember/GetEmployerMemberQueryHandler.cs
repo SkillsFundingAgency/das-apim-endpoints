@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.InnerApi.Requests;
 using SFA.DAS.EmployerAan.Services;
 
 namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 
-public class GetEmployerMemberQueryHandler : IRequestHandler<GetEmployerMemberQuery, GetEmployerMemberQueryResult>
+public class GetEmployerMemberQueryHandler : IRequestHandler<GetEmployerMemberQuery, GetEmployerMemberQueryResult?>
 {
     private readonly IAanHubApiClient<AanHubApiConfiguration> _aanHubApiClient;
 
@@ -14,8 +15,15 @@ public class GetEmployerMemberQueryHandler : IRequestHandler<GetEmployerMemberQu
         _aanHubApiClient = aanHubApiClient;
     }
 
-    public Task<GetEmployerMemberQueryResult> Handle(GetEmployerMemberQuery request, CancellationToken cancellationToken)
+    public async Task<GetEmployerMemberQueryResult?> Handle(GetEmployerMemberQuery request, CancellationToken cancellationToken)
     {
-        return _aanHubApiClient.Get<GetEmployerMemberQueryResult>(new GetEmployerMemberRequest() { UserRef = request.UserRef });
+        var response = await _aanHubApiClient.GetWithResponseCode<GetEmployerMemberQueryResult>(new GetEmployerMemberRequest() { UserRef = request.UserRef });
+        var result = response.StatusCode switch
+        {
+            HttpStatusCode.OK => response.Body,
+            HttpStatusCode.NotFound => null,
+            _ => throw new InvalidOperationException($"Get employer member didn't some back with successful response")
+        };
+        return result;
     }
 }
