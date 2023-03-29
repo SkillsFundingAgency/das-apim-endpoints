@@ -6,7 +6,7 @@ using SFA.DAS.ApprenticePortal.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries
+namespace SFA.DAS.ApprenticePortal.Application.Queries.ApprenticeAccounts
 {
     public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, GetMyApprenticeshipQueryResult>
     {
@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries
         public async Task<GetMyApprenticeshipQueryResult> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
         {
             var myApprenticeship = _accountsApiClient.Get<MyApprenticeshipData>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-            return new GetMyApprenticeshipQueryResult { ApprenticeshipData = await myApprenticeship};
+            return new GetMyApprenticeshipQueryResult { ApprenticeshipData = await myApprenticeship };
         }
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Commands;
+using SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts;
 
 namespace SFA.DAS.ApprenticePortal.Api.Controllers
 {

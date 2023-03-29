@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.ApprenticePortal.Models;
 
-namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
+namespace SFA.DAS.ApprenticePortal.Application.Queries.Homepage
 {
     public class GetApprenticeHomepageQueryResult
     {

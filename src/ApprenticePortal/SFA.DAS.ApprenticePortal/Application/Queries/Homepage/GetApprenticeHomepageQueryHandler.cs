@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticePortal.Services;
 
-namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
+namespace SFA.DAS.ApprenticePortal.Application.Queries.Homepage
 {
     public class GetApprenticeHomepageQueryHandler : IRequestHandler<GetApprenticeHomepageQuery, GetApprenticeHomepageQueryResult>
     {
@@ -24,7 +24,7 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
         {
             _coursesService = coursesService;
             _accountsApiClient = accountsApiClient;
-            _commitmentsApiClient= commitmentsApiClient;
+            _commitmentsApiClient = commitmentsApiClient;
         }
 
         public async Task<GetApprenticeHomepageQueryResult> Handle(GetApprenticeHomepageQuery request, CancellationToken cancellationToken)
@@ -44,11 +44,11 @@ namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
             return new GetApprenticeHomepageQueryResult
             {
                 ApprenticeHomepage = new ApprenticeHomepage
-                {                    
+                {
                     Apprentice = await apprenticeTask,
                     Apprenticeship = (await apprenticeshipsTask)?.Apprenticeships.FirstOrDefault(),
                     MyApprenticeship = myApprenticeship
-                }                
+                }
             };
         }
         private async Task<MyApprenticeship> PopulateMyApprenticeshipWithCourseTitle(MyApprenticeship myApprenticeship)
