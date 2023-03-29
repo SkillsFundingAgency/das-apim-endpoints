@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ApprenticePortal.Application.Queries.Homepage;
 
 namespace SFA.DAS.ApprenticePortal.Application.Homepage.Queries
 {

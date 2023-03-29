@@ -13,7 +13,7 @@ using SFA.DAS.ApprenticePortal.Services;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
 
-namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Commands
+namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
 {
     public class AddOrUpdateMyApprenticeshipCommandHandler : IRequestHandler<AddOrUpdateMyApprenticeshipCommand>
     {
@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Commands
 
             var commitmentsApprenticeship = await GetCommitmentsApprenticeshipDetails(request.CommitmentsApprenticeshipId);
             var myNewApprenticeship = await BuildMyApprenticeship(commitmentsApprenticeship);
-            
+
             // Internally the Inner API will either create a new MyApprenticeship or update the existing one
             await _accountsApiClient.Post(new PostApprenticeshipRequest(request.ApprenticeId) { Data = myNewApprenticeship });
 
