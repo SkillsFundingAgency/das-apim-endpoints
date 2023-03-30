@@ -12,8 +12,6 @@ namespace SFA.DAS.ApprenticePortal.Services
 
         public CoursesService(CourseApiClient client) => _client = client;
 
-        //public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
-
         public async Task<StandardApiResponse> GetStandardCourse(string standardUId)
         {
             var response = await _client.GetWithResponseCode<StandardApiResponse>(

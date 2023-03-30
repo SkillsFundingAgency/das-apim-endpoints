@@ -5,13 +5,13 @@ namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests
 {
     public class GetMyApprenticeshipRequest : IGetApiRequest
     {
-        private readonly Guid _id;
+        private readonly Guid _apprenticeId;
 
-        public GetMyApprenticeshipRequest(Guid id)
+        public GetMyApprenticeshipRequest(Guid apprenticeId)
         {
-            _id = id;
+            _apprenticeId = apprenticeId;
         }
 
-        public string GetUrl => $"apprentices/{_id}/my-apprenticeship";
+        public string GetUrl => $"apprentices/{_apprenticeId}/my-apprenticeship";
     }
 }
