@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeCommitments.Configuration
+namespace SFA.DAS.SharedOuterApi.Configuration
 {
     public class TrainingProviderConfiguration : IInternalApiConfiguration
     {
