@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService
 {
     public class TrainingProviderResponse
     {

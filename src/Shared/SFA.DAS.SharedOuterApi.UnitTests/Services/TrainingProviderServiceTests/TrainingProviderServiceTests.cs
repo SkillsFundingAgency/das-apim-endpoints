@@ -1,18 +1,19 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Net;
-using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.ApprenticeCommitments.UnitTests.Application.Services
+namespace SFA.DAS.SharedOuterApi.UnitTests.Services.TrainingProviderServiceTests
 {
     [TestFixture]
     public class TrainingProviderServiceTests

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using AutoFixture;
-using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
