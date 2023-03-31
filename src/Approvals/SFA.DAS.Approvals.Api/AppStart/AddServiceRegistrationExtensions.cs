@@ -52,6 +52,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
             services.AddTransient<IFjaaService, FjaaService>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+            services.AddTransient<IProviderCoursesService, ProviderCoursesService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddServiceParameters();
         }

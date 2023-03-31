@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class TrainingProviderService
+    public class TrainingProviderService : ITrainingProviderService
     {
         private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
 
