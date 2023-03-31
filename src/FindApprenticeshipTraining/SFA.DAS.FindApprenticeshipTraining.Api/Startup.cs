@@ -35,9 +35,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -66,14 +66,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             var configuration = _configuration
                 .GetSection("FindApprenticeshipTrainingConfiguration")
                 .Get<FindApprenticeshipTrainingConfiguration>();
-            
+
             if (_configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
             }
             else
             {
-                
+
 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -113,14 +113,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 app.UseHealthChecks();
             }
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
-            });
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -128,7 +120,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 c.RoutePrefix = string.Empty;
             });
 
+            app.UseRouting();
             app.UseMiddleware<SecurityHeadersMiddleware>();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
+            });
         }
 
     }
