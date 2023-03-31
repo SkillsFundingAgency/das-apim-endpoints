@@ -127,6 +127,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindApprenticeshipTrainingOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+
+            app.UseMiddleware<SecurityHeadersMiddleware>();
         }
 
     }
