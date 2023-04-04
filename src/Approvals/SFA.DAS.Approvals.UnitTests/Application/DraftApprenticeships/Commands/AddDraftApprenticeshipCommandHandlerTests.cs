@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -20,6 +21,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         private AddDraftApprenticeshipCommandHandler _handler;
         private AddDraftApprenticeshipCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<ILearnerDetailsValidator> _learnerDetailsValidator;
         private Fixture _fixture;
 
         [SetUp]
@@ -29,8 +31,29 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             _request = _fixture.Create<AddDraftApprenticeshipCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
+            _learnerDetailsValidator
+                .Setup(x => x.Validate(It.IsAny<ValidateLearnerDetailsRequest>()))
+                .ReturnsAsync(It.IsAny<LearnerVerificationResponse>());
 
-            _handler = new AddDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object);
+            _handler = new AddDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
+        }
+
+        [Test]
+        public async Task Handle_Details_Validator_Called()
+        {
+            _commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<AddDraftApprenticeshipResponse>(It.IsAny<PostAddDraftApprenticeshipRequest>(), true))
+                .ReturnsAsync(_fixture.Create<ApiResponse<AddDraftApprenticeshipResponse>>());
+
+            await _handler.Handle(_request, CancellationToken.None);
+
+            _learnerDetailsValidator.Verify(x => x.Validate(
+                It.Is<ValidateLearnerDetailsRequest>(r =>
+                r.Uln == _request.Uln &&
+                r.FirstName == _request.FirstName &&
+                r.LastName == _request.LastName)
+                ), Times.Once);
         }
 
         [Test]

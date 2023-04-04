@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -12,14 +13,19 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
     public class CreateCohortCommandHandler : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
-        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        private readonly ILearnerDetailsValidator _detailsValidator;
+
+        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ILearnerDetailsValidator detailsValidator)
         {
             _apiClient = apiClient;
+            _detailsValidator = detailsValidator;
         }
 
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
         {
+            var validateDetailsRequest = new ValidateLearnerDetailsRequest() { Uln = request.Uln, FirstName = request.FirstName, LastName = request.LastName };
+            var validationResult = await _detailsValidator.Validate(validateDetailsRequest);
+
             var createCohortRequest = new CreateCohortRequest
             {
                 AccountId = request.AccountId,
@@ -45,6 +51,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 TransferSenderId = request.TransferSenderId,
                 Uln = request.Uln,
                 UserInfo = request.UserInfo,
+                LearnerVerificationResponse = validationResult,
                 RequestingParty = request.RequestingParty
             };
             var createCohortResponse = await _apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));

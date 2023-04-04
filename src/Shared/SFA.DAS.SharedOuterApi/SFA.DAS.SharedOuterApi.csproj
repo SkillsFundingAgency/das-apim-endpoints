@@ -18,5 +18,4 @@
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
     </ItemGroup>
-
 </Project>

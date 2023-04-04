@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using SFA.DAS.Approvals.Application.Shared.Enums;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
@@ -25,5 +26,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public Guid? ReservationId { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public LearnerVerificationResponse LearnerVerificationResponse { get; set; }
     }
 }

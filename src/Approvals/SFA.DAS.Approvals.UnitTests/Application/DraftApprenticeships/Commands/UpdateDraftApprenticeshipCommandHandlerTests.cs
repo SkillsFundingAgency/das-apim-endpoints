@@ -4,6 +4,7 @@ using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -17,6 +18,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         private UpdateDraftApprenticeshipCommandHandler _handler;
         private UpdateDraftApprenticeshipCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<ILearnerDetailsValidator> _learnerDetailsValidator;
         private Fixture _fixture;
 
         [SetUp]
@@ -26,8 +28,25 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             _request = _fixture.Create<UpdateDraftApprenticeshipCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
+            _learnerDetailsValidator
+                .Setup(x => x.Validate(It.IsAny<ValidateLearnerDetailsRequest>()))
+                .ReturnsAsync(It.IsAny<LearnerVerificationResponse>());
 
-            _handler = new UpdateDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object);
+            _handler = new UpdateDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
+        }
+
+        [Test]
+        public async Task Handle_Details_Validator_Called()
+        {
+            await _handler.Handle(_request, CancellationToken.None);
+
+            _learnerDetailsValidator.Verify(x => x.Validate(
+                It.Is<ValidateLearnerDetailsRequest>(r =>
+                r.Uln == _request.Uln &&
+                r.FirstName == _request.FirstName &&
+                r.LastName == _request.LastName)
+                ), Times.Once);
         }
 
         [Test]

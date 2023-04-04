@@ -11,6 +11,7 @@ using FluentAssertions;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Application.Shared.LearnerDetailsValidation;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 {
@@ -20,6 +21,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         private CreateCohortCommandHandler _handler;
         private CreateCohortCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<ILearnerDetailsValidator> _learnerDetailsValidator;
         private Fixture _fixture;
 
         [SetUp]
@@ -29,8 +31,29 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             _request = _fixture.Create<CreateCohortCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _learnerDetailsValidator = new Mock<ILearnerDetailsValidator>();
+            _learnerDetailsValidator
+                .Setup(x => x.Validate(It.IsAny<ValidateLearnerDetailsRequest>()))
+                .ReturnsAsync(It.IsAny<LearnerVerificationResponse>());
 
-            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object);
+            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object, _learnerDetailsValidator.Object);
+        }
+
+        [Test]
+        public async Task Handle_Details_Validator_Called()
+        {
+            _commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(It.IsAny<PostCreateCohortRequest>(), true))
+                .ReturnsAsync(_fixture.Create<ApiResponse<CreateCohortResponse>>());
+
+            await _handler.Handle(_request, CancellationToken.None);
+
+            _learnerDetailsValidator.Verify(x => x.Validate(
+                It.Is<ValidateLearnerDetailsRequest>(r =>
+                r.Uln == _request.Uln &&
+                r.FirstName == _request.FirstName &&
+                r.LastName == _request.LastName)
+                ), Times.Once);
         }
 
         [Test]
