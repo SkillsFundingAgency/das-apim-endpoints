@@ -21,18 +21,18 @@ namespace SFA.DAS.Approvals.Services
     {
         private readonly ServiceParameters _serviceParameters;
         private readonly ITrainingProviderService _trainingProviderService;
-        private readonly IInternalApiClient<RoatpV2ApiConfiguration> _managingStandardsApiClient;
+        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
 
         public ProviderCoursesService(ServiceParameters serviceParameters,
             ITrainingProviderService trainingProviderService,
-            IInternalApiClient<RoatpV2ApiConfiguration> managingStandardsApiClient,
+            IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
         {
             _serviceParameters = serviceParameters;
             _trainingProviderService = trainingProviderService;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
-            _managingStandardsApiClient = managingStandardsApiClient;
+            _providerCoursesApiClient = providerCoursesApiClient;
         }
 
         public async Task<Dictionary<string, string>> GetCourses(long providerId)
@@ -48,7 +48,7 @@ namespace SFA.DAS.Approvals.Services
             if (providerDetails.IsMainProvider)
             {
                 var providerStandards =
-                    await _managingStandardsApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
+                    await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
                         new GetProviderStandardsRequest(providerId));
 
                 return providerStandards.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);

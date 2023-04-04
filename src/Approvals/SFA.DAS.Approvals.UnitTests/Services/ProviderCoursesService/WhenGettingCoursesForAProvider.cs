@@ -56,7 +56,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Approvals.Services.ProviderCoursesService _providerCoursesService;
             private ServiceParameters _serviceParameters;
             private Mock<ITrainingProviderService> _trainingProviderService;
-            private Mock<IInternalApiClient<RoatpV2ApiConfiguration>> _managingStandardsApiClient;
+            private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _managingStandardsApiClient;
             private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsV2ApiClient;
             private Fixture _autoFixture = new Fixture();
             private long _trainingProviderId;
@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public ProviderCoursesServiceTestFixture()
             {
                 _trainingProviderService = new Mock<ITrainingProviderService>();
-                _managingStandardsApiClient = new Mock<IInternalApiClient<RoatpV2ApiConfiguration>>();
+                _managingStandardsApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
                 _commitmentsV2ApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
                 _serviceParameters = new ServiceParameters(Party.Provider, 123);
 
