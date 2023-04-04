@@ -95,20 +95,23 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             app.UseHttpsRedirection();
             app.UseHealthChecks();
             app.UseAuthentication();
-            app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Account}/{action=index}/{id?}");
-            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeFeedbackOuterApi");
                 c.RoutePrefix = string.Empty;
+            });
+
+            app.UseRouting();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
         }
     }
