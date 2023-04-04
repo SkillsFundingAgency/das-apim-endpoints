@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
-using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -31,11 +31,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         private GetDraftApprenticeshipsResponse _draftApprenticeship;
 
         private GetEditDraftApprenticeshipDeliveryModelQueryResult _queryEditDraftResult;
-
+        private Dictionary<string, string> _providerCourses;
 
         private List<string> _deliveryModels;
         private Mock<IDeliveryModelService> _deliveryModelService;
         private Mock<IFjaaService> _fjaaService;
+        private Mock<IProviderCoursesService> _providerCoursesService;
 
         [SetUp]
         public void Setup()
@@ -73,7 +74,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
-            _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object);
+            _providerCourses = fixture.Create<Dictionary<string, string>>();
+            _providerCoursesService = new Mock<IProviderCoursesService>();
+            _providerCoursesService.Setup(x => x.GetCourses(It.Is<long>(id => id == _cohort.ProviderId)))
+                .ReturnsAsync(_providerCourses);
+
+            _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object, _providerCoursesService.Object);
         }
 
         [Test]
@@ -88,6 +94,33 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_Empty()
+        {
+            _providerCourses.Clear();
+
+            foreach (var courseCode in _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct())
+            {
+                _providerCourses.Add(courseCode, $"test-{courseCode}");
+            }
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_NotEmpty()
+        {
+            _providerCourses.Clear();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            var expected = _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct();
+
+            CollectionAssert.AreEqual(expected, result.InvalidProviderCourseCodes);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
+        public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
+
     }
 
     public class GetCohortDetailsQueryHandler : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
@@ -31,12 +34,14 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
         private readonly IFjaaService _fjaaService;
+        private readonly IProviderCoursesService _providerCoursesService;
 
-        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService)
+        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService, IProviderCoursesService providerCoursesService)
         {
             _apiClient = apiClient;
             _serviceParameters = serviceParameters;
             _fjaaService = fjaaService;
+            _providerCoursesService = providerCoursesService;
         }
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
@@ -44,20 +49,20 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId);
             var cohortRequest = new GetCohortRequest(request.CohortId);
 
-            var apiResponseTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
+            var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
 
-            await Task.WhenAll(apiResponseTask, cohortResponseTask);
+            await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask);
 
-            if (apiResponseTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
+            if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
 
-            apiResponseTask.Result.EnsureSuccessStatusCode();
+            draftApprenticeshipTask.Result.EnsureSuccessStatusCode();
             cohortResponseTask.Result.EnsureSuccessStatusCode();
 
-            var apprenticeships = apiResponseTask.Result.Body;
+            var draftApprenticeships = draftApprenticeshipTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))
@@ -65,13 +70,23 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 return null;
             }
 
-            var isOnRegister = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+            var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
+            var providerCoursesTask = _providerCoursesService.GetCourses(cohort.ProviderId);
+
+            await Task.WhenAll(isOnRegisterTask, providerCoursesTask);
+
+            var isOnRegister = isOnRegisterTask.Result;
+            var providerCourses = providerCoursesTask.Result;
+
+            var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
+                .Where(c => !providerCourses.ContainsKey(c));
 
             return new GetCohortDetailsQueryResult
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && apprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency))
+                HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
+                InvalidProviderCourseCodes = invalidCourses
             };
         }
     }
