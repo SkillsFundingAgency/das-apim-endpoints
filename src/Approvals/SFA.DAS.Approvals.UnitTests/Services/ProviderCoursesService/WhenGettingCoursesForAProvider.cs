@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
@@ -8,8 +10,6 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
@@ -28,23 +28,26 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
         }
 
         [Test]
-        public void When_Calling_Party_Is_Employer_Then_All_Standards_Are_Returned()
+        public async Task When_Calling_Party_Is_Employer_Then_All_Standards_Are_Returned()
         {
             _fixture.WithEmployerAsCallingParty();
+            await _fixture.GetCourses();
             _fixture.AssertResultIsAllStandards();
         }
 
         [Test]
-        public void When_Provider_Is_Main_Provider_Then_Courses_Defined_In_Managing_Standards_Are_Returned()
+        public async Task When_Provider_Is_Main_Provider_Then_Courses_Defined_In_Managing_Standards_Are_Returned()
         {
+            await _fixture.GetCourses();
             _fixture.AssertResultIsAsDefinedInManagingStandards();
         }
 
-        [TestCase(ProviderType.EmployerProvider)]
-        [TestCase(ProviderType.SupportingProvider)]
-        public void When_Provider_Is_Not_Main_Provider_Then_All_Standards_Returned(ProviderType providerType)
+        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.EmployerProvider)]
+        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.SupportingProvider)]
+        public async Task When_Provider_Is_Not_Main_Provider_Then_All_Standards_Returned(TrainingProviderResponse.ProviderTypeIdentifier providerType)
         {
             _fixture.WithProviderType(providerType);
+            await _fixture.GetCourses();
             _fixture.AssertResultIsAllStandards();
         }
 
@@ -60,7 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private TrainingProviderResponse _trainingProviderResponse;
             private Dictionary<string, string> _result;
             private GetAllStandardsResponse _allStandardsResponse;
-            private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponses;
+            private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
 
             public ProviderCoursesServiceTestFixture()
             {
@@ -71,7 +74,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
                 _trainingProviderId = _autoFixture.Create<long>();
                 _trainingProviderResponse = _autoFixture.Create<TrainingProviderResponse>();
-                _trainingProviderResponse.ProviderType.Id = (short) ProviderType.MainProvider;
+                _trainingProviderResponse.ProviderType.Id = (short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider;
 
                 _trainingProviderService.Setup(x =>
                         x.GetTrainingProviderDetails(It.Is<long>(id => id == _trainingProviderId)))
@@ -81,17 +84,17 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _commitmentsV2ApiClient.Setup(x => x.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
                     .ReturnsAsync(_allStandardsResponse);
 
-                _getProviderStandardsResponses = _autoFixture.Create<IEnumerable<GetProviderStandardsResponse>>();
+                _getProviderStandardsResponse = _autoFixture.Create<IEnumerable<GetProviderStandardsResponse>>();
                 _managingStandardsApiClient.Setup(x =>
                         x.Get<IEnumerable<GetProviderStandardsResponse>>(It.IsAny<GetProviderStandardsRequest>()))
-                    .ReturnsAsync(_getProviderStandardsResponses);
+                    .ReturnsAsync(_getProviderStandardsResponse);
 
                 _providerCoursesService = new Approvals.Services.ProviderCoursesService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
                     _commitmentsV2ApiClient.Object);
             }
 
-            public ProviderCoursesServiceTestFixture WithProviderType(ProviderType providerType)
+            public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
             {
                 _trainingProviderResponse.ProviderType.Id = (short) providerType;
                 return this;
@@ -108,28 +111,22 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 return this;
             }
 
-            public void GetCourses()
+            public async Task GetCourses()
             {
-                _result = _providerCoursesService.GetCourses(_trainingProviderId);
+                _result = await _providerCoursesService.GetCourses(_trainingProviderId);
             }
 
             public void AssertResultIsAllStandards()
             {
-                Assert.Fail("Not implemented");
+                var expected = _allStandardsResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
+                CollectionAssert.AreEqual(expected, _result);
             }
 
             public void AssertResultIsAsDefinedInManagingStandards()
             {
-                Assert.Fail("Not implemented");
+                var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
+                CollectionAssert.AreEqual(expected, _result);
             }
         }
-
-        public enum ProviderType
-        {
-            MainProvider,
-            EmployerProvider,
-            SupportingProvider
-        }
-
     }
 }
