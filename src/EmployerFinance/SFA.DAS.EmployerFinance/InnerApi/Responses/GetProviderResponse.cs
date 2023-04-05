@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCourses
+﻿namespace SFA.DAS.EmployerFinance.InnerApi.Responses
 {
     public class GetProviderResponse
     {
