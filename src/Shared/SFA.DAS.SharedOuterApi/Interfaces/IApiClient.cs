@@ -19,6 +19,12 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task Put<TData>(IPutApiRequest<TData> request);
         Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true);
         Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request);
+        /// <summary>
+        /// Sends a PUT request to an API endpoint and returns a response code.
+        /// </summary>
+        /// <typeparam name="TResponse">If the API returns no data use NullResponse type.</typeparam>
+        /// <param name="request"></param>
+        /// <returns></returns>
         Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request);
     }
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Api", "SFA.DAS.ApprenticeAan.Api\SFA.DAS.ApprenticeAan.Api.csproj", "{7884FEF9-68C7-4461-BCA0-D1BB3428E5C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Applicaiton", "SFA.DAS.ApprenticeAan.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj", "{20415028-96A9-471D-A303-9F41DC438667}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Application", "SFA.DAS.ApprenticeAan.Application\SFA.DAS.ApprenticeAan.Application.csproj", "{20415028-96A9-471D-A303-9F41DC438667}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Api.UnitTests", "SFA.DAS.ApprenticeAan.Api.UnitTests\SFA.DAS.ApprenticeAan.Api.UnitTests.csproj", "{D6C2F873-D5C7-4549-AE68-D9E267CA8D7A}"
 EndProject

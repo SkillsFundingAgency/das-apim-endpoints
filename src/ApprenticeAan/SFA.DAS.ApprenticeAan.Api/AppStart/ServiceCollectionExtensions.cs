@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
-using SFA.DAS.ApprenticeAan.Api.Services;
+using SFA.DAS.ApprenticeAan.Application.Extensions;
+using SFA.DAS.ApprenticeAan.Application.Services;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticeAan.Api.AppStart;
 
@@ -18,6 +21,9 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAanHubApiClient<AanHubApiConfiguration>, AanHubApiClient>();
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
+        services.AddApplicationRegistrations();
         return services;
     }
 
@@ -26,6 +32,10 @@ public static class ServiceCollectionExtensions
         services.AddOptions();
         services.Configure<AanHubApiConfiguration>(configuration.GetSection(nameof(AanHubApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AanHubApiConfiguration>>()!.Value);
+        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>()!.Value);
+        services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
         return services;
     }
 }
