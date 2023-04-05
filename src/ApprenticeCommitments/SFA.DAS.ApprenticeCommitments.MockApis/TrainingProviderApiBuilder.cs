@@ -51,6 +51,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             var result = _fixture.Build<TrainingProviderResponse>()
                 .With(x => x.Ukprn, trainingProviderId)
                 .Create();
+
             var response = new SearchResponse { SearchResults = new TrainingProviderResponse[] { result } };
 
             _server

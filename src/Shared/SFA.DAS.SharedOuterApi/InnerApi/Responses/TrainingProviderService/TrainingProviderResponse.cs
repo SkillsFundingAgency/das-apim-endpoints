@@ -4,6 +4,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService
 {
     public class TrainingProviderResponse
     {
+        public TrainingProviderResponse()
+        {
+            ProviderType = new ProviderTypeResponse();
+        }
+
         public Guid Id { get; set; }
         public long Ukprn { get; set; }
         public string LegalName { get; set; }
