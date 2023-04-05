@@ -2,7 +2,7 @@
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
+using SFA.DAS.ApprenticePortal.Application.Queries.Homepage;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeCommitments.Requests;
 using SFA.DAS.ApprenticePortal.Models;
