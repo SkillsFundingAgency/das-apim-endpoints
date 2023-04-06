@@ -19,19 +19,15 @@ namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
 
         public async Task<GetProviderResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            GetProviderResponse provider=null;
-
             var result = await _roatpApiClient.Get<GetRoatpProviderResponse>(
                 new GetProviderRequest
                 {
                     Ukprn = request.Ukprn
                 });
 
-            provider = result;
-            
             return new GetProviderResult
             {
-                Provider = provider
+                Provider = result
             };
         }
     }
