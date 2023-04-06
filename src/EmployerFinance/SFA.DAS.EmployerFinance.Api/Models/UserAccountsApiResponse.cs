@@ -36,7 +36,6 @@ namespace SFA.DAS.EmployerFinance.Api.Models
         public string EncodedAccountId { get ; set ; }
         public string DasAccountName { get ; set ; }
         public string Role { get ; set ; }
-        public int MinimumSignedAgreementVersion { get; set; }
         
         public static implicit operator UserAccountsApiResponseItem(AccountUser source)
         {
@@ -44,8 +43,7 @@ namespace SFA.DAS.EmployerFinance.Api.Models
             {
                 DasAccountName = source.DasAccountName,
                 EncodedAccountId = source.EncodedAccountId,
-                Role = source.Role,
-                MinimumSignedAgreementVersion = source.MinimumSignedAgreementVersion
+                Role = source.Role
             };
         }
     }

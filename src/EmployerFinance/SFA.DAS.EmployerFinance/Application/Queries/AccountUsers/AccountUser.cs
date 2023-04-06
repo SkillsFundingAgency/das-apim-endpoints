@@ -5,6 +5,5 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.AccountUsers
         public string DasAccountName {get; set;}
         public string EncodedAccountId {get; set;}
         public string Role {get; set;}
-        public int MinimumSignedAgreementVersion { get; set; }
     }
 }

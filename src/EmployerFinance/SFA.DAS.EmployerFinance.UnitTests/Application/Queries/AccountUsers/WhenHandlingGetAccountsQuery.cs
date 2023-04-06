@@ -25,8 +25,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.AccountUsers
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
             GetAccountsQuery query,
             List<EmployerAccountUser> teamResponse,
-            GetSignedAgreementVersionResponse apiResponse,
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountApClient,
             [Frozen] Mock<IEmployerAccountsService> accountService,
             GetAccountsQueryHandler handler)
         {
@@ -36,14 +34,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.AccountUsers
                     x.GetEmployerAccounts(It.Is<EmployerProfile>(c =>
                         c.Email.Equals(query.Email) && c.UserId.Equals(query.UserId))))
                 .ReturnsAsync(teamResponse);
-            foreach (var user in teamResponse)
-            {
-                accountApClient
-                    .Setup(x => x.GetWithResponseCode<GetSignedAgreementVersionResponse>(
-                        It.Is<GetSignedAgreementVersionRequest>(c => c.GetUrl.Contains(user.EncodedAccountId))))
-                    .ReturnsAsync(
-                        new ApiResponse<GetSignedAgreementVersionResponse>(apiResponse, HttpStatusCode.OK, ""));
-            }
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -59,8 +49,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.AccountUsers
             actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
             actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
             actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
-            actual.UserAccountResponse.Select(x => x.MinimumSignedAgreementVersion).ToList()
-                .TrueForAll(c => c == apiResponse.MinimumSignedAgreementVersion).Should().BeTrue();
         }
         
         [Test, MoqAutoData]
