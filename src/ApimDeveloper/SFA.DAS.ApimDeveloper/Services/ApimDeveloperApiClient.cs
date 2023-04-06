@@ -54,7 +54,7 @@ namespace SFA.DAS.ApimDeveloper.Services
 
         public Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Delete(request);
         }
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)
