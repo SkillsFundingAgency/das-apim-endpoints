@@ -79,7 +79,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var providerCourses = providerCoursesTask.Result;
 
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
-                .Where(c => !providerCourses.ContainsKey(c));
+                .Where(c => providerCourses.All(x => x.CourseCode != c));
 
             return new GetCohortDetailsQueryResult
             {

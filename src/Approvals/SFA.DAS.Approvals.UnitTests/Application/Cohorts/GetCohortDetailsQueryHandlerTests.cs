@@ -15,6 +15,7 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using Standard = SFA.DAS.Approvals.Types.Standard;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 {
@@ -31,7 +32,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         private GetDraftApprenticeshipsResponse _draftApprenticeship;
 
         private GetEditDraftApprenticeshipDeliveryModelQueryResult _queryEditDraftResult;
-        private Dictionary<string, string> _providerCourses;
+        private List<Standard> _providerCourses;
 
         private List<string> _deliveryModels;
         private Mock<IDeliveryModelService> _deliveryModelService;
@@ -74,7 +75,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
-            _providerCourses = fixture.Create<Dictionary<string, string>>();
+            _providerCourses = fixture.Create<List<Standard>>();
             _providerCoursesService = new Mock<IProviderCoursesService>();
             _providerCoursesService.Setup(x => x.GetCourses(It.Is<long>(id => id == _cohort.ProviderId)))
                 .ReturnsAsync(_providerCourses);
@@ -103,7 +104,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             foreach (var courseCode in _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct())
             {
-                _providerCourses.Add(courseCode, $"test-{courseCode}");
+                _providerCourses.Add(new Standard(courseCode, $"test-{courseCode}"));
             }
 
             var result = await _handler.Handle(_query, CancellationToken.None);

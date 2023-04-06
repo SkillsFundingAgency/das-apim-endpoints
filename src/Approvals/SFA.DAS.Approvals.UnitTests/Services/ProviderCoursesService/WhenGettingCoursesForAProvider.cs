@@ -9,6 +9,7 @@ using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
+using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -61,7 +62,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Fixture _autoFixture = new Fixture();
             private long _trainingProviderId;
             private TrainingProviderResponse _trainingProviderResponse;
-            private Dictionary<string, string> _result;
+            private IEnumerable<Standard> _result;
             private GetAllStandardsResponse _allStandardsResponse;
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
 
@@ -119,13 +120,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public void AssertResultIsAllStandards()
             {
                 var expected = _allStandardsResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
-                CollectionAssert.AreEqual(expected, _result);
+                CollectionAssert.AreEqual(expected, _result.ToDictionary(x => x.CourseCode, y => y.Name));
             }
 
             public void AssertResultIsAsDefinedInManagingStandards()
             {
                 var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
-                CollectionAssert.AreEqual(expected, _result);
+                CollectionAssert.AreEqual(expected, _result.ToDictionary(x => x.CourseCode, y => y.Name));
             }
         }
     }
