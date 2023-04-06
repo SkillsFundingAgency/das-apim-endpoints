@@ -46,6 +46,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _cohort = fixture.Build<GetCohortResponse>()
                 .With(x => x.WithParty, Party.Employer)
+                .With(x => x.IsLinkedToChangeOfPartyRequest, false)
                 .Create();
 
             _query = fixture.Create<GetCohortDetailsQuery>();
@@ -122,6 +123,17 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             var expected = _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct();
 
             CollectionAssert.AreEqual(expected, result.InvalidProviderCourseCodes);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_Empty_When_Cohort_Is_Change_Of_Party()
+        {
+            _cohort.IsLinkedToChangeOfPartyRequest = true;
+            _providerCourses.Clear();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
         }
     }
 }

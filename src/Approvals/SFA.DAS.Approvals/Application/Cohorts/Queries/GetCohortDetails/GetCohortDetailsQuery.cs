@@ -86,7 +86,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
-                InvalidProviderCourseCodes = invalidCourses
+                InvalidProviderCourseCodes = cohort.IsLinkedToChangeOfPartyRequest ? Enumerable.Empty<string>() : invalidCourses
             };
         }
     }
