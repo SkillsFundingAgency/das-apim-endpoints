@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -61,6 +62,14 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             _fixture.AssertResultIsAllStandardsFromCache();
         }
 
+        [Test]
+        public async Task When_Cached_Provider_Is_Main_Provider_Then_Courses_Defined_In_Managing_Standards_Are_Returned()
+        {
+            _fixture.WithMainProviderDetailsInCache();
+            await _fixture.GetCourses();
+            _fixture.AssertResultIsAsDefinedInManagingStandards();
+        }
+
         public class ProviderCoursesServiceTestFixture
         {
             private Approvals.Services.ProviderCoursesService _providerCoursesService;
@@ -72,6 +81,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Fixture _autoFixture = new Fixture();
             private long _trainingProviderId;
             private TrainingProviderResponse _trainingProviderResponse;
+            private TrainingProviderResponse _trainingProviderCacheResponse;
             private IEnumerable<Standard> _result;
             private GetAllStandardsResponse _allStandardsResponse;
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
@@ -106,6 +116,11 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                         x.RetrieveFromCache<GetAllStandardsResponse>(Approvals.Services.ProviderCoursesService.AllStandardsCacheKey))
                     .ReturnsAsync(() => null);
 
+                _cacheStorageService.Setup(x =>
+                        x.RetrieveFromCache<TrainingProviderResponse>(
+                            $"{Approvals.Services.ProviderCoursesService.ProviderDetailsCacheKey}-{_trainingProviderId}"))
+                    .ReturnsAsync(() => null);
+
                 _providerCoursesService = new Approvals.Services.ProviderCoursesService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
                     _commitmentsV2ApiClient.Object,
@@ -136,6 +151,28 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _cacheStorageService.Setup(x =>
                         x.RetrieveFromCache<GetAllStandardsResponse>(Approvals.Services.ProviderCoursesService.AllStandardsCacheKey))
                     .ReturnsAsync(_allStandardsCacheResponse);
+
+                _commitmentsV2ApiClient.Setup(x => x.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
+                    .ThrowsAsync(new InvalidOperationException("GetAllStandardsRequest Api Request is invalid when response is cached"));
+
+                return this;
+            }
+
+            public ProviderCoursesServiceTestFixture WithMainProviderDetailsInCache()
+            {
+                _trainingProviderCacheResponse = _autoFixture.Build<TrainingProviderResponse>()
+                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse{ Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
+                    .Create();
+
+                _trainingProviderService.Setup(x =>
+                        x.GetTrainingProviderDetails(It.Is<long>(id => id == _trainingProviderId)))
+                    .ThrowsAsync(new InvalidOperationException("GetTrainingProviderDetails API call is invalid when response is cached"));
+
+                _cacheStorageService.Setup(x =>
+                        x.RetrieveFromCache<TrainingProviderResponse>(
+                            $"{Approvals.Services.ProviderCoursesService.ProviderDetailsCacheKey}-{_trainingProviderId}"))
+                    .ReturnsAsync(_trainingProviderCacheResponse);
+
                 return this;
             }
 

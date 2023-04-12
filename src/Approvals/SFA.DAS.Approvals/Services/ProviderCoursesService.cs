@@ -9,6 +9,7 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Services
@@ -27,6 +28,8 @@ namespace SFA.DAS.Approvals.Services
         private readonly ICacheStorageService _cacheStorageService;
 
         public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
+        public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
+        public const int CacheExpiryHours = 12;
 
         public ProviderCoursesService(ServiceParameters serviceParameters,
             ITrainingProviderService trainingProviderService,
@@ -47,7 +50,7 @@ namespace SFA.DAS.Approvals.Services
                 return await GetAllStandards();
             }
 
-            var providerDetails = await _trainingProviderService.GetTrainingProviderDetails(providerId);
+            var providerDetails = await GetTrainingProviderDetails(providerId);
 
             if (providerDetails.IsMainProvider)
             {
@@ -61,6 +64,22 @@ namespace SFA.DAS.Approvals.Services
             return await GetAllStandards();
         }
 
+        private async Task<TrainingProviderResponse> GetTrainingProviderDetails(long providerId)
+        {
+            var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
+
+            var cacheResult = await _cacheStorageService.RetrieveFromCache<TrainingProviderResponse>(cacheKey);
+
+            if (cacheResult != null)
+            {
+                return cacheResult;
+            }
+
+            var result = await _trainingProviderService.GetTrainingProviderDetails(providerId);
+            await _cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
+            return result;
+        }
+
         private async Task<IEnumerable<Standard>> GetAllStandards()
         {
             var cacheResult = await _cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllStandardsCacheKey);
@@ -71,7 +90,7 @@ namespace SFA.DAS.Approvals.Services
             }
 
             var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-            await _cacheStorageService.SaveToCache(AllStandardsCacheKey, result, 12);
+            await _cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
             return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
         }
     }
