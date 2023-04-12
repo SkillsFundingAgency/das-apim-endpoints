@@ -9,7 +9,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models.RegisteredProvider
         public DateTime StatusDate { get; set; }
         public int OrganisationTypeId { get; set; }
         public int ProviderTypeId { get; set; }
-        public Feedback Feedback { get; set; }
         public string LegalName { get; set; }
     }
 }

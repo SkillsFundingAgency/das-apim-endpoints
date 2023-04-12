@@ -16,38 +16,15 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Providers.Queries
     public class WhenGettingProviders
     {
         [Test, MoqAutoData]
-        public async Task Then_The_CourseDeliveryApi_Is_Called_With_The_Request_And_Epaos_Returned(
-            GetProvidersQuery query,
-            GetProvidersListResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> providerCoursesApiClient,
-            FeatureToggles featureToggles
-        )
-        {
-            featureToggles.RoatpProvidersEnabled = false;
-            GetProvidersQueryHandler handler = new GetProvidersQueryHandler(apiClient.Object, providerCoursesApiClient.Object, featureToggles);
-            apiClient.Setup(x => x.Get<GetProvidersListResponse>(It.IsAny<GetProvidersRequest>())).ReturnsAsync(apiResponse);
-
-            var actual = await handler.Handle(query, CancellationToken.None);
-
-            actual.Providers.Should().BeEquivalentTo(apiResponse.Providers);
-        }
-
-        [Test, MoqAutoData]
         public async Task Then_The_RoatpApi_Is_Called_With_The_Request_And_Epaos_Returned(
             GetProvidersQuery query,
             GetRoatpProvidersListResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> providerCoursesApiClient,
-            FeatureToggles featureToggles
+            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> providerCoursesApiClient
         )
         {
-            featureToggles.RoatpProvidersEnabled = true;
-            GetProvidersQueryHandler handler = new GetProvidersQueryHandler(apiClient.Object, providerCoursesApiClient.Object, featureToggles);
+            GetProvidersQueryHandler handler = new GetProvidersQueryHandler(providerCoursesApiClient.Object);
             providerCoursesApiClient.Setup(x => x.Get<GetRoatpProvidersListResponse>(It.IsAny<GetProvidersRequest>())).ReturnsAsync(apiResponse);
-
             var actual = await handler.Handle(query, CancellationToken.None);
-
             actual.Providers.Should().BeEquivalentTo(apiResponse.RegisteredProviders);
         }
     }
