@@ -7,7 +7,7 @@ namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests
     public class PostApprenticeshipRequest : IPostApiRequest<MyApprenticeshipData>
     {
         private readonly Guid _apprenticeId;
-        public string PostUrl => $"/apprentices/{_apprenticeId}/my-apprenticeship";
+        public string PostUrl => $"/apprentices/{_apprenticeId}/myapprenticeship";
         public MyApprenticeshipData Data { get; set; }
 
         public PostApprenticeshipRequest(Guid apprenticeId)

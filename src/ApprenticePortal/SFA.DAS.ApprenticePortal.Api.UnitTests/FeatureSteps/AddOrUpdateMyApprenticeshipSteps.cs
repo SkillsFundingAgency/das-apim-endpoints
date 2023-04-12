@@ -66,7 +66,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         public void ThenTheCallToSaveMyApprenticeshipIsCalled()
         {
             var logEntry = _context.ApprenticeAccountsInnerApi.LogEntries.Should().Contain(x =>
-                x.RequestMessage.Path == $"/apprentices/{_apprentice.ApprenticeId}/my-apprenticeship").Which;
+                x.RequestMessage.Path == $"/apprentices/{_apprentice.ApprenticeId}/myapprenticeship").Which;
 
             _postedData = JsonConvert.DeserializeObject<MyApprenticeshipData>(logEntry.RequestMessage.Body);
         }

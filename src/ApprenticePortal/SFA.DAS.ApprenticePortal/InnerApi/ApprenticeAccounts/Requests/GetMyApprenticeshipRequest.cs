@@ -12,6 +12,6 @@ namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests
             _apprenticeId = apprenticeId;
         }
 
-        public string GetUrl => $"apprentices/{_apprenticeId}/my-apprenticeship";
+        public string GetUrl => $"apprentices/{_apprenticeId}/myapprenticeship";
     }
 }
