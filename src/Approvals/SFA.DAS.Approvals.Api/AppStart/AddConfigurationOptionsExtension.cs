@@ -15,8 +15,6 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<FjaaApiConfiguration>>().Value);
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<CourseDeliveryApiConfiguration>(configuration.GetSection(nameof(CourseDeliveryApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CourseDeliveryApiConfiguration>>().Value);
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<AssessorsApiConfiguration>(configuration.GetSection(nameof(AssessorsApiConfiguration)));
@@ -41,8 +39,6 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderEventsConfiguration>>().Value);
             services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
-            services.Configure<FeatureToggles>(configuration.GetSection("FeatureToggles"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<FeatureToggles>>().Value);
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
         }

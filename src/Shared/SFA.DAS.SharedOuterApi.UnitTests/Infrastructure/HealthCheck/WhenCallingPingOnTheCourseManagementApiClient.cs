@@ -43,7 +43,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         }
 
         [Test, MoqAutoData]
-        public async Task And_CourseDeliveryApi_Ping_Not_Found_Then_Unhealthy(
+        public async Task And_CourseManagementApi_Ping_Not_Found_Then_Unhealthy(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             RoatpCourseManagementApiHealthCheck healthCheck)
