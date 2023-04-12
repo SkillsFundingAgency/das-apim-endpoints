@@ -24,15 +24,19 @@ namespace SFA.DAS.Approvals.Services
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
+        private readonly ICacheStorageService _cacheStorageService;
+
+        public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
 
         public ProviderCoursesService(ServiceParameters serviceParameters,
             ITrainingProviderService trainingProviderService,
             IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
-            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, ICacheStorageService cacheStorageService)
         {
             _serviceParameters = serviceParameters;
             _trainingProviderService = trainingProviderService;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
+            _cacheStorageService = cacheStorageService;
             _providerCoursesApiClient = providerCoursesApiClient;
         }
 
@@ -40,8 +44,7 @@ namespace SFA.DAS.Approvals.Services
         {
             if (_serviceParameters.CallingParty == Party.Employer)
             {
-                var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-                return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+                return await GetAllStandards();
             }
 
             var providerDetails = await _trainingProviderService.GetTrainingProviderDetails(providerId);
@@ -55,8 +58,21 @@ namespace SFA.DAS.Approvals.Services
                 return providerStandards.Select(x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel));
             }
 
-            var result2 = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-            return result2.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+            return await GetAllStandards();
+        }
+
+        private async Task<IEnumerable<Standard>> GetAllStandards()
+        {
+            var cacheResult = await _cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllStandardsCacheKey);
+
+            if (cacheResult != null)
+            {
+                return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+            }
+
+            var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+            await _cacheStorageService.SaveToCache(AllStandardsCacheKey, result, 12);
+            return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
         }
     }
 }

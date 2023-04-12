@@ -52,6 +52,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             _fixture.AssertResultIsAllStandards();
         }
 
+        [Test]
+        public async Task When_Cached_Then_All_Standards_Are_Returned_From_Cache()
+        {
+            _fixture.WithEmployerAsCallingParty()
+                .WithAllStandardsInCache();
+            await _fixture.GetCourses();
+            _fixture.AssertResultIsAllStandardsFromCache();
+        }
+
         public class ProviderCoursesServiceTestFixture
         {
             private Approvals.Services.ProviderCoursesService _providerCoursesService;
@@ -59,18 +68,21 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Mock<ITrainingProviderService> _trainingProviderService;
             private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _managingStandardsApiClient;
             private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsV2ApiClient;
+            private Mock<ICacheStorageService> _cacheStorageService;
             private Fixture _autoFixture = new Fixture();
             private long _trainingProviderId;
             private TrainingProviderResponse _trainingProviderResponse;
             private IEnumerable<Standard> _result;
             private GetAllStandardsResponse _allStandardsResponse;
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
+            private GetAllStandardsResponse _allStandardsCacheResponse;
 
             public ProviderCoursesServiceTestFixture()
             {
                 _trainingProviderService = new Mock<ITrainingProviderService>();
                 _managingStandardsApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
                 _commitmentsV2ApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+                _cacheStorageService = new Mock<ICacheStorageService>();
                 _serviceParameters = new ServiceParameters(Party.Provider, 123);
 
                 _trainingProviderId = _autoFixture.Create<long>();
@@ -90,9 +102,14 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                         x.Get<IEnumerable<GetProviderStandardsResponse>>(It.IsAny<GetProviderStandardsRequest>()))
                     .ReturnsAsync(_getProviderStandardsResponse);
 
+                _cacheStorageService.Setup(x =>
+                        x.RetrieveFromCache<GetAllStandardsResponse>(Approvals.Services.ProviderCoursesService.AllStandardsCacheKey))
+                    .ReturnsAsync(() => null);
+
                 _providerCoursesService = new Approvals.Services.ProviderCoursesService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
-                    _commitmentsV2ApiClient.Object);
+                    _commitmentsV2ApiClient.Object,
+                    _cacheStorageService.Object);
             }
 
             public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
@@ -107,8 +124,18 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
                 _providerCoursesService = new Approvals.Services.ProviderCoursesService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
-                    _commitmentsV2ApiClient.Object);
+                    _commitmentsV2ApiClient.Object,
+                    _cacheStorageService.Object);
 
+                return this;
+            }
+
+            public ProviderCoursesServiceTestFixture WithAllStandardsInCache()
+            {
+                _allStandardsCacheResponse = _autoFixture.Create<GetAllStandardsResponse>();
+                _cacheStorageService.Setup(x =>
+                        x.RetrieveFromCache<GetAllStandardsResponse>(Approvals.Services.ProviderCoursesService.AllStandardsCacheKey))
+                    .ReturnsAsync(_allStandardsCacheResponse);
                 return this;
             }
 
@@ -120,6 +147,12 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public void AssertResultIsAllStandards()
             {
                 var expected = _allStandardsResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
+                CollectionAssert.AreEqual(expected, _result.ToDictionary(x => x.CourseCode, y => y.Name));
+            }
+
+            public void AssertResultIsAllStandardsFromCache()
+            {
+                var expected = _allStandardsCacheResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
                 CollectionAssert.AreEqual(expected, _result.ToDictionary(x => x.CourseCode, y => y.Name));
             }
 
