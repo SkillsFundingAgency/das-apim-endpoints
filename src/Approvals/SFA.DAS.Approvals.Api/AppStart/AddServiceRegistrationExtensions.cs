@@ -53,7 +53,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
             services.AddTransient<IFjaaService, FjaaService>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-            services.AddTransient<IProviderCoursesService, ProviderCoursesService>();
+            services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddServiceParameters();
