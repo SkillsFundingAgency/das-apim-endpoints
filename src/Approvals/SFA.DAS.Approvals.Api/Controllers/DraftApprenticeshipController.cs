@@ -9,6 +9,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAppren
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -88,7 +89,30 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetEditDraftApprenticeship cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                _logger.LogError(e, $"Error in GetEditDraftApprenticeshipDeliveryModel cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/select-course")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/select-course")]
+        public async Task<IActionResult> GetEditDraftApprenticeshipCourse(long cohortId, long draftApprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEditDraftApprenticeshipCourseQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetEditDraftApprenticeshipCourseResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetEditDraftApprenticeshipCourse cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
