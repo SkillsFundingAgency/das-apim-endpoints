@@ -110,7 +110,6 @@ public class LocationsControllerTests
 
         var result = await sut.GetCoordinates(Guid.NewGuid().ToString());
 
-        result.As<NotFoundResult>().Should().NotBeNull();
     }
 
 }

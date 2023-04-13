@@ -30,7 +30,6 @@ public class LocationsController : ControllerBase
         var queryResponse = await _mediator.Send(new GetPostcodeQuery(postcode));
 
         if (queryResponse == null) return NotFound();
-
         return Ok(queryResponse);
     }
 }
