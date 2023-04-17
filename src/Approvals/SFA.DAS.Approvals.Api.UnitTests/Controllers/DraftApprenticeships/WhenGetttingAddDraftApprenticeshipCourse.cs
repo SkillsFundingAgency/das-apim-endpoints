@@ -9,16 +9,16 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
-using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipCourse;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipCourse;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 {
     [TestFixture]
-    public class WhenGettingEditDraftApprenticeshipCourseTests
+    public class WhenGettingAddDraftApprenticeshipCourseTests
     {
         private DraftApprenticeshipController _controller;
         private Mock<IMediator> _mediator;
-        private GetEditDraftApprenticeshipCourseQueryResult _queryResult;
+        private GetAddDraftApprenticeshipCourseQueryResult _queryResult;
 
         private long _cohortId;
         private long _draftApprenticeshipId;
@@ -27,13 +27,13 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         public void Setup()
         {
             var fixture = new Fixture();
-            _queryResult = fixture.Create<GetEditDraftApprenticeshipCourseQueryResult>();
+            _queryResult = fixture.Create<GetAddDraftApprenticeshipCourseQueryResult>();
 
             _cohortId = fixture.Create<long>();
             _draftApprenticeshipId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetEditDraftApprenticeshipCourseQuery>(q =>
+            _mediator.Setup(x => x.Send(It.Is<GetAddDraftApprenticeshipCourseQuery>(q =>
                         q.CohortId == _cohortId &&
                         q.DraftApprenticeshipId == _draftApprenticeshipId),
                     It.IsAny<CancellationToken>()))
@@ -43,14 +43,14 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         }
 
         [Test]
-        public async Task EditDraftApprenticeshipCourseResponseIsReturned()
+        public async Task AddDraftApprenticeshipCourseResponseIsReturned()
         {
-            var result = await _controller.GetEditDraftApprenticeshipCourse(_cohortId, _draftApprenticeshipId);
+            var result = await _controller.GetAddDraftApprenticeshipCourse(_cohortId, _draftApprenticeshipId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult) result;
-            Assert.IsInstanceOf<GetEditDraftApprenticeshipCourseResponse>(okObjectResult.Value);
-            var objectResult = (GetEditDraftApprenticeshipCourseResponse) okObjectResult.Value;
+            Assert.IsInstanceOf<GetAddDraftApprenticeshipCourseResponse>(okObjectResult.Value);
+            var objectResult = (GetAddDraftApprenticeshipCourseResponse) okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
