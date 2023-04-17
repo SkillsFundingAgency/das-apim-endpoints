@@ -9,11 +9,13 @@ using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
+using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 {
@@ -52,6 +54,20 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             _fixture.AssertResultIsAllStandards();
         }
 
+        [Test]
+        public async Task When_Provider_Is_Main_Provider_Then_ProviderCourses_Defined_In_Managing_Standards_Are_Returned()
+        {
+            await _fixture.GetProviderCourses();
+            _fixture.AssertResultIsAllProviderStandardsDefinedInManagingStandards();
+        }
+
+        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.SupportingProvider)]
+        public async Task When_Provider_Is_Not_Main_Provider_Then_No_Standards_Returned(TrainingProviderResponse.ProviderTypeIdentifier providerType)
+        {
+            _fixture.WithProviderType(providerType);
+            await _fixture.GetProviderCourses();
+            _fixture.AssertResultIsNull();
+        }
         public class ProviderCoursesServiceTestFixture
         {
             private Approvals.Services.ProviderCoursesService _providerCoursesService;
@@ -63,6 +79,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private long _trainingProviderId;
             private TrainingProviderResponse _trainingProviderResponse;
             private IEnumerable<Standard> _result;
+            private ProviderStandardResults _providerStandardresult;
             private GetAllStandardsResponse _allStandardsResponse;
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
 
@@ -97,7 +114,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
             public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
             {
-                _trainingProviderResponse.ProviderType.Id = (short) providerType;
+                _trainingProviderResponse.ProviderType.Id = (short)providerType;
                 return this;
             }
 
@@ -117,6 +134,11 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _result = await _providerCoursesService.GetCourses(_trainingProviderId);
             }
 
+            public async Task GetProviderCourses()
+            {
+                _providerStandardresult = await _providerCoursesService.GetProviderCourses(_trainingProviderId);
+            }
+
             public void AssertResultIsAllStandards()
             {
                 var expected = _allStandardsResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
@@ -127,6 +149,18 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             {
                 var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
                 CollectionAssert.AreEqual(expected, _result.ToDictionary(x => x.CourseCode, y => y.Name));
+            }
+
+            public void AssertResultIsAllProviderStandardsDefinedInManagingStandards()
+            {
+                var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
+                CollectionAssert.AreEqual(expected, _providerStandardresult.ProviderStandards.ToDictionary(x => x.CourseCode, y => y.Name));
+            }
+
+            public void AssertResultIsNull()
+            {
+                CollectionAssert.AreEqual(null, _providerStandardresult.ProviderStandards);
+                Assert.AreEqual(_trainingProviderResponse.IsMainProvider, _providerStandardresult.IsMainProvider);
             }
         }
     }
