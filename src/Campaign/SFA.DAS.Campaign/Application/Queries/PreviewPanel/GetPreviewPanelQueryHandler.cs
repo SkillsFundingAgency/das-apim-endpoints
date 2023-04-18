@@ -23,7 +23,7 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewPanel
 
         public async Task<GetPreviewPanelQueryResult> Handle(GetPreviewPanelQuery request, CancellationToken cancellationToken)
         {
-            var panel = await _client.Get<CmsContent>(new GetPanelRequest(request.Slug));
+            var panel = await _client.Get<CmsContent>(new GetPanelRequest(request.Id));
             
             var pageModel = new PanelModel().Build(panel);
 

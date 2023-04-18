@@ -344,6 +344,8 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public ImageContent Image { get; set; }
         [JsonPropertyName("linkTitle")]
         public string LinkTitle { get; set; }
+        [JsonPropertyName("Id")]
+        public int Id { get; set; }
     }
 
     public class MainContent

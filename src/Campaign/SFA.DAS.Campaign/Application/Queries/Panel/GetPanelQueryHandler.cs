@@ -26,8 +26,8 @@ namespace SFA.DAS.Campaign.Application.Queries.Panel
         public async Task<GetPanelQueryResult> Handle(GetPanelQuery request, CancellationToken cancellationToken)
         {
             var panel = await _reliableCacheStorageService.GetData<CmsContent>(
-                new GetPanelRequest(request.Slug),
-                $"{request.Slug}",
+                new GetPanelRequest(request.Id),
+                $"{request.Id}",
                 _contentService.HasContent);
 
             var pageModel = new PanelModel().Build(panel);
