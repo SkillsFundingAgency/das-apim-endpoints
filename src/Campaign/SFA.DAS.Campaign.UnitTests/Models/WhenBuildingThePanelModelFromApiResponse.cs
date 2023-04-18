@@ -56,6 +56,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Image.Should().NotBeNull();
             actual.MainContent.Button.Should().NotBeNull();
             actual.MainContent.LinkTitle.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.Id.Should().NotBe(null);
         }
     }
 }
