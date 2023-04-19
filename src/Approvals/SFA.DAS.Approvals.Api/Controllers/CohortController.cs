@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
@@ -120,6 +121,30 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails ale {accountLegalEntityId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/select-course")]
+        [Route("provider/{providerId}/unapproved/add/select-course")]
+        public async Task<IActionResult> GetAddDraftApprenticeshipCourse([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipCourseQuery
+                    { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetAddDraftApprenticeshipCourseResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipCourse ale {accountLegalEntityId}");
                 return BadRequest();
             }
         }
