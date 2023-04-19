@@ -7,12 +7,10 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.Services
 {
@@ -106,23 +104,6 @@ namespace SFA.DAS.Approvals.Services
 
             return providerStandards.Select(
                 x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel));
-        }
-
-        public async Task<ProviderStandardResults> GetProviderCourses(long providerId)
-        {
-            var providerDetails = await _trainingProviderService.GetTrainingProviderDetails(providerId);
-            ProviderStandardResults providerStandardResults = new ProviderStandardResults { IsMainProvider = providerDetails.IsMainProvider };
-
-            if (providerDetails.IsMainProvider == false) return providerStandardResults;
-
-            var standards =
-                    await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
-                        new GetProviderStandardsRequest(providerId));
-
-            if (standards == null) return providerStandardResults;
-            providerStandardResults.ProviderStandards = standards.Select(x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).ToList();
-
-            return providerStandardResults;
         }
     }
 }

@@ -10,13 +10,11 @@ using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
-using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 {
@@ -173,7 +171,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public ProviderCoursesServiceTestFixture WithMainProviderDetailsInCache()
             {
                 _trainingProviderCacheResponse = _autoFixture.Build<TrainingProviderResponse>()
-                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse{ Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
+                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse { Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
                     .Create();
 
                 _trainingProviderService.Setup(x =>
@@ -191,11 +189,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public async Task GetStandardsData()
             {
                 _result = await _providerStandardsService.GetStandardsData(_trainingProviderId);
-            }
-
-            public async Task GetProviderCourses()
-            {
-                _providerStandardresult = await _providerCoursesService.GetProviderCourses(_trainingProviderId);
             }
 
             public void AssertResultIsAllStandards()
@@ -219,18 +212,6 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public void AssertResultIndicatesIsMainProvider(bool expectIsMainProvider)
             {
                 Assert.AreEqual(expectIsMainProvider, _result.IsMainProvider);
-            }
-
-            public void AssertResultIsAllProviderStandardsDefinedInManagingStandards()
-            {
-                var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
-                CollectionAssert.AreEqual(expected, _providerStandardresult.ProviderStandards.ToDictionary(x => x.CourseCode, y => y.Name));
-            }
-
-            public void AssertResultIsNull()
-            {
-                CollectionAssert.AreEqual(null, _providerStandardresult.ProviderStandards);
-                Assert.AreEqual(_trainingProviderResponse.IsMainProvider, _providerStandardresult.IsMainProvider);
             }
         }
     }
