@@ -76,7 +76,6 @@ namespace SFA.DAS.Reservations.Api
                 services.AddHealthChecks()
                     .AddCheck<FinanceApiHealthCheck>("Finance API health check")
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("CourseDelivery API health check")
                     .AddCheck<CommitmentsV2HealthCheck>("CommitmentsV2 API health check");
             }
             
