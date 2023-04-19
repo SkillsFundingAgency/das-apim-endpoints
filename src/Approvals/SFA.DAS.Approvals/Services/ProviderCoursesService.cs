@@ -10,56 +10,102 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.Services
 {
-    public interface IProviderCoursesService
+    public interface IProviderStandardsService
     {
-        Task<IEnumerable<Standard>> GetCourses(long providerId);
-        Task<ProviderStandardResults> GetProviderCourses(long providerId);
+        Task<ProviderStandardsData> GetStandardsData(long providerId);
     }
 
-    public class ProviderCoursesService : IProviderCoursesService
+    public class ProviderStandardsService : IProviderStandardsService
     {
         private readonly ServiceParameters _serviceParameters;
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
+        private readonly ICacheStorageService _cacheStorageService;
 
-        public ProviderCoursesService(ServiceParameters serviceParameters,
+        public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
+        public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
+        public const int CacheExpiryHours = 12;
+
+        public ProviderStandardsService(ServiceParameters serviceParameters,
             ITrainingProviderService trainingProviderService,
             IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
-            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
+            ICacheStorageService cacheStorageService)
         {
             _serviceParameters = serviceParameters;
             _trainingProviderService = trainingProviderService;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
+            _cacheStorageService = cacheStorageService;
             _providerCoursesApiClient = providerCoursesApiClient;
         }
 
-        public async Task<IEnumerable<Standard>> GetCourses(long providerId)
+        public async Task<ProviderStandardsData> GetStandardsData(long providerId)
         {
-            if (_serviceParameters.CallingParty == Party.Employer)
+            var providerDetails = await GetTrainingProviderDetails(providerId);
+
+            if (_serviceParameters.CallingParty == Party.Employer || !providerDetails.IsMainProvider)
             {
-                var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-                return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+                return new ProviderStandardsData
+                {
+                    IsMainProvider = providerDetails.IsMainProvider,
+                    Standards = await GetAllStandards()
+                };
             }
 
-            var providerDetails = await _trainingProviderService.GetTrainingProviderDetails(providerId);
-
-            if (providerDetails.IsMainProvider)
+            return new ProviderStandardsData
             {
-                var providerStandards =
-                    await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
-                        new GetProviderStandardsRequest(providerId));
+                IsMainProvider = providerDetails.IsMainProvider,
+                Standards = await GetStandardsForProvider(providerId)
+            };
 
-                return providerStandards.Select(x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel));
+        }
+
+        private async Task<TrainingProviderResponse> GetTrainingProviderDetails(long providerId)
+        {
+            var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
+
+            var cacheResult = await _cacheStorageService.RetrieveFromCache<TrainingProviderResponse>(cacheKey);
+
+            if (cacheResult != null)
+            {
+                return cacheResult;
             }
 
-            var result2 = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-            return result2.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+            var result = await _trainingProviderService.GetTrainingProviderDetails(providerId);
+            await _cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
+            return result;
+        }
+
+        private async Task<IEnumerable<Standard>> GetAllStandards()
+        {
+            var cacheResult =
+                await _cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllStandardsCacheKey);
+
+            if (cacheResult != null)
+            {
+                return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+            }
+
+            var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+            await _cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
+            return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+        }
+
+        private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
+        {
+            var providerStandards =
+                await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
+                    new GetProviderStandardsRequest(providerId));
+
+            return providerStandards.Select(
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel));
         }
 
         public async Task<ProviderStandardResults> GetProviderCourses(long providerId)
