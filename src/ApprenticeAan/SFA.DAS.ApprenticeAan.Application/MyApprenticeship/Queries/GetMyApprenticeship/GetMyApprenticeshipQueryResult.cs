@@ -6,7 +6,6 @@
         {
             return new GetMyApprenticeshipQueryResult
             {
-
                 ApprenticeId = response.ApprenticeId,
                 DateOfBirth = response.DateOfBirth,
                 Email = response.Email,
