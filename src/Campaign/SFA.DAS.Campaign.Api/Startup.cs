@@ -97,6 +97,10 @@ namespace SFA.DAS.Campaign.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseAuthentication();
 
