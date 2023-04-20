@@ -68,7 +68,7 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
                     result.MyApprenticeship.TrainingCourse = framework;
                 }
             }
-        };
+        }
 
     return result;
     }

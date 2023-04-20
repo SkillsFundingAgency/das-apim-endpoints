@@ -2,11 +2,9 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -98,7 +96,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.G
             coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Never);
             actualResult.Should().BeEquivalentTo((GetMyApprenticeshipQueryResult)expectedResult, l=>l.Excluding(e=>e.MyApprenticeship));
 
-            actualResult.MyApprenticeship.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)standardResponse);
+            actualResult!.MyApprenticeship!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)standardResponse);
         }
 
 
@@ -131,7 +129,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.G
             coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Never);
             coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Once);
             actualResult.Should().BeEquivalentTo((GetMyApprenticeshipQueryResult)expectedResult, l => l.Excluding(e => e.MyApprenticeship));
-            actualResult.MyApprenticeship.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)frameworkResponse);
+            actualResult!.MyApprenticeship!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)frameworkResponse);
         }
     }
 }
