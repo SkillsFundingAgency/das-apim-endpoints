@@ -43,7 +43,6 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
 
         var result = (GetMyApprenticeshipQueryResult)myApprenticeshipsResponse;
 
-
         if (myApprenticeshipsResponse.MyApprenticeships != null && myApprenticeshipsResponse.MyApprenticeships.Any())
         {
             var mostRecentMyApprenticeship = myApprenticeshipsResponse.MyApprenticeships.First();

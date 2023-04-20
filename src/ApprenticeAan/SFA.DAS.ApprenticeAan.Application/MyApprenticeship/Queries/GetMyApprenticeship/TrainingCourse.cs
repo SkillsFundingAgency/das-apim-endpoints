@@ -13,7 +13,6 @@ public class TrainingCourse
         };
     }
 
-
     public static implicit operator TrainingCourse(GetFrameworkResponse framework)
     {
         return new TrainingCourse
