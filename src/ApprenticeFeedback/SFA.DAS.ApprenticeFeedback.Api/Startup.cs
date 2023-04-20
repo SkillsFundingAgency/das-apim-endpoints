@@ -91,6 +91,10 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
             app.UseHealthChecks();
