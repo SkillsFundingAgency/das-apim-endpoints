@@ -22,15 +22,15 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpPost]
-        [Route("priorlearningdata/{cohortId}/draft-apprenticeships/{draftApprenticeshipId}")]
+        [Route("priorlearningdata/{cohortId}/{draftApprenticeshipId}")]
         public async Task<IActionResult> PriorLearningData(long cohortId, long draftApprenticeshipId, [FromBody] AddPriorLearningDataRequest request)
         {
             var command = new AddPriorLearningDataCommand
             {
                 CohortId = cohortId,
-                CostBeforeRpl= request.CostBeforeRpl,
-                DraftApprenticeshipId= draftApprenticeshipId,
-                HasStandardOptions= request.HasStandardOptions,
+                DraftApprenticeshipId = draftApprenticeshipId,
+
+                CostBeforeRpl = request.CostBeforeRpl,
                 DurationReducedBy= request.DurationReducedBy,
                 DurationReducedByHours= request.DurationReducedByHours,
                 IsDurationReducedByRpl= request.IsDurationReducedByRpl,
@@ -38,12 +38,9 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 TrainingTotalHours = request.TrainingTotalHours                
             };
 
-            var result = await _mediator.Send(command);
+            await _mediator.Send(command);
 
-            return Ok(new AddPriorLearningDataResponse
-            {
-                HasStandardOptions = result.HasStandardOptions
-            });
+            return Ok();
         }
     }
 }

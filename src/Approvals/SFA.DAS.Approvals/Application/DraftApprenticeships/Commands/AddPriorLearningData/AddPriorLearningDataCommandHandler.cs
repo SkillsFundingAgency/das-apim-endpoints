@@ -32,7 +32,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
 
             return new AddPriorLearningDataResult
             {
-                HasStandardOptions = response.Body.HasStandardOptions
             };
         }
     }

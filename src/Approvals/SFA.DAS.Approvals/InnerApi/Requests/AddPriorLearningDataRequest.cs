@@ -8,7 +8,5 @@
         public int? DurationReducedBy { get; set; }
         public int? CostBeforeRpl { get; set; }
         public int? PriceReducedBy { get; set; }
-
-        public bool? HasStandardOptions { get; set; }
     }
 }

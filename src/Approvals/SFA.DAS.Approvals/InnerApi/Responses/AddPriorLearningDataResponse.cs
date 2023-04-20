@@ -2,6 +2,5 @@
 {
     public sealed class AddPriorLearningDataResponse
     {
-        public bool? HasStandardOptions { get; set; }
     }
 }

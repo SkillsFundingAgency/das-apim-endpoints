@@ -2,6 +2,5 @@
 {
     public class AddPriorLearningDataResult
     {
-        public bool? HasStandardOptions { get; set; }
     }
 }
