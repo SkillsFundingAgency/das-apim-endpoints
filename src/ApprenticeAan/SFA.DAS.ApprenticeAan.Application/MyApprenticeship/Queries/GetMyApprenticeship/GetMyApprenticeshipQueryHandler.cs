@@ -36,7 +36,7 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
         else
         {
             throw new InvalidOperationException(
-                $"Unexpected response received from apprentice accounts api when getting my apprenticeships details for apprenticeId: {request.ApprenticeId}");
+                $"Unexpected response received from apprentice accounts api when getting MyApprenticeships details for apprenticeId: {request.ApprenticeId}");
         }
 
         var myApprenticeshipsResponse = response.Body;
