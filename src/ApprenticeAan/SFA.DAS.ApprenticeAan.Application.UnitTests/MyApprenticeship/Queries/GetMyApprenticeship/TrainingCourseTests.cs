@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.G
                 Assert.That(sut.Name, Is.EqualTo(source.Title));
                 Assert.That(sut.Level, Is.EqualTo(source.Level));
                 Assert.That(sut.Sector, Is.EqualTo(source.Route));
-                Assert.That(sut.Duration, Is.EqualTo(source.VersionDetail.ProposedTypicalDuration));
+                Assert.That(sut.Duration, Is.EqualTo(source.VersionDetail!.ProposedTypicalDuration));
             });
         }
 

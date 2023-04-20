@@ -39,37 +39,42 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
                 $"Unexpected response received from apprentice accounts api when getting MyApprenticeships details for apprenticeId: {request.ApprenticeId}");
         }
 
-        var myApprenticeshipsResponse = response.Body;
+        var result = await ConvertResponseToResult(response.Body);
 
+        return result;
+    }
+
+    private async Task<GetMyApprenticeshipQueryResult> ConvertResponseToResult(GetMyApprenticeshipsQueryResponse myApprenticeshipsResponse)
+    {
         var result = (GetMyApprenticeshipQueryResult)myApprenticeshipsResponse;
 
-        if (myApprenticeshipsResponse.MyApprenticeships != null && myApprenticeshipsResponse.MyApprenticeships.Any())
+        if (myApprenticeshipsResponse.MyApprenticeships == null ||
+            !myApprenticeshipsResponse.MyApprenticeships.Any()) return result;
+
+        var mostRecentMyApprenticeship = myApprenticeshipsResponse.MyApprenticeships.First();
+        result.MyApprenticeship = mostRecentMyApprenticeship;
+
+        if (mostRecentMyApprenticeship.StandardUId != null)
         {
-            var mostRecentMyApprenticeship = myApprenticeshipsResponse.MyApprenticeships.First();
-            result.MyApprenticeship = mostRecentMyApprenticeship;
+            var standard = await _coursesApiClient.Get<GetStandardResponse>(
+                new GetStandardQueryRequest(mostRecentMyApprenticeship.StandardUId));
 
-            if (mostRecentMyApprenticeship.StandardUId != null)
+            if (standard != null)
             {
-                var standard = await _coursesApiClient.Get<GetStandardResponse>(
-                    new GetStandardQueryRequest(mostRecentMyApprenticeship.StandardUId));
-
-                if (standard!=null)
-                {
-                    result.MyApprenticeship.TrainingCourse  = standard;
-                }
+                result.MyApprenticeship.TrainingCourse = standard;
             }
-            else if (mostRecentMyApprenticeship.TrainingCode != null)
-                {
-                var framework = await _coursesApiClient.Get<GetFrameworkResponse>(
-                    new GetFrameworkQueryRequest(mostRecentMyApprenticeship.TrainingCode));
+        }
+        else if (mostRecentMyApprenticeship.TrainingCode != null)
+        {
+            var framework = await _coursesApiClient.Get<GetFrameworkResponse>(
+                new GetFrameworkQueryRequest(mostRecentMyApprenticeship.TrainingCode));
 
-                if (framework !=null)
-                {
-                    result.MyApprenticeship.TrainingCourse = framework;
-                }
+            if (framework != null)
+            {
+                result.MyApprenticeship.TrainingCourse = framework;
             }
         }
 
-    return result;
+        return result;
     }
 }
