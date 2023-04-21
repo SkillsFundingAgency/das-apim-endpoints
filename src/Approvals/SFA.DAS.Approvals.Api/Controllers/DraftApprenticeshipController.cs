@@ -10,6 +10,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApp
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -188,5 +189,27 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        [Route("cohorts/{cohortId}/draft-apprenticeships/{draftApprenticeshipId}/prior-learning-data")]
+        public async Task<IActionResult> PriorLearningData(long cohortId, long draftApprenticeshipId, [FromBody] InnerApi.Requests.AddPriorLearningDataRequest request)
+        {
+            var command = new AddPriorLearningDataCommand
+            {
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                CostBeforeRpl = request.CostBeforeRpl,
+                DurationReducedBy = request.DurationReducedBy,
+                DurationReducedByHours = request.DurationReducedByHours,
+                IsDurationReducedByRpl = request.IsDurationReducedByRpl,
+                PriceReducedBy = request.PriceReducedBy,
+                TrainingTotalHours = request.TrainingTotalHours
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
     }
 }
