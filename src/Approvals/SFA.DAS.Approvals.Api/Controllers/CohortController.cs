@@ -1,16 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.Application.Cohorts.Queries;
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
+using System;
+using System.Threading.Tasks;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -145,6 +146,30 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipCourse ale {accountLegalEntityId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/select-delivery-model")]
+        [Route("provider/{providerId}/unapproved/add/select-delivery-model")]
+        public async Task<IActionResult> GetAddDraftApprenticeshipDeliveryModel([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId, [FromQuery] string courseCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipDeliveryModelQuery
+                    { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId, CourseCode = courseCode});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetAddDraftApprenticeshipDeliveryModelResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDeliveryModel ale {accountLegalEntityId}");
                 return BadRequest();
             }
         }
