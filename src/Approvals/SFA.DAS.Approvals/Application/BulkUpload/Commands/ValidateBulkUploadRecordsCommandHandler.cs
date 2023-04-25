@@ -47,18 +47,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             var providerStandardResults = await _providerStandardsService.GetStandardsData(command.ProviderId);
 
-            if (providerStandardResults.IsMainProvider != true) { providerStandardResults.Standards = null; }
-
             // If any errors this call will throw a bulkupload domain exception, which is handled through middleware.
-            await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(command.ProviderId,
-                 new BulkUploadValidateApiRequest
-                 {
-                     CsvRecords = command.CsvRecords,
-                     ProviderId = command.ProviderId,
-                     UserInfo = command.UserInfo,
-                     BulkReservationValidationResults = reservationValidationResult.Body,
-                     ProviderStandardsData = providerStandardResults
-                 }));
+
+            BulkUploadValidateApiRequest bulkUploadValidateApiRequest = new BulkUploadValidateApiRequest
+            {
+                CsvRecords = command.CsvRecords,
+                ProviderId = command.ProviderId,
+                UserInfo = command.UserInfo,
+                BulkReservationValidationResults = reservationValidationResult.Body,
+                ProviderStandardsData = providerStandardResults
+            };
+
+            if (!bulkUploadValidateApiRequest.ProviderStandardsData.IsMainProvider) { bulkUploadValidateApiRequest.ProviderStandardsData.Standards = null; }
+
+            await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(command.ProviderId, bulkUploadValidateApiRequest));
             return Unit.Value;
         }
 
