@@ -51,7 +51,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/my-apprenticeship")
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/myapprenticeship")
                         .UsingGet()
                 )
                 .RespondWith(
@@ -65,7 +65,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/my-apprenticeship")
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/myapprenticeship")
                         .UsingGet()
                 )
                 .RespondWith(
@@ -74,12 +74,24 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             return this;
         }
 
+        public ApprenticeAccountsInnerApiMock WithAnInvalidStatusForMyApprenticeship(Apprentice apprentice, HttpStatusCode statusCode)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/myapprenticeship")
+                        .UsingGet()
+                )
+                .RespondWith(Response.Create().WithStatusCode(statusCode));
+            return this;
+        }
+
         public ApprenticeAccountsInnerApiMock WithPostMyApprenticeship(Apprentice apprentice)
         {
             MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/my-apprenticeship")
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/myapprenticeship")
                         .UsingPost()
                 )
                 .RespondWith(
@@ -87,6 +99,22 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 );
             return this;
         }
+
+        public ApprenticeAccountsInnerApiMock WithPutMyApprenticeship(Apprentice apprentice)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/apprentices/{apprentice.ApprenticeUrlId()}/myapprenticeship")
+                        .UsingPut()
+                )
+                .RespondWith(
+                    Response.Create().WithStatusCode((int)HttpStatusCode.Created)
+                );
+            return this;
+        }
+
+
 
         public ApprenticeAccountsInnerApiMock WithPing()
         {

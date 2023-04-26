@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -8,6 +10,7 @@ using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.Models;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using System.Net;
+using System.Net.Http;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Requests;
 using SFA.DAS.ApprenticePortal.Services;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
@@ -42,8 +45,24 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
             var commitmentsApprenticeship = await GetCommitmentsApprenticeshipDetails(request.CommitmentsApprenticeshipId);
             var myNewApprenticeship = await BuildMyApprenticeship(commitmentsApprenticeship);
 
-            // Internally the Inner API will either create a new MyApprenticeship or update the existing one
-            await _accountsApiClient.Post(new PostApprenticeshipRequest(request.ApprenticeId) { Data = myNewApprenticeship });
+            var response = await _accountsApiClient.GetResponseCode(new GetMyApprenticeshipRequest(request.ApprenticeId));
+
+            switch (response)
+            {
+                case HttpStatusCode.NotFound:
+                    await _accountsApiClient.Post(new PostApprenticeshipRequest(request.ApprenticeId)
+                        { Data = myNewApprenticeship });
+                    break;
+                case HttpStatusCode.OK:
+                    await _accountsApiClient.Put(new PutApprenticeshipRequest(request.ApprenticeId)
+                        {Data = myNewApprenticeship});
+                    break;
+                default:
+                    _logger.LogError("Calling GetMyApprenticeship returned unexpected HTTP response code of {response}", response);
+                    throw new ApplicationException(
+                        $"Call to GetMyApprenticeship, expected an OK or NotFound, but received {response}");
+            }
+
 
             return Unit.Value;
         }

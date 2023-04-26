@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -30,6 +31,9 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
             _trainingProviderResponse = _fixture.Create<TrainingProviderResponse>();
             _confirmRequest = _fixture.Build<MyApprenticeshipConfirmedRequest>()
                 .With(x => x.CommitmentsApprenticeshipId, _apprenticeshipDetails.Id).Create();
+
+            _context.ApprenticeAccountsInnerApi.WithPostMyApprenticeship(_apprentice)
+                .WithPutMyApprenticeship(_apprentice);
         }
 
         [Given(@"there is an apprentice")]
@@ -49,27 +53,49 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         {
             _context.TrainingProviderInnerApi.WithValidSearch(_apprenticeshipDetails.ProviderId, _trainingProviderResponse);
         }
-
+        
         [Given(@"training provider has no trading name")]
         public void GivenTrainingProviderExistsButHasNoTradingName()
         {
             _trainingProviderResponse.TradingName = null;
         }
 
+        [Given(@"MyApprenticeship exists")]
+        public void GivenMyApprenticeshipExists()
+        {
+            _context.ApprenticeAccountsInnerApi.WithMyApprenticeship(_apprentice, _fixture.Create<MyApprenticeship>());
+        }
+
+        [Given(@"MyApprenticeship returns an invalid status")]
+        public void GivenMyApprenticeshipReturnsAnInvalidStatus()
+        {
+            _context.ApprenticeAccountsInnerApi.WithAnInvalidStatusForMyApprenticeship(_apprentice, HttpStatusCode.Conflict);
+        }
+
         [When(@"the MyApprenticeshipConfirmedRequest is posted")]
         public async Task WhenTheMyApprenticeshipConfirmedRequestIsPosted()
         {
-            await _context.OuterApiClient.Post($"/apprentices/{_apprentice.ApprenticeId}/my-apprenticeship", _confirmRequest);
+           await _context.OuterApiClient.Post($"/apprentices/{_apprentice.ApprenticeId}/my-apprenticeship", _confirmRequest);
         }
 
-        [Then(@"the call to save MyApprenticeship is called")]
+        [Then(@"the call to add MyApprenticeship is called")]
         public void ThenTheCallToSaveMyApprenticeshipIsCalled()
         {
             var logEntry = _context.ApprenticeAccountsInnerApi.LogEntries.Should().Contain(x =>
-                x.RequestMessage.Path == $"/apprentices/{_apprentice.ApprenticeId}/myapprenticeship").Which;
+                 x.RequestMessage.Method == "POST" && x.RequestMessage.Path == $"/apprentices/{_apprentice.ApprenticeId}/myapprenticeship").Which;
 
             _postedData = JsonConvert.DeserializeObject<MyApprenticeshipData>(logEntry.RequestMessage.Body);
         }
+
+        [Then(@"the call to update MyApprenticeship is called")]
+        public void ThenTheCallToUpdateMyApprenticeshipIsCalled()
+        {
+            var logEntry = _context.ApprenticeAccountsInnerApi.LogEntries.Should().Contain(x =>
+                x.RequestMessage.Method == "PUT" && x.RequestMessage.Path == $"/apprentices/{_apprentice.ApprenticeId}/myapprenticeship").Which;
+
+            _postedData = JsonConvert.DeserializeObject<MyApprenticeshipData>(logEntry.RequestMessage.Body);
+        }
+
 
         [Then(@"it contains all the information")]
         public void ThenItContainsAllTheInformation()
@@ -94,6 +120,18 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         public void ThenItContainsTheProvidersLegalName()
         {
             _postedData.TrainingProviderName.Should().Be(_trainingProviderResponse.LegalName);
+        }
+
+        [Then(@"and response from API is InternalError")]
+        public void ThenAndResponseFromAPIIsInternalError()
+        {
+            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        }
+
+        [Then(@"and response from API is Ok")]
+        public void ThenAndResponseFromAPIIsOk()
+        {
+            _context.OuterApiClient.Response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
