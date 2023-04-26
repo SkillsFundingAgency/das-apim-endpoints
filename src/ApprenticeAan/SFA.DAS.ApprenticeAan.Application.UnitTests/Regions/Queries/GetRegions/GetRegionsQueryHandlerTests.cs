@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.ApprenticeAan.Application.Services;
 using SFA.DAS.SharedOuterApi.Models;
