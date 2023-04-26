@@ -109,7 +109,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                         .UsingPut()
                 )
                 .RespondWith(
-                    Response.Create().WithStatusCode((int)HttpStatusCode.Created)
+                    Response.Create().WithStatusCode((int)HttpStatusCode.OK)
                 );
             return this;
         }
