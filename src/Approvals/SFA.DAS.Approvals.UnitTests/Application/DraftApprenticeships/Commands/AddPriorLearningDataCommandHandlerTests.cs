@@ -42,5 +42,26 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             var response = await _handler.Handle(_request, CancellationToken.None);
             response.Should().NotBeNull();
         }
+
+        [Test]
+        public async Task Handle_PriorLearningData_Created()
+        {
+            var fixture = new Fixture();
+            var expectedResponse = fixture.Create<AddPriorLearningDataResponse>();
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<AddPriorLearningDataResponse>(
+                    It.Is<PostAddPriorLearningDataRequest>(r =>
+                            ((AddPriorLearningDataRequest)r.Data).CostBeforeRpl == _request.CostBeforeRpl &&
+                            ((AddPriorLearningDataRequest)r.Data).DurationReducedBy == _request.DurationReducedBy &&
+                            ((AddPriorLearningDataRequest)r.Data).DurationReducedByHours == _request.DurationReducedByHours &&
+                            ((AddPriorLearningDataRequest)r.Data).IsDurationReducedByRpl == _request.IsDurationReducedByRpl &&
+                            ((AddPriorLearningDataRequest)r.Data).PriceReducedBy == _request.PriceReducedBy &&
+                            ((AddPriorLearningDataRequest)r.Data).TrainingTotalHours == _request.TrainingTotalHours
+                        ), true
+                )).ReturnsAsync(new ApiResponse<AddPriorLearningDataResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
+
+            var response = await _handler.Handle(_request, CancellationToken.None);
+
+            Assert.IsInstanceOf<MediatR.Unit>(response);
+        }
     }
 }
