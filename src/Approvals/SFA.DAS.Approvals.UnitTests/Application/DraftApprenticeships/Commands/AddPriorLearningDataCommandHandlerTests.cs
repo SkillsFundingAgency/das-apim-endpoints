@@ -21,7 +21,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         private AddPriorLearningDataCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
 
-
         [SetUp]
         public void Setup()
         {
@@ -45,4 +44,3 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         }
     }
 }
-
