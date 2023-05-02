@@ -34,14 +34,14 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;
         private readonly IFjaaService _fjaaService;
-        private readonly IProviderCoursesService _providerCoursesService;
+        private readonly IProviderStandardsService _providerStandardsService;
 
-        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService, IProviderCoursesService providerCoursesService)
+        public GetCohortDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters, IFjaaService fjaaService, IProviderStandardsService providerStandardsService)
         {
             _apiClient = apiClient;
             _serviceParameters = serviceParameters;
             _fjaaService = fjaaService;
-            _providerCoursesService = providerCoursesService;
+            _providerStandardsService = providerStandardsService;
         }
 
         public async Task<GetCohortDetailsQueryResult> Handle(GetCohortDetailsQuery request, CancellationToken cancellationToken)
@@ -71,7 +71,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             }
 
             var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
-            var providerCoursesTask = _providerCoursesService.GetCourses(cohort.ProviderId);
+            var providerCoursesTask = _providerStandardsService.GetStandardsData(cohort.ProviderId);
 
             await Task.WhenAll(isOnRegisterTask, providerCoursesTask);
 
@@ -79,7 +79,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var providerCourses = providerCoursesTask.Result;
 
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
-                .Where(c => providerCourses.All(x => x.CourseCode != c));
+                .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
             return new GetCohortDetailsQueryResult
             {
