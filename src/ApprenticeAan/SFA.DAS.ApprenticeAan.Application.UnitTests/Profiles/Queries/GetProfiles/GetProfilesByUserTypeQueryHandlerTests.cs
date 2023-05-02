@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Profiles.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Profiles;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Services;
 using SFA.DAS.SharedOuterApi.Models;
