@@ -7,6 +7,7 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -51,7 +52,10 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
             services.AddTransient<IFjaaService, FjaaService>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+            services.AddTransient<IProviderCoursesService, ProviderCoursesService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddServiceParameters();
         }
     }

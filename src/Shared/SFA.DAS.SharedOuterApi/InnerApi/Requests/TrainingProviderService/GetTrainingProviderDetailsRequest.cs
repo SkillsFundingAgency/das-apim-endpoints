@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService
 {
     public class GetTrainingProviderDetailsRequest : IGetApiRequest
     {

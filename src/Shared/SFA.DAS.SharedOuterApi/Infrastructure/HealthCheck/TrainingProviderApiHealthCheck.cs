@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.ApprenticeCommitments.Infrastructure
+namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class TrainingProviderApiHealthCheck : IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Employer Commitments V2 Api Health Check";
+        private const string HealthCheckResultDescription = "Training Provider Service Health Check";
         private readonly TrainingProviderService _service;
 
         public TrainingProviderApiHealthCheck(TrainingProviderService service)
