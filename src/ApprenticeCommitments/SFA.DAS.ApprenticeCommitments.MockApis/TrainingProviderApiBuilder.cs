@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using AutoFixture;
-using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -51,6 +51,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             var result = _fixture.Build<TrainingProviderResponse>()
                 .With(x => x.Ukprn, trainingProviderId)
                 .Create();
+
             var response = new SearchResponse { SearchResults = new TrainingProviderResponse[] { result } };
 
             _server

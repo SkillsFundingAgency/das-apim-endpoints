@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerFinance.Api
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CourseDeliveryApiHealthCheck>("Course Delivery API health check");
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management Health API health check");
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

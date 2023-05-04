@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,9 +27,9 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         {
             _logger.LogInformation("Outer API: Request received to get provider course locations for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             var providerCourselocationsResult = await _mediator.Send(new GetProviderCourseLocationQuery(ukprn, larsCode));
-            if (providerCourselocationsResult == null || !providerCourselocationsResult.ProviderCourseLocations.Any())
+            if (providerCourselocationsResult == null)
             {
-                _logger.LogError($"Provider Course Locations not found for ukprn {ukprn} and lars code {larsCode}");
+                _logger.LogInformation($"Provider Course Locations not found for ukprn {ukprn} and lars code {larsCode}", ukprn,larsCode);
                 return NotFound();
             }
 

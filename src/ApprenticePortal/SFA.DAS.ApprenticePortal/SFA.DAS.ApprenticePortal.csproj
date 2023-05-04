@@ -6,6 +6,7 @@
 
   <ItemGroup>
 	<PackageReference Include="MediatR" />
+	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="SFA.DAS.Common.Domain" />
   </ItemGroup>
 

@@ -1,14 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.Application.Cohorts.Queries;
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands;
+using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.Application.Cohorts.Queries;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
+using System;
+using System.Threading.Tasks;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -121,6 +124,95 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails ale {accountLegalEntityId}");
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/select-course")]
+        [Route("provider/{providerId}/unapproved/add/select-course")]
+        public async Task<IActionResult> GetAddDraftApprenticeshipCourse([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipCourseQuery
+                    { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetAddDraftApprenticeshipCourseResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipCourse ale {accountLegalEntityId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/select-delivery-model")]
+        [Route("provider/{providerId}/unapproved/add/select-delivery-model")]
+        public async Task<IActionResult> GetAddDraftApprenticeshipDeliveryModel([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId, [FromQuery] string courseCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipDeliveryModelQuery
+                    { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId, CourseCode = courseCode});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetAddDraftApprenticeshipDeliveryModelResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDeliveryModel ale {accountLegalEntityId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("cohorts")]
+        public async Task<IActionResult> Create([FromBody] CreateCohortRequest request)
+        {
+            var command = new CreateCohortCommand
+            {
+                ActualStartDate = request.ActualStartDate,
+                StartDate = request.StartDate,
+                AccountId = request.AccountId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                Cost = request.Cost,
+                CourseCode = request.CourseCode,
+                DateOfBirth = request.DateOfBirth,
+                DeliveryModel = request.DeliveryModel,
+                Email = request.Email,
+                ReservationId = request.ReservationId,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                EndDate = request.EndDate,
+                FirstName = request.FirstName,
+                IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
+                LastName = request.LastName,
+                IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
+                OriginatorReference = request.OriginatorReference,
+                PledgeApplicationId = request.PledgeApplicationId,
+                ProviderId = request.ProviderId,
+                TransferSenderId = request.TransferSenderId,
+                Uln = request.Uln,
+                UserInfo = request.UserInfo,
+                RequestingParty = request.RequestingParty
+            };
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new CreateCohortResponse
+            {
+                CohortId = result.CohortId,
+                CohortReference = result.CohortReference
+            });
         }
     }
 }

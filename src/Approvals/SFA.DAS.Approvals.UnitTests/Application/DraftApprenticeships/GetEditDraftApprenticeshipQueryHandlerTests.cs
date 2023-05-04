@@ -251,5 +251,19 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_draftApprenticeship.EmailAddressConfirmed, result.EmailAddressConfirmed);
         }
+
+        [Test]
+        public async Task Handle_RplStillRequired_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+        }
+
+        [Test]
+        public async Task Handle_RplExtendedStillRequired_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, result.RecognisingPriorLearningExtendedStillNeedsToBeConsidered);
+        }
     }
 }
