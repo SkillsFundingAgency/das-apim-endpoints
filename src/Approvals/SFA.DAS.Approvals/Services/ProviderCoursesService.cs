@@ -88,12 +88,12 @@ namespace SFA.DAS.Approvals.Services
 
             if (cacheResult != null)
             {
-                return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+                return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
             }
 
             var result = await _commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
             await _cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
-            return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name));
+            return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
         }
 
         private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
@@ -103,7 +103,7 @@ namespace SFA.DAS.Approvals.Services
                     new GetProviderStandardsRequest(providerId));
 
             return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel));
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name);
         }
     }
 }

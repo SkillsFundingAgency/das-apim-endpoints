@@ -28,4 +28,8 @@
     <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Application\SFA.DAS.ApprenticeAan.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="InnerApi\Profiles\Requests\" />
+  </ItemGroup>
+
 </Project>
