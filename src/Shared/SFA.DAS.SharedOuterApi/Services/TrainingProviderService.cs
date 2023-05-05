@@ -1,13 +1,15 @@
-﻿using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
-using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeCommitments.Application.Services
+namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class TrainingProviderService
+    public class TrainingProviderService : ITrainingProviderService
     {
         private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
 
