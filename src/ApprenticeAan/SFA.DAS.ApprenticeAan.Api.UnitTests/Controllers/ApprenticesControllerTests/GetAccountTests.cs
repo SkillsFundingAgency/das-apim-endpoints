@@ -7,9 +7,9 @@ using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.ApprenticesControllerTests;
 
-public class ApprenticesControllerTests
+public class GetAccountTests
 {
     [Test]
     [MoqAutoData]
