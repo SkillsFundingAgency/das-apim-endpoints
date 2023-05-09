@@ -8,11 +8,11 @@ namespace SFA.DAS.Campaign.UnitTests.ExternalApi.Requests
     public class WhenBuildingGetPanelRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(string slug)
+        public void Then_The_Url_Is_Correctly_Built(int panelId)
         {
-            var actual = new GetPanelRequest(slug);
+            var actual = new GetPanelRequest(panelId);
 
-            actual.GetUrl.Should().Be($"entries?content_type=panel&fields.slug={slug}");
+            actual.GetUrl.Should().Be($"entries?content_type=panel&fields.id={panelId}");
         }
     }
 }
