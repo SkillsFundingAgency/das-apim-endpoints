@@ -30,10 +30,8 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Panel_Is_Built(CmsContent source, string contentValue, string linkTitle)
+        public void Then_The_Panel_Is_Built(CmsContent source, string contentValue)
         {
-            source.Items[0].Fields.LinkTitle = linkTitle;
-
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)
             {
                 subContentItems.NodeType = "paragraph";
@@ -55,7 +53,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items.Any().Should().BeTrue();
             actual.MainContent.Image.Should().NotBeNull();
             actual.MainContent.Button.Should().NotBeNull();
-            actual.MainContent.LinkTitle.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.Id.Should().NotBe(null);
         }
     }
 }
