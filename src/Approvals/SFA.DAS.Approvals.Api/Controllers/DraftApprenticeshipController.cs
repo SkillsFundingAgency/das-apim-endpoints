@@ -13,6 +13,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApp
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -236,6 +237,20 @@ namespace SFA.DAS.Approvals.Api.Controllers
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-data")]
+        public async Task<IActionResult> GetPriorLearningData(long cohortId, long draftApprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetEditDraftApprenticeshipPriorLearningDataQuery(cohortId,draftApprenticeshipId));
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         [HttpPost]
