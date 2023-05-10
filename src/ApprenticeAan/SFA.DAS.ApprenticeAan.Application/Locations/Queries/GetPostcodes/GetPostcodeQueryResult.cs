@@ -8,7 +8,7 @@ public class GetPostcodeQueryResult
 
     public static implicit operator GetPostcodeQueryResult(GetAddressesListItem addressesListItem)
     {
-        if (addressesListItem == null || addressesListItem.Latitude == null || addressesListItem.Longitude == null) return null!;
+        if (addressesListItem == null) return null!;
 
         var result = new GetPostcodeQueryResult();
         result.Coordinates.Latitude = addressesListItem.Latitude.GetValueOrDefault();
