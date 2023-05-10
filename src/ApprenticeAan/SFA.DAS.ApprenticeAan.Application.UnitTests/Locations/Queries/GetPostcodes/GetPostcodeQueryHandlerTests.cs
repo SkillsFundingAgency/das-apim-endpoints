@@ -26,7 +26,7 @@ public class GetPostcodeQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Coordinates.Should().NotBeNull();
+        result!.Coordinates.Should().NotBeNull();
     }
 
     [Test]
@@ -45,4 +45,45 @@ public class GetPostcodeQueryHandlerTests
 
         result.Should().BeNull();
     }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_PostcodesFoundWithLatitudeNull_ReturnsEmptyResult(
+        GetPostcodeQuery query,
+        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
+    {
+        var addressess = new List<GetAddressesListItem>();
+        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = double.MinValue, Longitude = 10.5 });
+
+        var apiResponse = new GetAddressesListResponse { Addresses = addressess };
+        apiClient
+            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_PostcodesFoundWithLongitudeNull_ReturnsEmptyResult(
+        GetPostcodeQuery query,
+        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
+    {
+        var addressess = new List<GetAddressesListItem>();
+        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = double.MinValue, Longitude = null });
+
+        var apiResponse = new GetAddressesListResponse { Addresses = addressess };
+        apiClient
+            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
 }
