@@ -15,7 +15,7 @@ public class GetMyApprenticeshipQueryHandlerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Handle_ApprenticeWithMyApprenticeshipFoundWithStandardUidSet(
+    public async Task Handle_MyApprenticeshipFoundWithStandardUidSet(
         [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
@@ -57,8 +57,9 @@ public class GetMyApprenticeshipQueryHandlerTests
         actualResult!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)standardResponse);
     }
 
+    [Test]
     [MoqAutoData]
-    public async Task Handle_ApprenticeWithMyApprenticeshipFoundWithTrainingCodeSet(
+    public async Task Handle_MyApprenticeshipFoundWithTrainingCodeSet(
         [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
@@ -101,7 +102,7 @@ public class GetMyApprenticeshipQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_ApprenticeNotFound_ReturnsNotFound(
+    public async Task Handle_ApprenticeNotFound_ReturnsNull(
         [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
@@ -121,14 +122,14 @@ public class GetMyApprenticeshipQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_ApiInvalidResponse_ThrowsInvalidOperationException(
+    public async Task Handle_ApiBadRequest_ThrowsInvalidOperationException(
         [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
         GetMyApprenticeshipQuery request,
         CancellationToken cancellationToken)
     {
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>((MyApprenticeshipResponse)null!, HttpStatusCode.InternalServerError, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>((MyApprenticeshipResponse)null!, HttpStatusCode.BadRequest, null));
 
         Func<Task> act = () => sut.Handle(request, cancellationToken);
 
