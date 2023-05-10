@@ -2,6 +2,11 @@
 
 public class TrainingCourse
 {
+    public string? Name { get; set; }
+    public int Level { get; set; }
+    public int? Duration { get; set; }
+    public string? Sector { get; set; }
+
     public static implicit operator TrainingCourse(GetStandardResponse standard)
     {
         return new TrainingCourse
@@ -23,9 +28,4 @@ public class TrainingCourse
             Duration = framework.Duration
         };
     }
-
-    public string? Name { get; set; }
-    public int Level { get; set; }
-    public int? Duration { get; set; }
-    public string? Sector { get; set; }
 }

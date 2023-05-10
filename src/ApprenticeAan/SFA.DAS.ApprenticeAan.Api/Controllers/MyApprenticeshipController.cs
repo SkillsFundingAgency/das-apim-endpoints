@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
 
@@ -18,17 +17,14 @@ public class MyApprenticeshipController : ControllerBase
 
     [HttpGet]
     [Route("{apprenticeId}")]
-    [ProducesResponseType(typeof(GetMyApprenticeshipQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MyApprenticeship), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMyApprenticeship(Guid apprenticeId, CancellationToken cancellationToken)
     {
-        var myApprenticeshipDetails = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = apprenticeId }, cancellationToken);
-            
-        return myApprenticeshipDetails.StatusCode switch
-        {
-            HttpStatusCode.BadRequest => BadRequest(),
-            HttpStatusCode.NotFound => NotFound(),
-            _ => Ok(myApprenticeshipDetails.MyApprenticeship)
-        };
+        var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = apprenticeId }, cancellationToken);
+
+        if (myApprenticeship == null) return NotFound();
+
+        return Ok(myApprenticeship);
     }
 }

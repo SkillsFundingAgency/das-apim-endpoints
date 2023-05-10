@@ -2,6 +2,15 @@
 
 public class MyApprenticeship
 {
+    public long? Uln { get; set; }
+    public long? ApprenticeshipId { get; set; }
+    public string? EmployerName { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public long? TrainingProviderId { get; set; }
+    public string? TrainingProviderName { get; set; }
+
+    public TrainingCourse? TrainingCourse { get; set; }
 
     public static implicit operator MyApprenticeship(MyApprenticeshipResponse myApprenticeshipResponse)
     {
@@ -16,14 +25,4 @@ public class MyApprenticeship
             TrainingProviderName = myApprenticeshipResponse.TrainingProviderName
         };
     }
-
-    public long? Uln { get; set; }
-    public long? ApprenticeshipId { get; set; }
-    public string? EmployerName { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public long? TrainingProviderId { get; set; }
-    public string? TrainingProviderName { get; set; }
-
-    public TrainingCourse? TrainingCourse { get; set; }
 }

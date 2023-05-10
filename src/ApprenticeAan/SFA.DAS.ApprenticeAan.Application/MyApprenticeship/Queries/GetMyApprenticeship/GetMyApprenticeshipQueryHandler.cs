@@ -1,12 +1,12 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
 
-public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, GetMyApprenticeshipQueryResult>
+public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, MyApprenticeship?>
 {
     private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;
     private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -17,34 +17,29 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
         _coursesApiClient = coursesApiClient;
     }
 
-    public async Task<GetMyApprenticeshipQueryResult> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
+    public async Task<MyApprenticeship?> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
     {
         var response =
             await _apprenticeAccountsApiClient.GetWithResponseCode<MyApprenticeshipResponse>(new GetMyApprenticeshipRequest(request.ApprenticeId));
 
-        if (response.StatusCode!=HttpStatusCode.OK)
+
+        if (response.StatusCode == HttpStatusCode.OK)
         {
-            return new GetMyApprenticeshipQueryResult
-            {
-                StatusCode = response.StatusCode
-            };
+            var result = await ConvertResponseToResultWithTrainingCourse(response.Body);
+            return result;
         }
 
-        var result = new GetMyApprenticeshipQueryResult
-        {
-            MyApprenticeship = await ConvertResponseToResult(response.Body),
-            StatusCode = response.StatusCode
-        };
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
 
-        return result;
+        throw new InvalidOperationException(
+            $"Unexpected response received from apprentice accounts api when getting MyApprenticeship for apprenticeId: {request.ApprenticeId}");
     }
 
-    private async Task<MyApprenticeship?> ConvertResponseToResult(MyApprenticeshipResponse myApprenticeshipsResponse)
+    private async Task<MyApprenticeship?> ConvertResponseToResultWithTrainingCourse(MyApprenticeshipResponse myApprenticeshipsResponse)
     {
         var result = (MyApprenticeship)myApprenticeshipsResponse;
 
-      
-          if (myApprenticeshipsResponse.StandardUId != null)
+        if (myApprenticeshipsResponse.StandardUId != null)
         {
             var standard = await _coursesApiClient.Get<GetStandardResponse>(
                 new GetStandardQueryRequest(myApprenticeshipsResponse.StandardUId));
