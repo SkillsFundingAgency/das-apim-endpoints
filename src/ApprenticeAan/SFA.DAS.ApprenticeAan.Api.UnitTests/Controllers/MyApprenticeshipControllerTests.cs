@@ -37,23 +37,9 @@ public class MyApprenticeshipControllerTests
         Guid apprenticeId,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync((MyApprenticeship)null);
+        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync((MyApprenticeship)null!);
         var response = await sut.GetMyApprenticeship(apprenticeId, cancellationToken);
         response.As<NotFoundResult>().Should().NotBeNull();
         mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
     }
-
-    // [Test]
-    // [MoqAutoData]
-    // public async Task GetMyApprenticeship_ApprenticeNotFound_ReturnsBadRequest(
-    //     [Frozen] Mock<IMediator> mediatorMock,
-    //     [Greedy] MyApprenticeshipController sut,
-    //     Guid apprenticeId,
-    //     CancellationToken cancellationToken)
-    // {
-    //     mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync(new GetMyApprenticeshipQueryResult { StatusCode = HttpStatusCode.BadRequest });
-    //     var response = await sut.GetMyApprenticeship(apprenticeId, cancellationToken);
-    //     response.As<BadRequestResult>().Should().NotBeNull();
-    //     mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
-    // }
 }

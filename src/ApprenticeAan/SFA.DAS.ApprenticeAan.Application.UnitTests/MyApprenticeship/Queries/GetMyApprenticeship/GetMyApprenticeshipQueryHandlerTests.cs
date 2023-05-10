@@ -128,7 +128,7 @@ public class GetMyApprenticeshipQueryHandlerTests
         GetMyApprenticeshipQuery request,
         CancellationToken cancellationToken)
     {
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(null, HttpStatusCode.InternalServerError, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>((MyApprenticeshipResponse)null!, HttpStatusCode.InternalServerError, null));
 
         Func<Task> act = () => sut.Handle(request, cancellationToken);
 
