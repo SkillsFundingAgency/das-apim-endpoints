@@ -54,7 +54,7 @@ public class GetPostcodeQueryHandlerTests
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
     {
         var addressess = new List<GetAddressesListItem>();
-        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = double.MinValue, Longitude = 10.5 });
+        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = null, Longitude = double.MinValue });
 
         var apiResponse = new GetAddressesListResponse { Addresses = addressess };
         apiClient
@@ -85,5 +85,4 @@ public class GetPostcodeQueryHandlerTests
 
         result.Should().BeNull();
     }
-
 }
