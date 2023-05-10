@@ -1,38 +1,37 @@
 ﻿using AutoFixture.NUnit3;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.GetMyApprenticeship
+namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.GetMyApprenticeship;
+
+public class TrainingCourseTests
 {
-    public class TrainingCourseTests
+    [Test]
+    [AutoData]
+    public void Operator_ConvertsFrom_GetStandardResponse(GetStandardResponse source)
     {
-        [Test]
-        [AutoData]
-        public void Operator_ConvertsFrom_GetStandardResponse(GetStandardResponse source)
+        TrainingCourse sut = source;
+
+        Assert.Multiple(() =>
         {
-            TrainingCourse sut = source;
+            Assert.That(sut.Name, Is.EqualTo(source.Title));
+            Assert.That(sut.Level, Is.EqualTo(source.Level));
+            Assert.That(sut.Sector, Is.EqualTo(source.Route));
+            Assert.That(sut.Duration, Is.EqualTo(source.VersionDetail!.ProposedTypicalDuration));
+        });
+    }
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(sut.Name, Is.EqualTo(source.Title));
-                Assert.That(sut.Level, Is.EqualTo(source.Level));
-                Assert.That(sut.Sector, Is.EqualTo(source.Route));
-                Assert.That(sut.Duration, Is.EqualTo(source.VersionDetail!.ProposedTypicalDuration));
-            });
-        }
+    [Test]
+    [AutoData]
+    public void Operator_ConvertsFrom_GetFrameworkResponse(GetFrameworkResponse source)
+    {
+        TrainingCourse sut = source;
 
-        [Test]
-        [AutoData]
-        public void Operator_ConvertsFrom_GetFrameworkResponse(GetFrameworkResponse source)
+        Assert.Multiple(() =>
         {
-            TrainingCourse sut = source;
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(sut.Name, Is.EqualTo(source.Title));
-                Assert.That(sut.Level, Is.EqualTo(source.Level));
-                Assert.That(sut.Sector, Is.EqualTo(source.FrameworkName));
-                Assert.That(sut.Duration, Is.EqualTo(source.Duration));
-            });
-        }
+            Assert.That(sut.Name, Is.EqualTo(source.Title));
+            Assert.That(sut.Level, Is.EqualTo(source.Level));
+            Assert.That(sut.Sector, Is.EqualTo(source.FrameworkName));
+            Assert.That(sut.Duration, Is.EqualTo(source.Duration));
+        });
     }
 }
