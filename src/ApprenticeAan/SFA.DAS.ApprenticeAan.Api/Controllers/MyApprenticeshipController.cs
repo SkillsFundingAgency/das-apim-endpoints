@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
 
@@ -22,8 +23,13 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         public async Task<IActionResult> GetMyApprenticeship(Guid apprenticeId, CancellationToken cancellationToken)
         {
             var myApprenticeshipDetails = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = apprenticeId }, cancellationToken);
-            if (myApprenticeshipDetails == null) return NotFound();
-            return Ok(myApprenticeshipDetails);
+            
+            return myApprenticeshipDetails.StatusCode switch
+            {
+                HttpStatusCode.BadRequest => BadRequest(),
+                HttpStatusCode.NotFound => NotFound(),
+                _ => Ok(myApprenticeshipDetails.MyApprenticeship)
+            };
         }
     }
 }
