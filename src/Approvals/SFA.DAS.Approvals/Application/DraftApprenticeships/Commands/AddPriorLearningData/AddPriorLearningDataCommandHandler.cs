@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData
 {
-    public class AddPriorLearningDataCommandHandler : IRequestHandler<AddPriorLearningDataCommand>
+    public class AddPriorLearningDataCommandHandler : IRequestHandler<AddPriorLearningDataCommand, AddPriorLearningDataCommandResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         
@@ -20,7 +21,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
             _apiClient = apiClient;
         }
 
-        public async Task<Unit> Handle(AddPriorLearningDataCommand request, CancellationToken cancellationToken)
+        public async Task<AddPriorLearningDataCommandResult> Handle(AddPriorLearningDataCommand request, CancellationToken cancellationToken)
         {
             var addPriorLearningRequest = new AddPriorLearningDataRequest
             {
@@ -35,7 +36,14 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
 
             result.EnsureSuccessStatusCode();
 
-            return Unit.Value;
+            var apprenticeship = await _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
+            var priorLearningSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+
+            return new AddPriorLearningDataCommandResult
+            {
+                HasStandardOptions = apprenticeship.HasStandardOptions,
+                RplPriceReductionError = priorLearningSummary.RplPriceReductionError,
+            };
         }
     }
 }

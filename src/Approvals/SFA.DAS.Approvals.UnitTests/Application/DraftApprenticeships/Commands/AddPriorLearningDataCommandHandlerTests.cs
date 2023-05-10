@@ -19,6 +19,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
     {
         private AddPriorLearningDataCommandHandler _handler;
         private AddPriorLearningDataCommand _request;
+        private GetDraftApprenticeshipResponse _apprenticeship;
+        private GetPriorLearningSummaryResponse _priorLearningSummary;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
 
         [SetUp]
@@ -27,11 +29,22 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             var fixture = new Fixture();
             _request = fixture.Create<AddPriorLearningDataCommand>();
 
+            _apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
+            _priorLearningSummary = fixture.Create<GetPriorLearningSummaryResponse>();
+
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<AddPriorLearningDataResponse>(It.IsAny<PostAddPriorLearningDataRequest>(), false))
-                .Callback((IPostApiRequest request, bool includeResponse) => _request = request as AddPriorLearningDataCommand)
+            _commitmentsApiClient.Setup(x => 
+                    x.PostWithResponseCode<AddPriorLearningDataResponse>(It.IsAny<PostAddPriorLearningDataRequest>(), false))
                 .ReturnsAsync(new ApiResponse<AddPriorLearningDataResponse>(null, HttpStatusCode.OK, string.Empty));
+
+            _commitmentsApiClient.Setup(x => 
+                    x.Get<GetDraftApprenticeshipResponse>(It.Is<GetDraftApprenticeshipRequest>(x => x.CohortId == _request.CohortId && x.DraftApprenticeshipId == _request.DraftApprenticeshipId)))
+                .ReturnsAsync(_apprenticeship);
+
+            _commitmentsApiClient.Setup(x => 
+                    x.Get<GetPriorLearningSummaryResponse>(It.Is<GetPriorLearningSummaryRequest>(x => x.CohortId == _request.CohortId && x.DraftApprenticeshipId == _request.DraftApprenticeshipId)))
+                .ReturnsAsync(_priorLearningSummary);
 
             _handler = new AddPriorLearningDataCommandHandler(_commitmentsApiClient.Object);
         }
@@ -50,6 +63,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             var expectedResponse = fixture.Create<AddPriorLearningDataResponse>();
             _commitmentsApiClient.Setup(x => x.PostWithResponseCode<AddPriorLearningDataResponse>(
                     It.Is<PostAddPriorLearningDataRequest>(r =>
+                        r.CohortId == _request.CohortId &&
+                        r.DraftApprenticeshipId == _request.DraftApprenticeshipId &&
                             ((AddPriorLearningDataRequest)r.Data).CostBeforeRpl == _request.CostBeforeRpl &&
                             ((AddPriorLearningDataRequest)r.Data).DurationReducedBy == _request.DurationReducedBy &&
                             ((AddPriorLearningDataRequest)r.Data).DurationReducedByHours == _request.DurationReducedByHours &&
@@ -61,7 +76,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
 
             var response = await _handler.Handle(_request, CancellationToken.None);
 
-            Assert.IsInstanceOf<MediatR.Unit>(response);
+            Assert.IsInstanceOf<AddPriorLearningDataCommandResult>(response);
+            Assert.AreEqual(_apprenticeship.HasStandardOptions, response.HasStandardOptions);
+            Assert.AreEqual(_priorLearningSummary.RplPriceReductionError, response.RplPriceReductionError);
         }
     }
 }

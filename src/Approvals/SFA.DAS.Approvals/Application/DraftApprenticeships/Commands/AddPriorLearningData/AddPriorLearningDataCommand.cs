@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData
 {
-    public class AddPriorLearningDataCommand : IRequest
+    public class AddPriorLearningDataCommand : IRequest<AddPriorLearningDataCommandResult>
     {
         public long CohortId { get; set; }
         public long DraftApprenticeshipId { get; set; }

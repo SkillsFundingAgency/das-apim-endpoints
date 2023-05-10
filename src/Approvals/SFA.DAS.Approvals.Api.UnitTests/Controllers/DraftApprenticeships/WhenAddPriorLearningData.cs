@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         private DraftApprenticeshipController _controller;
         private Mock<IMediator> _mediator;
         private AddPriorLearningDataRequest _request;
+        private AddPriorLearningDataCommandResult _result;
         private Fixture _fixture;
 
         [SetUp]
@@ -25,6 +27,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         {
             _fixture = new Fixture();
             _request = _fixture.Create<AddPriorLearningDataRequest>();
+            _result = _fixture.Create<AddPriorLearningDataCommandResult>();
             _mediator = new Mock<IMediator>();
             _controller = new DraftApprenticeshipController(Mock.Of<ILogger<DraftApprenticeshipController>>(), _mediator.Object);
         }
@@ -44,11 +47,19 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.IsDurationReducedByRpl == _request.IsDurationReducedByRpl &&
                 y.PriceReducedBy == _request.PriceReducedBy &&
                 y.TrainingTotalHours == _request.TrainingTotalHours
-            ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
+            ), It.IsAny<CancellationToken>())).ReturnsAsync(_result);
 
             var result = await _controller.PriorLearningData(cohortId, draftApprenticeshipId, _request);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okObjectResult = (OkObjectResult)result;
+            Assert.IsInstanceOf<AddPriorLearningDataCommandResult>(okObjectResult.Value);
+            var objectResult = (AddPriorLearningDataCommandResult)okObjectResult.Value;
+
+            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+
+            var comparisonResult = compare.Compare(_result, objectResult);
+            Assert.IsTrue(comparisonResult.AreEqual);
         }
     }
 }
