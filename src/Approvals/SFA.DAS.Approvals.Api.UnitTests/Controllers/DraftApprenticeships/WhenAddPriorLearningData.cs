@@ -7,9 +7,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
-using SFA.DAS.Approvals.InnerApi.Requests;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 {
@@ -49,7 +49,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.TrainingTotalHours == _request.TrainingTotalHours
             ), It.IsAny<CancellationToken>())).ReturnsAsync(_result);
 
-            var result = await _controller.PriorLearningData(cohortId, draftApprenticeshipId, _request);
+            var result = await _controller.AddPriorLearningData(cohortId, draftApprenticeshipId, _request);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult)result;

@@ -1,9 +1,6 @@
 ﻿using MediatR;
-using Microsoft.Azure.Amqp.Framing;
-using SFA.DAS.Approvals.Application.BulkUpload.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -36,13 +33,14 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
 
             result.EnsureSuccessStatusCode();
 
-            var apprenticeship = await _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
-            var priorLearningSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+            var apprenticeship = _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
+            var priorLearningSummary = _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+            await Task.WhenAll(apprenticeship, priorLearningSummary);
 
             return new AddPriorLearningDataCommandResult
             {
-                HasStandardOptions = apprenticeship.HasStandardOptions,
-                RplPriceReductionError = priorLearningSummary.RplPriceReductionError,
+                HasStandardOptions = (await apprenticeship).HasStandardOptions,
+                RplPriceReductionError = (await priorLearningSummary).RplPriceReductionError,
             };
         }
     }

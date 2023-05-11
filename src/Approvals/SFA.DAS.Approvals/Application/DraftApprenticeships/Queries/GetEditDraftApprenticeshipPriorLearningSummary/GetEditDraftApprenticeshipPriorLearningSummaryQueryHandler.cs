@@ -19,8 +19,11 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
 
         public async  Task<GetEditDraftApprenticeshipPriorLearningSummaryQueryResult> Handle(GetEditDraftApprenticeshipPriorLearningSummaryQuery request, CancellationToken cancellationToken)
         {
-            var apprenticeship = await _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
-            var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+            var apprenticeshipTask = _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
+            var rplSummaryTask = _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+            await Task.WhenAll(apprenticeshipTask, rplSummaryTask);
+            var apprenticeship = await apprenticeshipTask;
+            var rplSummary = await rplSummaryTask;
 
             return new GetEditDraftApprenticeshipPriorLearningSummaryQueryResult
             {

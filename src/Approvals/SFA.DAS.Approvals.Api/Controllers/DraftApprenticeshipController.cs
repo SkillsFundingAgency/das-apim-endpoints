@@ -256,7 +256,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPost]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-data")]
-        public async Task<IActionResult> PriorLearningData(long cohortId, long draftApprenticeshipId, [FromBody] InnerApi.Requests.AddPriorLearningDataRequest request)
+        public async Task<IActionResult> AddPriorLearningData(long cohortId, long draftApprenticeshipId, [FromBody] AddPriorLearningDataRequest request)
         {
             var command = new AddPriorLearningDataCommand
             {
