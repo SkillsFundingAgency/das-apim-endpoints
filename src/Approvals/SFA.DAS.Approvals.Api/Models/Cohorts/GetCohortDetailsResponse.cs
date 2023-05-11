@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
+﻿using System.Collections.Generic;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
 namespace SFA.DAS.Approvals.Api.Models.Cohorts
 {
@@ -7,7 +8,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
-
+        public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
 
         public static implicit operator GetCohortDetailsResponse(GetCohortDetailsQueryResult source)
         {
@@ -15,7 +16,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
             {
                 LegalEntityName = source.LegalEntityName,
                 ProviderName = source.ProviderName,
-                HasUnavailableFlexiJobAgencyDeliveryModel = source.HasUnavailableFlexiJobAgencyDeliveryModel
+                HasUnavailableFlexiJobAgencyDeliveryModel = source.HasUnavailableFlexiJobAgencyDeliveryModel,
+                InvalidProviderCourseCodes = source.InvalidProviderCourseCodes
             };
         }
     }

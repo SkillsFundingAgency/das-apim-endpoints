@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,15 +13,23 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="NUnit.Analyzers" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="SFA.DAS.Testing" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Applicaiton\SFA.DAS.ApprenticeAan.Applicaiton.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Application\SFA.DAS.ApprenticeAan.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="InnerApi\Profiles\Requests\" />
   </ItemGroup>
 
 </Project>

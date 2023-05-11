@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticePortal.Application.ApprenticeAccounts.Queries;
-using SFA.DAS.ApprenticePortal.Application.Homepage.Queries;
+using SFA.DAS.ApprenticePortal.Application.Queries.Homepage;
 using System;
 using System.Threading.Tasks;
 
@@ -24,17 +23,6 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
                 return NotFound();            
 
             return Ok(result.ApprenticeHomepage);
-        }
-
-        [HttpGet("/apprentices/{id}")]
-        public async Task<IActionResult> GetApprentice(Guid id)
-        {
-            var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
-
-            if (result.Apprentice == null)
-                return NotFound();
-
-            return Ok(result.Apprentice);
         }
     }
 }

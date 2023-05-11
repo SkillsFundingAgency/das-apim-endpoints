@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +9,14 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
-using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using Standard = SFA.DAS.Approvals.Types.Standard;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 {
@@ -31,11 +33,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         private GetDraftApprenticeshipsResponse _draftApprenticeship;
 
         private GetEditDraftApprenticeshipDeliveryModelQueryResult _queryEditDraftResult;
-
+        private List<Standard> _providerStandards;
 
         private List<string> _deliveryModels;
         private Mock<IDeliveryModelService> _deliveryModelService;
         private Mock<IFjaaService> _fjaaService;
+        private Mock<IProviderStandardsService> _providerCoursesService;
 
         [SetUp]
         public void Setup()
@@ -44,6 +47,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _cohort = fixture.Build<GetCohortResponse>()
                 .With(x => x.WithParty, Party.Employer)
+                .With(x => x.IsLinkedToChangeOfPartyRequest, false)
                 .Create();
 
             _query = fixture.Create<GetCohortDetailsQuery>();
@@ -73,7 +77,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
-            _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object);
+            _providerStandards = fixture.Create<List<Standard>>();
+            _providerCoursesService = new Mock<IProviderStandardsService>();
+            _providerCoursesService.Setup(x => x.GetStandardsData(It.Is<long>(id => id == _cohort.ProviderId)))
+                .ReturnsAsync(() => new ProviderStandardsData { Standards = _providerStandards });
+
+            _handler = new GetCohortDetailsQueryHandler(_apiClient.Object, _serviceParameters, _fjaaService.Object, _providerCoursesService.Object);
         }
 
         [Test]
@@ -88,6 +97,44 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_Empty()
+        {
+            _providerStandards.Clear();
+
+            foreach (var courseCode in _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct())
+            {
+                _providerStandards.Add(new Standard(courseCode, $"test-{courseCode}"));
+            }
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_NotEmpty()
+        {
+            _providerStandards.Clear();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            var expected = _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct();
+
+            CollectionAssert.AreEqual(expected, result.InvalidProviderCourseCodes);
+        }
+
+        [Test]
+        public async Task Handle_InvalidProviderCourseCodes_IsMapped_Empty_When_Cohort_Is_Change_Of_Party()
+        {
+            _cohort.IsLinkedToChangeOfPartyRequest = true;
+            _providerStandards.Clear();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
         }
     }
 }
