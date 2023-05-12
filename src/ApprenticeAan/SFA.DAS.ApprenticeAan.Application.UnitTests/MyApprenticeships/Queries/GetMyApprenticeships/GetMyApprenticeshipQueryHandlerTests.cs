@@ -2,6 +2,7 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
