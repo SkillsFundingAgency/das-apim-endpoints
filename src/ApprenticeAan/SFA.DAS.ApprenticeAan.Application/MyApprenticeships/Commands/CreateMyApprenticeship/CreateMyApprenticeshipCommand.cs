@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.ApprenticeAan.Api.Controllers;
+namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 
 public class CreateMyApprenticeshipCommand : IRequest<Unit>
 {

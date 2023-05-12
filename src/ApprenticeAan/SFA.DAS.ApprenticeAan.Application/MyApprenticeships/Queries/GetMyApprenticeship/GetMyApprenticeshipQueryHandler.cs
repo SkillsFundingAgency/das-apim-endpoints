@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
 
-namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
+namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, MyApprenticeship?>
 {

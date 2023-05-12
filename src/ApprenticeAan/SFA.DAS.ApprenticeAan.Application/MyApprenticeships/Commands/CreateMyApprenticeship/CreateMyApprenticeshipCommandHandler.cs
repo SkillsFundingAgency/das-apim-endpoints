@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeAan.Api.Controllers;
+namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 
 public class CreateMyApprenticeshipCommandHandler : IRequestHandler<CreateMyApprenticeshipCommand, Unit>
 {

@@ -4,7 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
-using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;

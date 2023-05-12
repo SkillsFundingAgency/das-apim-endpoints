@@ -3,14 +3,14 @@ using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Commands.CreateMyApprenticeship;
+namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Commands.CreateMyApprenticeships;
 
 public class CreateMyApprenticeshipCommandHandlerTests
 {
