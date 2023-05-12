@@ -27,4 +27,12 @@ public class MyApprenticeshipController : ControllerBase
 
         return Ok(myApprenticeship);
     }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateMyApprenticeship([FromBody] CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
+    }
 }

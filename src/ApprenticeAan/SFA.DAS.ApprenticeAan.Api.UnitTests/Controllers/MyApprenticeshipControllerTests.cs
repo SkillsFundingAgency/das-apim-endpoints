@@ -42,4 +42,17 @@ public class MyApprenticeshipControllerTests
         response.As<NotFoundResult>().Should().NotBeNull();
         mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
     }
+
+    [Test, MoqAutoData]
+    public async Task CreateMyApprenticeship_InvokesCommandHandler(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] MyApprenticeshipController sut,
+        CreateMyApprenticeshipCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await sut.CreateMyApprenticeship(command, cancellationToken);
+
+        mediatorMock.Verify(m => m.Send(command, cancellationToken));
+        result.As<OkResult>().Should().NotBeNull();
+    }
 }
