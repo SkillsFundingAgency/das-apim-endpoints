@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
@@ -13,9 +12,6 @@ using SFA.DAS.Campaign.Application.Queries.Panel;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using FluentAssertions;
-using SFA.DAS.Campaign.Application.Services;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using Microsoft.Azure.ServiceBus.Management;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Panel
 {
@@ -34,8 +30,8 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Panel
             service.Setup(o =>
                     o.GetData<CmsContent>(
                         It.Is<GetPanelRequest>(c =>
-                            c.GetUrl.Contains($"entries?content_type=panel&fields.slug={query.Slug}")),
-                        $"{query.Slug}", contentService.Object.HasContent))
+                            c.GetUrl.Contains($"entries?content_type=panel&fields.id={query.Id}")),
+                        $"{query.Id}", contentService.Object.HasContent))
                 .ReturnsAsync(apiResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

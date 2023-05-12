@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
+using SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -16,7 +17,7 @@ public class ApprenticesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("account/{apprenticeId}")]
+    [Route("{apprenticeId}/account")]
     [ProducesResponseType(typeof(GetApprenticeAccountQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAccount(Guid apprenticeId, CancellationToken cancellationToken)
@@ -25,4 +26,18 @@ public class ApprenticesController : ControllerBase
         if (apprenticeAccountDetails == null) return NotFound();
         return Ok(apprenticeAccountDetails);
     }
+
+    [HttpGet]
+    [Route("{apprenticeId}")]
+    [ProducesResponseType(typeof(GetApprenticeQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetApprentice(Guid apprenticeId, CancellationToken cancellationToken)
+    {
+        var apprentice = await _mediator.Send(new GetApprenticeQuery(apprenticeId), cancellationToken);
+
+        if (apprentice == null) return NotFound();
+
+        return Ok(apprentice);
+    }
+
 }
