@@ -104,6 +104,46 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
         }
         
         [Test, MoqAutoData]
+        public async Task Then_If_The_Id_Is_Not_A_Guid_And_A_New_User_With_No_Accounts_Then_User_Upserted_And_User_Information_Returned(
+            EmployerProfile employerProfile,
+            EmployerProfileUsersApiResponse profileUserResponse,
+            [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+            EmployerAccountsService handler)
+        {
+            accountsApiClient
+                .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{profileUserResponse.Id}/accounts"))))
+                .ReturnsAsync(new List<GetUserAccountsResponse>());
+            accountsApiClient
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
+                    It.IsAny<GetAccountTeamMembersRequest>()))
+                .ReturnsAsync(new List<GetAccountTeamMembersResponse>());
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<GetEmployerUserAccountRequest>(c =>
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
+            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<PutUpsertEmployerUserAccountRequest>(c =>
+                        c.PutUrl.Contains($"api/users/"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.Created, ""));
+
+            var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
+
+            actual.Count.Should().Be(1);
+            var actualRecord = actual.First();
+            actualRecord.UserId.Should().Be(profileUserResponse.Id);
+            actualRecord.FirstName.Should().Be(profileUserResponse.FirstName);
+            actualRecord.LastName.Should().Be(profileUserResponse.LastName);
+            actualRecord.DisplayName.Should().Be(profileUserResponse.DisplayName);
+            actualRecord.IsSuspended.Should().Be(profileUserResponse.IsSuspended);
+            actualRecord.DasAccountName.Should().BeNullOrEmpty();
+            actualRecord.EncodedAccountId.Should().BeNullOrEmpty();
+            actualRecord.Role.Should().BeNullOrEmpty();
+            
+        }
+        
+        [Test, MoqAutoData]
         public async Task Then_If_The_Id_Is_A_Guid_Then_User_Account_Found_And_Not_Upserted(
             EmployerProfile employerProfile,
             List<GetUserAccountsResponse> apiResponse,

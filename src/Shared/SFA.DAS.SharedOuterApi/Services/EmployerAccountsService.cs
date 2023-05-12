@@ -100,6 +100,18 @@ namespace SFA.DAS.SharedOuterApi.Services
                 }
             }
 
+            if (returnList.Count == 0)
+            {
+                returnList.Add(new EmployerAccountUser
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    UserId = userId,
+                    DisplayName = displayName,
+                    IsSuspended = isSuspended
+                });
+            }
+
             return returnList;
         }
 
