@@ -18,8 +18,9 @@ namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands
         {
             return await _employerAccountService.PutEmployerAccount(new EmployerProfile
             {
+                GovIdentifier = request.GovIdentifier,
                 Email = request.Email,
-                UserId = request.GovIdentifier,
+                UserId = request.UserId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
             });

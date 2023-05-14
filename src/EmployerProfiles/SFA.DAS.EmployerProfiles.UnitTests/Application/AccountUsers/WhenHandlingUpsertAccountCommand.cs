@@ -23,7 +23,10 @@ namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
             accountsApiClient.Setup(x =>
                     x.PutEmployerAccount(It.Is<EmployerProfile>(c =>
                         c.Email.Equals(request.Email) 
-                        && c.UserId.Equals(request.GovIdentifier))))
+                        && c.UserId.Equals(request.UserId)
+                        && c.FirstName.Equals(request.FirstName)
+                        && c.LastName.Equals(request.LastName)
+                        && c.GovIdentifier.Equals(request.GovIdentifier))))
                 .ReturnsAsync(response);
 
             var actual = await handler.Handle(request, CancellationToken.None);
@@ -36,10 +39,10 @@ namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
                     .Excluding(c => c.Email)
             );
 
-            actual.FirstName.Equals(response.FirstName);
-            actual.LastName.Equals(response.LastName);
-            actual.UserId.Equals(response.UserId);
-            actual.Email.Equals(response.Email);
+            actual.FirstName.Should().Be(response.FirstName);
+            actual.LastName.Should().Be(response.LastName);
+            actual.UserId.Should().Be(response.UserId);
+            actual.Email.Should().Be(response.Email);
         }
     }
 }

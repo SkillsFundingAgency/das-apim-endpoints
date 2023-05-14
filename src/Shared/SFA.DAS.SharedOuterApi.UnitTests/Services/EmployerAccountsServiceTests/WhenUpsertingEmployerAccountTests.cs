@@ -31,7 +31,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             
             employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 It.Is<PutUpsertEmployerUserAccountRequest>(c =>
-                    c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                    c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}") 
+                    && c.Data.GetType().GetProperty("GovIdentifier").GetValue(c.Data, null).ToString() == employerProfile.GovIdentifier
+                    && c.Data.GetType().GetProperty("FirstName").GetValue(c.Data, null).ToString() == employerProfile.FirstName
+                    && c.Data.GetType().GetProperty("LastName").GetValue(c.Data, null).ToString() == employerProfile.LastName
+                    && c.Data.GetType().GetProperty("Email").GetValue(c.Data, null).ToString() == employerProfile.Email
+                    )))
                 .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
             
             var actual = (await handler.PutEmployerAccount(employerProfile));

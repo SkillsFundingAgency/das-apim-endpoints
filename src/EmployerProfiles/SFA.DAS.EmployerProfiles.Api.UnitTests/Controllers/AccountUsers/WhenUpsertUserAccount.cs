@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.AccountUsers
     {
         [Test, MoqAutoData]
         public async Task Then_Upsert_UserAccount_From_Mediator(
-            string email,
+            string userId,
             UpsertAccountRequest request,
             EmployerProfile mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -28,11 +28,17 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.AccountUsers
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<UpsertAccountCommand>(c => c.Email.Equals(request.Email)),
+                    It.Is<UpsertAccountCommand>(c => 
+                        c.Email.Equals(request.Email)
+                        && c.GovIdentifier.Equals(request.GovIdentifier)
+                        && c.FirstName.Equals(request.FirstName)
+                        && c.LastName.Equals(request.LastName)
+                        && c.UserId.Equals(userId)
+                        ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.UpsertUserAccount(email, request) as ObjectResult;
+            var controllerResult = await controller.UpsertUserAccount(userId, request) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

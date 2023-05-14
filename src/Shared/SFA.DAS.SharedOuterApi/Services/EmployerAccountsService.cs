@@ -125,7 +125,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             var employerUserResponse = await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 new PutUpsertEmployerUserAccountRequest(
                     new Guid(employerProfile.UserId),
-                    employerProfile.UserId,
+                    employerProfile.GovIdentifier,
                     employerProfile.Email,
                     employerProfile.FirstName,
                     employerProfile.LastName));

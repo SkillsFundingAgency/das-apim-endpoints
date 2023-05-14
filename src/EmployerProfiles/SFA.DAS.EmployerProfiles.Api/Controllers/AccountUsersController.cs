@@ -55,7 +55,8 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
             {
                 var result = await _mediator.Send(new UpsertAccountCommand
                 {
-                    GovIdentifier = userId,
+                    UserId = userId,
+                    GovIdentifier = request.GovIdentifier,
                     Email = request.Email,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
