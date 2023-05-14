@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
+namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 public class GetStandardResponse
 {

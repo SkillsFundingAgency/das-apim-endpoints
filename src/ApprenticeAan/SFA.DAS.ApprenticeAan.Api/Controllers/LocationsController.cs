@@ -20,8 +20,6 @@ public class LocationsController : ControllerBase
     {
         var queryResponse = await _mediator.Send(new GetAddressesQuery(query));
 
-        if (!queryResponse.Addresses.Any()) return NotFound();
-
         return Ok(queryResponse);
     }
 }

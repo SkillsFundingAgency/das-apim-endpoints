@@ -4,7 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
-using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
@@ -41,5 +42,18 @@ public class MyApprenticeshipControllerTests
         var response = await sut.GetMyApprenticeship(apprenticeId, cancellationToken);
         response.As<NotFoundResult>().Should().NotBeNull();
         mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
+    }
+
+    [Test, MoqAutoData]
+    public async Task CreateMyApprenticeship_InvokesCommandHandler(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] MyApprenticeshipController sut,
+        CreateMyApprenticeshipCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await sut.CreateMyApprenticeship(command, cancellationToken);
+
+        mediatorMock.Verify(m => m.Send(command, cancellationToken));
+        result.As<OkResult>().Should().NotBeNull();
     }
 }
