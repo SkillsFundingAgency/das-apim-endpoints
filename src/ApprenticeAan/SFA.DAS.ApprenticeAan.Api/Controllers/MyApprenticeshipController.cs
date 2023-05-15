@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeAan.Application.MyApprenticeship.Queries.GetMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -26,5 +27,13 @@ public class MyApprenticeshipController : ControllerBase
         if (myApprenticeship == null) return NotFound();
 
         return Ok(myApprenticeship);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateMyApprenticeship([FromBody] CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
     }
 }

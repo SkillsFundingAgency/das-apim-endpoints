@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeship.Queries.GetMyApprenticeship;
+namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Queries.GetMyApprenticeships;
 
 public class GetMyApprenticeshipRequestTests
 {
