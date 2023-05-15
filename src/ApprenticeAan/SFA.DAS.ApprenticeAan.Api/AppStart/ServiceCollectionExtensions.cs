@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAanHubApiClient<AanHubApiConfiguration>, AanHubApiClient>();
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddApplicationRegistrations();
         return services;
     }
@@ -36,6 +37,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>()!.Value);
         services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
+        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
         return services;
     }
 }
