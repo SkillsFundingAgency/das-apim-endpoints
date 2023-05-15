@@ -17,7 +17,7 @@ public class GetPostcodeQueryHandler : IRequestHandler<GetPostcodeQuery, GetPost
     {
         var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.PostCode, minMatch));
 
-        GetPostcodeQueryResult getPostcodeQueryResult = addressesResponse.Addresses.FirstOrDefault(x => x.Latitude != null && x.Longitude != null)!;
+        GetPostcodeQueryResult? getPostcodeQueryResult = addressesResponse.Addresses.FirstOrDefault(x => x.Latitude != null && x.Longitude != null)!;
 
         return getPostcodeQueryResult;
     }

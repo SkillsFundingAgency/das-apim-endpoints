@@ -104,10 +104,9 @@ public class LocationsControllerTests
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LocationsController sut)
     {
-        var response = new GetPostcodeQueryResult() { Coordinates = null! };
         mockMediator
             .Setup(m => m.Send(It.IsAny<GetPostcodeQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
+            .ReturnsAsync(() => null);
 
         var result = await sut.GetCoordinates(Guid.NewGuid().ToString());
 

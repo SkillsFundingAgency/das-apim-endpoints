@@ -14,7 +14,7 @@ public class GetPostcodeQueryHandlerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Handle_ReturnPostcodeBasedOnQuery(
+    public async Task Handle_ReturnsCoordinatesFromTheFirstAddress(
         GetPostcodeQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler,
@@ -26,7 +26,9 @@ public class GetPostcodeQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result!.Coordinates.Should().NotBeNull();
+        result!.Longitude.Should().Be(apiResponse.Addresses.First().Longitude);
+        result!.Latitude.Should().Be(apiResponse.Addresses.First().Latitude);
+
     }
 
     [Test]

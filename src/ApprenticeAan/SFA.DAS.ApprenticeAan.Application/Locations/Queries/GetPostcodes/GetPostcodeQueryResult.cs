@@ -4,15 +4,16 @@ namespace SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetPostcodes;
 
 public class GetPostcodeQueryResult
 {
-    public CoordinatesItem Coordinates { get; set; } = new();
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     public static implicit operator GetPostcodeQueryResult(GetAddressesListItem addressesListItem)
     {
         if (addressesListItem == null) return null!;
 
         var result = new GetPostcodeQueryResult();
-        result.Coordinates.Latitude = addressesListItem.Latitude.GetValueOrDefault();
-        result.Coordinates.Longitude = addressesListItem.Longitude.GetValueOrDefault();
+        result.Latitude = addressesListItem.Latitude.GetValueOrDefault();
+        result.Longitude = addressesListItem.Longitude.GetValueOrDefault();
 
         return result;
     }
