@@ -49,7 +49,7 @@ public class LocationsControllerTests
 
     [Test]
     [MoqAutoData]
-    public async Task GetAddresses_NoMatch_ReturnNotFoundResponse(
+    public async Task GetAddresses_NoMatch_ReturnOkWithEmptyArray(
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LocationsController sut)
     {
@@ -60,6 +60,7 @@ public class LocationsControllerTests
 
         var result = await sut.GetAddresses("thisIsAQuery");
 
-        result.As<NotFoundResult>().Should().NotBeNull();
+        result.As<OkObjectResult>().Should().NotBeNull();
+        result.As<OkObjectResult>().Value.As<GetAddressesQueryResult>().Addresses.Should().BeEmpty();
     }
 }

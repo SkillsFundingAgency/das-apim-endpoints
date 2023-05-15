@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
+using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
@@ -40,4 +41,11 @@ public class ApprenticesController : ControllerBase
         return Ok(apprentice);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateApprenticeMember([FromBody] CreateApprenticeMemberCommand command, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(command, cancellationToken);
+        return Ok();
+    }
 }
