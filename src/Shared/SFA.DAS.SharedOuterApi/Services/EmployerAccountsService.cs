@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -63,6 +64,10 @@ namespace SFA.DAS.SharedOuterApi.Services
                 // if true then update the EmployerAccount with latest information.
                 if (!Guid.TryParse(employerProfile.UserId, out _) && userResponse.Body.Email != employerProfile.Email)
                 {
+                    employerProfile.UserId = userResponse.Body.Id;
+                    employerProfile.FirstName = userResponse.Body.FirstName;
+                    employerProfile.LastName = userResponse.Body.LastName;
+                    employerProfile.GovIdentifier = userResponse.Body.GovUkIdentifier;
                     await PutEmployerAccount(employerProfile);
                 }
 
@@ -133,7 +138,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (employerUserResponse?.Body != null)
             {
                 // external api call to update the employer_account repo with latest information.
-                await _accountsApiClient.Put(new PutAccountUserRequest(
+                var response = await _accountsApiClient.PutWithResponseCode<NullResponse>(new PutAccountUserRequest(
                     employerProfile.UserId,
                     employerProfile.Email,
                     employerProfile.FirstName,

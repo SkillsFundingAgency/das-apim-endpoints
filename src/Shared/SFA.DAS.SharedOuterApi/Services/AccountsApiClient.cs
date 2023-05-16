@@ -82,7 +82,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _client.PutWithResponseCode<TResponse>(request);
         }
     }
 }
