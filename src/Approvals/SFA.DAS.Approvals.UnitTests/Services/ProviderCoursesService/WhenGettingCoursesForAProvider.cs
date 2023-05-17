@@ -139,7 +139,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
             public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
             {
-                _trainingProviderResponse.ProviderType.Id = (short) providerType;
+                _trainingProviderResponse.ProviderType.Id = (short)providerType;
                 return this;
             }
 
@@ -171,7 +171,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public ProviderCoursesServiceTestFixture WithMainProviderDetailsInCache()
             {
                 _trainingProviderCacheResponse = _autoFixture.Build<TrainingProviderResponse>()
-                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse{ Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
+                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse { Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
                     .Create();
 
                 _trainingProviderService.Setup(x =>
