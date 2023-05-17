@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MediatR;
 using SFA.DAS.EmployerAan.Configuration;
-using SFA.DAS.EmployerAan.InnerApi.Requests;
+using SFA.DAS.EmployerAan.InnerApi.EmployerMembers;
 using SFA.DAS.EmployerAan.Services;
 
 namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;

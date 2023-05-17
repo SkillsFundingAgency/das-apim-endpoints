@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using SFA.DAS.EmployerAan.InnerApi.Requests;
+using SFA.DAS.EmployerAan.InnerApi.EmployerMembers;
 
 namespace SFA.DAS.EmployerAan.UnitTests.InnerApi.Requests;
 public class GetEmployerMemberRequestTests

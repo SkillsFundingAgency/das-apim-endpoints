@@ -4,6 +4,7 @@ public static class Constants
     public static class AanHubApiRequestUrls
     {
         public const string GetEmployerMember = "/employers/";
+        public const string GetProfilesUrl = $"/profiles/";
     }
 
 }

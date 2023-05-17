@@ -4,7 +4,7 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Configuration;
-using SFA.DAS.EmployerAan.InnerApi.Requests;
+using SFA.DAS.EmployerAan.InnerApi.EmployerMembers;
 using SFA.DAS.EmployerAan.Services;
 using SFA.DAS.SharedOuterApi.Models;
 
