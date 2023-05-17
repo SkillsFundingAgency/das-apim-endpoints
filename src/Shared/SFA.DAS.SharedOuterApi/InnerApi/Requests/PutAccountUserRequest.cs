@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
                 UserRef = userRef,
                 FirstName = firstName,
                 LastName = lastName,
-                Email = email,
+                EmailAddress = email,
                 CorrelationId = string.Empty
             };
         }
