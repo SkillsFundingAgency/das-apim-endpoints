@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services)
     {
         services.AddHttpClient();
+        services.AddTransient<IAanHubRestApiClient, AanHubRestApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAanHubApiClient<AanHubApiConfiguration>, AanHubApiClient>();
