@@ -18,7 +18,6 @@ namespace SFA.DAS.ApprenticePortal.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
             services.AddTransient<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>, ApprenticeCommitmentsApiClient>();
-            services.AddTransient<ProviderAccountApiClient>();
             services.AddTransient<CourseApiClient>();
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<TrainingProviderService>();

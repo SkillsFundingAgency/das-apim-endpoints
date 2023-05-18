@@ -5,8 +5,8 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticePortal.Api.Controllers;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
-using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
 using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps

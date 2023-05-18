@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -10,11 +9,10 @@ using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.Models;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using System.Net;
-using System.Net.Http;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Requests;
-using SFA.DAS.ApprenticePortal.Services;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
-using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
-using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
-using SFA.DAS.ApprenticePortal.InnerApi.ProviderAccounts.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
