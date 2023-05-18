@@ -1,13 +1,19 @@
 ﻿using RestEase;
+using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
-using static SFA.DAS.ApprenticeAan.Application.Common.Constants;
 
 namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 public interface IAanHubRestApiClient
 {
-    [Get(AanHubApiUrls.GetRegionsUrl)]
-    Task<GetRegionsQueryResult> GetRegions();
+    public const string RequestedByMemberId = "X-RequestedByMemberId";
+
+    [Get("/regions")]
+    Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
+
+    [Get("/profiles/{userType}")]
+    Task<GetProfilesByUserTypeQueryResult> GetProfiles([Path] string userType, CancellationToken cancellationToken);
+
 
 
     /// [Get("calendarEvents")]

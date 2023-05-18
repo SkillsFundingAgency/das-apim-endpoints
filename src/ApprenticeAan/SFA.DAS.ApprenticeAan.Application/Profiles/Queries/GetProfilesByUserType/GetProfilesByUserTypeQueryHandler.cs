@@ -1,19 +1,17 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Api.Configuration;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Profiles;
-using SFA.DAS.ApprenticeAan.Application.Services;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 
-public class GetProfilesByUserTypeQueryHandler : IRequestHandler<GetProfilesByUserTypeQuery, GetProfilesByUserTypeQueryResult?>
+public class GetProfilesByUserTypeQueryHandler : IRequestHandler<GetProfilesByUserTypeQuery, GetProfilesByUserTypeQueryResult>
 {
-    private readonly IAanHubApiClient<AanHubApiConfiguration> _apiClient;
-    public GetProfilesByUserTypeQueryHandler(IAanHubApiClient<AanHubApiConfiguration> apiClient)
+    private readonly IAanHubRestApiClient _apiClient;
+    public GetProfilesByUserTypeQueryHandler(IAanHubRestApiClient apiClient)
     {
         _apiClient = apiClient;
     }
-    public async Task<GetProfilesByUserTypeQueryResult?> Handle(GetProfilesByUserTypeQuery request, CancellationToken cancellationToken)
+    public async Task<GetProfilesByUserTypeQueryResult> Handle(GetProfilesByUserTypeQuery request, CancellationToken cancellationToken)
     {
-        return await _apiClient.Get<GetProfilesByUserTypeQueryResult>(new GetProfilesByUserTypeQueryRequest(request.UserType));
+        return await _apiClient.GetProfiles(request.UserType, cancellationToken);
     }
 }

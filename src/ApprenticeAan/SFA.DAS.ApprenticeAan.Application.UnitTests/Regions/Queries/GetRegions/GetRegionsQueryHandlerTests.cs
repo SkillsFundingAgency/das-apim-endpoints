@@ -12,15 +12,15 @@ public class GetRegionsQueryHandlerTests
     [Test]
     [MoqAutoData]
     public async Task Handle_ReturnAllRegions(
-        GetRegionsQuery query,
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
-        [Frozen(Matching.ImplementedInterfaces)]
         GetRegionsQueryHandler handler,
-        GetRegionsQueryResult expected)
+        GetRegionsQuery query,
+        GetRegionsQueryResult expected,
+        CancellationToken cancellationToken)
     {
-        apiClient.Setup(x => x.GetRegions()).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(expected);
 
-        var actual = await handler.Handle(query, CancellationToken.None);
+        var actual = await handler.Handle(query, cancellationToken);
 
         actual.Should().Be(expected);
     }

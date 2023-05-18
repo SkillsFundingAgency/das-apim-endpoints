@@ -14,6 +14,6 @@ public class GetRegionsQueryHandler : IRequestHandler<GetRegionsQuery, GetRegion
 
     public async Task<GetRegionsQueryResult> Handle(GetRegionsQuery request, CancellationToken cancellationToken)
     {
-        return await _apiClient.GetRegions();
+        return await _apiClient.GetRegions(cancellationToken);
     }
 }
