@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -78,7 +79,10 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var isOnRegister = isOnRegisterTask.Result;
             var providerCourses = providerCoursesTask.Result;
 
-            var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
+            var invalidCourses = draftApprenticeships.DraftApprenticeships
+                .Select(x => x.CourseCode)
+                .Where(y => !string.IsNullOrWhiteSpace(y))
+                .Distinct()
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
             return new GetCohortDetailsQueryResult
