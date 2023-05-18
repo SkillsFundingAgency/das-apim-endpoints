@@ -8,23 +8,18 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 [ApiController]
 public class ValuesController : ControllerBase
 {
-    private readonly IAanHubRestApiClient _restApiClient;
+    private readonly IInnerApiRestClient _restApiClient;
 
-    public ValuesController(IAanHubRestApiClient restApiClient)
+    public ValuesController(IInnerApiRestClient restApiClient)
     {
         _restApiClient = restApiClient;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromHeader] string header)
     {
-        var response = await _restApiClient.Get<PingApiResponse>("values", new[] { new KeyValuePair<string, string>("X-RequestedByMemberId", "King Kong") });
-        return Ok(response);
-    }
-
-    public class PingApiResponse
-    {
-        public string RequestedByMemberId { get; set; } = null!;
+        var response = await _restApiClient.GetValues(header);
+        return Ok(response.GetContent());
     }
 
     public class GetPingRequest : IGetApiRequest
@@ -32,3 +27,4 @@ public class ValuesController : ControllerBase
         public string GetUrl => "values";
     }
 }
+

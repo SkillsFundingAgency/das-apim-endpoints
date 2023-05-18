@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
+using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
@@ -18,10 +19,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services)
     {
         services.AddHttpClient();
-        services.AddTransient<IAanHubRestApiClient, AanHubRestApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.AddTransient<IAanHubApiClient<AanHubApiConfiguration>, AanHubApiClient>();
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
@@ -40,6 +39,16 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
         services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
+
+        var apiConfig = configuration
+                .GetSection("AanHubApiConfiguration")
+                .Get<AanHubApiConfiguration>();
+
+        services.AddScoped<InnerApiAuthenticationHeaderHandler>();
+
+        services.AddRestEaseClient<IInnerApiRestClient>(apiConfig.Url)
+            .AddHttpMessageHandler<InnerApiAuthenticationHeaderHandler>();
+
         return services;
     }
 }
