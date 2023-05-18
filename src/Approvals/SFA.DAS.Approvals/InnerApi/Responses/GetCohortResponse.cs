@@ -6,7 +6,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
     {
         public long AccountId { get; set; }
         public TransferApprovalStatus? TransferApprovalStatus { get; set; }
-        public bool IsLinkedToChangeOfPartyRequest { get; }
+        public bool IsLinkedToChangeOfPartyRequest { get; set; }
         public long? ChangeOfPartyRequestId { get; set; }
         public ApprenticeshipEmployerType LevyStatus { get; set; }
         public bool IsCompleteForProvider { get; set; }
