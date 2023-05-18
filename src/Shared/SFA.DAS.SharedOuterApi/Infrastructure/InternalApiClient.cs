@@ -1,8 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -24,7 +24,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             {
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(Configuration.Identifier);
                 httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
             }
+            httpRequestMessage.Headers.TryAddWithoutValidation("X-RequestedByMemberId", "John Smith");
         }
     }
 }
