@@ -7,26 +7,25 @@ using SFA.DAS.EmployerAan.Api.Controllers;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.ProfilesControllerTests
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.ProfilesControllerTests;
+
+public class ProfilesControllerTests
 {
-    public class ProfilesControllerTests
+    [Test]
+    [MoqAutoData]
+    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(GetProfilesByUserTypeQueryResult response,
+        [Frozen] Mock<IMediator> mockMediator)
     {
-        [Test]
-        [MoqAutoData]
-        public async Task And_MediatorCommandSuccessful_Then_ReturnOk(GetProfilesByUserTypeQueryResult response,
-            [Frozen] Mock<IMediator> mockMediator)
-        {
-            mockMediator.Setup(m => m.Send(It.IsAny<GetProfilesByUserTypeQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(response);
-            var controller = new ProfilesController(mockMediator.Object);
+        mockMediator.Setup(m => m.Send(It.IsAny<GetProfilesByUserTypeQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(response);
+        var controller = new ProfilesController(mockMediator.Object);
 
-            var userType = "employer";
-            var result = await controller.GetProfilesByUserType(userType) as OkObjectResult;
+        var userType = "employer";
+        var result = await controller.GetProfilesByUserType(userType) as OkObjectResult;
 
-            result.Should().NotBeNull();
+        result.Should().NotBeNull();
 
-            var model = result?.Value;
+        var model = result?.Value;
 
-            model.Should().BeEquivalentTo(response);
-        }
+        model.Should().BeEquivalentTo(response);
     }
 }
