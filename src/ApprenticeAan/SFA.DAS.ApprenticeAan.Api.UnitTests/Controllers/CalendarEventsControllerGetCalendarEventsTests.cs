@@ -34,7 +34,7 @@ public class CalendarEventsControllerGetCalendarEventsTests
         CancellationToken cancellationToken)
     {
         var notFoundResponse = (GetCalendarEventsQueryResult?)null;
-        mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))!
                     .ReturnsAsync(notFoundResponse);
 
         var result = await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
