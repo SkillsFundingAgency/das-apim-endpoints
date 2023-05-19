@@ -1,9 +1,11 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
 
 namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
+[ExcludeFromCodeCoverage]
 public class InnerApiAuthenticationHeaderHandler : DelegatingHandler
 {
     private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
