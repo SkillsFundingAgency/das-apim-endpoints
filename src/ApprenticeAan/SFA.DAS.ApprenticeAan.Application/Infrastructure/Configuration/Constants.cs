@@ -1,5 +1,8 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 public static class Constants
 {
-    public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
+    public static class ApiHeaders
+    {
+        public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
+    }
 }

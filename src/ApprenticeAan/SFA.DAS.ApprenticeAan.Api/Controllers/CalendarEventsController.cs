@@ -20,7 +20,7 @@ public class CalendarEventsController : ControllerBase
     [Route("")]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId), cancellationToken);
         if (response == null)

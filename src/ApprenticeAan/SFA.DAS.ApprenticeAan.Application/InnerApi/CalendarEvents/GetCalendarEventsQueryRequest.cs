@@ -2,8 +2,7 @@
 
 namespace SFA.DAS.ApprenticeAan.Application.InnerApi.CalendarEvents;
 
-
-public record GetCalendarEventsQueryRequest() : IGetApiRequest
+public record GetCalendarEventsQueryRequest : IGetApiRequest
 {
     public string GetUrl => $"calendarEvents";
 }
